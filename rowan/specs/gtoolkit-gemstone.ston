@@ -1,0 +1,18 @@
+RwLoadSpecificationV2 {
+	#specName : 'gtoolkit-gemstone',
+	#projectName : 'gtoolkit-gemstone',
+	#gitUrl : 'git@github.com:feenkcom/gtoolkit-gemstone.git',
+	#revision : 'main',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'SystemUser' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}

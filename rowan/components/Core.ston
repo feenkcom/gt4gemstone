@@ -1,0 +1,14 @@
+RwSimpleProjectLoadComponentV2 {
+	#name : 'Core',
+	#condition : 'common',
+	#projectNames : [
+		'RemoteServiceReplication'
+	],
+	#componentNames : [
+		'gemstone/Core'
+	],
+	#packageNames : [
+		'GToolkit-GemStone'
+	],
+	#comment : ''
+}
