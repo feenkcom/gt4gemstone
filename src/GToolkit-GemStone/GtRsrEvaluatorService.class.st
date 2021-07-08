@@ -1,3 +1,6 @@
+"
+GtRsrEvaluatorService provides the ability to evaluate scripts on a GemStone server from a Gtoolkit client, using GemStone's RemoteServiceReplicator facility.
+"
 Class {
 	#name : 'GtRsrEvaluatorService',
 	#superclass : 'RsrService',
