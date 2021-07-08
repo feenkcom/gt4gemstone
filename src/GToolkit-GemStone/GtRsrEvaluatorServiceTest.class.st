@@ -1,7 +1,7 @@
 Class {
 	#name : 'GtRsrEvaluatorServiceTest',
 	#superclass : 'TestCase',
-	#category : 'GToolkit-GemStone-Test'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : 'tests' }

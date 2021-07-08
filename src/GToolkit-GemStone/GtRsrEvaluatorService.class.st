@@ -8,7 +8,7 @@ Class {
 		'selfInstance',
 		'script'
 	],
-	#category : 'GToolkit-GemStone-Services'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : 'accessing' }
