@@ -29,3 +29,8 @@ SqueakDebug.log
 # Metacello-github cache
 /github-cache
 github-*.zip
+
+# vim meta data files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+

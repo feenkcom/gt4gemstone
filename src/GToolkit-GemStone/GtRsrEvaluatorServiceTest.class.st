@@ -1,7 +1,7 @@
 Class {
 	#name : 'GtRsrEvaluatorServiceTest',
 	#superclass : 'TestCase',
-	#category : 'GToolkit-GemStone-Test'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : 'tests' }
@@ -16,8 +16,8 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 	self assert: evaluator selfInstance isNil.
 	self assert: evaluator script equals: script.
 	result := evaluator doIt.
-	self assert: result class equals: SyntaxErrorNotification.
-	self assert: result messageText equals: 'Variable or expression expected'.
+	self assert: result class equals: CompileError.
+	self assert: result messageText equals: 'a CompileError occurred (error 1001), expected a primary expression '.
 ]
 
 { #category : 'tests' }
