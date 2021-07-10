@@ -12,6 +12,12 @@ Class {
 }
 
 { #category : 'accessing' }
+GtRsrEvaluatorService class >> templateClassName [
+
+	^ #GtRsrEvaluatorService
+]
+
+{ #category : 'accessing' }
 GtRsrEvaluatorService >> script [
 
 	^ script
