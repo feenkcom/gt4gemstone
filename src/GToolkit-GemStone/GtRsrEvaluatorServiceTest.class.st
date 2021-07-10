@@ -34,7 +34,9 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	result := evaluator doIt.
 	"'4 + ''NaN''' raises an MNU #adaptToNumber:andSend:"
 	self assert: result class equals: MessageNotUnderstood.
-	self assert: result message selector equals: #adaptToNumber:andSend:.
+	"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
+	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: result message selector).
+
 ]
 
 { #category : 'tests' }
