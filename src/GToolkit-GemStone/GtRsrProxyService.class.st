@@ -7,6 +7,12 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
+{ #category : 'other' }
+GtRsrProxyService class >> templateClassName [
+
+	^ #GtRsrProxyService
+]
+
 { #category : 'accessing' }
 GtRsrProxyService >> remoteClass [
 	"Answer the name of the class of the remote object"

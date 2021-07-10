@@ -11,6 +11,12 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
+{ #category : 'other' }
+GtRsrEvaluatorService class >> templateClassName [
+
+	^ #GtRsrEvaluatorService
+]
+
 { #category : 'accessing' }
 GtRsrEvaluatorService >> script [
 

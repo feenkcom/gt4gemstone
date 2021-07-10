@@ -4,17 +4,20 @@ Extension { #name : 'GtRsrEvaluatorServiceServer' }
 GtRsrEvaluatorServiceServer >> doIt [
 	"Evaluate the receiver's script, answering the result.
 	On Error, answer the exception"
-	| method result |
+	| method result receiver |
 
-	method := [ script _compileInContext: selfInstance symbolList: GsCurrentSession currentSession symbolList ]
+	receiver := selfInstance class == GtRsrProxyServiceServer
+		ifTrue: [ selfInstance object ]
+		ifFalse: [ selfInstance ].
+	method := [ script _compileInContext: receiver symbolList: GsCurrentSession currentSession symbolList ]
 		on: CompileError 
 		do: [ :ex | ^ ex ].
-	result := [ method _executeInContext: selfInstance ]
+	result := [ method _executeInContext: receiver ]
 		on: Error 
 		do: [ :ex | ex ].
 
 	Transcript
-		nextPutAll: '1: ';
+		nextPutAll: '1.1: ';
 		show: result;
 		lf.
 	"Answer either an immediate value or a proxy to the object"
