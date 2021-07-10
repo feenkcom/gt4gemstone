@@ -7,12 +7,6 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'other' }
-GtRsrProxyService class >> templateClassName [
-
-	^ #GtRsrProxyService
-]
-
 { #category : 'accessing' }
 GtRsrProxyService class >> templateClassName [
 
