@@ -1,6 +1,8 @@
 Class {
 	#name : 'GtGemStoneClient',
 	#superclass : 'Object',
+	#traits : 'TGtUniqueInstance',
+	#classTraits : 'TGtUniqueInstance classTrait',
 	#instVars : [
 		'connection',
 		'evaluator',
@@ -10,6 +12,19 @@ Class {
 	],
 	#category : 'GToolkit-GemStone-Pharo'
 }
+
+{ #category : 'private - hooks' }
+GtGemStoneClient class >> onRemoveUniqueInstance: anInstance [
+	"Close the instance before GC"
+
+	uniqueInstance close.
+]
+
+{ #category : 'accessing' }
+GtGemStoneClient class >> uniqueInstance: aGtGemStoneClient [
+
+	uniqueInstance := aGtGemStoneClient
+]
 
 { #category : 'actions' }
 GtGemStoneClient >> close [
@@ -32,31 +47,15 @@ GtGemStoneClient >> connect [
 ]
 
 { #category : 'actions' }
-GtGemStoneClient >> evaluate: aScript [
+GtGemStoneClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ mutex critical:
-		[ evaluator evaluate: aScript for: nil ]
+	^ evaluator evaluate: remoteScript for: anObject bindings: remoteBindings
 ]
 
 { #category : 'actions' }
-GtGemStoneClient >> evaluate: aScript for: anObject [
+GtGemStoneClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
-	^ mutex critical:
-		[ evaluator evaluate: aScript for: anObject ]
-]
-
-{ #category : 'actions' }
-GtGemStoneClient >> evaluateAndWait: aScript [
-
-	^ (mutex critical:
-		[ evaluator evaluate: aScript for: nil ]) wait
-]
-
-{ #category : 'actions' }
-GtGemStoneClient >> evaluateAndWait: aScript for: anObject [
-
-	^ (mutex critical:
-		[ evaluator evaluate: aScript for: anObject ]) wait
+	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
 ]
 
 { #category : 'accessing' }
@@ -78,6 +77,13 @@ GtGemStoneClient >> initialize [
 	host := 'localhost'.
 	port := 29299.
 	mutex := Mutex new.
+]
+
+{ #category : 'testing' }
+GtGemStoneClient >> isRunning [ 
+
+	connection ifNil: [ ^ false ].
+	^ connection isOpen
 ]
 
 { #category : 'accessing' }

@@ -4,10 +4,6 @@ GtRsrEvaluatorService provides the ability to evaluate scripts on a GemStone ser
 Class {
 	#name : 'GtRsrEvaluatorService',
 	#superclass : 'RsrService',
-	#instVars : [
-		'selfInstance',
-		'script'
-	],
 	#category : 'GToolkit-GemStone'
 }
 
@@ -17,26 +13,14 @@ GtRsrEvaluatorService class >> templateClassName [
 	^ #GtRsrEvaluatorService
 ]
 
-{ #category : 'accessing' }
-GtRsrEvaluatorService >> script [
+{ #category : 'actions' }
+GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ script
+	^ self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
-GtRsrEvaluatorService >> script: anObject [
+{ #category : 'actions' }
+GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
-	script := anObject
-]
-
-{ #category : 'accessing' }
-GtRsrEvaluatorService >> selfInstance [
-
-	^ selfInstance
-]
-
-{ #category : 'accessing' }
-GtRsrEvaluatorService >> selfInstance: anObject [
-
-	selfInstance := anObject
+	^ self subclassResponsibility
 ]
