@@ -1,20 +1,20 @@
 Extension { #name : 'GtRsrEvaluatorServiceServer' }
 
 { #category : '*GToolkit-GemStone-GemStone' }
-GtRsrEvaluatorServiceServer >> doIt [
+GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	On Error, answer the exception"
-	| method result receiver |
+	| method result receiver symbolDictionary bindings |
 
-	receiver := selfInstance class == GtRsrProxyServiceServer
-		ifTrue: [ selfInstance object ]
-		ifFalse: [ selfInstance ].
-	method := [ script _compileInContext: receiver symbolList: GsCurrentSession currentSession symbolList ]
-		on: CompileError 
-		do: [ :ex | ^ ex ].
-	result := [ method _executeInContext: receiver ]
-		on: Error 
-		do: [ :ex | ex ].
+	receiver := anObject class == GtRsrProxyServiceServer
+		ifTrue: [ anObject object ]
+		ifFalse: [ anObject ].
+	symbolDictionary := SymbolDictionary new.
+	symbolDictionary addAll: aDictionary.
+	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
+
+	method := aString _compileInContext: receiver symbolList: bindings.
+	result := method _executeInContext: receiver.
 
 	Transcript
 		nextPutAll: '1.1: ';
