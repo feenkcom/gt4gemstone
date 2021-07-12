@@ -5,33 +5,13 @@ Class {
 }
 
 { #category : 'actions' }
-GtRsrEvaluatorServiceClient >> doIt [
+GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ remoteSelf doIt
+	^ remoteSelf evaluate: remoteScript asString for: anObject bindings: remoteBindings asDictionary
 ]
 
 { #category : 'actions' }
-GtRsrEvaluatorServiceClient >> doItAndWait [
+GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
-	^ remoteSelf doIt wait.
-]
-
-{ #category : 'actions' }
-GtRsrEvaluatorServiceClient >> evaluate: aScript for: anObject [
-	"Evaluate the supplied script with `self` bound to anObject"
-
-	^ self
-		selfInstance: anObject;
-		script: aScript;
-		doIt.
-]
-
-{ #category : 'actions' }
-GtRsrEvaluatorServiceClient >> evaluateAndWait: aScript for: anObject [
-	"Evaluate the supplied script with `self` bound to anObject"
-
-	self
-		selfInstance: anObject;
-		script: aScript;
-		doItAndWait.
+	^ (self evaluate: remoteScript for: anObject bindings: remoteBindings) wait
 ]
