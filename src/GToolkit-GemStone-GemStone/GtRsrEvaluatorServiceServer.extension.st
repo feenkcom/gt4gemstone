@@ -2,8 +2,7 @@ Extension { #name : 'GtRsrEvaluatorServiceServer' }
 
 { #category : '*GToolkit-GemStone-GemStone' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
-	"Evaluate the receiver's script, answering the result.
-	On Error, answer the exception"
+	"Evaluate the receiver's script, answering the result"
 	| method result receiver symbolDictionary bindings |
 
 	receiver := anObject class == GtRsrProxyServiceServer
@@ -30,6 +29,14 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 		lf.
 
 	^ result
+]
+
+{ #category : '*GToolkit-GemStone-GemStone' }
+GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the result.
+	 On the server it is always synchronous"
+
+	^ self evaluate: aString for: anObject bindings: aDictionary
 ]
 
 { #category : '*GToolkit-GemStone-GemStone' }
