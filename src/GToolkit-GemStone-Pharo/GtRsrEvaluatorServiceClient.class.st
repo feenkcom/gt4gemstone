@@ -7,7 +7,10 @@ Class {
 { #category : 'actions' }
 GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ remoteSelf evaluate: remoteScript asString for: anObject bindings: remoteBindings asDictionary
+	^ remoteSelf 
+		evaluate: remoteScript asString 
+		for: anObject 
+		bindings: remoteBindings asDictionary
 ]
 
 { #category : 'actions' }

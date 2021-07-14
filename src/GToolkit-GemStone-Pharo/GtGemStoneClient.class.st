@@ -47,9 +47,24 @@ GtGemStoneClient >> connect [
 ]
 
 { #category : 'actions' }
+GtGemStoneClient >> ensureRunning [
+	self isRunning
+		ifFalse: [ self connect ]
+		
+]
+
+{ #category : 'actions' }
 GtGemStoneClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator evaluate: remoteScript for: anObject bindings: remoteBindings
+]
+
+{ #category : 'actions' }
+GtGemStoneClient >> evaluateAndWait: remoteScript [
+	^ self 
+		evaluateAndWait: remoteScript
+		for: nil 
+		bindings: Dictionary new
 ]
 
 { #category : 'actions' }
