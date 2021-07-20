@@ -16,19 +16,11 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	result := method _executeInContext: receiver.
 
 	Transcript
-		nextPutAll: '1.1: ';
-		show: result;
-		lf.
-	"Answer either an immediate value or a proxy to the object"
-	result := (self isRsrImmediate: result)
-		ifTrue: [ result ]
-		ifFalse: [ GtRsrProxyServiceServer object: result ].
-	Transcript
-		nextPutAll: '2: ';
+		nextPutAll: 'result: ';
 		show: result;
 		lf.
 
-	^ result
+	^ result asGtRsrProxyObjectForConnection: _connection
 ]
 
 { #category : '*GToolkit-GemStone-GemStone' }

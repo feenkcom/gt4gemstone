@@ -7,8 +7,8 @@ Dictionary >> asGtRsrProxyObjectForConnection: aRsrConnection [
 	For Dictionaries, for now all keys must be immediate."
 	| proxyDict |
 
-	self assert: (self keys allSatisfy: [ :key | 
-		GtRsrEvaluatorService isRsrImmediate: key ]).
+	(self keys allSatisfy: [ :key | GtRsrEvaluatorService isRsrImmediate: key ]) ifFalse:
+		[ self error: 'GtRsr dictionary keys must be primitive types (immediate)' ].
 	proxyDict := self class new: self size.
 	self keysAndValuesDo: [ :key :value |
 		proxyDict

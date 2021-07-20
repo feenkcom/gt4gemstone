@@ -7,8 +7,8 @@
 | warnings |
 warnings := String new.
 [
-	(Rowan projectFromUrl: 'file:/$GTOOLKIT_GEMSTONE_LOAD_SPEC_FILE_URL')
-		projectsHome: '$ROWAN_PROJECTS_HOME';
+	(Rowan projectFromUrl: 'file:///home/alistair/gemstone/alpha2/gitreps/gtoolkit-gemstone/rowan/specs/gtoolkit-gemstone.ston')
+		projectsHome: '/home/alistair/gemstone/alpha2/gitreps';
 		load
 ] on: CompileWarning do: [:ex |
 	(ex description includesString: 'not optimized')
