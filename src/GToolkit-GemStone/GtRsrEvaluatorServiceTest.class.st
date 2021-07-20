@@ -16,6 +16,37 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 ]
 
 { #category : 'tests' }
+GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
+	"Test answering a complex object.
+	Assumes that Associations are not immediate"
+	| script evaluator result dict proxy |
+
+	evaluator := GtRsrEvaluatorServiceServer new.
+	script := 
+'| resultDict aDict anArray |
+
+aDict := Dictionary new.
+aDict at: #a put: 1.
+aDict at: #b put: #c -> 2.
+anArray := Array new: 3.
+anArray at: 1 put: 3.
+anArray at: 2 put: aDict.
+anArray at: 3 put: #d -> 4.
+anArray.'. 
+	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	self assert: result class equals: Array.
+	self assert: result size equals: 3.
+	self assert: (result at: 1) equals: 3.
+	dict := result at: 2.
+	self assert: (dict at: #a) equals: 1.
+	proxy := dict at: #b.
+	proxy := result at: 3.
+	self assert: proxy class equals: GtRsrProxyServiceServer.
+	self assert: proxy object equals: #d -> 4.
+	^ result.
+]
+
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator |
 

@@ -13,7 +13,7 @@ GtRsrEvaluatorServiceServer >> evaluate: remoteScript for: anObject bindings: re
 		noPattern: true;
 		evaluate.
 
-	^ result
+	^ result asGtRsrProxyObjectForConnection: _connection.
 ]
 
 { #category : '*GToolkit-GemStone-Pharo' }
