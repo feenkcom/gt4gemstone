@@ -1,21 +1,25 @@
 Extension { #name : 'GtRsrEvaluatorServiceServer' }
 
 { #category : '*GToolkit-GemStone-Pharo' }
-GtRsrEvaluatorServiceServer >> doIt [
-	"Evaluate the receiver's script, answer something, but what?"
-	| compiler method result |
+GtRsrEvaluatorServiceServer >> evaluate: remoteScript for: anObject bindings: remoteBindings [
+	"Evaluate the supplied script against anObject with the supplied bindings"
+	| compiler result |
 
-	compiler := selfInstance class compiler.
-	compiler 
-		source: script;
-		noPattern: true.
-	method := [ compiler compileDoit ]
-		on: SyntaxErrorNotification 
-		do: [ :ex | ^ ex ].
-	"This should be in an exception handler, evaluation can fail"
-	result := [ selfInstance withArgs: #() executeMethod: method ]
-		on: Error 
-		do: [ :ex | ex ].
+	compiler := anObject class compiler.
+	result := compiler 
+		source: remoteScript;
+		bindings: remoteBindings;
+		receiver: anObject;
+		noPattern: true;
+		evaluate.
 
-	^ result
+	^ result asGtRsrProxyObjectForConnection: _connection.
+]
+
+{ #category : '*GToolkit-GemStone-Pharo' }
+GtRsrEvaluatorServiceServer >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
+	"Evaluate the supplied script.
+	On the client, it is always synchronous"
+
+	^ self evaluate: remoteScript for: anObject bindings: remoteBindings
 ]

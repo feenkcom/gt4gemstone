@@ -1,66 +1,83 @@
 Class {
 	#name : 'GtRsrEvaluatorServiceTest',
 	#superclass : 'TestCase',
-	#category : 'GToolkit-GemStone-Test'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
-	| script evaluator result |
+	| script evaluator |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self error:'. 
-	evaluator
-		selfInstance: nil;
-		script: script.
-	self assert: evaluator selfInstance isNil.
-	self assert: evaluator script equals: script.
-	result := evaluator doIt.
-	self assert: result class equals: SyntaxErrorNotification.
-	self assert: result messageText equals: 'Variable or expression expected'.
+	self
+		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
+		raise: self errorClass.
+]
+
+{ #category : 'tests' }
+GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
+	"Test answering a complex object.
+	Assumes that Associations are not immediate"
+	| script evaluator result dict proxy |
+
+	evaluator := GtRsrEvaluatorServiceServer new.
+	script := 
+'| resultDict aDict anArray |
+
+aDict := Dictionary new.
+aDict at: #a put: 1.
+aDict at: #b put: #c -> 2.
+anArray := Array new: 3.
+anArray at: 1 put: 3.
+anArray at: 2 put: aDict.
+anArray at: 3 put: #d -> 4.
+anArray.'. 
+	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	self assert: result class equals: Array.
+	self assert: result size equals: 3.
+	self assert: (result at: 1) equals: 3.
+	dict := result at: 2.
+	self assert: (dict at: #a) equals: 1.
+	proxy := dict at: #b.
+	proxy := result at: 3.
+	self assert: proxy class equals: GtRsrProxyServiceServer.
+	self assert: proxy object equals: #d -> 4.
+	^ result.
 ]
 
 { #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
-	| script evaluator result |
+	| script evaluator |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
-	script := 'self + ''NaN'''. 
-	evaluator
-		selfInstance: 4;
-		script: script.
-	self assert: evaluator selfInstance equals: 4.
-	self assert: evaluator script equals: script.
-	result := evaluator doIt.
-	"'4 + ''NaN''' raises an MNU #adaptToNumber:andSend:"
-	self assert: result class equals: MessageNotUnderstood.
-	self assert: result message selector equals: #adaptToNumber:andSend:.
+	script := 'self + ''NaN'''.
+	"'4 + ''NaN''' raises a MNU"
+	self
+		should: [ evaluator evaluateAndWait: script for: 4 bindings: Dictionary new ]
+		raise: MessageNotUnderstood
+		withExceptionDo: [ :ex | 
+			"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
+			self assert: (#(#adaptToNumber:andSend: #'_generality') includes: ex message selector) ].
+
 ]
 
 { #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
-	| script evaluator |
+	| script evaluator result |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self + 3'. 
-	evaluator
-		selfInstance: 4;
-		script: script.
-	self assert: evaluator selfInstance equals: 4.
-	self assert: evaluator script equals: script.
-	self assert: evaluator doIt equals: 7.
+	result := evaluator evaluateAndWait: script for: 4 bindings: Dictionary new.
+	self assert: result equals: 7.
 ]
 
 { #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
-	| script evaluator |
+	| script evaluator result |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := '4+3'. 
-	evaluator
-		selfInstance: nil;
-		script: script.
-	self assert: evaluator selfInstance isNil.
-	self assert: evaluator script equals: script.
-	self assert: evaluator doIt equals: 7.
+	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	self assert: result equals: 7.
 ]

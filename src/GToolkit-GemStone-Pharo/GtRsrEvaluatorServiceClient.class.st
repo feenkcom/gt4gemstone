@@ -5,7 +5,16 @@ Class {
 }
 
 { #category : 'actions' }
-GtRsrEvaluatorServiceClient >> doIt [
+GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ remoteSelf doIt
+	^ remoteSelf 
+		evaluate: remoteScript asString 
+		for: anObject 
+		bindings: remoteBindings asDictionary
+]
+
+{ #category : 'actions' }
+GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
+
+	^ (self evaluate: remoteScript for: anObject bindings: remoteBindings) wait
 ]

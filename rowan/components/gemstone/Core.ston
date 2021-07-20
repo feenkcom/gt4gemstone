@@ -1,0 +1,10 @@
+RwPlatformNestedProjectLoadComponentV2 {
+	#name : 'gemstone/Core',
+	#condition : [
+		'gemstone'
+	],
+	#packageNames : [
+		'GToolkit-GemStone-GemStone'
+	],
+	#comment : ''
+}
