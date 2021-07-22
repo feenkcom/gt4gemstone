@@ -1,8 +1,6 @@
 Class {
 	#name : 'GtGemStoneClient',
 	#superclass : 'Object',
-	#traits : 'TGtUniqueInstance',
-	#classTraits : 'TGtUniqueInstance classTrait',
 	#instVars : [
 		'connection',
 		'evaluator',
@@ -10,14 +8,48 @@ Class {
 		'port',
 		'mutex'
 	],
+	#classInstVars : [
+		'uniqueInstance'
+	],
 	#category : 'GToolkit-GemStone-Pharo'
 }
 
-{ #category : 'private - hooks' }
-GtGemStoneClient class >> onRemoveUniqueInstance: anInstance [
-	"Close the instance before GC"
+{ #category : 'cleanup' }
+GtGemStoneClient class >> cleanUniqueInstance [
+	uniqueInstance ifNotNil: [ :anInstance | 
+		self onRemoveUniqueInstance: anInstance ].
+	uniqueInstance := nil.
+]
 
-	uniqueInstance close.
+{ #category : 'cleanup' }
+GtGemStoneClient class >> cleanUp [
+	self cleanUniqueInstance
+]
+
+{ #category : 'cleanup' }
+GtGemStoneClient class >> default [
+	^ self uniqueInstance
+]
+
+{ #category : 'cleanup' }
+GtGemStoneClient class >> hasUniqueInstance [
+
+	^ uniqueInstance isNotNil
+]
+
+{ #category : 'cleanup' }
+GtGemStoneClient class >> instance [
+	^ self uniqueInstance
+]
+
+{ #category : 'cleanup' }
+GtGemStoneClient class >> onRemoveUniqueInstance: anInstance [
+	"Classes may perform some activities on a singleton that is about to be released"
+]
+
+{ #category : 'cleanup' }
+GtGemStoneClient class >> uniqueInstance [
+	^ uniqueInstance ifNil: [ uniqueInstance := self new ]
 ]
 
 { #category : 'accessing' }
