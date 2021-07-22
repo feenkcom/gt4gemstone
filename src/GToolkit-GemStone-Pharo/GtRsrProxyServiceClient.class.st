@@ -59,7 +59,7 @@ GtRsrProxyServiceClient >> declarativeViews [
 		viewSelectors := remoteInspectorProxy proxyPerform: #getGtViewMethodNames.
 		rawViews := viewSelectors collect: [ :viewSelector |
 			viewDictionary := remoteInspectorProxy 
-				proxyPerform: #getViewDeclaration: withArguments: viewSelector.
+				proxyPerform: #getViewDeclaration: withArguments: { viewSelector }.
 			((GtDeclarativeView fromDictionary: viewDictionary)
 					accessor: remoteInspectorProxy;
 					methodName: viewSelector;
@@ -73,11 +73,11 @@ GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 	| evaluator |
 
-	evaluator := GtRsrEvaluatorServiceClient new
-		selfInstance: self;
-		script: aString;
-		registerWith: _connection.
-	^ evaluator doItAndWait.
+	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
+	^ evaluator
+		evaluateAndWait: aString
+		for: self
+		bindings: Dictionary new.
 ]
 
 { #category : 'gt inspector' }
@@ -204,7 +204,7 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol [
 { #category : 'performing' }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 
-	^ remoteSelf proxyPerform: aSymbol withArguments: anArray
+	^ (remoteSelf proxyPerform: aSymbol withArguments: anArray) wait
 ]
 
 { #category : 'gt inspector' }
