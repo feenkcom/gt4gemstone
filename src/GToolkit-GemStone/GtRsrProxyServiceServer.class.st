@@ -31,11 +31,11 @@ GtRsrProxyServiceServer >> object: anObject [
 { #category : 'performing' }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol [
 
-	^ object perform: aSymbol
+	^ (object perform: aSymbol) asGtRsrProxyObjectForConnection: _connection
 ]
 
 { #category : 'performing' }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray [
 
-	^ object perform: aSymbol withArguments: anArray
+	^ (object perform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
 ]
