@@ -18,5 +18,6 @@ GtpoGsNMethod >> gtSourceFor: aView [
 		title: 'Source';
 		priority: 10;
 		aptitude: BrGlamorousCodeEditorAptitude;
+		styler: BrRBTextStyler new;
 		text: [ self proxyPerform: #sourceString ]
 ]
