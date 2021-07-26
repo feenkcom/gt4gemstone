@@ -1,7 +1,7 @@
 Class {
 	#name : 'GtRsrProxyServiceClient',
 	#superclass : 'GtRsrProxyService',
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : 'testing' }

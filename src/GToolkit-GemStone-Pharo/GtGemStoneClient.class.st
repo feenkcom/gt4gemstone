@@ -11,7 +11,7 @@ Class {
 	#classInstVars : [
 		'uniqueInstance'
 	],
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : 'cleanup' }
