@@ -20,9 +20,8 @@ RsrRemoteException >> gtMethodFromStackString: aString [
 
 	start := aString indexOfSubCollection: '[GsNMethod '.
 	start = 0 ifTrue: [ ^ nil ].
-	end := aString indexOf: $].
+	end := aString indexOf: $] startingAt: start+11.
 	end = 0 ifTrue: [ ^ nil ].
-	self assert: start < end.
 	methodOop := aString copyFrom: start+11 to: end-1.
 	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
 	^ evaluator evaluateAndWait: 'Object objectForOop: ', methodOop
