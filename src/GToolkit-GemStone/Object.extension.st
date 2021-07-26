@@ -9,10 +9,3 @@ Object >> asGtRsrProxyObjectForConnection: aRsrConnection [
 		[ ^ GtRsrProxyServiceServer object: self ].
 	^ self
 ]
-
-{ #category : '*GToolkit-GemStone' }
-Object >> forGtoolkit: gtoolkitBlock forGemStone: gemstoneBlock [
-	"Evaluate the supplied platform specific block"
-
-	^ gtoolkitBlock value
-]
