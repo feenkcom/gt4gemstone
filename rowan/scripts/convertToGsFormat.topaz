@@ -1,0 +1,33 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	expectvalue true
+	run
+| warnings projectSetModification visitor gsDirectory project repositoryRoot projectSetDefinition  |
+warnings := String new.
+
+	repositoryRoot := '$ROWAN_PROJECTS_HOME/gtoolkit-gemstone'.
+	gsDirectory := repositoryRoot asFileReference / 'src-gs'.
+	project := Rowan 
+		projectFromUrl: 'file:', repositoryRoot, '/rowan/specs/gtoolkit-gemstone.ston'
+		gitUrl: 'file:', repositoryRoot.
+	projectSetDefinition := RwProjectSetDefinition new
+		addProject: project _resolvedProject;
+		yourself.
+	projectSetModification := projectSetDefinition compareAgainstBase: RwProjectSetDefinition new.
+	visitor := RwGsModificationTopazWriterVisitorV2 new
+		logCreation: true;
+		repositoryRootPath: gsDirectory;
+		topazFilename: 'gtoolkit-gemstone';
+		yourself.
+	visitor visit: projectSetModification.
+
+
+warnings isEmpty
+	ifTrue: [ true ]
+	ifFalse: [ warnings ]
+%
+	commit
+
+	errorCount
