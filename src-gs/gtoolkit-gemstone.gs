@@ -130,6 +130,53 @@ evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
 	^ self subclassResponsibility
 %
 
+! Class implementation for 'GtRsrEvaluatorServiceServer'
+
+!		Instance methods for 'GtRsrEvaluatorServiceServer'
+
+category: 'actions'
+method: GtRsrEvaluatorServiceServer
+evaluate: aString for: anObject bindings: aDictionary
+	"Evaluate the receiver's script, answering the result"
+
+	^ self
+		forGtoolkit: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		forGemStone: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
+%
+
+category: 'actions'
+method: GtRsrEvaluatorServiceServer
+evaluateAndWait: aString for: anObject bindings: aDictionary
+	"Evaluate the receiver's script, answering the result.
+	 On the server it is always synchronous"
+
+	^ self evaluate: aString for: anObject bindings: aDictionary
+%
+
+category: 'private'
+method: GtRsrEvaluatorServiceServer
+gsEvaluate: aString for: anObject bindings: aDictionary
+	"Evaluate the receiver's script, answering the result"
+	| method result receiver symbolDictionary bindings |
+
+	receiver := anObject class == GtRsrProxyServiceServer
+		ifTrue: [ anObject object ]
+		ifFalse: [ anObject ].
+	symbolDictionary := SymbolDictionary new.
+	symbolDictionary addAll: aDictionary.
+	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
+
+	method := aString _compileInContext: receiver symbolList: bindings.
+	result := method _executeInContext: receiver.
+
+	Transcript
+		nextPutAll: 'result: ';
+		show: result;
+		lf.
+
+	^ result asGtRsrProxyObjectForConnection: _connection
+%
+
 ! Class implementation for 'GtRsrProxyService'
 
 !		Class methods for 'GtRsrProxyService'
@@ -193,19 +240,38 @@ category: 'performing'
 method: GtRsrProxyServiceServer
 proxyPerform: aSymbol
 
-	^ object perform: aSymbol
+	^ (object perform: aSymbol) asGtRsrProxyObjectForConnection: _connection
 %
 
 category: 'performing'
 method: GtRsrProxyServiceServer
 proxyPerform: aSymbol withArguments: anArray
 
-	^ object perform: aSymbol withArguments: anArray
+	^ (object perform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
 %
 
 ! Class implementation for 'GtRsrEvaluatorServiceTest'
 
 !		Instance methods for 'GtRsrEvaluatorServiceTest'
+
+category: 'private'
+method: GtRsrEvaluatorServiceTest
+gsErrorClass
+
+	^ CompileError
+%
+
+category: 'private'
+method: GtRsrEvaluatorServiceTest
+should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock
+
+	testBlock
+		on: anErrorClass
+		do: [ :ex | 
+			exceptionBlock value: ex.
+			^ self ].
+	self error: anErrorClass printString, ' not raised'.
+%
 
 category: 'tests'
 method: GtRsrEvaluatorServiceTest
@@ -216,7 +282,7 @@ testCompilationError
 	script := 'self error:'. 
 	self
 		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
-		raise: self errorClass.
+		raise: (self forGtoolkit: [ self gtErrorClass ] forGemStone: [ self gsErrorClass ]).
 %
 
 category: 'tests'
@@ -324,54 +390,6 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ proxyDict
 %
 
-! Class extensions for 'GtRsrEvaluatorServiceServer'
-
-!		Instance methods for 'GtRsrEvaluatorServiceServer'
-
-category: '*GToolkit-GemStone-GemStone'
-method: GtRsrEvaluatorServiceServer
-evaluate: aString for: anObject bindings: aDictionary
-	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings |
-
-	receiver := anObject class == GtRsrProxyServiceServer
-		ifTrue: [ anObject object ]
-		ifFalse: [ anObject ].
-	symbolDictionary := SymbolDictionary new.
-	symbolDictionary addAll: aDictionary.
-	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
-
-	method := aString _compileInContext: receiver symbolList: bindings.
-	result := method _executeInContext: receiver.
-
-	Transcript
-		nextPutAll: 'result: ';
-		show: result;
-		lf.
-
-	^ result asGtRsrProxyObjectForConnection: _connection
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: GtRsrEvaluatorServiceServer
-evaluateAndWait: aString for: anObject bindings: aDictionary
-	"Evaluate the receiver's script, answering the result.
-	 On the server it is always synchronous"
-
-	^ self evaluate: aString for: anObject bindings: aDictionary
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: GtRsrEvaluatorServiceServer
-isRsrImmediate: anObject
-	"Answer a boolean indicating whether the supplied object is considered a primitive type, meaining:
-	- it has an RSR service mapping, or
-	- it is a service object"
-
-	^ (RsrReference referenceMapping includesKey: anObject class) or:
-		[ anObject isKindOf: RsrService ]
-%
-
 ! Class extensions for 'Object'
 
 !		Instance methods for 'Object'
@@ -385,6 +403,14 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	(GtRsrEvaluatorService isRsrImmediate: self) ifFalse: 
 		[ ^ GtRsrProxyServiceServer object: self ].
 	^ self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Object
+forGtoolkit: gtoolkitBlock forGemStone: gemstoneBlock
+	"Evaluate the supplied platform specific block"
+
+	^ gemstoneBlock value
 %
 
 ! Class extensions for 'OrderedCollection'

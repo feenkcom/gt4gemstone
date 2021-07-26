@@ -8,7 +8,7 @@
 warnings := String new.
 rowanProjectsHome := '$ROWAN_PROJECTS_HOME'.
 [
-	(Rowan projectFromUrl: 'file://', rowanProjectsHome, '/gtoolkit-gemstone/rowan/specs/gtoolkit-gemstone.ston')
+	(Rowan projectFromUrl: 'file:', rowanProjectsHome, '/gtoolkit-gemstone/rowan/specs/gtoolkit-gemstone.ston')
 		projectsHome: rowanProjectsHome;
 		load
 ] on: CompileWarning do: [:ex |
