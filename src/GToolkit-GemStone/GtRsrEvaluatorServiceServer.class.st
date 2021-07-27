@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 	^ self evaluate: aString for: anObject bindings: aDictionary
 ]
 
-{ #category : 'private' }
+{ #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
 	| method result receiver symbolDictionary bindings |

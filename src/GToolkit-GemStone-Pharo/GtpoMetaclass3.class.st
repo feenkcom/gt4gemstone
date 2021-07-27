@@ -1,7 +1,7 @@
 Class {
 	#name : 'GtpoMetaclass3',
 	#superclass : 'GtRsrProxyServiceClient',
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : 'private' }

@@ -4,11 +4,12 @@
 
 	expectvalue true
 	run
-| warnings |
+| warnings rowanProjectsHome |
 warnings := String new.
+rowanProjectsHome := '$ROWAN_PROJECTS_HOME'.
 [
-	(Rowan projectFromUrl: 'file:///home/alistair/gemstone/alpha2/gitreps/gtoolkit-gemstone/rowan/specs/gtoolkit-gemstone.ston')
-		projectsHome: '/home/alistair/gemstone/alpha2/gitreps';
+	(Rowan projectFromUrl: 'file:', rowanProjectsHome, '/gtoolkit-gemstone/rowan/specs/gtoolkit-gemstone.ston')
+		projectsHome: rowanProjectsHome;
 		load
 ] on: CompileWarning do: [:ex |
 	(ex description includesString: 'not optimized')

@@ -1,7 +1,7 @@
 Extension { #name : 'GtRsrEvaluatorServiceServer' }
 
 { #category : '*GToolkit-GemStone-Pharo' }
-GtRsrEvaluatorServiceServer >> evaluate: remoteScript for: anObject bindings: remoteBindings [
+GtRsrEvaluatorServiceServer >> gtEvaluate: remoteScript for: anObject bindings: remoteBindings [
 	"Evaluate the supplied script against anObject with the supplied bindings"
 	| compiler result |
 
@@ -14,12 +14,4 @@ GtRsrEvaluatorServiceServer >> evaluate: remoteScript for: anObject bindings: re
 		evaluate.
 
 	^ result asGtRsrProxyObjectForConnection: _connection.
-]
-
-{ #category : '*GToolkit-GemStone-Pharo' }
-GtRsrEvaluatorServiceServer >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
-	"Evaluate the supplied script.
-	On the client, it is always synchronous"
-
-	^ self evaluate: remoteScript for: anObject bindings: remoteBindings
 ]

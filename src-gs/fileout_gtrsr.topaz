@@ -1,6 +1,0 @@
-fileout class: GtRsrEvaluatorService toFile: GtRsrEvaluatorService.gs
-fileout class: GtRsrEvaluatorServiceServer toFile: GtRsrEvaluatorServiceServer.gs
-fileout class: GtRsrEvaluatorServiceTest toFile: GtRsrEvaluatorServiceTest.gs
-fileout class: GtRsrProxyService toFile: GtRsrProxyService.gs
-fileout class: GtRsrProxyServiceServer toFile: GtRsrProxyServiceServer.gs
-

@@ -11,7 +11,7 @@ Class {
 	#classInstVars : [
 		'uniqueInstance'
 	],
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : 'cleanup' }
@@ -103,6 +103,32 @@ GtGemStoneClient >> evaluateAndWait: remoteScript [
 GtGemStoneClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
+]
+
+{ #category : 'ui' }
+GtGemStoneClient >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	self isRunning ifFalse: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Abort Transaction';
+		icon: BrGlamorousVectorIcons cancel;
+		action: [ :button | 
+			self evaluateAndWait: 'System abortTransaction'.
+			button phlow spawnObject: 'Aborted transaction' ]
+]
+
+{ #category : 'ui' }
+GtGemStoneClient >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	self isRunning ifFalse: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Commit Transaction';
+		icon: BrGlamorousVectorIcons accept;
+		action: [ :button | 
+			self evaluateAndWait: 'System commitTransaction'.
+			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
 { #category : 'accessing' }

@@ -1,7 +1,7 @@
 Class {
 	#name : 'GtpoGtRemotePhlowViewedObject',
 	#superclass : 'GtRsrProxyServiceClient',
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : 'accessing' }
