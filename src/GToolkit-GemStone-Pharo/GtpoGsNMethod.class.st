@@ -49,8 +49,10 @@ GtpoGsNMethod >> gtSourceFor: aView [
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
 		text: [ self proxyPerform: #sourceString ];
-		actionButtonLabel: 'Compile' action: [ :aButton :aTab :aButtonModel | 
-			self compileFromTab: aTab.
-			aTab viewContentElement phlow update ];
+		actionButtonIcon: BrGlamorousVectorIcons accept
+			tooltip: 'Compile' 
+			action: [ :aButton :aTab :aButtonModel | 
+				self compileFromTab: aTab.
+				aTab viewContentElement phlow update ];
 		actionUpdateButton
 ]

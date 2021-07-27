@@ -16,3 +16,11 @@ GtpoMetaclass3 class >> remoteClassName [
 
 	^ #Metaclass3
 ]
+
+{ #category : 'printing' }
+GtpoMetaclass3 >> printOn: aStream [
+
+	[ aStream << (self proxyPerform: #printString) ]
+		on: Error 
+		do: [ :ex | super printOn: aStream ]
+]
