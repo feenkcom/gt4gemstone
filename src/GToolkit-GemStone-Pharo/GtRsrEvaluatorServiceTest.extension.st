@@ -1,7 +1,7 @@
 Extension { #name : 'GtRsrEvaluatorServiceTest' }
 
 { #category : '*GToolkit-GemStone-Pharo' }
-GtRsrEvaluatorServiceTest >> errorClass [ 
+GtRsrEvaluatorServiceTest >> gtErrorClass [ 
 
 	^ SyntaxErrorNotification 
 ]

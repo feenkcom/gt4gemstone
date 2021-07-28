@@ -1,13 +1,20 @@
 Class {
 	#name : 'GtRsrProxyServiceClient',
 	#superclass : 'GtRsrProxyService',
-	#category : 'GToolkit-GemStone-Pharo'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : 'testing' }
 GtRsrProxyServiceClient class >> isClientClass [
 
 	^ true
+]
+
+{ #category : 'private' }
+GtRsrProxyServiceClient class >> remoteClassMatcher [
+	"Answer the block that matches a given class name"
+
+	^ [ :aSymbol | self remoteClassName = aSymbol ]
 ]
 
 { #category : 'accessing' }
@@ -23,7 +30,7 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 	"Answer the subclass that represents the supplied class name"
 
 	^ self subclasses
-		detect: [ :each | each remoteClassName = aSymbol ]
+		detect: [ :each | each remoteClassMatcher value: aSymbol ]
 		ifNone: [ nil ].
 
 ]

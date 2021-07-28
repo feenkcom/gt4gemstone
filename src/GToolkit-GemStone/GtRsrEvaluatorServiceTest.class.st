@@ -4,6 +4,23 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
+{ #category : 'private' }
+GtRsrEvaluatorServiceTest >> gsErrorClass [
+
+	^ CompileError
+]
+
+{ #category : 'private' }
+GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
+
+	testBlock
+		on: anErrorClass
+		do: [ :ex | 
+			exceptionBlock value: ex.
+			^ self ].
+	self error: anErrorClass printString, ' not raised'.
+]
+
 { #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	| script evaluator |
@@ -12,7 +29,7 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 	script := 'self error:'. 
 	self
 		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
-		raise: self errorClass.
+		raise: (self forGtoolkit: [ self gtErrorClass ] forGemStone: [ self gsErrorClass ]).
 ]
 
 { #category : 'tests' }
