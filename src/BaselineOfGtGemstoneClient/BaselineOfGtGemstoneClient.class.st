@@ -16,5 +16,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			package: 'GToolkit-GemStone' with:
 				[ spec requires: #( 'RemoteServiceReplication' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
-				[ spec requires: #( 'GToolkit-GemStone' ) ] ].
+				[ spec requires: #( 'GToolkit-GemStone' ) ];
+			package: 'GToolkit-GemStone-Lepiter' with:
+				[ spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
 ]
