@@ -10,7 +10,7 @@ if [ $? = 0 ]
         exit 0
     else
         echo !!!!!!!!!!!!!!
-        echo INSTALL FAILED
+        echo INSTALL FAILED for gtoolkit-gemstone
         echo !!!!!!!!!!!!!!
         exit 1
     fi

@@ -28,6 +28,6 @@ warnings isEmpty
 	ifTrue: [ true ]
 	ifFalse: [ warnings ]
 %
-	commit
+	abort
 
 	errorCount
