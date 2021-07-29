@@ -1,16 +1,20 @@
 #! /bin/bash
-### Install gtoolkit-gemstone from Tonel files into a Rowan-enabled stone
-### Exits with 0 if success, 1 if failed
+### Export gtoolkit-gemstone to a .gs file.
+### Requires loginSystemUser.topaz be configured with the correct credentials.
+### Exits with 0 if success, topaz status if failed.
+
+### Note: This file normally isn't run directly, but is called by gtoolkit-remote/convertToGsFormat.sh
 
 gt4GemstoneHome=${ROWAN_PROJECTS_HOME}/gtoolkit-gemstone
 ## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
 topaz -l -I ${gt4GemstoneHome}/rowan/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/rowan/scripts/convertToGsFormat.topaz < /dev/zero
-if [ $? = 0 ]
-    then
-        exit 0
-    else
-        echo !!!!!!!!!!!!!!
-        echo CONVERTION FAILED
-        echo !!!!!!!!!!!!!!
-        exit 1
-    fi
+status=$?
+if [ $status != 0 ]
+then
+        echo !!!!!!!!!!!!!!!!
+        echo Failed to export gtoolkit-gemstone
+        echo !!!!!!!!!!!!!!!!
+        exit $status
+fi
+
+exit 0

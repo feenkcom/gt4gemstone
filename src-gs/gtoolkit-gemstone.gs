@@ -153,7 +153,7 @@ evaluateAndWait: aString for: anObject bindings: aDictionary
 	^ self evaluate: aString for: anObject bindings: aDictionary
 %
 
-category: 'private'
+category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
@@ -424,6 +424,18 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
 
 	^ self collect: [ :each | each asGtRsrProxyObjectForConnection: aRsrConnection ]
+%
+
+! Class extensions for 'SequenceableCollection'
+
+!		Instance methods for 'SequenceableCollection'
+
+category: '*GToolkit-GemStone-GemStone'
+method: SequenceableCollection
+allButFirstDo: block
+
+	2 to: self size do:
+		[ :index | block value: (self at: index) ]
 %
 
 ! Class extensions for 'Set'
