@@ -60,17 +60,18 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 { #category : 'gt inspector' }
 GtRsrProxyServiceClient >> declarativeViews [
 	"Answer the views for the receiver"
-	| viewSelectors rawViews viewDictionary |
+	| viewSelectors rawViews |
 
 	self viewProxyDo: [ :remoteInspectorProxy |
-		viewSelectors := remoteInspectorProxy proxyPerform: #getGtViewMethodNames.
+		viewSelectors := remoteInspectorProxy getDeclarativeViewMethodNames.
 		rawViews := viewSelectors collect: [ :viewSelector |
-			viewDictionary := remoteInspectorProxy 
-				proxyPerform: #getViewDeclaration: withArguments: { viewSelector }.
-			((GtDeclarativeView fromDictionary: viewDictionary)
-					accessor: remoteInspectorProxy;
-					methodName: viewSelector;
-					yourself) ] ].
+			| viewDictionary declarativeView |
+			viewDictionary := remoteInspectorProxy getViewDeclaration: viewSelector.
+			declarativeView := GtDeclarativeView fromDictionary: viewDictionary.
+			declarativeView
+				methodSelector: viewSelector;
+				initializeFromInspector: remoteInspectorProxy.
+			declarativeView ] ].
 
 	^ rawViews
 ]
@@ -143,13 +144,6 @@ GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 		items: [ self declarativeViews ];
 		itemText: [ :aViewAccessor | aViewAccessor title ];
 		send: [ :aDeclarativeView | aDeclarativeView ]
-]
-
-{ #category : 'gt inspector' }
-GtRsrProxyServiceClient >> gtSentItemFor: methodName at: selection [ 
-	"Pass the #gtSentItemFor:at: request on to the receiver's object, which is a GtViewedObject"
-
-	^ self proxyPerform: #gtSentItemFor:at: withArguments: { methodName . selection }
 ]
 
 { #category : 'gt inspector' }
