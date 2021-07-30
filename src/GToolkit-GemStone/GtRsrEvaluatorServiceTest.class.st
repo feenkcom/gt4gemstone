@@ -29,7 +29,7 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 	script := 'self error:'. 
 	self
 		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
-		raise: (self forGtoolkit: [ self gtErrorClass ] forGemStone: [ self gsErrorClass ]).
+		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 ]
 
 { #category : 'tests' }

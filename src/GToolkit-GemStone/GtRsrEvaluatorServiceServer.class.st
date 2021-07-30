@@ -9,8 +9,8 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	"Evaluate the receiver's script, answering the result"
 
 	^ self
-		forGtoolkit: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		forGemStone: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
 ]
 
 { #category : 'actions' }
