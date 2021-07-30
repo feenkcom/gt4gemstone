@@ -8,5 +8,5 @@ Class {
 
 { #category : 'accessing' }
 GtpoGtDeclarativeListView class >> remoteClassName [
-	^ #GtDeclarativeListView
+	^ #GtPhlowDeclarativeListView
 ]
