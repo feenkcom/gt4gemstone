@@ -3,8 +3,6 @@
 ### Requires loginSystemUser.topaz be configured with the correct credentials.
 ### Exits with 0 if success, topaz status if failed.
 
-### Note: This file normally isn't run directly, but is called by gtoolkit-remote/convertToGsFormat.sh
-
 gt4GemstoneHome=${ROWAN_PROJECTS_HOME}/gtoolkit-gemstone
 ## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
 topaz -l -I ${gt4GemstoneHome}/rowan/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/rowan/scripts/convertToGsFormat.topaz < /dev/zero

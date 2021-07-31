@@ -140,8 +140,8 @@ evaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
 
 	^ self
-		forGtoolkit: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		forGemStone: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
 %
 
 category: 'actions'
@@ -282,7 +282,7 @@ testCompilationError
 	script := 'self error:'. 
 	self
 		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
-		raise: (self forGtoolkit: [ self gtErrorClass ] forGemStone: [ self gsErrorClass ]).
+		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 %
 
 category: 'tests'
@@ -407,7 +407,7 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 category: '*GToolkit-GemStone-GemStone'
 method: Object
-forGtoolkit: gtoolkitBlock forGemStone: gemstoneBlock
+gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	"Evaluate the supplied platform specific block"
 
 	^ gemstoneBlock value
