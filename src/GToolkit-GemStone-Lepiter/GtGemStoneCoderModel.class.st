@@ -157,17 +157,19 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 { #category : 'private - execution' }
 GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 	"Update remoteScript and remoteBindings based on the supplied source code and the prebuild AST (newAstCache)"
-	| trimmedString trimmedSource visitor lastStatement varNames leftBar |
+	| trimmedString trimmedSource visitor lastStatement varNames leftBar sourceAst |
 
 	trimmedString := sourceString trimRight.
 	trimmedSource := SmaCCString on: trimmedString.
 	trimmedString last = $. ifFalse: 
 		[ trimmedSource append: '.' ].
 	visitor := LeGemStoneVarNodeVisitor new.
-	self astAwaitDo: [ :ast |
-		visitor acceptNode: ast.
-		lastStatement := ast statements last.
-		leftBar := ast leftBar ifNotNil: [ ast leftBar startPosition ] ].
+	sourceAst := GtPharoParser
+		parse: trimmedSource asString
+		startingAt: GtPharoParser startingStateForMethodSequence.
+	visitor acceptNode: sourceAst.
+	lastStatement := sourceAst statements last.
+	leftBar := sourceAst leftBar ifNotNil: [ sourceAst leftBar startPosition ].
 	varNames := visitor undeclaredVariableNames.
 	pharoBindings ifNotNil:
 		[ pharoBindings allNames do: [ :name |

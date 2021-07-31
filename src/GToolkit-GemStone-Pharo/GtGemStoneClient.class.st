@@ -44,7 +44,9 @@ GtGemStoneClient class >> instance [
 
 { #category : 'cleanup' }
 GtGemStoneClient class >> onRemoveUniqueInstance: anInstance [
-	"Classes may perform some activities on a singleton that is about to be released"
+	"Close the instance before GC"
+
+	uniqueInstance close.
 ]
 
 { #category : 'cleanup' }
