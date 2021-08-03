@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'connection',
 		'evaluator',
-		'host',
-		'port',
+		'connector',
 		'mutex'
 	],
 	#classInstVars : [
@@ -74,10 +73,20 @@ GtGemStoneClient >> connect [
 
 	connection ifNotNil: [ ^ self ].
 
-	connection := (RsrInitiateConnection host: host port: port) connect.
+	connection := connector connect.
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
 		yourself.
+]
+
+{ #category : 'accessing' }
+GtGemStoneClient >> connector [
+	^ connector
+]
+
+{ #category : 'accessing' }
+GtGemStoneClient >> connector: anObject [
+	connector := anObject
 ]
 
 { #category : 'actions' }
@@ -133,24 +142,10 @@ GtGemStoneClient >> gtCommitActionFor: anAction [
 			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
-{ #category : 'accessing' }
-GtGemStoneClient >> host [
-
-	^ host
-]
-
-{ #category : 'accessing' }
-GtGemStoneClient >> host: anObject [
-
-	host := anObject
-]
-
 { #category : 'initialization' }
 GtGemStoneClient >> initialize [ 
 
 	super initialize.
-	host := 'localhost'.
-	port := 29299.
 	mutex := Mutex new.
 ]
 
@@ -159,16 +154,4 @@ GtGemStoneClient >> isRunning [
 
 	connection ifNil: [ ^ false ].
 	^ connection isOpen
-]
-
-{ #category : 'accessing' }
-GtGemStoneClient >> port [
-
-	^ port
-]
-
-{ #category : 'accessing' }
-GtGemStoneClient >> port: anObject [
-
-	port := anObject
 ]

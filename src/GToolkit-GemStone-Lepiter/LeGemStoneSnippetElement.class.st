@@ -23,16 +23,18 @@ LeGemStoneSnippetElement >> serverStrategy [
 
 { #category : 'private' }
 LeGemStoneSnippetElement >> updateLanguageLabel [
-	| settings label default |
+	| settings label port |
 
 	settings := self serverStrategy applicationSettings.
-	default := GtGemStoneClient new.
+	port := settings port 
+		ifNil: [ settings netldi ifNil: [ 'unknown' ] ]
+		ifNotNil: [ :portNumber | portNumber asString ].
 	label := String streamContents: [ :stream |
 		stream
 			<< 'GemStone @ ';
-			<< (settings host ifNil: [ default host ]);
+			<< (settings host ifNil: [ 'unknown' ]);
 			<< ':';
-			print: (settings port ifNil: [ default port ]) ].
+			<< port ].
 	languageLabel text: (label asRopedText glamorousRegularFont foreground: BrGlamorousColors textMarkupColor).
 
 ]
