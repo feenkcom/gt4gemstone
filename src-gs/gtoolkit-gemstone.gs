@@ -407,38 +407,10 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 category: '*GToolkit-GemStone-GemStone'
 method: Object
-gtDisplayString
-  ^ self gtGsDisplayString
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: Object
 gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	"Evaluate the supplied platform specific block"
 
 	^ gemstoneBlock value
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: Object
-gtGsDisplayString
-  | ws contents |
-  ws := PrintStream printingOn: String new "maxSize: 100".
-
-  [ self gtGsPrintOn: ws ] 
-	on: Error 
-	do: [ :error | ^ '<error printing>' ].
-  contents := ws _collection.
-
-  ^ contents size > 200
-    ifTrue: [ (contents copyFrom: 1 to: 200) , '...' ]
-    ifFalse: [ contents ]
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: Object
-gtGsPrintOn: writeStream
-	self printOn: writeStream
 %
 
 ! Class extensions for 'OrderedCollection'
@@ -479,15 +451,5 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
 
 	^ GtRsrProxyServiceServer object: self
-%
-
-! Class extensions for 'String'
-
-!		Instance methods for 'String'
-
-category: '*GToolkit-GemStone-GemStone'
-method: String
-gtGsPrintOn: writeStream
-	writeStream nextPutAll: self
 %
 
