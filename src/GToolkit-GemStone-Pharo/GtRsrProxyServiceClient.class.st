@@ -95,6 +95,13 @@ GtRsrProxyServiceClient >> getViewProxy [
 	^ self evaluate: 'GtRemotePhlowViewedObject object: self'
 ]
 
+{ #category : 'as yet unclassified' }
+GtRsrProxyServiceClient >> gtDisplayOn: aStream [
+	aStream << ([ self 
+		proxyPerform: #gtGsDisplayString ] 
+			on: Error do: [ self gtDisplayString ])
+]
+
 { #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtLocalViewsFor: aView inContext: aContext [
 	| title resultingView |
