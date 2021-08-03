@@ -15,14 +15,16 @@ LeGemStoneApplicationStrategy >> newApplicationFor: aLeDatabase [
 
 { #category : 'private' }
 LeGemStoneApplicationStrategy >> updatedSettings: aGtGemStoneClient [
-	"Update the supplied client with the lepiter configuration"
-	| lepiterSettings lepiterDatabase |
+	"Update the supplied client with the lepiter configuration.
+	For GemStone, this means setting the connector in the client"
+	| lepiterSettings lepiterDatabase connectorClass connector |
 
 	lepiterDatabase := content database.
 	lepiterSettings := lepiterDatabase properties gemStoneSettings.
-	lepiterSettings host ifNotNil:
-		[ :host | aGtGemStoneClient host: host ].
-	lepiterSettings port ifNotNil:
-		[ :port | aGtGemStoneClient port: port ].
+	connectorClass := lepiterSettings connectionType = #GCI
+		ifTrue: [ GtGemStoneGciConnector ]
+		ifFalse: [ GtGemStoneDirectConnector ].
+	connector := connectorClass fromLepiterSettings: lepiterSettings.
+	aGtGemStoneClient connector: connector.
 	^ aGtGemStoneClient
 ]
