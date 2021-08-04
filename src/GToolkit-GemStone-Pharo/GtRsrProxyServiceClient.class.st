@@ -98,7 +98,7 @@ GtRsrProxyServiceClient >> getViewProxy [
 { #category : 'as yet unclassified' }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
-		proxyPerform: #gtGsDisplayString ] 
+		proxyPerform: #gtDisplayString ] 
 			on: Error do: [ self gtDisplayString ])
 ]
 
