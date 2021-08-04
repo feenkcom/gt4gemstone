@@ -28,3 +28,8 @@ GtpoGtRemotePhlowViewedObject >> getViewDeclaration: aViewSelector [
 		proxyPerform: #getViewDeclaration:
 		withArguments: { aViewSelector asSymbol }
 ]
+
+{ #category : 'accessing' }
+GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
+	^ self proxyPerform: #getViewsDeclarations
+]

@@ -60,16 +60,15 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 { #category : 'gt inspector' }
 GtRsrProxyServiceClient >> declarativeViews [
 	"Answer the views for the receiver"
-	| viewSelectors rawViews |
+	| rawViews |
 
 	self viewProxyDo: [ :remoteInspectorProxy |
-		viewSelectors := remoteInspectorProxy getDeclarativeViewMethodNames.
-		rawViews := viewSelectors collect: [ :viewSelector |
-			| viewDictionary declarativeView |
-			viewDictionary := remoteInspectorProxy getViewDeclaration: viewSelector.
-			declarativeView := GtPhlowDeclarativeView fromDictionary: viewDictionary.
+		| declarativeViewDeclarations |
+		declarativeViewDeclarations := remoteInspectorProxy getViewsDeclarations.
+		rawViews := declarativeViewDeclarations collect: [ :declarativeViewData |
+			| declarativeView |
+			declarativeView := GtPhlowDeclarativeView fromDictionary: declarativeViewData.
 			declarativeView
-				methodSelector: viewSelector;
 				initializeFromInspector: remoteInspectorProxy.
 			declarativeView ] ].
 
