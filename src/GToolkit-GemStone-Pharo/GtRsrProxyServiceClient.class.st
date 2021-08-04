@@ -63,8 +63,9 @@ GtRsrProxyServiceClient >> declarativeViews [
 	| rawViews |
 
 	self viewProxyDo: [ :remoteInspectorProxy |
-		| declarativeViewDeclarations |
-		declarativeViewDeclarations := remoteInspectorProxy getViewsDeclarations.
+		| declarativeData declarativeViewDeclarations |
+		declarativeData := remoteInspectorProxy getViewsDeclarations.
+		declarativeViewDeclarations := declarativeData at: 'views' ifAbsent: [ #() ].
 		rawViews := declarativeViewDeclarations collect: [ :declarativeViewData |
 			| declarativeView |
 			declarativeView := GtPhlowDeclarativeView fromDictionary: declarativeViewData.
