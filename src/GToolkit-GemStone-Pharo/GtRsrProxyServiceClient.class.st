@@ -217,11 +217,11 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 
 { #category : 'gt inspector' }
 GtRsrProxyServiceClient >> viewProxyDo: aBlock [
-	"Evaluate the supplied block ensuring that the receiver is a GtViewedObject"
+	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
 
 	| viewProxy |
 
-	viewProxy := (#(GtViewedObject GtRemotePhlowViewedObject) includes: remoteClass)
+	viewProxy := (#(GtRemotePhlowViewedObject) includes: remoteClass)
 		ifTrue: [ self ]
 		ifFalse: [ self getViewProxy ].
 	^ aBlock value: viewProxy.
