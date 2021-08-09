@@ -368,6 +368,19 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self collect: [ :each | each asGtRsrProxyObjectForConnection: aRsrConnection ]
 %
 
+! Class extensions for 'DateAndTimeANSI'
+
+!		Class methods for 'DateAndTimeANSI'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: DateAndTimeANSI
+readFrom: aStream
+	"Basic compatibility with Pharo DateAndTime>>readFrom:.	
+	Assumes that the DateAndTime is the last thing in the stream."
+
+	^ self fromString: aStream upToEnd
+%
+
 ! Class extensions for 'Dictionary'
 
 !		Instance methods for 'Dictionary'
