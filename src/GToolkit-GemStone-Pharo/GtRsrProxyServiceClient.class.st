@@ -43,7 +43,7 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
 	remoteSelf := anObject.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'private' }
 GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	"Convert the to the appropriate subclass.
 	RSR client service objects are always created using #basicNew and instance variables are populated using #instVarAt:put:, so there isn't an opportunity to intercept the client creation.  Once the remoteClass has been set, we can replace the client proxy object using #becomeForward:"
@@ -95,7 +95,7 @@ GtRsrProxyServiceClient >> getViewProxy [
 	^ self evaluate: 'GtRemotePhlowViewedObject object: self'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'printing' }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
 		proxyPerform: #gtDisplayString ] 
@@ -201,6 +201,15 @@ GtRsrProxyServiceClient >> instVarAt: anInteger put: anObject [
 	anInteger = 4 ifTrue: 
 		[ self becomeProxyRemoteClass ].
 	^ result
+]
+
+{ #category : 'accessing' }
+GtRsrProxyServiceClient >> object [
+	"Answer the receiver's object as an immediate"
+
+	(#(Set Dictionary Array OrderedCollection) includes: remoteClass) ifFalse:
+		[ self error: 'Unable to return non-immediate object' ].
+	^ remoteSelf object wait
 ]
 
 { #category : 'performing' }

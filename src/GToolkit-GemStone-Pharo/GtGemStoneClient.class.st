@@ -155,3 +155,10 @@ GtGemStoneClient >> isRunning [
 	connection ifNil: [ ^ false ].
 	^ connection isOpen
 ]
+
+{ #category : 'accessing' }
+GtGemStoneClient >> stop [
+	"Synonym for #close"
+
+	^ self close
+]
