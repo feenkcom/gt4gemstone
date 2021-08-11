@@ -14,7 +14,7 @@ git clone git@github.com:GemTalk/SparkleFFI.git
 git clone git@github.com:GemTalk/Rowan.git
 git clone git@github.com:GemTalk/Announcements.git
 
-# gtoolkit-gemstone is normally cloned manually to get this script
-#git clone git@github.com:feenkcom/gtoolkit-gemstone.git
+# gt4gemstone is normally cloned manually to get this script
+#git clone git@github.com:feenkcom/gt4gemstone.git
 
 git clone git@github.com:feenkcom/gtoolkit-remote.git

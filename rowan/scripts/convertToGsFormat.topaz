@@ -7,10 +7,10 @@
 | warnings projectSetModification visitor gsDirectory project repositoryRoot projectSetDefinition  |
 warnings := String new.
 
-	repositoryRoot := '$ROWAN_PROJECTS_HOME/gtoolkit-gemstone'.
+	repositoryRoot := '$ROWAN_PROJECTS_HOME/gt4gemstone'.
 	gsDirectory := repositoryRoot asFileReference / 'src-gs'.
 	project := Rowan 
-		projectFromUrl: 'file:', repositoryRoot, '/rowan/specs/gtoolkit-gemstone.ston'
+		projectFromUrl: 'file:', repositoryRoot, '/rowan/specs/gt4gemstone.ston'
 		gitUrl: 'file:', repositoryRoot.
 	projectSetDefinition := RwProjectSetDefinition new
 		addProject: project _resolvedProject;
@@ -19,7 +19,7 @@ warnings := String new.
 	visitor := RwGsModificationTopazWriterVisitorV2 new
 		logCreation: true;
 		repositoryRootPath: gsDirectory;
-		topazFilename: 'gtoolkit-gemstone';
+		topazFilename: 'gt4gemstone';
 		yourself.
 	visitor visit: projectSetModification.
 
