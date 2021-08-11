@@ -21,5 +21,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			package: 'GToolkit-GemStone-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone' ) ];
 			package: 'GToolkit-GemStone-Lepiter' with:
-				[ spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
+				[ spec requires: #( 'GToolkit-GemStone-Pharo' ) ];
+			package: 'GToolkit-RemoteExamples-GemStone' with:
+				[  spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
 ]
