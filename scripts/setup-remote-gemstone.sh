@@ -62,7 +62,7 @@ startstone
 sleep 1
 
 $ROWAN_PROJECTS_HOME/Sparkle/src-gs/bootstrapSparkle.sh
-$ROWAN_PROJECTS_HOME/gt4gemstone/rowan/scripts/inputGt4gemstone.sh
+$ROWAN_PROJECTS_HOME/gt4gemstone/scripts/inputGt4gemstone.sh
 $ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts/inputGtRemote.sh
 
 exit 0
