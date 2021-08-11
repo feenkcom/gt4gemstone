@@ -3,7 +3,7 @@
 # Run the remote Pharo examples in GtRemotePharoDeclarativeExamples
 #
 # Assumes that the environment should be located in `remote-pharo` below the 
-# working directory, which is typically the image directory.
+# working directory, which is the image directory.
 #
 set -e
 trap stop_servers EXIT
@@ -30,6 +30,7 @@ startnetldi -g
 startstone
 sleep 1
 # Run the remote examples
-./bin/GlamorousToolkit-cli GlamorousToolkit.image gtRemoteServerExamples --junit-xml-output --verbose --package GToolkit-RemoteExamples-GemStone
+cd ..
+./gt-installer --verbose test --packages "GToolkit-RemoteExamples-GemStone"
 
 exit 0

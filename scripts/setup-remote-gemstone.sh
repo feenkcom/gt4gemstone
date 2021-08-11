@@ -4,7 +4,7 @@
 # GtRemoteGemStoneDeclarativeExamples
 #
 # Assumes that the environment should be located in `remote-gemstone` below the 
-# working directory, which is typically the image directory.
+# working directory, which is the image directory.
 #
 set -e
 set -x
