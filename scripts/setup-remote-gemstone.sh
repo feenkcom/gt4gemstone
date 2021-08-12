@@ -45,7 +45,7 @@ mkdir rowan-projects
 cd rowan-projects
 ln -s ../../pharo-local/iceberg/feenkcom/gt4gemstone
 ln -s ../../pharo-local/iceberg/feenkcom/gtoolkit-remote
-git clone git@github.com:GemTalk/Sparkle.git
+git clone https://github.com/feenkcom/Sparkle.git
 cd ..
 cd ..
 
