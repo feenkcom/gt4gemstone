@@ -40,20 +40,20 @@ echo "gtoolkit-remote..."
 ls -lh gtoolkit-remote/
 chmod +x gtoolkit-remote/scripts/*.sh
 
-cd $WORKSPACE
+cd $WORKSPACE/..
 echo "Download GemStone archives if required"
-if [ ! -f GemStone64Bit3.7.0-x86_64.Linux.zip ]
+if [ ! -e GemStone64Bit3.7.0-x86_64.Linux.zip ]
 then
 	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStone64Bit3.7.0-x86_64.Linux.zip
 fi
 
-if [ ! -f GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
+if [ ! -e GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
 then
 	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStoneClientLibs3.7.0-x86_64.Linux.zip
 fi
 
 cd ${imageDirectory}
 echo "Link to GemStone archives"
-ln -s $WORKSPACE/GemStone64Bit3.7.0-x86_64.Linux.zip
-ln -s $WORKSPACE/GemStoneClientLibs3.7.0-x86_64.Linux.zip
+ln -s $WORKSPACE/../GemStone64Bit3.7.0-x86_64.Linux.zip
+ln -s $WORKSPACE/../GemStoneClientLibs3.7.0-x86_64.Linux.zip
 
