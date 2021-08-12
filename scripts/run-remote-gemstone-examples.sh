@@ -30,7 +30,8 @@ startnetldi -g
 startstone
 sleep 1
 # Run the remote examples
+imageDirectory=`pwd`
 cd ..
-./gt-installer --verbose test --packages "GToolkit-RemoteExamples-GemStone"
+./gt-installer --verbose --workspace ${imageDirectory} test --packages "GToolkit-RemoteExamples-GemStone"
 
 exit 0
