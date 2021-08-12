@@ -10,12 +10,16 @@
 #	WORKSPACE is a directory where the archives can be cached.
 #
 
+echo "Starting Remote Examples Jenkins Setup"
+
+imageDirectory=`pwd`
+echo "EXAMPLES_FOLDER / imageDirectory=${imageDirectory}"
+
+cd ..
 ROOT_DIR=`pwd`
 echo "ROOT_DIR=${ROOT_DIR}"
 
-cd ${EXAMPLES_FOLDER}
-imageDirectory=`pwd`
-echo "EXAMPLES_FOLDER / imageDirectory=${imageDirectory}"
+cd ${imageDirectory}
 
 # Install GtGemstoneClient in the image
 ./bin/GlamorousToolkit-cli GlamorousToolkit.image eval --save "Metacello new \
