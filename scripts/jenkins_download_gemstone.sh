@@ -18,6 +18,7 @@ echo "EXAMPLES_FOLDER / imageDirectory=${imageDirectory}"
 cd ..
 ROOT_DIR=`pwd`
 echo "ROOT_DIR=${ROOT_DIR}"
+echo "WORKSPACE=${WORKSPACE}"
 
 cd ${imageDirectory}
 
@@ -37,6 +38,7 @@ ln -s ${ROOT_DIR}/${RELEASER_FOLDER}/pharo-local/iceberg/feenkcom/gtoolkit-remot
 ls -lh
 echo "gtoolkit-remote..."
 ls -lh gtoolkit-remote/
+chmod +x gtoolkit-remote/scripts/*.sh
 
 cd $WORKSPACE
 echo "Download GemStone archives if required"
