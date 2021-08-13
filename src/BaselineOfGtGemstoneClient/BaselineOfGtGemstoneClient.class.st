@@ -10,10 +10,10 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 
 	spec for: #common do: [ 
 		spec
-			baseline: 'RemoteServiceReplication'
+			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
 			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:main/src' ].
 		spec
-			baseline: 'SparkleFFI'
+			baseline: 'SparkleFFIForGlamorousToolkit'
 			with: [ spec repository: 'github://feenkcom/SparkleFFI:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone' with:
