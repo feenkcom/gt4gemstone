@@ -22,13 +22,6 @@ echo "WORKSPACE=${WORKSPACE}"
 
 cd ${imageDirectory}
 
-# Install GtGemstoneClient in the image
-./bin/GlamorousToolkit-cli GlamorousToolkit.image eval --save "Metacello new \
-	repository: 'github://feenkcom/gt4gemstone:main/src'; \
-	baseline: 'GtGemstoneClient'; \
-	load."
-echo "GtGemstoneClient loaded"
-
 # Ensure the scripts have executable permission
 chmod +x pharo-local/iceberg/feenkcom/gt4gemstone/scripts/*.sh
 
