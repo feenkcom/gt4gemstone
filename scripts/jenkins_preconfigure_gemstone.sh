@@ -23,7 +23,7 @@ echo "WORKSPACE=${WORKSPACE}"
 cd ${imageDirectory}
 
 # Install GtGemstoneClient in the image
-./bin/GlamorousToolkit-cli GlamorousToolkit.image eval --save "Metacello new \
+./bin/GlamorousToolkit-cli GlamorousToolkit.image eval "Metacello new \
 	repository: 'github://feenkcom/gt4gemstone:main/src'; \
 	baseline: 'GtGemstoneClient'; \
 	load."
