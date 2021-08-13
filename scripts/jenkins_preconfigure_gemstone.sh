@@ -34,7 +34,7 @@ chmod +x pharo-local/iceberg/feenkcom/gt4gemstone/scripts/*.sh
 
 # Make the gtoolkit-remote repository accessible
 cd pharo-local/iceberg/feenkcom
-git clone --depth=1 https://github.com/feenkcom/gtoolkit-remote.git
+git clone https://github.com/feenkcom/gtoolkit-remote.git
 echo "gtoolkit-remote..."
 ls -lh gtoolkit-remote/
 chmod +x gtoolkit-remote/scripts/*.sh
