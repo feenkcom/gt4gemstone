@@ -61,6 +61,11 @@ startnetldi -g
 startstone
 sleep 1
 
+echo "ROWAN_PROJECTS_HOME=$ROWAN_PROJECTS_HOME :"
+ls -l $ROWAN_PROJECTS_HOME
+echo "gtoolkit-remote/scripts:"
+ls -l $ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts
+
 $ROWAN_PROJECTS_HOME/Sparkle/src-gs/bootstrapSparkle.sh
 $ROWAN_PROJECTS_HOME/gt4gemstone/scripts/inputGt4gemstone.sh
 $ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts/inputGtRemote.sh
