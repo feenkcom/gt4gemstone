@@ -14,7 +14,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			with: [ spec repository: 'github://GemTalk/RemoteServiceReplication:main/src' ].
 		spec
 			baseline: 'SparkleFFI'
-			with: [ spec repository: 'github://feenkcom/SparkleFFI:akg/src' ].
+			with: [ spec repository: 'github://feenkcom/SparkleFFI:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone' with:
 				[ spec requires: #( 'SparkleFFI' 'RemoteServiceReplication' ) ];
