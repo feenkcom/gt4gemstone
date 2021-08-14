@@ -32,6 +32,6 @@ sleep 1
 # Run the remote examples
 imageDirectory=`pwd`
 cd ..
-./gt-installer --verbose --workspace ${imageDirectory} test --packages "GToolkit-RemoteExamples-GemStone"
+./gt-installer --verbose --workspace ${imageDirectory} test --disable-deprecation-rewrites --packages "GToolkit-RemoteExamples-GemStone"
 
 exit 0
