@@ -41,6 +41,7 @@ mkdir remote-gemstone/opt
 cd remote-gemstone
 unzip ../GemStone64Bit3.7.0-x86_64.Linux.zip
 unzip ../GemStoneClientLibs3.7.0-x86_64.Linux.zip
+
 mkdir rowan-projects
 cd rowan-projects
 ln -s ../../pharo-local/iceberg/feenkcom/gt4gemstone

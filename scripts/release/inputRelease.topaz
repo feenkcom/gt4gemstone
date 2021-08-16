@@ -1,0 +1,10 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	input $GT4GEMSTONE_RELEASE_HOME/Sparkle/src-gs/bootstrapSparkle.gs
+    input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/gt4gemstone.gs
+    input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-remote/src-gs/gtoolkit-remote.gs
+	commit
+
+	errorCount
