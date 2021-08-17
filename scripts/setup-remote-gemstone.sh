@@ -42,14 +42,14 @@ then
 	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStoneClientLibs3.7.0-x86_64.Linux.zip
 fi
 
-# Set up environment variables
-source $SCRIPT_DIR/remote-gemstone-env.sh
-
 mkdir ${GEMSTONE_WORKSPACE}
 mkdir ${GEMSTONE_WORKSPACE}/opt
 cd ${GEMSTONE_WORKSPACE}
 unzip ../GemStone64Bit3.7.0-x86_64.Linux.zip
 unzip ../GemStoneClientLibs3.7.0-x86_64.Linux.zip
+
+# Set up environment variables
+source $SCRIPT_DIR/remote-gemstone-env.sh
 
 mkdir ${ROWAN_PROJECTS_HOME}
 cd ${ROWAN_PROJECTS_HOME}
