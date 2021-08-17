@@ -29,8 +29,8 @@ SPARKLE_HOME=${ROWAN_PROJECTS_HOME}/Sparkle
 GT4GEMSTONE_HOME=${ROWAN_PROJECTS_HOME}/gt4gemstone
 GTOOLKIT_REMOTE_HOME=${ROWAN_PROJECTS_HOME}/gtoolkit-remote
 
-$GT4GEMSTONE_HOME/scripts/convertToGsFormat.sh
-$GTOOLKIT_REMOTE_HOME/scripts/convertToGsFormat.sh
+#$GT4GEMSTONE_HOME/scripts/convertToGsFormat.sh
+#$GTOOLKIT_REMOTE_HOME/scripts/convertToGsFormat.sh
 
 #Package the required files into an archive
 echo "Package release"
