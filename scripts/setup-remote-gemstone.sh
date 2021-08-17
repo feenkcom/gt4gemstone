@@ -78,8 +78,6 @@ ls -l $ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts
 #ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts/inputGtRemote.sh
 
 ${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh
-
-chmod +x ${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh
 ${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh
 
 exit 0

@@ -31,6 +31,7 @@ echo "GtGemstoneClient loaded"
 
 # Ensure the scripts have executable permission
 chmod +x pharo-local/iceberg/feenkcom/gt4gemstone/scripts/*.sh
+chmod +x pharo-local/iceberg/feenkcom/gt4gemstone/scripts/release/*.sh
 
 # Make the gtoolkit-remote repository accessible
 cd pharo-local/iceberg/feenkcom
