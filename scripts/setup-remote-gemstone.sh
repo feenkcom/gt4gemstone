@@ -53,9 +53,9 @@ source $SCRIPT_DIR/remote-gemstone-env.sh
 
 mkdir ${ROWAN_PROJECTS_HOME}
 cd ${ROWAN_PROJECTS_HOME}
-ln -s ../../pharo-local/iceberg/feenkcom/gt4gemstone
-ln -s ../../pharo-local/iceberg/feenkcom/gtoolkit-remote
-git clone https://github.com/feenkcom/Sparkle.git
+ln -s ../../gt4gemstone
+ln -s ../../gtoolkit-remote
+ln -s ../../Sparkle
 cd ..
 cd ..
 
