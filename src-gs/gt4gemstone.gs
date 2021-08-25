@@ -2,6 +2,24 @@
 ! Generated file, do not Edit
 
 doit
+(Object
+	subclass: 'GtGsRelease'
+	instVarNames: #( versionString )
+	classVars: #(  )
+	classInstVars: #( default )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGsRelease
+removeallclassmethods GtGsRelease
+
+doit
 (RsrService
 	subclass: 'GtRsrEvaluatorService'
 	instVarNames: #(  )
@@ -91,6 +109,45 @@ true.
 
 removeallmethods GtRsrEvaluatorServiceTest
 removeallclassmethods GtRsrEvaluatorServiceTest
+
+! Class implementation for 'GtGsRelease'
+
+!		Class methods for 'GtGsRelease'
+
+category: 'accessing'
+classmethod: GtGsRelease
+default
+	^ default ifNil: [ 
+		default := self new ]
+%
+
+category: 'accessing'
+classmethod: GtGsRelease
+versionString
+	^ self default versionString
+%
+
+category: 'accessing'
+classmethod: GtGsRelease
+versionString: aString
+	self default versionString: aString
+%
+
+!		Instance methods for 'GtGsRelease'
+
+category: 'accessing'
+method: GtGsRelease
+versionString
+
+	^ versionString
+%
+
+category: 'accessing'
+method: GtGsRelease
+versionString: aString
+
+	versionString := aString
+%
 
 ! Class implementation for 'GtRsrEvaluatorService'
 
