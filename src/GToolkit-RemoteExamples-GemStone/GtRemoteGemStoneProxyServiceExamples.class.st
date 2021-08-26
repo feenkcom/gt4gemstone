@@ -66,6 +66,20 @@ GtRemoteGemStoneProxyServiceExamples >> testInspectableName [
 ]
 
 { #category : 'tests' }
+GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
+	<gtExample>
+	| proxy value |
+	
+	proxy := self runningServer 
+		evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'.
+	
+	value := proxy proxyPerform: #printStringFor: withArguments: {1}.
+	self assert: value equals: '1'.
+		
+	^ proxy
+]
+
+{ #category : 'tests' }
 GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	<gtExample>
 	| collectionProxy size |
@@ -113,4 +127,20 @@ GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 		assert: (setProxy proxyPerform: #includes: withArguments: {5}) not.
 	
 	^ setProxy
+]
+
+{ #category : 'tests' }
+GtRemoteGemStoneProxyServiceExamples >> testWithProxyObjectAsParameterAsArgument [
+	<gtExample>
+	| argumentProxy proxy value |
+	
+	argumentProxy := self runningServer 
+		evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'.
+	proxy := self runningServer 
+		evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'.
+	
+	value := proxy proxyPerform: #printStringFor: withArguments: {argumentProxy}.
+	self assert: value equals: 'aGtRemotePhlowDeclarativeTestInspectable'.
+		
+	^ proxy
 ]
