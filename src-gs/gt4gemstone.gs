@@ -303,8 +303,12 @@ proxyPerform: aSymbol
 category: 'performing'
 method: GtRsrProxyServiceServer
 proxyPerform: aSymbol withArguments: anArray
-
-	^ (object perform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
+	| convertedArguments |
+	convertedArguments := anArray collect: [ :anObject |
+		(anObject isKindOf: self class) 
+			ifTrue: [ anObject object ]
+			ifFalse: [ anObject ] ].
+	^ (object perform: aSymbol withArguments: convertedArguments) asGtRsrProxyObjectForConnection: _connection
 %
 
 ! Class implementation for 'GtRsrEvaluatorServiceTest'
