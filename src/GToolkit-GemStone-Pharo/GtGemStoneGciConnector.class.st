@@ -9,7 +9,8 @@ Class {
 		'hostUsername',
 		'hostPassword',
 		'libraryPath',
-		'gemstoneVersion'
+		'gemstoneVersion',
+		'currentSession'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
@@ -20,8 +21,14 @@ GtGemStoneGciConnector >> connect [
 	<return: #RsrConnection>
 
 	GciInterface libraryDirectory: libraryPath.
-	^ self setupRsrConnection: self loggedInSession.
+	currentSession := self loggedInSession. 
+	^ self setupRsrConnection: currentSession
 
+]
+
+{ #category : 'accessing' }
+GtGemStoneGciConnector >> currentSession [
+	^ currentSession
 ]
 
 { #category : 'accessing' }
