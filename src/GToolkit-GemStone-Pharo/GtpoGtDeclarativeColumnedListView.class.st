@@ -10,3 +10,10 @@ Class {
 GtpoGtDeclarativeColumnedListView class >> remoteClassName [
 	^ #GtPhlowDeclarativeColumnedListView
 ]
+
+{ #category : 'accessing' }
+GtpoGtDeclarativeColumnedListView >> retriveSpawnedObjectAtRow: aRowIndex column: aColumnIndex [	
+	^ self
+		proxyPerform: #retriveSpawnedObjectAtRow:column:
+		withArguments: { aRowIndex . aColumnIndex }
+]
