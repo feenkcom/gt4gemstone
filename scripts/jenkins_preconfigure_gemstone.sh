@@ -36,13 +36,3 @@ cd ${imageDirectory}
 echo "Link to GemStone archives"
 ln -s $WORKSPACE/../GemStone64Bit3.7.0-x86_64.Linux.zip
 ln -s $WORKSPACE/../GemStoneClientLibs3.7.0-x86_64.Linux.zip
-
-echo "Retrieve required repositories"
-git clone --depth=1 https://github.com/feenkcom/gt4gemstone.git
-git clone --depth=1 https://github.com/feenkcom/gtoolkit-remote.git
-git clone --depth=1 https://github.com/feenkcom/Sparkle.git
-
-chmod +x gt4gemstone/scripts/*.sh
-chmod +x gt4gemstone/scripts/release/*.sh
-chmod +x gtoolkit-remote/scripts/*.sh
-
