@@ -6,12 +6,9 @@
 # GemStone will be installed in to {imageDirectory}/remote-gemstone.
 #
 
+export GTIMAGE_DIRECTORY=`pwd`
+export GEMSTONE_WORKSPACE=${GTIMAGE_DIRECTORY}/remote-gemstone
 export GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.0-x86_64.Linux"
-if [ ! -d $GEMSTONE ]
-then
-	echo "ERROR: $GEMSTONE doesn't exist"
-	exit 1
-fi
 export GEMSTONE_GLOBAL_DIR=$GEMSTONE_WORKSPACE/opt
 export MANPATH=$GEMSTONE/doc
 export PATH=$GEMSTONE/bin:$PATH

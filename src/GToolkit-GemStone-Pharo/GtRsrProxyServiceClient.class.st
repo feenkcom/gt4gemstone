@@ -44,6 +44,15 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
 ]
 
 { #category : 'private' }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
+]
+
+{ #category : 'private' }
 GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	"Convert the to the appropriate subclass.
 	RSR client service objects are always created using #basicNew and instance variables are populated using #instVarAt:put:, so there isn't an opportunity to intercept the client creation.  Once the remoteClass has been set, we can replace the client proxy object using #becomeForward:"
@@ -52,7 +61,11 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	proxyClass := self class subclassForRemoteClass: remoteClass.
 	proxyClass ifNil: [ ^ self ].
 	newProxy := proxyClass new.
-	newProxy _id: _id connection: _connection remoteSelf: remoteSelf.
+	newProxy 
+		_id: _id 
+		connection: _connection 
+		remoteSelf: remoteSelf
+		remoteClass: remoteClass.
 	self becomeForward: newProxy.
 	^ newProxy
 ]
