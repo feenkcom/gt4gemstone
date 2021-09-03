@@ -18,6 +18,8 @@ function stop_servers()
 }
 
 export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Set up environment variables
+source $SCRIPT_DIR/remote-gemstone-env.sh
 
 if [ -z "$GEMSTONE_WORKSPACE" ]
 then
@@ -47,9 +49,6 @@ mkdir ${GEMSTONE_WORKSPACE}/opt
 cd ${GEMSTONE_WORKSPACE}
 unzip ../GemStone64Bit3.7.0-x86_64.Linux.zip
 unzip ../GemStoneClientLibs3.7.0-x86_64.Linux.zip
-
-# Set up environment variables
-source $SCRIPT_DIR/remote-gemstone-env.sh
 
 mkdir ${ROWAN_PROJECTS_HOME}
 cd ${ROWAN_PROJECTS_HOME}
