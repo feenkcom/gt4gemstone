@@ -1,7 +1,7 @@
 Extension { #name : 'GtGemStoneGciConnector' }
 
 { #category : '*GToolkit-GemStone-Lepiter' }
-GtGemStoneGciConnector classSide >> fromLepiterSettings: lepiterSettings [
+GtGemStoneGciConnector class >> fromLepiterSettings: lepiterSettings [
 
 	lepiterSettings connectionType = #GCI ifFalse: 
 		[ self error: 'Invalid GemStone connection type: ', lepiterSettings connectionType printString ].
