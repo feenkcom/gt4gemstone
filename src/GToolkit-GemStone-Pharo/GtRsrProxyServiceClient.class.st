@@ -112,7 +112,7 @@ GtRsrProxyServiceClient >> getViewProxy [
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
 		proxyPerform: #gtDisplayString ] 
-			on: Error do: [ self gtDisplayString ])
+			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
 ]
 
 { #category : 'gt inspector' }

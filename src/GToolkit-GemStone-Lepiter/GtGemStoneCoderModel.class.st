@@ -110,11 +110,23 @@ GtGemStoneCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderE
 
 { #category : 'private - actions' }
 GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
-	| result gemstoneClient|
+	"Evaluate the supplied GemStone script."
+	| result gemstoneClient boundObject |
 
-	self updateRemoteFrom: aSourceString.
+	"Ensure the GtGemStoneClient is connected"
 	gemstoneClient := applicationStrategy applicationServer.
 	gemstoneClient isRunning ifFalse: [ gemstoneClient connect ].
+
+	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
+	(probably because the gemstoneClient has been restarted)"
+	pharoBindings allNames do: [ :name |
+		boundObject := (pharoBindings bindingOf: name) value.
+		(boundObject isKindOf: RsrService) ifTrue:
+			[ (boundObject isFunctional not or: 
+				[ gemstoneClient connection ~= boundObject _connection ]) ifTrue:
+					[ pharoBindings remove: name ] ] ].
+
+	self updateRemoteFrom: aSourceString.
 
 	result := gemstoneClient evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
 	result associationsDo: [ :binding |
