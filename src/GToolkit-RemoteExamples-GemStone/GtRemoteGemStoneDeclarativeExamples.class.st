@@ -55,7 +55,7 @@ GtRemoteGemStoneDeclarativeExamples >> runningServer [
 		stone: 'gs64stone';
 		username: 'SystemUser';
 		password: 'swordfish'.
-	server := GtGemStoneClient new connector: connector.
+	server := GtGemStoneSession new connector: connector.
 	^ server connect.
 ]
 

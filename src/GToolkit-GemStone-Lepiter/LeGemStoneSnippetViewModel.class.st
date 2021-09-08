@@ -1,6 +1,9 @@
 Class {
 	#name : 'LeGemStoneSnippetViewModel',
 	#superclass : 'LeCodeSnippetViewModel',
+	#instVars : [
+		'sessionName'
+	],
 	#category : 'GToolkit-GemStone-Lepiter-Snippet'
 }
 
@@ -21,6 +24,19 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 		addShortcut: (LeSnippetMoveSnippetUpShortcut new combination: (self keyboardShortcut: #MoveSnippetUp));
 		"Move Snippet down"
 		addShortcut: (LeSnippetMoveSnippetDownShortcut new combination: (self keyboardShortcut: #MoveSnippetDown))
+]
+
+{ #category : 'accessing' }
+LeGemStoneSnippetViewModel >> sessionName [
+
+	^ sessionName
+]
+
+{ #category : 'accessing' }
+LeGemStoneSnippetViewModel >> sessionName: aString [
+
+	sessionName := aString.
+	coderViewModel coderModel sessionName: aString.
 ]
 
 { #category : 'accessing' }

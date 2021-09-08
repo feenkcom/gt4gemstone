@@ -3,22 +3,13 @@ Class {
 	#superclass : 'GtSourceCoder',
 	#instVars : [
 		'pharoBindings',
+		'sessionName',
 		'applicationStrategy',
 		'remoteScript',
 		'remoteBindings'
 	],
 	#category : 'GToolkit-GemStone-Lepiter-Coder'
 }
-
-{ #category : 'accessing' }
-GtGemStoneCoderModel >> applicationStrategy [
-	^ applicationStrategy
-]
-
-{ #category : 'accessing' }
-GtGemStoneCoderModel >> applicationStrategy: anObject [
-	applicationStrategy := anObject
-]
 
 { #category : 'converting' }
 GtGemStoneCoderModel >> asCoderUIModel [
@@ -111,24 +102,24 @@ GtGemStoneCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderE
 { #category : 'private - actions' }
 GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| result gemstoneClient boundObject |
+	| result gemstoneSession boundObject |
 
-	"Ensure the GtGemStoneClient is connected"
-	gemstoneClient := applicationStrategy applicationServer.
-	gemstoneClient isRunning ifFalse: [ gemstoneClient connect ].
+	"Ensure the GtgemstoneSession is connected"
+	gemstoneSession := GtGemStoneSessionRegistry default sessionNamed: sessionName.
+	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
-	(probably because the gemstoneClient has been restarted)"
+	(probably because the gemstoneSession has been restarted)"
 	pharoBindings allNames do: [ :name |
 		boundObject := (pharoBindings bindingOf: name) value.
 		(boundObject isKindOf: RsrService) ifTrue:
 			[ (boundObject isFunctional not or: 
-				[ gemstoneClient connection ~= boundObject _connection ]) ifTrue:
+				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
 					[ pharoBindings remove: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
 
-	result := gemstoneClient evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
+	result := gemstoneSession evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
 	result associationsDo: [ :binding |
 		pharoBindings at: binding key asSymbol put: binding value ].
 
@@ -164,6 +155,18 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 				<< '. ' ].
 		stream
 			<< ' #snippetResult -> snippetResult. } asDictionary' ]
+]
+
+{ #category : 'accessing' }
+GtGemStoneCoderModel >> sessionName [
+
+	^ sessionName
+]
+
+{ #category : 'accessing' }
+GtGemStoneCoderModel >> sessionName: anObject [
+
+	sessionName := anObject
 ]
 
 { #category : 'private - execution' }
