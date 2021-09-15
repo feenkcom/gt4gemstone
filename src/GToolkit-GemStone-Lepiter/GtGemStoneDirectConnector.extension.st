@@ -1,7 +1,7 @@
 Extension { #name : 'GtGemStoneDirectConnector' }
 
 { #category : '*GToolkit-GemStone-Lepiter' }
-GtGemStoneDirectConnector classSide >> fromLepiterSettings: lepiterSettings [
+GtGemStoneDirectConnector class >> fromLepiterSettings: lepiterSettings [
 
 	lepiterSettings connectionType = #direct ifFalse: 
 		[ self error: 'Invalid GemStone connection type: ', lepiterSettings connectionType printString ].

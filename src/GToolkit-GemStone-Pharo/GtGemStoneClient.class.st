@@ -80,6 +80,12 @@ GtGemStoneClient >> connect [
 ]
 
 { #category : 'accessing' }
+GtGemStoneClient >> connection [
+
+	^ connection
+]
+
+{ #category : 'accessing' }
 GtGemStoneClient >> connector [
 	^ connector
 ]
