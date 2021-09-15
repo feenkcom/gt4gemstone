@@ -26,6 +26,8 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				[ spec requires: #( 'SparkleFFIForGlamorousToolkit' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' ) ];
+			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
+				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
 			package: 'GToolkit-GemStone-Lepiter' with:
 				[ spec requires: #( 'GToolkit-GemStone-Pharo' 'LepiterEngineCore') ];
 			package: 'GToolkit-RemoteExamples-GemStone' with:
