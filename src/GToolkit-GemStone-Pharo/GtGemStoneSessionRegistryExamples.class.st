@@ -46,9 +46,9 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 		do: [ :anAnnouncement | announcement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry allConnectors size equals: 1.
+	self assert: registry allConnectors size equals: 2.
 
-	connector := registry allConnectors anyOne.
+	connector := registry connectorNamed: #session1.
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	oldName := connector name.
@@ -86,8 +86,10 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 
 	file := FileSystem memory root / 'gt4gemstone.properties'.
 	propertiesFile := GtGemStonePropertiesFile file: file.
+	"The properties file contains namedConnectors"
 	self assert: propertiesFile size equals: 1.
-	self assert: propertiesFile allConnectors size equals: 0.
+	"A default connector is always provided"
+	self assert: propertiesFile allConnectors size equals: 1.
 	^ propertiesFile
 ]
 
@@ -104,16 +106,16 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 		do: [ :anAnnouncement | announcement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry allConnectors size equals: 1.
+	self assert: registry allConnectors size equals: 2.
 
-	connector := registry allConnectors anyOne.
+	connector := registry connectorNamed: #session1.
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	registry removeConnector: connector.
 	self assert: announcement isNotNil.
 	self assert: announcement operation equals: #removed.
 	self assert: announcement connector equals: connector.
-	self assert: registry allConnectors size equals: 0.
+	self assert: registry allConnectors size equals: 1.
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
