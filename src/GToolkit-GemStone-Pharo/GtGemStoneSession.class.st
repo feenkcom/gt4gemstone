@@ -1,15 +1,20 @@
 "
-GtGemStoneSession represents an individual connection to a running GemStone DB (instance).
+GtGemStoneSession represents an individual session and connection to a running GemStone DB (instance).
 
 There may be multiple sessions to the same GemStone instance.
 
 GtGemStoneSessions instances are normally managed through a {{gtClass:GtGemStoneSessionRegistry}}.
+
+### Notes
+
+It looks like a GemStone session ({{gtClass:GsSession}}) is independent of a RSR connection ({{gtClass:RsrConnection}}).  If a RsrConnection is disconnected it can be reconnected on top of the same session.  For now, we are keeping a 1-to-1 relationship between a GsSession and RsrConnection.
 "
 Class {
 	#name : 'GtGemStoneSession',
 	#superclass : 'Object',
 	#instVars : [
 		'registry',
+		'session',
 		'connection',
 		'evaluator',
 		'connector',
@@ -80,7 +85,8 @@ GtGemStoneSession >> close [
 	connection ifNil: [ ^ self ].
 
 	connection close.
-	connection := evaluator := nil.
+	session ifNotNil: [ session logout ].
+	session := connection := evaluator := nil.
 ]
 
 { #category : 'actions' }
@@ -88,7 +94,8 @@ GtGemStoneSession >> connect [
 
 	connection ifNotNil: [ ^ self ].
 
-	connection := connector connect.
+	session := connector newSession.
+	connection := connector connectionForSession: session.
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
 		yourself.
@@ -178,9 +185,9 @@ GtGemStoneSession >> gtLiveFor: aView [
 		title: 'Live';
 		priority: 10;
 		stencil: [ (GtGemStoneGciConnectorWidget 
-							onConnector: self connector
-							propertiesFile: registry propertiesFile)
-								padding: (BlInsets all: 5) ]
+			onConnector: self connector
+			propertiesFile: (registry ifNotNil: [ registry propertiesFile ]))
+				padding: (BlInsets all: 5) ]
 ]
 
 { #category : 'ui' }

@@ -194,7 +194,7 @@ GtGemStoneGciConnectorWidget >> propertyWidth [
 
 { #category : 'private' }
 GtGemStoneGciConnectorWidget >> saveProperties [
-	| nameChanged connector |
+	| nameChanged connector propertiesFile |
 
 	connector := connectorViewModel connector.
 	nameChanged := connector name ~= (self childNamed: #name) text asString.
@@ -205,7 +205,8 @@ GtGemStoneGciConnectorWidget >> saveProperties [
 				withArguments: { (self childNamed: name) text asString } ].
 	connector 
 		libraryPath: (self childNamed: #libraryPath) text asString asFileReference.
-	connectorViewModel propertiesFile saveProperties.
+	propertiesFile := connectorViewModel propertiesFile.
+	propertiesFile ifNotNil: [ propertiesFile saveProperties ].
 	nameChanged 
 		ifTrue: [ connector notifyNameChanged ]
 		ifFalse: [ connector notifyUpdated ].

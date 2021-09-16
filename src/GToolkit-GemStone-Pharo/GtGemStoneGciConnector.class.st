@@ -14,16 +14,12 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'actions' }
-GtGemStoneGciConnector >> connect [
-	"Connect to the server and answer the connection"
+{ #category : 'connecting' }
+GtGemStoneGciConnector >> connectionForSession: aGsSession [
+	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
-	| session |
 
-	GciInterface libraryDirectory: libraryPath fullName.
-	session := self loggedInSession. 
-	^ self setupRsrConnection: session
-
+	^ self setupRsrConnection: aGsSession
 ]
 
 { #category : 'accessing' }
@@ -104,6 +100,16 @@ GtGemStoneGciConnector >> netldi [
 { #category : 'accessing' }
 GtGemStoneGciConnector >> netldi: anObject [
 	netldi := anObject
+]
+
+{ #category : 'connecting' }
+GtGemStoneGciConnector >> newSession [
+	"Answer the session defined by the receiver"
+	<return: #GsSession>
+
+	GciInterface libraryDirectory: libraryPath fullName.
+	^ self loggedInSession. 
+
 ]
 
 { #category : 'accessing' }

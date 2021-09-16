@@ -23,10 +23,12 @@ GtGemStoneConnector >> announcer [
 	^ announcer
 ]
 
-{ #category : 'actions' }
-GtGemStoneConnector >> connect [ 
+{ #category : 'connecting' }
+GtGemStoneConnector >> connectionForSession: aGsSession [
+	"Answer the RsrConnection associated with the supplied session"
+	<return: #RsrConnection>
 
-	^ self subclassResponsibility 
+	^ self subclassResponsibility
 ]
 
 { #category : 'accessing' }
@@ -59,6 +61,13 @@ GtGemStoneConnector >> name [
 GtGemStoneConnector >> name: aString [
 
 	name := aString
+]
+
+{ #category : 'connecting' }
+GtGemStoneConnector >> newSession [
+	"Answer a new session defined by the receiver"
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'announcing' }
