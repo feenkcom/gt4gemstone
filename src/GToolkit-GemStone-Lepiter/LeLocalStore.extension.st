@@ -1,27 +1,21 @@
 Extension { #name : 'LeLocalStore' }
 
 { #category : '*GToolkit-GemStone-Lepiter' }
-LeLocalStore >> gemStone [
-	"Answer the Dictionary containing the GemStone settings for this database"
-	<return: #Dictionary>
+LeLocalStore >> gemStonePropertiesFile [
+	"Answer the location of the GemStone properties file to be used for this image.
+	Default = "
+	<return: #FileReference>
 
-	^ self dbProperties at: #gemStone
-		ifPresent: [ :aDictionary | aDictionary ]
-		ifAbsent: [ Dictionary new ]
+	^ self dbProperties at: #gemStonePropertiesFile 
+		ifPresent: [ :aString | self fileReferenceFrom: aString ]
+		ifAbsent: [ LepiterCoreDefaults defaultGemStonePropertiesFileReference ].
 ]
 
 { #category : '*GToolkit-GemStone-Lepiter' }
-LeLocalStore >> gemStone: aDictionaryOrNil [
+LeLocalStore >> gemStonePropertiesFile: aFileReferenceOrNil [
+	"Set the location of the GemStone properties for this image"
 
 	self 
 		updateProperty: #gemStone
-		value: aDictionaryOrNil
-]
-
-{ #category : '*GToolkit-GemStone-Lepiter' }
-LeLocalStore >> gemStoneSettings [
-	"Answer the initialised LeGemStoneSettings for this database"
-	<return: #LeGemStoneSettings>
-
-	^ LeGemStoneSettings new dbProperties: self
+		value: (self fileReferenceString: aFileReferenceOrNil)
 ]

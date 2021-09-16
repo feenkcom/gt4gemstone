@@ -4,37 +4,51 @@ Class {
 	#category : 'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : 'initialization' }
+LeGemStoneSnippetElement >> initializeLanguageElement [
+	"Initialise the element that displays the language and connection details.
+	This is normally a text element, but subclasses may replace it with something else, e.g. a button"
+	| stencil element |
+
+	stencil := GtGemStoneSessionSelectionStencil new
+		registry: GtGemStoneSessionRegistry default;
+		selectAction: [ :connector :button |
+			snippetViewModel sessionName: connector name.
+			self updateLanguageLabel.
+			button dispatchEvent: (BrDropdownHideWish new anchor: button) ].
+	element := stencil create.
+	element 
+		margin: (BlInsets top: 0 left: 5 bottom: 0 right: 30);
+		hFitContent;
+		vMatchParent.
+	^ element.
+]
+
 { #category : 'api - snippet view model' }
 LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 
 	self updateLanguageLabel.
 	self coder
-		applicationStrategy: self serverStrategy;
+		sessionName: self sessionName;
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 
 { #category : 'accessing' }
-LeGemStoneSnippetElement >> serverStrategy [
+LeGemStoneSnippetElement >> sessionName [
 
-	^ serverStrategy ifNil: 
-		[ serverStrategy := LeGemStoneApplicationGlobalStrategy new content: self ].
+	^ nil
 ]
 
 { #category : 'private' }
 LeGemStoneSnippetElement >> updateLanguageLabel [
-	| settings label port |
+	| label |
 
-	settings := self serverStrategy applicationSettings.
-	port := settings port 
-		ifNil: [ settings netldi ifNil: [ 'unknown' ] ]
-		ifNotNil: [ :portNumber | portNumber asString ].
 	label := String streamContents: [ :stream |
 		stream
-			<< 'GemStone @ ';
-			<< (settings host ifNil: [ 'unknown' ]);
-			<< ':';
-			<< port ].
-	languageLabel text: (label asRopedText glamorousRegularFont foreground: BrGlamorousColors textMarkupColor).
+			<< 'GemStone (';
+			<< (snippetViewModel sessionName ifNil: [ GtGemStoneSessionRegistry default defaultConnectorName ]);
+			<< ')' ].
+	languageElement label: (label asRopedText glamorousRegularFont foreground: BrGlamorousColors textMarkupColor).
 
 ]
