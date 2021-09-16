@@ -9,26 +9,17 @@ Class {
 		'hostUsername',
 		'hostPassword',
 		'libraryPath',
-		'gemstoneVersion',
-		'currentSession'
+		'gemstoneVersion'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'actions' }
-GtGemStoneGciConnector >> connect [
-	"Connect to the server and answer the connection"
+{ #category : 'connecting' }
+GtGemStoneGciConnector >> connectionForSession: aGsSession [
+	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
 
-	GciInterface libraryDirectory: libraryPath.
-	currentSession := self loggedInSession. 
-	^ self setupRsrConnection: currentSession
-
-]
-
-{ #category : 'accessing' }
-GtGemStoneGciConnector >> currentSession [
-	^ currentSession
+	^ self setupRsrConnection: aGsSession
 ]
 
 { #category : 'accessing' }
@@ -61,14 +52,29 @@ GtGemStoneGciConnector >> hostUsername: anObject [
 	hostUsername := anObject
 ]
 
+{ #category : 'initialization' }
+GtGemStoneGciConnector >> initialize [
+
+	super initialize.
+	stone := 'gs64stone'.
+	netldi := 'gs64ldi'.
+	username := 'DataCurator'.
+	password := 'swordfish'.
+	libraryPath := '/path/to/GemStone/client/libraries' asFileReference.
+	gemstoneVersion := '3.7.0'.
+]
+
 { #category : 'accessing' }
 GtGemStoneGciConnector >> libraryPath [
+	<return: #FileReference>
+
 	^ libraryPath
 ]
 
 { #category : 'accessing' }
-GtGemStoneGciConnector >> libraryPath: anObject [
-	libraryPath := anObject
+GtGemStoneGciConnector >> libraryPath: aFileReference [
+
+	libraryPath := aFileReference
 ]
 
 { #category : 'private' }
@@ -94,6 +100,16 @@ GtGemStoneGciConnector >> netldi [
 { #category : 'accessing' }
 GtGemStoneGciConnector >> netldi: anObject [
 	netldi := anObject
+]
+
+{ #category : 'connecting' }
+GtGemStoneGciConnector >> newSession [
+	"Answer the session defined by the receiver"
+	<return: #GsSession>
+
+	GciInterface libraryDirectory: libraryPath fullName.
+	^ self loggedInSession. 
+
 ]
 
 { #category : 'accessing' }

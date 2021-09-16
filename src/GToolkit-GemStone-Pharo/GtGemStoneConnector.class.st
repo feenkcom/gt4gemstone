@@ -6,16 +6,29 @@ A subclass exists for each supported transport.
 Class {
 	#name : 'GtGemStoneConnector',
 	#superclass : 'Object',
+	#traits : 'TGtAnnouncer',
+	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
-		'host'
+		'name',
+		'propertiesFile',
+		'host',
+		'announcer'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'actions' }
-GtGemStoneConnector >> connect [ 
+{ #category : 'accessing' }
+GtGemStoneConnector >> announcer [ 
 
-	^ self subclassResponsibility 
+	^ announcer
+]
+
+{ #category : 'connecting' }
+GtGemStoneConnector >> connectionForSession: aGsSession [
+	"Answer the RsrConnection associated with the supplied session"
+	<return: #RsrConnection>
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'accessing' }
@@ -26,4 +39,69 @@ GtGemStoneConnector >> host [
 { #category : 'accessing' }
 GtGemStoneConnector >> host: anObject [
 	host := anObject
+]
+
+{ #category : 'initialization' }
+GtGemStoneConnector >> initialize [ 
+
+	super initialize.
+	announcer := Announcer new.
+	host := 'localhost'.
+
+]
+
+{ #category : 'accessing' }
+GtGemStoneConnector >> name [
+	<return: #String>
+
+	^ name ifNil: [ '<unnamed>' ]
+]
+
+{ #category : 'accessing' }
+GtGemStoneConnector >> name: aString [
+
+	name := aString
+]
+
+{ #category : 'connecting' }
+GtGemStoneConnector >> newSession [
+	"Answer a new session defined by the receiver"
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'announcing' }
+GtGemStoneConnector >> notifyNameChanged [
+	"Notify dependents that the receiver has been updated, including its name changed"
+
+	self announcer announce: 
+		(GtGemStoneConnectorNameChangeAnnouncement new connector: self)
+]
+
+{ #category : 'announcing' }
+GtGemStoneConnector >> notifyRemoved [
+	"Notify dependents that the receiver has been updated"
+
+	self announcer announce: (GtGemStoneConnectorAnnouncement new
+		connector: self;
+		operation: #removed)
+]
+
+{ #category : 'announcing' }
+GtGemStoneConnector >> notifyUpdated [
+	"Notify dependents that the receiver has been updated"
+
+	self announcer announce: (GtGemStoneConnectorAnnouncement new
+		connector: self;
+		operation: #updated)
+]
+
+{ #category : 'printing' }
+GtGemStoneConnector >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream 
+		nextPut: $(;
+		<< self name;
+		nextPut: $).
 ]

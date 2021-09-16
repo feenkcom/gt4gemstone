@@ -49,13 +49,13 @@ GtRemoteGemStoneDeclarativeExamples >> runningServer [
 	self assert: libraryDirectory isDirectory.
 	connector := GtGemStoneGciConnector new
 		gemstoneVersion: '3.7.0';
-		libraryPath: libraryDirectory fullName;
+		libraryPath: libraryDirectory;
 		host: 'localhost';
 		netldi: 'gs64ldi';
 		stone: 'gs64stone';
 		username: 'SystemUser';
 		password: 'swordfish'.
-	server := GtGemStoneClient new connector: connector.
+	server := GtGemStoneSession new connector: connector.
 	^ server connect.
 ]
 
