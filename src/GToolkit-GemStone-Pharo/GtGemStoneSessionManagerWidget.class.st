@@ -24,6 +24,18 @@ GtGemStoneSessionManagerWidget >> addNewConnector [
 	sessionRegistryModel addNewConnector
 ]
 
+{ #category : 'configuration' }
+GtGemStoneSessionManagerWidget >> addNewSessionButton [
+	"Add the 'New Session' button to the toolbar"
+
+	newSessionButton ifNotNil: 
+		[ self error: 'New Session button already exists' ].
+
+	newSessionButton := self createNewSessionButton.
+	toolbar addChild: newSessionButton.
+
+]
+
 { #category : 'initialization' }
 GtGemStoneSessionManagerWidget >> buildUI [ 
 
@@ -92,18 +104,15 @@ GtGemStoneSessionManagerWidget >> createSessionList [
 
 { #category : 'initialization' }
 GtGemStoneSessionManagerWidget >> createToolbar [
-	| toolbar |
+	| newToolbar |
 
-	toolbar := BrHorizontalPane new.
-	toolbar
+	newToolbar := BrHorizontalPane new.
+	newToolbar
 		hMatchParent;
 		vFitContent;
 		alignCenterRight.
 
-	newSessionButton := self createNewSessionButton.
-	toolbar addChild: newSessionButton.
-
-	^ toolbar
+	^ newToolbar
 ]
 
 { #category : 'initialization' }

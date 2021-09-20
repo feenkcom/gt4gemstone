@@ -118,7 +118,8 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		title: 'Live';
 		priority: 10;
 		stencil: [ (GtGemStoneSessionManagerWidget onRegistry: self)
-						padding: (BlInsets all: 5) ]
+						padding: (BlInsets all: 5);
+						addNewSessionButton ]
 ]
 
 { #category : 'testing' }
