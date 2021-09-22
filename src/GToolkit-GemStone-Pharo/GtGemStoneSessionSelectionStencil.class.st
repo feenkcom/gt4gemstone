@@ -24,6 +24,7 @@ GtGemStoneSessionSelectionStencil >> create [
 				[ BrButton new
 					label: 'Selecting...';
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
+					beSmallSize;
 					fitContent ]
 			content: 
 				[ GtGemStoneSessionSelectorStencil new
@@ -31,6 +32,7 @@ GtGemStoneSessionSelectionStencil >> create [
 					extent: extent;
 					selectAction: [ :connector | 
 						selectAction cull: connector cull: selectionButton ] ] );
+		beSmallSize;
 		fitContent.
 	^ selectionButton
 ]
