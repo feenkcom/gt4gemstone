@@ -1,6 +1,6 @@
 Class {
 	#name : 'GtGsBareProxy',
-	#superclass : 'Object',
+	#superclass : 'ProtoObject',
 	#instVars : [
 		'serviceClient'
 	],
@@ -13,9 +13,23 @@ GtGsBareProxy class >> forServiceClient: aServiceClient [
 		serviceClient: aServiceClient
 ]
 
+{ #category : 'gt - coder' }
+GtGsBareProxy class >> gtCoderSlotNames [
+	"Answer the slot names to be bound by GtPharoSourceCoderViewModel.
+	Answer an empty Array since we don't want to see the proxy object itself."
+
+
+	^ #()
+]
+
 { #category : 'comparing' }
 GtGsBareProxy >> = anObject [ 
 	^ self == anObject
+]
+
+{ #category : 'transformation' }
+GtGsBareProxy >> asGtBareProxy [
+	^ self
 ]
 
 { #category : 'reflective operations' }
@@ -30,13 +44,64 @@ GtGsBareProxy >> doesNotUnderstand: aMessage [
 ]
 
 { #category : 'transformation' }
-GtGsBareProxy >> gtGsAsBareProxy [
-	^ self
-]
-
-{ #category : 'transformation' }
 GtGsBareProxy >> gtGsBareProxyAsClientService [
 	^ self serviceClient
+]
+
+{ #category : 'simulation' }
+GtGsBareProxy >> gtLocalViewsFor: aView inContext: aContext [
+	| title resultingView |
+
+	title := String streamContents: [ :stream |
+				stream
+					<< 'Proxy to a(n): ';
+					<< (serviceClient
+						ifNil: [ '<unknown>' ]
+						ifNotNil: [ serviceClient proxyPerform: #printString ]) ].
+	resultingView := ((aView composite
+		views: (self gtViewsInContext: aContext))
+		labelled: title).
+	^ resultingView
+]
+
+{ #category : 'simulation' }
+GtGsBareProxy >> gtViewsFor: aView inContext: aContext [
+	| resultingView inspectorViews |
+
+	resultingView := self gtLocalViewsFor: aView inContext: aContext.
+	inspectorViews := resultingView originalView views.
+
+	"Add the explicitly declarative views from the inspected object"
+	inspectorViews addAll: (serviceClient viewsFor: aView).
+
+	"Re-sort by priority"
+	inspectorViews := inspectorViews sorted: [ :a :b | a priority < b priority ].
+	resultingView originalView views: inspectorViews.
+	^resultingView
+
+]
+
+{ #category : 'simulation' }
+GtGsBareProxy >> gtViewsInContext: aContext [
+	"This collects all views for the current object.
+	For a proxy we just want the Raw view renamed as 'Proxy'"
+	| views |
+
+	views := super gtViewsInContext: aContext.
+	"Retitle the original Raw view to Proxy and lower priority"
+	views 
+		detect: [ :each | each title = #Raw ]
+		ifFound: [ :proxyRaw |
+			proxyRaw
+			title: #Proxy;
+			priority: 10000 ].
+	"Remove the default Print view, the remote can supply it later"
+	views 
+		detect: [ :each | each title = #Print ]
+		ifFound: [ :proxyPrint | views remove: proxyPrint ].
+	
+	"views add: (self gtProxyRawFor: GtPhlowEmptyView new)."
+	^ views.
 ]
 
 { #category : 'comparing' }
@@ -76,7 +141,19 @@ GtGsBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	result := self 
 		rawPerformRemotely: aSelector 
 		withArguments: transfomedArguments.
-	^ result gtGsAsBareProxy
+	^ result asGtBareProxy
+]
+
+{ #category : 'printing' }
+GtGsBareProxy >> printOn: aStream [
+
+	aStream << 'youve got the bare proxy'
+]
+
+{ #category : 'printing' }
+GtGsBareProxy >> printString [
+
+	^ 'youve got the bare proxy'
 ]
 
 { #category : 'actions - proxy' }

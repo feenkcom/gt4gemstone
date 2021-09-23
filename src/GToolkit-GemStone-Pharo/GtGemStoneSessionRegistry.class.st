@@ -110,6 +110,13 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 	^ propertiesFile defaultConnectorName
 ]
 
+{ #category : 'private' }
+GtGemStoneSessionRegistry >> defaultSession [ 
+	"Answer the default session"
+
+	^ self sessionNamed: self defaultConnectorName
+]
+
 { #category : 'ui' }
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
