@@ -254,6 +254,8 @@ GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 GtRsrProxyServiceClient >> viewsFor: aView [
 	"Should be all views, but just get Raw and Print views for now"
 
-	^ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ].
+	^ self isFunctional
+		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
+		ifFalse: [ #() ].
 
 ]

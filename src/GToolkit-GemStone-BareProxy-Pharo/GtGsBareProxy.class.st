@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'serviceClient'
 	],
-	#category : 'GToolkit-GemStone-BareProxy-Pharo'
+	#category : 'GToolkit-GemStone-BareProxy-Pharo-Model'
 }
 
 { #category : 'instance creation' }
@@ -23,8 +23,12 @@ GtGsBareProxy class >> gtCoderSlotNames [
 ]
 
 { #category : 'comparing' }
-GtGsBareProxy >> = anObject [ 
-	^ self == anObject
+GtGsBareProxy >> = anObject [
+	"If the receiver has a serviceClient, delegate equality to the serviceClient, otherwise use the identity of the receiver"
+
+	^ serviceClient 
+		ifNil: [ self == anObject ]
+		ifNotNil: [ anObject = serviceClient ]
 ]
 
 { #category : 'transformation' }
@@ -50,14 +54,18 @@ GtGsBareProxy >> gtGsBareProxyAsClientService [
 
 { #category : 'simulation' }
 GtGsBareProxy >> gtLocalViewsFor: aView inContext: aContext [
-	| title resultingView |
+	| titleString title resultingView |
 
+	titleString := serviceClient ifNil:
+		[ '<unknown> ']
+	ifNotNil: [ serviceClient isFunctional ifTrue:
+		[ serviceClient proxyPerform: #printString ]
+	ifFalse:
+		[ '<not connected>' ] ].
 	title := String streamContents: [ :stream |
 				stream
 					<< 'Proxy to a(n): ';
-					<< (serviceClient
-						ifNil: [ '<unknown>' ]
-						ifNotNil: [ serviceClient proxyPerform: #printString ]) ].
+					<< titleString ].
 	resultingView := ((aView composite
 		views: (self gtViewsInContext: aContext))
 		labelled: title).
@@ -106,7 +114,11 @@ GtGsBareProxy >> gtViewsInContext: aContext [
 
 { #category : 'comparing' }
 GtGsBareProxy >> hash [
-	^ self identityHash
+
+	^ serviceClient 
+		ifNil: [ self identityHash ]
+		ifNotNil: [ serviceClient hash ]
+
 ]
 
 { #category : 'testing' }
@@ -147,13 +159,17 @@ GtGsBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 { #category : 'printing' }
 GtGsBareProxy >> printOn: aStream [
 
-	aStream << 'youve got the bare proxy'
+	serviceClient
+		ifNil: [ aStream << 'a GtGsBareProxy' ]
+		ifNotNil: [ serviceClient printOn: aStream ]
 ]
 
 { #category : 'printing' }
 GtGsBareProxy >> printString [
 
-	^ 'youve got the bare proxy'
+	^ serviceClient
+		ifNil: [ 'a GtGsBareProxy' ]
+		ifNotNil: [ serviceClient printString ]
 ]
 
 { #category : 'actions - proxy' }
