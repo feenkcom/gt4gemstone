@@ -1,202 +1,46 @@
+"
+GtGsBareProxy is the bare-proxy object class for GemStone remote objects.
+"
 Class {
 	#name : 'GtGsBareProxy',
-	#superclass : 'ProtoObject',
-	#instVars : [
-		'serviceClient'
-	],
+	#superclass : 'GtBareProxy',
 	#category : 'GToolkit-GemStone-BareProxy-Pharo-Model'
 }
 
 { #category : 'instance creation' }
-GtGsBareProxy class >> forServiceClient: aServiceClient [
-	^ self new
-		serviceClient: aServiceClient
+GtGsBareProxy class >> forProxyObject: aProxyObject [
+	| proxyClass |
+
+	proxyClass := self subclassForRemoteClass: aProxyObject remoteClass.
+	^ proxyClass new proxyObject: aProxyObject
 ]
 
-{ #category : 'gt - coder' }
-GtGsBareProxy class >> gtCoderSlotNames [
-	"Answer the slot names to be bound by GtPharoSourceCoderViewModel.
-	Answer an empty Array since we don't want to see the proxy object itself."
+{ #category : 'private' }
+GtGsBareProxy class >> remoteClassMatcher [
+	"Answer the block that matches a given class name"
 
-
-	^ #()
+	^ [ :aSymbol | self remoteClassName = aSymbol ]
 ]
 
-{ #category : 'comparing' }
-GtGsBareProxy >> = anObject [
-	"If the receiver has a serviceClient, delegate equality to the serviceClient, otherwise use the identity of the receiver"
+{ #category : 'private' }
+GtGsBareProxy class >> remoteClassName [
+	"Answer the name of the remote class the receiver represents"
+	<return: #Symbol or: nil>
 
-	^ serviceClient 
-		ifNil: [ self == anObject ]
-		ifNotNil: [ anObject = serviceClient ]
+	^ nil
 ]
 
-{ #category : 'transformation' }
-GtGsBareProxy >> asGtBareProxy [
-	^ self
-]
+{ #category : 'private' }
+GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
+	"Answer the subclass that represents the supplied class name"
 
-{ #category : 'reflective operations' }
-GtGsBareProxy >> doesNotUnderstand: aMessage [ 
-	"In case the proxy has no remote client or the client is not logged in
-	do not propagate the message to the remote object. If the return value 
-	is not a primitive type I convert it to a bare proxy."
-	
-	^ self isProxyObjectActive 
-		ifFalse: [ super doesNotUnderstand: aMessage  ]
-		ifTrue: [ self performRemotely: aMessage selector withArguments: aMessage arguments ]
+	^ self subclasses
+		detect: [ :each | each remoteClassMatcher value: aSymbol ]
+		ifNone: [ self ].
+
 ]
 
 { #category : 'transformation' }
 GtGsBareProxy >> gtGsBareProxyAsClientService [
-	^ self serviceClient
-]
-
-{ #category : 'simulation' }
-GtGsBareProxy >> gtLocalViewsFor: aView inContext: aContext [
-	| titleString title resultingView |
-
-	titleString := serviceClient ifNil:
-		[ '<unknown> ']
-	ifNotNil: [ serviceClient isFunctional ifTrue:
-		[ serviceClient proxyPerform: #printString ]
-	ifFalse:
-		[ '<not connected>' ] ].
-	title := String streamContents: [ :stream |
-				stream
-					<< 'Proxy to a(n): ';
-					<< titleString ].
-	resultingView := ((aView composite
-		views: (self gtViewsInContext: aContext))
-		labelled: title).
-	^ resultingView
-]
-
-{ #category : 'simulation' }
-GtGsBareProxy >> gtViewsFor: aView inContext: aContext [
-	| resultingView inspectorViews |
-
-	resultingView := self gtLocalViewsFor: aView inContext: aContext.
-	inspectorViews := resultingView originalView views.
-
-	"Add the explicitly declarative views from the inspected object"
-	inspectorViews addAll: (serviceClient viewsFor: aView).
-
-	"Re-sort by priority"
-	inspectorViews := inspectorViews sorted: [ :a :b | a priority < b priority ].
-	resultingView originalView views: inspectorViews.
-	^resultingView
-
-]
-
-{ #category : 'simulation' }
-GtGsBareProxy >> gtViewsInContext: aContext [
-	"This collects all views for the current object.
-	For a proxy we just want the Raw view renamed as 'Proxy'"
-	| views |
-
-	views := super gtViewsInContext: aContext.
-	"Retitle the original Raw view to Proxy and lower priority"
-	views 
-		detect: [ :each | each title = #Raw ]
-		ifFound: [ :proxyRaw |
-			proxyRaw
-			title: #Proxy;
-			priority: 10000 ].
-	"Remove the default Print view, the remote can supply it later"
-	views 
-		detect: [ :each | each title = #Print ]
-		ifFound: [ :proxyPrint | views remove: proxyPrint ].
-	
-	"views add: (self gtProxyRawFor: GtPhlowEmptyView new)."
-	^ views.
-]
-
-{ #category : 'comparing' }
-GtGsBareProxy >> hash [
-
-	^ serviceClient 
-		ifNil: [ self identityHash ]
-		ifNotNil: [ serviceClient hash ]
-
-]
-
-{ #category : 'testing' }
-GtGsBareProxy >> isProxyObjectActive [
-	^ self serviceClient 
-		ifNil: [ false ] 
-		ifNotNil: [ :aProxyService | 
-			aProxyService connection isOpen ] 
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> performRemotely: aSelector [
-	^ self performRemotely: aSelector withArguments: #()
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> performRemotely: aSelector with: anArgument [
-	^ self performRemotely: aSelector withArguments: { anArgument }
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
-	"Perform remotely aSelector with the given arguments and create a proxy object 
-	if the remote call returned a reference to a remote object. If the remote call 
-	returned a primitive value return it directly without creating a proxy object.
-	Primitive arguments are pased by value. Proxy arguments are passed based on their
-	proxy service, meaning that the actual remote object will be passed to the remote method."
-	| result transfomedArguments |
-		
-	transfomedArguments := argumentsArray collect: [ :anObject |
-		anObject gtGsBareProxyAsClientService ].
-	result := self 
-		rawPerformRemotely: aSelector 
-		withArguments: transfomedArguments.
-	^ result asGtBareProxy
-]
-
-{ #category : 'printing' }
-GtGsBareProxy >> printOn: aStream [
-
-	serviceClient
-		ifNil: [ aStream << 'a GtGsBareProxy' ]
-		ifNotNil: [ serviceClient printOn: aStream ]
-]
-
-{ #category : 'printing' }
-GtGsBareProxy >> printString [
-
-	^ serviceClient
-		ifNil: [ 'a GtGsBareProxy' ]
-		ifNotNil: [ serviceClient printString ]
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> rawPerformRemotely: aSelector [
-	^ self rawPerformRemotely: aSelector withArguments: #()
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> rawPerformRemotely: aSelector with: anArgument [
-	^ self rawPerformRemotely: aSelector withArguments: { anArgument }
-]
-
-{ #category : 'actions - proxy' }
-GtGsBareProxy >> rawPerformRemotely: aSelector withArguments: anArgumentsArrayOfServices [
-	^ self serviceClient 
-		proxyPerform: aSelector 
-		withArguments: anArgumentsArrayOfServices
-]
-
-{ #category : 'accessing' }
-GtGsBareProxy >> serviceClient [
-	^ serviceClient 
-]
-
-{ #category : 'accessing' }
-GtGsBareProxy >> serviceClient: aServiceClient [
-	serviceClient ifNotNil: [ 
-		Error signal: 'Cannot change the service client associated with a proxy object.' ].
-	serviceClient := aServiceClient
+	^ self proxyObject
 ]

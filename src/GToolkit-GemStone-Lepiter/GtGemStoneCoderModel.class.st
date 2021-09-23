@@ -113,7 +113,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 	pharoBindings allNames do: [ :name |
 		boundObject := (pharoBindings bindingOf: name) value.
 		(boundObject isKindOf: RsrService) ifTrue:
-			[ (boundObject isFunctional not or: 
+			[ (boundObject isProxyObjectActive not or: 
 				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
 					[ pharoBindings remove: name ] ] ].
 

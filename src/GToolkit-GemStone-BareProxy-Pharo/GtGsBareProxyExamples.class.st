@@ -12,8 +12,8 @@ GtGsBareProxyExamples >> testEqualityWithClient [
 	<gtExample>
 	| proxy1 proxy2 |
 
-	proxy1 := GtGsBareProxy forServiceClient: GtRsrProxyServiceClient new.
-	proxy2 := GtGsBareProxy forServiceClient: GtRsrProxyServiceClient new.
+	proxy1 := GtGsBareProxy forProxyObject: GtRsrProxyServiceClient new.
+	proxy2 := GtGsBareProxy forProxyObject: GtRsrProxyServiceClient new.
 
 	self assert: proxy1 = proxy1.
 	self deny: proxy1 = proxy2.
