@@ -88,9 +88,9 @@ GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 	bindings := Dictionary new.
 	visitor globalVariableNames do: [ :name |
 		(pharoBindings hasBindingOf: name) ifTrue: 
-			[ bindings at: name put: (pharoBindings bindingOf: name) value ] ].
+			[ bindings at: name put: (pharoBindings bindingOf: name) value asGtProxyObject ] ].
 	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
-			[ bindings at: #snippetResult put: (pharoBindings bindingOf: #snippetResult) value ].
+			[ bindings at: #snippetResult put: (pharoBindings bindingOf: #snippetResult) value asGtProxyObject ].
 	^ bindings
 ]
 
@@ -110,8 +110,8 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"
-	pharoBindings allNames do: [ :name |
-		boundObject := (pharoBindings bindingOf: name) value.
+	pharoBindings bindingNames do: [ :name |
+		boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
 		(boundObject isKindOf: RsrService) ifTrue:
 			[ (boundObject isProxyObjectActive not or: 
 				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
@@ -121,11 +121,11 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	result := gemstoneSession evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
 	result associationsDo: [ :binding |
-		pharoBindings at: binding key asSymbol put: binding value ].
+		(pharoBindings bindingOf: binding key asSymbol) value: binding value asGtBareProxyObject ].
 
-	^ result
+	^ (result
 		at: 'snippetResult'
-		ifAbsent: anEvaluationFailBlock
+		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
 ]
 
 { #category : 'accessing' }
@@ -187,7 +187,7 @@ GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 	leftBar := sourceAst leftBar ifNotNil: [ sourceAst leftBar startPosition ].
 	varNames := visitor undeclaredVariableNames.
 	pharoBindings ifNotNil:
-		[ pharoBindings allNames do: [ :name |
+		[ pharoBindings bindingNames do: [ :name |
 			varNames remove: name ifAbsent: [] ] ].
 
 	"Construct the script to be evaluated on the remote (GemStone server):

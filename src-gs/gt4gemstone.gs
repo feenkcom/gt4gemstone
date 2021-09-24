@@ -214,13 +214,17 @@ category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings |
+	| method result receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
 		ifFalse: [ anObject ].
 	symbolDictionary := SymbolDictionary new.
-	symbolDictionary addAll: aDictionary.
+	aDictionary keysAndValuesDo: [ :key :value |
+		object := (value isKindOf: GtRsrProxyService)
+			ifTrue: [ value object ]
+			ifFalse: [ value ].
+		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
 	method := aString _compileInContext: receiver symbolList: bindings.
@@ -246,6 +250,17 @@ templateClassName
 %
 
 !		Instance methods for 'GtRsrProxyService'
+
+category: 'testing'
+method: GtRsrProxyService
+isProxyObjectActive
+	"Answer a boolean indicating whether the receiver is expected to be functioning,
+	i.e. it has a connection that is open, and it's connection is the current one."
+
+	_connection ifNil: [ ^ false ].
+	_connection isOpen ifFalse: [ ^ false ].
+	^ true
+%
 
 category: 'accessing'
 method: GtRsrProxyService

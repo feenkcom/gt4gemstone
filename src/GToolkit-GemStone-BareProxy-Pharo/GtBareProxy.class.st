@@ -19,10 +19,16 @@ GtBareProxy class >> forProxyObject: aServiceClient [
 ]
 
 { #category : 'gt - coder' }
-GtBareProxy class >> gtCoderSlotNames [
+GtBareProxy class >> gtSlotNamed: aName ifFound: foundBlock ifNone: exceptionBlock [
+	"The proxy hides its only slot (proxyObject), so just evaluate exceptionBlock"
+
+	^ exceptionBlock value
+]
+
+{ #category : 'gt - coder' }
+GtBareProxy class >> gtSlotNames [
 	"Answer the slot names to be bound by GtPharoSourceCoderViewModel.
 	Answer an empty Array since we don't want to see the proxy object itself."
-
 
 	^ #()
 ]
@@ -37,8 +43,13 @@ GtBareProxy >> = anObject [
 ]
 
 { #category : 'transformation' }
-GtBareProxy >> asGtBareProxy [
+GtBareProxy >> asGtBareProxyObject [
 	^ self
+]
+
+{ #category : 'transformation' }
+GtBareProxy >> asGtProxyObject [
+	^ proxyObject
 ]
 
 { #category : 'reflective operations' }
@@ -159,11 +170,11 @@ GtBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	| result transfomedArguments |
 		
 	transfomedArguments := argumentsArray collect: [ :anObject |
-		anObject gtGsBareProxyAsClientService ].
+		anObject asGtProxyObject ].
 	result := self 
 		rawPerformRemotely: aSelector 
 		withArguments: transfomedArguments.
-	^ result asGtBareProxy
+	^ result asGtBareProxyObject
 ]
 
 { #category : 'printing' }
