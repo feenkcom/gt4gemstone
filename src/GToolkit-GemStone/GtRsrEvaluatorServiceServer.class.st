@@ -24,13 +24,17 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 { #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings |
+	| method result receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
 		ifFalse: [ anObject ].
 	symbolDictionary := SymbolDictionary new.
-	symbolDictionary addAll: aDictionary.
+	aDictionary keysAndValuesDo: [ :key :value |
+		object := (value isKindOf: GtRsrProxyService)
+			ifTrue: [ value object ]
+			ifFalse: [ value ].
+		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
 	method := aString _compileInContext: receiver symbolList: bindings.
