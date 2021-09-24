@@ -37,8 +37,13 @@ GtBareProxy >> = anObject [
 ]
 
 { #category : 'transformation' }
-GtBareProxy >> asGtBareProxy [
+GtBareProxy >> asGtBareProxyObject [
 	^ self
+]
+
+{ #category : 'transformation' }
+GtBareProxy >> asGtProxyObject [
+	^ proxyObject
 ]
 
 { #category : 'reflective operations' }
@@ -159,11 +164,11 @@ GtBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	| result transfomedArguments |
 		
 	transfomedArguments := argumentsArray collect: [ :anObject |
-		anObject gtGsBareProxyAsClientService ].
+		anObject asGtProxyObject ].
 	result := self 
 		rawPerformRemotely: aSelector 
 		withArguments: transfomedArguments.
-	^ result asGtBareProxy
+	^ result asGtBareProxyObject
 ]
 
 { #category : 'printing' }

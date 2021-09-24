@@ -39,8 +39,3 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 		ifNone: [ self ].
 
 ]
-
-{ #category : 'transformation' }
-GtGsBareProxy >> gtGsBareProxyAsClientService [
-	^ self proxyObject
-]
