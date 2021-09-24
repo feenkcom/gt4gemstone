@@ -110,7 +110,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"
-	pharoBindings allNames do: [ :name |
+	pharoBindings bindingNames do: [ :name |
 		boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
 		(boundObject isKindOf: RsrService) ifTrue:
 			[ (boundObject isProxyObjectActive not or: 
@@ -121,7 +121,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	result := gemstoneSession evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
 	result associationsDo: [ :binding |
-		pharoBindings at: binding key asSymbol put: binding value asGtBareProxyObject ].
+		(pharoBindings bindingOf: binding key asSymbol) value: binding value asGtBareProxyObject ].
 
 	^ (result
 		at: 'snippetResult'
@@ -187,7 +187,7 @@ GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 	leftBar := sourceAst leftBar ifNotNil: [ sourceAst leftBar startPosition ].
 	varNames := visitor undeclaredVariableNames.
 	pharoBindings ifNotNil:
-		[ pharoBindings allNames do: [ :name |
+		[ pharoBindings bindingNames do: [ :name |
 			varNames remove: name ifAbsent: [] ] ].
 
 	"Construct the script to be evaluated on the remote (GemStone server):
