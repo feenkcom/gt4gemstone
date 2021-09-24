@@ -57,8 +57,8 @@ inputVariable := ''Used''.
 answer'.
 	coderModel := GtGemStoneCoderModel new.
 	coderModel sourceCode: (GtCoderExplicitSourceCode new source: source).
-	pharoBindings := GtSnippetBindings new.
-	pharoBindings at: #inputVariable put: 40.
+	pharoBindings := GtLocalVariablesBindings new.
+	pharoBindings localAt: #inputVariable put: 40.
 	coderModel pharoBindings: pharoBindings.
 	coderModel updateRemoteFrom: source.
 
