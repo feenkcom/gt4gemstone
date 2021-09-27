@@ -18,6 +18,14 @@ GtGemStoneSessionManagerWidget class >> onRegistry: aGtGemStoneSessionRegistry [
 			sessionRegistry: aGtGemStoneSessionRegistry)
 ]
 
+{ #category : 'configuration' }
+GtGemStoneSessionManagerWidget >> addInspectButton [
+	"Add an 'Inspect' button to the toolbar allowing the receiver's GtGemStoneSessionRegistry to be edited"
+
+	toolbar addChild: self createInspectButton.
+
+]
+
 { #category : 'private' }
 GtGemStoneSessionManagerWidget >> addNewConnector [
 
@@ -45,6 +53,19 @@ GtGemStoneSessionManagerWidget >> buildUI [
 	self matchParent.
 	self addChild: sessionList as: #sessionList.
 	self addChild: toolbar as: #toolbar.
+]
+
+{ #category : 'initialization' }
+GtGemStoneSessionManagerWidget >> createInspectButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
+		icon: BrGlamorousVectorIcons inspect;
+		label: 'Inspect';
+		fitContent;
+		action: [ :theButton :theButtonModel :theClickEvent |
+			self sessionRegistry inspect. ].
+
 ]
 
 { #category : 'initialization' }
@@ -159,6 +180,14 @@ GtGemStoneSessionManagerWidget >> selectedSessionDo: aBlock [
 GtGemStoneSessionManagerWidget >> sessionList [
 
 	^ sessionList
+]
+
+{ #category : 'accessing' }
+GtGemStoneSessionManagerWidget >> sessionRegistry [
+	"Answer the receiver's session registry"
+	<return: #GtGemStoneSessionRegistry>
+
+	^ sessionRegistryModel sessionRegistry
 ]
 
 { #category : 'accessing' }
