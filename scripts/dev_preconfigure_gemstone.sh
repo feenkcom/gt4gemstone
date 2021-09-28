@@ -13,7 +13,9 @@ echo "Starting Remote Examples Development Setup"
 
 imageDirectory=`pwd`
 echo "imageDirectory=${imageDirectory}"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+DIR=`readlink "$0"` || DIR="$0";
+SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
 source $SCRIPT_DIR/remote-gemstone-env.sh
 
 #

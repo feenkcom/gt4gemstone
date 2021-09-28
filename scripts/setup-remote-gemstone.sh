@@ -17,7 +17,8 @@ function stop_servers()
         stopnetldi
 }
 
-export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR=`readlink "$0"` || DIR="$0";
+export SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
 # Set up environment variables
 source $SCRIPT_DIR/remote-gemstone-env.sh
 
@@ -33,22 +34,14 @@ then
 	exit 1
 fi
 
-# Download all the required archives, git clones, etc. and upack
-if [ ! -f GemStone64Bit3.7.0-x86_64.Linux.zip ]
-then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStone64Bit3.7.0-x86_64.Linux.zip
-fi
-
-if [ ! -f GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
-then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStoneClientLibs3.7.0-x86_64.Linux.zip
-fi
-
 mkdir ${GEMSTONE_WORKSPACE}
 mkdir ${GEMSTONE_WORKSPACE}/opt
-cd ${GEMSTONE_WORKSPACE}
-unzip ../GemStone64Bit3.7.0-x86_64.Linux.zip
-unzip ../GemStoneClientLibs3.7.0-x86_64.Linux.zip
+
+if [ "$GT_OSNAME" == "Linux" ]; then
+    $SCRIPT_DIR/download-gemstone-linux.sh
+elif [ "$GT_OSNAME" == "Darwin" ]; then
+    $SCRIPT_DIR/download-gemstone-macos.sh
+fi
 
 mkdir ${ROWAN_PROJECTS_HOME}
 cd ${ROWAN_PROJECTS_HOME}
