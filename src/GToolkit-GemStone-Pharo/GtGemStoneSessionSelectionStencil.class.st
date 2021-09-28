@@ -18,7 +18,7 @@ GtGemStoneSessionSelectionStencil >> create [
 	selectionButton := BrButton new.
 	selectionButton 
 		label: tooltip;
-		aptitude: BrGlamorousButtonWithLabelAptitude;
+		aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
