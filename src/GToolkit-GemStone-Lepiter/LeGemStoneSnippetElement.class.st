@@ -17,10 +17,7 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 			self updateLanguageLabel.
 			button dispatchEvent: (BrDropdownHideWish new anchor: button) ].
 	element := stencil create.
-	element 
-		margin: (BlInsets top: 0 left: 5 bottom: 0 right: 30);
-		hFitContent;
-		vMatchParent.
+	element fitContent.
 	^ element.
 ]
 
