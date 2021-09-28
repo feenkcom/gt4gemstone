@@ -151,6 +151,15 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
 ]
 
+{ #category : 'accessing' }
+GtGemStoneSession >> gemLogFileReference [
+	"Answer a file reference to the server's log file.
+	This is only useful if the client and server are on the same machine, i.e. for development."
+	<return: #FileReference>
+
+	^ (self evaluateAndWait: 'System gemLogPath') asFileReference / (self evaluateAndWait: 'System gemLogFileName')
+]
+
 { #category : 'ui' }
 GtGemStoneSession >> gtAbortActionFor: anAction [
 	<gtAction>

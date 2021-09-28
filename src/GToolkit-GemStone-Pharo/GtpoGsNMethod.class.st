@@ -1,6 +1,9 @@
 Class {
 	#name : 'GtpoGsNMethod',
 	#superclass : 'GtRsrProxyServiceClient',
+	#instVars : [
+		'sourceCode'
+	],
 	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
@@ -55,4 +58,10 @@ GtpoGsNMethod >> gtSourceFor: aView [
 				self compileFromTab: aTab.
 				aTab viewContentElement phlow update ];
 		actionUpdateButton
+]
+
+{ #category : 'accessing' }
+GtpoGsNMethod >> sourceCode [
+
+	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString ]
 ]
