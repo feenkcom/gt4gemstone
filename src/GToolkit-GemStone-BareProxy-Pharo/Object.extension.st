@@ -1,11 +1,11 @@
 Extension { #name : 'Object' }
 
 { #category : '*GToolkit-GemStone-BareProxy-Pharo' }
-Object >> gtGsAsBareProxy [
+Object >> asGtBareProxyObject [
 	^ self
 ]
 
 { #category : '*GToolkit-GemStone-BareProxy-Pharo' }
-Object >> gtGsBareProxyAsClientService [
+Object >> asGtProxyObject [
 	^ self
 ]

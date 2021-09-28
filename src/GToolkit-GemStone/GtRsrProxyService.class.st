@@ -14,7 +14,7 @@ GtRsrProxyService class >> templateClassName [
 ]
 
 { #category : 'testing' }
-GtRsrProxyService >> isFunctional [
+GtRsrProxyService >> isProxyObjectActive [
 	"Answer a boolean indicating whether the receiver is expected to be functioning,
 	i.e. it has a connection that is open, and it's connection is the current one."
 

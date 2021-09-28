@@ -15,6 +15,7 @@ GtGemStoneSessionSelectorStencil >> create [
 
 	element := GtGemStoneSessionManagerWidget onRegistry: registry.
 	element 
+		addInspectButton;
 		padding: (BlInsets all: 10);
 		exact: extent.
 
