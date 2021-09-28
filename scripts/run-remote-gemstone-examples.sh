@@ -15,7 +15,8 @@ function stop_servers()
 	stopnetldi
 }
 
-export SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR=`readlink "$0"` || DIR="$0";
+export SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
 
 # Install the remote environment, if required
 if [ ! -d remote-gemstone ]
