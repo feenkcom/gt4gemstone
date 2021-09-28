@@ -25,6 +25,7 @@ elif [ "$GT_OSNAME" == "Darwin" ]; then
     GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.0-i386.Darwin"
 fi
 
+export GEMSTONE
 export GEMSTONE_GLOBAL_DIR=$GEMSTONE_WORKSPACE/opt
 export MANPATH=$GEMSTONE/doc
 export PATH=$GEMSTONE/bin:$PATH
