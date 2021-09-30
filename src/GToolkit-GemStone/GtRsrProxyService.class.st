@@ -1,19 +1,19 @@
 Class {
-	#name : 'GtRsrProxyService',
-	#superclass : 'RsrService',
+	#name : #GtRsrProxyService,
+	#superclass : #RsrService,
 	#instVars : [
 		'remoteClass'
 	],
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrProxyService class >> templateClassName [
 
 	^ #GtRsrProxyService
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtRsrProxyService >> isProxyObjectActive [
 	"Answer a boolean indicating whether the receiver is expected to be functioning,
 	i.e. it has a connection that is open, and it's connection is the current one."
@@ -23,14 +23,14 @@ GtRsrProxyService >> isProxyObjectActive [
 	^ true
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrProxyService >> remoteClass [
 	"Answer the name of the class of the remote object"
 
 	^ remoteClass
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrProxyService >> remoteClass: aSymbol [
 	"Set the name of the class of the remote object"
 
