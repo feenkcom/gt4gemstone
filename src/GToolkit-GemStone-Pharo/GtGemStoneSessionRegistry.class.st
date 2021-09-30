@@ -13,8 +13,8 @@ The global (uniqueInstance) is maintained by Lepiter.
 ### Implementation Points
 "
 Class {
-	#name : 'GtGemStoneSessionRegistry',
-	#superclass : 'Object',
+	#name : #GtGemStoneSessionRegistry,
+	#superclass : #Object,
 	#traits : 'TGtUniqueInstance + TGtAnnouncer',
 	#classTraits : 'TGtUniqueInstance classTrait + TGtAnnouncer classTrait',
 	#instVars : [
@@ -25,7 +25,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Registry'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry class >> default [
 	"Answer the default session registry, i.e. the properties file is co-located with the leptier logical database properties."
 
@@ -35,7 +35,7 @@ GtGemStoneSessionRegistry class >> default [
 	^ uniqueInstance
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionRegistry class >> initialize [ 
 	"Reload the registry after lepiter has been notified of a session start"
 
@@ -45,14 +45,14 @@ GtGemStoneSessionRegistry class >> initialize [
 
 ]
 
-{ #category : 'system startup' }
+{ #category : #'system startup' }
 GtGemStoneSessionRegistry class >> startUp: resuming [
 
 	self hasUniqueInstance ifTrue: [ uniqueInstance startUp: resuming ].
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> activeSessionNames [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
@@ -60,7 +60,7 @@ GtGemStoneSessionRegistry >> activeSessionNames [
 	^ sessions keys
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> activeSessions [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
@@ -68,27 +68,27 @@ GtGemStoneSessionRegistry >> activeSessions [
 	^ sessions values
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtGemStoneSessionRegistry >> addNewConnector [ 
 
 	^ propertiesFile addNewConnector.
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> allConnectors [
 
 	^ propertiesFile allConnectors
 ]
 
-{ #category : 'announcer' }
+{ #category : #announcer }
 GtGemStoneSessionRegistry >> announcer [
 	<return: #Announcer>
 
 	^ announcer
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNamed: aString [
 	"Answer the connector at the supplied name"
 
@@ -96,7 +96,7 @@ GtGemStoneSessionRegistry >> connectorNamed: aString [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNames [ 
 	"Answer the list of known session names"
 	<return: #Array>
@@ -104,20 +104,20 @@ GtGemStoneSessionRegistry >> connectorNames [
 	^ propertiesFile connectorNames
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> defaultConnectorName [ 
 
 	^ propertiesFile defaultConnectorName
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionRegistry >> defaultSession [ 
 	"Answer the default session"
 
 	^ self sessionNamed: self defaultConnectorName
 ]
 
-{ #category : 'ui' }
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 
@@ -129,7 +129,7 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 						addNewSessionButton ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
 	<return: #Boolean>
@@ -137,7 +137,7 @@ GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 	^ propertiesFile hasConnectorNamed: aString
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
@@ -145,7 +145,7 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	^ sessions includesKey: aString
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionRegistry >> initialize [ 
 
 	super initialize.
@@ -153,7 +153,7 @@ GtGemStoneSessionRegistry >> initialize [
 	self resetSessions.
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnouncement [
 	"Propogate any announcements from the properties file.
 	If the connector has been renamed, rebuild the session dictionary."
@@ -168,13 +168,13 @@ GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnoun
 	self announce: aGtGemStoneConnectorAnnouncement
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> propertiesFile [
 
 	^ propertiesFile
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> propertiesFile: aGtGemStonePropertiesFile [
 
 	propertiesFile ifNotNil:
@@ -187,13 +187,13 @@ GtGemStoneSessionRegistry >> propertiesFile: aGtGemStonePropertiesFile [
 	self resetSessions.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> propertiesFilename [
 
 	^ propertiesFile ifNotNil: [ propertiesFile file ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> propertiesFilename: aFileReference [
 	"Open the registry's properties on the supplied file"
 
@@ -202,7 +202,7 @@ GtGemStoneSessionRegistry >> propertiesFilename: aFileReference [
 
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionRegistry >> reload [
 	"Reload the properties file and reset the sessions"
 	| oldSessionNames newSessionNames |
@@ -214,14 +214,14 @@ GtGemStoneSessionRegistry >> reload [
 		sessions removeKey: name ifAbsent: [ ] ].
 ]
 
-{ #category : 'removing' }
+{ #category : #removing }
 GtGemStoneSessionRegistry >> removeConnector: aGtGemStoneConnector [
 	"Remove the supplied connector from the properties file"
 
 	self removeConnectorNamed: aGtGemStoneConnector name.
 ]
 
-{ #category : 'removing' }
+{ #category : #removing }
 GtGemStoneSessionRegistry >> removeConnectorNamed: aString [
 	"Remove the supplied connector from the properties file.
 	This implies removing the associated session (if it exists)."
@@ -234,20 +234,20 @@ GtGemStoneSessionRegistry >> removeConnectorNamed: aString [
 
 ]
 
-{ #category : 'removing' }
+{ #category : #removing }
 GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 	"Remove the supplied session and its definition"
 
 	self removeConnectorNamed: aGtGemStoneSession name.
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionRegistry >> resetSessions [ 
 
 	sessions := Dictionary new.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> sessionNamed: aString [
 	"Answer the session at the supplied name"
 	| sessionName |
@@ -260,7 +260,7 @@ GtGemStoneSessionRegistry >> sessionNamed: aString [
 			registry: self ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
 
@@ -268,7 +268,7 @@ GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 		each connection = aRsrConnection ]
 ]
 
-{ #category : 'system startup' }
+{ #category : #'system startup' }
 GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"
 

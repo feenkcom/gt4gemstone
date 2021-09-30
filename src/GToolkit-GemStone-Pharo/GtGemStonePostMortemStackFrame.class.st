@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStonePostMortemStackFrame',
-	#superclass : 'Object',
+	#name : #GtGemStonePostMortemStackFrame,
+	#superclass : #Object,
 	#instVars : [
 		'ordinal',
 		'displayString',
@@ -9,31 +9,31 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Debugger'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> displayString [
 
 	^ displayString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> displayString: anObject [
 
 	displayString := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> exception [
 
 	^ exception
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> exception: anObject [
 
 	exception := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> line [
 	| re |
 
@@ -43,19 +43,19 @@ GtGemStonePostMortemStackFrame >> line [
 		ifFalse: [ nil ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> ordinal [
 
 	^ ordinal
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> ordinal: anObject [
 
 	ordinal := anObject
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStonePostMortemStackFrame >> printOn: aStream [
 
 	displayString
@@ -63,7 +63,7 @@ GtGemStonePostMortemStackFrame >> printOn: aStream [
 		ifNotNil: [ aStream << displayString ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> sourceText [
 	| source lineNumber text indexes |
 	

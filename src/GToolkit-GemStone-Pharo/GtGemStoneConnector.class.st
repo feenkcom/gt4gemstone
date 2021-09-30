@@ -4,8 +4,8 @@ GtGemStoneConnector maintains the state and knowlege to connect to a GemStone se
 A subclass exists for each supported transport.
 "
 Class {
-	#name : 'GtGemStoneConnector',
-	#superclass : 'Object',
+	#name : #GtGemStoneConnector,
+	#superclass : #Object,
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
@@ -17,13 +17,13 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> announcer [ 
 
 	^ announcer
 ]
 
-{ #category : 'connecting' }
+{ #category : #connecting }
 GtGemStoneConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
@@ -31,17 +31,17 @@ GtGemStoneConnector >> connectionForSession: aGsSession [
 	^ self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> host [
 	^ host
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> host: anObject [
 	host := anObject
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneConnector >> initialize [ 
 
 	super initialize.
@@ -50,27 +50,27 @@ GtGemStoneConnector >> initialize [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> name [
 	<return: #String>
 
 	^ name ifNil: [ '<unnamed>' ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> name: aString [
 
 	name := aString
 ]
 
-{ #category : 'connecting' }
+{ #category : #connecting }
 GtGemStoneConnector >> newSession [
 	"Answer a new session defined by the receiver"
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyNameChanged [
 	"Notify dependents that the receiver has been updated, including its name changed"
 
@@ -78,7 +78,7 @@ GtGemStoneConnector >> notifyNameChanged [
 		(GtGemStoneConnectorNameChangeAnnouncement new connector: self)
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyRemoved [
 	"Notify dependents that the receiver has been updated"
 
@@ -87,7 +87,7 @@ GtGemStoneConnector >> notifyRemoved [
 		operation: #removed)
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyUpdated [
 	"Notify dependents that the receiver has been updated"
 
@@ -96,7 +96,7 @@ GtGemStoneConnector >> notifyUpdated [
 		operation: #updated)
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneConnector >> printOn: aStream [
 
 	super printOn: aStream.

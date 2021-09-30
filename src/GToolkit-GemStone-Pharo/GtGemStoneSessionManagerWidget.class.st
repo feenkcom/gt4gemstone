@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionManagerWidget',
-	#superclass : 'BrVerticalPane',
+	#name : #GtGemStoneSessionManagerWidget,
+	#superclass : #BrVerticalPane,
 	#instVars : [
 		'sessionList',
 		'newSessionButton',
@@ -10,7 +10,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneSessionManagerWidget class >> onRegistry: aGtGemStoneSessionRegistry [
 
 	^ self new sessionRegistryModel: 
@@ -18,7 +18,7 @@ GtGemStoneSessionManagerWidget class >> onRegistry: aGtGemStoneSessionRegistry [
 			sessionRegistry: aGtGemStoneSessionRegistry)
 ]
 
-{ #category : 'configuration' }
+{ #category : #configuration }
 GtGemStoneSessionManagerWidget >> addInspectButton [
 	"Add an 'Inspect' button to the toolbar allowing the receiver's GtGemStoneSessionRegistry to be edited"
 
@@ -26,13 +26,13 @@ GtGemStoneSessionManagerWidget >> addInspectButton [
 
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> addNewConnector [
 
 	sessionRegistryModel addNewConnector
 ]
 
-{ #category : 'configuration' }
+{ #category : #configuration }
 GtGemStoneSessionManagerWidget >> addNewSessionButton [
 	"Add the 'New Session' button to the toolbar"
 
@@ -44,7 +44,7 @@ GtGemStoneSessionManagerWidget >> addNewSessionButton [
 
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> buildUI [ 
 
 	sessionList := self createSessionList.
@@ -55,7 +55,7 @@ GtGemStoneSessionManagerWidget >> buildUI [
 	self addChild: toolbar as: #toolbar.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createInspectButton [
 
 	^ BrButton new 
@@ -68,7 +68,7 @@ GtGemStoneSessionManagerWidget >> createInspectButton [
 
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createNewSessionButton [
 
 	^ BrButton new 
@@ -80,7 +80,7 @@ GtGemStoneSessionManagerWidget >> createNewSessionButton [
 
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createSessionList [
 	| list |
 
@@ -123,7 +123,7 @@ GtGemStoneSessionManagerWidget >> createSessionList [
 	^ list
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createToolbar [
 	| newToolbar |
 
@@ -136,7 +136,7 @@ GtGemStoneSessionManagerWidget >> createToolbar [
 	^ newToolbar
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> initialize [ 
 
 	super initialize.
@@ -144,7 +144,7 @@ GtGemStoneSessionManagerWidget >> initialize [
 
 ]
 
-{ #category : 'hooks - children' }
+{ #category : #'hooks - children' }
 GtGemStoneSessionManagerWidget >> onAddedToSceneGraph [ 
 
 	super onAddedToSceneGraph.
@@ -152,7 +152,7 @@ GtGemStoneSessionManagerWidget >> onAddedToSceneGraph [
 		[ self subscribeToSessionRegistryModel ].
 ]
 
-{ #category : 'hooks - children' }
+{ #category : #'hooks - children' }
 GtGemStoneSessionManagerWidget >> onRemovedFromSceneGraph [ 
 
 	super onRemovedFromSceneGraph.
@@ -160,7 +160,7 @@ GtGemStoneSessionManagerWidget >> onRemovedFromSceneGraph [
 		[ self unsubscribeFrom: sessionRegistryModel ].
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> onSessionManagerViewModelChanged [
 
 	self updateSessionList.
@@ -168,7 +168,7 @@ GtGemStoneSessionManagerWidget >> onSessionManagerViewModelChanged [
 
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtGemStoneSessionManagerWidget >> selectedSessionDo: aBlock [
 	"Evaluate the supplied block with the selected session and index.
 	Does nothing if there is no selection."
@@ -176,13 +176,13 @@ GtGemStoneSessionManagerWidget >> selectedSessionDo: aBlock [
 	sessionList selectedItemDo: aBlock
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> sessionList [
 
 	^ sessionList
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> sessionRegistry [
 	"Answer the receiver's session registry"
 	<return: #GtGemStoneSessionRegistry>
@@ -190,13 +190,13 @@ GtGemStoneSessionManagerWidget >> sessionRegistry [
 	^ sessionRegistryModel sessionRegistry
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> sessionRegistryModel [
 
 	^ sessionRegistryModel
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> sessionRegistryModel: aGtGemStoneSessionManagerViewModel [
 
 	sessionRegistryModel ifNotNil:
@@ -205,7 +205,7 @@ GtGemStoneSessionManagerWidget >> sessionRegistryModel: aGtGemStoneSessionManage
 	self onSessionManagerViewModelChanged.
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> subscribeToSessionRegistryModel [
 
 	sessionRegistryModel
@@ -214,19 +214,19 @@ GtGemStoneSessionManagerWidget >> subscribeToSessionRegistryModel [
 		to: self
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> toolbar [
 
 	^ toolbar
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> unsubscribeFrom: aGtGemStoneSessionRegistryModel [
 
 	aGtGemStoneSessionRegistryModel sessionRegistry unsubscribe: self
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> updateSessionList [
 
 	sessionList items: (sessionRegistryModel allConnectors

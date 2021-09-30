@@ -6,19 +6,19 @@ Currently this is just a list of all the named sessions.  A session represents a
 The properties file is not normally manipulated directly, but through the registry ({{gtClass:GtGemStoneSessionRegistry}}).
 "
 Class {
-	#name : 'GtGemStonePropertiesFile',
-	#superclass : 'GtPropertiesFile',
+	#name : #GtGemStonePropertiesFile,
+	#superclass : #GtPropertiesFile,
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtGemStonePropertiesFile >> addNewConnector [
 	"Add a new session, default type = GCI"
 
 	^ self addNewGciConnector
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtGemStonePropertiesFile >> addNewConnectorClass: aGtGemStoneConnectorClass [
 	| sessionNames number newName |
 
@@ -32,26 +32,26 @@ GtGemStonePropertiesFile >> addNewConnectorClass: aGtGemStoneConnectorClass [
 
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtGemStonePropertiesFile >> addNewDirectConnector [
 
 	^ self addNewConnectorClass: GtGemStoneDirectConnector
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtGemStonePropertiesFile >> addNewGciConnector [
 
 	^ self addNewConnectorClass: GtGemStoneGciConnector
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> allConnectors [ 
 	"Answer all defined connectors"
 
 	^ (properties at: #namedConnectors) values
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> connectorNamed: aString [
 	"Answer the session connection details with the supplied name"
 	<return: #GtGemStoneConnector>
@@ -59,7 +59,7 @@ GtGemStonePropertiesFile >> connectorNamed: aString [
 	^ (properties at: #namedConnectors) at: aString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> connectorNamed: aString put: aGtGemStoneConnector [
 	"Set the session connection details with the supplied name"
 	| announcement |
@@ -75,7 +75,7 @@ GtGemStonePropertiesFile >> connectorNamed: aString put: aGtGemStoneConnector [
 	^ aGtGemStoneConnector 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> connectorNames [
 	"Answer the set of defined session names"
 	<return: #Array>
@@ -83,13 +83,13 @@ GtGemStonePropertiesFile >> connectorNames [
 	^ (properties at: #namedConnectors) keys
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> defaultConnector [
 
 	^ self connectorNamed: self defaultConnectorName
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> defaultConnectorName [
 	"Answer the default session to use"
 
@@ -98,7 +98,7 @@ GtGemStonePropertiesFile >> defaultConnectorName [
 		ifAbsent: [ #default ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStonePropertiesFile >> defaultConnectorName: aString [
 	"Set the default session to use"
 
@@ -106,7 +106,7 @@ GtGemStonePropertiesFile >> defaultConnectorName: aString [
 
 ]
 
-{ #category : 'ui' }
+{ #category : #ui }
 GtGemStonePropertiesFile >> gtPropertiesFor: aView [
 	<gtView>
 
@@ -118,7 +118,7 @@ GtGemStonePropertiesFile >> gtPropertiesFor: aView [
 		view: #gtLiveFor:
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
 	<return: #Boolean>
@@ -126,14 +126,14 @@ GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 	^ (properties at: #namedConnectors) includesKey: aString
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStonePropertiesFile >> initialize [ 
 
 	super initialize.
 	properties at: #namedConnectors put: Dictionary new.
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStonePropertiesFile >> loadProperties [
 
 	super loadProperties.
@@ -148,13 +148,13 @@ GtGemStonePropertiesFile >> loadProperties [
 
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStonePropertiesFile >> namedConnectors [
 
 	^ properties at: #namedConnectors
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStonePropertiesFile >> onConnectorChanged: aGtGemStoneConnectorAnnouncement [
 	"Propogate any announcements from the receiver's connectors.
 	If the connector has been renamed, rebuild the namedConnectors dictionary."
@@ -169,7 +169,7 @@ GtGemStonePropertiesFile >> onConnectorChanged: aGtGemStoneConnectorAnnouncement
 	self announce: aGtGemStoneConnectorAnnouncement
 ]
 
-{ #category : 'removing' }
+{ #category : #removing }
 GtGemStonePropertiesFile >> removeConnectorNamed: aString [
 	| namedConnections connector |
 
@@ -181,7 +181,7 @@ GtGemStonePropertiesFile >> removeConnectorNamed: aString [
 	^ connector
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStonePropertiesFile >> subscribeToConnector: aGtGemStoneConnector [
 
 	aGtGemStoneConnector 
