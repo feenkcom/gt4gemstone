@@ -81,7 +81,7 @@ GtGemStoneSessionRegistry >> allConnectors [
 	^ propertiesFile allConnectors
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> allSessions [
 	"Ensure there's a session for every connector and then answer the collection"
 

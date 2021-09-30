@@ -4,7 +4,6 @@ Class {
 	#instVars : [
 		'pharoBindings',
 		'sessionName',
-		'applicationStrategy',
 		'remoteScript',
 		'remoteBindings'
 	],
