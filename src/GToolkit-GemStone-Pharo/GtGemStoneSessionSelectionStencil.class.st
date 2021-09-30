@@ -7,7 +7,7 @@ Class {
 		'registry',
 		'selectAction'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'api - instantiation' }
@@ -27,11 +27,25 @@ GtGemStoneSessionSelectionStencil >> create [
 					beSmallSize;
 					fitContent ]
 			content: 
-				[ GtGemStoneSessionSelectorStencil new
-					registry: registry;
-					extent: extent;
-					selectAction: [ :connector | 
-						selectAction cull: connector cull: selectionButton ] ] );
+				[
+				| aSelectionElement |
+				
+				aSelectionElement := GtGemStoneSessionManagerWidget onRegistry: registry.
+				aSelectionElement 
+					addInspectButton;
+					exact: extent.
+
+				aSelectionElement gemStoneSessionManagerViewModel
+					when: GtGemStoneSessionViewModelActivated
+					do: [ :anEvent |
+						selectAction
+							cull: anEvent gemStoneSessionViewModel gemStoneSession
+							cull: selectionButton ].
+
+				aSelectionElement
+					when: GtPhlowObjectToSpawn
+					do: [ :anEvent | selectionButton fireEvent: anEvent ].
+				aSelectionElement ] );
 		beSmallSize;
 		fitContent.
 	^ selectionButton
