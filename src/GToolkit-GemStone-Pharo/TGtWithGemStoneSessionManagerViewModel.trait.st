@@ -1,12 +1,12 @@
 Trait {
-	#name : 'TGtWithGemStoneSessionManagerViewModel',
+	#name : #TGtWithGemStoneSessionManagerViewModel,
 	#instVars : [
 		'gemStoneSessionManagerViewModel'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Support'
 }
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> gemStoneSessionManagerViewModel [
 	"Return a not-null gemStoneSessionManagerViewModel assigned to the receiver"
 	<modelGetter: #sessionManager>
@@ -18,7 +18,7 @@ TGtWithGemStoneSessionManagerViewModel >> gemStoneSessionManagerViewModel [
 	^ gemStoneSessionManagerViewModel
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> gemStoneSessionManagerViewModel: aGemStoneSessionManagerViewModel [
 	"Set a not-null gemStoneSessionManagerViewModel assigned to the receiver"
 	<modelSetter: #sessionManager>
@@ -38,7 +38,7 @@ TGtWithGemStoneSessionManagerViewModel >> gemStoneSessionManagerViewModel: aGemS
 	self onPostGemStoneSessionManagerViewModelChanged
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> hasGemStoneSessionManagerViewModel [
 	"Return a true if nil is assigned to the receiver, false otherwise"
 	<return: #Boolean>
@@ -48,7 +48,7 @@ TGtWithGemStoneSessionManagerViewModel >> hasGemStoneSessionManagerViewModel [
 	^ gemStoneSessionManagerViewModel notNil
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> onGemStoneSessionManagerViewModelChanged [
 	"Is sent when a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	Note: #onGemStoneSessionManagerViewModelChanged is sent before #subscribeToGemStoneSessionManagerViewModel
@@ -58,7 +58,7 @@ TGtWithGemStoneSessionManagerViewModel >> onGemStoneSessionManagerViewModelChang
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> onPostGemStoneSessionManagerViewModelChanged [
 	"I am an optional hook method that is sent after #subscribeToGemStoneSessionManagerViewModel.
 	I do nothing by default but allow users to perform update operations when a receiver object is already
@@ -66,7 +66,7 @@ TGtWithGemStoneSessionManagerViewModel >> onPostGemStoneSessionManagerViewModelC
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onPostObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> subscribeToGemStoneSessionManagerViewModel [
 	"Is sent after a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -75,7 +75,7 @@ TGtWithGemStoneSessionManagerViewModel >> subscribeToGemStoneSessionManagerViewM
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 TGtWithGemStoneSessionManagerViewModel >> unsubscribeFromGemStoneSessionManagerViewModel [
 	"Is sent before a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	Objects that subscribe to gemStoneSessionManagerViewModel are required to implement this method."

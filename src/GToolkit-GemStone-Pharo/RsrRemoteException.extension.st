@@ -1,6 +1,6 @@
-Extension { #name : 'RsrRemoteException' }
+Extension { #name : #RsrRemoteException }
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> gtDisplayedStackFrames [
 	"Answer an array of the stack frames based on the stack text.
 	This can then be parsed to get the method definitions"
@@ -13,7 +13,7 @@ RsrRemoteException >> gtDisplayedStackFrames [
 			trimmedLine ifNotEmpty: [ stream nextPut: trimmedLine ] ] ].
 ]
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> gtMethodFromStackString: aString [ 
 	"Answer the Method based on the supplied string"
 	| start end evaluator methodOop |
@@ -29,7 +29,7 @@ RsrRemoteException >> gtMethodFromStackString: aString [
 		bindings: Dictionary new.
 ]
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> gtStackFor: aView [
 	<gtView>
 
@@ -41,7 +41,7 @@ RsrRemoteException >> gtStackFor: aView [
 		send: [ :item | self gtMethodFromStackString: item ]
 ]
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> gtSummaryFor: aView [
 	<gtView>
 
@@ -52,7 +52,7 @@ RsrRemoteException >> gtSummaryFor: aView [
 		text: [ self summaryText ]
 ]
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> summaryText [
 	"Answer a formatted BlText summarising the receiver's exception"
 	| text |

@@ -1,12 +1,12 @@
 Trait {
-	#name : 'TGtWithGemStoneSession',
+	#name : #TGtWithGemStoneSession,
 	#instVars : [
 		'gemStoneSession'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Support'
 }
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> gemStoneSession [
 	"Return a not-null gemStoneSession assigned to the receiver"
 	<modelGetter: #session>
@@ -18,7 +18,7 @@ TGtWithGemStoneSession >> gemStoneSession [
 	^ gemStoneSession
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> gemStoneSession: aGemStoneSession [
 	"Set a not-null gemStoneSession assigned to the receiver"
 	<modelSetter: #session>
@@ -38,7 +38,7 @@ TGtWithGemStoneSession >> gemStoneSession: aGemStoneSession [
 	self onPostGemStoneSessionChanged
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> hasGemStoneSession [
 	"Return a true if nil is assigned to the receiver, false otherwise"
 	<return: #Boolean>
@@ -48,7 +48,7 @@ TGtWithGemStoneSession >> hasGemStoneSession [
 	^ gemStoneSession notNil
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> onGemStoneSessionChanged [
 	"Is sent when a new gemStoneSession is assigned to the receiver.
 	Note: #onGemStoneSessionChanged is sent before #subscribeToGemStoneSession
@@ -58,7 +58,7 @@ TGtWithGemStoneSession >> onGemStoneSessionChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> onPostGemStoneSessionChanged [
 	"I am an optional hook method that is sent after #subscribeToGemStoneSession.
 	I do nothing by default but allow users to perform update operations when a receiver object is already
@@ -66,7 +66,7 @@ TGtWithGemStoneSession >> onPostGemStoneSessionChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onPostObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> subscribeToGemStoneSession [
 	"Is sent after a new gemStoneSession is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -75,7 +75,7 @@ TGtWithGemStoneSession >> subscribeToGemStoneSession [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
 ]
 
-{ #category : 'api - gem stone session' }
+{ #category : #'api - gem stone session' }
 TGtWithGemStoneSession >> unsubscribeFromGemStoneSession [
 	"Is sent before a new gemStoneSession is assigned to the receiver.
 	Objects that subscribe to gemStoneSession are required to implement this method."

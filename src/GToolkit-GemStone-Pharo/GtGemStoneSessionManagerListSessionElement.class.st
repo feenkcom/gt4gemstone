@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionManagerListSessionElement',
-	#superclass : 'BrHorizontalPane',
+	#name : #GtGemStoneSessionManagerListSessionElement,
+	#superclass : #BrHorizontalPane,
 	#traits : 'TGtWithGemStoneSessionViewModel',
 	#classTraits : 'TGtWithGemStoneSessionViewModel classTrait',
 	#instVars : [
@@ -13,7 +13,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerListSessionElement >> initialize [
 	super initialize.
 	
@@ -76,7 +76,7 @@ GtGemStoneSessionManagerListSessionElement >> initialize [
 	}
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 GtGemStoneSessionManagerListSessionElement >> onGemStoneSessionViewModelChanged [
 	"Is sent when a new gemStoneSessionViewModel is assigned to the receiver.
 	Note: #onGemStoneSessionViewModelChanged is sent before #subscribeToGemStoneSessionViewModel
@@ -94,7 +94,7 @@ GtGemStoneSessionManagerListSessionElement >> onGemStoneSessionViewModelChanged 
 	self updateToolbar
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 GtGemStoneSessionManagerListSessionElement >> subscribeToGemStoneSessionViewModel [
 	"Is sent after a new gemStoneSessionViewModel is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -111,7 +111,7 @@ GtGemStoneSessionManagerListSessionElement >> subscribeToGemStoneSessionViewMode
 			to: self
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 GtGemStoneSessionManagerListSessionElement >> unsubscribeFromGemStoneSessionViewModel [
 	"Is sent before a new gemStoneSessionViewModel is assigned to the receiver.
 	Objects that subscribe to gemStoneSessionViewModel are required to implement this method."
@@ -121,21 +121,21 @@ GtGemStoneSessionManagerListSessionElement >> unsubscribeFromGemStoneSessionView
 	self gemStoneSessionViewModel unsubscribe: self
 ]
 
-{ #category : 'private - update' }
+{ #category : #'private - update' }
 GtGemStoneSessionManagerListSessionElement >> updateActivation [
 	self gemStoneSessionViewModel isActivatedSession
 		ifTrue: [ activated visibility: BlVisibility visible ]
 		ifFalse: [ activated visibility: BlVisibility hidden ]
 ]
 
-{ #category : 'private - update' }
+{ #category : #'private - update' }
 GtGemStoneSessionManagerListSessionElement >> updateSelection [
 	self gemStoneSessionViewModel isSelectedSession
 		ifTrue: [ self states addState: BlElementState selected ]
 		ifFalse: [ self states removeState: BlElementState selected ]
 ]
 
-{ #category : 'private - update' }
+{ #category : #'private - update' }
 GtGemStoneSessionManagerListSessionElement >> updateToolbar [
 
 	actions removeAllItems.

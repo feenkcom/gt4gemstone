@@ -1,17 +1,17 @@
 Class {
-	#name : 'GtpoGtDeclarativeColumnedListView',
-	#superclass : 'GtRsrProxyServiceClient',
+	#name : #GtpoGtDeclarativeColumnedListView,
+	#superclass : #GtRsrProxyServiceClient,
 	#traits : 'TGlpoGtDeclarativeListingView',
 	#classTraits : 'TGlpoGtDeclarativeListingView classTrait',
 	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtpoGtDeclarativeColumnedListView class >> remoteClassName [
 	^ #GtPhlowDeclarativeColumnedListView
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtpoGtDeclarativeColumnedListView >> retriveSpawnedObjectAtRow: aRowIndex column: aColumnIndex [	
 	^ self
 		proxyPerform: #retriveSpawnedObjectAtRow:column:

@@ -1,13 +1,13 @@
 Class {
-	#name : 'GtGemStoneSessionViewModelDeactivated',
-	#superclass : 'Announcement',
+	#name : #GtGemStoneSessionViewModelDeactivated,
+	#superclass : #Announcement,
 	#instVars : [
 		'gemStoneSessionViewModel'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Events'
 }
 
-{ #category : 'generated' }
+{ #category : #generated }
 GtGemStoneSessionViewModelDeactivated >> gemStoneSessionViewModel [
 	<objectGetter: #session>
 	<generatedFrom: #'GtRobocoderMetamodelAnnouncementTemplate>>#objectGetterTemplate'>
@@ -15,7 +15,7 @@ GtGemStoneSessionViewModelDeactivated >> gemStoneSessionViewModel [
 	^ gemStoneSessionViewModel
 ]
 
-{ #category : 'generated' }
+{ #category : #generated }
 GtGemStoneSessionViewModelDeactivated >> gemStoneSessionViewModel: aGemStoneSessionViewModel [
 	<objectSetter: #session>
 	<generatedFrom: #'GtRobocoderMetamodelAnnouncementTemplate>>#objectSetterTemplate'>

@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionSelectorStencil',
-	#superclass : 'BrStencil',
+	#name : #GtGemStoneSessionSelectorStencil,
+	#superclass : #BrStencil,
 	#instVars : [
 		'registry',
 		'selectAction',
@@ -9,7 +9,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'api - instantiation' }
+{ #category : #'api - instantiation' }
 GtGemStoneSessionSelectorStencil >> create [ 
 	| element |
 
@@ -24,37 +24,37 @@ GtGemStoneSessionSelectorStencil >> create [
 	^ element
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> extent [
 
 	^ extent
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> extent: anObject [
 
 	extent := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> registry [
 
 	^ registry
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> registry: anObject [
 
 	registry := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> selectAction [
 
 	^ selectAction
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectorStencil >> selectAction: anObject [
 
 	selectAction := anObject

@@ -1,12 +1,12 @@
 Trait {
-	#name : 'TGtWithGemStoneSessionViewModel',
+	#name : #TGtWithGemStoneSessionViewModel,
 	#instVars : [
 		'gemStoneSessionViewModel'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Support'
 }
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> gemStoneSessionViewModel [
 	"Return a not-null gemStoneSessionViewModel assigned to the receiver"
 	<modelGetter: #session>
@@ -18,7 +18,7 @@ TGtWithGemStoneSessionViewModel >> gemStoneSessionViewModel [
 	^ gemStoneSessionViewModel
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> gemStoneSessionViewModel: aGemStoneSessionViewModel [
 	"Set a not-null gemStoneSessionViewModel assigned to the receiver"
 	<modelSetter: #session>
@@ -38,7 +38,7 @@ TGtWithGemStoneSessionViewModel >> gemStoneSessionViewModel: aGemStoneSessionVie
 	self onPostGemStoneSessionViewModelChanged
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> hasGemStoneSessionViewModel [
 	"Return a true if nil is assigned to the receiver, false otherwise"
 	<return: #Boolean>
@@ -48,7 +48,7 @@ TGtWithGemStoneSessionViewModel >> hasGemStoneSessionViewModel [
 	^ gemStoneSessionViewModel notNil
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> onGemStoneSessionViewModelChanged [
 	"Is sent when a new gemStoneSessionViewModel is assigned to the receiver.
 	Note: #onGemStoneSessionViewModelChanged is sent before #subscribeToGemStoneSessionViewModel
@@ -58,7 +58,7 @@ TGtWithGemStoneSessionViewModel >> onGemStoneSessionViewModelChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> onPostGemStoneSessionViewModelChanged [
 	"I am an optional hook method that is sent after #subscribeToGemStoneSessionViewModel.
 	I do nothing by default but allow users to perform update operations when a receiver object is already
@@ -66,7 +66,7 @@ TGtWithGemStoneSessionViewModel >> onPostGemStoneSessionViewModelChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onPostObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> subscribeToGemStoneSessionViewModel [
 	"Is sent after a new gemStoneSessionViewModel is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -75,7 +75,7 @@ TGtWithGemStoneSessionViewModel >> subscribeToGemStoneSessionViewModel [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
 ]
 
-{ #category : 'api - gem stone session view model' }
+{ #category : #'api - gem stone session view model' }
 TGtWithGemStoneSessionViewModel >> unsubscribeFromGemStoneSessionViewModel [
 	"Is sent before a new gemStoneSessionViewModel is assigned to the receiver.
 	Objects that subscribe to gemStoneSessionViewModel are required to implement this method."

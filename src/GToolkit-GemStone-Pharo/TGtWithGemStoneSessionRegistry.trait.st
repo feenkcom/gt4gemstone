@@ -1,12 +1,12 @@
 Trait {
-	#name : 'TGtWithGemStoneSessionRegistry',
+	#name : #TGtWithGemStoneSessionRegistry,
 	#instVars : [
 		'gemStoneSessionRegistry'
 	],
 	#category : 'GToolkit-GemStone-Pharo-Support'
 }
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> gemStoneSessionRegistry [
 	"Return a not-null gemStoneSessionRegistry assigned to the receiver"
 	<modelGetter: #sessionRegistry>
@@ -18,7 +18,7 @@ TGtWithGemStoneSessionRegistry >> gemStoneSessionRegistry [
 	^ gemStoneSessionRegistry
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> gemStoneSessionRegistry: aGemStoneSessionRegistry [
 	"Set a not-null gemStoneSessionRegistry assigned to the receiver"
 	<modelSetter: #sessionRegistry>
@@ -38,7 +38,7 @@ TGtWithGemStoneSessionRegistry >> gemStoneSessionRegistry: aGemStoneSessionRegis
 	self onPostGemStoneSessionRegistryChanged
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> hasGemStoneSessionRegistry [
 	"Return a true if nil is assigned to the receiver, false otherwise"
 	<return: #Boolean>
@@ -48,7 +48,7 @@ TGtWithGemStoneSessionRegistry >> hasGemStoneSessionRegistry [
 	^ gemStoneSessionRegistry notNil
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> onGemStoneSessionRegistryChanged [
 	"Is sent when a new gemStoneSessionRegistry is assigned to the receiver.
 	Note: #onGemStoneSessionRegistryChanged is sent before #subscribeToGemStoneSessionRegistry
@@ -58,7 +58,7 @@ TGtWithGemStoneSessionRegistry >> onGemStoneSessionRegistryChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> onPostGemStoneSessionRegistryChanged [
 	"I am an optional hook method that is sent after #subscribeToGemStoneSessionRegistry.
 	I do nothing by default but allow users to perform update operations when a receiver object is already
@@ -66,7 +66,7 @@ TGtWithGemStoneSessionRegistry >> onPostGemStoneSessionRegistryChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onPostObjectChangedTemplate'>
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> subscribeToGemStoneSessionRegistry [
 	"Is sent after a new gemStoneSessionRegistry is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -75,7 +75,7 @@ TGtWithGemStoneSessionRegistry >> subscribeToGemStoneSessionRegistry [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
 ]
 
-{ #category : 'api - gem stone session registry' }
+{ #category : #'api - gem stone session registry' }
 TGtWithGemStoneSessionRegistry >> unsubscribeFromGemStoneSessionRegistry [
 	"Is sent before a new gemStoneSessionRegistry is assigned to the receiver.
 	Objects that subscribe to gemStoneSessionRegistry are required to implement this method."

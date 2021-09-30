@@ -4,7 +4,7 @@ SymbolDictionary is a stub class for GemStone compatibility.
 It allows GemStone classes to be loaded in Gtoolkit without undefined class errors, and may contain functionality to allow automated tests to pass.
 "
 Class {
-	#name : 'SymbolDictionary',
-	#superclass : 'IdentityDictionary',
+	#name : #SymbolDictionary,
+	#superclass : #IdentityDictionary,
 	#category : 'GToolkit-GemStone-Pharo-Stubs'
 }

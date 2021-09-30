@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionViewModel',
-	#superclass : 'Object',
+	#name : #GtGemStoneSessionViewModel,
+	#superclass : #Object,
 	#traits : 'TGtWithGemStoneSession',
 	#classTraits : 'TGtWithGemStoneSession classTrait',
 	#instVars : [
@@ -10,7 +10,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> activateSession [
 	"Just activate a session without changing children"
 	<propertySetter: #activatedSessionViewModel>
@@ -20,7 +20,7 @@ GtGemStoneSessionViewModel >> activateSession [
 		ifTrue: [ self parentGemStoneSessionsViewModel activateSessionViewModel: self ]
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> activateSessionWithoutOtherEntities [
 	"Activate a session and deactivate other activated children"
 
@@ -29,7 +29,7 @@ GtGemStoneSessionViewModel >> activateSessionWithoutOtherEntities [
 	self activateSession
 ]
 
-{ #category : 'api - actions' }
+{ #category : #'api - actions' }
 GtGemStoneSessionViewModel >> allSessionActions [
 	^ Array streamContents: [ :aStream |
 		self gtActions
@@ -37,7 +37,7 @@ GtGemStoneSessionViewModel >> allSessionActions [
 			thenDo: [ :eachAction | aStream nextPut: eachAction ] ]
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionViewModel >> announce: anAnnouncement [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
 	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: anAnnouncement ].
@@ -46,7 +46,7 @@ GtGemStoneSessionViewModel >> announce: anAnnouncement [
 		ifTrue: [ self parentGemStoneSessionsViewModel announce: anAnnouncement ].
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> deactivateAllFromTopMostParent [
 	"Deactivate any activated child starting from the top most parent"
 	<propertyUnsetFromParent: #activatedSessionViewModel>
@@ -55,14 +55,14 @@ GtGemStoneSessionViewModel >> deactivateAllFromTopMostParent [
 	self topMostParentsWithActivationDo: [ :eachParent | eachParent deactivateChildren ]
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> deactivateChildren [
 	"Deactivate any activated child"
 	<propertyUnsetChildren: #activatedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetChildrenTemplate'>
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> deselectAllFromTopMostParent [
 	"Deselect any selected child starting from the top most parent"
 	<propertyUnsetFromParent: #selectedSessionViewModel>
@@ -71,14 +71,14 @@ GtGemStoneSessionViewModel >> deselectAllFromTopMostParent [
 	self topMostParentsWithSelectionDo: [ :eachParent | eachParent deselectChildren ]
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> deselectChildren [
 	"Deselect any selected child"
 	<propertyUnsetChildren: #selectedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetChildrenTemplate'>
 ]
 
-{ #category : 'api - actions' }
+{ #category : #'api - actions' }
 GtGemStoneSessionViewModel >> gtActivateFor: anAction [
 	<gtAction>
 	
@@ -89,7 +89,7 @@ GtGemStoneSessionViewModel >> gtActivateFor: anAction [
 		target: GtGemStoneSessionActionTarget uniqueInstance
 ]
 
-{ #category : 'api - actions' }
+{ #category : #'api - actions' }
 GtGemStoneSessionViewModel >> gtModifyFor: anAction [
 	<gtAction>
 	
@@ -100,7 +100,7 @@ GtGemStoneSessionViewModel >> gtModifyFor: anAction [
 		target: GtGemStoneSessionActionTarget uniqueInstance
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> hasOtherActivatedEntities [
 	"Return true if there are other activated entities that are the children"
 	<return: #Boolean>
@@ -110,7 +110,7 @@ GtGemStoneSessionViewModel >> hasOtherActivatedEntities [
 	^ false
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> hasOtherSelectedEntities [
 	"Return true if there are other selected entities that are the children"
 	<return: #Boolean>
@@ -120,7 +120,7 @@ GtGemStoneSessionViewModel >> hasOtherSelectedEntities [
 	^ false
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionViewModel >> hasParentGemStoneSessionsViewModel [
 	"Return true if the parent object is attached"
 	<return: #Boolean>
@@ -130,7 +130,7 @@ GtGemStoneSessionViewModel >> hasParentGemStoneSessionsViewModel [
 	^ parentGemStoneSessionsViewModel notNil
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> isActivatedSession [
 	"Return true if this session is activated"
 	<return: #Boolean>
@@ -140,7 +140,7 @@ GtGemStoneSessionViewModel >> isActivatedSession [
 		and: [ self parentGemStoneSessionsViewModel activatedSessionViewModel == self ]
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionViewModel >> isGemStoneSessionManagerViewModel [
 	"Return true if the receiver represents gemStoneSessionManagerViewModel, false otherwise"
 	<return: #Boolean>
@@ -149,7 +149,7 @@ GtGemStoneSessionViewModel >> isGemStoneSessionManagerViewModel [
 	^ false
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionViewModel >> isGemStoneSessionViewModel [
 	"Return true if the receiver represents gemStoneSessionViewModel, false otherwise"
 	<return: #Boolean>
@@ -158,7 +158,7 @@ GtGemStoneSessionViewModel >> isGemStoneSessionViewModel [
 	^ true
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionViewModel >> isGemStoneSessionsViewModel [
 	"Return true if the receiver represents gemStoneSessionsViewModel, false otherwise"
 	<return: #Boolean>
@@ -167,7 +167,7 @@ GtGemStoneSessionViewModel >> isGemStoneSessionsViewModel [
 	^ false
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> isOnlyActivatedSession [
 	"Return true if only this session is activated and not any of the children"
 	<return: #Boolean>
@@ -176,7 +176,7 @@ GtGemStoneSessionViewModel >> isOnlyActivatedSession [
 	^ self isActivatedSession and: [ self hasOtherActivatedEntities not ]
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> isOnlySelectedSession [
 	"Return true if only this session is selected and not any of the children"
 	<return: #Boolean>
@@ -185,7 +185,7 @@ GtGemStoneSessionViewModel >> isOnlySelectedSession [
 	^ self isSelectedSession and: [ self hasOtherSelectedEntities not ]
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> isSelectedSession [
 	"Return true if this session is selected"
 	<return: #Boolean>
@@ -195,12 +195,12 @@ GtGemStoneSessionViewModel >> isSelectedSession [
 		and: [ self parentGemStoneSessionsViewModel selectedSessionViewModel == self ]
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> name [
 	^ self gemStoneSession name
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> notifySessionActivated [
 	<propertySetNotifier: #activatedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForChildTemplate>>#notifyPropertySetTemplate'>
@@ -208,7 +208,7 @@ GtGemStoneSessionViewModel >> notifySessionActivated [
 	self announce: (GtGemStoneSessionViewModelActivated new gemStoneSessionViewModel: self)
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> notifySessionDeactivated [
 	<propertyUnsetNotifier: #activatedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForChildTemplate>>#notifyPropertyUnsetTemplate'>
@@ -216,7 +216,7 @@ GtGemStoneSessionViewModel >> notifySessionDeactivated [
 	self announce: (GtGemStoneSessionViewModelDeactivated new gemStoneSessionViewModel: self)
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> notifySessionDeselected [
 	<propertyUnsetNotifier: #selectedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForChildTemplate>>#notifyPropertyUnsetTemplate'>
@@ -224,7 +224,7 @@ GtGemStoneSessionViewModel >> notifySessionDeselected [
 	self announce: (GtGemStoneSessionViewModelDeselected new gemStoneSessionViewModel: self)
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> notifySessionSelected [
 	<propertySetNotifier: #selectedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForChildTemplate>>#notifyPropertySetTemplate'>
@@ -232,7 +232,7 @@ GtGemStoneSessionViewModel >> notifySessionSelected [
 	self announce: (GtGemStoneSessionViewModelSelected new gemStoneSessionViewModel: self)
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> objectName [
 	"Return a symbolic name of the receiver which helps to create various type based mappings.
 	Note: The symbolic name of the object is the exact name that was used
@@ -243,7 +243,7 @@ GtGemStoneSessionViewModel >> objectName [
 	^ #session
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> parentGemStoneSessionsViewModel [
 	"Return a parent object which is used to access various state properties,
 	for example parent may be responsible for knowing a selected child object.
@@ -259,7 +259,7 @@ GtGemStoneSessionViewModel >> parentGemStoneSessionsViewModel [
 	^ parentGemStoneSessionsViewModel
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> parentGemStoneSessionsViewModel: aGtGemStoneSessionsViewModel [
 	"Assign a parent object (${class:GtGemStoneSessionsViewModel}$) which is used to access various state properties,
 	for example parent may be responsible for knowing a selected child object.
@@ -274,13 +274,13 @@ GtGemStoneSessionViewModel >> parentGemStoneSessionsViewModel: aGtGemStoneSessio
 	parentGemStoneSessionsViewModel := aGtGemStoneSessionsViewModel
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneSessionViewModel >> printOn: aStream [
 	<generatedFrom: #'GtRobocoderMetamodelPrintDerive>>#printOnTemplate'>
 	aStream print: self gemStoneSession
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> selectSession [
 	"Just select a session without changing children"
 	<propertySetter: #selectedSessionViewModel>
@@ -290,7 +290,7 @@ GtGemStoneSessionViewModel >> selectSession [
 		ifTrue: [ self parentGemStoneSessionsViewModel selectSessionViewModel: self ]
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> selectSessionWithoutOtherEntities [
 	"Select a session and deselect other selected children"
 
@@ -299,12 +299,12 @@ GtGemStoneSessionViewModel >> selectSessionWithoutOtherEntities [
 	self selectSession
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> stoneName [
 	^ self gemStoneSession stoneName
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> topMostParentsWithActivationDo: aBlock [
 	"Evaluate a given block with each top most parent that has a activation property"
 	<propertyTopMostParents: #activatedSessionViewModel>
@@ -330,7 +330,7 @@ GtGemStoneSessionViewModel >> topMostParentsWithActivationDo: aBlock [
 		ifFalse: [ aBlock value: self ].
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionViewModel >> topMostParentsWithSelectionDo: aBlock [
 	"Evaluate a given block with each top most parent that has a selection property"
 	<propertyTopMostParents: #selectedSessionViewModel>
@@ -356,7 +356,7 @@ GtGemStoneSessionViewModel >> topMostParentsWithSelectionDo: aBlock [
 		ifFalse: [ aBlock value: self ].
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionViewModel >> unsubscribe: anObject [
 	"Unsubscribe all subscriptions of anObject from the receiver"
 
@@ -364,19 +364,19 @@ GtGemStoneSessionViewModel >> unsubscribe: anObject [
 	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionViewModel >> username [
 	^ self gemStoneSession username
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionViewModel >> when: anAnnouncementClass do: aBlock [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ])
 		when: anAnnouncementClass do: aBlock
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionViewModel >> when: anAnnouncementClass send: aSelector to: anObject [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ]) weak

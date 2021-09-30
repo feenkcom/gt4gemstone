@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionsViewModel',
-	#superclass : 'Object',
+	#name : #GtGemStoneSessionsViewModel,
+	#superclass : #Object,
 	#traits : 'TGtWithActivatedSessionViewModel + TGtWithSelectedSessionViewModel',
 	#classTraits : 'TGtWithActivatedSessionViewModel classTrait + TGtWithSelectedSessionViewModel classTrait',
 	#instVars : [
@@ -12,7 +12,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> activeSessions [
 	"Return a not-null activeSessions assigned to the receiver"
 	<modelGetter: #activeSessions>
@@ -24,7 +24,7 @@ GtGemStoneSessionsViewModel >> activeSessions [
 	^ activeSessions
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> activeSessions: aActiveSessions [
 	"Set a not-null activeSessions assigned to the receiver"
 	<modelSetter: #activeSessions>
@@ -44,7 +44,7 @@ GtGemStoneSessionsViewModel >> activeSessions: aActiveSessions [
 	self onPostActiveSessionsChanged
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionsViewModel >> announce: anAnnouncement [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
 	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: anAnnouncement ].
@@ -53,7 +53,7 @@ GtGemStoneSessionsViewModel >> announce: anAnnouncement [
 		ifTrue: [ self parentGemStoneSessionManagerViewModel announce: anAnnouncement ].
 ]
 
-{ #category : 'private - instance creation' }
+{ #category : #'private - instance creation' }
 GtGemStoneSessionsViewModel >> createGemStoneSessionViewModels [
 	"For each child from the domain model create an object and return a resulting collection"
 	<return: #Collection of: #GtGemStoneSessionViewModel>
@@ -63,7 +63,7 @@ GtGemStoneSessionsViewModel >> createGemStoneSessionViewModels [
 		self createGemStoneSessionViewModelsFor: eachModel ] as: OrderedCollection
 ]
 
-{ #category : 'private - instance creation' }
+{ #category : #'private - instance creation' }
 GtGemStoneSessionsViewModel >> createGemStoneSessionViewModelsFor: aChildModel [
 	<return: #GtGemStoneSessionViewModel>
 	<childObjectCreator: #session>
@@ -76,7 +76,7 @@ GtGemStoneSessionsViewModel >> createGemStoneSessionViewModelsFor: aChildModel [
 	^ aNewChild
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionsViewModel >> deactivateAllFromTopMostParent [
 	"Deactivate any activated child starting from the top most parent"
 	<propertyUnsetFromParent: #activatedSessionViewModel>
@@ -85,7 +85,7 @@ GtGemStoneSessionsViewModel >> deactivateAllFromTopMostParent [
 	self topMostParentsWithActivationDo: [ :eachParent | eachParent deactivateChildren ]
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionsViewModel >> deactivateChildren [
 	"Deactivate any activated child"
 	<propertyUnsetChildren: #activatedSessionViewModel>
@@ -93,7 +93,7 @@ GtGemStoneSessionsViewModel >> deactivateChildren [
 	self deactivateSessionViewModel.
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionsViewModel >> deselectAllFromTopMostParent [
 	"Deselect any selected child starting from the top most parent"
 	<propertyUnsetFromParent: #selectedSessionViewModel>
@@ -102,7 +102,7 @@ GtGemStoneSessionsViewModel >> deselectAllFromTopMostParent [
 	self topMostParentsWithSelectionDo: [ :eachParent | eachParent deselectChildren ]
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionsViewModel >> deselectChildren [
 	"Deselect any selected child"
 	<propertyUnsetChildren: #selectedSessionViewModel>
@@ -110,7 +110,7 @@ GtGemStoneSessionsViewModel >> deselectChildren [
 	self deselectSessionViewModel.
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession [
 	"Find a child object based on the child model and return the child if it was found, nil otherwise.
 	aNoneBlock otherwise."
@@ -124,7 +124,7 @@ GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession [
 		ifNone: [ nil ]
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession ifFound: aFoundBlock ifNone: aNoneBlock [
 	"Find a child object based on the child model and evaluate aFoundBlock if such child was found,
 	aNoneBlock otherwise."
@@ -138,7 +138,7 @@ GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession ifFound: 
 		ifNone: aNoneBlock
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> gemStoneSessionViewModels [
 	"Return a collection of objects (${class:GtGemStoneSessionViewModel}$) created for each child from the domain model.
 	Note: The children are lazily instantiated."
@@ -149,7 +149,7 @@ GtGemStoneSessionsViewModel >> gemStoneSessionViewModels [
 	^  gemStoneSessionViewModels ifNil: [ gemStoneSessionViewModels := self createGemStoneSessionViewModels ]
 ]
 
-{ #category : 'gt-extentions' }
+{ #category : #'gt-extentions' }
 GtGemStoneSessionsViewModel >> gtSessionListViewFor: aView [
 	<gtView>
 	<generatedFrom: #'GtRobocoderMetamodelPhlowListViewDerive>>#listForManyTemplate'>
@@ -160,7 +160,7 @@ GtGemStoneSessionsViewModel >> gtSessionListViewFor: aView [
 		items: [ self gemStoneSessionViewModels ]
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> hasActiveSessions [
 	"Return a true if nil is assigned to the receiver, false otherwise"
 	<return: #Boolean>
@@ -170,7 +170,7 @@ GtGemStoneSessionsViewModel >> hasActiveSessions [
 	^ activeSessions notNil
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionsViewModel >> hasParentGemStoneSessionManagerViewModel [
 	"Return true if the parent object is attached"
 	<return: #Boolean>
@@ -180,7 +180,7 @@ GtGemStoneSessionsViewModel >> hasParentGemStoneSessionManagerViewModel [
 	^ parentGemStoneSessionManagerViewModel notNil
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionsViewModel >> includesGemStoneSessionViewModels: aGemStoneSessionViewModels [
 	"Check and return true if a given child object exists among my children, false otherwise.
 	The comparison happens by identity"
@@ -192,7 +192,7 @@ GtGemStoneSessionsViewModel >> includesGemStoneSessionViewModels: aGemStoneSessi
 		eachGemStoneSessionViewModels == aGemStoneSessionViewModels ]
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionsViewModel >> isGemStoneSessionManagerViewModel [
 	"Return true if the receiver represents gemStoneSessionManagerViewModel, false otherwise"
 	<return: #Boolean>
@@ -201,7 +201,7 @@ GtGemStoneSessionsViewModel >> isGemStoneSessionManagerViewModel [
 	^ false
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionsViewModel >> isGemStoneSessionViewModel [
 	"Return true if the receiver represents gemStoneSessionViewModel, false otherwise"
 	<return: #Boolean>
@@ -210,7 +210,7 @@ GtGemStoneSessionsViewModel >> isGemStoneSessionViewModel [
 	^ false
 ]
 
-{ #category : 'api - testing' }
+{ #category : #'api - testing' }
 GtGemStoneSessionsViewModel >> isGemStoneSessionsViewModel [
 	"Return true if the receiver represents gemStoneSessionsViewModel, false otherwise"
 	<return: #Boolean>
@@ -219,7 +219,7 @@ GtGemStoneSessionsViewModel >> isGemStoneSessionsViewModel [
 	^ true
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> objectName [
 	"Return a symbolic name of the receiver which helps to create various type based mappings.
 	Note: The symbolic name of the object is the exact name that was used
@@ -230,7 +230,7 @@ GtGemStoneSessionsViewModel >> objectName [
 	^ #sessions
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> onActiveSessionsChanged [
 	"Is sent when a new activeSessions is assigned to the receiver.
 	Note: #onActiveSessionsChanged is sent before #subscribeToActiveSessions
@@ -240,7 +240,7 @@ GtGemStoneSessionsViewModel >> onActiveSessionsChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
 ]
 
-{ #category : 'api - activated session view model' }
+{ #category : #'api - activated session view model' }
 GtGemStoneSessionsViewModel >> onNewActivatedSessionViewModelSet: aNewActivatedSessionViewModel [
 	"Is sent after a new value of the activatedSessionViewModel is assigned"
 	<propertySetHook: #activatedSessionViewModel>
@@ -249,7 +249,7 @@ GtGemStoneSessionsViewModel >> onNewActivatedSessionViewModelSet: aNewActivatedS
 	aNewActivatedSessionViewModel notifySessionActivated
 ]
 
-{ #category : 'api - selected session view model' }
+{ #category : #'api - selected session view model' }
 GtGemStoneSessionsViewModel >> onNewSelectedSessionViewModelSet: aNewSelectedSessionViewModel [
 	"Is sent after a new value of the selectedSessionViewModel is assigned"
 	<propertySetHook: #selectedSessionViewModel>
@@ -258,7 +258,7 @@ GtGemStoneSessionsViewModel >> onNewSelectedSessionViewModelSet: aNewSelectedSes
 	aNewSelectedSessionViewModel notifySessionSelected
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> onPostActiveSessionsChanged [
 	"I am an optional hook method that is sent after #subscribeToActiveSessions.
 	I do nothing by default but allow users to perform update operations when a receiver object is already
@@ -266,7 +266,7 @@ GtGemStoneSessionsViewModel >> onPostActiveSessionsChanged [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onPostObjectChangedTemplate'>
 ]
 
-{ #category : 'api - activated session view model' }
+{ #category : #'api - activated session view model' }
 GtGemStoneSessionsViewModel >> onPreviousActivatedSessionViewModelUnset: aPreviousActivatedSessionViewModel [
 	"Is sent after a previous value of the activatedSessionViewModel is de-assigned"
 	<propertyUnsetHook: #activatedSessionViewModel>
@@ -276,7 +276,7 @@ GtGemStoneSessionsViewModel >> onPreviousActivatedSessionViewModelUnset: aPrevio
 	aPreviousActivatedSessionViewModel notifySessionDeactivated
 ]
 
-{ #category : 'api - selected session view model' }
+{ #category : #'api - selected session view model' }
 GtGemStoneSessionsViewModel >> onPreviousSelectedSessionViewModelUnset: aPreviousSelectedSessionViewModel [
 	"Is sent after a previous value of the selectedSessionViewModel is de-assigned"
 	<propertyUnsetHook: #selectedSessionViewModel>
@@ -286,7 +286,7 @@ GtGemStoneSessionsViewModel >> onPreviousSelectedSessionViewModelUnset: aPreviou
 	aPreviousSelectedSessionViewModel notifySessionDeselected
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> parentGemStoneSessionManagerViewModel [
 	"Return a parent object which is used to access various state properties,
 	for example parent may be responsible for knowing a selected child object.
@@ -302,7 +302,7 @@ GtGemStoneSessionsViewModel >> parentGemStoneSessionManagerViewModel [
 	^ parentGemStoneSessionManagerViewModel
 ]
 
-{ #category : 'api - accessing' }
+{ #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> parentGemStoneSessionManagerViewModel: aGtGemStoneSessionManagerViewModel [
 	"Assign a parent object (${class:GtGemStoneSessionManagerViewModel}$) which is used to access various state properties,
 	for example parent may be responsible for knowing a selected child object.
@@ -317,13 +317,13 @@ GtGemStoneSessionsViewModel >> parentGemStoneSessionManagerViewModel: aGtGemSton
 	parentGemStoneSessionManagerViewModel := aGtGemStoneSessionManagerViewModel
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneSessionsViewModel >> printOn: aStream [
 	<generatedFrom: #'GtRobocoderMetamodelPrintDerive>>#printOnTemplate'>
 	aStream print: self activeSessions
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> subscribeToActiveSessions [
 	"Is sent after a new activeSessions is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -332,7 +332,7 @@ GtGemStoneSessionsViewModel >> subscribeToActiveSessions [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
 ]
 
-{ #category : 'api - activation' }
+{ #category : #'api - activation' }
 GtGemStoneSessionsViewModel >> topMostParentsWithActivationDo: aBlock [
 	"Evaluate a given block with each top most parent that has a activation property"
 	<propertyTopMostParents: #activatedSessionViewModel>
@@ -358,7 +358,7 @@ GtGemStoneSessionsViewModel >> topMostParentsWithActivationDo: aBlock [
 		ifFalse: [ aBlock value: self ].
 ]
 
-{ #category : 'api - selection' }
+{ #category : #'api - selection' }
 GtGemStoneSessionsViewModel >> topMostParentsWithSelectionDo: aBlock [
 	"Evaluate a given block with each top most parent that has a selection property"
 	<propertyTopMostParents: #selectedSessionViewModel>
@@ -384,7 +384,7 @@ GtGemStoneSessionsViewModel >> topMostParentsWithSelectionDo: aBlock [
 		ifFalse: [ aBlock value: self ].
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionsViewModel >> unsubscribe: anObject [
 	"Unsubscribe all subscriptions of anObject from the receiver"
 
@@ -392,7 +392,7 @@ GtGemStoneSessionsViewModel >> unsubscribe: anObject [
 	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
 ]
 
-{ #category : 'api - active sessions' }
+{ #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> unsubscribeFromActiveSessions [
 	"Is sent before a new activeSessions is assigned to the receiver.
 	Objects that subscribe to activeSessions are required to implement this method."
@@ -400,14 +400,14 @@ GtGemStoneSessionsViewModel >> unsubscribeFromActiveSessions [
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#unsubscribeFromObjectTemplate'>
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionsViewModel >> when: anAnnouncementClass do: aBlock [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ])
 		when: anAnnouncementClass do: aBlock
 ]
 
-{ #category : 'api - announcer' }
+{ #category : #'api - announcer' }
 GtGemStoneSessionsViewModel >> when: anAnnouncementClass send: aSelector to: anObject [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ]) weak

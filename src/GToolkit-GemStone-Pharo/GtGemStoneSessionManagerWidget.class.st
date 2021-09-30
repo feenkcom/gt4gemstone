@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneSessionManagerWidget',
-	#superclass : 'BrVerticalPane',
+	#name : #GtGemStoneSessionManagerWidget,
+	#superclass : #BrVerticalPane,
 	#traits : 'TGtWithGemStoneSessionManagerViewModel',
 	#classTraits : 'TGtWithGemStoneSessionManagerViewModel classTrait',
 	#instVars : [
@@ -11,14 +11,14 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneSessionManagerWidget class >> onRegistry: aGtGemStoneSessionRegistry [
 	^ self new gemStoneSessionManagerViewModel: 
 		(GtGemStoneSessionManagerViewModel new 
 			gemStoneSessionRegistry: aGtGemStoneSessionRegistry)
 ]
 
-{ #category : 'configuration' }
+{ #category : #configuration }
 GtGemStoneSessionManagerWidget >> addInspectButton [
 	"Add an 'Inspect' button to the toolbar allowing the receiver's GtGemStoneSessionRegistry to be edited"
 
@@ -26,13 +26,13 @@ GtGemStoneSessionManagerWidget >> addInspectButton [
 
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> addNewConnector [
 
 	gemStoneSessionManagerViewModel addNewConnector
 ]
 
-{ #category : 'configuration' }
+{ #category : #configuration }
 GtGemStoneSessionManagerWidget >> addNewSessionButton [
 	"Add the 'New Session' button to the toolbar"
 
@@ -43,7 +43,7 @@ GtGemStoneSessionManagerWidget >> addNewSessionButton [
 	toolbar addChild: newSessionButton
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createInspectButton [
 	^ BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude;
@@ -53,7 +53,7 @@ GtGemStoneSessionManagerWidget >> createInspectButton [
 		action: [ :theButton | theButton phlow spawnObject: self gemStoneSessionManagerViewModel gemStoneSessionRegistry ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createNewSessionButton [
 
 	^ BrButton new 
@@ -65,7 +65,7 @@ GtGemStoneSessionManagerWidget >> createNewSessionButton [
 
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createSessionList [
 	| list headerPane |
 
@@ -96,7 +96,7 @@ GtGemStoneSessionManagerWidget >> createSessionList [
 	^ list
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> createToolbar [
 	| newToolbar |
 
@@ -110,7 +110,7 @@ GtGemStoneSessionManagerWidget >> createToolbar [
 	^ newToolbar
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionManagerWidget >> initialize [ 
 	super initialize.
 
@@ -123,7 +123,7 @@ GtGemStoneSessionManagerWidget >> initialize [
 	self addChild: toolbar as: #toolbar
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 GtGemStoneSessionManagerWidget >> onGemStoneSessionManagerViewModelChanged [
 	"Is sent when a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	Note: #onGemStoneSessionManagerViewModelChanged is sent before #subscribeToGemStoneSessionManagerViewModel
@@ -135,13 +135,13 @@ GtGemStoneSessionManagerWidget >> onGemStoneSessionManagerViewModelChanged [
 	self updateSessionList
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> sessionList [
 
 	^ sessionList
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 GtGemStoneSessionManagerWidget >> subscribeToGemStoneSessionManagerViewModel [
 	"Is sent after a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	It is required to unsubscribe from the previously subscribed objects by implementing
@@ -155,13 +155,13 @@ GtGemStoneSessionManagerWidget >> subscribeToGemStoneSessionManagerViewModel [
 		to: self
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerWidget >> toolbar [
 
 	^ toolbar
 ]
 
-{ #category : 'api - gem stone session manager view model' }
+{ #category : #'api - gem stone session manager view model' }
 GtGemStoneSessionManagerWidget >> unsubscribeFromGemStoneSessionManagerViewModel [
 	"Is sent before a new gemStoneSessionManagerViewModel is assigned to the receiver.
 	Objects that subscribe to gemStoneSessionManagerViewModel are required to implement this method."
@@ -171,7 +171,7 @@ GtGemStoneSessionManagerWidget >> unsubscribeFromGemStoneSessionManagerViewModel
 	self gemStoneSessionManagerViewModel gemStoneSessionRegistry unsubscribe: self
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneSessionManagerWidget >> updateSessionList [
 
 	sessionList items: (self gemStoneSessionManagerViewModel gemStoneSessionsViewModel gemStoneSessionViewModels
