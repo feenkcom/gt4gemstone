@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrEvaluatorServiceServer',
-	#superclass : 'GtRsrEvaluatorService',
-	#category : 'GToolkit-GemStone'
+	#name : #GtRsrEvaluatorServiceServer,
+	#superclass : #GtRsrEvaluatorService,
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
 
@@ -13,7 +13,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	 On the server it is always synchronous"
@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 	^ self evaluate: aString for: anObject bindings: aDictionary
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
 	| method result receiver symbolDictionary bindings object |
@@ -39,11 +39,6 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 
 	method := aString _compileInContext: receiver symbolList: bindings.
 	result := method _executeInContext: receiver.
-
-	Transcript
-		nextPutAll: 'result: ';
-		show: result;
-		lf.
 
 	^ result asGtRsrProxyObjectForConnection: _connection
 ]

@@ -2,12 +2,12 @@
 GtRsrEvaluatorService provides the ability to evaluate scripts on a GemStone server from a Gtoolkit client, using GemStone's RemoteServiceReplicator facility.
 "
 Class {
-	#name : 'GtRsrEvaluatorService',
-	#superclass : 'RsrService',
+	#name : #GtRsrEvaluatorService,
+	#superclass : #RsrService,
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtRsrEvaluatorService class >> isRsrImmediate: anObject [
 	"Answer a boolean indicating whether the supplied object is considered a primitive type, meaining:
 	- it has an RSR service mapping, or
@@ -17,19 +17,19 @@ GtRsrEvaluatorService class >> isRsrImmediate: anObject [
 		[ anObject isKindOf: RsrService ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrEvaluatorService class >> templateClassName [
 
 	^ #GtRsrEvaluatorService
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ self subclassResponsibility
