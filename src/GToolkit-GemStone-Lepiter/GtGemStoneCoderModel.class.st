@@ -8,7 +8,7 @@ Class {
 		'remoteScript',
 		'remoteBindings'
 	],
-	#category : 'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #converting }
@@ -22,6 +22,13 @@ GtGemStoneCoderModel >> computeAst: theSourceString [
 	^ GtPharoParser
 		parseWithErrors: theSourceString
 		startingAt: GtPharoParser startingStateForMethodSequence
+]
+
+{ #category : #'api - ast' }
+GtGemStoneCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
+	self astAwait
+		allNodesDo:
+			[ :each | (each isVariable and: [ aString = each variableName asString and: [ each whoDefines isNil ] ]) ifTrue: [ aBlock value: each ] ]
 ]
 
 { #category : #initialize }
