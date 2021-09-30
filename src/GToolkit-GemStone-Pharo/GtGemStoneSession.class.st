@@ -43,7 +43,7 @@ GtGemStoneSession >> close [
 { #category : #actions }
 GtGemStoneSession >> connect [
 
-	connection ifNotNil: [ ^ self ].
+	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
 
 	session := connector newSession.
 	connection := connector connectionForSession: session.
