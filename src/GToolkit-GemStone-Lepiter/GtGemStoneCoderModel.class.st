@@ -102,14 +102,18 @@ GtGemStoneCoderModel >> pharoBindings: anObject [
 { #category : 'private - execution' }
 GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 	"Answer a collection of bindings for variables that aren't declared in the source and are in the snippet's bindings"
-	| bindings |
+	| bindings value |
 
 	bindings := Dictionary new.
 	visitor globalVariableNames do: [ :name |
 		(pharoBindings hasBindingOf: name) ifTrue: 
-			[ bindings at: name put: (pharoBindings bindingOf: name) value asGtProxyObject ] ].
+			[ value := (pharoBindings bindingOf: name) value asGtProxyObject.
+			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+				[ bindings at: name put: value ] ] ].
 	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
-			[ bindings at: #snippetResult put: (pharoBindings bindingOf: #snippetResult) value asGtProxyObject ].
+			[ value := (pharoBindings bindingOf: #snippetResult) value asGtProxyObject.
+			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+				[ bindings at: #snippetResult put: value ] ].
 	^ bindings
 ]
 

@@ -258,6 +258,14 @@ GtGemStoneSessionRegistry >> sessionNamed: aString [
 			registry: self ]
 ]
 
+{ #category : 'accessing' }
+GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
+	<return: #GtGemStoneSession>
+
+	^ sessions values detect: [ :each |
+		each connection = aRsrConnection ]
+]
+
 { #category : 'system startup' }
 GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"

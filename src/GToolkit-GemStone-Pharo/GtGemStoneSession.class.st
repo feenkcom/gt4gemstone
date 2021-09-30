@@ -20,57 +20,8 @@ Class {
 		'connector',
 		'mutex'
 	],
-	#classInstVars : [
-		'uniqueInstance'
-	],
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> cleanUniqueInstance [
-	uniqueInstance ifNotNil: [ :anInstance | 
-		self onRemoveUniqueInstance: anInstance ].
-	uniqueInstance := nil.
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> cleanUp [
-	self cleanUniqueInstance
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> default [
-	^ self uniqueInstance
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> hasUniqueInstance [
-
-	^ uniqueInstance isNotNil
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> instance [
-	^ self uniqueInstance
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> onRemoveUniqueInstance: anInstance [
-	"Close the instance before GC"
-
-	uniqueInstance close.
-]
-
-{ #category : 'cleanup' }
-GtGemStoneSession class >> uniqueInstance [
-	^ uniqueInstance ifNil: [ uniqueInstance := self new ]
-]
-
-{ #category : 'accessing' }
-GtGemStoneSession class >> uniqueInstance: aGtGemStoneClient [
-
-	uniqueInstance := aGtGemStoneClient
-]
 
 { #category : 'actions' }
 GtGemStoneSession >> abortTransaction [
@@ -149,6 +100,15 @@ GtGemStoneSession >> evaluateAndWait: remoteScript [
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
+]
+
+{ #category : 'accessing' }
+GtGemStoneSession >> gemLogFileReference [
+	"Answer a file reference to the server's log file.
+	This is only useful if the client and server are on the same machine, i.e. for development."
+	<return: #FileReference>
+
+	^ (self evaluateAndWait: 'System gemLogPath') asFileReference / (self evaluateAndWait: 'System gemLogFileName')
 ]
 
 { #category : 'ui' }
