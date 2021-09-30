@@ -4,10 +4,8 @@ GtGemStoneConnector maintains the state and knowlege to connect to a GemStone se
 A subclass exists for each supported transport.
 "
 Class {
-	#name : 'GtGemStoneConnector',
-	#superclass : 'Object',
-	#traits : 'TGtAnnouncer',
-	#classTraits : 'TGtAnnouncer classTrait',
+	#name : #GtGemStoneConnector,
+	#superclass : #Object,
 	#instVars : [
 		'name',
 		'propertiesFile',
@@ -17,13 +15,18 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : 'accessing' }
-GtGemStoneConnector >> announcer [ 
-
-	^ announcer
+{ #category : #'api - announcer' }
+GtGemStoneConnector >> announce: anAnnouncement [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
+	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: anAnnouncement ].
 ]
 
-{ #category : 'connecting' }
+{ #category : #'api - announcer' }
+GtGemStoneConnector >> announcer [
+	^ announcer ifNil: [ announcer := Announcer new ]
+]
+
+{ #category : #connecting }
 GtGemStoneConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
@@ -31,72 +34,69 @@ GtGemStoneConnector >> connectionForSession: aGsSession [
 	^ self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> host [
 	^ host
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> host: anObject [
 	host := anObject
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneConnector >> initialize [ 
-
 	super initialize.
-	announcer := Announcer new.
 	host := 'localhost'.
-
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> name [
 	<return: #String>
 
 	^ name ifNil: [ '<unnamed>' ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnector >> name: aString [
 
 	name := aString
 ]
 
-{ #category : 'connecting' }
+{ #category : #connecting }
 GtGemStoneConnector >> newSession [
 	"Answer a new session defined by the receiver"
 
 	^ self subclassResponsibility
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyNameChanged [
 	"Notify dependents that the receiver has been updated, including its name changed"
 
-	self announcer announce: 
+	self announce: 
 		(GtGemStoneConnectorNameChangeAnnouncement new connector: self)
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyRemoved [
 	"Notify dependents that the receiver has been updated"
 
-	self announcer announce: (GtGemStoneConnectorAnnouncement new
+	self announce: (GtGemStoneConnectorAnnouncement new
 		connector: self;
 		operation: #removed)
 ]
 
-{ #category : 'announcing' }
+{ #category : #announcing }
 GtGemStoneConnector >> notifyUpdated [
 	"Notify dependents that the receiver has been updated"
 
-	self announcer announce: (GtGemStoneConnectorAnnouncement new
+	self announce: (GtGemStoneConnectorAnnouncement new
 		connector: self;
 		operation: #updated)
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneConnector >> printOn: aStream [
 
 	super printOn: aStream.
@@ -104,4 +104,26 @@ GtGemStoneConnector >> printOn: aStream [
 		nextPut: $(;
 		<< self name;
 		nextPut: $).
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneConnector >> unsubscribe: anObject [
+	"Unsubscribe all subscriptions of anObject from the receiver"
+
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#unsubscribeTemplate'>
+	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneConnector >> when: anAnnouncementClass do: aBlock [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ])
+		when: anAnnouncementClass do: aBlock
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneConnector >> when: anAnnouncementClass send: aSelector to: anObject [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ]) weak
+		when: anAnnouncementClass send: aSelector to: anObject
 ]

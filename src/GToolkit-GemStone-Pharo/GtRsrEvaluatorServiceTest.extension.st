@@ -1,6 +1,6 @@
-Extension { #name : 'GtRsrEvaluatorServiceTest' }
+Extension { #name : #GtRsrEvaluatorServiceTest }
 
-{ #category : '*GToolkit-GemStone-Pharo' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 GtRsrEvaluatorServiceTest >> gtErrorClass [ 
 
 	^ SyntaxErrorNotification 

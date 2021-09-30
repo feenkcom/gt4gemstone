@@ -8,8 +8,8 @@ The operation is one of:
 - #removed
 "
 Class {
-	#name : 'GtGemStoneConnectorAnnouncement',
-	#superclass : 'Announcement',
+	#name : #GtGemStoneConnectorAnnouncement,
+	#superclass : #Announcement,
 	#instVars : [
 		'connector',
 		'operation'
@@ -17,49 +17,49 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Announcements'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnectorAnnouncement >> connector [
 
 	^ connector
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnectorAnnouncement >> connector: anObject [
 
 	connector := anObject
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneConnectorAnnouncement >> isAdded [
 
 	^ operation = #added
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneConnectorAnnouncement >> isNameChange [
 
 	^ false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneConnectorAnnouncement >> isRemoved [
 
 	^ operation = #removed
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneConnectorAnnouncement >> isUpdated [
 
 	^ operation = #updated
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnectorAnnouncement >> operation [
 
 	^ operation
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneConnectorAnnouncement >> operation: anObject [
 
 	operation := anObject

@@ -1,16 +1,16 @@
 Class {
-	#name : 'GtGemStoneSessionSelectionStencil',
-	#superclass : 'BrStencil',
+	#name : #GtGemStoneSessionSelectionStencil,
+	#superclass : #BrStencil,
 	#instVars : [
 		'tooltip',
 		'extent',
 		'registry',
 		'selectAction'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'api - instantiation' }
+{ #category : #'api - instantiation' }
 GtGemStoneSessionSelectionStencil >> create [ 
 	"Create a new session selection button with dropdown selection"
 	| selectionButton |
@@ -22,22 +22,36 @@ GtGemStoneSessionSelectionStencil >> create [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: 'Selecting...';
+					label: tooltip;
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
 			content: 
-				[ GtGemStoneSessionSelectorStencil new
-					registry: registry;
-					extent: extent;
-					selectAction: [ :connector | 
-						selectAction cull: connector cull: selectionButton ] ] );
+				[
+				| aSelectionElement |
+				
+				aSelectionElement := GtGemStoneSessionManagerWidget onRegistry: registry.
+				aSelectionElement 
+					addInspectButton;
+					exact: extent.
+
+				aSelectionElement gemStoneSessionManagerViewModel
+					when: GtGemStoneSessionViewModelActivated
+					do: [ :anEvent |
+						selectAction
+							cull: anEvent gemStoneSessionViewModel gemStoneSession
+							cull: selectionButton ].
+
+				aSelectionElement
+					when: GtPhlowObjectToSpawn
+					do: [ :anEvent | selectionButton fireEvent: anEvent ].
+				aSelectionElement ] );
 		beSmallSize;
 		fitContent.
 	^ selectionButton
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionSelectionStencil >> initialize [ 
 
 	super initialize.
@@ -45,25 +59,25 @@ GtGemStoneSessionSelectionStencil >> initialize [
 	extent := 400 @ 300.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectionStencil >> registry [
 
 	^ registry
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectionStencil >> registry: anObject [
 
 	registry := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectionStencil >> selectAction [
 
 	^ selectAction
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionSelectionStencil >> selectAction: anObject [
 
 	selectAction := anObject

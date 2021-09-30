@@ -1,16 +1,19 @@
 Class {
-	#name : 'GtpoGsNMethod',
-	#superclass : 'GtRsrProxyServiceClient',
+	#name : #GtpoGsNMethod,
+	#superclass : #GtRsrProxyServiceClient,
+	#instVars : [
+		'sourceCode'
+	],
 	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtpoGsNMethod class >> remoteClassName [
 
 	^ #GsNMethod
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtpoGsNMethod >> compileFromTab: aTab [
 	"Compile the receiver's method based on the current editor contents"
 	| tabGroup code script result selector category environmentId |
@@ -39,7 +42,7 @@ GtpoGsNMethod >> compileFromTab: aTab [
 	aTab phlow spawnObject: result.
 ]
 
-{ #category : 'ui' }
+{ #category : #ui }
 GtpoGsNMethod >> gtSourceFor: aView [
 	<gtView>
 
@@ -55,4 +58,10 @@ GtpoGsNMethod >> gtSourceFor: aView [
 				self compileFromTab: aTab.
 				aTab viewContentElement phlow update ];
 		actionUpdateButton
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> sourceCode [
+
+	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString ]
 ]

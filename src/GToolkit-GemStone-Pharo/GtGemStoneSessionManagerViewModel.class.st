@@ -1,57 +1,194 @@
-"
-GtGemStoneSessionManagerViewModel keeps the UI state for GtGemStoneSessionManagerWidget.
-"
 Class {
-	#name : 'GtGemStoneSessionManagerViewModel',
-	#superclass : 'Object',
-	#traits : 'TGtAnnouncer',
-	#classTraits : 'TGtAnnouncer classTrait',
+	#name : #GtGemStoneSessionManagerViewModel,
+	#superclass : #Object,
+	#traits : 'TGtWithGemStoneSessionRegistry',
+	#classTraits : 'TGtWithGemStoneSessionRegistry classTrait',
 	#instVars : [
-		'sessionRegistry'
+		'gemStoneSessionsViewModel',
+		'announcer'
 	],
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtGemStoneSessionManagerViewModel >> addNewConnector [ 
 
-	sessionRegistry addNewConnector
+	gemStoneSessionRegistry addNewConnector
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerViewModel >> allConnectors [
 
-	^ sessionRegistry allConnectors
+	^ gemStoneSessionRegistry allConnectors
 ]
 
-{ #category : 'accessing' }
-GtGemStoneSessionManagerViewModel >> announcer [ 
-	"For now, the view model doesn't announce anything independently of the connector, so uses the registry's announcer"
-
-	^ sessionRegistry announcer
+{ #category : #'api - announcer' }
+GtGemStoneSessionManagerViewModel >> announce: anAnnouncement [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
+	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: anAnnouncement ].
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionManagerViewModel >> connectorNamed: aString [
 
-	^ sessionRegistry connectorNamed: aString
+	^ gemStoneSessionRegistry connectorNamed: aString
 ]
 
-{ #category : 'accessing' }
+{ #category : #'private - instance creation' }
+GtGemStoneSessionManagerViewModel >> createGemStoneSessionsViewModel [
+	"Create a nested child object for a domain child (or children) and return the result"
+	<return: #GtGemStoneSessionsViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelChildrenForOneTemplate>>#createChildObjectsTemplate'>
+	| childObject |
+
+	childObject := GtGemStoneSessionsViewModel new.
+	childObject parentGemStoneSessionManagerViewModel: self.
+	childObject activeSessions: self gemStoneSessionRegistry activeSessions.
+	^ childObject
+]
+
+{ #category : #'api - activation' }
+GtGemStoneSessionManagerViewModel >> deactivateAllFromTopMostParent [
+	"Deactivate any activated child starting from the top most parent"
+	<propertyUnsetFromParent: #activatedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetAllFromTopMostParentTemplate'>
+	
+	self topMostParentsWithActivationDo: [ :eachParent | eachParent deactivateChildren ]
+]
+
+{ #category : #'api - activation' }
+GtGemStoneSessionManagerViewModel >> deactivateChildren [
+	"Deactivate any activated child"
+	<propertyUnsetChildren: #activatedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetChildrenTemplate'>
+	self gemStoneSessionsViewModel deactivateSessionViewModel.
+]
+
+{ #category : #'api - selection' }
+GtGemStoneSessionManagerViewModel >> deselectAllFromTopMostParent [
+	"Deselect any selected child starting from the top most parent"
+	<propertyUnsetFromParent: #selectedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetAllFromTopMostParentTemplate'>
+	
+	self topMostParentsWithSelectionDo: [ :eachParent | eachParent deselectChildren ]
+]
+
+{ #category : #'api - selection' }
+GtGemStoneSessionManagerViewModel >> deselectChildren [
+	"Deselect any selected child"
+	<propertyUnsetChildren: #selectedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#unsetChildrenTemplate'>
+	self gemStoneSessionsViewModel deselectSessionViewModel.
+]
+
+{ #category : #'api - accessing' }
+GtGemStoneSessionManagerViewModel >> gemStoneSessionsViewModel [
+	"Return a composite object (${class:nil}$) created for a collection of children from the domain model.
+	Note: The object is lazily instantiated."
+	<return: #GtGemStoneSessionsViewModel>
+	<childObjectGetter: #sessions>
+	<generatedFrom: #'TGtRobocoderMetamodelChildrenForOneTemplate>>#childObjectsTemplate'>
+
+	^ gemStoneSessionsViewModel ifNil: [ gemStoneSessionsViewModel := self createGemStoneSessionsViewModel ]
+]
+
+{ #category : #'gt-extentions' }
+GtGemStoneSessionManagerViewModel >> gtSessionsListViewFor: aView [
+	<gtView>
+	<generatedFrom: #'GtRobocoderMetamodelPhlowListViewDerive>>#listForOneTemplate'>
+
+	^ aView list
+		priority: 5;
+		title: 'Sessions';
+		items: [ self gemStoneSessionsViewModel gemStoneSessionViewModels ]
+]
+
+{ #category : #'api - testing' }
+GtGemStoneSessionManagerViewModel >> isGemStoneSessionManagerViewModel [
+	"Return true if the receiver represents gemStoneSessionManagerViewModel, false otherwise"
+	<return: #Boolean>
+	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
+
+	^ true
+]
+
+{ #category : #'api - testing' }
+GtGemStoneSessionManagerViewModel >> isGemStoneSessionViewModel [
+	"Return true if the receiver represents gemStoneSessionViewModel, false otherwise"
+	<return: #Boolean>
+	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
+
+	^ false
+]
+
+{ #category : #'api - testing' }
+GtGemStoneSessionManagerViewModel >> isGemStoneSessionsViewModel [
+	"Return true if the receiver represents gemStoneSessionsViewModel, false otherwise"
+	<return: #Boolean>
+	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
+
+	^ false
+]
+
+{ #category : #'api - accessing' }
+GtGemStoneSessionManagerViewModel >> objectName [
+	"Return a symbolic name of the receiver which helps to create various type based mappings.
+	Note: The symbolic name of the object is the exact name that was used
+	in the metamodel declaration from which this class was generated"
+	<return: #Symbol>
+	<generatedFrom: #'GtRobocoderMetamodelNameDerive>>#objectNameTemplate'>
+
+	^ #sessionManager
+]
+
+{ #category : #printing }
+GtGemStoneSessionManagerViewModel >> printOn: aStream [
+	<generatedFrom: #'GtRobocoderMetamodelPrintDerive>>#printOnTemplate'>
+	aStream print: self gemStoneSessionRegistry
+]
+
+{ #category : #accessing }
 GtGemStoneSessionManagerViewModel >> sessionNamed: aString [
 
-	^ sessionRegistry sessionNamed: aString
+	^ gemStoneSessionRegistry sessionNamed: aString
 ]
 
-{ #category : 'accessing' }
-GtGemStoneSessionManagerViewModel >> sessionRegistry [
-	<return: #GtGemStoneSessionRegistry>
-
-	^ sessionRegistry
+{ #category : #'api - activation' }
+GtGemStoneSessionManagerViewModel >> topMostParentsWithActivationDo: aBlock [
+	"Evaluate a given block with each top most parent that has a activation property"
+	<propertyTopMostParents: #activatedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#topMostParentsWithPropertyDoTemplate'>
+	
+	aBlock value: self.
 ]
 
-{ #category : 'accessing' }
-GtGemStoneSessionManagerViewModel >> sessionRegistry: anObject [
+{ #category : #'api - selection' }
+GtGemStoneSessionManagerViewModel >> topMostParentsWithSelectionDo: aBlock [
+	"Evaluate a given block with each top most parent that has a selection property"
+	<propertyTopMostParents: #selectedSessionManagerViewModel>
+	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#topMostParentsWithPropertyDoTemplate'>
+	
+	aBlock value: self.
+]
 
-	sessionRegistry := anObject
+{ #category : #'api - announcer' }
+GtGemStoneSessionManagerViewModel >> unsubscribe: anObject [
+	"Unsubscribe all subscriptions of anObject from the receiver"
+
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#unsubscribeTemplate'>
+	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneSessionManagerViewModel >> when: anAnnouncementClass do: aBlock [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ])
+		when: anAnnouncementClass do: aBlock
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneSessionManagerViewModel >> when: anAnnouncementClass send: aSelector to: anObject [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ]) weak
+		when: anAnnouncementClass send: aSelector to: anObject
 ]
