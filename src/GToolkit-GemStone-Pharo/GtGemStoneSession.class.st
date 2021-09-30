@@ -10,8 +10,8 @@ GtGemStoneSessions instances are normally managed through a {{gtClass:GtGemStone
 It looks like a GemStone session ({{gtClass:GsSession}}) is independent of a RSR connection ({{gtClass:RsrConnection}}).  If a RsrConnection is disconnected it can be reconnected on top of the same session.  For now, we are keeping a 1-to-1 relationship between a GsSession and RsrConnection.
 "
 Class {
-	#name : #GtGemStoneSession,
-	#superclass : #Object,
+	#name : 'GtGemStoneSession',
+	#superclass : 'Object',
 	#instVars : [
 		'registry',
 		'session',
@@ -23,14 +23,14 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> abortTransaction [
 
 	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ].
 
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> close [
 
 	connection ifNil: [ ^ self ].
@@ -40,7 +40,7 @@ GtGemStoneSession >> close [
 	session := connection := evaluator := nil.
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> connect [
 
 	connection ifNotNil: [ ^ self ].
@@ -52,18 +52,18 @@ GtGemStoneSession >> connect [
 		yourself.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> connection [
 
 	^ connection
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> connector [
 	^ connector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> connector: aGtGemstoneConnector [
 
 	connector ifNotNil:
@@ -75,20 +75,20 @@ GtGemStoneSession >> connector: aGtGemstoneConnector [
 		to: self
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> ensureRunning [
 	self isRunning
 		ifFalse: [ self connect ]
 		
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator evaluate: remoteScript for: anObject bindings: remoteBindings
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
 	^ self 
 		evaluateAndWait: remoteScript
@@ -96,13 +96,13 @@ GtGemStoneSession >> evaluateAndWait: remoteScript [
 		bindings: Dictionary new
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
 	This is only useful if the client and server are on the same machine, i.e. for development."
@@ -111,7 +111,7 @@ GtGemStoneSession >> gemLogFileReference [
 	^ (self evaluateAndWait: 'System gemLogPath') asFileReference / (self evaluateAndWait: 'System gemLogFileName')
 ]
 
-{ #category : #ui }
+{ #category : 'ui' }
 GtGemStoneSession >> gtAbortActionFor: anAction [
 	<gtAction>
 
@@ -124,7 +124,7 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 			button phlow spawnObject: 'Aborted transaction' ]
 ]
 
-{ #category : #ui }
+{ #category : 'ui' }
 GtGemStoneSession >> gtCommitActionFor: anAction [
 	<gtAction>
 
@@ -137,7 +137,7 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
-{ #category : #ui }
+{ #category : 'ui' }
 GtGemStoneSession >> gtLiveFor: aView [
 	<gtView>
 
@@ -150,7 +150,7 @@ GtGemStoneSession >> gtLiveFor: aView [
 				padding: (BlInsets all: 5) ]
 ]
 
-{ #category : #ui }
+{ #category : 'ui' }
 GtGemStoneSession >> gtRemoveActionFor: anAction [
 	<gtAction>
 
@@ -184,20 +184,20 @@ GtGemStoneSession >> initialize [
 	mutex := Mutex new.
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtGemStoneSession >> isRunning [ 
 
 	connection ifNil: [ ^ false ].
 	^ connection isOpen
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> name [
 
 	^ connector name
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneSession >> onConnectorChanged: aGtGemStoneConnnectorAnnouncement [
 	"Some of the details in the receiver's connector have been changed, restart the connection if required."
 
@@ -207,7 +207,7 @@ GtGemStoneSession >> onConnectorChanged: aGtGemStoneConnnectorAnnouncement [
 			[ self connect. ] ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneSession >> printOn: aStream [
 
 	super printOn: aStream.
@@ -219,19 +219,19 @@ GtGemStoneSession >> printOn: aStream [
 		nextPut: $).
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> registry [
 
 	^ registry
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> registry: anObject [
 
 	registry := anObject
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 GtGemStoneSession >> removeSelf [ 
 	"Remove the receiver from the registry and delete the session definition"
 
@@ -239,20 +239,20 @@ GtGemStoneSession >> removeSelf [
 	registry removeSession: self.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> stoneName [
 
 	^ connector stone
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> stop [
 	"Synonym for #close"
 
 	^ self close
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSession >> username [
 
 	^ connector username

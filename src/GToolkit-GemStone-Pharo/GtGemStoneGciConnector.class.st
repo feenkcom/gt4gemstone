@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneGciConnector,
-	#superclass : #GtGemStoneConnector,
+	#name : 'GtGemStoneGciConnector',
+	#superclass : 'GtGemStoneConnector',
 	#instVars : [
 		'stone',
 		'netldi',
@@ -14,7 +14,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 GtGemStoneGciConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
@@ -22,37 +22,37 @@ GtGemStoneGciConnector >> connectionForSession: aGsSession [
 	^ self setupRsrConnection: aGsSession
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> gemstoneVersion [
 	^ gemstoneVersion
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> gemstoneVersion: anObject [
 	gemstoneVersion := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> hostPassword [
 	^ hostPassword
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> hostPassword: anObject [
 	hostPassword := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> hostUsername [
 	^ hostUsername
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> hostUsername: anObject [
 	hostUsername := anObject
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnector >> initialize [
 
 	super initialize.
@@ -64,20 +64,20 @@ GtGemStoneGciConnector >> initialize [
 	gemstoneVersion := '3.7.0'.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> libraryPath [
 	<return: #FileReference>
 
 	^ libraryPath
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> libraryPath: aFileReference [
 
 	libraryPath := aFileReference
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnector >> loggedInSession [
 	<return: #GsSession>
 	| session |
@@ -92,17 +92,17 @@ GtGemStoneGciConnector >> loggedInSession [
 	^ session
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> netldi [
 	^ netldi
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> netldi: anObject [
 	netldi := anObject
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 GtGemStoneGciConnector >> newSession [
 	"Answer the session defined by the receiver"
 	<return: #GsSession>
@@ -112,17 +112,17 @@ GtGemStoneGciConnector >> newSession [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> password [
 	^ password
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> password: anObject [
 	password := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 	<return: #RsrConnection>
 	| detailBytes initiator thePort token |
@@ -153,22 +153,22 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 	^ initiator connect
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> stone [
 	^ stone
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> stone: anObject [
 	stone := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> username [
 	^ username
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnector >> username: anObject [
 	username := anObject
 ]

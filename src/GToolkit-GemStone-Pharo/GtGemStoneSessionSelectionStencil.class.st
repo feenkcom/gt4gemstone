@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneSessionSelectionStencil,
-	#superclass : #BrStencil,
+	#name : 'GtGemStoneSessionSelectionStencil',
+	#superclass : 'BrStencil',
 	#instVars : [
 		'tooltip',
 		'extent',
@@ -10,7 +10,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : #'api - instantiation' }
+{ #category : 'api - instantiation' }
 GtGemStoneSessionSelectionStencil >> create [ 
 	"Create a new session selection button with dropdown selection"
 	| selectionButton |
@@ -22,7 +22,7 @@ GtGemStoneSessionSelectionStencil >> create [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: 'Selecting...';
+					label: tooltip;
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
@@ -37,7 +37,7 @@ GtGemStoneSessionSelectionStencil >> create [
 	^ selectionButton
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneSessionSelectionStencil >> initialize [ 
 
 	super initialize.
@@ -45,25 +45,25 @@ GtGemStoneSessionSelectionStencil >> initialize [
 	extent := 400 @ 300.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionSelectionStencil >> registry [
 
 	^ registry
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionSelectionStencil >> registry: anObject [
 
 	registry := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionSelectionStencil >> selectAction [
 
 	^ selectAction
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionSelectionStencil >> selectAction: anObject [
 
 	selectAction := anObject

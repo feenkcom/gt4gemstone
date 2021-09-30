@@ -1,12 +1,12 @@
 Class {
-	#name : #GtGemStoneSessionRegistryExamples,
-	#superclass : #Object,
+	#name : 'GtGemStoneSessionRegistryExamples',
+	#superclass : 'Object',
 	#traits : 'TAssertable',
 	#classTraits : 'TAssertable classTrait',
 	#category : 'GToolkit-GemStone-Pharo-Examples'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is added"
 	<gtExample>
@@ -33,7 +33,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	"Confirm that a name change announcement is received from the session registry when a connector is renamed"
 	<gtExample>
@@ -78,7 +78,7 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneSessionRegistryExamples >> propertiesFile [
 	"Answer an empty properties file"
 	<gtExample>
@@ -93,7 +93,7 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 	^ propertiesFile
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is removed"
 	<gtExample>
@@ -123,7 +123,7 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneSessionRegistryExamples >> sessionRegistry [
 	"Answer an empty session registry"
 	<gtExample>

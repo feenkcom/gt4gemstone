@@ -1,23 +1,23 @@
 Class {
-	#name : #GtRsrProxyServiceClient,
-	#superclass : #GtRsrProxyService,
+	#name : 'GtRsrProxyServiceClient',
+	#superclass : 'GtRsrProxyService',
 	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtRsrProxyServiceClient class >> isClientClass [
 
 	^ true
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrProxyServiceClient class >> remoteClassMatcher [
 	"Answer the block that matches a given class name"
 
 	^ [ :aSymbol | self remoteClassName = aSymbol ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtRsrProxyServiceClient class >> remoteClassName [
 	"Answer the name of the remote class the receiver represents"
 	<return: #Symbol or: nil>
@@ -25,7 +25,7 @@ GtRsrProxyServiceClient class >> remoteClassName [
 	^ nil
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 	"Answer the subclass that represents the supplied class name"
 
@@ -35,7 +35,7 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
 
 	_id := id.
@@ -43,7 +43,7 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
 	remoteSelf := anObject.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
 
 	_id := id.
@@ -52,7 +52,7 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject r
 	remoteClass := aString.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	"Convert the to the appropriate subclass.
 	RSR client service objects are always created using #basicNew and instance variables are populated using #instVarAt:put:, so there isn't an opportunity to intercept the client creation.  Once the remoteClass has been set, we can replace the client proxy object using #becomeForward:"
@@ -70,7 +70,7 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	^ newProxy
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> declarativeViews [
 	"Answer the views for the receiver"
 	| rawViews |
@@ -89,7 +89,7 @@ GtRsrProxyServiceClient >> declarativeViews [
 	^ rawViews
 ]
 
-{ #category : #performing }
+{ #category : 'performing' }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 	| evaluator |
@@ -101,21 +101,21 @@ GtRsrProxyServiceClient >> evaluate: aString [
 		bindings: Dictionary new.
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> getViewProxy [
 	"Answer a GtViewedProxy on the receiver"
 
 	^ self evaluate: 'GtRemotePhlowViewedObject object: self'
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
 		proxyPerform: #gtDisplayString ] 
 			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtLocalViewsFor: aView inContext: aContext [
 	| title resultingView |
 
@@ -129,7 +129,7 @@ GtRsrProxyServiceClient >> gtLocalViewsFor: aView inContext: aContext [
 	^ resultingView
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyFor: aView [
 	<gtProxy>
 
@@ -138,7 +138,7 @@ GtRsrProxyServiceClient >> gtProxyFor: aView [
 		priority: 10000.
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyRawFor: aView [
 
 	^ aView columnedList 
@@ -155,7 +155,7 @@ GtRsrProxyServiceClient >> gtProxyRawFor: aView [
 		send: [ :aNode | aNode third ]
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 	<gtView>
 	^ aView list
@@ -166,7 +166,7 @@ GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 		send: [ :aDeclarativeView | aDeclarativeView ]
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtViewsFor: aView inContext: aContext [
 	"Add the declarative views from the inspectors object to the inspectors views"
 
@@ -184,7 +184,7 @@ GtRsrProxyServiceClient >> gtViewsFor: aView inContext: aContext [
 	^resultingView
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> gtViewsInContext: aContext [
 	"This collects all views for the current object.
 	For a proxy we just want the Raw view renamed as 'Proxy'"
@@ -204,7 +204,7 @@ GtRsrProxyServiceClient >> gtViewsInContext: aContext [
 	^ views.
 ]
 
-{ #category : #introspection }
+{ #category : 'introspection' }
 GtRsrProxyServiceClient >> instVarAt: anInteger put: anObject [
 	"If the receiver's remoteClass has been set, convert the receiver to the specific proxy class.
 	WARNING: The index of remoteClass is assumed to be 4.  This must be manually updated if instance variables are inserted before remoteClass"
@@ -216,7 +216,7 @@ GtRsrProxyServiceClient >> instVarAt: anInteger put: anObject [
 	^ result
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtRsrProxyServiceClient >> object [
 	"Answer the receiver's object as an immediate"
 
@@ -225,19 +225,19 @@ GtRsrProxyServiceClient >> object [
 	^ remoteSelf object wait
 ]
 
-{ #category : #performing }
+{ #category : 'performing' }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
 
 	^ (remoteSelf proxyPerform: aSymbol) wait.
 ]
 
-{ #category : #performing }
+{ #category : 'performing' }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 
 	^ (remoteSelf proxyPerform: aSymbol withArguments: anArray) wait
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
 
@@ -250,7 +250,7 @@ GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 
 ]
 
-{ #category : #'gt inspector' }
+{ #category : 'gt inspector' }
 GtRsrProxyServiceClient >> viewsFor: aView [
 	"Should be all views, but just get Raw and Print views for now"
 

@@ -1,13 +1,13 @@
 Class {
-	#name : #LeGemStoneSnippetViewModel,
-	#superclass : #LeCodeSnippetViewModel,
+	#name : 'LeGemStoneSnippetViewModel',
+	#superclass : 'LeCodeSnippetViewModel',
 	#instVars : [
 		'sessionName'
 	],
 	#category : 'GToolkit-GemStone-Lepiter-Snippet'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 	"Initialise the keyboard shortcuts in the code editor"
 
@@ -26,20 +26,20 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 		addShortcut: (LeSnippetMoveSnippetDownShortcut new combination: (self keyboardShortcut: #MoveSnippetDown))
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 LeGemStoneSnippetViewModel >> sessionName [
 
 	^ sessionName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 LeGemStoneSnippetViewModel >> sessionName: aString [
 
 	sessionName := aString.
 	coderViewModel coderModel sessionName: aString.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 LeGemStoneSnippetViewModel >> snippetElementClass [
 	^ LeGemStoneSnippetElement
 ]

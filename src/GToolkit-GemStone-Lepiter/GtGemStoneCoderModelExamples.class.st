@@ -2,12 +2,12 @@
 LeGemStoneVarNodeVisitorExamples demonstrates the variable categorisation required to set the bindings and temporary variable declarations when passing scripts to GemStone.
 "
 Class {
-	#name : #GtGemStoneCoderModelExamples,
-	#superclass : #Object,
+	#name : 'GtGemStoneCoderModelExamples',
+	#superclass : 'Object',
 	#category : 'GToolkit-GemStone-Lepiter-Examples'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneCoderModelExamples >> simpleExpression [
 	<gtExample>
 	| source coderModel |
@@ -25,7 +25,7 @@ snippetResult := 4+3.
 
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneCoderModelExamples >> simpleExpressionWithGlobal [
 	<gtExample>
 	| source coderModel |
@@ -46,7 +46,7 @@ snippetResult := g + 3.
 
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneCoderModelExamples >> simpleExpressionWithModifiedGlobal [
 	<gtExample>
 	| source coderModel pharoBindings |
@@ -74,7 +74,7 @@ snippetResult := answer.
 
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 GtGemStoneCoderModelExamples >> simpleExpressionWithTemps [
 	<gtExample>
 	| source coderModel |

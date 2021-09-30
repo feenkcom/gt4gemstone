@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneGciConnectorViewModel,
-	#superclass : #Object,
+	#name : 'GtGemStoneGciConnectorViewModel',
+	#superclass : 'Object',
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
@@ -10,38 +10,38 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorViewModel >> announcer [ 
 	"For now, the view model doesn't announce anything independently of the connector, so uses the connector's announcer"
 
 	^ connector announcer
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorViewModel >> connector [
 
 	^ connector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorViewModel >> connector: anObject [
 
 	connector := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorViewModel >> propertiesFile [
 
 	^ propertiesFile
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorViewModel >> propertiesFile: anObject [
 
 	propertiesFile := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnectorViewModel >> propertyMappings [
 	<return: #Array>
 

@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneSessionAnnouncement,
-	#superclass : #Announcement,
+	#name : 'GtGemStoneSessionAnnouncement',
+	#superclass : 'Announcement',
 	#instVars : [
 		'session',
 		'operation'
@@ -8,25 +8,25 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-Announcements'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionAnnouncement >> operation [
 
 	^ operation
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionAnnouncement >> operation: anObject [
 
 	operation := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionAnnouncement >> session [
 
 	^ session
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneSessionAnnouncement >> session: anObject [
 
 	session := anObject

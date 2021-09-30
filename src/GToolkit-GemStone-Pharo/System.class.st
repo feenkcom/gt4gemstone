@@ -1,5 +1,5 @@
 Class {
-	#name : #System,
-	#superclass : #Object,
+	#name : 'System',
+	#superclass : 'Object',
 	#category : 'GToolkit-GemStone-Pharo-Stubs'
 }

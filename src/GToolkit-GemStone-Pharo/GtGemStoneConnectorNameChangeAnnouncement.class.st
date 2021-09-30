@@ -1,17 +1,17 @@
 Class {
-	#name : #GtGemStoneConnectorNameChangeAnnouncement,
-	#superclass : #GtGemStoneConnectorAnnouncement,
+	#name : 'GtGemStoneConnectorNameChangeAnnouncement',
+	#superclass : 'GtGemStoneConnectorAnnouncement',
 	#category : 'GToolkit-GemStone-Pharo-Announcements'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneConnectorNameChangeAnnouncement >> initialize [
 
 	super initialize.
 	operation := #updated.
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtGemStoneConnectorNameChangeAnnouncement >> isNameChange [
 
 	^ true

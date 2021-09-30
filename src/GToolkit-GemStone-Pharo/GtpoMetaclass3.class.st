@@ -1,23 +1,23 @@
 Class {
-	#name : #GtpoMetaclass3,
-	#superclass : #GtRsrProxyServiceClient,
+	#name : 'GtpoMetaclass3',
+	#superclass : 'GtRsrProxyServiceClient',
 	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtpoMetaclass3 class >> remoteClassMatcher [
 	"Answer the block that matches a given class name"
 
 	^ [ :aSymbol | aSymbol endsWith: ' class' ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtpoMetaclass3 class >> remoteClassName [
 
 	^ #Metaclass3
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtpoMetaclass3 >> printOn: aStream [
 
 	[ aStream << (self proxyPerform: #printString) ]

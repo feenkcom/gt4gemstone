@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneGciConnectorWidget,
-	#superclass : #BrVerticalPane,
+	#name : 'GtGemStoneGciConnectorWidget',
+	#superclass : 'BrVerticalPane',
 	#instVars : [
 		'connectorViewModel',
 		'saveButton'
@@ -8,7 +8,7 @@ Class {
 	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtGemStoneGciConnectorWidget class >> onConnector: aGtGemStoneGciConnector propertiesFile: aGtGemStonePropertiesFile [
 
 	^ self new connectorViewModel:
@@ -17,7 +17,7 @@ GtGemStoneGciConnectorWidget class >> onConnector: aGtGemStoneGciConnector prope
 			propertiesFile: aGtGemStonePropertiesFile)
 ]
 
-{ #category : #'private - list' }
+{ #category : 'private - list' }
 GtGemStoneGciConnectorWidget >> addListHeader [
 
 	self addChild: (BrHorizontalPane new
@@ -34,7 +34,7 @@ GtGemStoneGciConnectorWidget >> addListHeader [
 			text: 'Value'))
 ]
 
-{ #category : #'private - list' }
+{ #category : 'private - list' }
 GtGemStoneGciConnectorWidget >> addListLabelName: nameSymbol title: titleString [
 	"Add a string label field"
 
@@ -52,7 +52,7 @@ GtGemStoneGciConnectorWidget >> addListLabelName: nameSymbol title: titleString 
 			hMatchParent) as: nameSymbol)
 ]
 
-{ #category : #'private - list' }
+{ #category : 'private - list' }
 GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleString [
 	"Add a string input field"
 
@@ -70,7 +70,7 @@ GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleStri
 			hMatchParent) as: nameSymbol)
 ]
 
-{ #category : #'private - list' }
+{ #category : 'private - list' }
 GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString [
 	"Add a string input field"
 
@@ -88,7 +88,7 @@ GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString
 			hMatchParent) as: nameSymbol)
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnectorWidget >> buildUI [
 	| toolbar |
 
@@ -99,7 +99,7 @@ GtGemStoneGciConnectorWidget >> buildUI [
 	self addChildren: { toolbar. }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneGciConnectorWidget >> connectorViewModel: aGtGemStoneConnectorViewModel [
 
 	connectorViewModel ifNotNil:
@@ -112,7 +112,7 @@ GtGemStoneGciConnectorWidget >> connectorViewModel: aGtGemStoneConnectorViewMode
 	self onConnectorViewModelChanged.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnectorWidget >> createPropertiesList [
 
 	self addListHeader.
@@ -128,7 +128,7 @@ GtGemStoneGciConnectorWidget >> createPropertiesList [
 	self addListPasswordName: #hostPassword title: 'Host Password'.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnectorWidget >> createSaveButton [
 
 	^ BrButton new
@@ -139,7 +139,7 @@ GtGemStoneGciConnectorWidget >> createSaveButton [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnectorWidget >> createToolbar [
 	| toolbar |
 
@@ -156,14 +156,14 @@ GtGemStoneGciConnectorWidget >> createToolbar [
 	^ toolbar
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneGciConnectorWidget >> initialize [ 
 
 	super initialize.
 	self buildUI.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnectorWidget >> onConnectorViewModelChanged [
 	| libraryPath |
 
@@ -178,21 +178,21 @@ GtGemStoneGciConnectorWidget >> onConnectorViewModelChanged [
 
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnectorWidget >> onConnectorViewModelChanged: aGtGemStoneConnectorAnnouncement [
 
 	aGtGemStoneConnectorAnnouncement operation = #updated ifFalse: [ ^ self ].
 	self onConnectorViewModelChanged.
 ]
 
-{ #category : #'private - list' }
+{ #category : 'private - list' }
 GtGemStoneGciConnectorWidget >> propertyWidth [
 	"Answer the width of the Property column"
 	
 	^ 150
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneGciConnectorWidget >> saveProperties [
 	| nameChanged connector propertiesFile |
 

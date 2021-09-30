@@ -1,6 +1,6 @@
-Extension { #name : #LeLocalStore }
+Extension { #name : 'LeLocalStore' }
 
-{ #category : #'*GToolkit-GemStone-Lepiter' }
+{ #category : '*GToolkit-GemStone-Lepiter' }
 LeLocalStore >> gemStonePropertiesFile [
 	"Answer the location of the GemStone properties file to be used for this image.
 	Default = "
@@ -11,7 +11,7 @@ LeLocalStore >> gemStonePropertiesFile [
 		ifAbsent: [ LepiterCoreDefaults defaultGemStonePropertiesFileReference ].
 ]
 
-{ #category : #'*GToolkit-GemStone-Lepiter' }
+{ #category : '*GToolkit-GemStone-Lepiter' }
 LeLocalStore >> gemStonePropertiesFile: aFileReferenceOrNil [
 	"Set the location of the GemStone properties for this image"
 
