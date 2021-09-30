@@ -5,7 +5,8 @@ Class {
 		'tooltip',
 		'extent',
 		'registry',
-		'selectAction'
+		'selectAction',
+		'currentSessionNameComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -22,16 +23,26 @@ GtGemStoneSessionSelectionStencil >> create [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: tooltip;
+					label: ('GemStone ({1})' format: { (registry sessionNamed: currentSessionNameComputation value) name });
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
 			content: 
 				[
-				| aSelectionElement |
+				| aCurrentSession aSessionManagerViewModel aSelectionElement |
 				
-				aSelectionElement := GtGemStoneSessionManagerWidget onRegistry: registry.
-				aSelectionElement 
+				aCurrentSession := registry sessionNamed: currentSessionNameComputation value.
+				
+				aSessionManagerViewModel := GtGemStoneSessionManagerViewModel new 
+					gemStoneSessionRegistry: registry.
+				
+				aSessionManagerViewModel gemStoneSessionsViewModel
+					findGemStoneSessionViewModels: aCurrentSession
+					ifFound: [ :aSessionViewModel | aSessionViewModel activateSession ]
+					ifNone: [ ].
+
+				aSelectionElement := GtGemStoneSessionManagerWidget new
+					gemStoneSessionManagerViewModel: aSessionManagerViewModel;
 					addInspectButton;
 					exact: extent.
 
@@ -51,12 +62,17 @@ GtGemStoneSessionSelectionStencil >> create [
 	^ selectionButton
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionSelectionStencil >> currentSessionNameComputation: aBlock [
+	currentSessionNameComputation := aBlock
+]
+
 { #category : #initialization }
 GtGemStoneSessionSelectionStencil >> initialize [ 
 
 	super initialize.
 	tooltip := 'Select Session'.
-	extent := 400 @ 300.
+	extent := 400 @ 200.
 ]
 
 { #category : #accessing }

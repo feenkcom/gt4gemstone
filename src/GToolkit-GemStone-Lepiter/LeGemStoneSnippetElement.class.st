@@ -1,7 +1,7 @@
 Class {
 	#name : #LeGemStoneSnippetElement,
 	#superclass : #LeExternalEvaluatedSnippetElement,
-	#category : 'GToolkit-GemStone-Lepiter-Snippet'
+	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
 { #category : #initialization }
@@ -15,10 +15,13 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 		selectAction: [ :connector :button |
 			snippetViewModel sessionName: connector name.
 			self updateLanguageLabel.
-			button dispatchEvent: (BrDropdownHideWish new anchor: button) ].
+			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
+		currentSessionNameComputation: [ snippetViewModel sessionName ].
+
 	element := stencil create.
 	element margin: (BlInsets top: 5 right: 0).
 	element fitContent.
+
 	^ element.
 ]
 

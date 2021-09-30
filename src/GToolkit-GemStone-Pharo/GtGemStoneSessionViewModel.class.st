@@ -7,7 +7,7 @@ Class {
 		'announcer',
 		'parentGemStoneSessionsViewModel'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'api - activation' }
@@ -140,33 +140,6 @@ GtGemStoneSessionViewModel >> isActivatedSession [
 		and: [ self parentGemStoneSessionsViewModel activatedSessionViewModel == self ]
 ]
 
-{ #category : #'api - testing' }
-GtGemStoneSessionViewModel >> isGemStoneSessionManagerViewModel [
-	"Return true if the receiver represents gemStoneSessionManagerViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ false
-]
-
-{ #category : #'api - testing' }
-GtGemStoneSessionViewModel >> isGemStoneSessionViewModel [
-	"Return true if the receiver represents gemStoneSessionViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ true
-]
-
-{ #category : #'api - testing' }
-GtGemStoneSessionViewModel >> isGemStoneSessionsViewModel [
-	"Return true if the receiver represents gemStoneSessionsViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ false
-]
-
 { #category : #'api - activation' }
 GtGemStoneSessionViewModel >> isOnlyActivatedSession [
 	"Return true if only this session is activated and not any of the children"
@@ -230,17 +203,6 @@ GtGemStoneSessionViewModel >> notifySessionSelected [
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForChildTemplate>>#notifyPropertySetTemplate'>
 
 	self announce: (GtGemStoneSessionViewModelSelected new gemStoneSessionViewModel: self)
-]
-
-{ #category : #'api - accessing' }
-GtGemStoneSessionViewModel >> objectName [
-	"Return a symbolic name of the receiver which helps to create various type based mappings.
-	Note: The symbolic name of the object is the exact name that was used
-	in the metamodel declaration from which this class was generated"
-	<return: #Symbol>
-	<generatedFrom: #'GtRobocoderMetamodelNameDerive>>#objectNameTemplate'>
-
-	^ #session
 ]
 
 { #category : #'api - accessing' }
