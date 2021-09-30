@@ -7,7 +7,7 @@ Class {
 		'gemStoneSessionsViewModel',
 		'announcer'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #actions }
@@ -101,44 +101,6 @@ GtGemStoneSessionManagerViewModel >> gtSessionsListViewFor: aView [
 		priority: 5;
 		title: 'Sessions';
 		items: [ self gemStoneSessionsViewModel gemStoneSessionViewModels ]
-]
-
-{ #category : #'api - testing' }
-GtGemStoneSessionManagerViewModel >> isGemStoneSessionManagerViewModel [
-	"Return true if the receiver represents gemStoneSessionManagerViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ true
-]
-
-{ #category : #'api - testing' }
-GtGemStoneSessionManagerViewModel >> isGemStoneSessionViewModel [
-	"Return true if the receiver represents gemStoneSessionViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ false
-]
-
-{ #category : #'api - testing' }
-GtGemStoneSessionManagerViewModel >> isGemStoneSessionsViewModel [
-	"Return true if the receiver represents gemStoneSessionsViewModel, false otherwise"
-	<return: #Boolean>
-	<generatedFrom: #'GtRobocoderMetamodelTypeTestDerive>>#typeTesterTemplate'>
-
-	^ false
-]
-
-{ #category : #'api - accessing' }
-GtGemStoneSessionManagerViewModel >> objectName [
-	"Return a symbolic name of the receiver which helps to create various type based mappings.
-	Note: The symbolic name of the object is the exact name that was used
-	in the metamodel declaration from which this class was generated"
-	<return: #Symbol>
-	<generatedFrom: #'GtRobocoderMetamodelNameDerive>>#objectNameTemplate'>
-
-	^ #sessionManager
 ]
 
 { #category : #printing }

@@ -1,10 +1,10 @@
 Class {
-	#name : 'LeGemStoneSnippetElement',
-	#superclass : 'LeExternalEvaluatedSnippetElement',
-	#category : 'GToolkit-GemStone-Lepiter-Snippet'
+	#name : #LeGemStoneSnippetElement,
+	#superclass : #LeExternalEvaluatedSnippetElement,
+	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 LeGemStoneSnippetElement >> initializeLanguageElement [
 	"Initialise the element that displays the language and connection details.
 	This is normally a text element, but subclasses may replace it with something else, e.g. a button"
@@ -15,14 +15,17 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 		selectAction: [ :connector :button |
 			snippetViewModel sessionName: connector name.
 			self updateLanguageLabel.
-			button dispatchEvent: (BrDropdownHideWish new anchor: button) ].
+			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
+		currentSessionNameComputation: [ snippetViewModel sessionName ].
+
 	element := stencil create.
 	element margin: (BlInsets top: 5 right: 0).
 	element fitContent.
+
 	^ element.
 ]
 
-{ #category : 'api - snippet view model' }
+{ #category : #'api - snippet view model' }
 LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 
@@ -32,13 +35,13 @@ LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneSnippetElement >> sessionName [
 
 	^ nil
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 LeGemStoneSnippetElement >> updateLanguageLabel [
 	| label |
 
