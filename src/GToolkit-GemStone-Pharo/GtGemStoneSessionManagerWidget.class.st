@@ -1,10 +1,11 @@
 Class {
 	#name : 'GtGemStoneSessionManagerWidget',
 	#superclass : 'BrVerticalPane',
+	#traits : 'TGtWithGemStoneSessionManagerViewModel',
+	#classTraits : 'TGtWithGemStoneSessionManagerViewModel classTrait',
 	#instVars : [
 		'sessionList',
 		'newSessionButton',
-		'sessionRegistryModel',
 		'toolbar'
 	],
 	#category : 'GToolkit-GemStone-Pharo-UI'
@@ -12,10 +13,9 @@ Class {
 
 { #category : 'instance creation' }
 GtGemStoneSessionManagerWidget class >> onRegistry: aGtGemStoneSessionRegistry [
-
-	^ self new sessionRegistryModel: 
+	^ self new gemStoneSessionManagerViewModel: 
 		(GtGemStoneSessionManagerViewModel new 
-			sessionRegistry: aGtGemStoneSessionRegistry)
+			gemStoneSessionRegistry: aGtGemStoneSessionRegistry)
 ]
 
 { #category : 'configuration' }
@@ -29,7 +29,7 @@ GtGemStoneSessionManagerWidget >> addInspectButton [
 { #category : 'private' }
 GtGemStoneSessionManagerWidget >> addNewConnector [
 
-	sessionRegistryModel addNewConnector
+	gemStoneSessionManagerViewModel addNewConnector
 ]
 
 { #category : 'configuration' }
@@ -40,32 +40,17 @@ GtGemStoneSessionManagerWidget >> addNewSessionButton [
 		[ self error: 'New Session button already exists' ].
 
 	newSessionButton := self createNewSessionButton.
-	toolbar addChild: newSessionButton.
-
-]
-
-{ #category : 'initialization' }
-GtGemStoneSessionManagerWidget >> buildUI [ 
-
-	sessionList := self createSessionList.
-	toolbar := self createToolbar.
-
-	self matchParent.
-	self addChild: sessionList as: #sessionList.
-	self addChild: toolbar as: #toolbar.
+	toolbar addChild: newSessionButton
 ]
 
 { #category : 'initialization' }
 GtGemStoneSessionManagerWidget >> createInspectButton [
-
-	^ BrButton new 
-		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
+	^ BrButton new
+		aptitude: BrGlamorousButtonWithIconAptitude;
 		icon: BrGlamorousVectorIcons inspect;
-		label: 'Inspect';
-		fitContent;
-		action: [ :theButton :theButtonModel :theClickEvent |
-			self sessionRegistry inspect. ].
-
+		label: 'Inspect session registry';
+		beSmallSize;
+		action: [ :theButton | theButton phlow spawnObject: self gemStoneSessionManagerViewModel gemStoneSessionRegistry ]
 ]
 
 { #category : 'initialization' }
@@ -82,44 +67,32 @@ GtGemStoneSessionManagerWidget >> createNewSessionButton [
 
 { #category : 'initialization' }
 GtGemStoneSessionManagerWidget >> createSessionList [
-	| list |
+	| list headerPane |
 
-	list := BrColumnedList new.
+	headerPane := BrHorizontalPane new
+		margin: (BlInsets bottom: 5);
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets left: 18 right: 64).
+
+	{ 'Name' . 'Username' . 'Ston name' } do: [ :eachColumnName | 
+			| label |
+			label := BrLabel new
+				aptitude: (BrGlamorousLabelAptitude new foreground: self theme button defaultTextColor);
+				text: eachColumnName;
+				hMatchParent.
+			headerPane addChild: label ].
+
+	list := BrSimpleList new.
 	list 
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
 		padding: (BlInsets top: 5);
 		matchParent.
 
-	list column
-		title: 'Name';
-		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem name ].
+	list itemStencil: [ GtGemStoneSessionManagerListSessionElement new ].
+	list itemDataBinder: [ :eachSessionElement :eachSessionViewModel | eachSessionElement gemStoneSessionViewModel: eachSessionViewModel ].
 
-	list column
-		title: 'User';
-		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem username ].
+	list addChildFirst: headerPane.
 
-	list column
-		title: 'Stone';
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem stone ].
-
-	list
-		when: BrSelectionDoubleClicked
-		do: [ :anEvent | 
-			anEvent selection ifNotEmpty: [ :theIndices | 
-				| connector selectedObject |
-				anEvent target selectedItemDo: [ :item | connector := item ].
-				self assert: connector isNotNil.
-				selectedObject := sessionRegistryModel sessionNamed: connector name.
-				self phlow spawnObject: selectedObject ] ].
-	list addAptitude: BrColumnedListHeaderAptitude.
 	^ list
 ]
 
@@ -131,49 +104,35 @@ GtGemStoneSessionManagerWidget >> createToolbar [
 	newToolbar
 		hMatchParent;
 		vFitContent;
-		alignCenterRight.
+		alignCenterRight;
+		padding: (BlInsets all: 5).
 
 	^ newToolbar
 ]
 
 { #category : 'initialization' }
 GtGemStoneSessionManagerWidget >> initialize [ 
-
 	super initialize.
-	self buildUI.
 
+	self matchParent.
+	
+	sessionList := self createSessionList.
+	toolbar := self createToolbar.
+
+	self addChild: sessionList as: #sessionList.
+	self addChild: toolbar as: #toolbar
 ]
 
-{ #category : 'hooks - children' }
-GtGemStoneSessionManagerWidget >> onAddedToSceneGraph [ 
-
-	super onAddedToSceneGraph.
-	sessionRegistryModel ifNotNil:
-		[ self subscribeToSessionRegistryModel ].
-]
-
-{ #category : 'hooks - children' }
-GtGemStoneSessionManagerWidget >> onRemovedFromSceneGraph [ 
-
-	super onRemovedFromSceneGraph.
-	sessionRegistryModel ifNotNil:
-		[ self unsubscribeFrom: sessionRegistryModel ].
-]
-
-{ #category : 'private' }
-GtGemStoneSessionManagerWidget >> onSessionManagerViewModelChanged [
-
-	self updateSessionList.
-	self subscribeToSessionRegistryModel.
-
-]
-
-{ #category : 'enumerating' }
-GtGemStoneSessionManagerWidget >> selectedSessionDo: aBlock [
-	"Evaluate the supplied block with the selected session and index.
-	Does nothing if there is no selection."
-
-	sessionList selectedItemDo: aBlock
+{ #category : 'api - gem stone session manager view model' }
+GtGemStoneSessionManagerWidget >> onGemStoneSessionManagerViewModelChanged [
+	"Is sent when a new gemStoneSessionManagerViewModel is assigned to the receiver.
+	Note: #onGemStoneSessionManagerViewModelChanged is sent before #subscribeToGemStoneSessionManagerViewModel
+	which means that if you perform any operation that triggers an announcement it will be ignored because the receiver
+	didn't get a chance to subscribe to any announcement. Override #onPostGemStoneSessionManagerViewModelChanged if you
+	wish to perform an operation that requires an announcement, but keep in mind that this is not the most efficient way"
+	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
+	
+	self updateSessionList
 ]
 
 { #category : 'accessing' }
@@ -182,33 +141,15 @@ GtGemStoneSessionManagerWidget >> sessionList [
 	^ sessionList
 ]
 
-{ #category : 'accessing' }
-GtGemStoneSessionManagerWidget >> sessionRegistry [
-	"Answer the receiver's session registry"
-	<return: #GtGemStoneSessionRegistry>
-
-	^ sessionRegistryModel sessionRegistry
-]
-
-{ #category : 'accessing' }
-GtGemStoneSessionManagerWidget >> sessionRegistryModel [
-
-	^ sessionRegistryModel
-]
-
-{ #category : 'accessing' }
-GtGemStoneSessionManagerWidget >> sessionRegistryModel: aGtGemStoneSessionManagerViewModel [
-
-	sessionRegistryModel ifNotNil:
-		[ self unsubscribeFrom: sessionRegistryModel ].
-	sessionRegistryModel := aGtGemStoneSessionManagerViewModel.
-	self onSessionManagerViewModelChanged.
-]
-
-{ #category : 'private' }
-GtGemStoneSessionManagerWidget >> subscribeToSessionRegistryModel [
-
-	sessionRegistryModel
+{ #category : 'api - gem stone session manager view model' }
+GtGemStoneSessionManagerWidget >> subscribeToGemStoneSessionManagerViewModel [
+	"Is sent after a new gemStoneSessionManagerViewModel is assigned to the receiver.
+	It is required to unsubscribe from the previously subscribed objects by implementing
+	#unsubscribeFromGemStoneSessionManagerViewModel if the receiver subscribes to them"
+	<modelSubscriber: #sessionManager>
+	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
+	
+	self gemStoneSessionManagerViewModel gemStoneSessionRegistry
 		when: GtGemStoneConnectorAnnouncement
 		send: #updateSessionList
 		to: self
@@ -220,16 +161,19 @@ GtGemStoneSessionManagerWidget >> toolbar [
 	^ toolbar
 ]
 
-{ #category : 'private' }
-GtGemStoneSessionManagerWidget >> unsubscribeFrom: aGtGemStoneSessionRegistryModel [
-
-	aGtGemStoneSessionRegistryModel sessionRegistry unsubscribe: self
+{ #category : 'api - gem stone session manager view model' }
+GtGemStoneSessionManagerWidget >> unsubscribeFromGemStoneSessionManagerViewModel [
+	"Is sent before a new gemStoneSessionManagerViewModel is assigned to the receiver.
+	Objects that subscribe to gemStoneSessionManagerViewModel are required to implement this method."
+	<modelUnsubscriber: #sessionManager>
+	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#unsubscribeFromObjectTemplate'>
+	
+	self gemStoneSessionManagerViewModel gemStoneSessionRegistry unsubscribe: self
 ]
 
 { #category : 'private' }
 GtGemStoneSessionManagerWidget >> updateSessionList [
 
-	sessionList items: (sessionRegistryModel allConnectors
-		sorted: [ :a :b | a name < b name ]).
-
+	sessionList items: (self gemStoneSessionManagerViewModel gemStoneSessionsViewModel gemStoneSessionViewModels
+		sorted: [ :a :b | a name < b name ])
 ]

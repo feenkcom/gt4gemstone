@@ -11,30 +11,16 @@ Class {
 
 { #category : 'api - instantiation' }
 GtGemStoneSessionSelectorStencil >> create [ 
-	| element sessionList toolbar selectSessionButton |
+	| element |
 
 	element := GtGemStoneSessionManagerWidget onRegistry: registry.
 	element 
 		addInspectButton;
-		padding: (BlInsets all: 10);
 		exact: extent.
 
-	sessionList := element sessionList.
-	toolbar := element toolbar.
-	selectSessionButton := BrButton new
-		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
-		icon: BrGlamorousVectorIcons accept;
-		label: 'Select';
-		margin: (BlInsets left: 5);
-		fitContent;
-		disable;
-		action: 
-			[ sessionList selectedItemDo: [ :session | 
-				selectAction cull: session cull: selectSessionButton ] ].
-	toolbar addChild: selectSessionButton.
-	sessionList 
-		when: BrSelectionChanged 
-		do: [ selectSessionButton enable ].
+	element gemStoneSessionManagerViewModel when: GtGemStoneSessionViewModelActivated  do: [ :anEvent |
+		selectAction cull: anEvent gemStoneSessionViewModel gemStoneSession cull: element ].
+
 	^ element
 ]
 

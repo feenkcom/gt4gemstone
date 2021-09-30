@@ -15,8 +15,8 @@ The global (uniqueInstance) is maintained by Lepiter.
 Class {
 	#name : 'GtGemStoneSessionRegistry',
 	#superclass : 'Object',
-	#traits : 'TGtUniqueInstance + TGtAnnouncer',
-	#classTraits : 'TGtUniqueInstance classTrait + TGtAnnouncer classTrait',
+	#traits : 'TGtUniqueInstance',
+	#classTraits : 'TGtUniqueInstance classTrait',
 	#instVars : [
 		'propertiesFile',
 		'sessions',
@@ -81,11 +81,10 @@ GtGemStoneSessionRegistry >> allConnectors [
 	^ propertiesFile allConnectors
 ]
 
-{ #category : 'announcer' }
-GtGemStoneSessionRegistry >> announcer [
-	<return: #Announcer>
-
-	^ announcer
+{ #category : 'api - announcer' }
+GtGemStoneSessionRegistry >> announce: anAnnouncement [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
+	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: anAnnouncement ].
 ]
 
 { #category : 'accessing' }
@@ -147,9 +146,8 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 
 { #category : 'initialization' }
 GtGemStoneSessionRegistry >> initialize [ 
-
 	super initialize.
-	announcer := Announcer new.
+
 	self resetSessions.
 ]
 
@@ -265,4 +263,26 @@ GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"
 
 	isImageStarting ifTrue: [ self reload ]
+]
+
+{ #category : 'api - announcer' }
+GtGemStoneSessionRegistry >> unsubscribe: anObject [
+	"Unsubscribe all subscriptions of anObject from the receiver"
+
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#unsubscribeTemplate'>
+	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
+]
+
+{ #category : 'api - announcer' }
+GtGemStoneSessionRegistry >> when: anAnnouncementClass do: aBlock [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ])
+		when: anAnnouncementClass do: aBlock
+]
+
+{ #category : 'api - announcer' }
+GtGemStoneSessionRegistry >> when: anAnnouncementClass send: aSelector to: anObject [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
+	^ (announcer ifNil: [ announcer := Announcer new ]) weak
+		when: anAnnouncementClass send: aSelector to: anObject
 ]

@@ -22,7 +22,7 @@ GtGemStoneSessionSelectionStencil >> create [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: 'Selecting...';
+					label: tooltip;
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
