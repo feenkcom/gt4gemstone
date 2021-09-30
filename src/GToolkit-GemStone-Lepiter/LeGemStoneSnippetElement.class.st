@@ -1,10 +1,10 @@
 Class {
-	#name : 'LeGemStoneSnippetElement',
-	#superclass : 'LeExternalEvaluatedSnippetElement',
+	#name : #LeGemStoneSnippetElement,
+	#superclass : #LeExternalEvaluatedSnippetElement,
 	#category : 'GToolkit-GemStone-Lepiter-Snippet'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 LeGemStoneSnippetElement >> initializeLanguageElement [
 	"Initialise the element that displays the language and connection details.
 	This is normally a text element, but subclasses may replace it with something else, e.g. a button"
@@ -22,7 +22,7 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 	^ element.
 ]
 
-{ #category : 'api - snippet view model' }
+{ #category : #'api - snippet view model' }
 LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 
@@ -32,13 +32,13 @@ LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneSnippetElement >> sessionName [
 
 	^ nil
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 LeGemStoneSnippetElement >> updateLanguageLabel [
 	| label |
 

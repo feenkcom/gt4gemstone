@@ -1,10 +1,10 @@
 Class {
-	#name : 'LeGemStoneSnippet',
-	#superclass : 'LeCodeSnippet',
+	#name : #LeGemStoneSnippet,
+	#superclass : #LeCodeSnippet,
 	#category : 'GToolkit-GemStone-Lepiter-Snippet'
 }
 
-{ #category : 'api - accessing menu' }
+{ #category : #'api - accessing menu' }
 LeGemStoneSnippet class >> contextMenuItemSpecification [
 	<leSnippetSpecification>
 	^ LeContextMenuItemSpecification new
@@ -12,25 +12,25 @@ LeGemStoneSnippet class >> contextMenuItemSpecification [
 		title: 'GemStone'
 ]
 
-{ #category : 'lepiter-store' }
+{ #category : #'lepiter-store' }
 LeGemStoneSnippet class >> leJsonV4Name [
 
 	^ 'gemstoneSnippet'
 ]
 
-{ #category : 'visiting' }
+{ #category : #visiting }
 LeGemStoneSnippet >> acceptVisitor: aVisitor [
 
 	^ aVisitor visitGemStoneSnippet: self
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 LeGemStoneSnippet >> asSnippetViewModel [
 	<return: #LeSnippetViewModel>
 	^ LeGemStoneSnippetViewModel new snippetModel: self
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 LeGemStoneSnippet >> newCoder [
 	^ GtGemStoneCoderModel new
 ]

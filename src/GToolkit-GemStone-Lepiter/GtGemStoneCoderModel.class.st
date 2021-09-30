@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneCoderModel',
-	#superclass : 'GtSourceCoder',
+	#name : #GtGemStoneCoderModel,
+	#superclass : #GtSourceCoder,
 	#instVars : [
 		'pharoBindings',
 		'sessionName',
@@ -8,23 +8,23 @@ Class {
 		'remoteScript',
 		'remoteBindings'
 	],
-	#category : 'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneCoderModel >> asCoderUIModel [
 
 	^ GtSourceCoderViewModel new coder: self
 ]
 
-{ #category : 'api - ast' }
+{ #category : #'api - ast' }
 GtGemStoneCoderModel >> computeAst: theSourceString [
 	^ GtPharoParser
 		parseWithErrors: theSourceString
 		startingAt: GtPharoParser startingStateForMethodSequence
 ]
 
-{ #category : 'initialize' }
+{ #category : #initialize }
 GtGemStoneCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
 	
@@ -50,7 +50,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 		id: GtSourceCoderDoItAndGoActionId.
 ]
 
-{ #category : 'initialize' }
+{ #category : #initialize }
 GtGemStoneCoderModel >> initializeShortcuts: addOns [
 	super initializeShortcuts: addOns.
 
@@ -59,7 +59,7 @@ GtGemStoneCoderModel >> initializeShortcuts: addOns [
 		addShortcut: GtSourceCoderDoItAndInspectShortcut new
 ]
 
-{ #category : 'private - execution' }
+{ #category : #'private - execution' }
 GtGemStoneCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar [
 	| temporaries index |
 
@@ -84,41 +84,45 @@ GtGemStoneCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarP
 	trimmedSource insert: temporaries at: index.
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> pharoBindings [
 	^ pharoBindings
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> pharoBindings: anObject [
 	pharoBindings := anObject
 ]
 
-{ #category : 'private - execution' }
+{ #category : #'private - execution' }
 GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 	"Answer a collection of bindings for variables that aren't declared in the source and are in the snippet's bindings"
-	| bindings |
+	| bindings value |
 
 	bindings := Dictionary new.
 	visitor globalVariableNames do: [ :name |
 		(pharoBindings hasBindingOf: name) ifTrue: 
-			[ bindings at: name put: (pharoBindings bindingOf: name) value asGtProxyObject ] ].
+			[ value := (pharoBindings bindingOf: name) value asGtProxyObject.
+			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+				[ bindings at: name put: value ] ] ].
 	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
-			[ bindings at: #snippetResult put: (pharoBindings bindingOf: #snippetResult) value asGtProxyObject ].
+			[ value := (pharoBindings bindingOf: #snippetResult) value asGtProxyObject.
+			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+				[ bindings at: #snippetResult put: value ] ].
 	^ bindings
 ]
 
-{ #category : 'private - actions' }
+{ #category : #'private - actions' }
 GtGemStoneCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	self flag: #TODO.
 ]
 
-{ #category : 'private - actions' }
+{ #category : #'private - actions' }
 GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
 	| result gemstoneSession boundObject |
@@ -147,17 +151,17 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> remoteBindings [
 	^ remoteBindings
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> remoteScript [
 	^ remoteScript
 ]
 
-{ #category : 'private - execution' }
+{ #category : #'private - execution' }
 GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 	"Answer return expression for the remote script"
 
@@ -176,19 +180,19 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 			<< ' #snippetResult -> snippetResult. } asDictionary' ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> sessionName [
 
 	^ sessionName
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> sessionName: anObject [
 
 	sessionName := anObject
 ]
 
-{ #category : 'private - execution' }
+{ #category : #'private - execution' }
 GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 	"Update remoteScript and remoteBindings based on the supplied source code and the prebuild AST (newAstCache)"
 	| trimmedString trimmedSource visitor lastStatement varNames leftBar sourceAst |
@@ -228,7 +232,7 @@ GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCoderModel >> variableBindings: aGtSnippetBindings [
 
 	^ self pharoBindings: aGtSnippetBindings

@@ -1,6 +1,6 @@
 Class {
-	#name : 'LeGemStoneVarNodeVisitor',
-	#superclass : 'Object',
+	#name : #LeGemStoneVarNodeVisitor,
+	#superclass : #Object,
 	#traits : 'TGtPharoProgramNodeVisitor',
 	#classTraits : 'TGtPharoProgramNodeVisitor classTrait',
 	#instVars : [
@@ -11,26 +11,26 @@ Class {
 	#category : 'GToolkit-GemStone-Lepiter-Coder'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> accessedFirstVariableNames [
 	"Answer the set of variable names where the variable is accessed before being assigned a value (if at all)"
 
 	^ accessedFirstVariables 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> assignedVariableNames [
 
 	^ assignedVariables
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 LeGemStoneVarNodeVisitor >> globalVariableNames [
 
 	^ (accessedFirstVariables, assignedVariables) difference: temporaryVariables
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 LeGemStoneVarNodeVisitor >> initialize [
 
 	super initialize.
@@ -40,20 +40,20 @@ LeGemStoneVarNodeVisitor >> initialize [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> temporaryVariableNames [
 
 	^ temporaryVariables
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> undeclaredVariableNames [
 	"Answer the set of variable names where the variable is assigned a value, but is not a temporary variable"
 
 	^ self assignedVariableNames asSet difference: self temporaryVariableNames asSet
 ]
 
-{ #category : 'generated' }
+{ #category : #generated }
 LeGemStoneVarNodeVisitor >> visitAssignment: anAssignment [
 
 	"Get the assigned node and save"
@@ -61,7 +61,7 @@ LeGemStoneVarNodeVisitor >> visitAssignment: anAssignment [
 	^ self visitValue: anAssignment
 ]
 
-{ #category : 'generated' }
+{ #category : #generated }
 LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 	| name |
 
@@ -71,7 +71,7 @@ LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 	^ self visitVariable: aNamedVariable
 ]
 
-{ #category : 'generated' }
+{ #category : #generated }
 LeGemStoneVarNodeVisitor >> visitSequence: aSequence [
 
 	temporaryVariables addAll: (aSequence variables collect: #variableName).

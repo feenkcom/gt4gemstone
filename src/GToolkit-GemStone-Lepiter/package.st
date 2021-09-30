@@ -1,1 +1,1 @@
-Package { #name : 'GToolkit-GemStone-Lepiter' }
+Package { #name : #'GToolkit-GemStone-Lepiter' }
