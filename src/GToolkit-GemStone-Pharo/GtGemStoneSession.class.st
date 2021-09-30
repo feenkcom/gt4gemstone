@@ -20,7 +20,7 @@ Class {
 		'connector',
 		'mutex'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #actions }
@@ -161,6 +161,20 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 		action: [ :button | 
 			self removeSelf.
 			button phlow spawnObject: 'Deleted Session Definition' ]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtStdoutFor: aView [
+
+	"Display the contents of stdout of the receiver if the log file is available locally"
+
+	<gtView>
+	self gemLogFileReference exists ifFalse: [ ^ aView empty ].
+	^ aView textEditor
+		  title: 'stdout';
+		  priority: 20;
+		  text: [ self gemLogFileReference contents ];
+		  actionUpdateButton
 ]
 
 { #category : #initialization }
