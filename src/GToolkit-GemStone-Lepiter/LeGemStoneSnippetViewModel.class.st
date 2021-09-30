@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'sessionName'
 	],
-	#category : 'GToolkit-GemStone-Lepiter-Snippet'
+	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
 { #category : #initialization }
@@ -37,6 +37,14 @@ LeGemStoneSnippetViewModel >> sessionName: aString [
 
 	sessionName := aString.
 	coderViewModel coderModel sessionName: aString.
+]
+
+{ #category : #'api - bindings' }
+LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
+	
+	super sharedSnippetContext: aLeSharedSnippetContext.
+
+	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
 ]
 
 { #category : #accessing }
