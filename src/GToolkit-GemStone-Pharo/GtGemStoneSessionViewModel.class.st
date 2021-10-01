@@ -4,8 +4,8 @@ Class {
 	#traits : 'TGtWithGemStoneSession',
 	#classTraits : 'TGtWithGemStoneSession classTrait',
 	#instVars : [
-		'announcer',
-		'parentGemStoneSessionsViewModel'
+		'parentGemStoneSessionsViewModel',
+		'announcer'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -336,6 +336,14 @@ GtGemStoneSessionViewModel >> when: anAnnouncementClass do: aBlock [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ])
 		when: anAnnouncementClass do: aBlock
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneSessionViewModel >> when: anAnnouncementClass do: aBlock for: aSubscriber [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoForTemplate'>
+	^ (self when: anAnnouncementClass do: aBlock)
+		subscriber: aSubscriber;
+		yourself
 ]
 
 { #category : #'api - announcer' }

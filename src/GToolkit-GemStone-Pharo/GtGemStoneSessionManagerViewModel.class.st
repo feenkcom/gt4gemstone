@@ -149,6 +149,14 @@ GtGemStoneSessionManagerViewModel >> when: anAnnouncementClass do: aBlock [
 ]
 
 { #category : #'api - announcer' }
+GtGemStoneSessionManagerViewModel >> when: anAnnouncementClass do: aBlock for: aSubscriber [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoForTemplate'>
+	^ (self when: anAnnouncementClass do: aBlock)
+		subscriber: aSubscriber;
+		yourself
+]
+
+{ #category : #'api - announcer' }
 GtGemStoneSessionManagerViewModel >> when: anAnnouncementClass send: aSelector to: anObject [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ]) weak
