@@ -5,7 +5,7 @@ Class {
 		'connectorViewModel',
 		'saveButton'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }
@@ -206,8 +206,9 @@ GtGemStoneGciConnectorWidget >> saveProperties [
 	connector 
 		libraryPath: (self childNamed: #libraryPath) text asString asFileReference.
 	propertiesFile := connectorViewModel propertiesFile.
-	propertiesFile ifNotNil: [ propertiesFile saveProperties ].
 	nameChanged 
 		ifTrue: [ connector notifyNameChanged ]
 		ifFalse: [ connector notifyUpdated ].
+	propertiesFile ifNotNil: [ propertiesFile saveProperties ].
+
 ]

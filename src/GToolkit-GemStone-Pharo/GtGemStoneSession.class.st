@@ -43,7 +43,7 @@ GtGemStoneSession >> close [
 { #category : #actions }
 GtGemStoneSession >> connect [
 
-	connection ifNotNil: [ ^ self ].
+	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
 
 	session := connector newSession.
 	connection := connector connectionForSession: session.
@@ -151,6 +151,20 @@ GtGemStoneSession >> gtLiveFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSession >> gtLogFor: aView [
+
+	"Display the contents of stdout of the receiver if the log file is available locally"
+
+	<gtView>
+	self gemLogFileReference exists ifFalse: [ ^ aView empty ].
+	^ aView textEditor
+		  title: 'Log';
+		  priority: 20;
+		  text: [ self gemLogFileReference contents ];
+		  actionUpdateButton
+]
+
+{ #category : #ui }
 GtGemStoneSession >> gtRemoveActionFor: anAction [
 	<gtAction>
 
@@ -161,20 +175,6 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 		action: [ :button | 
 			self removeSelf.
 			button phlow spawnObject: 'Deleted Session Definition' ]
-]
-
-{ #category : #ui }
-GtGemStoneSession >> gtStdoutFor: aView [
-
-	"Display the contents of stdout of the receiver if the log file is available locally"
-
-	<gtView>
-	self gemLogFileReference exists ifFalse: [ ^ aView empty ].
-	^ aView textEditor
-		  title: 'stdout';
-		  priority: 20;
-		  text: [ self gemLogFileReference contents ];
-		  actionUpdateButton
 ]
 
 { #category : #initialization }

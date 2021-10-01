@@ -72,7 +72,7 @@ GtGemStoneSessionSelectionStencil >> initialize [
 
 	super initialize.
 	tooltip := 'Select Session'.
-	extent := 400 @ 300.
+	extent := 400 @ 200.
 ]
 
 { #category : #accessing }

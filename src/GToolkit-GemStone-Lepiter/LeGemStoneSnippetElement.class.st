@@ -48,8 +48,10 @@ LeGemStoneSnippetElement >> updateLanguageLabel [
 	label := String streamContents: [ :stream |
 		stream
 			<< 'GemStone (';
-			<< (snippetViewModel sessionName ifNil: [ GtGemStoneSessionRegistry default defaultConnectorName ]);
+			<< (snippetViewModel sessionName ifNil: [ 
+				GtGemStoneSessionRegistry default defaultConnectorName ]);
 			<< ')' ].
-	languageElement label: (label asRopedText glamorousRegularFont foreground: BrGlamorousColors textMarkupColor).
+	languageElement label: (label asRopedText glamorousRegularFont 
+		foreground: BrGlamorousColors textMarkupColor).
 
 ]

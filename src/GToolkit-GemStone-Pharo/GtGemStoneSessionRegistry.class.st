@@ -81,6 +81,15 @@ GtGemStoneSessionRegistry >> allConnectors [
 	^ propertiesFile allConnectors
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> allSessions [
+	"Ensure there's a session for every connector and then answer the collection"
+
+	propertiesFile connectorNames do: [ :each |
+		self sessionNamed: each ].
+	^ sessions values
+]
+
 { #category : #'api - announcer' }
 GtGemStoneSessionRegistry >> announce: anAnnouncement [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
