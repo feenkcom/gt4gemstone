@@ -147,7 +147,7 @@ GtBareProxy >> gtViewsInContext: aContext [
 	
 	proxyObjectViews := proxyObject gtViewsInContext: aContext.
 	proxyObjectViews := proxyObjectViews reject: [ :each |
-		#(Proxy Connections Meta) includes: each title ].
+		#(Proxy) includes: each title ].
 	
 	collectedViews := OrderedCollection new
 		addAll: (super gtViewsInContext: aContext);
