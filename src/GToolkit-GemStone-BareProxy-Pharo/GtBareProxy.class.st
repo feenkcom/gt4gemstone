@@ -93,16 +93,6 @@ GtBareProxy >> gtInspectorTitleStringOn: aStream [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtLocalViewsFor: aView inContext: aContext [
-	| resultingView |
-
-	resultingView := ((aView composite
-		views: (self gtViewsInContext: aContext))
-		labelled: self gtInspectorTitleString).
-	^ resultingView
-]
-
-{ #category : #'gt inspector' }
 GtBareProxy >> gtProxyFor: aView [
 	"Provide a basic view of the proxy object.
 	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
@@ -133,7 +123,7 @@ GtBareProxy >> gtProxyFor: aView [
 GtBareProxy >> gtViewsFor: aView inContext: aContext [
 	| resultingView proxyObjectViews inspectorViews |
 
-	resultingView := self gtLocalViewsFor: aView inContext: aContext.
+	resultingView := super gtViewsFor: aView inContext: aContext.
 	inspectorViews := resultingView originalView views.
 
 	"Add the proxyObject views"

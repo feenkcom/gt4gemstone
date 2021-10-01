@@ -124,20 +124,6 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtLocalViewsFor: aView inContext: aContext [
-	| title resultingView |
-
-	title := String streamContents: [ :stream |
-				stream
-					<< 'Proxy to a(n): ';
-					<< (remoteClass ifNil: [ '<None>' ]) ].
-	resultingView := ((aView composite
-		views: (self gtViewsInContext: aContext))
-		labelled: title).
-	^ resultingView
-]
-
-{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyFor: aView [
 	<gtProxy>
 
@@ -180,7 +166,7 @@ GtRsrProxyServiceClient >> gtViewsFor: aView inContext: aContext [
 
 	| resultingView inspectorViews |
 
-	resultingView := self gtLocalViewsFor: aView inContext: aContext.
+	resultingView := super gtViewsFor: aView inContext: aContext.
 	inspectorViews := resultingView originalView views.
 
 	"Add the explicitly declarative views from the inspected object"
@@ -208,7 +194,6 @@ GtRsrProxyServiceClient >> gtViewsInContext: aContext [
 	proxyPrint := views detect: [ :each | each title = #Print ].
 	views remove: proxyPrint.
 	
-	"views add: (self gtProxyRawFor: GtPhlowEmptyView new)."
 	^ views.
 ]
 
