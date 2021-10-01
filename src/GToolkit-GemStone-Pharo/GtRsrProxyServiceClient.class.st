@@ -124,10 +124,15 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> gtPrintFor: aView [ 
+	"Remove the default Print view, the remote can supply it later"
+	^ aView empty
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyFor: aView [
 	<gtProxy>
-
-	^(self gtRawFor: aView)
+	^ (self gtRawFor: aView)
 		title: 'Proxy' translated;
 		priority: 10000.
 ]
@@ -144,40 +149,23 @@ GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtViewsFor: aView inContext: aContext [
-	"Add the declarative views from the inspectors object to the inspectors views"
-
-	| resultingView inspectorViews |
-
-	resultingView := super gtViewsFor: aView inContext: aContext.
-	inspectorViews := resultingView originalView views.
-
-	"Add the explicitly declarative views from the inspected object"
-	inspectorViews addAll: (self viewsFor: aView).
-
-	"Re-sort by priority"
-	inspectorViews := inspectorViews sorted: [ :a :b | a priority < b priority ].
-	resultingView originalView views: inspectorViews.
-	^resultingView
+GtRsrProxyServiceClient >> gtRawFor: aView [ 
+	"Retitle the original Raw view to Proxy and lower priority"
+	^ (super gtRawFor: aView)
+		title: #Proxy;
+		priority: 10000
 ]
 
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtViewsInContext: aContext [
-	"This collects all views for the current object.
-	For a proxy we just want the Raw view renamed as 'Proxy'"
-	| views proxyRaw proxyPrint |
-
-	views := super gtViewsInContext: aContext.
-	"Retitle the original Raw view to Proxy and lower priority"
-	proxyRaw := views detect: [ :each | each title = #Raw ].
-	proxyRaw
-		title: #Proxy;
-		priority: 10000.
-	"Remove the default Print view, the remote can supply it later"
-	proxyPrint := views detect: [ :each | each title = #Print ].
-	views remove: proxyPrint.
-	
-	^ views.
+	"This collects all views for the current object, both local and remote."
+	| collectedViews |
+	collectedViews := OrderedCollection new
+		addAll: (super gtViewsInContext: aContext);
+		addAll: (self remoteViewsFor: GtPhlowEmptyView new);
+		yourself.
+	GtPhlowUtility sortByPriority: collectedViews.
+	^ collectedViews
 ]
 
 { #category : #introspection }
@@ -214,6 +202,16 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> remoteViewsFor: aView [
+	"Should be all views, but just get Raw and Print views for now"
+
+	^ self isProxyObjectActive
+		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
+		ifFalse: [ #() ].
+
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
 
@@ -223,15 +221,5 @@ GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 		ifTrue: [ self ]
 		ifFalse: [ self getViewProxy ].
 	^ aBlock value: viewProxy.
-
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> viewsFor: aView [
-	"Should be all views, but just get Raw and Print views for now"
-
-	^ self isProxyObjectActive
-		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
-		ifFalse: [ #() ].
 
 ]

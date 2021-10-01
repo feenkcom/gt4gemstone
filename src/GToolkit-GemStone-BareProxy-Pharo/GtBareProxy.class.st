@@ -120,46 +120,20 @@ GtBareProxy >> gtProxyFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtViewsFor: aView inContext: aContext [
-	| resultingView proxyObjectViews inspectorViews |
-
-	resultingView := super gtViewsFor: aView inContext: aContext.
-	inspectorViews := resultingView originalView views.
-
-	"Add the proxyObject views"
-	proxyObjectViews := (proxyObject gtViewsFor: aView inContext: aContext) originalView views.
+GtBareProxy >> gtViewsInContext: aContext [
+	| proxyObjectViews collectedViews |
+	"This collects all views for the current object, both local and remote."
+	
+	proxyObjectViews := proxyObject gtViewsInContext: aContext.
 	proxyObjectViews := proxyObjectViews reject: [ :each |
 		#(Proxy Connections Meta) includes: each title ].
-	inspectorViews addAll: proxyObjectViews.
-
-	"Re-sort by priority"
-	inspectorViews := inspectorViews sorted: [ :a :b | a priority < b priority ].
-	resultingView originalView views: inspectorViews.
-	^resultingView
-
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtViewsInContext: aContext [
-	"This collects all views for the current object.
-	For a proxy we just want the Raw view renamed as 'Proxy'"
-	| views |
-
-	views := super gtViewsInContext: aContext.
-	"Retitle the original Raw view to Proxy and lower priority"
-	views 
-		detect: [ :each | each title = #Raw ]
-		ifFound: [ :proxyRaw |
-			proxyRaw
-			title: #Proxy;
-			priority: 10000 ].
-	"Remove the default Print view, the remote can supply it later"
-	views 
-		detect: [ :each | each title = #Print ]
-		ifFound: [ :proxyPrint | views remove: proxyPrint ].
 	
-	"views add: (self gtProxyRawFor: GtPhlowEmptyView new)."
-	^ views.
+	collectedViews := OrderedCollection new
+		addAll: (super gtViewsInContext: aContext);
+		addAll: proxyObjectViews;
+		yourself.
+	GtPhlowUtility sortByPriority: collectedViews.
+	^ collectedViews
 ]
 
 { #category : #comparing }
