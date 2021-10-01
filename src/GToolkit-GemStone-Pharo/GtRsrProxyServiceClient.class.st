@@ -133,23 +133,6 @@ GtRsrProxyServiceClient >> gtProxyFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyRawFor: aView [
-
-	^ aView columnedList 
-		title: 'Raw';
-		priority: 15;
-		items: [ self viewProxyDo: [ :viewProxy |
-				viewProxy proxyPerform:  #rawViewData ] ];
-		column: 'Icon' icon: [ :aNode | aNode third iconNamed: aNode first ];
-		column: 'Variable' text: [ :aNode | aNode second asRopedText ];
-		column: 'Value' text: [ :aNode | 
-					[ aNode third gtDisplayString asRopedText ]
-						on: Error 
-						do: [ :ex | ex messageText asRopedText foreground: Color red ] ];
-		send: [ :aNode | aNode third ]
-]
-
-{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 	<gtView>
 	^ aView list
