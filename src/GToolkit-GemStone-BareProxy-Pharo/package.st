@@ -1,1 +1,1 @@
-Package { #name : 'GToolkit-GemStone-BareProxy-Pharo' }
+Package { #name : #'GToolkit-GemStone-BareProxy-Pharo' }

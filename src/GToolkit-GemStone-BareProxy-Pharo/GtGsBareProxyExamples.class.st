@@ -1,12 +1,12 @@
 Class {
-	#name : 'GtGsBareProxyExamples',
-	#superclass : 'Object',
+	#name : #GtGsBareProxyExamples,
+	#superclass : #Object,
 	#traits : 'TAssertable',
 	#classTraits : 'TAssertable classTrait',
 	#category : 'GToolkit-GemStone-BareProxy-Pharo-Examples'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 GtGsBareProxyExamples >> testEqualityWithClient [
 	"Confirm the equality rules for a bare proxy without a service client"
 	<gtExample>
@@ -20,7 +20,7 @@ GtGsBareProxyExamples >> testEqualityWithClient [
 
 ]
 
-{ #category : 'examples' }
+{ #category : #examples }
 GtGsBareProxyExamples >> testEqualityWithoutClient [
 	"Confirm the equality rules for a bare proxy without a service client"
 	<gtExample>

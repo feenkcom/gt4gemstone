@@ -1,11 +1,11 @@
-Extension { #name : 'Object' }
+Extension { #name : #Object }
 
-{ #category : '*GToolkit-GemStone-BareProxy-Pharo' }
+{ #category : #'*GToolkit-GemStone-BareProxy-Pharo' }
 Object >> asGtBareProxyObject [
 	^ self
 ]
 
-{ #category : '*GToolkit-GemStone-BareProxy-Pharo' }
+{ #category : #'*GToolkit-GemStone-BareProxy-Pharo' }
 Object >> asGtProxyObject [
 	^ self
 ]
