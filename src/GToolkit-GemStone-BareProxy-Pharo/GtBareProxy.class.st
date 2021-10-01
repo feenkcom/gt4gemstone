@@ -93,14 +93,35 @@ GtBareProxy >> gtInspectorTitleStringOn: aStream [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtProxyFor: aView [
-	"Provide a basic view of the proxy object.
-	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
-	<gtView>
+GtBareProxy >> gtMetaFor: aView [
+	<gtProxy>
+	^ aView explicit
+		title: 'Meta';
+		priority: 200;
+		stencil: [ (GtPharoBehaviorCoder forObject: self) asElement ]
+]
 
-	^ aView columnedList
+{ #category : #'gt inspector' }
+GtBareProxy >> gtProxyViewsFor: aView [
+	<gtView>
+	^ aView composite
 		title: 'Proxy';
 		priority: 10000;
+		collectorDo: [ :aCollector |
+			aCollector 
+				pragmaName: #gtProxy;
+				fromObject: self ]
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtRawFor: aView [
+	"Provide a basic view of the proxy object.
+	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
+	<gtProxy>
+
+	^ aView columnedList
+		title: 'Raw';
+		priority: 100;
 		items: [ {
 			{ #self. self. }.
 			{ #proxyObject. proxyObject. } } ];
