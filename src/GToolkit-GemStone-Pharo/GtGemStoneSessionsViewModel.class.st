@@ -1,13 +1,13 @@
 Class {
 	#name : #GtGemStoneSessionsViewModel,
 	#superclass : #Object,
-	#traits : 'TGtWithActivatedSessionViewModel + TGtWithSelectedSessionViewModel',
-	#classTraits : 'TGtWithActivatedSessionViewModel classTrait + TGtWithSelectedSessionViewModel classTrait',
+	#traits : 'TGtWithSelectedSessionViewModel + TGtWithActivatedSessionViewModel',
+	#classTraits : 'TGtWithSelectedSessionViewModel classTrait + TGtWithActivatedSessionViewModel classTrait',
 	#instVars : [
 		'activeSessions',
+		'parentGemStoneSessionManagerViewModel',
 		'gemStoneSessionViewModels',
-		'announcer',
-		'parentGemStoneSessionManagerViewModel'
+		'announcer'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -192,6 +192,24 @@ GtGemStoneSessionsViewModel >> includesGemStoneSessionViewModels: aGemStoneSessi
 		eachGemStoneSessionViewModels == aGemStoneSessionViewModels ]
 ]
 
+{ #category : #'api - activated session view model' }
+GtGemStoneSessionsViewModel >> notifyActivatedSessionViewModelChanged [
+	"Override this notify method to announce changes to the property"
+	<propertyChangeNotifier: #activatedSessionViewModel>
+	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#notifyPropertyChangedTemplate'>
+	self announce: (GtGemStoneActivatedSessionViewModelChanged new
+		activatedSessionViewModel: self activatedSessionViewModel).
+]
+
+{ #category : #'api - selected session view model' }
+GtGemStoneSessionsViewModel >> notifySelectedSessionViewModelChanged [
+	"Override this notify method to announce changes to the property"
+	<propertyChangeNotifier: #selectedSessionViewModel>
+	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#notifyPropertyChangedTemplate'>
+	self announce: (GtGemStoneSelectedSessionViewModelChanged new
+		selectedSessionViewModel: self selectedSessionViewModel).
+]
+
 { #category : #'api - active sessions' }
 GtGemStoneSessionsViewModel >> onActiveSessionsChanged [
 	"Is sent when a new activeSessions is assigned to the receiver.
@@ -300,24 +318,7 @@ GtGemStoneSessionsViewModel >> topMostParentsWithActivationDo: aBlock [
 	<propertyTopMostParents: #activatedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#topMostParentsWithPropertyDoTemplate'>
 	
-	| aCurrentParent aParentFound |
-	
-	aParentFound := false.
-	
-	aCurrentParent := self.
-	(aCurrentParent notNil and: [ aCurrentParent hasParentGemStoneSessionManagerViewModel ])
-		ifFalse: [ aCurrentParent := nil ]
-		ifTrue: [ aCurrentParent := aCurrentParent parentGemStoneSessionManagerViewModel ].
-	
-	aCurrentParent
-		ifNotNil: [
-			aParentFound := true.
-			aCurrentParent topMostParentsWithActivationDo: aBlock ].
-	
-	
-	"there is no assigned parent, meaning I am the topmost"
-	aParentFound
-		ifFalse: [ aBlock value: self ].
+	aBlock value: self.
 ]
 
 { #category : #'api - selection' }
@@ -326,24 +327,7 @@ GtGemStoneSessionsViewModel >> topMostParentsWithSelectionDo: aBlock [
 	<propertyTopMostParents: #selectedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderMetamodelPropertyForParentTemplate>>#topMostParentsWithPropertyDoTemplate'>
 	
-	| aCurrentParent aParentFound |
-	
-	aParentFound := false.
-	
-	aCurrentParent := self.
-	(aCurrentParent notNil and: [ aCurrentParent hasParentGemStoneSessionManagerViewModel ])
-		ifFalse: [ aCurrentParent := nil ]
-		ifTrue: [ aCurrentParent := aCurrentParent parentGemStoneSessionManagerViewModel ].
-	
-	aCurrentParent
-		ifNotNil: [
-			aParentFound := true.
-			aCurrentParent topMostParentsWithSelectionDo: aBlock ].
-	
-	
-	"there is no assigned parent, meaning I am the topmost"
-	aParentFound
-		ifFalse: [ aBlock value: self ].
+	aBlock value: self.
 ]
 
 { #category : #'api - announcer' }
@@ -367,6 +351,14 @@ GtGemStoneSessionsViewModel >> when: anAnnouncementClass do: aBlock [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
 	^ (announcer ifNil: [ announcer := Announcer new ])
 		when: anAnnouncementClass do: aBlock
+]
+
+{ #category : #'api - announcer' }
+GtGemStoneSessionsViewModel >> when: anAnnouncementClass do: aBlock for: aSubscriber [
+	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoForTemplate'>
+	^ (self when: anAnnouncementClass do: aBlock)
+		subscriber: aSubscriber;
+		yourself
 ]
 
 { #category : #'api - announcer' }
