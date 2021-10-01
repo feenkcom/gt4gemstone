@@ -1,7 +1,7 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #testing }
@@ -113,6 +113,14 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
 		proxyPerform: #gtDisplayString ] 
 			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorTitleString [ 
+	^ String streamContents: [ :stream |
+		stream
+			<< 'Proxy to a(n): ';
+			<< (remoteClass ifNil: [ '<None>' ]) ].
 ]
 
 { #category : #'gt inspector' }
