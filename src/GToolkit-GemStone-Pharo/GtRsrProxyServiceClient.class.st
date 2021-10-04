@@ -124,24 +124,22 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtPrintFor: aView [ 
-	"Remove the default Print view, the remote can supply it later"
-	^ aView empty
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyFor: aView [
+GtRsrProxyServiceClient >> gtMetaFor: aView [ 
 	<gtProxy>
-	^ (self gtRawFor: aView)
-		title: 'Proxy' translated;
-		priority: 10000.
+	^ super gtMetaFor: aView 
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
-	<gtView>
+GtRsrProxyServiceClient >> gtPrintFor: aView [ 
+	<gtProxy>
+	^ super gtPrintFor: aView 
+]
+
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> gtProxyRemoveViewsListFor: aView [
+	<gtProxy>
 	^ aView list
-		title: 'Proxy views' translated;
+		title: 'Remote views' translated;
 		priority: 10001;
 		items: [ self declarativeViews ];
 		itemText: [ :aViewAccessor | aViewAccessor title ];
@@ -149,19 +147,30 @@ GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
+	<gtView>
+	^ aView composite
+		title: 'Proxy';
+		priority: 10000;
+		collectorDo: [ :aCollector |
+			aCollector 
+				pragmaName: #gtProxy;
+				fromObject: self ]
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtRawFor: aView [ 
-	"Retitle the original Raw view to Proxy and lower priority"
-	^ (super gtRawFor: aView)
-		title: #Proxy;
-		priority: 10000
+	<gtProxy>
+	^ super gtRawFor: aView 
 ]
 
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtViewsInContext: aContext [
 	"This collects all views for the current object, both local and remote."
-	| collectedViews |
+	| localViews collectedViews |
+	localViews := super gtViewsInContext: aContext.
 	collectedViews := OrderedCollection new
-		addAll: (super gtViewsInContext: aContext);
+		addAll: (self updateLocalProxyViews: localViews);
 		addAll: (self remoteViewsFor: GtPhlowEmptyView new);
 		yourself.
 	GtPhlowUtility sortByPriority: collectedViews.
@@ -209,6 +218,12 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
 
+]
+
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> updateLocalProxyViews: localViews [
+	^ localViews reject: [ :each |
+		#(Raw Print Connections Meta) includes: each title ].
 ]
 
 { #category : #'gt inspector' }
