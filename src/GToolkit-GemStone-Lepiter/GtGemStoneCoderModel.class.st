@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : #converting }
-GtGemStoneCoderModel >> asCoderUIModel [
+GtGemStoneCoderModel >> asCoderViewModel [
 
 	^ GtSourceCoderViewModel new coder: self
 ]
