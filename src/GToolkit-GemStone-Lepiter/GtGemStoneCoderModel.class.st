@@ -41,7 +41,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 		icon: BrGlamorousVectorIcons play
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doIt
-				coderUIModel: aCoderUIModel;
+				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItActionId.
@@ -50,7 +50,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 		icon: BrGlamorousVectorIcons playinspect
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doItAndGo
-				coderUIModel: aCoderUIModel;
+				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItAndGoActionId.
