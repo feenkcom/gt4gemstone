@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrEvaluatorServiceClient',
-	#superclass : 'GtRsrEvaluatorService',
+	#name : #GtRsrEvaluatorServiceClient,
+	#superclass : #GtRsrEvaluatorService,
 	#category : 'GToolkit-GemStone-Pharo-Services'
 }
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ remoteSelf 
@@ -13,7 +13,7 @@ GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: re
 		bindings: remoteBindings asDictionary
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self evaluate: remoteScript for: anObject bindings: remoteBindings) wait

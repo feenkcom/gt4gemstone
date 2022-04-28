@@ -1,0 +1,1139 @@
+#! /bin/sh
+# set -xv
+#=========================================================================
+# Copyright (C) GemTalk Systems 1986-2020.  All Rights Reserved.
+#
+# Name - installgs.sh
+#
+# Modified installgs to do a basic installation sutiable for Gtoolkit
+# automated testing, with no user interaction required.
+#
+#=========================================================================
+
+currdir=`pwd | sed -e 's/\(.*\)\/\(.*\)$/\2/g'` # Basic `basename`
+if [ "x$currdir" != "xinstall" ]; then
+echo ""
+echo "    ERROR: The installgs script must be run from the GemStone"
+echo "           'install/' directory. Please 'cd' to there and run"
+echo "           this script again."
+echo ""
+echo "           If you are already in that directory, please contact"
+echo "           GemStone Customer Support."
+echo ""
+echo "           This GemStone installation did not complete successfully."
+exit 1
+fi
+
+# make sure of minimum path
+PATH=:/bin:/usr/bin:/usr/ucb:/usr/etc:$PATH; export PATH
+
+comid="installgs"
+tmpFile="/tmp/installgs-$$"
+
+cd ..  > /dev/null
+GEMSTONE="`pwd`"
+export GEMSTONE
+cd install > /dev/null
+
+###############
+#  free Linux license only 
+echo "By running this, the GemStone license has been accepted"
+
+# Setup some general environmental stuff.  File Descriptor limtis, etc
+. $GEMSTONE/bin/misc.sh
+
+#
+# Gt: Use $GEMSTONE_GLOBAL_DIR as GEMSTONE_LOCKBASE.
+# Assume that $GEMSTONE_GLOBAL_DIR is already defined
+#
+if [ -z "$GEMSTONE_GLOBAL_DIR" ]
+then
+    echo "ERROR: GEMSTONE_GLOBAL_DIR isn't defined"
+    exit 1
+fi
+GEMSTONE_LOCKBASE=$GEMSTONE_GLOBAL_DIR
+
+#---------------------------------------------------------------------------
+#
+# Who is this user?  Useful for checking if root access is available, etc
+
+myEffectiveUid=`$GEMSTONE/install/getid -neu`
+myRealUid=`$GEMSTONE/install/getid -ru`
+
+#---------------------------------------------------------------------------
+#
+# Put out random noise, mostly to see if language translation works...
+
+# say installgs.howdy 
+echo "GemStone/S 64 Bit Installation"
+echo "Please stand by...."
+
+# Who do we call?
+SCS="GemStone Customer Support"
+
+#---------------------------------------------------------------------------
+#
+# Determine whether other languages then the default are available, and if
+# so, offer a choice.
+
+# List available languages
+
+cd $GEMSTONE/sys  > /dev/null
+langs=""
+count=0
+for each in *.err
+do
+  lang=`echo $each | sed -e s/.err\$//g`
+  langs="$langs $lang"
+  count=`expr $count + 1`
+done
+cd ../install
+
+echo "This installation script will run only in English."
+
+beginWindow="[Please do not interrupt...]"
+endWindow="[...now it is OK to interrupt]"
+
+
+#---------------------------------------------------------------------------
+#
+# Introduction
+#    Here's the verbose statement of what this script is, and what it does.
+#     Some help is also given as to interrupting it, etc.
+
+# say installgs.intro 
+
+echo "installgs -- Install GemStone/S 64 Bit"
+echo ""
+echo "This script will walk you through the process of installing on your host."
+echo "We will analyze your system configuration and make suggestions or"
+echo "modifications as appropriate."
+echo ""
+echo "At certain points in this script, we may attempt to modify your system"
+echo "configuration.  At no time will we do this without warning you and (more"
+echo "importantly) giving you a chance to abort the script."
+echo ""
+echo "Except for certain small windows of time, it is always safe to abort this"
+echo "script (by pressing control-C or whatever your interrupt character is.)"
+echo "Whenever it is not safe to do so, messages will be printed before and after"
+echo "the unsafe period of time."
+echo ""
+echo "Whenever you are asked to answer "yes" or "no", answer with a "y" or an "n"."
+echo ""
+echo "Now we begin the installation process...."
+
+
+cd $GEMSTONE
+
+
+#---------------------------------------------------------------------------
+#
+# See if user believes architecture
+
+# say installgs.whatarch "$HOSTTYPE" "$OSTYPE" "$SCS"
+echo "This is a $HOSTTYPE  machine, running the $OSTYPE operating system."
+echo "If this is correct, press return.  Otherwise, interrupt this script now"
+echo "and contact $SCS ."
+echo ""
+
+if [ $HOSTTYPE != "x86_64" -a $HOSTTYPE != "i386" ]
+then
+	echo "Expected x86_64 architecture"
+	exit 1
+fi
+if [ $OSTYPE != "Linux" -a $OSTYPE != "Darwin" ]
+then
+	echo "Expected Linux or Mac OS"
+	#exit 1
+fi
+echo "-----------------------------------------------------------------"
+echo ""
+
+#---------------------------------------------------------------------------
+#
+# Good.  Now let's do a quick check on the manifest...
+
+installgsNotDone() {
+  echo "                      ERROR -- ERROR -- ERROR"
+  echo ""
+  echo "    GemStone installation has FAILED.  Please correct the above problems and"
+  echo "    then run the installation procedure again."
+  echo ""
+  echo "    GemStone will not run correctly until the installation script has"
+  echo "    completed successfully!"
+}
+
+installgsDisclaimer() {
+  echo "    This is not a GemStone problem. However, the nature of the problem will"
+  echo "    prevent GemStone from operating correctly. Please correct the problem,"
+  echo "    and reinstall GemStone."
+}
+
+installgsDefaultDb() {
+    echo "In a simple installation, a single extent (repository file) in the"
+    echo "GemStone 'data' directory is usually all that is needed."
+    echo "The installer can create a default extent by copying extent0.dbf from"
+    echo "the 'bin' directory to the 'data' directory under  $GEMSTONE ."
+    echo "This requires approximately 50MB of disk space."
+    echo "If it is not done then the user will need to set up and configure extents"
+    echo "after the installation is complete."
+    echo "Would you like the install program to set up an extent for you now? [y]"
+}
+
+installgsHooray() {
+  echo "Congratulations:"
+  echo ""
+  echo "GemStone installation has completed.  You may still need to change"
+  echo "various configuration options and start a stone server and one or more"
+  echo "netldi processes."
+}
+
+
+#---------------------------------------------------------------------------
+# Intro message to system check
+# say installgs.syschq
+echo ""
+echo "Gathering information about this system configuration..."
+
+#---------------------------------------------------------------------------
+#
+# Next step.  Examine available RAM
+#
+# Don't know how to get swap size on Linux, so skip it for now.
+#
+if [ "$OSTYPE" != "Linux" -a "$OSTYPE" != "Darwin" ]; then
+  # say installgs.vmintro
+  echo "Now examining available virtual memory..."
+
+  getSwapPgm
+  if [ ! -x $swapPgm ]; then
+    if [ "$HOSTTYPE" = "hppa" ]; then
+      if [ "$swapPgm" != "gobblegobble" ]; then
+        # say installgs.hpuxvmprob1 $swapPgm
+        echo "Warning:  cannot execute $swapPgm ; unable to verify swap space."
+        echo "The swapinfo(1M) program, used to extract information on system swap space,"
+        echo "is available on HP-UX 8.07 (or later) systems. Without this program,"
+        echo "we cannot easily determine the amount of swap space available on your"
+        echo "system."
+      fi
+    else
+      # say installgs.nopstat $swapPgm
+      echo "Warning:  cannot execute $swapPgm , unable to verify swap space."
+    fi
+    # say installgs.prompt
+  else
+    swapfound=1
+    getSwapSize
+    if [ $swapfound -eq 0 ]; then
+        # say installgs.swapfailed
+        echo "Warning:  unable to verify swap space."
+        if [ $myEffectiveUid -ne 0 ]; then
+	  # say installgs.notsu
+	  echo "          This failure is probably due to you not being superuser."
+        fi
+        # say installgs.prompt
+    else
+      # installgs.vmsumm 
+      echo "You have $theSize bytes of virtual memory."
+    fi
+  fi
+fi
+echo ""
+
+
+#---------------------------------------------------------------------------
+#
+# Who made this box?
+
+vendor="$vendor"
+
+installgsBadnet() {
+  echo "Your networking software is not correctly installed."
+  echo"    This is a networking problem.  Please examine the documentation for"
+  echo"    your operating system.  If you still do not understand what is wrong,"
+  echo"    contact your OS vendor, $vendor"
+}
+
+#---------------------------------------------------------------------------
+#
+# Verify hostname
+
+# bug 40199 - determine correct location for uname
+if [ -f "/bin/uname" ]; then
+  UNAME="/bin/uname"
+elif [ -f "/usr/bin/uname" ]; then
+  UNAME="/usr/bin/uname"
+else
+# Weird case.  Let's just hope it's in the path...
+  UNAME="uname"
+fi
+
+myName=`$UNAME -n 2>/dev/null`
+status=$?
+
+if [ $status -ne 0 ]; then
+  # say installgs.errpgm $pgmName
+  echo "ERROR:  Error running $pgmName.  There is something terribly wrong"
+  echo "    with your system configuration."
+  installgsBadnet
+
+  installgsDisclaimer
+  installgsNotDone
+  exit 1
+fi
+if [ "x$myName" = "x" ]; then
+  # say installgs.nohostname
+  echo "ERROR:  hostname is empty.  It is manifestly impossible for TCP/IP to"
+  echo "    function properly without this host having a hostname.  On most systems,"
+  echo "    a command of the form "hostname <thishost>" should be added to the"
+  echo "    script /etc/rc.local."
+  installgsBadnet
+  installgsDisclaimer
+  installgsNotDone
+  exit 1
+else
+  echo "Good, your hostname is  $myName "
+fi
+
+
+#---------------------------------------------------------------------------
+#
+# Verify ping
+
+if [ ! -x $PING ]; then
+  # say installgs.nopgm2 $PING
+  echo "ERROR:  Cannot find program $PING "
+  installgsBadnet
+  installgsDisclaimer
+  installgsNotDone
+  exit 1
+else
+  # say installgs.foundpgm $PING
+  echo "Good, found  $PING "
+fi
+
+$PING $pingArgs $myName $pingPostArgs >$tmpFile 2>&1
+status=$?
+if [ $status -ne 0 ]; then
+  # say installgs.pingerr "$myName"
+  echo "ERROR:  cannot ping this host $myName , $PING returned $status "
+  echo ""
+  cat $tmpFile
+  installgsBadnet
+  installgsDisclaimer
+  rm -f $tmpFile
+  installgsNotDone
+  exit 1
+else
+  # say installgs.pingok "$myName"
+  echo "Good, no problem pinging  $myName "
+fi
+
+rm -f $tmpFile
+
+
+#---------------------------------------------------------------------------
+#
+# See if gs64ldi service is in services database...
+pgmName=$GEMSTONE/install/getservbyname
+
+ldiName=gs64ldi
+$pgmName $ldiName >$tmpFile
+status=$?
+if [ $status = 0 ]; then
+  hasService="y"
+  # say installgs.okldiname 
+  echo "Good, you already have $ldiName  in your services database; entry is:"
+  cat $tmpFile
+  echo ""
+else
+  hasService="n"
+  # say installgs.noldiname 
+  echo "You don't seem to have $ldiName in your services database. You will"
+  echo "almost certainly need to add an entry before running any GemStone programs."
+  echo "If you believe this diagnostic is in error, you may wish to have your system"
+  echo "administrator examine the program $GEMSTONE/install/gethostbyname.c"
+fi
+
+# say installgs.prompt
+echo "-----------------------------------------------------------------"
+echo ""
+
+#---------------------------------------------------------------------------
+#
+#  Make sure the file descriptor tables can be large enough
+#
+
+cd $GEMSTONE/install
+pgmName=$GEMSTONE/install/getdtablesize
+
+raiseDescriptors
+dtSize=`$pgmName`
+status=$?
+returnDescriptors
+
+if [ $status -ne 0 ]; then
+  # truly weird
+  rm -f $tmpFile
+  echo "ERROR:  $pgmName returned $status after attempt to raise descriptor limit "
+  installgsNotDone
+  exit 1
+fi
+
+getTabSize
+
+if [ $tabSize != skip ]; then
+  # Show dtablesize
+  # say installgs.dtsize2 $dtSize
+  echo "Programs can open $dtSize  file descriptors."
+  if [ $tabSize -lt $dtSize ]; then
+    # limited by filetable size
+    # say installgs.dtsize3 $tabSize
+    echo "However, your kernel is limited to $tabSize open files."
+  else
+    # show filetable limit, anyway
+    # say installgs.dtsize4 $tabSize
+    echo " Note that your kernel is limited to $tabSize total open files."
+  fi
+  # explain file descriptor allocation
+  # say installgs.dtsize5 "$SCS"
+  echo "The allocation of file descriptors is somewhat complicated.  Use the"
+  echo "following table for reference, or contact  $SCS :"
+  echo ""
+  echo "    # Use"
+  echo " ---- ---"
+  echo "    3 stdin, stdout, stderr"
+  echo "    1 for each file extent within a file system"
+  echo "    2 for each file extent that is a raw partition (i.e., /dev/rsd0h)"
+  echo "    1 for each pageserver connection"
+  echo "    2 for each network connection"
+  echo "    1 for a well-known socket (i.e., gs64stone)"
+
+fi
+
+
+#---------------------------------------------------------------------------
+# Check for shared memory support.
+# say installgs.shmem
+echo "Now seeing if shared memory and semaphores are installed..."
+
+pgmName=$GEMSTONE/install/shmem
+rm -f $tmpFile
+touch $tmpFile
+$pgmName $tmpFile 10000 15
+status=$?
+rm -f $tmpFile
+
+if [ $status -ne 0 ]; then
+  # Must not have shared memory and semaphores enabled
+  # say installgs.shmembad "$vendor"
+  echo "ERROR:  Shared memory and/or semaphores do not appear to be configured"
+  echo "    correctly on this system.  You will need to reconfigure your kernel in"
+  echo "    order to do so.  Please contact vendor $vendor for more"
+  echo "    information on how to do this on this machine.  You may also wish to"
+  echo "    examine $GEMSTONE/install/shmem.c for a simple test program that your"
+  echo "    system administrator may wish to use."
+  
+  installgsDisclaimer
+  installgsNotDone
+  exit 1
+else
+  # say installgs.shmemok
+  echo "Good, no problems with shmget() or semget()."
+fi
+
+echo "-----------------------------------------------------------------"
+echo ""
+
+#---------------------------------------------------------------------------
+#
+#  Add the $GEMSTONE_LOCKBASE directory, if necessary, as well as all its
+#   needed subdirectories.
+
+# say installgs.introgemdir $GEMSTONE_LOCKBASE
+echo "GemStone needs a directory for recording global information about GemStone."
+echo "The name of this directory is:"
+echo "    $GEMSTONE_LOCKBASE "
+echo "If the directory does not exist, this script will attempt to create it."
+echo "Otherwise, the existing directory will be used.  The permissions on this"
+echo "directory ought to give read, write, and execute permission to all users."
+echo "The script will also check these permissions."
+echo "A symbolic link can be used to another directory although the space"
+echo "requirements for this directory are not great.  The creation of such a"
+echo "symbolic link must be done by the user outside of this script."
+
+
+for theDir in $GEMSTONE_LOCKBASE $GEMSTONE_LOCKBASE/locks $GEMSTONE_LOCKBASE/log
+do
+  # Check if it's there, and create it if it isn't
+  if [ ! -d $theDir ]; then
+    # We *might* be dealing with a "bad"/stale symlink.  Better check...
+    if [ -h $theDir ]; then
+      # say installgs.symlnkbad "$theDir"
+      echo "The symbolic for"
+      echo "    $theDir "
+      echo "appears to be linked to a non-directory.  This script can make no"
+      echo "assumptions on what this means.  It is therefore up to you to"
+      echo "correct this problem."
+      next;
+    else
+      mkdir $theDir
+      if [ ! -d $theDir ]; then
+        # trouble!
+        # say installgs.mkdirerr1 $theDir
+        echo "Unable to create directory $theDir "
+        if [ $myEffectiveUid -eq 0 ]; then
+	  # if root can't create it, things are SICK.
+	  # say installgs.mkdirerr2 $theDir
+          echo "You ARE root, but I am unable to create $theDir "
+          echo "This could be because the parent directory does not exist,"
+          echo "or it exists on an NFS-mounted filesystem."
+
+	  installgsDisclaimer
+        else
+	  # Have them try again as "root"
+	  # say installgs.mkdirerr3
+          echo "You may need to be "root" to create this directory.  Please log in as"
+          echo "root and run this script again."
+        fi
+        rm -f $tmpFile
+        installgsNotDone
+        exit 1
+      fi
+    fi    # -L $theDir
+  else
+    # it's there.
+    # say installgs.foundit $theDir
+    echo "Good, $theDir exists "
+  fi
+
+  # We need to get the permissions on the directory.
+  # If the directory is actually a symbolic link, we'll need to step into
+  #  the link to get the "real" directory name.  We can then test this
+  #  directory and make alterations as necessary.
+  # We'll need to make sure we change changed directories first, though.
+  #  We'll pushd into the directory, get its name, and popd back out!
+  if [ -h $theDir ]; then
+    echo "Investigating symbolic link for"
+    echo "  " $theDir
+    # nolinks is a special bash variable that causes pushd and pwd
+    # to show the actual value of the link.
+    # nolinks=1
+    # pushd $theDir > /dev/null
+    cd $theDir > /dev/null
+    theDir=`pwd`		# replace the string in theDir!
+    echo "It is found to point to:"
+    echo "  " $theDir
+    # popd > /dev/null
+    cd $GEMSTONE/install > /dev/null
+    # unset nolinks
+  fi
+
+  # Give it 770 permissions (not required, but suggested)
+  lsCommand="/bin/ls -ld"
+  $lsCommand $theDir >$tmpFile
+  read theProt junk <$tmpFile
+  rawPerm=`expr $theProt : ".\([rwxSs-]+\)"`
+
+  if [ "$theProt" != "drwxrws---" -a \
+        "$theProt" != "drwxrwx---" ]; then
+    # show current protection
+    # say installgs.prot1 $theDir
+    echo "Current protection of $theDir is:"
+    cat $tmpFile
+    echo ""
+
+    # now changing...
+    # say installgs.chgprotok $theDir
+    echo "The file/directory "
+    echo "  $theDir "
+    echo "needs to have group read and write access. It is also recommended to remove "
+    echo "world permissions from this directory."
+    echo "If you would like me to do this now, press \"y\" [y] "
+
+    prompt="y"
+    if [ "x$prompt" = "xy" ] || [ "x$prompt" = "xY" ] \
+       || [ "x$prompt" = "x" ]; then
+      chmod 770 $theDir
+      status=$?
+      if [ $status -ne 0 ]; then
+        # trouble
+        # say installgs.chgproterr1 $theDir
+        echo "Unable to  chmod 770 $theDir "
+        if [ $myEffectiveUid -eq 0 ]; then
+          # really weird, guys
+          # say installgs.chgproterr2
+          echo "You ARE root, but I am unable to set the appropriate protections of"
+          echo "   $theDir "
+          echo "This could be because the file is on an NFS-mounted file-system."
+          installgsDisclaimer
+        else
+          # advise to be root
+          # say installgs.chgproterr3
+          echo "You may need to be \"root\" to set this protection.  Please log in as"
+          echo "root and run this script again."
+
+        fi
+        rm -f $tmpFile
+        installgsNotDone
+        exit 1
+      else
+        echo ""
+      fi
+    else
+      # say installgs.reallyoughta "World access of $theDir"
+      echo "World access of $theDir is not _strictly_ required for the proper"
+      echo "operation of GemStone, but diverging from this practice may cause"
+      echo "difficulties later on."
+      # but keep going
+    fi
+  else
+    # OK
+    # say installgs.protok $theDir
+    echo "Good; the protection of "
+    echo "   $theDir "
+    echo "seems OK."
+
+  fi
+done
+
+#==========================================================================
+# Some steps that require privileges
+#==========================================================================
+
+#--------------------------------------------------------------------------
+#  If this script finds itself to be "root", the next block of code 
+#   executes.  It will change the ownership and group of the gemstone
+#   files, 
+echo ""
+# say installgs.prompt
+echo "-----------------------------------------------------------------"
+echo ""
+permchange=0
+if [ $myEffectiveUid -eq 0 ]; then
+
+  #------------------------------------------------------------------------
+  # Now set group and owner protection of all files
+  #  explain and see if user wants to skip
+
+  # say installgs.fileprot $GEMSTONE
+  echo "File protection/permissions will be altered at this step.  It is possible"
+  echo "that, when GemStone was extracted from the distribution media, the file"
+  echo "permissions changed from what is recommended for GemStone.  The GemStone source"
+  echo "tree will be analyzed and incorrect file permissions will be repaired."
+  echo "As the effective user id is currently root, you may change the"
+  echo "owning user name and group name of the GemStone directory from those of"
+  echo "the user that extracted GemStone from the distribution media."
+  echo ""
+  echo "WARNING:  To change any ownerships, you should rerun this installation."
+  echo ""
+  echo "We can now change the user id and group id (to the desired \"owning\" user"
+  echo "account) for all the files under the directories:"
+  echo "    $GEMSTONE "
+  echo "    $GEMSTONE_LOCKBASE "
+  echo "    $GEMSTONE_LOCKDIR "
+  echo "    $OPT_GEMSTONE_LOGDIR  "
+  echo "Do you wish to set file ownership now [y]?"
+
+  prompt="y"
+  if [ "x$prompt" != "xn" ] && [ "x$prompt" != "xN" ]; then 
+    permchange=1
+    chownFile="/tmp/installgs-$$-check"
+    touch $chownFile
+
+    prompt="y"
+    while [ "x$prompt" = "xy" ] || [ "x$prompt" = "xY" ]; do
+      # say installgs.uuser
+      echo "What is the Unix login name to which the files should belong?"
+      theUser=$myRealUid
+      # The following tries to determine if the specified user exists
+      chown $theUser $chownFile
+      if [ "$?" != "0" ]; then
+	# trouble with chown
+	# say installgs.chown $theUser
+        echo "chown failed with user  $theUser ."
+        echo "Would you like to try a different user name [y]?"
+
+	prompt="n"
+	if [ "x$prompt" = "x" ]; then
+	  prompt="y"
+	fi
+      else
+	prompt="n"
+      fi
+    done
+
+    prompt="y"
+    while [ "x$prompt" = "xy" ] || [ "x$prompt" = "xY" ]; do
+      # say installgs.ugroup
+      echo "What is the Unix group name to which the files should belong?"
+
+      theGroup=$myEffectiveUid
+      # The following tries to determine if the specified group exists
+      chgrp $theGroup $chownFile
+      if [ "$?" != "0" ]; then
+	# trouble with chgrp
+	# say installgs.chgrp $theGroup
+        echo "chgrp failed with group   $theGroup "
+        echo "Would you like to try a different group name [y]?"
+
+	prompt="n"
+	if [ "x$prompt" = "x" ]; then
+	  prompt="y"
+	fi
+      else
+	prompt="n"
+      fi
+    done
+    rm -f $chownFile
+    
+    echo "-----------------------------------------------------------------"
+    $GEMSTONE/install/machine_grp $theGroup -o$theUser
+    status=$?
+    if [ $status -ne 0 ]; then 
+      # trouble
+      # say installgs.proterr
+      echo "ERROR:  Unable to set ownerships and protections on GemStone files."
+      # Gt: the original script continued here, but let's figure out what happened
+      exit 1
+    fi
+    echo ""
+
+    # Ask the user if they want a default database setup.
+    # This is done by copying $GEMSTONE/bin/extent0.dbf to $GEMSTONE/data.
+    # say installgs.defaultdb "$GEMSTONE"
+    installgsDefaultDb
+
+    prompt="y"
+    if [ "x$prompt" = "xn" ] || [ "x$prompt" = "xN" ]; then
+      defaultdb=0
+    else # copy it
+      defaultdb=1
+      cp $GEMSTONE/bin/extent0.dbf $GEMSTONE/data/
+    fi
+    
+    # Tell the user about setuid and the warnings involved.  Then, explain
+    #  to them that they can protect the database, or completely undo the
+    #  setuid stuff and make the database accessable by anyone.
+    # say installgs.setuidexp "$theUser" "$theGroup" "$GEMSTONE" "$theUser" "$theGroup" 
+    echo "In a simple installation, several GemStone programs can have their"
+    echo ""setuid/setgid protection bits" set.  In this configuration, only the user"
+    echo "  $theUser  of group  $theGroup  "
+    echo "can directly access the repository.  However, should any user execute one of"
+    echo "the GemStone programs in the directory,"
+    echo "  $GEMSTONE "
+    echo "it will appear to be executed as (have effective uid/gid of)"
+    echo "  $theUser  (of group  $theGroup ),"
+    echo "thereby allowing them access to the repository.  This provides a certain"
+    echo "level of protection to the repository file.  Moreover, simple GemStone"
+    echo "configurations will never run into file protection failures.  The"
+    echo "disadvantage is that users will not be able to run applications linked"
+    echo "with gcilnkobj.o unless the owner, group, and protections on the"
+    echo "resulting executables are set correctly."
+    echo "If you would rather not deal with setuid/setgid, you can choose"
+    echo "to clear the setuid/setgid bit on GemStone programs, but the"
+    echo "repository file will be readable and writable by all users."
+    echo ""
+    echo "WARNING:  To change any permissions, you should rerun this installation."
+    echo ""
+    echo "Would you like to keep the repository protected? [y]"
+
+    read prompt
+    if [ "x$prompt" = "xn" ] || [ "x$prompt" = "xN" ]; then 
+      # say installgs.clruidgid 
+      echo "Clearing setuid/setgid bits..."
+      if [ -f $GEMSTONE/data/extent0.dbf ]; then
+        chmod 660 $GEMSTONE/data/extent0.dbf
+      fi
+      chmod 770 $GEMSTONE/data	# so that tranlogs can be made
+      find $GEMSTONE \( -perm 6555 -o -perm 6755 -o -perm 6775 \) \
+	  -exec chmod ug-s {} \;
+    else
+      # change the DBF.  Note that data/extent0.dbf may not be in packing list
+      if [ -f $GEMSTONE/data/extent0.dbf ]; then
+        chown $theUser $GEMSTONE/data/extent0.dbf
+        chgrp $theGroup $GEMSTONE/data/extent0.dbf
+	chmod 600 $GEMSTONE/data/extent0.dbf
+      fi
+      chmod 770 $GEMSTONE/data	
+
+      chown $theUser $GEMSTONE/data/system.conf
+      chgrp $theGroup $GEMSTONE/data/system.conf
+
+      # change affected executables
+      for each in sys/topazlconvert sys/stoneconvert \
+	bin/topaz sys/gem sys/pgsvr sys/pgsvrslow sys/pgsvrmain sys/stoned
+      do
+        if [ ! -f $GEMSTONE/$each ]; then
+	  continue
+	fi
+	chmod u+s $GEMSTONE/$each
+      done
+    fi
+  fi
+  chmod 644 $GEMSTONE/data/system.conf
+
+  echo "-----------------------------------------------------------------"
+  # explain about netldi setuid
+  # say installgs.setuid2
+  echo "Some sites find it convenient to set the owner and protection of the netldi"
+  echo "executable so that any user may start a netldi.  This executable invokes the"
+  echo "setregid() and setreuid() system calls, so it needs to run as 'root'."
+  echo ""
+  echo "Enabling root setuid permission on GemStone executables will not compromise"
+  echo "system security."
+  echo "Note that it is possible to run the netldi without being root by using"
+  echo "guest mode and captive account mode. See the GemStone System Administrator's"
+  echo "Guide for details."
+
+
+  # get permission
+  # say installgs.setuid3
+  echo "Since you are root, you may now do this, if you wish.  Do you wish non-root"
+  echo "users to be able to start a netldi? [y]"
+
+  wantsProtection=n
+  if [ "x$prompt" = "xn" ]; then 
+    wantsProtection=n
+  fi
+  if [ $wantsProtection = y ]; then 
+    # change owner to root 
+    chown root $GEMSTONE/sys/netldid
+    status=$?
+    if [ $status -ne 0 ]; then 
+      # must not be root on this particular disk.
+      echo "ERROR: chown root $GEMSTONE/sys/netldid , failed with status  $status "
+      # say installgs.proterr2
+      echo "Perhaps this is an NFS-mounted disk upon which you do not have  root"
+      echo "access.  Log in to the host where these files actually reside as root,"
+      echo "and run this script again."
+
+      rm -f $tmpFile
+    else
+      # change protection.  Since chown worked, presumably this chmod will
+      # also work.
+      chmod u+s $GEMSTONE/sys/netldid
+    fi
+  else
+    chmod ug-s $GEMSTONE/sys/netldid # since euid isn't root
+  fi
+else
+  # can't do it; show how
+  # say installgs.fileprotman "$GEMSTONE"
+  echo ""
+  echo "File protections on all files need to be set so that GemStone users can read"
+  echo "(and in some cases, execute, or even write) the files under $GEMSTONE."
+  echo "As you are not logged in as root, you will need to do this step manually,"
+  echo "or you will need to reinstall GemStone as root. Please see the relevant"
+  echo "section of the System Administrator's Guide."
+  # say installgs.setuid4
+  echo "Some sites find it convenient to set the owner and protection of the netldi"
+  echo "executable so that any user may start a netldi.  This executable invokes the"
+  echo "setregid() and setreuid() system calls, so it needs to run as  root . "
+  echo ""
+  echo "Since you are not root, you cannot do this now."
+  echo "If you wish to do this, log in as root and then execute:"
+  echo ""
+  echo "   chmod ug+s $GEMSTONE/sys/netldid"
+  echo "   chown root $GEMSTONE/sys/netldid"
+  echo ""
+  echo "Note that it is possible to run the netldi without being root by using"
+  echo "guest mode and captive account mode. See the GemStone System Administrator's"
+  echo "Guide for details."
+
+  # Ask the user if they want a default database setup.
+  # This is done by copying $GEMSTONE/bin/extent0.dbf to $GEMSTONE/data.
+  # say installgs.defaultdb "$GEMSTONE"
+  installgsDefaultDb
+
+  prompt="y"
+  if [ "x$prompt" = "xn" ] || [ "x$prompt" = "xN" ]; then
+    defaultdb=0
+  else # copy it
+    defaultdb=1
+    cp $GEMSTONE/bin/extent0.dbf $GEMSTONE/data/
+    chmod 600 $GEMSTONE/data/extent0.dbf
+  fi
+fi
+
+echo "-----------------------------------------------------------------"
+echo ""
+
+keyFile=$GEMSTONE/sys/gemstone.key
+
+if [ ! -f $keyFile ]; then
+  myType=$HOSTTYPE.$OSTYPE
+  # Explain key files, ask if we should install one.
+  # say installgs.key2 "$SCS" "$myType"
+  echo "WARNING:  You may need to contact $SCS and request a key file."
+  echo "    This is not necessary if this host will not be running a stone process."
+  echo ""
+  echo "    If you call us, you will need to tell us the following:"
+  echo ""
+  echo "Host type: $myType  "
+  echo ""
+  echo "Do you have a key file you wish to install now [n]?"
+
+  prompt="n"
+  if [ "x$prompt" = "xy" ] || [ "x$prompt" = "xY" ]; then
+    theFile=$keyFile
+    while [ 1 ];
+    do
+      # get name of file
+      # say installgs.key3
+      echo "Please enter full path name of your key file, "
+      echo " or the key file name relative to the current directory:"
+
+      read theFile
+      if [ -f $theFile ]; then
+        break
+      else
+      # no such file
+      # say installgs.key4 $theFile
+      echo "Cannot find file $theFile.  Please try again"
+      fi
+    done
+    echo "-----------------------------------------------------------------"
+    # make target directory writeable
+    chmod u+w $GEMSTONE/sys
+    status=$?
+    if [ $status -ne 0 ]; then
+      # trouble!
+      # say installgs.key5 "$GEMSTONE/sys"
+      echo "ERROR:  Unable to chmod directory $GEMSTONE/sys to be writable"
+      installgsDisclaimer
+      rm -f $tmpFile
+      installgsNotDone
+      exit 1
+    fi
+    cp $theFile $keyFile
+    status=$?
+    if [ $status -ne 0 ]; then
+      # trouble!
+      # say installgs.key6 $keyFile
+      echo "ERROR:  Unable to cp to file $keyFile "
+      installgsDisclaimer
+      rm -f $tmpFile
+      installgsNotDone
+      exit 1
+    fi
+    chmod 444 $keyFile
+    # change the owner/group id of the key file if the user asked to have
+    #  the rest of the directory changed
+    if [ $permchange = 1 ]; then
+      chown $theUser $keyFile
+      chgrp $theGroup $keyFile
+    fi
+    chmod u-w $GEMSTONE/sys
+    # if first chmod worked, these should too!
+  fi
+else
+  # say installgs.key7 $keyFile
+  echo "Good, key file"
+  echo "    $keyFile  "
+  echo "is already in place."
+
+  # change the owner/group id of the key file if the user asked to have
+  #  the rest of the directory changed
+  if [ $permchange = 1 ]; then
+    chown $theUser $keyFile
+    chgrp $theGroup $keyFile
+  fi
+fi
+
+# Verify correctness of keyfile
+keyFileOk="n"
+if [ -f $keyFile ]; then
+  $GEMSTONE/sys/stoned -k >$tmpFile 2>&1
+  status=$?
+  if [ $status -ne 0 ]; then
+    # key file doesn't work
+    # say installgs.key8
+    echo "WARNING:  key file is invalid or expired: "
+    echo ""
+    cat $tmpFile
+    echo ""
+    # but not necessarily fatal.
+    # say installgs.key9 "$SCS"
+    echo "This is not fatal if this host is will not be running stone processes;"
+    echo " otherwise you should contact $SCS for assistance."
+
+    # say installgs.prompt
+    echo "[press return to continue]"
+    read prompt
+    echo "-----------------------------------------------------------------"
+  else
+    keyFileOk="y"
+    # say installgs.key10
+    echo "Good; your key file seems to be functional."
+  fi
+fi
+
+cd $ORIGDIR
+
+# remove old debris from environment
+unset GEMSTONE_SYS_CONF
+unset GEMSTONE_EXE_CONF
+unset GEMSTONE_LOG
+. $GEMSTONE/bin/gemsetup.sh
+
+if [ "$hasService" = "n" ]; then
+  # say installgs.nostartstuff 
+  echo "We noted earlier that you do not have a netldi entry in your services"
+  echo "database. GemStone requires that entry to be present. You will need to"
+  echo "have an entry similar to the following inserted in your services database:"
+  echo ""
+        echo "$ldiName   40055/tcp   # GemStone "
+  echo ""
+  echo "Note that the service port number ("40055" in this case) must be the same"
+  echo "as the $ldiName port number on any other machine on which you have GemStone"
+  echo "installed."
+  echo ""
+  echo "When this task has been done, you can run GemStone programs. To start a"
+  echo "netldi, use "startnetldi". Similarly, to start a stone, use "startstone"."
+  echo "You may need to add these commands to your system startup file."
+
+  rpcinfo -p | grep ypbind > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    # say installgs.usingyp `ypwhich`
+    nisServer=`ypwhich`
+    echo "As you are seem to be using NIS the services entry"
+    echo "should be placed in the services file residing on  $nisServer  . "
+    echo ""
+    echo "Don't forget the  ypmake , if required by your NIS."
+  fi
+  # say installgs.bye
+  echo ""
+  echo "End of GemStone installation"
+  rm -f $tmpFile
+  exit 0
+else
+  # explain about netldi's.  want to start one?
+  # say installgs.boot1
+  echo "Every host that will be running a GemStone session process (gem process)"
+  echo "must run a netldi process."
+  echo ""
+  echo "[Note that NFS makes an assumption that makes it unsuitable for"
+  echo "files that have more than one writer; hence a host that NFS mounts a file"
+  echo "cannot be substituted for the host on which the file actually resides.]"
+  echo ""
+  echo "Do you wish to start a netldi (network server) now? [n]"
+
+  wantsNetldi="n"
+  echo "-----------------------------------------------------------------"
+
+  if [ "x$wantsNetldi" = "xy" ]; then
+    # say installgs.netldioptions
+    if [ $myEffectiveUid -eq 0 ]; then
+      # say installgs.netldiroot
+      echo "There are two primary ways of starting a netldi process. Because the job"
+      echo "of the netldi process is to start other processes on behalf of GemStone"
+      echo "users, it is important to insure that ownership and permissions of the"
+      echo "netldi process are correct for your system."
+      echo ""
+      echo "One option is to run the netldi in guest mode, with a captive account."
+      echo "In this mode, all processes started by the netldi will act as if started"
+      echo "by that captive account."
+      echo ""
+      echo "The other option is to start the netldi as root. In this case, processes"
+      echo "started by the netldi will act as if started by the user which was"
+      echo "established as the setuid user earlier in this installation."
+      echo ""
+      echo "Do you want to start the netldi as 'root'? [y]"
+
+    else
+      # say installgs.netldicaptive
+      echo "Because you are not running as 'root', we will start the netldi in guest"
+      echo "mode, with your user ID as the captive account. This means that all"
+      echo "processes started by the netldi will act as if started by you. If this"
+      echo "is not how you want the netldi to run, when the installation is complete,"
+      echo "run 'stopnetldi', su to 'root', and start the netldi again as root."
+      echo ""
+      echo "Is this how you would like to start the netldi? [y]"
+
+    fi
+
+    useDefault="y"
+    if [ "x$useDefault" != "xn" ] && [ "x$useDefault" != "xN" ]; then
+      if [ $myEffectiveUid -eq 0 ]; then
+        $GEMSTONE/bin/startnetldi
+      else
+        $GEMSTONE/bin/startnetldi -g -a$myRealUid
+      fi
+    fi
+  fi
+
+  if [ $keyFileOk != "y" ]; then
+    # Can't start a stone without a key file.
+    # say installgs.nokeyfile
+    echo "Since you do not have a valid key file, you can not start a Stone"
+    echo "repository monitor process on this host "
+
+  elif [ $myEffectiveUid -eq 0 ]; then
+    if [ $defaultdb ]; then
+      # say installgs.nostoneasroot
+      echo "GemStone uses a central repository monitor process (called Stone) to manage"
+      echo "critical (non-shareable) resources. However, we do not recommend starting"
+      echo "the Stone repository monitor as 'root'. When this installation is complete,"
+      echo "log in as the user you wish to own the Stone repository monitor and run the"
+      echo "'startstone' utility."
+      echo ""
+
+    else
+      # say installgs.nodefaultdbasroot
+      echo "GemStone uses a central repository monitor process (called Stone) to manage"
+      echo "critical (non-shareable) resources. However, we do not recommend starting"
+      echo "the Stone repository monitor as 'root'. When this installation is complete,"
+      echo "log in as the user you wish to own the Stone repository monitor,"
+      echo "setup and configure a repository as described in the system administration"
+      echo "manual and start it using the 'startstone' utility."
+
+    fi
+  elif [ ! $defaultdb ]; then
+    # Can't start a stone without a extent0.dbf in $GEMSTONE/data
+    # say installgs.nodefaultdb
+    echo "Since you chose not to copy an extent to the 'data' directory the installer"
+    echo "is not able to start a stone. When this installation is complete,"
+    echo "setup and configure a repository as described in the system administration"
+    echo "manual and start it using the 'startstone' utility."
+
+  else
+    # Explain about stones.  Want to start one?
+    echo "-----------------------------------------------------------------"
+    # say installgs.startstone
+    echo "GemStone uses a central repository monitor process (called Stone) to manage"
+    echo "critical (non-shareable) resources."
+    echo ""
+    echo "Do you wish to start a Stone repository server now? [n]"
+
+    wantsStone="n"
+    if [ "x$wantsStone" = "xy" ]; then
+      $GEMSTONE/bin/startstone
+    fi
+  fi
+fi
+
+rm -f $tmpFile
+
+# No servers?  All done.
+if [ "x$wantsStone" != "xy" -a "x$wantsNetldi" != "xy" ]; then
+  # say installgs.hooray
+  installgsHooray
+  exit 0
+fi
+
+# say installgs.rc1
+echo "    If you wish to have GemStone servers start automatically at system boot"
+echo "    time, you will have to modify the system startup scripts.  See the"
+echo "    GemStone System Administrator's Guide for more information."
+
+
+# all done!
+# say installgs.bye
+echo ""
+echo "End of GemStone installation"
+
+# say installgs.hooray
+installgsHooray
+
+exit 0

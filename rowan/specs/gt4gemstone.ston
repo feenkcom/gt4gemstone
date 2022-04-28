@@ -1,0 +1,18 @@
+RwLoadSpecificationV2 {
+	#specName : 'gt4gemstone',
+	#projectName : 'gt4gemstone',
+	#gitUrl : 'git@github.com:feenkcom/gt4gemstone.git',
+	#revision : 'main',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'SystemUser' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}

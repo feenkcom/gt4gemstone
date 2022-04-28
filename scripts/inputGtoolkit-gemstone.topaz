@@ -1,0 +1,8 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	input $ROWAN_PROJECTS_HOME/gt4gemstone/src-gs/gt4gemstone.gs
+	commit
+
+	errorCount

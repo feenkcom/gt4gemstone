@@ -1,4 +1,4 @@
-# gtoolkit-gemstone
+# gt4gemstone
 A Gtoolkit interface to GemStone
 
 ## Installation
@@ -7,7 +7,7 @@ To install the Pharo component in a Gt image (currently only tested in a vanilla
 
 ```smalltalk
 Metacello new
-	repository: 'github://feenkcom/gtoolkit-gemstone:main/src';
+	repository: 'github://feenkcom/gt4gemstone:main/src';
 	baseline: 'GtGemstoneClient';
 	load
 ```

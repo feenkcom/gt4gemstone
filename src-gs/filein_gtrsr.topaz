@@ -1,6 +1,0 @@
-input GtRsrEvaluatorService.gs
-input GtRsrEvaluatorServiceServer.gs
-input GtRsrEvaluatorServiceTest.gs
-input GtRsrProxyService.gs
-input GtRsrProxyServiceServer.gs
-

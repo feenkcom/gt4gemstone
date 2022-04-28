@@ -10,11 +10,26 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 
 	spec for: #common do: [ 
 		spec
-			baseline: 'RemoteServiceReplication'
-			with: [ spec repository: 'github://GemTalk/RemoteServiceReplication:main/src' ].
+			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
+			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:main/src' ].
+		spec
+			baseline: 'SparkleFFIForGlamorousToolkit'
+			with: [ spec repository: 'github://feenkcom/SparkleFFI:main/src' ].
+		spec 
+			baseline: 'GToolkitRemote' 
+			with: [ spec repository: 'github://feenkcom/gtoolkit-remote:main/src' ].
+		spec
+			baseline: 'LepiterEngineCore'
+			with: [ spec repository: 'github://feenkcom/lepiter:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone' with:
-				[ spec requires: #( 'RemoteServiceReplication' ) ];
+				[ spec requires: #( 'SparkleFFIForGlamorousToolkit' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
-				[ spec requires: #( 'GToolkit-GemStone' ) ] ].
+				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' ) ];
+			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
+				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
+			package: 'GToolkit-GemStone-Lepiter' with:
+				[ spec requires: #( 'GToolkit-GemStone-Pharo' 'LepiterEngineCore') ];
+			package: 'GToolkit-RemoteExamples-GemStone' with:
+				[  spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
 ]
