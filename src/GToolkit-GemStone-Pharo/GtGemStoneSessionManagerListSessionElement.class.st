@@ -10,70 +10,65 @@ Class {
 		'activated',
 		'actions'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #initialization }
 GtGemStoneSessionManagerListSessionElement >> initialize [
 	super initialize.
-	
+
 	self addAptitude: BrGlamorousListItemAptitude.
-	
+
 	self hMatchParent.
 	self vFitContent.
 	self alignCenterLeft.
-	
-	self addAptitude:
-		(BrGlamorousWithContextMenuAptitude
-			content: [
-				BrGlamorousSimpleContextMenuContent new
-					items: (
-				self gemStoneSessionViewModel allSessionActions
-					collect: [ :eachAction | eachAction label -> [ :anElement | eachAction performActionOn: anElement ] ]) ]).
+
+	self
+		addAptitude: (BrGlamorousWithContextMenuAptitude
+				content: [ BrGlamorousSimpleContextMenuContent new
+						items: (self gemStoneSessionViewModel allSessionActions
+								collect: [ :eachAction | eachAction label -> [ :anElement | eachAction performActionOn: anElement ] ]) ]).
 
 	self
 		when: BlClickEvent
-		do: [ :anEvent |
+		do: [ :anEvent | 
 			anEvent consumed: true.
-			anEvent currentTarget gemStoneSessionViewModel selectSessionWithoutOtherEntities ].
+			anEvent currentTarget gemStoneSessionViewModel
+				selectSessionWithoutOtherEntities ].
 
 	self
 		when: BlDoubleClickEvent
 		do: [ :anEvent | 
 			anEvent consumed: true.
-			anEvent currentTarget phlow spawnObject: anEvent currentTarget gemStoneSessionViewModel gemStoneSession ].
-	
-	activated := BrGlamorousVectorIcons accept asElement background: self theme default primaryBorderColor.
+			anEvent currentTarget phlow
+				spawnObject: anEvent currentTarget gemStoneSessionViewModel gemStoneSession ].
+
+	activated := BrGlamorousVectorIcons accept asElement
+			background: self theme default primaryBorderColor.
 	activated margin: (BlInsets left: 2).
-	
-	name := BrLabel new
-		aptitude: BrGlamorousLabelAptitude;
-		hMatchParent.
-		
-	username := BrLabel new
-		aptitude: BrGlamorousLabelAptitude;
-		hMatchParent.
-		
-	stoneName := BrLabel new
-		aptitude: BrGlamorousLabelAptitude;
-		hMatchParent.
+
+	name := BrLabel new hMatchParent.
+
+	username := BrLabel new hMatchParent.
+
+	stoneName := BrLabel new hMatchParent.
 
 	actions := BrToolbar new
-		aptitude: (BrGlamorousToolbarAptitude new spacing: 2);
-		fitContent.
+			aptitude: (BrGlamorousToolbarAptitude new spacing: 2);
+			fitContent.
 
-	self addAptitude: (BrStyleCommonAptitude new
-		@ actions;
-		default: [ :aStyle | aStyle visibility: BlVisibility hidden ];
-		hovered: [ :aStyle | aStyle visibility: BlVisibility visible ]).
+	self
+		addAptitude: (BrStyleCommonAptitude new
+				@ actions;
+				default: [ :aStyle | aStyle visibility: BlVisibility hidden ];
+				hovered: [ :aStyle | aStyle visibility: BlVisibility visible ]).
 
-	self addChildren: { 
-		activated.
-		name.
-		username.
-		stoneName.
-		actions
-	}
+	self
+		addChildren: {activated.
+				name.
+				username.
+				stoneName.
+				actions}
 ]
 
 { #category : #'api - gem stone session view model' }
