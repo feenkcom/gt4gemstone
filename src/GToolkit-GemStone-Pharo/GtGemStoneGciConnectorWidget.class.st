@@ -19,73 +19,73 @@ GtGemStoneGciConnectorWidget class >> onConnector: aGtGemStoneGciConnector prope
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListHeader [
-	self
-		addChild: (BrHorizontalPane new
-				hMatchParent;
-				vFitContent;
-				padding: (BlInsets all: 2);
-				addChild: (BrLabel new
-						hExact: self propertyWidth;
-						vFitContent;
-						text: 'Property');
-				addChild: (BrLabel new text: 'Value'))
+
+	self addChild: (BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets all: 2);
+		addChild: (BrLabel new 
+			hExact: self propertyWidth;
+			vFitContent;
+			aptitude: BrGlamorousLabelAptitude new;
+			text: 'Property');
+		addChild: (BrLabel new 
+			aptitude: BrGlamorousLabelAptitude new;
+			text: 'Value'))
 ]
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListLabelName: nameSymbol title: titleString [
 	"Add a string label field"
 
-	self
-		addChild: (BrHorizontalPane new
-				hMatchParent;
-				vFitContent;
-				padding: (BlInsets all: 2);
-				addChild: (BrLabel new
-						hExact: self propertyWidth;
-						text: titleString);
-				addChild: (BrLabel new
-							vFitContent;
-							hMatchParent)
-					as: nameSymbol)
+	self addChild: (BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets all: 2);
+		addChild: (BrLabel new 
+			hExact: self propertyWidth;
+			aptitude: BrGlamorousLabelAptitude new;
+			text: titleString);
+		addChild: (BrLabel new
+			aptitude: BrGlamorousLabelAptitude;
+			vFitContent;
+			hMatchParent) as: nameSymbol)
 ]
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleString [
 	"Add a string input field"
 
-	self
-		addChild: (BrHorizontalPane new
-				hMatchParent;
-				vFitContent;
-				padding: (BlInsets all: 2);
-				addChild: (BrLabel new
-						hExact: self propertyWidth;
-						text: titleString);
-				addChild: (BrEditor new
-							aptitude: (BrGlamorousRegularEditorAptitude new replacingText: $*)
-									+ BrGlamorousInputFieldSpacingAptitude;
-							vFitContent;
-							hMatchParent)
-					as: nameSymbol)
+	self addChild: (BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets all: 2);
+		addChild: (BrLabel new 
+			hExact: self propertyWidth;
+			aptitude: BrGlamorousLabelAptitude new;
+			text: titleString);
+		addChild: (BrEditor new
+			aptitude: (BrGlamorousRegularEditorAptitude new replacingText: $*) + BrGlamorousInputFieldSpacingAptitude;
+			vFitContent;
+			hMatchParent) as: nameSymbol)
 ]
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString [
 	"Add a string input field"
 
-	self
-		addChild: (BrHorizontalPane new
-				hMatchParent;
-				vFitContent;
-				padding: (BlInsets all: 2);
-				addChild: (BrLabel new
-						hExact: self propertyWidth;
-						text: titleString);
-				addChild: (BrEditor new
-							aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
-							vFitContent;
-							hMatchParent)
-					as: nameSymbol)
+	self addChild: (BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets all: 2);
+		addChild: (BrLabel new 
+			hExact: self propertyWidth;
+			aptitude: BrGlamorousLabelAptitude new;
+			text: titleString);
+		addChild: (BrEditor new
+			aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
+			vFitContent;
+			hMatchParent) as: nameSymbol)
 ]
 
 { #category : #initialization }
