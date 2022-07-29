@@ -8,7 +8,7 @@ The properties file is not normally manipulated directly, but through the regist
 Class {
 	#name : #GtGemStonePropertiesFile,
 	#superclass : #GtPropertiesFile,
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #adding }
@@ -118,6 +118,16 @@ GtGemStonePropertiesFile >> gtPropertiesFor: aView [
 		view: #gtLiveFor:
 ]
 
+{ #category : #ui }
+GtGemStonePropertiesFile >> gtViewConnectorsFor: aView [
+	<gtView>
+
+	properties ifNil: [ ^ aView empty ].
+	^ aView list 
+		title: 'Connectors';
+		items: [ self allConnectors]
+]
+
 { #category : #testing }
 GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
@@ -143,9 +153,10 @@ GtGemStonePropertiesFile >> loadProperties [
 		self subscribeToConnector: connector ].
 
 	"Ensure there is always a default connector"
-	self namedConnectors ifEmpty:
-		[ self connectorNamed: self defaultConnectorName put: GtGemStoneGciConnector new ].
-
+	self namedConnectors ifEmpty: [ 
+		self 
+			connectorNamed: self defaultConnectorName 
+			put: GtGemStoneGciConnector new ].
 ]
 
 { #category : #private }

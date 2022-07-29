@@ -11,7 +11,7 @@ Class {
 		'libraryPath',
 		'gemstoneVersion'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #connecting }
@@ -109,7 +109,6 @@ GtGemStoneGciConnector >> newSession [
 
 	GciInterface libraryDirectory: libraryPath fullName.
 	^ self loggedInSession. 
-
 ]
 
 { #category : #accessing }
