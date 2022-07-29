@@ -31,7 +31,9 @@ GtGemStoneSessionRegistry class >> default [
 
 	self hasUniqueInstance ifTrue: [ ^ uniqueInstance ].
 
-	uniqueInstance := self new propertiesFilename: LeDatabasesRegistry defaultPrimaryDatabase properties gemStonePropertiesFile.
+	uniqueInstance := self new 
+		propertiesFilename: LeDatabasesRegistry defaultPrimaryDatabase 
+			properties gemStonePropertiesFile.
 	^ uniqueInstance
 ]
 
@@ -135,11 +137,12 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 
 	^ aView explicit
-		title: 'Live';
+		title: 'Sessions';
 		priority: 10;
-		stencil: [ (GtGemStoneSessionManagerWidget onRegistry: self)
-						padding: (BlInsets all: 5);
-						addNewSessionButton ]
+		stencil: [
+			(GtGemStoneSessionManagerWidget onRegistry: self)
+				padding: (BlInsets all: 5);
+				addNewSessionButton ]
 ]
 
 { #category : #testing }
@@ -209,9 +212,10 @@ GtGemStoneSessionRegistry >> propertiesFilename [
 GtGemStoneSessionRegistry >> propertiesFilename: aFileReference [
 	"Open the registry's properties on the supplied file"
 
-	(propertiesFile isNotNil and: [ aFileReference = propertiesFile file ]) ifTrue: [ ^ self ].
+	(propertiesFile isNotNil and: [ 
+		aFileReference = propertiesFile file ]) 
+			ifTrue: [ ^ self ].
 	self propertiesFile: (GtGemStonePropertiesFile file: aFileReference).
-
 ]
 
 { #category : #private }
