@@ -24,12 +24,12 @@ cd $WORKSPACE/..
 echo "Download GemStone archives if required"
 if [ ! -e GemStone64Bit3.7.0-x86_64.Linux.zip ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStone64Bit3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha4/GemStone64Bit3.7.0-x86_64.Linux.zip
 fi
 
 if [ ! -e GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha2/GemStoneClientLibs3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha4/GemStoneClientLibs3.7.0-x86_64.Linux.zip
 fi
 
 cd ${imageDirectory}
