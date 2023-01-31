@@ -55,9 +55,12 @@ cd ..
 cd $GEMSTONE/install
 $SCRIPT_DIR/gtinstallgs
 
+# Configure Stone
+export STONE="gs64stone"
+
 # Load RSR and Gt packages
 startnetldi -g
-startstone
+startstone ${STONE}
 sleep 1
 
 echo "ROWAN_PROJECTS_HOME=$ROWAN_PROJECTS_HOME :"
@@ -70,6 +73,6 @@ ls -l $ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts
 #ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts/inputGtRemote.sh
 
 ${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh
-${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh
+${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh -s ${STONE}
 
 exit 0

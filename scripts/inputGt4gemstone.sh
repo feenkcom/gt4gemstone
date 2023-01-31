@@ -1,5 +1,5 @@
 #! /bin/bash
-### Load gt4gemstone from .gs files into a standard stone
+### Load gt4gemstone from .gs files into a given stone.
 ### Exits with 0 if success, 1 if failed
 
 set -e
@@ -7,6 +7,12 @@ set -e
 if [ -z "$ROWAN_PROJECTS_HOME" ]
 then
 	echo "ROWAN_PROJECTS_HOME must be defined"
+	exit 1
+fi
+
+if [ -z "$STONE" ]
+then
+	echo "STONE must be defined"
 	exit 1
 fi
 
