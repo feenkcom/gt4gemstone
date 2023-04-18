@@ -537,9 +537,3 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 	^ GtRsrProxyServiceServer object: self
 %
-
-, but that isn't happening yet."
-
-	^ GtRsrProxyServiceServer object: self
-%
-
