@@ -426,9 +426,9 @@ testSimpleScript
 	self assert: result equals: 7.
 %
 
-! Class extensions for #'Array'
+! Class extensions for 'Array'
 
-!		Instance methods for #'Array'
+!		Instance methods for 'Array'
 
 category: '*GToolkit-GemStone'
 method: Array
@@ -452,9 +452,9 @@ readFrom: aStream
 	^ self fromString: aStream upToEnd
 %
 
-! Class extensions for #'Dictionary'
+! Class extensions for 'Dictionary'
 
-!		Instance methods for #'Dictionary'
+!		Instance methods for 'Dictionary'
 
 category: '*GToolkit-GemStone'
 method: Dictionary
@@ -475,9 +475,9 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ proxyDict
 %
 
-! Class extensions for #'Object'
+! Class extensions for 'Object'
 
-!		Instance methods for #'Object'
+!		Instance methods for 'Object'
 
 category: '*GToolkit-GemStone'
 method: Object
@@ -490,10 +490,6 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self
 %
 
-! Class extensions for 'Object'
-
-!		Instance methods for 'Object'
-
 category: '*GToolkit-GemStone-GemStone'
 method: Object
 gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
@@ -502,9 +498,9 @@ gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	^ gemstoneBlock value
 %
 
-! Class extensions for #'OrderedCollection'
+! Class extensions for 'OrderedCollection'
 
-!		Instance methods for #'OrderedCollection'
+!		Instance methods for 'OrderedCollection'
 
 category: '*GToolkit-GemStone'
 method: OrderedCollection
@@ -528,9 +524,9 @@ allButFirstDo: block
 		[ :index | block value: (self at: index) ]
 %
 
-! Class extensions for #'Set'
+! Class extensions for 'Set'
 
-!		Instance methods for #'Set'
+!		Instance methods for 'Set'
 
 category: '*GToolkit-GemStone'
 method: Set
@@ -541,4 +537,3 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 	^ GtRsrProxyServiceServer object: self
 %
-
