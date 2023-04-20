@@ -7,12 +7,12 @@ fi
 # Download all the required archives, git clones, etc. and upack
 if [ ! -f GemStone64Bit3.7.0-i386.Darwin.dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha4/GemStone64Bit3.7.0-i386.Darwin.dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStone64Bit3.7.0-i386.Darwin.dmg
 fi
 
 if [ ! -f GemStoneClientLibs3.7.0-i386.Darwin.dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha4/GemStoneClientLibs3.7.0-i386.Darwin.dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStoneClientLibs3.7.0-i386.Darwin.dmg
 fi
 
 hdiutil attach GemStone64Bit3.7.0-i386.Darwin.dmg
