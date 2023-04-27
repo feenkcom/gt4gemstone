@@ -75,9 +75,12 @@ GtGemStoneSessionRegistry >> activeSessions [
 
 { #category : #actions }
 GtGemStoneSessionRegistry >> addNewConnector [ 
+	| newConnector |
 
-	^ propertiesFile addNewConnector.
-
+	newConnector := propertiesFile addNewConnector.
+	self assert: (connectors includesKey: newConnector name) not.
+	connectors at: newConnector name put: newConnector.
+	^ newConnector
 ]
 
 { #category : #accessing }
@@ -217,13 +220,18 @@ GtGemStoneSessionRegistry >> newSessionWithConnectorNamed: aString [
 GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnouncement [
 	"Propogate any announcements from the properties file.
 	If the connector has been renamed, rebuild the session dictionary."
-	| newSessions |
+	| newSessions newConnectors |
 
 	aGtGemStoneConnectorAnnouncement isNameChange ifTrue:
 		[ newSessions := Dictionary new.
 		sessions valuesDo: [ :session |
 			newSessions at: session name put: session ].
-		sessions := newSessions ].
+		sessions := newSessions.
+		connectors ifNotNil:
+			[ newConnectors := Dictionary new.
+			connectors valuesDo: [ :connector |
+				newConnectors at: connector name put: connector ].
+			connectors := newConnectors ] ].
 
 	self announce: aGtGemStoneConnectorAnnouncement
 ]
