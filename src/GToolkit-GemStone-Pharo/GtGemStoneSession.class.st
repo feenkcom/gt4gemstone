@@ -139,16 +139,16 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 ]
 
 { #category : #ui }
-GtGemStoneSession >> gtLiveFor: aView [
+GtGemStoneSession >> gtConnectorFor: aView [
 	<gtView>
-
-	^ aView explicit
-		title: 'Live';
-		priority: 10;
-		stencil: [ (GtGemStoneGciConnectorWidget 
-			onConnector: self connector
-			propertiesFile: (registry ifNotNil: [ registry propertiesFile ]))
-				padding: (BlInsets all: 5) ]
+	
+	connector ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Connector';
+		priority: 20;
+		object: [ connector ];
+		view: #gtLiveFor:;
+		actionUpdateButton
 ]
 
 { #category : #ui }
@@ -163,6 +163,26 @@ GtGemStoneSession >> gtLogFor: aView [
 		  priority: 20;
 		  text: [ self gemLogFileReference contents ];
 		  actionUpdateButton
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> gtPlaygroundFor: aView [
+	<gtView>
+
+	^ aView textEditor
+		title: 'Playground' translated;
+		priority: 100;
+		text: [ '' ];
+		styler: StParser gtStyler;
+		actionButtonIcon: BrGlamorousVectorIcons playinspect  
+			action: [ :aButton |
+				| statements result |
+				statements := aButton phlow textViewContent asString.
+				result := [ self connect evaluateAndWait: statements ]
+					on: Error
+					do: [ :ex | ex freeze ].
+				aButton phlow spawnObject: result ].
+
 ]
 
 { #category : #ui }

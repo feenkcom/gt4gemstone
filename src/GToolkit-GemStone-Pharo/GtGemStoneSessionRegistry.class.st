@@ -81,6 +81,12 @@ GtGemStoneSessionRegistry >> addNewConnector [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> addSession: aSession named: aString [
+
+	sessions at: aString put: aSession
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> allConnectors [
 
 	^ self connectors values
@@ -241,7 +247,7 @@ GtGemStoneSessionRegistry >> propertiesFile: aGtGemStonePropertiesFile [
 	self resetSessions.
 ]
 
-{ #category : #accessing }
+{ #category : #connectors }
 GtGemStoneSessionRegistry >> propertiesFileConnectors [
 	"Answer connectors specified in the properties file."
 	<gemstoneConnectors>
