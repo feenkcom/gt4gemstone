@@ -144,7 +144,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		(boundObject isKindOf: RsrService) ifTrue:
 			[ (boundObject isProxyObjectActive not or: 
 				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
-					[ pharoBindings remove: name ] ] ].
+					[ pharoBindings removeBindingOf: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
 

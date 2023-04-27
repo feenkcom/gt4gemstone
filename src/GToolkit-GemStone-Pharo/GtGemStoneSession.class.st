@@ -18,7 +18,8 @@ Class {
 		'connection',
 		'evaluator',
 		'connector',
-		'mutex'
+		'mutex',
+		'sessionId'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -156,7 +157,7 @@ GtGemStoneSession >> gtLogFor: aView [
 	"Display the contents of stdout of the receiver if the log file is available locally"
 
 	<gtView>
-	self gemLogFileReference exists ifFalse: [ ^ aView empty ].
+	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
 	^ aView textEditor
 		  title: 'Log';
 		  priority: 20;
@@ -194,7 +195,7 @@ GtGemStoneSession >> isRunning [
 { #category : #accessing }
 GtGemStoneSession >> name [
 
-	^ connector name
+	^ connector name, ':', sessionId asString
 ]
 
 { #category : #private }
@@ -237,6 +238,16 @@ GtGemStoneSession >> removeSelf [
 
 	self abortTransaction.
 	registry removeSession: self.
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> sessionId [
+	^ sessionId
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> sessionId: anObject [
+	sessionId := anObject
 ]
 
 { #category : #accessing }

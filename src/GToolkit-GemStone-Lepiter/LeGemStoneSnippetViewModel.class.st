@@ -29,7 +29,7 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> sessionName [
 
-	^ sessionName
+	^ sessionName ifNil: [ GtGemStoneNullConnector connectorName ].
 ]
 
 { #category : #accessing }
