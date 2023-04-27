@@ -12,7 +12,7 @@ Class {
 		'host',
 		'announcer'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #'api - announcer' }
@@ -104,6 +104,16 @@ GtGemStoneConnector >> printOn: aStream [
 		nextPut: $(;
 		<< self name;
 		nextPut: $).
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> propertiesFile [
+	^ propertiesFile
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> propertiesFile: anObject [
+	propertiesFile := anObject
 ]
 
 { #category : #'api - announcer' }

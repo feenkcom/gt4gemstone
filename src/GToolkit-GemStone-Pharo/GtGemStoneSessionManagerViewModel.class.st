@@ -43,7 +43,7 @@ GtGemStoneSessionManagerViewModel >> createGemStoneSessionsViewModel [
 
 	childObject := GtGemStoneSessionsViewModel new.
 	childObject parentGemStoneSessionManagerViewModel: self.
-	childObject activeSessions: self gemStoneSessionRegistry allSessions.
+	childObject activeSessions: self gemStoneSessionRegistry activeSessions.
 	^ childObject
 ]
 

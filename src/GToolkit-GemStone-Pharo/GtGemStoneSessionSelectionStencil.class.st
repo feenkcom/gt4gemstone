@@ -23,7 +23,7 @@ GtGemStoneSessionSelectionStencil >> create [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: ('GemStone ({1})' format: { (registry sessionNamed: currentSessionNameComputation value) name });
+					label: ('GemStone ({1})' format: { currentSessionNameComputation value });
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
@@ -31,7 +31,9 @@ GtGemStoneSessionSelectionStencil >> create [
 				[
 				| aCurrentSession aSessionManagerViewModel aSelectionElement |
 				
-				aCurrentSession := registry sessionNamed: currentSessionNameComputation value.
+				aCurrentSession := registry 
+					sessionNamed: currentSessionNameComputation value
+					ifAbsent: [ ].
 				
 				aSessionManagerViewModel := GtGemStoneSessionManagerViewModel new 
 					gemStoneSessionRegistry: registry.

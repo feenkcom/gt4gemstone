@@ -32,6 +32,19 @@ GtGemStoneGciConnector >> gemstoneVersion: anObject [
 	gemstoneVersion := anObject
 ]
 
+{ #category : #ui }
+GtGemStoneGciConnector >> gtLiveFor: aView [
+	<gtView>
+
+	^ aView explicit
+		title: 'Live';
+		priority: 10;
+		stencil: [ (GtGemStoneGciConnectorWidget 
+			onConnector: self
+			propertiesFile: self propertiesFile )
+				padding: (BlInsets all: 5) ]
+]
+
 { #category : #accessing }
 GtGemStoneGciConnector >> hostPassword [
 	^ hostPassword

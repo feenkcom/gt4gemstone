@@ -18,7 +18,8 @@ Class {
 		'connection',
 		'evaluator',
 		'connector',
-		'mutex'
+		'mutex',
+		'sessionId'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -138,16 +139,16 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 ]
 
 { #category : #ui }
-GtGemStoneSession >> gtLiveFor: aView [
+GtGemStoneSession >> gtConnectorFor: aView [
 	<gtView>
-
-	^ aView explicit
-		title: 'Live';
-		priority: 10;
-		stencil: [ (GtGemStoneGciConnectorWidget 
-			onConnector: self connector
-			propertiesFile: (registry ifNotNil: [ registry propertiesFile ]))
-				padding: (BlInsets all: 5) ]
+	
+	connector ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Connector';
+		priority: 20;
+		object: [ connector ];
+		view: #gtLiveFor:;
+		actionUpdateButton
 ]
 
 { #category : #ui }
@@ -156,12 +157,32 @@ GtGemStoneSession >> gtLogFor: aView [
 	"Display the contents of stdout of the receiver if the log file is available locally"
 
 	<gtView>
-	self gemLogFileReference exists ifFalse: [ ^ aView empty ].
+	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
 	^ aView textEditor
 		  title: 'Log';
 		  priority: 20;
 		  text: [ self gemLogFileReference contents ];
 		  actionUpdateButton
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> gtPlaygroundFor: aView [
+	<gtView>
+
+	^ aView textEditor
+		title: 'Playground' translated;
+		priority: 100;
+		text: [ '' ];
+		styler: StParser gtStyler;
+		actionButtonIcon: BrGlamorousVectorIcons playinspect  
+			action: [ :aButton |
+				| statements result |
+				statements := aButton phlow textViewContent asString.
+				result := [ self connect evaluateAndWait: statements ]
+					on: Error
+					do: [ :ex | ex freeze ].
+				aButton phlow spawnObject: result ].
+
 ]
 
 { #category : #ui }
@@ -194,7 +215,7 @@ GtGemStoneSession >> isRunning [
 { #category : #accessing }
 GtGemStoneSession >> name [
 
-	^ connector name
+	^ connector name, ':', sessionId asString
 ]
 
 { #category : #private }
@@ -237,6 +258,16 @@ GtGemStoneSession >> removeSelf [
 
 	self abortTransaction.
 	registry removeSession: self.
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> sessionId [
+	^ sessionId
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> sessionId: anObject [
+	sessionId := anObject
 ]
 
 { #category : #accessing }
