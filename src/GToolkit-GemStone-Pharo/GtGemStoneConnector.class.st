@@ -116,6 +116,12 @@ GtGemStoneConnector >> propertiesFile: anObject [
 	propertiesFile := anObject
 ]
 
+{ #category : #accessing }
+GtGemStoneConnector >> stone [
+
+	^ self subclassResponsibility
+]
+
 { #category : #'api - announcer' }
 GtGemStoneConnector >> unsubscribe: anObject [
 	"Unsubscribe all subscriptions of anObject from the receiver"
