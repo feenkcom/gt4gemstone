@@ -1,7 +1,10 @@
 Class {
 	#name : #LeGemStoneSnippet,
 	#superclass : #LeCodeSnippet,
-	#category : 'GToolkit-GemStone-Lepiter-Snippet'
+	#instVars : [
+		'connectorName'
+	],
+	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
 { #category : #'api - accessing menu' }
@@ -28,6 +31,16 @@ LeGemStoneSnippet >> acceptVisitor: aVisitor [
 LeGemStoneSnippet >> asSnippetViewModel [
 	<return: #LeSnippetViewModel>
 	^ LeGemStoneSnippetViewModel new snippetModel: self
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> connectorName [
+	^ connectorName
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> connectorName: anObject [
+	connectorName := anObject
 ]
 
 { #category : #initialization }

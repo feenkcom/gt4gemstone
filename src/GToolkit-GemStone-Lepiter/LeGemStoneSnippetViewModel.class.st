@@ -27,16 +27,22 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 ]
 
 { #category : #accessing }
-LeGemStoneSnippetViewModel >> sessionName [
+LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 
-	^ sessionName ifNil: [ GtGemStoneNullConnector connectorName ].
+	sessionName := aGtGemStoneSession name.
+	coderViewModel coderModel sessionName: sessionName.
+	self snippetModel connectorName: aGtGemStoneSession connector name.
 ]
 
 { #category : #accessing }
-LeGemStoneSnippetViewModel >> sessionName: aString [
+LeGemStoneSnippetViewModel >> sessionName [
 
-	sessionName := aString.
-	coderViewModel coderModel sessionName: aString.
+	^ sessionName ifNil: 
+		[ self snippetModel connectorName
+			ifNil: [ GtGemStoneNullConnector connectorName ]
+			ifNotNil: [ :name | 
+				sessionName := GtGemStoneSessionRegistry default
+					sessionWithConnectorNamed: name ] ].
 ]
 
 { #category : #'api - bindings' }
