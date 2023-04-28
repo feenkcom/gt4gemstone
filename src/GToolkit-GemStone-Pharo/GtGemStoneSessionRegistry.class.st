@@ -107,6 +107,18 @@ GtGemStoneSessionRegistry >> announcer [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> availableConnectors [
+	"Answer the known connectors"
+
+	^ (self class allMethods 
+		select: [ :method | method hasPragmaNamed: #gemstoneConnectors ]
+		thenFlatCollect: [ :method | | theConnectors |
+			theConnectors := self perform: method selector.
+			theConnectors collect: [ :connector |
+				connector name -> connector ] ]) asDictionary.
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNamed: aString [
 	"Answer the connector at the supplied name"
 
@@ -128,14 +140,7 @@ GtGemStoneSessionRegistry >> connectorNames [
 GtGemStoneSessionRegistry >> connectors [
 	"Answer the known connectors"
 
-	connectors ifNotNil: [ ^ connectors ].
-
-	^ connectors := (self class allMethods 
-		select: [ :method | method hasPragmaNamed: #gemstoneConnectors ]
-		thenFlatCollect: [ :method | | theConnectors |
-			theConnectors := self perform: method selector.
-			theConnectors collect: [ :connector |
-				connector name -> connector ] ]) asDictionary.
+	^ connectors ifNil: [ connectors := self availableConnectors ].
 ]
 
 { #category : #accessing }
@@ -147,14 +152,30 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: ' Available Connectors';
+		priority: 50;
+		items: [ self availableConnectors sorted: #name ascending ];
+		column: 'Name' text: [ :item | item name ];
+		column: 'Username' text: [ :item | item username ];
+		column: 'Stone' text: [ :item | item stone ];
+		actionUpdateButton
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 	<gtView>
 
-	^ aView list
+	^ aView columnedList
 		title: 'Connectors';
 		priority: 20;
 		items: [ self allConnectors sorted: #name ascending ];
-		itemText: [ : item | item name ];
+		column: 'Name' text: [ :item | item name ];
+		column: 'Username' text: [ :item | item username ];
+		column: 'Stone' text: [ :item | item stone ];
 		actionUpdateButton
 ]
 
