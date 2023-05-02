@@ -54,8 +54,21 @@ GtGemStoneGciConnectorWidget >> addListLabelName: nameSymbol title: titleString 
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleString [
-	"Add a string input field"
+	"Add a password input field"
 
+	^ self addListPasswordName: nameSymbol title: titleString readOnly: nil
+]
+
+{ #category : #'private - list' }
+GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleString readOnly: typeSymbol [
+	"Add a password input field and set it read only if specified"
+	| editor |
+
+	editor := BrEditor new
+			aptitude: (BrGlamorousRegularEditorAptitude new replacingText: $*) + BrGlamorousInputFieldSpacingAptitude;
+			vFitContent;
+			hMatchParent.
+	typeSymbol ifNotNil: [ typeSymbol value: editor ].
 	self addChild: (BrHorizontalPane new
 		hMatchParent;
 		vFitContent;
@@ -64,16 +77,26 @@ GtGemStoneGciConnectorWidget >> addListPasswordName: nameSymbol title: titleStri
 			hExact: self propertyWidth;
 			aptitude: BrGlamorousLabelAptitude new;
 			text: titleString);
-		addChild: (BrEditor new
-			aptitude: (BrGlamorousRegularEditorAptitude new replacingText: $*) + BrGlamorousInputFieldSpacingAptitude;
-			vFitContent;
-			hMatchParent) as: nameSymbol)
+		addChild: editor as: nameSymbol)
 ]
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString [
 	"Add a string input field"
 
+	^ self addListStringName: nameSymbol title: titleString readOnly: nil
+]
+
+{ #category : #'private - list' }
+GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString readOnly: typeSymbol [
+	"Add a string input field and set it read only if specified"
+	| editor |
+
+	editor := BrEditor new
+			aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
+			vFitContent;
+			hMatchParent.
+	typeSymbol ifNotNil: [ typeSymbol value: editor ].
 	self addChild: (BrHorizontalPane new
 		hMatchParent;
 		vFitContent;
@@ -82,10 +105,7 @@ GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString
 			hExact: self propertyWidth;
 			aptitude: BrGlamorousLabelAptitude new;
 			text: titleString);
-		addChild: (BrEditor new
-			aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
-			vFitContent;
-			hMatchParent) as: nameSymbol)
+		addChild: editor as: nameSymbol)
 ]
 
 { #category : #initialization }

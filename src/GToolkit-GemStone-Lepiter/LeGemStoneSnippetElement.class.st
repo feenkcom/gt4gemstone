@@ -12,8 +12,8 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 
 	stencil := GtGemStoneSessionSelectionStencil new
 		registry: GtGemStoneSessionRegistry default;
-		selectAction: [ :connector :button |
-			snippetViewModel sessionName: connector name.
+		selectAction: [ :session :button |
+			snippetViewModel session: session.
 			self updateLanguageLabel.
 			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
 		currentSessionNameComputation: [ snippetViewModel sessionName ].
@@ -38,7 +38,7 @@ LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 { #category : #accessing }
 LeGemStoneSnippetElement >> sessionName [
 
-	^ nil
+	^ snippetViewModel sessionName
 ]
 
 { #category : #private }

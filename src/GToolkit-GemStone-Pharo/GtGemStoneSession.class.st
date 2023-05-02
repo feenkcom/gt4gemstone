@@ -67,6 +67,7 @@ GtGemStoneSession >> connector [
 { #category : #accessing }
 GtGemStoneSession >> connector: aGtGemstoneConnector [
 
+	self assert: [ aGtGemstoneConnector isNull not ].
 	connector ifNotNil:
 		[ connector unsubscribe: self ].
 	connector := aGtGemstoneConnector.
@@ -139,6 +140,19 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 ]
 
 { #category : #ui }
+GtGemStoneSession >> gtConnectActionFor: anAction [
+	<gtAction>
+
+	self isRunning ifFalse: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Connect Session';
+		icon: BrGlamorousVectorIcons up;
+		action: [ :button | 
+			self connect.
+			button phlow spawnObject: self ]
+]
+
+{ #category : #ui }
 GtGemStoneSession >> gtConnectorFor: aView [
 	<gtView>
 	
@@ -149,6 +163,19 @@ GtGemStoneSession >> gtConnectorFor: aView [
 		object: [ connector ];
 		view: #gtLiveFor:;
 		actionUpdateButton
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtDisconnectActionFor: anAction [
+	<gtAction>
+
+	self isRunning ifFalse: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Disconnect Session';
+		icon: BrGlamorousVectorIcons down;
+		action: [ :button | 
+			self close.
+			button phlow spawnObject: self ]
 ]
 
 { #category : #ui }

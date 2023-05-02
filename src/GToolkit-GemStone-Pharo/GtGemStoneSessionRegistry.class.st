@@ -62,7 +62,9 @@ GtGemStoneSessionRegistry >> activeSessionNames [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
 
-	^ sessions keys
+	^ sessions
+		ifNil: [ #() ]
+		ifNotNil: [ self sessions keys ]
 ]
 
 { #category : #accessing }
@@ -70,7 +72,9 @@ GtGemStoneSessionRegistry >> activeSessions [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
 
-	^ sessions values
+	^ self sessions
+		ifNil: [ #() ]
+		ifNotNil: [ self sessions values ]
 ]
 
 { #category : #actions }
@@ -86,7 +90,7 @@ GtGemStoneSessionRegistry >> addNewConnector [
 { #category : #accessing }
 GtGemStoneSessionRegistry >> addSession: aSession named: aString [
 
-	sessions at: aString put: aSession
+	self sessions at: aString put: aSession
 ]
 
 { #category : #accessing }
@@ -206,7 +210,9 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
 
-	^ sessions includesKey: aString
+	^ sessions 
+		ifNil: [ false ]
+		ifNotNil: [ self sessions includesKey: aString ]
 ]
 
 { #category : #initialization }
@@ -226,7 +232,7 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 		connector: aGtGemStoneConnector;
 		sessionId: (lastSessionId := lastSessionId + 1);
 		registry: self.
-	sessions at: newSession name put: newSession.
+	self sessions at: newSession name put: newSession.
 	^ newSession.
 ]
 
@@ -245,8 +251,9 @@ GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnoun
 
 	aGtGemStoneConnectorAnnouncement isNameChange ifTrue:
 		[ newSessions := Dictionary new.
-		sessions valuesDo: [ :session |
-			newSessions at: session name put: session ].
+		sessions ifNotNil:
+			[ sessions valuesDo: [ :session |
+				newSessions at: session name put: session ] ].
 		sessions := newSessions.
 		connectors ifNotNil:
 			[ newConnectors := Dictionary new.
@@ -273,6 +280,7 @@ GtGemStoneSessionRegistry >> propertiesFile: aGtGemStonePropertiesFile [
 		when: GtGemStoneConnectorAnnouncement 
 		send: #onConnectorAnnouncement:
 		to: self.
+	self resetConnectors.
 	self resetSessions.
 ]
 
@@ -348,18 +356,14 @@ GtGemStoneSessionRegistry >> resetConnectors [
 { #category : #private }
 GtGemStoneSessionRegistry >> resetSessions [ 
 
-	sessions ifNotNil: [ sessions values do: #close ].
-	sessions := Dictionary new.
-	"Until the UI has been updated to handle the separation of connectors and sessions, 
-	keep the 1:1 relationship between connectors and sessions by generating a session for each connector automatically"
-	self allConnectors do: [ :connector |
-		self newSessionWithConnector: connector ]
+	sessions := nil.
 ]
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionNamed: aString [
 	"Answer the session at the supplied name"
 
+	sessions ifNil: [ KeyNotFound signalFor: aString in: self ].
 	^ sessions at: aString
 ]
 
@@ -367,6 +371,7 @@ GtGemStoneSessionRegistry >> sessionNamed: aString [
 GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	"Answer the session at the supplied name"
 
+	sessions ifNil: [ ^ absentBlock value ].
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
@@ -383,10 +388,22 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 	"Answer a session with the supplied connector name.
 	Create the session if required."
 
-	^ (sessions select: [ :each | each connector name = aString ])
+	^ (self sessions select: [ :each | each connector name = aString ])
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	sessions ifNotNil: [ ^ sessions ].
+	sessions := Dictionary new.
+	"Until the UI has been updated to handle the separation of connectors and sessions, 
+	keep the 1:1 relationship between connectors and sessions by generating a session for each connector automatically"
+	self allConnectors do: [ :connector |
+		self newSessionWithConnector: connector ].
+	^ sessions
 ]
 
 { #category : #'system startup' }
