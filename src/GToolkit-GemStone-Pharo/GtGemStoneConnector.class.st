@@ -50,6 +50,12 @@ GtGemStoneConnector >> initialize [
 	host := 'localhost'.
 ]
 
+{ #category : #testing }
+GtGemStoneConnector >> isNull [
+
+	^ false
+]
+
 { #category : #accessing }
 GtGemStoneConnector >> name [
 	<return: #String>
