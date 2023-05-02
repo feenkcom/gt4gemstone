@@ -18,6 +18,12 @@ GtGemStoneNullConnector >> connectionForSession: aGsSession [
 	self error: 'Attempt to connect the null connector'
 ]
 
+{ #category : #testing }
+GtGemStoneNullConnector >> isNull [
+
+	^ true
+]
+
 { #category : #accessing }
 GtGemStoneNullConnector >> name [
 

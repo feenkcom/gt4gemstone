@@ -17,7 +17,7 @@ LeGemStoneSnippetViewModel >> getSessionName [
 				[ snippet class = snippetModel class and:
 				[ snippet connectorName isNotNil ] ] ]
 			ifFound: [ :snippet | snippet connectorName ]
-			ifNone: [ GtGemStoneNullConnector connectorName ] ].
+			ifNone: [ ^ GtGemStoneNullConnector connectorName ] ].
 	^ (GtGemStoneSessionRegistry default
 			sessionWithConnectorNamed: connectorName) name.
 ]

@@ -67,6 +67,7 @@ GtGemStoneSession >> connector [
 { #category : #accessing }
 GtGemStoneSession >> connector: aGtGemstoneConnector [
 
+	self assert: [ aGtGemstoneConnector isNull not ].
 	connector ifNotNil:
 		[ connector unsubscribe: self ].
 	connector := aGtGemstoneConnector.
