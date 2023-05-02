@@ -35,6 +35,13 @@ LeGemStoneSnippet >> acceptVisitor: aVisitor [
 	^ aVisitor visitGemStoneSnippet: self
 ]
 
+{ #category : #accessing }
+LeGemStoneSnippet >> additionalStateForCopying [
+
+	^ super additionalStateForCopying
+		attributeNamed: #connectorName setValue: connectorName
+]
+
 { #category : #converting }
 LeGemStoneSnippet >> asSnippetViewModel [
 	<return: #LeSnippetViewModel>
