@@ -7,6 +7,21 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : #private }
+LeGemStoneSnippetViewModel >> getSessionName [
+	| connectorName |
+
+	connectorName := self snippetModel connectorName ifNil: 
+		[ snippetModel page allChildrenDepthFirst
+			detect: [ :snippet | snippet ~~ snippetModel and:
+				[ snippet class = snippetModel class and:
+				[ snippet connectorName isNotNil ] ] ]
+			ifFound: [ :snippet | snippet connectorName ]
+			ifNone: [ GtGemStoneNullConnector connectorName ] ].
+	^ (GtGemStoneSessionRegistry default
+			sessionWithConnectorNamed: connectorName) name.
+]
+
 { #category : #initialization }
 LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 	"Initialise the keyboard shortcuts in the code editor"
@@ -37,12 +52,7 @@ LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> sessionName [
 
-	^ sessionName ifNil: 
-		[ self snippetModel connectorName
-			ifNil: [ GtGemStoneNullConnector connectorName ]
-			ifNotNil: [ :name | 
-				sessionName := GtGemStoneSessionRegistry default
-					sessionWithConnectorNamed: name ] ].
+	^ sessionName ifNil: [ sessionName := self getSessionName ]
 ]
 
 { #category : #'api - bindings' }

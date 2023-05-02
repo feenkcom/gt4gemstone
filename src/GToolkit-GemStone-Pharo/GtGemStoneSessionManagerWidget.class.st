@@ -8,7 +8,7 @@ Class {
 		'newSessionButton',
 		'toolbar'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }
@@ -75,7 +75,7 @@ GtGemStoneSessionManagerWidget >> createSessionList [
 		vFitContent;
 		padding: (BlInsets left: 18 right: 64).
 
-	{ 'Name' . 'Username' . 'Ston name' } do: [ :eachColumnName | 
+	{ 'Name' . 'Username' . 'Stone name' } do: [ :eachColumnName | 
 			| label |
 			label := BrLabel new
 				aptitude: (BrGlamorousLabelAptitude new foreground: self theme button defaultTextColor);

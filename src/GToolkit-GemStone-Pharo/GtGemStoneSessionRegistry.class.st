@@ -72,7 +72,7 @@ GtGemStoneSessionRegistry >> activeSessions [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
 
-	^ sessions
+	^ self sessions
 		ifNil: [ #() ]
 		ifNotNil: [ self sessions values ]
 ]

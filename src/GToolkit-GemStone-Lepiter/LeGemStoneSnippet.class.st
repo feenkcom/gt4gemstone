@@ -16,6 +16,14 @@ LeGemStoneSnippet class >> contextMenuItemSpecification [
 ]
 
 { #category : #'lepiter-store' }
+LeGemStoneSnippet class >> leJsonV4AttributeMapping [
+
+	^ super leJsonV4AttributeMapping
+		add: (#connectorName -> #connectorName);
+		yourself
+]
+
+{ #category : #'lepiter-store' }
 LeGemStoneSnippet class >> leJsonV4Name [
 
 	^ 'gemstoneSnippet'
@@ -40,7 +48,10 @@ LeGemStoneSnippet >> connectorName [
 
 { #category : #accessing }
 LeGemStoneSnippet >> connectorName: anObject [
-	connectorName := anObject
+
+	connectorName := anObject.
+	self updateEditTimeAndEmail.
+	self announceContentChanged.
 ]
 
 { #category : #initialization }

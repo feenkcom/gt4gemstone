@@ -193,9 +193,9 @@ GtGemStoneCoderModel >> sessionName [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionName: anObject [
+GtGemStoneCoderModel >> sessionName: aString [
 
-	sessionName := anObject
+	sessionName := aString
 ]
 
 { #category : #'private - execution' }

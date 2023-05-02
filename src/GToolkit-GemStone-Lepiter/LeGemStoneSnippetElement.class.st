@@ -38,7 +38,7 @@ LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 { #category : #accessing }
 LeGemStoneSnippetElement >> sessionName [
 
-	^ nil
+	^ snippetViewModel sessionName
 ]
 
 { #category : #private }
