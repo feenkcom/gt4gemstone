@@ -13,14 +13,14 @@ Class {
 { #category : #converting }
 GtGemStoneCoderModel >> asCoderViewModel [
 
-	^ GtSourceCoderViewModel new coder: self
+	^ GtGemStoneSourceCoderViewModel new coder: self
 ]
 
 { #category : #'api - ast' }
 GtGemStoneCoderModel >> computeAst: theSourceString [
-	^ GtPharoParser
+	^ GtGemStoneParser
 		parseWithErrors: theSourceString
-		startingAt: GtPharoParser startingStateForMethodSequence
+		startingAt: GtGemStoneParser startingStateForMethodSequence
 ]
 
 { #category : #'api - ast' }
@@ -33,9 +33,9 @@ GtGemStoneCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
 { #category : #initialize }
 GtGemStoneCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
-	
-	addOns addStyler: (GtCoderAstSmaCCParserStyler new smaccStyler: StParser gtStyler).
-	
+
+	addOns addStyler: GtGemStoneStyler new.
+
 	addOns
 		addMainAction: 'Evaluate' translated
 		icon: BrGlamorousVectorIcons play
@@ -53,7 +53,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoActionId.
+		id: GtSourceCoderDoItAndGoActionId
 ]
 
 { #category : #initialize }
