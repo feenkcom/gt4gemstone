@@ -50,6 +50,13 @@ GtGemStoneSessionRegistry class >> initialize [
 
 ]
 
+{ #category : #'private - hooks' }
+GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
+	"Classes may perform some activities on a singleton that is about to be released"
+	
+	uniqueInstance ifNotNil: [ uniqueInstance resetSessions ].
+]
+
 { #category : #'system startup' }
 GtGemStoneSessionRegistry class >> startUp: resuming [
 
@@ -356,7 +363,8 @@ GtGemStoneSessionRegistry >> resetConnectors [
 { #category : #private }
 GtGemStoneSessionRegistry >> resetSessions [ 
 
-	sessions := nil.
+	sessions ifNotNil: [ sessions values do: #close ].
+	sessions := Dictionary new.
 ]
 
 { #category : #accessing }
@@ -373,18 +381,6 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 
 	sessions ifNil: [ ^ absentBlock value ].
 	^ sessions at: aString ifAbsent: absentBlock
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	sessions ifNotNil: [ ^ sessions ].
-	sessions := Dictionary new.
-	"Until the UI has been updated to handle the separation of connectors and sessions, 
-	keep the 1:1 relationship between connectors and sessions by generating a session for each connector automatically"
-	self allConnectors do: [ :connector |
-		self newSessionWithConnector: connector ].
-	^ sessions
 ]
 
 { #category : #accessing }
@@ -404,6 +400,12 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
 ]
 
 { #category : #'system startup' }
