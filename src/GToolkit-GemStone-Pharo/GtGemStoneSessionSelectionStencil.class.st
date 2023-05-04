@@ -46,6 +46,7 @@ GtGemStoneSessionSelectionStencil >> create [
 				aSelectionElement := GtGemStoneSessionManagerWidget new
 					gemStoneSessionManagerViewModel: aSessionManagerViewModel;
 					addInspectButton;
+					addNewSessionButton;
 					exact: extent.
 
 				aSelectionElement gemStoneSessionManagerViewModel

@@ -7,10 +7,9 @@ Class {
 		'name',
 		'username',
 		'stoneName',
-		'activated',
 		'actions'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #initialization }
@@ -43,9 +42,6 @@ GtGemStoneSessionManagerListSessionElement >> initialize [
 			anEvent consumed: true.
 			anEvent currentTarget phlow spawnObject: anEvent currentTarget gemStoneSessionViewModel gemStoneSession ].
 	
-	activated := BrGlamorousVectorIcons accept asElement background: self theme default primaryBorderColor.
-	activated margin: (BlInsets left: 2).
-	
 	name := BrLabel new
 		aptitude: BrGlamorousLabelAptitude;
 		hMatchParent.
@@ -68,7 +64,6 @@ GtGemStoneSessionManagerListSessionElement >> initialize [
 		hovered: [ :aStyle | aStyle visibility: BlVisibility visible ]).
 
 	self addChildren: { 
-		activated.
 		name.
 		username.
 		stoneName.
@@ -83,14 +78,12 @@ GtGemStoneSessionManagerListSessionElement >> onGemStoneSessionViewModelChanged 
 	which means that if you perform any operation that triggers an announcement it will be ignored because the receiver
 	didn't get a chance to subscribe to any announcement. Override #onPostGemStoneSessionViewModelChanged if you
 	wish to perform an operation that requires an announcement, but keep in mind that this is not the most efficient way"
-	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#onObjectChangedTemplate'>
-	
+
 	name text: self gemStoneSessionViewModel name.
 	username text: self gemStoneSessionViewModel username.
 	stoneName text: self gemStoneSessionViewModel stoneName.
 
 	self updateSelection.
-	self updateActivation.
 	self updateToolbar
 ]
 
@@ -100,14 +93,10 @@ GtGemStoneSessionManagerListSessionElement >> subscribeToGemStoneSessionViewMode
 	It is required to unsubscribe from the previously subscribed objects by implementing
 	#unsubscribeFromGemStoneSessionViewModel if the receiver subscribes to them"
 	<modelSubscriber: #session>
-	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#subscribeToObjectTemplate'>
-	
+
 	self gemStoneSessionViewModel
 		when: GtGemStoneSessionViewModelSelected, GtGemStoneSessionViewModelDeselected
 			send: #updateSelection
-			to: self;
-		when: GtGemStoneSessionViewModelActivated, GtGemStoneSessionViewModelDeactivated
-			send: #updateActivation
 			to: self
 ]
 
@@ -119,13 +108,6 @@ GtGemStoneSessionManagerListSessionElement >> unsubscribeFromGemStoneSessionView
 	<generatedFrom: #'TGtRobocoderWithObjectTraitTemplate>>#unsubscribeFromObjectTemplate'>
 	
 	self gemStoneSessionViewModel unsubscribe: self
-]
-
-{ #category : #'private - update' }
-GtGemStoneSessionManagerListSessionElement >> updateActivation [
-	self gemStoneSessionViewModel isActivatedSession
-		ifTrue: [ activated visibility: BlVisibility visible ]
-		ifFalse: [ activated visibility: BlVisibility hidden ]
 ]
 
 { #category : #'private - update' }

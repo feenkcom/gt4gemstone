@@ -19,6 +19,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 		do: [ :anAnnouncement | additionAnnouncement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
+	self assert: registry connectors size equals: 0.
 
 	connector := registry addNewConnector.
 

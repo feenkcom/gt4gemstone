@@ -27,9 +27,10 @@ GtGemStoneSessionManagerWidget >> addInspectButton [
 ]
 
 { #category : #private }
-GtGemStoneSessionManagerWidget >> addNewConnector [
+GtGemStoneSessionManagerWidget >> addNewSession [
 
-	gemStoneSessionManagerViewModel addNewConnector
+	gemStoneSessionManagerViewModel addNewSession.
+	self updateSessionList.
 ]
 
 { #category : #configuration }
@@ -61,7 +62,7 @@ GtGemStoneSessionManagerWidget >> createNewSessionButton [
 		icon: BrGlamorousVectorIcons add;
 		label: 'New Session';
 		fitContent;
-		action: [ self addNewConnector ].
+		action: [ self addNewSession ].
 
 ]
 

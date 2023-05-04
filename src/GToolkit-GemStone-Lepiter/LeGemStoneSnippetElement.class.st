@@ -8,12 +8,13 @@ Class {
 LeGemStoneSnippetElement >> initializeLanguageElement [
 	"Initialise the element that displays the language and connection details.
 	This is normally a text element, but subclasses may replace it with something else, e.g. a button"
-	| stencil element |
+	| stencil element registry |
 
+	registry := GtGemStoneSessionRegistry default.
 	stencil := GtGemStoneSessionSelectionStencil new
-		registry: GtGemStoneSessionRegistry default;
+		registry: registry;
 		selectAction: [ :session :button |
-			snippetViewModel session: session.
+			snippetViewModel session: (session asGemStoneSessionFromRegistry: registry).
 			self updateLanguageLabel.
 			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
 		currentSessionNameComputation: [ snippetViewModel sessionName ].
