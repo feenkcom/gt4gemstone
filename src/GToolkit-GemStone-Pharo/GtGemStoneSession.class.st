@@ -31,6 +31,13 @@ GtGemStoneSession >> abortTransaction [
 
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> asGemStoneSessionFromRegistry: aGemStoneRegistry [
+
+	self assert: [ aGemStoneRegistry == registry ].
+	^ self
+]
+
 { #category : #actions }
 GtGemStoneSession >> close [
 

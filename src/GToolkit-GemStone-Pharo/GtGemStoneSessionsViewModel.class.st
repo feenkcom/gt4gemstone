@@ -38,6 +38,7 @@ GtGemStoneSessionsViewModel >> activeSessions: aActiveSessions [
 
 	activeSessions ifNotNil: [ self unsubscribeFromActiveSessions ].
 	activeSessions := aActiveSessions.
+	gemStoneSessionViewModels := nil.
 
 	self onActiveSessionsChanged.
 	self subscribeToActiveSessions.

@@ -18,8 +18,10 @@ LeGemStoneSnippetViewModel >> getSessionName [
 				[ snippet connectorName isNotNil ] ] ]
 			ifFound: [ :snippet | snippet connectorName ]
 			ifNone: [ ^ GtGemStoneNullConnector connectorName ] ].
-	^ (GtGemStoneSessionRegistry default
-			sessionWithConnectorNamed: connectorName) name.
+	^ [ (GtGemStoneSessionRegistry default
+		sessionWithConnectorNamed: connectorName) name ]
+			on: KeyNotFound "The connector is no longer available"
+			do: [ :ex | nil ].
 ]
 
 { #category : #initialization }

@@ -26,12 +26,24 @@ GtGemStoneConnector >> announcer [
 	^ announcer ifNil: [ announcer := Announcer new ]
 ]
 
+{ #category : #converting }
+GtGemStoneConnector >> asGemStoneSessionFromRegistry: registry [
+
+	^ registry newSessionWithConnector: self.
+]
+
 { #category : #connecting }
 GtGemStoneConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
 
 	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> connector [
+
+	^ self
 ]
 
 { #category : #accessing }

@@ -11,9 +11,9 @@ Class {
 }
 
 { #category : #actions }
-GtGemStoneSessionManagerViewModel >> addNewConnector [ 
+GtGemStoneSessionManagerViewModel >> addNewSession [
 
-	gemStoneSessionRegistry addNewConnector
+	gemStoneSessionsViewModel activeSessions: gemStoneSessionRegistry allConnectors.
 ]
 
 { #category : #accessing }
