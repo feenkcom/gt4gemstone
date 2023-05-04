@@ -89,7 +89,7 @@ GtGemStoneSessionRegistry >> addNewConnector [
 	| newConnector |
 
 	newConnector := propertiesFile addNewConnector.
-	self assert: (connectors includesKey: newConnector name) not.
+	self assert: (self connectors includesKey: newConnector name) not.
 	connectors at: newConnector name put: newConnector.
 	^ newConnector
 ]
