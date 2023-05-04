@@ -375,6 +375,18 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	sessions ifNotNil: [ ^ sessions ].
+	sessions := Dictionary new.
+	"Until the UI has been updated to handle the separation of connectors and sessions, 
+	keep the 1:1 relationship between connectors and sessions by generating a session for each connector automatically"
+	self allConnectors do: [ :connector |
+		self newSessionWithConnector: connector ].
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -392,18 +404,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	sessions ifNotNil: [ ^ sessions ].
-	sessions := Dictionary new.
-	"Until the UI has been updated to handle the separation of connectors and sessions, 
-	keep the 1:1 relationship between connectors and sessions by generating a session for each connector automatically"
-	self allConnectors do: [ :connector |
-		self newSessionWithConnector: connector ].
-	^ sessions
 ]
 
 { #category : #'system startup' }

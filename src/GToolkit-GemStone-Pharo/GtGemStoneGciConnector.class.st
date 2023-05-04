@@ -176,12 +176,6 @@ GtGemStoneGciConnector >> stone: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneGciConnector >> stoneName [
-
-	^ stone
-]
-
-{ #category : #accessing }
 GtGemStoneGciConnector >> username [
 	^ username
 ]

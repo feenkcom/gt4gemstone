@@ -140,6 +140,12 @@ GtGemStoneConnector >> stone [
 	^ self subclassResponsibility
 ]
 
+{ #category : #accessing }
+GtGemStoneConnector >> stoneName [
+
+	^ self stone
+]
+
 { #category : #'api - announcer' }
 GtGemStoneConnector >> unsubscribe: anObject [
 	"Unsubscribe all subscriptions of anObject from the receiver"
