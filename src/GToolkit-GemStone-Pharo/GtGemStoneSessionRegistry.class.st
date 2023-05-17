@@ -167,7 +167,7 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 	<gtView>
 
 	^ aView columnedList
-		title: ' Available Connectors';
+		title: 'Available connectors';
 		priority: 50;
 		items: [ self availableConnectors sorted: #name ascending ];
 		column: 'Name' text: [ :item | item name ];
