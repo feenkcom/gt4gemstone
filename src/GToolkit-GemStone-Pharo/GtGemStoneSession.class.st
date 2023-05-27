@@ -252,6 +252,12 @@ GtGemStoneSession >> name [
 	^ connector name, ':', sessionId asString
 ]
 
+{ #category : #testing }
+GtGemStoneSession >> needsCommit [
+
+	^ self evaluateAndWait: 'System needsCommit'
+]
+
 { #category : #private }
 GtGemStoneSession >> onConnectorChanged: aGtGemStoneConnnectorAnnouncement [
 	"Some of the details in the receiver's connector have been changed, restart the connection if required."
