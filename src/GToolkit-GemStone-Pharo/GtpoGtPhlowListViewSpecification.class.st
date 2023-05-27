@@ -1,12 +1,12 @@
 Class {
-	#name : #GtpoGtDeclarativeListView,
+	#name : #GtpoGtPhlowListViewSpecification,
 	#superclass : #GtRsrProxyServiceClient,
 	#traits : 'TGlpoGtDeclarativeListingView',
 	#classTraits : 'TGlpoGtDeclarativeListingView classTrait',
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }
-GtpoGtDeclarativeListView class >> remoteClassName [
-	^ #GtPhlowDeclarativeListView
+GtpoGtPhlowListViewSpecification class >> remoteClassName [
+	^ #GtPhlowListViewSpecification
 ]
