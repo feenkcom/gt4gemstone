@@ -130,6 +130,18 @@ GtGemStoneSessionRegistry >> availableConnectors [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> cleanSessionWithConnectorNamed: aString [
+	"Answer a clean session with the supplied connector name.
+	Create the session if required."
+
+	^ self sessions
+		detect: [ :each | 
+			each connector name = aString
+				and: [ each isRunning and: [ each needsCommit not ] ] ]
+		ifNone: [ self newSessionWithConnectorNamed: aString ]
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNamed: aString [
 	"Answer the connector at the supplied name"
 
@@ -239,6 +251,7 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 		connector: aGtGemStoneConnector;
 		sessionId: (lastSessionId := lastSessionId + 1);
 		registry: self.
+	newSession connect.
 	self sessions at: newSession name put: newSession.
 	^ newSession.
 ]
