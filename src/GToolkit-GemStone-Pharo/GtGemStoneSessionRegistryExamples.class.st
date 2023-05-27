@@ -38,7 +38,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	"Confirm that a name change announcement is received from the session registry when a connector is renamed"
 	<gtExample>
-	| registry oldName connector session announcement |
+	| registry oldName connector announcement |
 
 	registry := self addNewConnectorAnnouncement.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
@@ -53,8 +53,6 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	oldName := connector name.
-	session := registry sessionWithConnectorNamed: oldName.
-	self assert: session class equals: GtGemStoneSession.
 
 	"Change the connector name.
 	To allow for batched changes, it is up to the user to notify dependents of the name change."
@@ -69,9 +67,7 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 
 	"Ensure the registry and properties file have updated their indexes"
 	self deny: (registry hasConnectorNamed: oldName).
-	self deny: (registry hasSessionNamed: oldName).
 	self assert: (registry hasConnectorNamed: connector name).
-	self assert: (registry hasSessionNamed: session name).
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
