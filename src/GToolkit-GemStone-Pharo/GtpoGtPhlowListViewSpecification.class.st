@@ -1,8 +1,8 @@
 Class {
 	#name : #GtpoGtPhlowListViewSpecification,
 	#superclass : #GtRsrProxyServiceClient,
-	#traits : 'TGlpoGtDeclarativeListingView',
-	#classTraits : 'TGlpoGtDeclarativeListingView classTrait',
+	#traits : 'TGlpoGtPhlowListingViewSpecification',
+	#classTraits : 'TGlpoGtPhlowListingViewSpecification classTrait',
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
