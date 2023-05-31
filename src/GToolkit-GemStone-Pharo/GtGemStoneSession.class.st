@@ -94,7 +94,10 @@ GtGemStoneSession >> ensureRunning [
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ evaluator evaluate: remoteScript for: anObject bindings: remoteBindings
+	^ evaluator 
+		evaluate: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
 ]
 
 { #category : #actions }
@@ -108,7 +111,10 @@ GtGemStoneSession >> evaluateAndWait: remoteScript [
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
-	^ evaluator evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
+	^ evaluator 
+		evaluateAndWait: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
 ]
 
 { #category : #accessing }
@@ -321,6 +327,20 @@ GtGemStoneSession >> stop [
 	"Synonym for #close"
 
 	^ self close
+]
+
+{ #category : #private }
+GtGemStoneSession >> updatedBindings: remoteBindings [ 
+	| updatedBindings |
+
+	updatedBindings := remoteBindings copy.
+	updatedBindings associationsDo: [ :assoc |
+		(assoc value isBlock and: [ assoc value isClean ]) ifTrue:
+			[ assoc value: (evaluator
+				evaluateAndWait: assoc value printString
+				for: nil
+				bindings: Dictionary new) ] ].
+	^ updatedBindings
 ]
 
 { #category : #accessing }
