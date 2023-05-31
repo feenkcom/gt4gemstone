@@ -114,7 +114,7 @@ GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 	visitor globalVariableNames do: [ :name |
 		(pharoBindings hasBindingOf: name) ifTrue: 
 			[ value := (pharoBindings bindingOf: name) value asGtProxyObject.
-			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+			((value isBlock and: [ value isClean]) or: [GtRsrEvaluatorService isRsrImmediate: value ]) ifTrue:
 				[ bindings at: name put: value ] ] ].
 	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
 			[ value := (pharoBindings bindingOf: #snippetResult) value asGtProxyObject.
