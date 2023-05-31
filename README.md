@@ -32,7 +32,7 @@ result := evaluatorServiceClient
 	evaluateAndWait: 'self + three' 
 	for: 4 
 	bindings: { #three -> 3 } asDictionary.
-{ result. connection.  egitkvaluatorServiceClient. }
+{ result. connection.  evaluatorServiceClient. }
 ```
 
 The result should be a `RsrPromise` with value `7`.
