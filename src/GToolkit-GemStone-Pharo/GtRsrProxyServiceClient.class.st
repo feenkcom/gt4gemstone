@@ -1,13 +1,36 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
+	#classVars : [
+		'ObjectMap'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> bareProxyObjectAt: anObject ifAbsent: absentBlock [
+
+	^ self proxyObjectMap at: anObject ifAbsent: absentBlock
+]
 
 { #category : #testing }
 GtRsrProxyServiceClient class >> isClientClass [
 
 	^ true
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> proxyObjectAt: anObject ifAbsent: absentBlock [
+
+	^ self proxyObjectMap at: anObject 
+		ifPresent: #asGtProxyObject
+		ifAbsent: absentBlock
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> proxyObjectMap [
+
+	^ ObjectMap ifNil: [ ObjectMap := WeakIdentityKeyDictionary new ]
 ]
 
 { #category : #private }
@@ -29,10 +52,28 @@ GtRsrProxyServiceClient class >> remoteClassName [
 GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 	"Answer the subclass that represents the supplied class name"
 
-	^ self subclasses
+	^ self allSubclasses
 		detect: [ :each | each remoteClassMatcher value: aSymbol ]
 		ifNone: [ nil ].
 
+]
+
+{ #category : #converting }
+GtRsrProxyServiceClient >> asGtpoLocalObject [
+	"Answer a local copy of the receiver"
+	| instVarDict localObject |
+
+	instVarDict := self evaluateAndWait: '| names dict |
+names := self class allInstVarNames.
+dict := Dictionary new.
+1 to: names size do: [ :i |
+	dict at: (names at: i) put: (self instVarAt: i) ].
+dict.'.
+	localObject := (self class environment at: remoteClass) basicNew.
+	instVarDict associationsDo: [ :assoc |
+		localObject instVarNamed: assoc key put: assoc value asGtBareProxyObject ].
+	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
+	^ localObject.
 ]
 
 { #category : #private }
@@ -43,8 +84,7 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 
 	proxyClass := self class subclassForRemoteClass: remoteClass.
 	proxyClass ifNil: [ ^ self ].
-	newProxy := proxyClass new.
-	newProxy 
+	newProxy := proxyClass new
 		_id: _id 
 		connection: _connection 
 		remoteSelf: remoteSelf
@@ -74,6 +114,18 @@ GtRsrProxyServiceClient >> declarativeViews [
 
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| evaluator |
+
+	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
+	^ evaluator
+		evaluateAndWait: aString
+		for: self
+		bindings: Dictionary new.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 	| evaluator |
 
@@ -220,14 +272,6 @@ GtRsrProxyServiceClient >> viewProxyDo: aBlock [
 		ifFalse: [ self getViewProxy ].
 	^ aBlock value: viewProxy.
 
-]
-
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
 ]
 
 { #category : #private }
