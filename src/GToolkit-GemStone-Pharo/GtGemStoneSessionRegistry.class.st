@@ -23,7 +23,8 @@ Class {
 		'announcer',
 		'connectors',
 		'lastSessionId',
-		'defaultName'
+		'defaultName',
+		'defaultSession'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
@@ -71,7 +72,7 @@ GtGemStoneSessionRegistry >> activeSessionNames [
 
 	^ sessions
 		ifNil: [ #() ]
-		ifNotNil: [ self sessions keys ]
+		ifNotNil: [ sessions keys ]
 ]
 
 { #category : #accessing }
@@ -79,9 +80,9 @@ GtGemStoneSessionRegistry >> activeSessions [
 	"Answer the set of session names that have active (but not necessarily running) sessions"
 	<return: #Array>
 
-	^ self sessions
+	^ sessions
 		ifNil: [ #() ]
-		ifNotNil: [ self sessions values ]
+		ifNotNil: [ sessions values ]
 ]
 
 { #category : #actions }
@@ -134,7 +135,7 @@ GtGemStoneSessionRegistry >> cleanSessionWithConnectorNamed: aString [
 	"Answer a clean session with the supplied connector name.
 	Create the session if required."
 
-	^ self sessions
+	^ sessions
 		detect: [ :each | 
 			each connector name = aString
 				and: [ each isRunning and: [ each needsCommit not ] ] ]
@@ -172,6 +173,20 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 	^ defaultName ifNil: [ propertiesFile 
 		ifNil: [ '<null>' ]
 		ifNotNil: [ propertiesFile defaultConnectorName ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> defaultSession [
+
+	^ defaultSession ifNil:
+		[ sessions size = 1
+			ifTrue: [ sessions anyOne ]
+			ifFalse: [ nil ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> defaultSession: anObject [
+	defaultSession := anObject
 ]
 
 { #category : #accessing }
@@ -231,7 +246,7 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 
 	^ sessions 
 		ifNil: [ false ]
-		ifNotNil: [ self sessions includesKey: aString ]
+		ifNotNil: [ sessions includesKey: aString ]
 ]
 
 { #category : #initialization }
@@ -396,6 +411,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -413,12 +434,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
 ]
 
 { #category : #'system startup' }

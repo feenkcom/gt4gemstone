@@ -112,9 +112,16 @@ GtGemStoneSessionManagerListSessionElement >> unsubscribeFromGemStoneSessionView
 
 { #category : #'private - update' }
 GtGemStoneSessionManagerListSessionElement >> updateSelection [
+	| isDefault |
 	self gemStoneSessionViewModel isSelectedSession
 		ifTrue: [ self states addState: BlElementState selected ]
-		ifFalse: [ self states removeState: BlElementState selected ]
+		ifFalse: [ self states removeState: BlElementState selected ].
+	isDefault := gemStoneSessionViewModel isDefaultSession.
+	self allChildrenBreadthFirstDo: [ :child |
+		child id asSymbol = #label ifTrue:
+			[ isDefault
+				ifTrue: [ child bold ]
+				ifFalse: [ child regular ] ] ].
 ]
 
 { #category : #'private - update' }

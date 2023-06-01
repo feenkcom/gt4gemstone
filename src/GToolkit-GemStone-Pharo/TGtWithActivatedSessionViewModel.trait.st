@@ -7,6 +7,15 @@ Trait {
 }
 
 { #category : #'api - activated session view model' }
+TGtWithActivatedSessionViewModel >> activatedSessionViewModel [
+	<return: #GtGemStoneSessionViewModel>
+	<propertyGetter: #activatedSessionViewModel>
+	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
+
+	^ activatedSessionViewModel
+]
+
+{ #category : #'api - activated session view model' }
 TGtWithActivatedSessionViewModel >> activateSessionViewModel: aNewActivatedSessionViewModel [
 	<propertySetter: #activatedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertySetterTemplate'>
@@ -24,15 +33,6 @@ TGtWithActivatedSessionViewModel >> activateSessionViewModel: aNewActivatedSessi
 	activatedSessionViewModel := aNewActivatedSessionViewModel.
 	self onNewActivatedSessionViewModelSet: aNewActivatedSessionViewModel.
 	self notifyActivatedSessionViewModelChanged
-]
-
-{ #category : #'api - activated session view model' }
-TGtWithActivatedSessionViewModel >> activatedSessionViewModel [
-	<return: #GtGemStoneSessionViewModel>
-	<propertyGetter: #activatedSessionViewModel>
-	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
-
-	^ activatedSessionViewModel
 ]
 
 { #category : #'api - activated session view model' }

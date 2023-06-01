@@ -139,6 +139,12 @@ GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession ifFound: 
 		ifNone: aNoneBlock
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionsViewModel >> gemStoneSessionRegistry [
+
+	^ parentGemStoneSessionManagerViewModel gemStoneSessionRegistry
+]
+
 { #category : #'api - accessing' }
 GtGemStoneSessionsViewModel >> gemStoneSessionViewModels [
 	"Return a collection of objects (${class:GtGemStoneSessionViewModel}$) created for each child from the domain model.
