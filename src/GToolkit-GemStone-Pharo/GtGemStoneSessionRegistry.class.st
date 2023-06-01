@@ -400,7 +400,7 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
 
-	^ self allSessions detect: [ :each |
+	^ sessions detect: [ :each |
 		each connection = aRsrConnection ]
 ]
 
