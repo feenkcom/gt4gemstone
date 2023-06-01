@@ -1,23 +1,23 @@
 Trait {
-	#name : #TGlpoGtDeclarativeListingView,
-	#category : 'GToolkit-GemStone-Pharo-Stubs'
+	#name : #TGlpoGtPhlowListingViewSpecification,
+	#category : #'GToolkit-GemStone-Pharo-Stubs'
 }
 
 { #category : #accessing }
-TGlpoGtDeclarativeListingView >> retrieveItems: anItemsCount fromIndex: anIndex [
+TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: anIndex [
 	^ self
 		proxyPerform: #retrieveItems:fromIndex:
 		withArguments: { anItemsCount . anIndex  }
 ]
 
 { #category : #accessing }
-TGlpoGtDeclarativeListingView >> retrieveTotalItemsCount [
+TGlpoGtPhlowListingViewSpecification >> retrieveTotalItemsCount [
 	^ self
 		proxyPerform: #retrieveTotalItemsCount
 ]
 
 { #category : #accessing }
-TGlpoGtDeclarativeListingView >> retriveSentItemAt: aSelectionIndex [ 
+TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [ 
 	^ self
 		proxyPerform: #retriveSentItemAt:
 		withArguments: { aSelectionIndex }

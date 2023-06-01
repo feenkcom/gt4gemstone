@@ -537,6 +537,3 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 	^ GtRsrProxyServiceServer object: self
 %
-
-bject: self
-%
