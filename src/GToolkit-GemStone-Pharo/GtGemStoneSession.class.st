@@ -27,8 +27,7 @@ Class {
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
 
-	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ].
-
+	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ]
 ]
 
 { #category : #accessing }
@@ -36,6 +35,12 @@ GtGemStoneSession >> asGemStoneSessionFromRegistry: aGemStoneRegistry [
 
 	self assert: [ aGemStoneRegistry == registry ].
 	^ self
+]
+
+{ #category : #actions }
+GtGemStoneSession >> beDefaultSession [
+
+	registry defaultSession: self.
 ]
 
 { #category : #actions }
@@ -243,6 +248,12 @@ GtGemStoneSession >> initialize [
 
 	super initialize.
 	mutex := Mutex new.
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> isDefaultSession [
+
+	^ registry defaultSession == self
 ]
 
 { #category : #testing }
