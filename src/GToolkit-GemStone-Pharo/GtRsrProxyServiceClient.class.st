@@ -146,6 +146,12 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> filterLocalProxyViews: localViews [
+	^ localViews reject: [ :each |
+		#(Raw Print Connections Meta) includes: each title ].
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> getViewProxy [
 	"Answer a GtViewedProxy on the receiver"
 
@@ -214,7 +220,7 @@ GtRsrProxyServiceClient >> gtViewsInContext: aContext [
 	| localViews collectedViews |
 	localViews := super gtViewsInContext: aContext.
 	collectedViews := OrderedCollection new
-		addAll: (self updateLocalProxyViews: localViews);
+		addAll: (self filterLocalProxyViews: localViews);
 		addAll: (self remoteViewsFor: GtPhlowEmptyView new);
 		yourself.
 	GtPhlowUtility sortByPriority: collectedViews.
@@ -262,12 +268,6 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> updateLocalProxyViews: localViews [
-	^ localViews reject: [ :each |
-		#(Raw Print Connections Meta) includes: each title ].
 ]
 
 { #category : #'gt inspector' }
