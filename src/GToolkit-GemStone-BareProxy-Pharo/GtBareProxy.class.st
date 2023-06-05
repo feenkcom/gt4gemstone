@@ -63,6 +63,17 @@ GtBareProxy >> doesNotUnderstand: aMessage [
 		ifTrue: [ self performRemotely: aMessage selector withArguments: aMessage arguments ]
 ]
 
+{ #category : #'gt inspector' }
+GtBareProxy >> gtDefaultInspectorTool [
+	^ GtPhlowCompositeTool new
+		addTool: (proxyObject gtRemoteSideInspectorTool
+			name: 'Remote';
+			withLabelAndIconAptitude);
+		addTool: (super gtDefaultInspectorTool
+			name: 'Proxy';
+			withLabelAndIconAptitude)
+]
+
 { #category : #printing }
 GtBareProxy >> gtInspectorTitleString [
 	| limitedString limit |
@@ -93,24 +104,15 @@ GtBareProxy >> gtInspectorTitleStringOn: aStream [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtMetaFor: aView [
-	<gtProxy>
-	^ aView explicit
-		title: 'Meta';
-		priority: 200;
-		stencil: [ (GtPharoBehaviorCoder forObject: self) asElement ]
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtProxyViewsFor: aView [
+GtBareProxy >> gtPrintFor: aView [
 	<gtView>
-	^ aView composite
-		title: 'Proxy';
-		priority: 10000;
-		collectorDo: [ :aCollector |
-			aCollector 
-				pragmaName: #gtProxy;
-				fromObject: self ]
+	
+	^ aView textEditor
+		title: 'Print';
+		priority: 110;
+		aptitude: BrGlamorousCodeEditorAptitude;
+		text: [ self gtDisplayString asRopedText ];
+		actionUpdateButton
 ]
 
 { #category : #'gt inspector' }
@@ -141,20 +143,16 @@ GtBareProxy >> gtRawFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtViewsInContext: aContext [
-	| proxyObjectViews collectedViews |
-	"This collects all views for the current object, both local and remote."
+GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
+	<gtView>
 	
-	proxyObjectViews := proxyObject gtViewsInContext: aContext.
-	proxyObjectViews := proxyObjectViews reject: [ :each |
-		#(Proxy) includes: each title ].
+	proxyObject ifNil: [ ^ aView empty ].
 	
-	collectedViews := OrderedCollection new
-		addAll: (super gtViewsInContext: aContext);
-		addAll: proxyObjectViews;
-		yourself.
-	GtPhlowUtility sortByPriority: collectedViews.
-	^ collectedViews
+	^ aView forward
+		title: 'Remote view specifications';
+		priority: 10001;
+		object: [ proxyObject ];
+		view: #gtRemoteViewSpecificationsFor:
 ]
 
 { #category : #comparing }
