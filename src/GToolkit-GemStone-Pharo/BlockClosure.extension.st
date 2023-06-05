@@ -1,6 +1,6 @@
 Extension { #name : #BlockClosure }
 
-{ #category : #'*GToolkit-GemStone' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 BlockClosure >> storeOn: aStream [
 
 	GtGsStoreStringFlag value == true

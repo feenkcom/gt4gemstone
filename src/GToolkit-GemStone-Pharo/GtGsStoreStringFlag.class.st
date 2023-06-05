@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGsStoreStringFlag,
 	#superclass : #DynamicVariable,
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
