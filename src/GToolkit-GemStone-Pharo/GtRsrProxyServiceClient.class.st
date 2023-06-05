@@ -1,6 +1,8 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
+	#traits : 'TGtRemoteLanguageProxyViewsAttachment + TGtRemoteLanguageProxySpecificViews',
+	#classTraits : 'TGtRemoteLanguageProxyViewsAttachment classTrait + TGtRemoteLanguageProxySpecificViews classTrait',
 	#classVars : [
 		'ObjectMap'
 	],
@@ -102,25 +104,6 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	^ newProxy
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> declarativeViews [
-	"Answer the views for the receiver"
-	| rawViews |
-
-	self viewProxyDo: [ :remoteInspectorProxy |
-		| declarativeData declarativeViewDeclarations |
-		declarativeData := remoteInspectorProxy getViewsDeclarations.
-		declarativeViewDeclarations := declarativeData at: 'views' ifAbsent: [ #() ].
-		rawViews := declarativeViewDeclarations collect: [ :declarativeViewData |
-			| declarativeView |
-			declarativeView := GtPhlowViewSpecification fromDictionary: declarativeViewData.
-			declarativeView
-				initializeFromInspector: remoteInspectorProxy.
-			declarativeView ] ].
-
-	^ rawViews
-]
-
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
@@ -145,19 +128,6 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 		bindings: Dictionary new.
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> filterLocalProxyViews: localViews [
-	^ localViews reject: [ :each |
-		#(Raw Print Connections Meta) includes: each title ].
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getViewProxy [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ self evaluate: 'GtRemotePhlowViewedObject object: self'
-]
-
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	aStream << ([ self 
@@ -171,60 +141,6 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 		stream
 			<< 'Proxy to a(n): ';
 			<< (remoteClass ifNil: [ '<None>' ]) ].
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtMetaFor: aView [ 
-	<gtProxy>
-	^ super gtMetaFor: aView 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtPrintFor: aView [ 
-	<gtProxy>
-	^ super gtPrintFor: aView 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyRemoveViewsListFor: aView [
-	<gtProxy>
-	^ aView list
-		title: 'Remote views' translated;
-		priority: 10001;
-		items: [ self declarativeViews ];
-		itemText: [ :aViewAccessor | aViewAccessor title ];
-		send: [ :aDeclarativeView | aDeclarativeView ]
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
-	<gtView>
-	^ aView composite
-		title: 'Proxy';
-		priority: 10000;
-		collectorDo: [ :aCollector |
-			aCollector 
-				pragmaName: #gtProxy;
-				fromObject: self ]
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtRawFor: aView [ 
-	<gtProxy>
-	^ super gtRawFor: aView 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtViewsInContext: aContext [
-	"This collects all views for the current object, both local and remote."
-	| localViews collectedViews |
-	localViews := super gtViewsInContext: aContext.
-	collectedViews := OrderedCollection new
-		addAll: (self filterLocalProxyViews: localViews);
-		addAll: (self remoteViewsFor: GtPhlowEmptyView new);
-		yourself.
-	GtPhlowUtility sortByPriority: collectedViews.
-	^ collectedViews
 ]
 
 { #category : #introspection }
@@ -265,20 +181,7 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView [
 	"Should be all views, but just get Raw and Print views for now"
 
 	^ self isProxyObjectActive
-		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
+		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
+			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
-
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> viewProxyDo: aBlock [
-	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
-
-	| viewProxy |
-
-	viewProxy := (#(GtRemotePhlowViewedObject) includes: remoteClass)
-		ifTrue: [ self ]
-		ifFalse: [ self getViewProxy ].
-	^ aBlock value: viewProxy.
-
 ]
