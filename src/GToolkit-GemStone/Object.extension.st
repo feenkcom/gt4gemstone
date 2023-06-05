@@ -9,11 +9,3 @@ Object >> asGtRsrProxyObjectForConnection: aRsrConnection [
 		[ ^ GtRsrProxyServiceServer object: self ].
 	^ self
 ]
-
-{ #category : #'*GToolkit-GemStone' }
-Object >> gtGsStoreString [
-
-	^ GtGsStoreStringFlag
-		value: true
-		during: [ self storeString ]
-]

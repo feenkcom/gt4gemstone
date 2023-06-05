@@ -6,3 +6,11 @@ Object >> gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock [
 
 	^ gtoolkitBlock value
 ]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+Object >> gtGsStoreString [
+
+	^ GtGsStoreStringFlag
+		value: true
+		during: [ self storeString ]
+]
