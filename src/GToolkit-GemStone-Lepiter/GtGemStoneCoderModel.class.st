@@ -96,6 +96,12 @@ GtGemStoneCoderModel >> newCompletionStrategy [
 ]
 
 { #category : #accessing }
+GtGemStoneCoderModel >> newEvaluationContext [
+
+	^ GtGemStoneSourceCoderEvaluationContext new
+]
+
+{ #category : #accessing }
 GtGemStoneCoderModel >> pharoBindings [
 	^ pharoBindings
 ]
@@ -154,7 +160,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	^ (result
 		at: 'snippetResult'
-		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
+		ifAbsent: anEvaluationFailBlock) asGtBareProxyObjectInSession: gemstoneSession.
 ]
 
 { #category : #accessing }
