@@ -3,6 +3,9 @@ Class {
 	#superclass : #GtRsrProxyService,
 	#traits : 'TGtRemoteLanguageProxyViewsAttachment + TGtRemoteLanguageProxySpecificViews',
 	#classTraits : 'TGtRemoteLanguageProxyViewsAttachment classTrait + TGtRemoteLanguageProxySpecificViews classTrait',
+	#instVars : [
+		'gtSession'
+	],
 	#classVars : [
 		'ObjectMap'
 	],
@@ -60,15 +63,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -82,8 +76,8 @@ dict := Dictionary new.
 dict.'.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: assoc value asGtBareProxyObject ].
-	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
+		localObject instVarNamed: assoc key put: (assoc value asGtBareProxyObjectInSession: gtSession) ].
+	self class proxyObjectMap at: localObject put: (self asGtBareProxyObjectInSession: gtSession).
 	^ localObject.
 ]
 
@@ -143,6 +137,39 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 			<< (remoteClass ifNil: [ '<None>' ]) ].
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
+	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
+	<return: #GtPhlowLabelledView>
+	
+	^ GtPhlowLabelledViewBuilder new
+		object: self;
+		view: aView;
+		context: GtPhlowContext new;
+		viewsSelector: #gtViewsForRemoteSideInContext:;
+		titleComputation: [
+			String streamContents: [ :stream |
+				stream
+					<< 'a(n): ';
+					<< (self remoteClass ifNil: [ '<None>' ]).
+				gtSession ifNotNil:
+					[ stream
+						<< ' [';
+						<< gtSession name;
+						<< ']' ]]];
+		build 
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtSession [
+	^ gtSession
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtSession: anObject [
+	gtSession := anObject
+]
+
 { #category : #introspection }
 GtRsrProxyServiceClient >> instVarAt: anInteger put: anObject [
 	"If the receiver's remoteClass has been set, convert the receiver to the specific proxy class.
@@ -184,4 +211,13 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]

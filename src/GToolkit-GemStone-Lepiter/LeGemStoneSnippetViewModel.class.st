@@ -59,10 +59,11 @@ LeGemStoneSnippetViewModel >> sessionName [
 
 { #category : #'api - bindings' }
 LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
-	
+
 	super sharedSnippetContext: aLeSharedSnippetContext.
 
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
+	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
 ]
 
 { #category : #accessing }

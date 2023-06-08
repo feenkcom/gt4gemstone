@@ -48,6 +48,11 @@ GtBareProxy >> asGtBareProxyObject [
 ]
 
 { #category : #transformation }
+GtBareProxy >> asGtBareProxyObjectInSession: aGtGemStoneSession [
+	^ self
+]
+
+{ #category : #transformation }
 GtBareProxy >> asGtProxyObject [
 	^ proxyObject
 ]
@@ -186,7 +191,7 @@ GtBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	result := self 
 		rawPerformRemotely: aSelector 
 		withArguments: transfomedArguments.
-	^ result asGtBareProxyObject
+	^ result asGtBareProxyObjectInSession: proxyObject gtSession
 ]
 
 { #category : #accessing }
