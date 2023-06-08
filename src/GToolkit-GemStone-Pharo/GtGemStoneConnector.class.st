@@ -145,7 +145,7 @@ GtGemStoneConnector >> propertiesFile: anObject [
 
 { #category : #accessing }
 GtGemStoneConnector >> serviceName [
-	^ serviceName ifNil: [ GemstoneLoginProfile gemnetObject nameString ].
+	^ serviceName ifNil: [ 'gemnetobject' ].
 ]
 
 { #category : #accessing }
