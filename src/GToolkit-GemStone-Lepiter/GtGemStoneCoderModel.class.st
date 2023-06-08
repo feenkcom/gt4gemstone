@@ -158,12 +158,15 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		evaluateAndWait: remoteScript 
 		for: aGtSourceCoderEvaluationContext receiverObject 
 		bindings: remoteBindings.
+	
 	result associationsDo: [ :binding |
-		(pharoBindings bindingOf: binding key asSymbol) value: binding value asGtBareProxyObject ].
+		binding value gtPharoProxyInitializeWithSession: gemstoneSession.
+		(pharoBindings bindingOf: binding key asSymbol) 
+			value: (binding value asGtBareProxyObject) ].
 
 	^ (result
 		at: 'snippetResult'
-		ifAbsent: anEvaluationFailBlock) asGtBareProxyObjectInSession: gemstoneSession.
+		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
 ]
 
 { #category : #accessing }

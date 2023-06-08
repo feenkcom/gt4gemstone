@@ -115,11 +115,13 @@ GtGemStoneSession >> evaluateAndWait: remoteScript [
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
-
-	^ evaluator 
+	| computedProxy |
+	computedProxy := evaluator 
 		evaluateAndWait: remoteScript 
 		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
+		bindings: (self updatedBindings: remoteBindings).
+	computedProxy gtPharoProxyInitializeWithSession: self.
+	^ computedProxy
 ]
 
 { #category : #accessing }

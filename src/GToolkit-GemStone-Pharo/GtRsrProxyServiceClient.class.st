@@ -110,25 +110,29 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| evaluator |
+	| evaluator computedProxy |
 
 	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	^ evaluator
+	computedProxy := evaluator
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| evaluator |
+	| evaluator computedProxy |
 
 	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	^ evaluator
+	computedProxy := evaluator
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
 ]
 
 { #category : #printing }
@@ -144,6 +148,13 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 		stream
 			<< 'Proxy to a(n): ';
 			<< (remoteClass ifNil: [ '<None>' ]) ].
+]
+
+{ #category : #initialization }
+GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
+	"Update the session from the given context".
+	
+	gtSession := aSession
 ]
 
 { #category : #accessing }
@@ -202,14 +213,19 @@ GtRsrProxyServiceClient >> object [
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
-
-	^ (remoteSelf proxyPerform: aSymbol) wait.
+	| computedProxy |
+	computedProxy := (remoteSelf proxyPerform: aSymbol) wait.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
+	^ computedProxy
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
-
-	^ (remoteSelf proxyPerform: aSymbol withArguments: anArray) wait
+	| computedProxy |
+	computedProxy := (remoteSelf 
+		proxyPerform: aSymbol withArguments: anArray) wait.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
+	^ computedProxy
 ]
 
 { #category : #'gt inspector' }
