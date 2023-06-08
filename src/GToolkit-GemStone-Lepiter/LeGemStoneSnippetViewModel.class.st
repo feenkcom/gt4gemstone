@@ -43,6 +43,11 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 		addShortcut: (LeSnippetMoveSnippetDownShortcut new combination: (self keyboardShortcut: #MoveSnippetDown))
 ]
 
+{ #category : #private }
+LeGemStoneSnippetViewModel >> onSelfObjectChanged [
+	coderViewModel selfObject: sharedContext selfObject
+]
+
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 
@@ -61,9 +66,11 @@ LeGemStoneSnippetViewModel >> sessionName [
 LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 
 	super sharedSnippetContext: aLeSharedSnippetContext.
-
+	
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
 	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
+	
+	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self
 ]
 
 { #category : #accessing }

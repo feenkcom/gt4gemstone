@@ -154,7 +154,10 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	self updateRemoteFrom: aSourceString.
 
-	result := gemstoneSession evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
+	result := gemstoneSession 
+		evaluateAndWait: remoteScript 
+		for: aGtSourceCoderEvaluationContext receiverObject 
+		bindings: remoteBindings.
 	result associationsDo: [ :binding |
 		(pharoBindings bindingOf: binding key asSymbol) value: binding value asGtBareProxyObject ].
 
