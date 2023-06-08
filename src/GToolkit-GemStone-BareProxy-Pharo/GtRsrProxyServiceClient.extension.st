@@ -7,7 +7,7 @@ GtRsrProxyServiceClient >> asGtBareProxyObject [
 
 { #category : #'*GToolkit-GemStone-BareProxy-Pharo' }
 GtRsrProxyServiceClient >> asGtBareProxyObjectInSession: aGtGemStoneSession [
-	gtSession := aGtGemStoneSession.
+	self gtPharoProxyInitializeWithSession: aGtGemStoneSession.
 	^ GtGsBareProxy forProxyObject: self
 ]
 

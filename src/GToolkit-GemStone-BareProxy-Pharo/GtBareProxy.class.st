@@ -191,7 +191,8 @@ GtBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	result := self 
 		rawPerformRemotely: aSelector 
 		withArguments: transfomedArguments.
-	^ result asGtBareProxyObjectInSession: proxyObject gtSession
+	
+	^ result asGtBareProxyObject
 ]
 
 { #category : #accessing }
