@@ -63,6 +63,14 @@ GtGemStoneConnector >> initialize [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isDefaultSession [
+	"Answer a boolean indicating if the receiver is the default sessions.
+	This is a bit of a hack to allow the UI to work with either sessions or connectors."
+
+	^ false.
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isNull [
 
 	^ false
