@@ -10,7 +10,8 @@ Class {
 		'name',
 		'propertiesFile',
 		'host',
-		'announcer'
+		'announcer',
+		'serviceName'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -140,6 +141,16 @@ GtGemStoneConnector >> propertiesFile [
 { #category : #accessing }
 GtGemStoneConnector >> propertiesFile: anObject [
 	propertiesFile := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> serviceName [
+	^ serviceName ifNil: [ 'gemnetobject' ].
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> serviceName: anObject [
+	serviceName := anObject
 ]
 
 { #category : #accessing }

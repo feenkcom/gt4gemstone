@@ -211,6 +211,17 @@ GtGemStoneSession >> gtLogFor: aView [
 ]
 
 { #category : #accessing }
+GtGemStoneSession >> gtNrsStringFor: aView [
+	<gtView>
+
+	session ifNil: [ ^ aView empty ].
+	^ aView textEditor
+		title: 'NRS String';
+		priority: 30;
+		text: [ session sessionParameters gemResource asNrsString ]
+]
+
+{ #category : #accessing }
 GtGemStoneSession >> gtPlaygroundFor: aView [
 	<gtView>
 
