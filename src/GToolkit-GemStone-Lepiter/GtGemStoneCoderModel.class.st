@@ -156,7 +156,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	result := gemstoneSession 
 		evaluateAndWait: remoteScript 
-		for: aGtSourceCoderEvaluationContext receiverObject 
+		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
 	
 	result associationsDo: [ :binding |
