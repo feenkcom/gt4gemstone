@@ -225,26 +225,11 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtViewsForRemoteSideInContext: aContext [
-	"This collects all views for the current object. This excludes the proxy-specific views (annotated with #gtProxy), and includes all remote views for the object, as well as all custom views defined locally"
- 
-	| localViews collectedViews |
-	
-	"Get the views using the super call. 
-	This will use #gtView to compute the list of views for the local object."
-	localViews := super gtViewsInContext: aContext.
-	
-	collectedViews := OrderedCollection new
-		addAll: (self filterLocalProxyViews: localViews);
-		addAll: (proxyObject 
+	^ proxyObject 
 			ifNil: [ #() ]
 			ifNotNil: [ :aProxyObject | 
 				proxyObject 
-					remoteViewsFor: GtPhlowEmptyView new 
-					inContext: aContext ]);
-		yourself.
-	GtPhlowUtility sortByPriority: collectedViews.
-	
-	^ collectedViews
+					gtViewsForRemoteSideInContext: aContext ]
 ]
 
 { #category : #'gt inspector' }
