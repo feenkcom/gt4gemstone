@@ -143,11 +143,49 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtInspectorTitleString [ 
-	^ String streamContents: [ :stream |
-		stream
-			<< 'Proxy to a(n): ';
-			<< (remoteClass ifNil: [ '<None>' ]) ].
+GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil:[ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorTitleString [
+	| limitedString limit |
+	limit := 1000.
+	limitedString := String 	
+		streamContents: [ :s | self gtInspectorTitleStringOn: s ] 
+		limitedTo: limit.
+	limitedString size < limit ifTrue: [^ limitedString].
+	^ limitedString , ' ...'
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< 'Service Client Proxy on: ';
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil: [ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #initialization }
@@ -155,6 +193,18 @@ GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
 	"Update the session from the given context".
 	
 	gtSession := aSession
+]
+
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtPrintFor: aView [
+	<gtProxy>
+	
+	^ aView textEditor
+		title: 'Print';
+		priority: 110;
+		aptitude: BrGlamorousCodeEditorAptitude;
+		text: [ self gtDisplayString asRopedText ];
+		actionUpdateButton
 ]
 
 { #category : #accessing }
@@ -168,15 +218,8 @@ GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
 		titleComputation: [
-			String streamContents: [ :stream |
-				stream
-					<< 'a(n): ';
-					<< (self remoteClass ifNil: [ '<None>' ]).
-				gtSession ifNotNil:
-					[ stream
-						<< ' [';
-						<< gtSession name;
-						<< ']' ]]];
+			String streamContents: [ :aStream |
+				self gtInspectorRemoteSideTitleStringOn: aStream ] ];
 		build 
 ]
 
