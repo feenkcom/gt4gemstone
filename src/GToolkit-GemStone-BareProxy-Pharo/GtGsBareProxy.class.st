@@ -41,12 +41,23 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 ]
 
 { #category : #printing }
-GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
-
-	super gtInspectorTitleStringOn: aStream.
+GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
+	super gtInspectorRemoteSideTitleStringOn: aStream.
+	
 	proxyObject gtSession ifNotNil:
 		[ :gtSession | aStream
 			<< ' [';
 			<< gtSession name;
-			<< ']' ].
+			<< ']' ]
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
+	super gtInspectorTitleStringOn: aStream.
+	
+	proxyObject gtSession ifNotNil:
+		[ :gtSession | aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
