@@ -185,8 +185,10 @@ GtGemStoneSessionRegistry >> defaultSession [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> defaultSession: anObject [
-	defaultSession := anObject
+GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
+
+	defaultSession := aGtGemStoneSession.
+	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
 ]
 
 { #category : #accessing }
@@ -268,6 +270,7 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 		registry: self.
 	newSession connect.
 	self sessions at: newSession name put: newSession.
+	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
 	^ newSession.
 ]
 
@@ -380,6 +383,7 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 	"Remove the supplied session and its definition"
 
 	self removeConnectorNamed: aGtGemStoneSession name.
+	self announce: (GtGemStoneSessionRemovedAnnouncement session: aGtGemStoneSession).
 ]
 
 { #category : #private }

@@ -2,22 +2,21 @@ Class {
 	#name : #GtGemStoneSessionAnnouncement,
 	#superclass : #Announcement,
 	#instVars : [
-		'session',
-		'operation'
+		'session'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Announcements'
+	#category : #'GToolkit-GemStone-Pharo-Announcements'
 }
 
-{ #category : #accessing }
-GtGemStoneSessionAnnouncement >> operation [
+{ #category : #'instance creation' }
+GtGemStoneSessionAnnouncement class >> emitSession: aGtGemStoneSession [
 
-	^ operation
+	^ (self new session: aGtGemStoneSession) emit
 ]
 
-{ #category : #accessing }
-GtGemStoneSessionAnnouncement >> operation: anObject [
+{ #category : #'instance creation' }
+GtGemStoneSessionAnnouncement class >> session: aGtGemStoneSession [
 
-	operation := anObject
+	^ self new session: aGtGemStoneSession
 ]
 
 { #category : #accessing }

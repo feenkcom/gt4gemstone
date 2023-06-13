@@ -27,7 +27,14 @@ Class {
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
 
-	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ]
+	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ].
+	self announce: (GtGemStoneSessionAbortedAnnouncement session: self).
+]
+
+{ #category : #private }
+GtGemStoneSession >> announce: anAnnouncement [
+
+	registry ifNotNil: [ registry announce: anAnnouncement]
 ]
 
 { #category : #accessing }
@@ -51,6 +58,14 @@ GtGemStoneSession >> close [
 	connection close.
 	session ifNotNil: [ session logout ].
 	session := connection := evaluator := nil.
+	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
+]
+
+{ #category : #actions }
+GtGemStoneSession >> commitTransaction [
+
+	self isRunning ifTrue: [ self evaluateAndWait: 'System commitTransaction' ].
+	self announce: (GtGemStoneSessionCommittedAnnouncement session: self).
 ]
 
 { #category : #actions }
@@ -63,6 +78,7 @@ GtGemStoneSession >> connect [
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
 		yourself.
+	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 
 { #category : #accessing }
@@ -263,7 +279,7 @@ GtGemStoneSession >> initialize [
 	mutex := Mutex new.
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GtGemStoneSession >> isDefaultSession [
 
 	^ registry defaultSession == self
@@ -285,7 +301,9 @@ GtGemStoneSession >> name [
 { #category : #testing }
 GtGemStoneSession >> needsCommit [
 
-	^ self evaluateAndWait: 'System needsCommit'
+	^ self isRunning
+		ifTrue: [ self evaluateAndWait: 'System needsCommit' ]
+		ifFalse: [ false ]
 ]
 
 { #category : #private }
@@ -308,6 +326,13 @@ GtGemStoneSession >> printOn: aStream [
 		<< ', ';
 		<< (self isRunning ifTrue: [ 'running' ] ifFalse: [ 'closed' ]);
 		nextPut: $).
+]
+
+{ #category : #actions }
+GtGemStoneSession >> reconnect [
+
+	self close.
+	self connect.
 ]
 
 { #category : #accessing }
