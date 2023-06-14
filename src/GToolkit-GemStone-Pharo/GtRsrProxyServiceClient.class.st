@@ -207,6 +207,11 @@ GtRsrProxyServiceClient >> gtPrintFor: aView [
 		actionUpdateButton
 ]
 
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
+	^ LeGemStoneSnippet new
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
 	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
