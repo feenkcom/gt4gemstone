@@ -29,10 +29,8 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 { #category : #'api - snippet view model' }
 LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
-
 	self updateLanguageLabel.
 	self coder
-		sessionName: self sessionName;
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 
@@ -44,12 +42,17 @@ LeGemStoneSnippetElement >> sessionName [
 
 { #category : #private }
 LeGemStoneSnippetElement >> updateLanguageLabel [
-	| label |
+	"Update the receiver's label"
+	| sessionName label |
 
+	"Ensure that an error while retrieving the session name doesn't cause the label to not be drawn"
+	sessionName := [ snippetViewModel sessionName ]
+		on: GciError
+		do: [ :ex | nil ].
 	label := String streamContents: [ :stream |
 		stream
 			<< 'GemStone (';
-			<< (snippetViewModel sessionName ifNil: [ GtGemStoneNullConnector connectorName ]);
+			<< (sessionName ifNil: [ GtGemStoneNullConnector connectorName ]);
 			<< ')' ].
 	languageElement label: (label asRopedText glamorousRegularFont 
 		foreground: BrGlamorousColors textMarkupColor).
