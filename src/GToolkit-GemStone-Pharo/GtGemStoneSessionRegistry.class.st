@@ -65,6 +65,13 @@ GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
 	uniqueInstance ifNotNil: [ uniqueInstance resetSessions ].
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry class >> sessionIdFromSessionName: aString [
+	"Answer the session Id from the supplied session name"
+
+	^ (aString splitOn: $:) second
+]
+
 { #category : #'system startup' }
 GtGemStoneSessionRegistry class >> startUp: resuming [
 
@@ -269,15 +276,33 @@ GtGemStoneSessionRegistry >> initialize [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionNamed: aString [
+	| connectorName sessionId |
+
+	connectorName := self class connectorNameFromSessionName: aString.
+	sessionId := self class sessionIdFromSessionName: aString.
+	^ self newSessionWithConnector: (self connectorNamed: connectorName)
+		id: sessionId
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
+	"Answer a new session using the supplied connector"
+
+	^ self newSessionWithConnector: aGtGemStoneConnector
+		id: (lastSessionId := lastSessionId + 1) asString
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: sessionId [
 	"Answer a new session using the supplied connector"
 	| newSession |
 
+	self assert: (sessionId indexOf: $:) = 0.
 	newSession := GtGemStoneSession new
 		connector: aGtGemStoneConnector;
-		sessionId: (lastSessionId := lastSessionId + 1);
+		sessionId: sessionId asString;
 		registry: self.
-	newSession connect.
 	self sessions at: newSession name put: newSession.
 	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
 	^ newSession.
@@ -414,7 +439,7 @@ GtGemStoneSessionRegistry >> sessionNamed: aString [
 
 	^ sessions 
 		at: aString
-		ifAbsent: [ self newSessionWithConnectorNamed: (self class connectorNameFromSessionName: aString) ]
+		ifAbsent: [ self newSessionNamed: aString ]
 ]
 
 { #category : #accessing }
