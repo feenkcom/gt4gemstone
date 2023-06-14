@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneSourceCoderEvaluationContext,
 	#superclass : #GtSourceCoderEvaluationContext,
 	#instVars : [
-		'receiverObject'
+		'receiverObject',
+		'session'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -14,7 +15,18 @@ GtGemStoneSourceCoderEvaluationContext >> receiverObject [
 	
 ]
 
-{ #category : #'as yet unclassified' }
-GtGemStoneSourceCoderEvaluationContext >> receiverObject: anUndefinedObject [ 
-	receiverObject := anUndefinedObject
+{ #category : #accessing }
+GtGemStoneSourceCoderEvaluationContext >> receiverObject: anObject [ 
+
+	receiverObject := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderEvaluationContext >> session [
+	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderEvaluationContext >> session: anObject [
+	session := anObject
 ]

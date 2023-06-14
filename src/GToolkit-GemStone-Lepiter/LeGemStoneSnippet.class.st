@@ -2,7 +2,8 @@ Class {
 	#name : #LeGemStoneSnippet,
 	#superclass : #LeCodeSnippet,
 	#instVars : [
-		'connectorName'
+		'sessionName',
+		'session'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
@@ -19,7 +20,7 @@ LeGemStoneSnippet class >> contextMenuItemSpecification [
 LeGemStoneSnippet class >> leJsonV4AttributeMapping [
 
 	^ super leJsonV4AttributeMapping
-		add: (#connectorName -> #connectorName);
+		add: (#sessionName -> #sessionName);
 		yourself
 ]
 
@@ -39,7 +40,7 @@ LeGemStoneSnippet >> acceptVisitor: aVisitor [
 LeGemStoneSnippet >> additionalStateForCopying [
 
 	^ super additionalStateForCopying
-		attributeNamed: #connectorName setValue: connectorName
+		attributeNamed: #sessionName setValue: sessionName
 ]
 
 { #category : #converting }
@@ -49,19 +50,27 @@ LeGemStoneSnippet >> asSnippetViewModel [
 ]
 
 { #category : #accessing }
-LeGemStoneSnippet >> connectorName [
-	^ connectorName
-]
+LeGemStoneSnippet >> connectorName: aString [
+	"Deprecated, provided for old snippets that are serialised."
 
-{ #category : #accessing }
-LeGemStoneSnippet >> connectorName: anObject [
-
-	connectorName := anObject.
-	self updateEditTimeAndEmail.
-	self announceContentChanged.
+	self sessionName: aString, ':1'.
 ]
 
 { #category : #initialization }
 LeGemStoneSnippet >> newCoder [
 	^ GtGemStoneCoderModel new
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> sessionName [
+
+	^ sessionName
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> sessionName: aString [
+
+	sessionName := aString.
+	self updateEditTimeAndEmail.
+	self announceContentChanged.
 ]

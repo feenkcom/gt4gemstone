@@ -2,16 +2,23 @@ Class {
 	#name : #GtGemStoneSourceCoderViewModel,
 	#superclass : #GtSourceCoderViewModel,
 	#instVars : [
-		'selfObject'
+		'selfObject',
+		'session'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
 GtGemStoneSourceCoderViewModel >> evaluationContext [
+	| receiverObject proxyObject |
 
+	proxyObject := selfObject asGtProxyObject.
+	receiverObject := (proxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
+		[ proxyObject gtSession == session ifTrue: [ selfObject ] ifFalse: [ nil ] ]
+	ifFalse: [ nil ].
 	^ super evaluationContext
-		receiverObject: selfObject.
+		receiverObject: receiverObject;
+		session: session.
 ]
 
 { #category : #testing }
@@ -31,5 +38,17 @@ GtGemStoneSourceCoderViewModel >> selfObject [
 
 { #category : #accessing }
 GtGemStoneSourceCoderViewModel >> selfObject: anObject [
+
 	selfObject := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderViewModel >> session [
+	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderViewModel >> session: anObject [
+
+	session := anObject
 ]

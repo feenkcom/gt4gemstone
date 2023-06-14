@@ -80,13 +80,13 @@ GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
 			name: 'Remote';
-			"playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
-				forRemoteProxySide);"
+			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
+				forRemoteProxySide);
 			withLabelAndIconAptitude);
 		addTool: (super gtDefaultInspectorTool
 			name: 'Proxy';
-			"playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
-				forLocalProxySide);"
+			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
+				forLocalProxySide);
 			withLabelAndIconAptitude)
 ]
 

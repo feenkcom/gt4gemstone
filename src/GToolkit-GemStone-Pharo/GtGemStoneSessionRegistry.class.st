@@ -30,6 +30,13 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneSessionRegistry class >> connectorNameFromSessionName: aString [
+	"Answer the connector name from the supplied session name"
+
+	^ (aString splitOn: $:) first
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry class >> default [
 	"Answer the default session registry, i.e. the properties file is co-located with the leptier logical database properties."
 
@@ -127,6 +134,8 @@ GtGemStoneSessionRegistry >> availableConnectors [
 		thenFlatCollect: [ :method | | theConnectors |
 			theConnectors := self perform: method selector.
 			theConnectors collect: [ :connector |
+				"Connector names aren't allowed to include colons ($:)"
+				self assert: (connector name indexOf: $:) = 0.
 				connector name -> connector ] ]) asDictionary.
 ]
 
@@ -171,7 +180,7 @@ GtGemStoneSessionRegistry >> connectors [
 GtGemStoneSessionRegistry >> defaultConnectorName [ 
 
 	^ defaultName ifNil: [ propertiesFile 
-		ifNil: [ '<null>' ]
+		ifNil: [ GtGemStoneNullConnector connectorName ]
 		ifNotNil: [ propertiesFile defaultConnectorName ] ]
 ]
 
@@ -403,8 +412,9 @@ GtGemStoneSessionRegistry >> resetSessions [
 GtGemStoneSessionRegistry >> sessionNamed: aString [
 	"Answer the session at the supplied name"
 
-	sessions ifNil: [ KeyNotFound signalFor: aString in: self ].
-	^ sessions at: aString
+	^ sessions 
+		at: aString
+		ifAbsent: [ self newSessionWithConnectorNamed: (self class connectorNameFromSessionName: aString) ]
 ]
 
 { #category : #accessing }
