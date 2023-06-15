@@ -204,22 +204,6 @@ GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 ]
 
 { #category : #accessing }
-GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
-	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
-	<return: #GtPhlowLabelledView>
-	
-	^ GtPhlowLabelledViewBuilder new
-		object: self;
-		view: aView;
-		context: GtPhlowContext new;
-		viewsSelector: #gtViewsForRemoteSideInContext:;
-		titleComputation: [
-			String streamContents: [ :aStream |
-				self gtInspectorRemoteSideTitleStringOn: aStream ] ];
-		build 
-]
-
-{ #category : #accessing }
 GtRsrProxyServiceClient >> gtSession [
 	^ gtSession
 ]
