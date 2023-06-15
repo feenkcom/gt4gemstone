@@ -1,22 +1,22 @@
 Class {
-	#name : 'GspoGtRemotePhlowDeclarativeTestInspectable',
-	#superclass : 'GtRsrProxyServiceClient',
+	#name : #GspoGtRemotePhlowDeclarativeTestInspectable,
+	#superclass : #GtRsrProxyServiceClient,
 	#category : 'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GspoGtRemotePhlowDeclarativeTestInspectable class >> remoteClassName [
 
 	^ #GtRemotePhlowDeclarativeTestInspectable
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GspoGtRemotePhlowDeclarativeTestInspectable >> collectionOfObjects [ 
 
 	^ self proxyPerform: #collectionOfObjects
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GspoGtRemotePhlowDeclarativeTestInspectable >> string [ 
 
 	^ self proxyPerform: #string
