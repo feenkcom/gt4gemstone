@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtRemoteGemStoneProxyServiceExamples',
-	#superclass : 'Object',
+	#name : #GtRemoteGemStoneProxyServiceExamples,
+	#superclass : #Object,
 	#instVars : [
 		'server',
 		'connector'
@@ -8,20 +8,20 @@ Class {
 	#category : 'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> getRemoteObject [
 
 	^ self runningServer evaluateAndWait: self remoteObjectCommand
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
 	^ self testInspectableName, ' new'
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> runningServer [
 	"Answer a running server.
 	This assumes:
@@ -48,7 +48,7 @@ GtRemoteGemStoneProxyServiceExamples >> runningServer [
 	^ server connect.
 ]
 
-{ #category : 'server - basic' }
+{ #category : #'server - basic' }
 GtRemoteGemStoneProxyServiceExamples >> stopServer [ 
 
 	server ifNotNil: 
@@ -57,14 +57,14 @@ GtRemoteGemStoneProxyServiceExamples >> stopServer [
 
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testInspectableName [
 	"Answer the name of the test inspectable class on the remote"
 
 	^ #GtRemotePhlowDeclarativeTestInspectable
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 	<gtExample>
 	| proxy value |
@@ -78,7 +78,7 @@ GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 	^ proxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	<gtExample>
 	| collectionProxy size |
@@ -105,7 +105,7 @@ GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	^ collectionProxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	<gtExample>
 	| setProxy size |
@@ -128,7 +128,7 @@ GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	^ setProxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testWithProxyObjectAsParameterAsArgument [
 	<gtExample>
 	| argumentProxy proxy value |
