@@ -22,12 +22,23 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 				left: 2 * aGtHomeSection spaceGap
 				bottom: 2 * aGtHomeSection spaceGap
 				right: 2 * aGtHomeSection spaceGap);
-			size: 250 @ 150;
+			size: 310 @ 150;
 			addChild: (self new
 				matchParent;
 				constraintsDo: [ :c | 
 					c frame horizontal alignLeft.
 					c frame vertical alignCenter ]))
+]
+
+{ #category : #private }
+GtGemStoneSessionsCardWidget >> activeMark [
+
+	^ BlElement new
+		layout: BlLinearLayout horizontal alignCenter;
+		constraintsDo: [ :c |
+			c horizontal matchParent.
+			c vertical fitContent ];
+		addChild: (BrGlamorousVectorIcons accept asElement)
 ]
 
 { #category : #'private - ui' }
@@ -72,28 +83,28 @@ GtGemStoneSessionsCardWidget >> createList [
 			aLabel text: aSession name ].
 	newList column
 		"Connected"
-		title: 'Run.';
-		width: 40;
+		title: 'Connected';
+		width: 70;
 		stencil: [ :aSession |
 			aSession isRunning
-				ifTrue: [ BrGlamorousVectorIcons accept ]
-				ifFalse: [ BrGlamorousVectorIcons cancel ] ].
+				ifTrue: [ self activeMark ]
+				ifFalse: [ BlElement new size: 0@0 ] ].
 	newList column
 		"Clean (needsCommit not)"
-		title: 'Cln.';
-		width: 40;
+		title: 'Changed';
+		width: 60;
 		stencil: [ :aSession |
 			aSession needsCommit
-				ifTrue: [ BrGlamorousVectorIcons cancel ]
-				ifFalse: [ BrGlamorousVectorIcons accept ] ].
+				ifTrue: [ self activeMark ]
+				ifFalse: [ BlElement new size: 0@0 ] ].
 	newList column
 		"Default"
-		title: 'Def.';
-		width: 40;
+		title: 'Default';
+		width: 50;
 		stencil: [ :aSession |
 			aSession isDefaultSession
-				ifTrue: [ BrGlamorousVectorIcons accept ]
-				ifFalse: [ BrGlamorousVectorIcons cancel ] ].
+				ifTrue: [ self activeMark ]
+				ifFalse: [ BlElement new size: 0@0 ] ].
 	newList
 		when: BrSelectionDoubleClicked
 		do: [ :anEvent | self doDoubleClicked: anEvent ].
@@ -140,11 +151,12 @@ GtGemStoneSessionsCardWidget >> createToolbar [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> doDoubleClicked: anEvent [ 
+	| session |
 
-	GtPager
-		openWrappedOn: (GtInspector newOn: 
-			(anEvent currentTarget items at: anEvent selection first))
-		title: 'GemStone Registry'
+	session := anEvent currentTarget items at: anEvent selection first.
+	session class = GtGemStoneCardWidgetNoSessions ifTrue: [ ^ self ].
+
+	self openPlaygroundOn: session
 		from: anEvent currentTarget.
 ]
 
@@ -169,10 +181,33 @@ GtGemStoneSessionsCardWidget >> inspectRegistryFrom: aButton [
 		from: aButton.
 ]
 
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> inspectSession: aSession from: anElement [
+
+	GtPager
+		openWrappedOn: (GtInspector newOn: aSession)
+		title: aSession name
+		from: anElement.
+]
+
 { #category : #'private - hooks' }
 GtGemStoneSessionsCardWidget >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
 	self updateContent
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
+	| page |
+
+	page := LePage unnamedPage.
+	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
+	GtWorldUtility
+		showSpaceWithTitle: aSession name
+		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
+				asStencil
+		from: anElement
 ]
 
 { #category : #accessing }
@@ -194,27 +229,23 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> sessionActions [
-	^ BrGlamorousSimpleContextMenuContent new items: {
-		'Commit' -> [ :aStatusLineElement | self halt ].
-		'Abort' -> [ :aStatusLineElement | aStatusLineElement executeTestsOnCluster ].
-		'Reconnect' -> [ :aStatusLineElement | aStatusLineElement executeTestsOnCluster ].
-		'Be Default' -> [ :aStatusLineElement | aStatusLineElement executeTestsOnCluster ].
-	}
-]
-
-{ #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> sessionActionsFor: aSession [
+
+	aSession class = GtGemStoneCardWidgetNoSessions ifTrue: [ ^ BrGlamorousSimpleContextMenuContent new ].
+
 	^ BrGlamorousSimpleContextMenuContent new items: {
+		'Playground' -> [ :aStatusLineElement | self openPlaygroundOn: aSession from: aStatusLineElement ].
 		'Commit' -> [ :aStatusLineElement | aSession commitTransaction ].
 		'Abort' -> [ :aStatusLineElement | aSession abortTransaction ].
 		'Reconnect' -> [ :aStatusLineElement | aSession reconnect ].
 		'Be Default' -> [ :aStatusLineElement | aSession beDefaultSession ].
+		'Inspect' -> [ :aStatusLineElement | self inspectSession: aSession from: aStatusLineElement ].
 	}
 ]
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> updateContent [
 
-	sessionList items: self registry activeSessions.
+	sessionList items: (self registry activeSessions ifEmpty:
+		[ { GtGemStoneCardWidgetNoSessions new } ]).
 ]
