@@ -63,15 +63,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -85,8 +76,8 @@ dict := Dictionary new.
 dict.'.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: (assoc value asGtBareProxyObjectInSession: gtSession) ].
-	self class proxyObjectMap at: localObject put: (self asGtBareProxyObjectInSession: gtSession).
+		localObject instVarNamed: assoc key put: assoc value ].
+	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
 	^ localObject.
 ]
 
@@ -284,4 +275,13 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]
