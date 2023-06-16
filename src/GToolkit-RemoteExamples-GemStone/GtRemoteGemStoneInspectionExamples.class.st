@@ -9,39 +9,6 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertBothSidesInspectionForProxy: aProxyObject [ 
-	| inspectorTool scripter |
-	
-	inspectorTool := self 
-		compositeInspectorToolForBothProxySidesForProxy: aProxyObject 
-		withDatabase: self databaseWithMonitor.
-		
-	scripter := self scripter.
-	scripter
-		model: inspectorTool object;
-		element: inspectorTool asElement.
-	
-	self assertCompositeInspectorToolUsing: scripter.
-	
-	^ scripter
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertObjectInspectionFor: codeString [
-	| proxyObject |
-	
-	proxyObject := self convertToTargetProxy: (self runningServer 
-		evaluateAndWait: codeString).
-	
-	^ self assertObjectInspectionForProxy: proxyObject.
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertObjectInspectionForProxy: aProxyObject [
-	^ self assertBothSidesInspectionForProxy: aProxyObject
-]
-
 { #category : #converting }
 GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
 	"Allow subclasses to transform the type of proxy instead of assuming that the server computes the right type."
@@ -53,10 +20,12 @@ GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
 	
-	^ self assertObjectInspectionFor: 'Dictionary new
-		at: Object new put: 1;
-		at: Object new put: 2;
-		yourself'
+	^ self 
+		assertObjectInspectionFor: 'Dictionary new
+			at: Object new put: 1;
+			at: Object new put: 2;
+			yourself'
+		withTypeName: #Dictionary
 ]
 
 { #category : #'examples - objects' }
@@ -64,7 +33,9 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	<gtExample>
 	<after: #stopServer>
 	
-	^ self assertObjectInspectionFor: 'OrderedCollection new'
+	^ self 
+		assertObjectInspectionFor: 'OrderedCollection new'
+		withTypeName: #OrderedCollection
 ]
 
 { #category : #'examples - objects' }
@@ -72,7 +43,9 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	<gtExample>
 	<after: #stopServer>
 	
-	^ self assertObjectInspectionFor: 'Set new'
+	^ self 
+		assertObjectInspectionFor: 'Set new'
+		 withTypeName: #Set
 ]
 
 { #category : #accessing }
