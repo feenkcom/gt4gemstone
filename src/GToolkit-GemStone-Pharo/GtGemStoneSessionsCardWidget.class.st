@@ -79,7 +79,7 @@ GtGemStoneSessionsCardWidget >> createList [
 		dataBinder: [ :aLabel :aSession |
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
-						(self sessionActionsFor: aSession)).
+						[ self sessionActionsFor: aSession ]).
 			aLabel text: aSession name ].
 	newList column
 		"Connected"
