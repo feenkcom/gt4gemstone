@@ -25,6 +25,11 @@ GtRsrProxyServiceClient class >> isClientClass [
 ]
 
 { #category : #accessing }
+GtRsrProxyServiceClient class >> leProxyTypeForPlaygroundPage [
+	^ GtRsrProxyServiceClient
+]
+
+{ #category : #accessing }
 GtRsrProxyServiceClient class >> proxyObjectAt: anObject ifAbsent: absentBlock [
 
 	^ self proxyObjectMap at: anObject 

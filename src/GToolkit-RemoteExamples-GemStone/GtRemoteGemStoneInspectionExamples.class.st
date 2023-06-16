@@ -44,6 +44,7 @@ GtRemoteGemStoneInspectionExamples >> assertObjectInspectionForProxy: aProxyObje
 
 { #category : #converting }
 GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
+	"Allow subclasses to transform the type of proxy instead of assuming that the server computes the right type."
 	^ anObject
 ]
 

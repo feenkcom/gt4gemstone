@@ -12,7 +12,13 @@ GtGsBareProxy class >> forProxyObject: aProxyObject [
 	| proxyClass |
 
 	proxyClass := self subclassForRemoteClass: aProxyObject remoteClass.
-	^ proxyClass new proxyObject: aProxyObject
+	^ proxyClass new 
+		proxyObject: aProxyObject
+]
+
+{ #category : #accessing }
+GtGsBareProxy class >> leProxyTypeForPlaygroundPage [
+	^ GtGsBareProxy
 ]
 
 { #category : #private }
