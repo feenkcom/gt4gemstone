@@ -4,6 +4,11 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #testing }
+GtRemoteGemStoneInspectionExamples class >> isAbstract [
+	^ self name = #GtRemoteGemStoneInspectionExamples
+]
+
 { #category : #'asserting - inspection' }
 GtRemoteGemStoneInspectionExamples >> assertBothSidesInspectionForProxy: aProxyObject [ 
 	| inspectorTool scripter |
@@ -26,9 +31,8 @@ GtRemoteGemStoneInspectionExamples >> assertBothSidesInspectionForProxy: aProxyO
 GtRemoteGemStoneInspectionExamples >> assertObjectInspectionFor: codeString [
 	| proxyObject |
 	
-	proxyObject := (self runningServer 
-		evaluateAndWait: codeString)
-			asGtBareProxyObject.
+	proxyObject := self convertToTargetProxy: (self runningServer 
+		evaluateAndWait: codeString).
 	
 	^ self assertObjectInspectionForProxy: proxyObject.
 ]
@@ -38,9 +42,9 @@ GtRemoteGemStoneInspectionExamples >> assertObjectInspectionForProxy: aProxyObje
 	^ self assertBothSidesInspectionForProxy: aProxyObject
 ]
 
-{ #category : #accessing }
-GtRemoteGemStoneInspectionExamples >> currentProxyTypeName [
-	^ #GtGsBareProxy
+{ #category : #converting }
+GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
+	^ anObject
 ]
 
 { #category : #'examples - objects' }
@@ -96,6 +100,6 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 GtRemoteGemStoneInspectionExamples >> targetProxyObjectForInspection [
 	<gtExample>
 	
-	^ (self runningServer evaluateAndWait: self remoteObjectCommand)
-		asGtBareProxyObject
+	^ self convertToTargetProxy: (self runningServer 
+		evaluateAndWait: self remoteObjectCommand)
 ]
