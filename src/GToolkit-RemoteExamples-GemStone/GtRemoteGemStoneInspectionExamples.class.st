@@ -6,13 +6,10 @@ Class {
 
 { #category : #'asserting - inspection' }
 GtRemoteGemStoneInspectionExamples >> assertBothSidesInspectionForProxy: aProxyObject [ 
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertLocalSideInspectionForProxy: aProxyObject [ 
 	| inspectorTool scripter |
+	
 	inspectorTool := self 
-		inspectorToolForLocalProxySideForProxy: aProxyObject 
+		compositeInspectorToolForBothProxySidesForProxy: aProxyObject 
 		withDatabase: self databaseWithMonitor.
 		
 	scripter := self scripter.
@@ -20,7 +17,7 @@ GtRemoteGemStoneInspectionExamples >> assertLocalSideInspectionForProxy: aProxyO
 		model: inspectorTool object;
 		element: inspectorTool asElement.
 	
-	self assertInspectorTabLabelsFor: scripter.
+	self assertCompositeInspectorToolUsing: scripter.
 	
 	^ scripter
 ]
@@ -29,37 +26,16 @@ GtRemoteGemStoneInspectionExamples >> assertLocalSideInspectionForProxy: aProxyO
 GtRemoteGemStoneInspectionExamples >> assertObjectInspectionFor: codeString [
 	| proxyObject |
 	
-	proxyObject := self runningServer evaluateAndWait: 'Set new'.
-	self assertObjectInspectionForProxy: proxyObject.
-	"^ self assertRemoteSideInspectionForProxy: proxyObject."
+	proxyObject := (self runningServer 
+		evaluateAndWait: codeString)
+			asGtBareProxyObject.
 	
-	^ proxyObject
+	^ self assertObjectInspectionForProxy: proxyObject.
 ]
 
 { #category : #'asserting - inspection' }
 GtRemoteGemStoneInspectionExamples >> assertObjectInspectionForProxy: aProxyObject [
-	
-	self assertRemoteSideInspectionForProxy: aProxyObject.
-	self assertLocalSideInspectionForProxy: aProxyObject.
-	self assertBothSidesInspectionForProxy: aProxyObject.
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertRemoteSideInspectionForProxy: aProxyObject [ 
-	| inspectorTool scripter |
-	inspectorTool := self 
-		inspectorToolForRemoteProxySideForProxy: aProxyObject 
-		withDatabase: self databaseWithMonitor.
-		
-	scripter := self scripter.
-	scripter
-		model: inspectorTool object;
-		element: inspectorTool asElement.
-	
-	self assertInspectorTabLabelsFor: scripter.
-	"self assertInspectorTabContentsFor: scripter."
-	
-	^ scripter
+	^ self assertBothSidesInspectionForProxy: aProxyObject
 ]
 
 { #category : #accessing }
@@ -68,7 +44,26 @@ GtRemoteGemStoneInspectionExamples >> currentProxyTypeName [
 ]
 
 { #category : #'examples - objects' }
-GtRemoteGemStoneInspectionExamples >> emptySetObjectInspection [
+GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self assertObjectInspectionFor: 'Dictionary new
+		at: Object new put: 1;
+		at: Object new put: 2;
+		yourself'
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self assertObjectInspectionFor: 'OrderedCollection new'
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	<gtExample>
 	<after: #stopServer>
 	
