@@ -4,75 +4,48 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertBothSidesInspectionForProxy: aProxyObject [ 
+{ #category : #testing }
+GtRemoteGemStoneInspectionExamples class >> isAbstract [
+	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertLocalSideInspectionForProxy: aProxyObject [ 
-	| inspectorTool scripter |
-	inspectorTool := self 
-		inspectorToolForLocalProxySideForProxy: aProxyObject 
-		withDatabase: self databaseWithMonitor.
-		
-	scripter := self scripter.
-	scripter
-		model: inspectorTool object;
-		element: inspectorTool asElement.
-	
-	self assertInspectorTabLabelsFor: scripter.
-	
-	^ scripter
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertObjectInspectionFor: codeString [
-	| proxyObject |
-	
-	proxyObject := self runningServer evaluateAndWait: 'Set new'.
-	self assertObjectInspectionForProxy: proxyObject.
-	"^ self assertRemoteSideInspectionForProxy: proxyObject."
-	
-	^ proxyObject
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertObjectInspectionForProxy: aProxyObject [
-	
-	self assertRemoteSideInspectionForProxy: aProxyObject.
-	self assertLocalSideInspectionForProxy: aProxyObject.
-	self assertBothSidesInspectionForProxy: aProxyObject.
-]
-
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertRemoteSideInspectionForProxy: aProxyObject [ 
-	| inspectorTool scripter |
-	inspectorTool := self 
-		inspectorToolForRemoteProxySideForProxy: aProxyObject 
-		withDatabase: self databaseWithMonitor.
-		
-	scripter := self scripter.
-	scripter
-		model: inspectorTool object;
-		element: inspectorTool asElement.
-	
-	self assertInspectorTabLabelsFor: scripter.
-	"self assertInspectorTabContentsFor: scripter."
-	
-	^ scripter
-]
-
-{ #category : #accessing }
-GtRemoteGemStoneInspectionExamples >> currentProxyTypeName [
-	^ #GtGsBareProxy
+{ #category : #converting }
+GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
+	"Allow subclasses to transform the type of proxy instead of assuming that the server computes the right type."
+	^ anObject
 ]
 
 { #category : #'examples - objects' }
-GtRemoteGemStoneInspectionExamples >> emptySetObjectInspection [
+GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
 	
-	^ self assertObjectInspectionFor: 'Set new'
+	^ self 
+		assertObjectInspectionFor: 'Dictionary new
+			at: Object new put: 1;
+			at: Object new put: 2;
+			yourself'
+		withTypeName: #Dictionary
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: 'OrderedCollection new'
+		withTypeName: #OrderedCollection
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptySetInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: 'Set new'
+		 withTypeName: #Set
 ]
 
 { #category : #accessing }
@@ -101,6 +74,6 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 GtRemoteGemStoneInspectionExamples >> targetProxyObjectForInspection [
 	<gtExample>
 	
-	^ (self runningServer evaluateAndWait: self remoteObjectCommand)
-		asGtBareProxyObject
+	^ self convertToTargetProxy: (self runningServer 
+		evaluateAndWait: self remoteObjectCommand)
 ]
