@@ -159,7 +159,6 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		bindings: remoteBindings.
 	
 	result associationsDo: [ :binding |
-		binding value gtPharoProxyInitializeWithSession: gemstoneSession.
 		(pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
 

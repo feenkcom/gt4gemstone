@@ -85,8 +85,8 @@ dict := Dictionary new.
 dict.'.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: (assoc value asGtBareProxyObjectInSession: gtSession) ].
-	self class proxyObjectMap at: localObject put: (self asGtBareProxyObjectInSession: gtSession).
+		localObject instVarNamed: assoc key put: assoc value ].
+	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
 	^ localObject.
 ]
 
@@ -210,22 +210,6 @@ GtRsrProxyServiceClient >> gtPrintFor: aView [
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
-	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
-	<return: #GtPhlowLabelledView>
-	
-	^ GtPhlowLabelledViewBuilder new
-		object: self;
-		view: aView;
-		context: GtPhlowContext new;
-		viewsSelector: #gtViewsForRemoteSideInContext:;
-		titleComputation: [
-			String streamContents: [ :aStream |
-				self gtInspectorRemoteSideTitleStringOn: aStream ] ];
-		build 
 ]
 
 { #category : #accessing }
