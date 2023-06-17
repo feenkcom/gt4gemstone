@@ -267,6 +267,12 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 		ifNotNil: [ sessions includesKey: aString ]
 ]
 
+{ #category : #testing }
+GtGemStoneSessionRegistry >> hasSessions [
+
+	^ sessions isNotEmpty
+]
+
 { #category : #initialization }
 GtGemStoneSessionRegistry >> initialize [
 

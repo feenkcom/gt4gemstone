@@ -4,7 +4,8 @@ Extension { #name : #GtPharoMethodCoder }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	<gtAstCoderAddOns: 103>
 
-	anAST methodNode ifNil: [ ^ self ].
+	(anAST methodNode isNil or: [ GtGemStoneSessionRegistry default hasSessions not ]) ifTrue: 
+		[ ^ self ].
 	coderAddOns
 		addContextMenuItem: 'Compile from GemStone' translated
 		hover: nil
@@ -32,7 +33,8 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	<gtAstCoderAddOns: 103>
 
-	anAST methodNode ifNil: [ ^ self ].
+	(anAST methodNode isNil or: [ GtGemStoneSessionRegistry default hasSessions not ]) ifTrue: 
+		[ ^ self ].
 	coderAddOns
 		addContextMenuItem: 'Compile to GemStone' translated
 		hover: nil
@@ -61,7 +63,8 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	<gtAstCoderAddOns: 1>
 
-	anAST methodNode ifNil: [ ^ self ].
+	(anAST methodNode isNil or: [ GtGemStoneSessionRegistry default hasSessions not ]) ifTrue: 
+		[ ^ self ].
 	coderAddOns
 		addContextMenuItem: 'Inspect from GemStone' translated
 		hover: nil
