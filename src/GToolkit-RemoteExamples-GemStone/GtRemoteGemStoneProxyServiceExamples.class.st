@@ -5,7 +5,7 @@ Class {
 		'server',
 		'connector'
 	],
-	#category : 'GToolkit-RemoteExamples-GemStone'
+	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
 { #category : #private }
@@ -30,22 +30,9 @@ GtRemoteGemStoneProxyServiceExamples >> runningServer [
 	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
 	<gtExample>
 	<after: #stopServer>
-	| libraryDirectory |
-
+	
 	server ifNotNil: [ ^ server ].
-	"Connect to the GemStone DB"
-	libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
-	self assert: libraryDirectory isDirectory.
-	connector := GtGemStoneGciConnector new
-		gemstoneVersion: '3.7.0';
-		libraryPath: libraryDirectory;
-		host: 'localhost';
-		netldi: 'gs64ldi';
-		stone: 'gs64stone';
-		username: 'SystemUser';
-		password: 'swordfish'.
-	server := GtGemStoneSession new connector: connector.
-	^ server connect.
+	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
 { #category : #'server - basic' }

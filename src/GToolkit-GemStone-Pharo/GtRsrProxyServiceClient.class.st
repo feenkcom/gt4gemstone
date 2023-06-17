@@ -25,6 +25,11 @@ GtRsrProxyServiceClient class >> isClientClass [
 ]
 
 { #category : #accessing }
+GtRsrProxyServiceClient class >> leProxyTypeForPlaygroundPage [
+	^ GtRsrProxyServiceClient
+]
+
+{ #category : #accessing }
 GtRsrProxyServiceClient class >> proxyObjectAt: anObject ifAbsent: absentBlock [
 
 	^ self proxyObjectMap at: anObject 
@@ -137,9 +142,20 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
-	aStream << ([ self 
-		proxyPerform: #gtDisplayString ] 
-			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< 'Service Client Proxy on: ';
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil: [ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #printing }
@@ -172,20 +188,7 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
-	self isProxyObjectActive 
-		ifTrue: [
-			aStream 
-				<< 'Service Client Proxy on: ';
-				<< ([self proxyPerform: #gtDisplayString]
-					on: Error 
-					do: [ :e | 'Error printing'  ]) ]
-		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
-	
-	gtSession ifNotNil: [ 
-		aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtDisplayOn: aStream
 ]
 
 { #category : #initialization }
@@ -241,6 +244,11 @@ GtRsrProxyServiceClient >> object [
 	(#(Set Dictionary Array OrderedCollection) includes: remoteClass) ifFalse:
 		[ self error: 'Unable to return non-immediate object' ].
 	^ remoteSelf object wait
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> printOn: aStream [
+	self gtDisplayOn: aStream
 ]
 
 { #category : #performing }
