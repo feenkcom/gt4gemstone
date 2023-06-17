@@ -123,7 +123,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
-	^ self 
+	^ self ensureRunning
 		evaluateAndWait: remoteScript
 		for: nil 
 		bindings: Dictionary new

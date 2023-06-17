@@ -19,7 +19,7 @@ GtpoMetaclass3 class >> remoteClassName [
 
 { #category : #private }
 GtpoMetaclass3 >> compileFromTab: aTab [
-	"Compile the receiver's method based on the current editor contents"
+	"Update the receiver's definition based on the current editor contents"
 	| tabGroup code result |
 
 	"Work our way up to the BrTabGroup and then down to the BrEditor"
@@ -33,6 +33,10 @@ GtpoMetaclass3 >> compileFromTab: aTab [
 			result := self evaluateAndWait: code. ]
 		ifNone: [ result := 'Unable to find editor' ].
 	aTab phlow spawnObject: result.
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 >> compileMethod: source category: categoryName [
 ]
 
 { #category : #ui }
