@@ -1,24 +1,49 @@
 Extension { #name : #GtPharoMethodCoder }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
-GtPharoMethodCoder >> gtGemStoneCompileMethodFor: anAST into: coderAddOns [
+GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	<gtAstCoderAddOns: 103>
 
 	anAST methodNode ifNil: [ ^ self ].
 	coderAddOns
-		addContextMenuItem: 'Compile on GemStone' translated
+		addContextMenuItem: 'Compile from GemStone' translated
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
-			| clsName source session category environmentId cmd gsMethod |
+			| clsName source session cmd |
+			clsName := self compiledMethod methodClass name.
+			session := GtGemStoneSessionRegistry default defaultSession.
+			session ifNil: [ self error: 'No default GemStone session available' ].
+			cmd := String streamContents: [ :stream |
+				stream
+					<< '(';
+					<< clsName;
+					<< ' compiledMethodAt: #';
+					<< selector;
+					<< ') sourceString' ].
+			source := session evaluateAndWait: cmd.
+			self compiledMethod methodClass
+				compile: source
+				classified: (self compiledMethod category) ]
+		id: nil
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
+	<gtAstCoderAddOns: 103>
+
+	anAST methodNode ifNil: [ ^ self ].
+	coderAddOns
+		addContextMenuItem: 'Compile to GemStone' translated
+		hover: nil
+		leave: nil
+		action: [ :aCoderUIModel :anEvent | 
+			| clsName source session category cmd gsMethod |
 			clsName := self compiledMethod methodClass name.
 			source := anAST source.
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
 			category := self compiledMethod category.
-			"Where to get the environmentId from?  Only a method seems to know its environment"
-			environmentId := '0'.
-			session ifNil: [ self error: 'No default session available' ].
 			cmd := String streamContents: [ :stream |
 				stream
 					<< clsName;
@@ -26,10 +51,9 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFor: anAST into: coderAddOns [
 					print: source; cr;
 					<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
 					<< 'category: #'''; << category; << ''''; cr;
-					<< 'environmentId: '; << environmentId ].
+					<< 'environmentId: 0' ].
 			gsMethod := session evaluateAndWait: cmd.
-			self notifyObjectSpawn: gsMethod.
-			 ]
+			self notifyObjectSpawn: gsMethod ]
 		id: nil
 ]
 

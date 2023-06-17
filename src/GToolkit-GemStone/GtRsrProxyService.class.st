@@ -16,8 +16,7 @@ GtRsrProxyService class >> templateClassName [
 { #category : #testing }
 GtRsrProxyService >> isProxyObjectActive [
 	"Answer a boolean indicating whether the receiver is expected to be functioning,
-	i.e. it has a connection that is open, and it's connection is the current one.
-	updated"
+	i.e. it has a connection that is open, and it's connection is the current one."
 
 	_connection ifNil: [ ^ false ].
 	_connection isOpen ifFalse: [ ^ false ].
