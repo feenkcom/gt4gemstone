@@ -258,6 +258,12 @@ GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 ]
 
 { #category : #testing }
+GtGemStoneSessionRegistry >> hasConnectors [
+
+	^ connectors notEmpty
+]
+
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
