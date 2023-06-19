@@ -2,7 +2,7 @@ Extension { #name : #GtPharoMethodCoder }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
-	<gtAstCoderAddOns: 103>
+	<gtCoderContextMenuAddOns: 303>
 
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
@@ -33,7 +33,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
-	<gtAstCoderAddOns: 103>
+	<gtCoderContextMenuAddOns: 302>
 
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
@@ -65,7 +65,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
-	<gtAstCoderAddOns: 1>
+	<gtCoderContextMenuAddOns: 304>
 
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
