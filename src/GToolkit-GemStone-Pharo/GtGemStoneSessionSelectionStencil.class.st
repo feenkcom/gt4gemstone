@@ -27,34 +27,15 @@ GtGemStoneSessionSelectionStencil >> create [
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
-			content: 
-				[
-				| aCurrentSession aSessionManagerViewModel aSelectionElement |
-				
-				aCurrentSession := registry 
-					sessionNamed: currentSessionNameComputation value
-					ifAbsent: [ ].
-				
-				aSessionManagerViewModel := GtGemStoneSessionManagerViewModel new 
-					gemStoneSessionRegistry: registry.
-				
-				aSessionManagerViewModel gemStoneSessionsViewModel
-					findGemStoneSessionViewModels: aCurrentSession
-					ifFound: [ :aSessionViewModel | aSessionViewModel activateSession ]
-					ifNone: [ ].
-
-				aSelectionElement := GtGemStoneSessionManagerWidget new
-					gemStoneSessionManagerViewModel: aSessionManagerViewModel;
-					addInspectButton;
-					addNewSessionButton;
-					exact: extent.
-
-				aSelectionElement gemStoneSessionManagerViewModel
-					when: GtGemStoneSessionViewModelActivated
-					do: [ :anEvent |
+			content: [ | aSelectionElement |
+				aSelectionElement := GtGemStoneSessionSelectionElement new
+					registry: registry;
+					selectAction: [ :aSession |
 						selectAction
-							cull: anEvent gemStoneSessionViewModel gemStoneSession
-							cull: selectionButton ].
+							cull: aSession
+							cull: selectionButton ];
+					currentSessionNameComputation: currentSessionNameComputation;
+					exact: extent.
 
 				aSelectionElement
 					when: GtPhlowObjectToSpawn

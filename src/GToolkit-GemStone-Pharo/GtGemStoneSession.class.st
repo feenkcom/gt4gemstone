@@ -179,7 +179,6 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 GtGemStoneSession >> gtConnectActionFor: anAction [
 	<gtAction>
 
-	self isRunning ifFalse: [ ^ anAction noAction ].
 	^ anAction button 
 		tooltip: 'GemStone Connect Session';
 		icon: BrGlamorousVectorIcons up;
@@ -212,6 +211,27 @@ GtGemStoneSession >> gtDisconnectActionFor: anAction [
 		action: [ :button | 
 			self close.
 			button phlow spawnObject: self ]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtLiveFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ { 
+			'Connected' -> #isRunning.
+			'Changed' -> #needsCommit.
+			'Default' -> #isDefaultSession } ];
+		column: 'Attribute' text: [ :item | item key ];
+		column: 'Status' 
+			icon: [ :item |
+				(item value value: self)
+					ifTrue: [ BrGlamorousVectorIcons accept ]
+					ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 70;
+		actionUpdateButton
 ]
 
 { #category : #ui }

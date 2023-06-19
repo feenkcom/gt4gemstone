@@ -82,7 +82,6 @@ GtGemStoneSessionsCardWidget >> createList [
 						[ self sessionActionsFor: aSession ]).
 			aLabel text: aSession name ].
 	newList column
-		"Connected"
 		title: 'Connected';
 		width: 70;
 		stencil: [ :aSession |
@@ -90,7 +89,6 @@ GtGemStoneSessionsCardWidget >> createList [
 				ifTrue: [ self activeMark ]
 				ifFalse: [ BlElement new size: 0@0 ] ].
 	newList column
-		"Clean (needsCommit not)"
 		title: 'Changed';
 		width: 60;
 		stencil: [ :aSession |
@@ -98,7 +96,6 @@ GtGemStoneSessionsCardWidget >> createList [
 				ifTrue: [ self activeMark ]
 				ifFalse: [ BlElement new size: 0@0 ] ].
 	newList column
-		"Default"
 		title: 'Default';
 		width: 50;
 		stencil: [ :aSession |
@@ -112,7 +109,6 @@ GtGemStoneSessionsCardWidget >> createList [
 		when: BrSelectionChanged 
 		do: [ :anEvent | self doSelectionChanged: anEvent ].
 	newList addAptitude: BrColumnedListHeaderAptitude.
-	"newList contextMenuStencil: self contextMenuStencilFromSessionActions."
 	^ newList.
 ]
 

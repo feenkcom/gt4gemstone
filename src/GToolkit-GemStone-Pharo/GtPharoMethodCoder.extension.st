@@ -59,7 +59,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 					<< 'category: #'''; << category; << ''''; cr;
 					<< 'environmentId: 0' ].
 			gsMethod := session evaluateAndWait: cmd.
-			self notifyObjectSpawn: gsMethod ]
+			self notifyObjectSpawn: gsMethod asGtBareProxyObject ]
 		id: nil
 ]
 
@@ -89,6 +89,6 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 			gsMethod := [ session evaluateAndWait: cmd ]
 				on: RsrBrokenPromise
 				do: [ :ex | ex ].
-			self notifyObjectSpawn: gsMethod ]
+			self notifyObjectSpawn: gsMethod asGtBareProxyObject ]
 		id: nil
 ]
