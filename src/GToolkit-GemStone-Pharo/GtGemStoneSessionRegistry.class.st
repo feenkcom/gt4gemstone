@@ -196,10 +196,7 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 { #category : #accessing }
 GtGemStoneSessionRegistry >> defaultSession [
 
-	^ defaultSession ifNil:
-		[ sessions size = 1
-			ifTrue: [ sessions anyOne ]
-			ifFalse: [ nil ] ]
+	^ defaultSession
 ]
 
 { #category : #accessing }
@@ -209,7 +206,7 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 	<gtView>
 
@@ -223,7 +220,7 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 	<gtView>
 
@@ -251,14 +248,33 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			text := item name asRopedText.
 			item isDefaultSession ifTrue: [ text bold ].
 			text ];
-		column: 'Username' text: [ :item | | text |
-			text := item username asRopedText.
-			item isDefaultSession ifTrue: [ text bold ].
-			text ];
-		column: 'Stone' text: [ :item | | text |
-			text := item stoneName asRopedText.
-			item isDefaultSession ifTrue: [ text bold ].
-			text ];
+		column: 'Connected' icon: [ :item |
+			item isRunning
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 70;
+		column: 'Changed' icon: [ :item |
+			item needsCommit
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 60;
+		column: 'Default' icon: [ :item |
+			item isDefaultSession
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 50;
+		contextItemLabel: 'Playground' action:
+			[ :anElement :aGtGemStoneSession | 
+				self openPlaygroundOn: aGtGemStoneSession from: anElement ];
+		contextItemLabel: 'Commit' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession commitTransaction ];
+		contextItemLabel: 'Abort' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession abortTransaction ];
+		contextItemLabel: 'Reconnect' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession reconnect ];
 		contextItemLabel: 'Be Default' action: 
 			[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession.
@@ -334,8 +350,9 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: s
 		connector: aGtGemStoneConnector;
 		sessionId: sessionId asString;
 		registry: self.
-	self sessions at: newSession name put: newSession.
+	sessions at: newSession name put: newSession.
 	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
+	sessions size = 1 ifTrue: [ self defaultSession: newSession ].
 	^ newSession.
 ]
 
@@ -365,6 +382,20 @@ GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnoun
 			connectors := newConnectors ] ].
 
 	self announce: aGtGemStoneConnectorAnnouncement
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> openPlaygroundOn: aSession from: anElement [
+	| page |
+
+	page := LePage unnamedPage.
+	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
+	GtWorldUtility
+		showSpaceWithTitle: aSession name
+		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
+				asStencil
+		from: anElement
 ]
 
 { #category : #accessing }
@@ -462,6 +493,7 @@ GtGemStoneSessionRegistry >> resetSessions [
 
 	sessions ifNotNil: [ sessions values do: #close ].
 	sessions := Dictionary new.
+	defaultSession := nil.
 ]
 
 { #category : #accessing }
