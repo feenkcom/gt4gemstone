@@ -260,7 +260,7 @@ GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 { #category : #testing }
 GtGemStoneSessionRegistry >> hasConnectors [
 
-	^ connectors notEmpty
+	^ self connectors notEmpty
 ]
 
 { #category : #testing }
