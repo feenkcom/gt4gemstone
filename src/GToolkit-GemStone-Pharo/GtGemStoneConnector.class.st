@@ -11,7 +11,8 @@ Class {
 		'propertiesFile',
 		'host',
 		'announcer',
-		'serviceName'
+		'serviceName',
+		'registry'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -141,6 +142,19 @@ GtGemStoneConnector >> propertiesFile [
 { #category : #accessing }
 GtGemStoneConnector >> propertiesFile: anObject [
 	propertiesFile := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> registry [
+	<return: #GtGemStoneSessionRegistry>
+
+	^ registry
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> registry: aGtGemStoneSessionRegistry [
+
+	registry := aGtGemStoneSessionRegistry
 ]
 
 { #category : #accessing }

@@ -105,6 +105,7 @@ GtGemStoneSessionRegistry >> addNewConnector [
 
 	newConnector := propertiesFile addNewConnector.
 	self assert: (self connectors includesKey: newConnector name) not.
+	newConnector registry: self.
 	connectors at: newConnector name put: newConnector.
 	^ newConnector
 ]
@@ -143,6 +144,7 @@ GtGemStoneSessionRegistry >> availableConnectors [
 			theConnectors collect: [ :connector |
 				"Connector names aren't allowed to include colons ($:)"
 				self assert: (connector name indexOf: $:) = 0.
+				connector registry: self.
 				connector name -> connector ] ]) asDictionary.
 ]
 
@@ -232,6 +234,8 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		column: 'Name' text: [ :item | item name ];
 		column: 'Username' text: [ :item | item username ];
 		column: 'Stone' text: [ :item | item stone ];
+		contextItemLabel: 'New Session' action: 
+			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButton
 ]
 
@@ -239,13 +243,28 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 
-	^ aView explicit
+	^ aView columnedList
 		title: 'Sessions';
 		priority: 10;
-		stencil: [
-			(GtGemStoneSessionManagerWidget onRegistry: self)
-				padding: (BlInsets all: 5);
-				addNewSessionButton ];
+		items: [ sessions values sorted: #name ascending ];
+		column: 'Name' text: [ :item | | text |
+			text := item name asRopedText.
+			item isDefaultSession ifTrue: [ text bold ].
+			text ];
+		column: 'Username' text: [ :item | | text |
+			text := item username asRopedText.
+			item isDefaultSession ifTrue: [ text bold ].
+			text ];
+		column: 'Stone' text: [ :item | | text |
+			text := item stoneName asRopedText.
+			item isDefaultSession ifTrue: [ text bold ].
+			text ];
+		contextItemLabel: 'Be Default' action: 
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession beDefaultSession.
+				anElement phlow firstParentWithView phlow update ];
+		contextItemLabel: 'Inspect' action: 
+			[ :anElement :aGtGemStoneSession | anElement phlow spawnObject: aGtGemStoneSession ];
 		actionUpdateButton
 ]
 
