@@ -513,12 +513,6 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
-]
-
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -536,6 +530,12 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
 ]
 
 { #category : #'system startup' }

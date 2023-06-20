@@ -216,7 +216,7 @@ GtGemStoneSessionSelectionElement >> onAddedToSceneGraph [
 
 { #category : #accessing }
 GtGemStoneSessionSelectionElement >> registry [
-	^ registry ifNil: [ registry := GtGemStoneSessionRegistry default ].
+	^ registry
 ]
 
 { #category : #accessing }

@@ -68,6 +68,15 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
+]
+
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -267,13 +276,4 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
-]
-
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
 ]

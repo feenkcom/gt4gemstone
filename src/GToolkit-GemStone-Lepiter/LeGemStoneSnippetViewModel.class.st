@@ -7,13 +7,18 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
+	^ sharedContext externalSnippetContext gemstoneSessionRegistry
+]
+
 { #category : #private }
 LeGemStoneSnippetViewModel >> getSessionName [
 	| registry |
 
 	sessionName ifNotNil: [ ^ sessionName ].
 	self snippetModel sessionName ifNotNil: [ :aName | ^ aName ].
-	registry := GtGemStoneSessionRegistry default.
+	registry := self gemstoneSessionRegistry.
 	^ snippetModel page allChildrenDepthFirst
 		detect: [ :snippet | snippet ~~ snippetModel and:
 			[ snippet class = snippetModel class and:
@@ -56,21 +61,9 @@ LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 LeGemStoneSnippetViewModel >> onSnippetContentChanged [
 
 	snippetModel sessionName ifNil: [ ^ self ].
-	coderViewModel session: (GtGemStoneSessionRegistry default sessionNamed: snippetModel sessionName).
+	coderViewModel session: (self gemstoneSessionRegistry 
+		sessionNamed: snippetModel sessionName).
 	sessionName := snippetModel sessionName.
-]
-
-{ #category : #accessing }
-LeGemStoneSnippetViewModel >> onSnippetModelChanged [
-	| session |
-
-	super onSnippetModelChanged.
-	session := snippetModel sessionName ifNil: 
-		[ GtGemStoneSessionRegistry default defaultSession ifNil: [ ^ self ] ]
-	ifNotNil: [ :aString |
-		GtGemStoneSessionRegistry default sessionNamed: aString ].
-	coderViewModel session: session.
-	sessionName := session name.
 ]
 
 { #category : #accessing }
@@ -93,13 +86,15 @@ LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 
 	super sharedSnippetContext: aLeSharedSnippetContext.
 	
+	self updateGemstoneSession.
+		
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
 	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
 	(sharedContext selfObject asGtProxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
 		[ coderViewModel session: sharedContext selfObject asGtProxyObject gtSession.
 		sessionName := coderViewModel session name ].
 
-	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self
+	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self.
 ]
 
 { #category : #accessing }
@@ -115,4 +110,17 @@ LeGemStoneSnippetViewModel >> subscribeToSnippetModel [
 		when: LeSnippetContentChanged 
 		send: #onSnippetContentChanged 
 		to: self.
+]
+
+{ #category : #'api - bindings' }
+LeGemStoneSnippetViewModel >> updateGemstoneSession [
+	| session |
+	
+	session := snippetModel sessionName ifNil: 
+		[ self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
+	ifNotNil: [ :aString |
+		self gemstoneSessionRegistry sessionNamed: aString ].
+	coderViewModel session: session.
+	
+	sessionName := session name.
 ]
