@@ -12,8 +12,8 @@
 echo "Starting Remote Examples Development Setup"
 
 ls *.image
-status=$?
-if [ $status -ne 0 ]
+status_ls=$?
+if [ $status_ls -ne 0 ]
 then
 	echo "No image file found.  CWD should be the image directory."
 	exit 1
