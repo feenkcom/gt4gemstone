@@ -62,11 +62,15 @@ LeGemStoneSnippetViewModel >> onSnippetContentChanged [
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> onSnippetModelChanged [
+	| session |
 
 	super onSnippetModelChanged.
-	snippetModel sessionName ifNil: [ ^ self ].
-	coderViewModel session: (GtGemStoneSessionRegistry default sessionNamed: snippetModel sessionName).
-	sessionName := coderViewModel session name.
+	session := snippetModel sessionName ifNil: 
+		[ GtGemStoneSessionRegistry default defaultSession ]
+	ifNotNil: [ :aString |
+		GtGemStoneSessionRegistry default sessionNamed: aString ].
+	coderViewModel session: session.
+	sessionName := session name.
 ]
 
 { #category : #accessing }
