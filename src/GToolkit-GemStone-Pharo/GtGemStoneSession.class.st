@@ -38,9 +38,8 @@ GtGemStoneSession >> announce: anAnnouncement [
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> asGemStoneSessionFromRegistry: aGemStoneRegistry [
+GtGemStoneSession >> asGemStoneSession [
 
-	self assert: [ aGemStoneRegistry == registry ].
 	^ self
 ]
 

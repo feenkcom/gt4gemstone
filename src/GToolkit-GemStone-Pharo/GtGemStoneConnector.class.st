@@ -29,7 +29,7 @@ GtGemStoneConnector >> announcer [
 ]
 
 { #category : #converting }
-GtGemStoneConnector >> asGemStoneSessionFromRegistry: registry [
+GtGemStoneConnector >> asGemStoneSession [
 
 	^ registry newSessionWithConnector: self.
 ]
