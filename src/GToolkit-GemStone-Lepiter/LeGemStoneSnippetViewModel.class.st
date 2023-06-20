@@ -66,7 +66,7 @@ LeGemStoneSnippetViewModel >> onSnippetModelChanged [
 
 	super onSnippetModelChanged.
 	session := snippetModel sessionName ifNil: 
-		[ GtGemStoneSessionRegistry default defaultSession ]
+		[ GtGemStoneSessionRegistry default defaultSession ifNil: [ ^ self ] ]
 	ifNotNil: [ :aString |
 		GtGemStoneSessionRegistry default sessionNamed: aString ].
 	coderViewModel session: session.
