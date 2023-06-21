@@ -158,6 +158,18 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 			<< ']' ]
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 	self isProxyObjectActive 
