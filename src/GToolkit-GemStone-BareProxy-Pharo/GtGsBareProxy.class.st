@@ -68,6 +68,13 @@ GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
 			<< ']' ]
 ]
 
+{ #category : #ui }
+GtGsBareProxy >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtInspectSessionFor: anAction
+]
+
 { #category : #printing }
 GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
