@@ -233,7 +233,8 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aSession [
 		'Playground' -> [ :aStatusLineElement | self openPlaygroundOn: aSession from: aStatusLineElement ].
 		'Commit' -> [ :aStatusLineElement | aSession commitTransaction ].
 		'Abort' -> [ :aStatusLineElement | aSession abortTransaction ].
-		'Reconnect' -> [ :aStatusLineElement | aSession reconnect ].
+		'Connect' -> [ :aStatusLineElement | aSession connect ].
+		'Disconnect' -> [ :aStatusLineElement | aSession close ].
 		'Be Default' -> [ :aStatusLineElement | aSession beDefaultSession ].
 		'Inspect' -> [ :aStatusLineElement | self inspectSession: aSession from: aStatusLineElement ].
 	}

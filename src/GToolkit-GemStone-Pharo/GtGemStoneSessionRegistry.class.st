@@ -272,9 +272,12 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		contextItemLabel: 'Abort' action:
 			[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession abortTransaction ];
-		contextItemLabel: 'Reconnect' action:
+		contextItemLabel: 'Connect' action:
 			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession reconnect ];
+				aGtGemStoneSession connect ];
+		contextItemLabel: 'Disconnect' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession close ];
 		contextItemLabel: 'Be Default' action: 
 			[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession.
@@ -513,6 +516,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -530,12 +539,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
 ]
 
 { #category : #'system startup' }
