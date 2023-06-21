@@ -272,9 +272,12 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		contextItemLabel: 'Abort' action:
 			[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession abortTransaction ];
-		contextItemLabel: 'Reconnect' action:
+		contextItemLabel: 'Connect' action:
 			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession reconnect ];
+				aGtGemStoneSession connect ];
+		contextItemLabel: 'Disconnect' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession close ];
 		contextItemLabel: 'Be Default' action: 
 			[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession.
