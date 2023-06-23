@@ -46,6 +46,13 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #ui }
+GtGsBareProxy >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtInspectSessionFor: anAction
+]
+
 { #category : #printing }
 GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 	super gtInspectorRemoteSideTitleStringOn: aStream.
