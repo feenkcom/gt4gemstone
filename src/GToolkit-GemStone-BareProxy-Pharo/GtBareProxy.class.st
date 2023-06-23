@@ -317,5 +317,6 @@ GtBareProxy >> rawPerformRemotely: aSelector withArguments: anArgumentsArrayOfSe
 GtBareProxy >> remoteClass [
 	"Answer the name of the class of the remote object"
 
-	^ proxyObject remoteClass
+	^ proxyObject ifNotNil: [ :aProxy | 
+		aProxy  remoteClass ]
 ]
