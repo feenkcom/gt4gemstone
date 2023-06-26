@@ -10,6 +10,12 @@ GtRemoteGemstoneExamplesSessionBuilder class >> createAndStartSession [
 ]
 
 { #category : #accessing }
+GtRemoteGemstoneExamplesSessionBuilder class >> createConnectorNamed: aConnectorName [
+	^ self new 
+		createConnectorNamed: aConnectorName
+]
+
+{ #category : #accessing }
 GtRemoteGemstoneExamplesSessionBuilder >> createAndStartSession [
 	^ self createSession 
 		connect;
@@ -17,12 +23,12 @@ GtRemoteGemstoneExamplesSessionBuilder >> createAndStartSession [
 ]
 
 { #category : #accessing }
-GtRemoteGemstoneExamplesSessionBuilder >> createSession [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
+GtRemoteGemstoneExamplesSessionBuilder >> createConnector [
+	^ self createConnectorNamed: nil
+]
+
+{ #category : #accessing }
+GtRemoteGemstoneExamplesSessionBuilder >> createConnectorNamed: aConnectorName [
 	| connector libraryDirectory |
 
 	"Connect to the GemStone DB"
@@ -38,6 +44,27 @@ GtRemoteGemstoneExamplesSessionBuilder >> createSession [
 		username: 'SystemUser';
 		password: 'swordfish'.
 
+	aConnectorName ifNotNil: [
+		connector name: aConnectorName ].
+		
+	^ connector
+]
+
+{ #category : #accessing }
+GtRemoteGemstoneExamplesSessionBuilder >> createSession [
+	"Answer a running server.
+	This assumes:
+	- The GemStone server is running with Gt loaded
+	- Default usernames and passwords
+	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
+	| connector libraryDirectory |
+
+	"Connect to the GemStone DB"
+	libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
+	self assert: libraryDirectory isDirectory.
+	
+	connector := self createConnector.
+	
 	^ GtGemStoneSession new 
 		connector: connector
 ]
