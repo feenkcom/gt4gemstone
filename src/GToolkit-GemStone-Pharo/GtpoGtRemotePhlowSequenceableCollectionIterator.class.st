@@ -11,7 +11,8 @@ GtpoGtRemotePhlowSequenceableCollectionIterator class >> remoteClassName [
 
 { #category : #accessing }
 GtpoGtRemotePhlowSequenceableCollectionIterator >> retrieveItems: anItemsCount fromIndex: startIndex [
-	^ self 
+	^ (self 
 		proxyPerform: #retrieveItems:fromIndex:
-		withArguments: {anItemsCount . startIndex} 
+		withArguments: {anItemsCount . startIndex}) collect: [ :aProxy |
+			aProxy asGtBareProxyObject ]
 ]
