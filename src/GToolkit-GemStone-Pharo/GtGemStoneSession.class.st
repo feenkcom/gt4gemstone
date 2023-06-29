@@ -121,6 +121,26 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndCollect: aString [
+
+	| remoteProxies result |
+	result := self evaluateAndWait: ('
+		| dictionary targetValue |
+		dictionary := Dictionary new.
+		targetValue := {1}.
+		targetValue doWithIndex: [ :anItem :anIndex |
+			dictionary at: anIndex put: anItem ].
+		dictionary' format: {aString}).
+		
+	remoteProxies := result associations sorted: [ :assoc | assoc key ] ascending.
+	remoteProxies do: [ :assoc |
+		assoc value gtPharoProxyInitializeWithSession: self ].
+	
+	^ remoteProxies 
+		collect: [ :assoc | assoc value asGtBareProxyObject ]
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
 	^ self ensureRunning
 		evaluateAndWait: remoteScript
@@ -137,6 +157,13 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		bindings: (self updatedBindings: remoteBindings).
 	computedProxy gtPharoProxyInitializeWithSession: self.
 	^ computedProxy
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAsRemoteStream: aString [
+	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
+		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
+			format: {aString}))
 ]
 
 { #category : #accessing }
