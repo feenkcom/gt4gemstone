@@ -245,7 +245,9 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aSession [
 		'Abort' -> [ :aStatusLineElement | aSession abortTransaction ].
 		'Connect' -> [ :aStatusLineElement | aSession connect ].
 		'Disconnect' -> [ :aStatusLineElement | aSession close ].
-		'Be Default' -> [ :aStatusLineElement | aSession beDefaultSession ].
+		'Be Default' -> [ :aStatusLineElement | 
+			aSession beDefaultSession.
+			selectAction cull: aSession ].
 		'Inspect' -> [ :aStatusLineElement | aStatusLineElement phlow spawnObject: aSession ].
 	}
 ]
