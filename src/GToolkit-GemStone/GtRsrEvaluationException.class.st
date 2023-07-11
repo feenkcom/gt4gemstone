@@ -13,7 +13,6 @@ Class {
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
 
-	Stdio stdout << 'GtRsrEvaluationException>>debuggerClient'; lf.
 	^ GtGemStonePostMortemDebugger new exception: self.
 ]
 
@@ -31,34 +30,10 @@ GtRsrEvaluationException >> exception [
 
 { #category : #accessing }
 GtRsrEvaluationException >> frames [
-	| stackDepth |
 
-	frames ifNotNil: [ ^ frames ].
-	stackDepth := process proxyPerform: #stackDepth.
-	^ frames := (1 to: stackDepth) collect: [ :i |
-		process proxyPerform: #_frameContentsAt: withArguments: { i } ].
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> gtDisplayedStackFrames [
-
-	^ self frames collect: [ :each |
-		each first evaluateAndWait: '(self inClass ifNil: [ ''<none>'' ] ifNotNil: [ :cls | cls name ]), '' >> '', (self selector ifNil: [ ''<none>'' ])' ].
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> gtMethodFromStackString: aString [ 
-	"Answer the Method based on the supplied string"
-	| start end methodOop |
-
-	start := aString indexOfSubCollection: '[GsNMethod '.
-	start = 0 ifTrue: [ ^ nil ].
-	end := aString indexOf: $] startingAt: start+11.
-	end = 0 ifTrue: [ ^ nil ].
-	methodOop := aString copyFrom: start+11 to: end-1.
-	^ self evaluator evaluateAndWait: 'Object objectForOop: ', methodOop
-		for: nil
-		bindings: Dictionary new
+	^ process evaluateAndWait:
+'(1 to: self stackDepth) collect: [ :i |
+	self _frameContentsAt: i ]'.
 ]
 
 { #category : #accessing }
@@ -67,8 +42,15 @@ GtRsrEvaluationException >> gtSession [
 	^ originalException gtSession
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GtRsrEvaluationException >> isPaused [
+
+	^ false
+]
+
+{ #category : #testing }
+GtRsrEvaluationException >> isResumable [
+	"Only the post-mortem debugger is working at the moment"
 
 	^ false
 ]

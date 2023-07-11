@@ -23,9 +23,8 @@ GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindi
 
 	value := (self evaluate: remoteScript for: anObject bindings: remoteBindings) wait.
 	gtSession ifNotNil: [ value gtPharoProxyInitializeWithSession: gtSession ].
-	((value isKindOf: GtRsrProxyServiceClient) and: [ value remoteClass = #GtRsrEvaluationException ]) ifTrue: 
-		[ Stdio stdout << '*** Raising exception'; lf.
-		exception := GtRsrEvaluationException new
+	(value class = GtpoGtRsrEvaluationExceptionInformation) ifTrue: 
+		[ exception := GtRsrEvaluationException new
 			originalException: (value proxyPerform: #exception);
 			process: (value proxyPerform: #process).
 		exception signal ].
