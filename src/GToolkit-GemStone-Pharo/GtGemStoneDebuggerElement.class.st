@@ -124,7 +124,7 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 		margin: (BlInsets top: 10);
 		background: Color white;
 		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :variableNode | variableNode value value ]).
+			transformation: [ :variableNode | variableNode value value asGtBareProxyObject ]).
 
 	tree column 
 		title: 'Variable';
@@ -604,7 +604,7 @@ GtGemStoneDebuggerElement >> updateStdout [
 { #category : #accessing }
 GtGemStoneDebuggerElement >> updateSummary [
 
-	summary text: self exception summaryText
+	summary text: self exception summaryString
 ]
 
 { #category : #callbacks }

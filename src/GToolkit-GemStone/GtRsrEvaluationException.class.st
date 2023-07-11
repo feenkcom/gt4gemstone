@@ -88,14 +88,28 @@ GtRsrEvaluationException >> stackFrames [
 ]
 
 { #category : #accessing }
+GtRsrEvaluationException >> summaryString [
+	"Answer a short string summarising the receiver's exception"
+	| string originalString |
+
+	string := messageText ifNil: [ '' ].
+	originalString := originalException proxyPerform: #buildMessageText.
+	(originalString isNotNil and: [ originalString isNotEmpty ]) ifTrue:
+		[ string := string, String crlf, originalString ].
+	^ string trimBoth.
+
+]
+
+{ #category : #accessing }
 GtRsrEvaluationException >> summaryText [
 	"Answer a formatted BlText summarising the receiver's exception"
 	| text stack originalText |
 
-	text := (messageText ifNil: [ '' ]) asRopedText.
+	text := (messageText ifNil: [ '' ]).
 	originalText := originalException proxyPerform: #buildMessageText.
 	(originalText isNotNil and: [ originalText isNotEmpty ]) ifTrue:
-		[ text := text, String crlf asRopedText, originalText asRopedText ].
-	stack ifNotNil: [ text := text, String crlfcrlf asRopedText, stack asRopedText glamorousCodeFont ].
-	^ text
+		[ text := text, String crlf, originalText ].
+	text := text trimBoth.
+	stack ifNotNil: [ text := (text, String crlfcrlf) asRopedText, stack asRopedText glamorousCodeFont ].
+	^ text asRopedText
 ]
