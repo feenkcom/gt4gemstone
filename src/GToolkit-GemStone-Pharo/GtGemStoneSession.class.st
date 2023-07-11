@@ -76,6 +76,7 @@ GtGemStoneSession >> connect [
 	connection := connector connectionForSession: session.
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
+		gtSession: self;
 		yourself.
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
@@ -164,6 +165,12 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
 		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
 			format: {aString}))
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> evaluator [
+
+	^ evaluator
 ]
 
 { #category : #accessing }
