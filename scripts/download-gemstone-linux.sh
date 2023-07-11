@@ -9,13 +9,13 @@ fi
 if [ ! -f GemStone64Bit3.7.0-x86_64.Linux.zip ]
 then
 	echo "Downloading GS to `pwd`"
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStone64Bit3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha6/GemStone64Bit3.7.0-x86_64.Linux.zip
 fi
 
 if [ ! -f GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
 then
 	echo "Downloading GS Libs to `pwd`"
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStoneClientLibs3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha6/GemStoneClientLibs3.7.0-x86_64.Linux.zip
 fi
 
 cd ${GEMSTONE_WORKSPACE}

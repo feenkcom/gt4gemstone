@@ -25,6 +25,11 @@ GtRsrProxyServiceClient class >> isClientClass [
 ]
 
 { #category : #accessing }
+GtRsrProxyServiceClient class >> leProxyTypeForPlaygroundPage [
+	^ GtRsrProxyServiceClient
+]
+
+{ #category : #accessing }
 GtRsrProxyServiceClient class >> proxyObjectAt: anObject ifAbsent: absentBlock [
 
 	^ self proxyObjectMap at: anObject 
@@ -76,8 +81,8 @@ dict := Dictionary new.
 dict.'.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: (assoc value asGtBareProxyObjectInSession: gtSession) ].
-	self class proxyObjectMap at: localObject put: (self asGtBareProxyObjectInSession: gtSession).
+		localObject instVarNamed: assoc key put: assoc value ].
+	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
 	^ localObject.
 ]
 
@@ -128,9 +133,20 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
-	aStream << ([ self 
-		proxyPerform: #gtDisplayString ] 
-			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< 'Service Client Proxy on: ';
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil: [ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #printing }
@@ -163,20 +179,19 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
-	self isProxyObjectActive 
-		ifTrue: [
-			aStream 
-				<< 'Service Client Proxy on: ';
-				<< ([self proxyPerform: #gtDisplayString]
-					on: Error 
-					do: [ :e | 'Error printing'  ]) ]
-		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
-	
-	gtSession ifNotNil: [ 
-		aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtDisplayOn: aStream
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #initialization }
@@ -198,20 +213,9 @@ GtRsrProxyServiceClient >> gtPrintFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
-	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
-	<return: #GtPhlowLabelledView>
-	
-	^ GtPhlowLabelledViewBuilder new
-		object: self;
-		view: aView;
-		context: GtPhlowContext new;
-		viewsSelector: #gtViewsForRemoteSideInContext:;
-		titleComputation: [
-			String streamContents: [ :aStream |
-				self gtInspectorRemoteSideTitleStringOn: aStream ] ];
-		build 
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
+	^ LeGemStoneSnippet new
 ]
 
 { #category : #accessing }
@@ -243,6 +247,11 @@ GtRsrProxyServiceClient >> object [
 	(#(Set Dictionary Array OrderedCollection) includes: remoteClass) ifFalse:
 		[ self error: 'Unable to return non-immediate object' ].
 	^ remoteSelf object wait
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> printOn: aStream [
+	self gtDisplayOn: aStream
 ]
 
 { #category : #performing }

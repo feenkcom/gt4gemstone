@@ -1,27 +1,27 @@
 Class {
-	#name : 'GtRemoteGemStoneProxyServiceExamples',
-	#superclass : 'Object',
+	#name : #GtRemoteGemStoneProxyServiceExamples,
+	#superclass : #Object,
 	#instVars : [
 		'server',
 		'connector'
 	],
-	#category : 'GToolkit-RemoteExamples-GemStone'
+	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> getRemoteObject [
 
 	^ self runningServer evaluateAndWait: self remoteObjectCommand
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
 	^ self testInspectableName, ' new'
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRemoteGemStoneProxyServiceExamples >> runningServer [
 	"Answer a running server.
 	This assumes:
@@ -30,25 +30,12 @@ GtRemoteGemStoneProxyServiceExamples >> runningServer [
 	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
 	<gtExample>
 	<after: #stopServer>
-	| libraryDirectory |
-
+	
 	server ifNotNil: [ ^ server ].
-	"Connect to the GemStone DB"
-	libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
-	self assert: libraryDirectory isDirectory.
-	connector := GtGemStoneGciConnector new
-		gemstoneVersion: '3.7.0';
-		libraryPath: libraryDirectory;
-		host: 'localhost';
-		netldi: 'gs64ldi';
-		stone: 'gs64stone';
-		username: 'SystemUser';
-		password: 'swordfish'.
-	server := GtGemStoneSession new connector: connector.
-	^ server connect.
+	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
-{ #category : 'server - basic' }
+{ #category : #'server - basic' }
 GtRemoteGemStoneProxyServiceExamples >> stopServer [ 
 
 	server ifNotNil: 
@@ -57,14 +44,14 @@ GtRemoteGemStoneProxyServiceExamples >> stopServer [
 
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testInspectableName [
 	"Answer the name of the test inspectable class on the remote"
 
 	^ #GtRemotePhlowDeclarativeTestInspectable
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 	<gtExample>
 	| proxy value |
@@ -78,7 +65,7 @@ GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 	^ proxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	<gtExample>
 	| collectionProxy size |
@@ -105,7 +92,7 @@ GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	^ collectionProxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	<gtExample>
 	| setProxy size |
@@ -128,7 +115,7 @@ GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	^ setProxy
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testWithProxyObjectAsParameterAsArgument [
 	<gtExample>
 	| argumentProxy proxy value |

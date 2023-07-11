@@ -30,6 +30,13 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneSessionRegistry class >> connectorNameFromSessionName: aString [
+	"Answer the connector name from the supplied session name"
+
+	^ (aString splitOn: $:) first
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry class >> default [
 	"Answer the default session registry, i.e. the properties file is co-located with the leptier logical database properties."
 
@@ -56,6 +63,13 @@ GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
 	"Classes may perform some activities on a singleton that is about to be released"
 	
 	uniqueInstance ifNotNil: [ uniqueInstance resetSessions ].
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry class >> sessionIdFromSessionName: aString [
+	"Answer the session Id from the supplied session name"
+
+	^ (aString splitOn: $:) second
 ]
 
 { #category : #'system startup' }
@@ -91,6 +105,7 @@ GtGemStoneSessionRegistry >> addNewConnector [
 
 	newConnector := propertiesFile addNewConnector.
 	self assert: (self connectors includesKey: newConnector name) not.
+	newConnector registry: self.
 	connectors at: newConnector name put: newConnector.
 	^ newConnector
 ]
@@ -127,6 +142,9 @@ GtGemStoneSessionRegistry >> availableConnectors [
 		thenFlatCollect: [ :method | | theConnectors |
 			theConnectors := self perform: method selector.
 			theConnectors collect: [ :connector |
+				"Connector names aren't allowed to include colons ($:)"
+				self assert: (connector name indexOf: $:) = 0.
+				connector registry: self.
 				connector name -> connector ] ]) asDictionary.
 ]
 
@@ -171,17 +189,14 @@ GtGemStoneSessionRegistry >> connectors [
 GtGemStoneSessionRegistry >> defaultConnectorName [ 
 
 	^ defaultName ifNil: [ propertiesFile 
-		ifNil: [ '<null>' ]
+		ifNil: [ GtGemStoneNullConnector connectorName ]
 		ifNotNil: [ propertiesFile defaultConnectorName ] ]
 ]
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> defaultSession [
 
-	^ defaultSession ifNil:
-		[ sessions size = 1
-			ifTrue: [ sessions anyOne ]
-			ifFalse: [ nil ] ]
+	^ defaultSession
 ]
 
 { #category : #accessing }
@@ -191,7 +206,7 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 	<gtView>
 
@@ -205,7 +220,7 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 	<gtView>
 
@@ -216,6 +231,8 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		column: 'Name' text: [ :item | item name ];
 		column: 'Username' text: [ :item | item username ];
 		column: 'Stone' text: [ :item | item stone ];
+		contextItemLabel: 'New Session' action: 
+			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButton
 ]
 
@@ -223,13 +240,50 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 
-	^ aView explicit
+	^ aView columnedList
 		title: 'Sessions';
 		priority: 10;
-		stencil: [
-			(GtGemStoneSessionManagerWidget onRegistry: self)
-				padding: (BlInsets all: 5);
-				addNewSessionButton ];
+		items: [ sessions values sorted: #name ascending ];
+		column: 'Name' text: [ :item | | text |
+			text := item name asRopedText.
+			item isDefaultSession ifTrue: [ text bold ].
+			text ];
+		column: 'Connected' icon: [ :item |
+			item isRunning
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 70;
+		column: 'Changed' icon: [ :item |
+			item needsCommit
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 60;
+		column: 'Default' icon: [ :item |
+			item isDefaultSession
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 50;
+		contextItemLabel: 'Playground' action:
+			[ :anElement :aGtGemStoneSession | 
+				self openPlaygroundOn: aGtGemStoneSession from: anElement ];
+		contextItemLabel: 'Commit' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession commitTransaction ];
+		contextItemLabel: 'Abort' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession abortTransaction ];
+		contextItemLabel: 'Connect' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession connect ];
+		contextItemLabel: 'Disconnect' action:
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession close ];
+		contextItemLabel: 'Be Default' action: 
+			[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession beDefaultSession.
+				anElement phlow firstParentWithView phlow update ];
+		contextItemLabel: 'Inspect' action: 
+			[ :anElement :aGtGemStoneSession | anElement phlow spawnObject: aGtGemStoneSession ];
 		actionUpdateButton
 ]
 
@@ -242,6 +296,12 @@ GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 ]
 
 { #category : #testing }
+GtGemStoneSessionRegistry >> hasConnectors [
+
+	^ self connectors notEmpty
+]
+
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
@@ -249,6 +309,12 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	^ sessions 
 		ifNil: [ false ]
 		ifNotNil: [ sessions includesKey: aString ]
+]
+
+{ #category : #testing }
+GtGemStoneSessionRegistry >> hasSessions [
+
+	^ sessions isNotEmpty
 ]
 
 { #category : #initialization }
@@ -260,17 +326,36 @@ GtGemStoneSessionRegistry >> initialize [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionNamed: aString [
+	| connectorName sessionId |
+
+	connectorName := self class connectorNameFromSessionName: aString.
+	sessionId := self class sessionIdFromSessionName: aString.
+	^ self newSessionWithConnector: (self connectorNamed: connectorName)
+		id: sessionId
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
+	"Answer a new session using the supplied connector"
+
+	^ self newSessionWithConnector: aGtGemStoneConnector
+		id: (lastSessionId := lastSessionId + 1) asString
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: sessionId [
 	"Answer a new session using the supplied connector"
 	| newSession |
 
+	self assert: (sessionId indexOf: $:) = 0.
 	newSession := GtGemStoneSession new
 		connector: aGtGemStoneConnector;
-		sessionId: (lastSessionId := lastSessionId + 1);
+		sessionId: sessionId asString;
 		registry: self.
-	newSession connect.
-	self sessions at: newSession name put: newSession.
+	sessions at: newSession name put: newSession.
 	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
+	sessions size = 1 ifTrue: [ self defaultSession: newSession ].
 	^ newSession.
 ]
 
@@ -300,6 +385,20 @@ GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnoun
 			connectors := newConnectors ] ].
 
 	self announce: aGtGemStoneConnectorAnnouncement
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> openPlaygroundOn: aSession from: anElement [
+	| page |
+
+	page := LePage unnamedPage.
+	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
+	GtWorldUtility
+		showSpaceWithTitle: aSession name
+		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
+				asStencil
+		from: anElement
 ]
 
 { #category : #accessing }
@@ -397,14 +496,16 @@ GtGemStoneSessionRegistry >> resetSessions [
 
 	sessions ifNotNil: [ sessions values do: #close ].
 	sessions := Dictionary new.
+	defaultSession := nil.
 ]
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionNamed: aString [
 	"Answer the session at the supplied name"
 
-	sessions ifNil: [ KeyNotFound signalFor: aString in: self ].
-	^ sessions at: aString
+	^ sessions 
+		at: aString
+		ifAbsent: [ self newSessionNamed: aString ]
 ]
 
 { #category : #accessing }

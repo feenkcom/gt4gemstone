@@ -25,13 +25,13 @@ echo "Download GemStone archives if required"
 if [ ! -e GemStone64Bit3.7.0-x86_64.Linux.zip ]
 then
 	echo "Preconfigure: Downloading GS to `pwd`"
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStone64Bit3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha6/GemStone64Bit3.7.0-x86_64.Linux.zip
 fi
 
 if [ ! -e GemStoneClientLibs3.7.0-x86_64.Linux.zip ]
 then
 	echo "Preconfigure: Downloading GS Libs to `pwd`"
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha5/GemStoneClientLibs3.7.0-x86_64.Linux.zip
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.0-Alpha6/GemStoneClientLibs3.7.0-x86_64.Linux.zip
 fi
 
 cd ${imageDirectory}

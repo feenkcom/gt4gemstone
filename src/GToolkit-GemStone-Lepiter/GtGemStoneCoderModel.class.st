@@ -3,7 +3,6 @@ Class {
 	#superclass : #GtSourceCoder,
 	#instVars : [
 		'pharoBindings',
-		'sessionName',
 		'remoteScript',
 		'remoteBindings'
 	],
@@ -140,7 +139,9 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 	| result gemstoneSession boundObject |
 
 	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession := GtGemStoneSessionRegistry default sessionNamed: sessionName.
+	gemstoneSession := aGtSourceCoderEvaluationContext session.
+	gemstoneSession ifNil:
+		[ self error: 'GemStone session not set' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
@@ -160,7 +161,6 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		bindings: remoteBindings.
 	
 	result associationsDo: [ :binding |
-		binding value gtPharoProxyInitializeWithSession: gemstoneSession.
 		(pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
 
@@ -199,15 +199,13 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionName [
-
-	^ sessionName
+GtGemStoneCoderModel >> sessionHolder [
+	^ sessionHolder
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionName: aString [
-
-	sessionName := aString
+GtGemStoneCoderModel >> sessionHolder: anObject [
+	sessionHolder := anObject
 ]
 
 { #category : #'private - execution' }

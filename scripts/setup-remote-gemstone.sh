@@ -37,9 +37,9 @@ fi
 mkdir ${GEMSTONE_WORKSPACE}
 mkdir ${GEMSTONE_WORKSPACE}/opt
 
-if [ "$GT_OSNAME" == "Linux" ]; then
+if [ "$GT_OSNAME" = "Linux" ]; then
     $SCRIPT_DIR/download-gemstone-linux.sh
-elif [ "$GT_OSNAME" == "Darwin" ]; then
+elif [ "$GT_OSNAME" = "Darwin" ]; then
     $SCRIPT_DIR/download-gemstone-macos.sh
 fi
 

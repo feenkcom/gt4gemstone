@@ -141,7 +141,7 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 
 	detailBytes := gsSession executeStringAndFetchResultByteArray:
 		'| acceptor port detailBytes |
-		acceptor := RsrGciAcceptConnection port: RsrAcceptConnection wildcardPort.
+		acceptor := RsrGciAcceptConnection portRange: (10800 to: 10805).
 		acceptor ensureListening.
 		SessionTemps current
 			at: #PendingConnectionAcceptor

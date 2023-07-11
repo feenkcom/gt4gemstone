@@ -38,9 +38,8 @@ GtGemStoneSession >> announce: anAnnouncement [
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> asGemStoneSessionFromRegistry: aGemStoneRegistry [
+GtGemStoneSession >> asGemStoneSession [
 
-	self assert: [ aGemStoneRegistry == registry ].
 	^ self
 ]
 
@@ -122,8 +121,28 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndCollect: aString [
+
+	| remoteProxies result |
+	result := self evaluateAndWait: ('
+		| dictionary targetValue |
+		dictionary := Dictionary new.
+		targetValue := {1}.
+		targetValue doWithIndex: [ :anItem :anIndex |
+			dictionary at: anIndex put: anItem ].
+		dictionary' format: {aString}).
+		
+	remoteProxies := result associations sorted: [ :assoc | assoc key ] ascending.
+	remoteProxies do: [ :assoc |
+		assoc value gtPharoProxyInitializeWithSession: self ].
+	
+	^ remoteProxies 
+		collect: [ :assoc | assoc value asGtBareProxyObject ]
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
-	^ self 
+	^ self ensureRunning
 		evaluateAndWait: remoteScript
 		for: nil 
 		bindings: Dictionary new
@@ -138,6 +157,13 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		bindings: (self updatedBindings: remoteBindings).
 	computedProxy gtPharoProxyInitializeWithSession: self.
 	^ computedProxy
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAsRemoteStream: aString [
+	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
+		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
+			format: {aString}))
 ]
 
 { #category : #accessing }
@@ -179,7 +205,6 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 GtGemStoneSession >> gtConnectActionFor: anAction [
 	<gtAction>
 
-	self isRunning ifFalse: [ ^ anAction noAction ].
 	^ anAction button 
 		tooltip: 'GemStone Connect Session';
 		icon: BrGlamorousVectorIcons up;
@@ -212,6 +237,27 @@ GtGemStoneSession >> gtDisconnectActionFor: anAction [
 		action: [ :button | 
 			self close.
 			button phlow spawnObject: self ]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtLiveFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ { 
+			'Connected' -> #isRunning.
+			'Changed' -> #needsCommit.
+			'Default' -> #isDefaultSession } ];
+		column: 'Attribute' text: [ :item | item key ];
+		column: 'Status' 
+			icon: [ :item |
+				(item value value: self)
+					ifTrue: [ BrGlamorousVectorIcons accept ]
+					ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 70;
+		actionUpdateButton
 ]
 
 { #category : #ui }

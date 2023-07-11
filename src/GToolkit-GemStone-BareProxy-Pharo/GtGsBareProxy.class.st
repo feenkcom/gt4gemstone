@@ -12,7 +12,13 @@ GtGsBareProxy class >> forProxyObject: aProxyObject [
 	| proxyClass |
 
 	proxyClass := self subclassForRemoteClass: aProxyObject remoteClass.
-	^ proxyClass new proxyObject: aProxyObject
+	^ proxyClass new 
+		proxyObject: aProxyObject
+]
+
+{ #category : #accessing }
+GtGsBareProxy class >> leProxyTypeForPlaygroundPage [
+	^ GtGsBareProxy
 ]
 
 { #category : #private }
@@ -40,6 +46,13 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #ui }
+GtGsBareProxy >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtInspectSessionFor: anAction
+]
+
 { #category : #printing }
 GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 	super gtInspectorRemoteSideTitleStringOn: aStream.
@@ -60,4 +73,9 @@ GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
 			<< ' [';
 			<< gtSession name;
 			<< ']' ]
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
+	^ LeGemStoneSnippet new
 ]

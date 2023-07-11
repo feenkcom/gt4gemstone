@@ -48,13 +48,15 @@ GtBareProxy >> asGtBareProxyObject [
 ]
 
 { #category : #transformation }
-GtBareProxy >> asGtBareProxyObjectInSession: aGtGemStoneSession [
-	^ self
-]
-
-{ #category : #transformation }
 GtBareProxy >> asGtProxyObject [
 	^ proxyObject
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> asLink [
+	"This is needed in the proxy object, as LinkedLists used by the inspector call #asLink on the objects that they add."
+
+	^ ValueLink value: self
 ]
 
 { #category : #'reflective operations' }
@@ -80,14 +82,37 @@ GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
 			name: 'Remote';
-			"playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
-				forRemoteProxySide);"
+			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
+				forRemoteProxySide);
 			withLabelAndIconAptitude);
 		addTool: (super gtDefaultInspectorTool
 			name: 'Proxy';
-			"playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
-				forLocalProxySide);"
+			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
+				forLocalProxySide);
 			withLabelAndIconAptitude)
+]
+
+{ #category : #printing }
+GtBareProxy >> gtDisplayOn: aStream [
+	proxyObject ifNil: [ 
+		aStream << 'Bare Proxy on: <not configured>'.
+		^ self ].
+	
+	proxyObject isProxyObjectActive ifFalse: [ 
+		aStream << 'Bare Proxy on: <not connected>'.
+		^ self ].
+	
+	aStream 
+		<< 'Bare Proxy on: ';
+		<< ([proxyObject proxyPerform: #gtDisplayString]
+				on: Error 
+				do: [ :e | 'Error printing'  ]) 
+]
+
+{ #category : #printing }
+GtBareProxy >> gtDisplayText [
+	^ (String streamContents: [ :aStream |
+		self gtDisplayOn:  aStream  ]) asRopedText
 ]
 
 { #category : #printing }
@@ -119,19 +144,7 @@ GtBareProxy >> gtInspectorTitleString [
 
 { #category : #printing }
 GtBareProxy >> gtInspectorTitleStringOn: aStream [
-	proxyObject ifNil: [ 
-		aStream << 'a GtGsBareProxy'.
-		^ self ].
-	
-	proxyObject isProxyObjectActive ifFalse: [ 
-		aStream << 'Bare Proxy on: <not connected>'.
-		^ self ].
-	
-	aStream 
-		<< 'Bare Proxy on: ';
-		<< ([proxyObject proxyPerform: #gtDisplayString]
-				on: Error 
-				do: [ :e | 'Error printing'  ]) 
+	self gtDisplayOn: aStream
 ]
 
 { #category : #'gt inspector' }
@@ -139,11 +152,6 @@ GtBareProxy >> gtMetaFor: aView [
 	<gtProxy>
 
 	^ super gtMetaFor: aView
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtPlaygroundPageStrategy [
-	^ LeInspectorPlaygroundLocalClassPageStrategy new 
 ]
 
 { #category : #'gt inspector' }
@@ -166,7 +174,9 @@ GtBareProxy >> gtRawFor: aView [
 	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
 	<gtProxy>
 
-	^ aView columnedList
+	^ super gtRawFor: aView.
+	
+	"^ aView columnedList
 		title: 'Raw';
 		priority: 100;
 		items: [ {
@@ -184,7 +194,7 @@ GtBareProxy >> gtRawFor: aView [
 					on: Error, Halt
 					do: [ :ex | ex printString asRopedText foreground: Color red ] ] ];
 		send: [ :item | item second ];
-		actionUpdateButton
+		actionUpdateButton"
 ]
 
 { #category : #'gt inspector' }
@@ -278,6 +288,12 @@ GtBareProxy >> performRemotely: aSelector withArguments: argumentsArray [
 	^ result asGtBareProxyObject
 ]
 
+{ #category : #printing }
+GtBareProxy >> printOn: aStream [
+	"Print on is needed as this level, as when it will be called when printing elements in a collection"
+	self gtDisplayOn: aStream
+]
+
 { #category : #accessing }
 GtBareProxy >> proxyObject [
 	^ proxyObject 
@@ -301,5 +317,6 @@ GtBareProxy >> rawPerformRemotely: aSelector withArguments: anArgumentsArrayOfSe
 GtBareProxy >> remoteClass [
 	"Answer the name of the class of the remote object"
 
-	^ proxyObject remoteClass
+	^ proxyObject ifNotNil: [ :aProxy | 
+		aProxy  remoteClass ]
 ]
