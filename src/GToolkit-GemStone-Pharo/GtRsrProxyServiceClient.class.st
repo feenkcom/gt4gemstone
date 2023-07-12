@@ -68,6 +68,15 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
+]
+
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -106,10 +115,9 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| evaluator computedProxy |
+	| computedProxy |
 
-	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	computedProxy := evaluator
+	computedProxy := gtSession evaluator
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
@@ -120,10 +128,9 @@ GtRsrProxyServiceClient >> evaluate: aString [
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| evaluator computedProxy |
+	| computedProxy |
 
-	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	computedProxy := evaluator
+	computedProxy := gtSession evaluator
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
@@ -131,22 +138,52 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	^ computedProxy
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Abort Transaction';
+		icon: BrGlamorousVectorIcons cancel;
+		action: [ :button | 
+			gtSession abortTransaction.
+			button phlow spawnObject: 'Aborted transaction' ]
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Commit Transaction';
+		icon: BrGlamorousVectorIcons accept;
+		action: [ :button | 
+			gtSession commitTransaction.
+			button phlow spawnObject: 'Successfully committed transaction' ]
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
-	self isProxyObjectActive 
-		ifTrue: [
-			aStream 
-				<< 'Service Client Proxy on: ';
-				<< ([self proxyPerform: #gtDisplayString]
-					on: Error 
-					do: [ :e | 'Error printing'  ]) ]
-		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
-	
-	gtSession ifNotNil: [ 
-		aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self isProxyObjectActive ifTrue: 
+		[ aStream << ([self proxyPerform: #gtDisplayString]
+			on: Error 
+			do: [ :e | 'Error printing'  ]) ]
+	ifFalse: 
+		[ aStream << 'Service Client Proxy on: <not connected>' ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #printing }
@@ -180,18 +217,6 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #initialization }
@@ -251,7 +276,21 @@ GtRsrProxyServiceClient >> object [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> printOn: aStream [
-	self gtDisplayOn: aStream
+
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< 'Service Client Proxy on: ';
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil: [ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #performing }
@@ -279,13 +318,4 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
-]
-
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
 ]
