@@ -37,8 +37,11 @@ GtGemStoneDebuggerElement class >> defaultTitle [
 { #category : #testing }
 GtGemStoneDebuggerElement class >> handlesContext: aContext [ 
 	"This is currently determined by checking the class of the receiver and its value, which will be different for each snippet type.  This should be changed to the signalling method having the appropriate pragma (<dapOpenDebugger>)"
-
-	^ aContext method hasPragmaNamed: #gemstoneDebuggerSignal.
+	| result |
+	
+	result := aContext method hasPragmaNamed: #gemstoneDebuggerSignal.
+	Stdio stdout << ('*** GtGemStoneDebuggerElement selected: ', result asString); lf.
+	^ result.
 ]
 
 { #category : #'instance creation' }
@@ -604,13 +607,13 @@ GtGemStoneDebuggerElement >> updateStdout [
 { #category : #accessing }
 GtGemStoneDebuggerElement >> updateSummary [
 
-	summary text: self exception summaryString
+	summary text: self exception summaryText
 ]
 
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> updateUI [
 
-	debuggerState text: self exception summaryText.
+	debuggerState text: self exception summaryString.
 	self updateDisplay.
 	toolbar updateUI.
 ]

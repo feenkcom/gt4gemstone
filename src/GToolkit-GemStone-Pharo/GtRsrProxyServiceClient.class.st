@@ -68,15 +68,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -148,18 +139,6 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 		[ aStream << 'Service Client Proxy on: <not connected>' ].
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
-]
-
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 	self isProxyObjectActive 
@@ -191,6 +170,18 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #initialization }
@@ -292,4 +283,13 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]
