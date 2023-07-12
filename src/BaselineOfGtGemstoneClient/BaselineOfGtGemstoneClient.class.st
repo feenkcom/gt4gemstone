@@ -33,3 +33,10 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			spec requires: #('GToolkit-GemStone-Pharo') ].
 	]
 ]
+
+{ #category : #'post load' }
+BaselineOfGtGemstoneClient >> postLoadSetup: spec [
+	"Register the GemStone debugger"
+
+	GtGemStoneDebuggerElement register.
+]

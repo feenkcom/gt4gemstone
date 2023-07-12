@@ -61,6 +61,19 @@ GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 			(self class environment at: self inClassName) >> selector) ]
 ]
 
+{ #category : #accessing }
+GtpoGsNMethod >> gtDisplayOn: aStream [
+	self isProxyObjectActive ifTrue: 
+		[ [ aStream 
+				<< self inClassName;
+				<< ' >> ';
+				<< self selector ]
+					on: Error 
+					do: [ :e | 'Error printing' ] ]
+	ifFalse: 
+		[ aStream << 'Service Client Proxy on: <not connected>' ].
+]
+
 { #category : #ui }
 GtpoGsNMethod >> gtSourceFor: aView [
 	<gtView>
@@ -70,7 +83,7 @@ GtpoGsNMethod >> gtSourceFor: aView [
 		priority: 10;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
-		text: [ self proxyPerform: #sourceString ];
+		text: [ self sourceString ];
 		actionButtonIcon: BrGlamorousVectorIcons accept
 			tooltip: 'Compile' 
 			action: [ :aButton :aTab :aButtonModel | 
@@ -116,7 +129,7 @@ GtpoGsNMethod >> gtTwoPanesDiffFor: aView [
 GtpoGsNMethod >> inClassName [
 	"Answer the name of the class the receiver is attached to"
 
-	^ inClassName ifNil: [ inClassName := self evaluateAndWait: 'self inClass name' ]
+	^ inClassName ifNil: [ inClassName := self evaluateAndWait: 'self inClass ifNil: [ #nil ] ifNotNil: [ :cls | cls name ]' ]
 ]
 
 { #category : #private }
@@ -139,11 +152,17 @@ GtpoGsNMethod >> removeFromTab: aTab [
 { #category : #accessing }
 GtpoGsNMethod >> selector [
 
-	^ selector ifNil: [ selector := self proxyPerform: #selector ]
+	^ selector ifNil: [ selector := (self proxyPerform: #selector) ifNil: [ #nil ] ]
 ]
 
 { #category : #accessing }
 GtpoGsNMethod >> sourceCode [
 
 	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString ]
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> sourceString [
+
+	^ self proxyPerform: #sourceString
 ]

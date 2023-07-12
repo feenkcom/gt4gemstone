@@ -47,6 +47,20 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 ]
 
 { #category : #ui }
+GtGsBareProxy >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtAbortActionFor: anAction
+]
+
+{ #category : #ui }
+GtGsBareProxy >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtCommitActionFor: anAction
+]
+
+{ #category : #ui }
 GtGsBareProxy >> gtInspectSessionFor: anAction [
 	<gtAction>
 
