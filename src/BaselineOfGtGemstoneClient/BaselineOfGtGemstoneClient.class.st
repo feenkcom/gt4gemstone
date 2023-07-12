@@ -8,6 +8,7 @@ Class {
 BaselineOfGtGemstoneClient >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
+		spec postLoadDoIt: #'postLoadSetup:'.
 		spec
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit' with: [
 				spec repository: 'github://feenkcom/RemoteServiceReplication:88c66a7afa0d4f3cae7afe323a6cea6587d8413b/src' ].
