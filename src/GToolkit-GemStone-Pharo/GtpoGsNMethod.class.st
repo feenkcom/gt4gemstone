@@ -43,19 +43,6 @@ GtpoGsNMethod >> compileFromTab: aTab [
 	aTab phlow spawnObject: result.
 ]
 
-{ #category : #accessing }
-GtpoGsNMethod >> gtAbortActionFor: anAction [
-	<gtAction>
-
-	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
-	^ anAction button 
-		tooltip: 'GemStone Abort Transaction';
-		icon: BrGlamorousVectorIcons cancel;
-		action: [ :button | 
-			gtSession abortTransaction.
-			button phlow spawnObject: 'Aborted transaction' ]
-]
-
 { #category : #ui }
 GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 	"Browse the local definition of the receiver"
@@ -72,19 +59,6 @@ GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 		name: 'Fred';
 		action: [ :aButton | aButton phlow spawnTool: (GtMethodCoderTool compiledMethod:
 			(self class environment at: self inClassName) >> selector) ]
-]
-
-{ #category : #accessing }
-GtpoGsNMethod >> gtCommitActionFor: anAction [
-	<gtAction>
-
-	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
-	^ anAction button 
-		tooltip: 'GemStone Commit Transaction';
-		icon: BrGlamorousVectorIcons accept;
-		action: [ :button | 
-			gtSession commitTransaction.
-			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
 { #category : #accessing }
