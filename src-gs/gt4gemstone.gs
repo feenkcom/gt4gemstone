@@ -20,6 +20,24 @@ removeallmethods GtGsRelease
 removeallclassmethods GtGsRelease
 
 doit
+(Object
+	subclass: 'GtRsrEvaluationExceptionInformation'
+	instVarNames: #( exception process )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrEvaluationExceptionInformation
+removeallclassmethods GtRsrEvaluationExceptionInformation
+
+doit
 (RsrService
 	subclass: 'GtRsrEvaluatorService'
 	instVarNames: #(  )
@@ -149,6 +167,38 @@ versionString: aString
 	versionString := aString
 %
 
+! Class implementation for 'GtRsrEvaluationExceptionInformation'
+
+!		Instance methods for 'GtRsrEvaluationExceptionInformation'
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+exception
+
+	^ exception
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+exception: anException
+
+	exception := anException
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+process
+
+	^ process
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+process: aGsProcess
+
+	process := aGsProcess
+%
+
 ! Class implementation for 'GtRsrEvaluatorService'
 
 !		Class methods for 'GtRsrEvaluatorService'
@@ -214,7 +264,7 @@ category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings object |
+	| method result receiver symbolDictionary bindings object semaphore evaluationProcess |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -226,9 +276,30 @@ gsEvaluate: aString for: anObject bindings: aDictionary
 			ifFalse: [ value ].
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
-
 	method := aString _compileInContext: receiver symbolList: bindings.
-	result := method _executeInContext: receiver.
+	semaphore := Semaphore new.
+
+	evaluationProcess := [ [ result := method _executeInContext: receiver. semaphore signal ]
+		on: Exception
+		do: [ :ex |
+			result := GtRsrEvaluationExceptionInformation new
+				exception: ex;
+				process: evaluationProcess.
+			semaphore signal.
+			evaluationProcess suspend ]
+				] newProcess.
+	evaluationProcess debugActionBlock: [ :ex |
+		result := GtRsrEvaluationExceptionInformation new
+			exception: ex;
+			process: evaluationProcess.
+		semaphore signal.
+		evaluationProcess suspend ].
+	evaluationProcess
+		name: 'GT evaluation';
+		priority: 15;
+		breakpointLevel: 1.
+	evaluationProcess resume.
+	semaphore waitForSeconds: 10.
 
 	^ result asGtRsrProxyObjectForConnection: _connection
 %
@@ -475,6 +546,36 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ proxyDict
 %
 
+! Class extensions for 'ExecBlock'
+
+!		Instance methods for 'ExecBlock'
+
+category: '*GToolkit-GemStone-GemStone'
+method: ExecBlock
+gtSourceFor: aView
+	<gtView>
+
+	^ aView textEditor
+		title: 'Source';
+		priority: 10;
+		text: [ self _sourceString ].
+%
+
+! Class extensions for 'GsStackBuffer'
+
+!		Instance methods for 'GsStackBuffer'
+
+category: '*GToolkit-GemStone'
+method: GsStackBuffer
+asGtRsrProxyObjectForConnection: aRsrConnection
+	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
+	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
+
+	(GtRsrEvaluatorService isRsrImmediate: self) ifFalse: 
+		[ ^ GtRsrProxyServiceServer object: self ].
+	^ self
+%
+
 ! Class extensions for 'Object'
 
 !		Instance methods for 'Object'
@@ -537,3 +638,4 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 	^ GtRsrProxyServiceServer object: self
 %
+
