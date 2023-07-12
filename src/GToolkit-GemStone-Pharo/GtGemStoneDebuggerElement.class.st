@@ -40,7 +40,6 @@ GtGemStoneDebuggerElement class >> handlesContext: aContext [
 	| result |
 	
 	result := aContext method hasPragmaNamed: #gemstoneDebuggerSignal.
-	Stdio stdout << ('*** GtGemStoneDebuggerElement selected: ', result asString); lf.
 	^ result.
 ]
 
