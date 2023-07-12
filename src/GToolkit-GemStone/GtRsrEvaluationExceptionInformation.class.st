@@ -1,3 +1,6 @@
+"
+GtRsrEvaluationExceptionInformation is used to pass information about an exception that occurred in GemStone back to GT, allowing a debugger to be opened on the exception.
+"
 Class {
 	#name : #GtRsrEvaluationExceptionInformation,
 	#superclass : #Object,
@@ -5,7 +8,7 @@ Class {
 		'exception',
 		'process'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }
