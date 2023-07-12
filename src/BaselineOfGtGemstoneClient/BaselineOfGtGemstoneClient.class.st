@@ -37,7 +37,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 
 { #category : #'post load' }
 BaselineOfGtGemstoneClient >> postLoadSetup: spec [
-	"Register the JS debugger"
+	"Register the GemStone debugger"
 
 	GtGemStoneDebuggerElement register.
 ]
