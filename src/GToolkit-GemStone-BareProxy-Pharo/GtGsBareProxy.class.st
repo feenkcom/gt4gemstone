@@ -50,6 +50,9 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 GtGsBareProxy >> gtAbortActionFor: anAction [
 	<gtAction>
 
+	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
+		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
+			[ ^ anAction noAction ].
 	^ proxyObject gtAbortActionFor: anAction
 ]
 
@@ -57,6 +60,9 @@ GtGsBareProxy >> gtAbortActionFor: anAction [
 GtGsBareProxy >> gtCommitActionFor: anAction [
 	<gtAction>
 
+	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
+		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
+			[ ^ anAction noAction ].
 	^ proxyObject gtCommitActionFor: anAction
 ]
 

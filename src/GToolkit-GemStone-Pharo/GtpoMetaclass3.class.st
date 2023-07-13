@@ -40,6 +40,19 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 ]
 
 { #category : #ui }
+GtpoMetaclass3 >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Abort Transaction';
+		icon: BrGlamorousVectorIcons cancel;
+		action: [ :button | 
+			gtSession abortTransaction.
+			button phlow spawnObject: 'Aborted transaction' ]
+]
+
+{ #category : #ui }
 GtpoMetaclass3 >> gtClassDefinitionFor: aView [
 	<gtView>
 
@@ -55,6 +68,19 @@ GtpoMetaclass3 >> gtClassDefinitionFor: aView [
 				self compileFromTab: aTab.
 				aTab viewContentElement phlow update ];
 		actionUpdateButton
+]
+
+{ #category : #ui }
+GtpoMetaclass3 >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Commit Transaction';
+		icon: BrGlamorousVectorIcons accept;
+		action: [ :button | 
+			gtSession commitTransaction.
+			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
 { #category : #printing }
