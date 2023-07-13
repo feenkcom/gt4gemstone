@@ -138,32 +138,6 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	^ computedProxy
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtAbortActionFor: anAction [
-	<gtAction>
-
-	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
-	^ anAction button 
-		tooltip: 'GemStone Abort Transaction';
-		icon: BrGlamorousVectorIcons cancel;
-		action: [ :button | 
-			gtSession abortTransaction.
-			button phlow spawnObject: 'Aborted transaction' ]
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtCommitActionFor: anAction [
-	<gtAction>
-
-	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
-	^ anAction button 
-		tooltip: 'GemStone Commit Transaction';
-		icon: BrGlamorousVectorIcons accept;
-		action: [ :button | 
-			gtSession commitTransaction.
-			button phlow spawnObject: 'Successfully committed transaction' ]
-]
-
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self isProxyObjectActive ifTrue: 
