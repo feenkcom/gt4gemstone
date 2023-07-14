@@ -57,11 +57,7 @@ GtRemoteGemstoneExamplesSessionBuilder >> createSession [
 	- The GemStone server is running with Gt loaded
 	- Default usernames and passwords
 	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	| connector libraryDirectory |
-
-	"Connect to the GemStone DB"
-	libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
-	self assert: libraryDirectory isDirectory.
+	| connector |
 	
 	connector := self createConnector.
 	
