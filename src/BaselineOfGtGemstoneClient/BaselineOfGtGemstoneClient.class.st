@@ -1,14 +1,15 @@
 Class {
-	#name : 'BaselineOfGtGemstoneClient',
-	#superclass : 'BaselineOf',
-	#category : 'BaselineOfGtGemstoneClient'
+	#name : #BaselineOfGtGemstoneClient,
+	#superclass : #BaselineOf,
+	#category : #BaselineOfGtGemstoneClient
 }
 
-{ #category : 'baselines' }
+{ #category : #baselines }
 BaselineOfGtGemstoneClient >> baseline: spec [
 	<baseline>
 
 	spec for: #common do: [ 
+		spec postLoadDoIt: #'postLoadSetup:'.
 		spec
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
 			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:main/src' ].
@@ -32,4 +33,11 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				[ spec requires: #( 'GToolkit-GemStone-Pharo' 'LepiterEngineCore') ];
 			package: 'GToolkit-RemoteExamples-GemStone' with:
 				[  spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
+]
+
+{ #category : #'post load' }
+BaselineOfGtGemstoneClient >> postLoadSetup: spec [
+	"Register the GemStone debugger"
+
+	GtGemStoneDebuggerElement register.
 ]

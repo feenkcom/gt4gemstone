@@ -1,7 +1,7 @@
-Extension { #name : 'DateAndTimeANSI' }
+Extension { #name : #DateAndTimeANSI }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
-DateAndTimeANSI class >> readFrom: aStream [
+{ #category : #'*GToolkit-GemStone-GemStone' }
+DateAndTimeANSI classSide >> readFrom: aStream [
 	"Basic compatibility with Pharo DateAndTime>>readFrom:.	
 	Assumes that the DateAndTime is the last thing in the stream."
 

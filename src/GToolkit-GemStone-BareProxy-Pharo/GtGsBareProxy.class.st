@@ -47,6 +47,26 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 ]
 
 { #category : #ui }
+GtGsBareProxy >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
+		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
+			[ ^ anAction noAction ].
+	^ proxyObject gtAbortActionFor: anAction
+]
+
+{ #category : #ui }
+GtGsBareProxy >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
+		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
+			[ ^ anAction noAction ].
+	^ proxyObject gtCommitActionFor: anAction
+]
+
+{ #category : #ui }
 GtGsBareProxy >> gtInspectSessionFor: anAction [
 	<gtAction>
 

@@ -44,6 +44,19 @@ GtpoGsNMethod >> compileFromTab: aTab [
 ]
 
 { #category : #ui }
+GtpoGsNMethod >> gtAbortActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Abort Transaction';
+		icon: BrGlamorousVectorIcons cancel;
+		action: [ :button | 
+			gtSession abortTransaction.
+			button phlow spawnObject: 'Aborted transaction' ]
+]
+
+{ #category : #ui }
 GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 	"Browse the local definition of the receiver"
 	<gtAction>
@@ -62,6 +75,32 @@ GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 ]
 
 { #category : #ui }
+GtpoGsNMethod >> gtCommitActionFor: anAction [
+	<gtAction>
+
+	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
+	^ anAction button 
+		tooltip: 'GemStone Commit Transaction';
+		icon: BrGlamorousVectorIcons accept;
+		action: [ :button | 
+			gtSession commitTransaction.
+			button phlow spawnObject: 'Successfully committed transaction' ]
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> gtDisplayOn: aStream [
+	self isProxyObjectActive ifTrue: 
+		[ [ aStream 
+				<< self inClassName;
+				<< ' >> ';
+				<< self selector ]
+					on: Error 
+					do: [ :e | 'Error printing' ] ]
+	ifFalse: 
+		[ aStream << 'Service Client Proxy on: <not connected>' ].
+]
+
+{ #category : #ui }
 GtpoGsNMethod >> gtSourceFor: aView [
 	<gtView>
 
@@ -70,7 +109,7 @@ GtpoGsNMethod >> gtSourceFor: aView [
 		priority: 10;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
-		text: [ self proxyPerform: #sourceString ];
+		text: [ self sourceString ];
 		actionButtonIcon: BrGlamorousVectorIcons accept
 			tooltip: 'Compile' 
 			action: [ :aButton :aTab :aButtonModel | 
@@ -116,7 +155,7 @@ GtpoGsNMethod >> gtTwoPanesDiffFor: aView [
 GtpoGsNMethod >> inClassName [
 	"Answer the name of the class the receiver is attached to"
 
-	^ inClassName ifNil: [ inClassName := self evaluateAndWait: 'self inClass name' ]
+	^ inClassName ifNil: [ inClassName := self evaluateAndWait: 'self inClass ifNil: [ #nil ] ifNotNil: [ :cls | cls name ]' ]
 ]
 
 { #category : #private }
@@ -139,11 +178,17 @@ GtpoGsNMethod >> removeFromTab: aTab [
 { #category : #accessing }
 GtpoGsNMethod >> selector [
 
-	^ selector ifNil: [ selector := self proxyPerform: #selector ]
+	^ selector ifNil: [ selector := (self proxyPerform: #selector) ifNil: [ #nil ] ]
 ]
 
 { #category : #accessing }
 GtpoGsNMethod >> sourceCode [
 
 	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString ]
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> sourceString [
+
+	^ self proxyPerform: #sourceString
 ]

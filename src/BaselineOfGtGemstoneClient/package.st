@@ -1,1 +1,1 @@
-Package { #name : 'BaselineOfGtGemstoneClient' }
+Package { #name : #BaselineOfGtGemstoneClient }

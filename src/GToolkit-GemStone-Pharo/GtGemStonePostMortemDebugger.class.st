@@ -6,8 +6,14 @@ Class {
 		'session',
 		'stackFrames'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
+
+{ #category : #accessing }
+GtGemStonePostMortemDebugger >> breakpoints [
+
+	^ Dictionary new
+]
 
 { #category : #accessing }
 GtGemStonePostMortemDebugger >> exception [
@@ -22,12 +28,18 @@ GtGemStonePostMortemDebugger >> exception: anObject [
 ]
 
 { #category : #accessing }
+GtGemStonePostMortemDebugger >> isStopped [
+	"While the debugger is post-mortem the process is always stopped"
+	
+	^ true
+]
+
+{ #category : #accessing }
 GtGemStonePostMortemDebugger >> session [
 	"Answer the GtGemStoneSession associated with the receiver's exception"
 	<return: #GtGemStoneSession>
 
-	^ session ifNil: [ session := GtGemStoneSessionRegistry default 
-		sessionWithConnection: exception _connection ]
+	^ session ifNil: [ session := exception gtSession ]
 ]
 
 { #category : #accessing }
@@ -43,11 +55,7 @@ GtGemStonePostMortemDebugger >> stackFrames [
 	This is called many times by the debugger, so cache"
 
 	^ stackFrames ifNil:
-		[ stackFrames := exception gtDisplayedStackFrames collectWithIndex:
-			[ :each :index | GtGemStonePostMortemStackFrame new
-				ordinal: index;
-				displayString: each;
-				exception: exception ] ]
+		[ stackFrames := exception stackFrames ]
 ]
 
 { #category : #accessing }
