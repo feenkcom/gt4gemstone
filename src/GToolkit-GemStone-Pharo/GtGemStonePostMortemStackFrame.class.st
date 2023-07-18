@@ -6,7 +6,7 @@ Class {
 		'displayString',
 		'exception'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
@@ -77,4 +77,11 @@ GtGemStonePostMortemStackFrame >> sourceText [
 			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler  ].
 	^ text
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> variablesAssociations [
+	"Variables aren't available from an RsrBrokenPromise"
+
+	^ #()
 ]
