@@ -17,10 +17,10 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://feenkcom/SparkleFFI:843ddaa293b0497ed3f88b30bc836d8b4e6ab22d/src' ].
 		spec
 			baseline: 'GToolkitRemote' with: [
-				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.1298/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.1299/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.6.1645/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.6.1646/src' ].
 
 		spec package: 'GToolkit-GemStone' with: [
 			spec requires: #('SparkleFFIForGlamorousToolkit' 'RemoteServiceReplicationForGlamorousToolkit') ].
