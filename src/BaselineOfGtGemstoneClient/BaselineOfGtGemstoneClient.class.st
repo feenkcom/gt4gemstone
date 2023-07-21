@@ -14,7 +14,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://feenkcom/RemoteServiceReplication:1cb09faf8091f578cf61b46d50527a225b062d17/src' ].
 		spec
 			baseline: 'SparkleFFIForGlamorousToolkit' with: [
-				spec repository: 'github://feenkcom/SparkleFFI:843ddaa293b0497ed3f88b30bc836d8b4e6ab22d/src' ].
+				spec repository: 'github://feenkcom/SparkleFFI:375fa6111a93412f0f6c03ab53c4a811ca4f279e/src' ].
 		spec
 			baseline: 'GToolkitRemote' with: [
 				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.1299/src' ].
