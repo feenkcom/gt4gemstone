@@ -1,6 +1,9 @@
 Class {
 	#name : #GtpoMetaclass3,
 	#superclass : #GtRsrProxyServiceClient,
+	#instVars : [
+		'definitionString'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
@@ -39,6 +42,11 @@ GtpoMetaclass3 >> compileFromTab: aTab [
 GtpoMetaclass3 >> compileMethod: source category: categoryName [
 ]
 
+{ #category : #accessing }
+GtpoMetaclass3 >> definitionString [
+	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
+]
+
 { #category : #ui }
 GtpoMetaclass3 >> gtAbortActionFor: anAction [
 	<gtAction>
@@ -58,7 +66,7 @@ GtpoMetaclass3 >> gtClassDefinitionFor: aView [
 
 	^ aView textEditor 
 		title: 'Definition';
-		priority: 10;
+		priority: 5;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
 		text: [ self proxyPerform: #definition ];
@@ -81,6 +89,42 @@ GtpoMetaclass3 >> gtCommitActionFor: anAction [
 		action: [ :button | 
 			gtSession commitTransaction.
 			button phlow spawnObject: 'Successfully committed transaction' ]
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 >> pharoEquivalentDefinitionString [
+	"Answer a string that defines an equivalent of the receiver in Pharo."
+	| ast arguments |
+
+	ast := StParser parseExpression: self  definitionString.
+	self assert: ast isMessage
+		description: 'Unable to parse GemStone defintion, unexpected AST'.
+	self assert: ast selector == #subclass:instVarNames:classVars:classInstVars:poolDictionaries:inDictionary:options:
+		description: 'Unable to parse GemStone definition, unpexected selector'.
+	arguments := ast arguments collect: #value.
+
+	^ String streamContents: [ :stream |
+		stream
+			<< ast receiver value;
+			<< ' subclass: #';
+			<< arguments first;
+			cr; tab;
+			<< 'instanceVariableNames: '''.
+		arguments second
+			do: [ :arg | stream << arg ]
+			separatedBy: [ stream space ].
+		stream
+			<< '''';
+			cr; tab;
+			<< 'classVariableNames: '''.
+		arguments third
+			do: [ :arg | stream << arg ]
+			separatedBy: [ stream space ].
+		stream
+			<< '''';
+			cr; tab;
+			<< 'package: ''';
+			<< '''' ].
 ]
 
 { #category : #printing }
