@@ -138,6 +138,19 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	^ computedProxy
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
+	<gtAction>
+
+	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
+		[ ^ anAction noAction ].
+	^ anAction button
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect Local Class';
+		action: [ :button |
+			button phlow spawnTool: (GtClassCoderTool forClass: (self class environment classOrTraitNamed: remoteClass asSymbol)) ].
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self isProxyObjectActive ifTrue: 
@@ -146,6 +159,32 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 			do: [ :e | 'Error printing'  ]) ]
 	ifFalse: 
 		[ aStream << 'Service Client Proxy on: <not connected>' ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectClassFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect GemStone Class';
+		action: [ :button |
+			button phlow spawnObject: (self proxyPerform: #class) ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectProxyClassFor: anAction [
+	<gtAction>
+
+	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
+		[ ^ anAction noAction ].
+	^ anAction button
+		label: 'Proxy';
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect Local Class';
+		action: [ :button |
+			button phlow spawnTool: (GtClassCoderTool forClass: self class) ].
 ]
 
 { #category : #accessing }
