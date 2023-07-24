@@ -205,19 +205,6 @@ GtBareProxy >> gtRemoteSideInspectorTool [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
-	<gtProxy>
-	
-	proxyObject ifNil: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Remote view specifications';
-		priority: 10001;
-		object: [ proxyObject ];
-		view: #gtRemoteViewSpecificationsFor:
-]
-
-{ #category : #'gt inspector' }
 GtBareProxy >> gtRemoteViewsFor: aView [
 	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
 	<return: #GtPhlowLabelledView>
@@ -231,6 +218,19 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];
 		build
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
+	<gtProxy>
+	
+	proxyObject ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Remote view specifications';
+		priority: 10001;
+		object: [ proxyObject ];
+		view: #gtRemoteViewSpecificationsFor:
 ]
 
 { #category : #'gt inspector' }

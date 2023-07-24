@@ -57,6 +57,13 @@ GtGsBareProxy >> gtAbortActionFor: anAction [
 ]
 
 { #category : #ui }
+GtGsBareProxy >> gtActionBrowseFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtActionBrowseFor: anAction
+]
+
+{ #category : #ui }
 GtGsBareProxy >> gtCommitActionFor: anAction [
 	<gtAction>
 
@@ -67,10 +74,10 @@ GtGsBareProxy >> gtCommitActionFor: anAction [
 ]
 
 { #category : #ui }
-GtGsBareProxy >> gtInspectSessionFor: anAction [
+GtGsBareProxy >> gtInspectClassFor: anAction [
 	<gtAction>
 
-	^ proxyObject gtInspectSessionFor: anAction
+	^ proxyObject gtInspectClassFor: anAction
 ]
 
 { #category : #printing }
@@ -93,6 +100,20 @@ GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
 			<< ' [';
 			<< gtSession name;
 			<< ']' ]
+]
+
+{ #category : #ui }
+GtGsBareProxy >> gtInspectProxyClassFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtInspectProxyClassFor: anAction
+]
+
+{ #category : #ui }
+GtGsBareProxy >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ proxyObject gtInspectSessionFor: anAction
 ]
 
 { #category : #printing }
