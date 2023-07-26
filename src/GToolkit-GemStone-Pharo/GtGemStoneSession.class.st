@@ -281,6 +281,19 @@ GtGemStoneSession >> gtLogFor: aView [
 		  actionUpdateButton
 ]
 
+{ #category : #ui }
+GtGemStoneSession >> gtModifiedObjectsFor: aView [
+	<gtView>
+
+	^ aView list
+		title: 'Modified';
+		priority: 20;
+		items: [ self isRunning 
+			ifTrue: [ self writtenObjects ] 
+			ifFalse: [ #() ] ];
+		actionUpdateButton
+]
+
 { #category : #accessing }
 GtGemStoneSession >> gtNrsStringFor: aView [
 	<gtView>
@@ -449,4 +462,10 @@ GtGemStoneSession >> updatedBindings: remoteBindings [
 GtGemStoneSession >> username [
 
 	^ connector username
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> writtenObjects [
+
+	^ self evaluateAndWait: 'System _writtenObjects'
 ]
