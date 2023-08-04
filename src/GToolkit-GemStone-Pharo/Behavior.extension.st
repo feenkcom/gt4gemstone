@@ -2,7 +2,7 @@ Extension { #name : #Behavior }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 Behavior >> gtGsClassEditorButtonFor: anAction [
-	"<gtClassAction>"
+	<gtClassAction>
 
 	(GtGemStoneSessionRegistry hasUniqueInstance not or:
 		[ GtGemStoneSessionRegistry default defaultSession isNil ])
