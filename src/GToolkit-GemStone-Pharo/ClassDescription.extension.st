@@ -11,7 +11,7 @@ ClassDescription >> gemstoneDefinitionStringBasedOn: aGtpoMetaclass3 [
 	| inDictionaryName optionsString arrayFormatter space |
 
 	inDictionaryName := aGtpoMetaclass3
-		ifNil: [ GtpoMetaclass3 defaultDictionary value ]
+		ifNil: [ GtpoMetaclass3 defaultDictionary value: self ]
 		ifNotNil: [ aGtpoMetaclass3 asGtProxyObject globalsDictionaryName ].
 	optionsString := aGtpoMetaclass3
 		ifNil: [ '#()' ]

@@ -13,15 +13,16 @@ Class {
 
 { #category : #accessing }
 GtpoMetaclass3 class >> defaultDictionary [
-	<return: #String or: #BlockClosure>
+	"Answer a BlockClosure that provides the default dictionary name given the supplied GT class (or nil)"
+	<return: #BlockClosure>
 
-	^ DefaultDictionary ifNil: [ 'Globals' ]
+	^ DefaultDictionary ifNil: [ [ :gtClass | 'Globals' ] ]
 ]
 
 { #category : #accessing }
-GtpoMetaclass3 class >> defaultDictionary: aBlockOrString [
+GtpoMetaclass3 class >> defaultDictionary: aBlock [
 
-	DefaultDictionary := aBlockOrString
+	DefaultDictionary := aBlock
 ]
 
 { #category : #private }
