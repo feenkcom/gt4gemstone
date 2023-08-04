@@ -2,10 +2,27 @@ Class {
 	#name : #GtpoMetaclass3,
 	#superclass : #GtRsrProxyServiceClient,
 	#instVars : [
-		'definitionString'
+		'definitionString',
+		'globalsDictionaryName'
+	],
+	#classVars : [
+		'DefaultDictionary'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
+
+{ #category : #accessing }
+GtpoMetaclass3 class >> defaultDictionary [
+	<return: #String or: #BlockClosure>
+
+	^ DefaultDictionary ifNil: [ 'Globals' ]
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 class >> defaultDictionary: aBlockOrString [
+
+	DefaultDictionary := aBlockOrString
+]
 
 { #category : #private }
 GtpoMetaclass3 class >> remoteClassMatcher [
@@ -45,6 +62,12 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 { #category : #accessing }
 GtpoMetaclass3 >> definitionString [
 	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 >> globalsDictionaryName [
+
+	^ globalsDictionaryName ifNil: [ globalsDictionaryName := self evaluateAndWait: 'self _dictionaryNameForFileout: System myUserProfile' ]
 ]
 
 { #category : #ui }
@@ -105,7 +128,7 @@ GtpoMetaclass3 >> pharoEquivalentDefinitionString [
 
 	^ String streamContents: [ :stream |
 		stream
-			<< ast receiver value;
+			<< ast receiver name;
 			<< ' subclass: #';
 			<< arguments first;
 			cr; tab;
@@ -123,8 +146,32 @@ GtpoMetaclass3 >> pharoEquivalentDefinitionString [
 		stream
 			<< '''';
 			cr; tab;
-			<< 'package: ''';
+			<< 'package: '''.
+		(self class environment classOrTraitNamed: remoteClass) ifNotNil: [ :gtClass |
+			stream << gtClass package name.
+			gtClass tags do: [ :tagName |
+				stream
+					nextPut: $-;
+					<< tagName ] ].
+		stream
+			<< '''.';
+			cr; cr.
+		stream
+			<< arguments first;
+			<< ' class';
+			cr; tab;
+			<< 'instanceVariableNames: '''.
+		arguments fourth
+			do: [ :arg | stream << arg ]
+			separatedBy: [ stream space ].
+		stream
 			<< '''' ].
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 >> poolDictionaries [
+
+	^ self proxyPerform: #_poolDictionaries
 ]
 
 { #category : #printing }
