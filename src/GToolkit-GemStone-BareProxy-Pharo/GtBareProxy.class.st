@@ -78,6 +78,20 @@ GtBareProxy >> filterLocalProxyViews: localViews [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtActions [
+	| proxyActions |
+
+	proxyActions := (proxyObject 
+			ifNil: [ #() ]
+			ifNotNil: [ proxyObject gtActions ]).
+	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
+	proxyActions := proxyActions reject: [ :action | action definingMethod selector == #gtActionInspectFor: ].
+		
+	^ super gtActions, proxyActions.
+		
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
@@ -205,6 +219,19 @@ GtBareProxy >> gtRemoteSideInspectorTool [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
+	<gtProxy>
+	
+	proxyObject ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Remote view specifications';
+		priority: 10001;
+		object: [ proxyObject ];
+		view: #gtRemoteViewSpecificationsFor:
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtRemoteViewsFor: aView [
 	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
 	<return: #GtPhlowLabelledView>
@@ -218,19 +245,6 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];
 		build
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
-	<gtProxy>
-	
-	proxyObject ifNil: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Remote view specifications';
-		priority: 10001;
-		object: [ proxyObject ];
-		view: #gtRemoteViewSpecificationsFor:
 ]
 
 { #category : #'gt inspector' }
