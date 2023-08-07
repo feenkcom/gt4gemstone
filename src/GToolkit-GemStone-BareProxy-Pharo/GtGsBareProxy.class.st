@@ -46,54 +46,6 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #ui }
-GtGsBareProxy >> gtAbortActionFor: anAction [
-	<gtAction>
-
-	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
-		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
-			[ ^ anAction noAction ].
-	^ proxyObject gtAbortActionFor: anAction
-]
-
-{ #category : #ui }
-GtGsBareProxy >> gtActionBrowseFor: anAction [
-	<gtAction>
-
-	^ proxyObject gtActionBrowseFor: anAction
-]
-
-{ #category : #ui }
-GtGsBareProxy >> gtCommitActionFor: anAction [
-	<gtAction>
-
-	(proxyObject isNil or: [ (proxyObject class = GtpoMetaclass3 or:
-		[ proxyObject class = GtpoGsNMethod ]) not ]) ifTrue: 
-			[ ^ anAction noAction ].
-	^ proxyObject gtCommitActionFor: anAction
-]
-
-{ #category : #ui }
-GtGsBareProxy >> gtInspectClassFor: anAction [
-	<gtAction>
-
-	^ proxyObject gtInspectClassFor: anAction
-]
-
-{ #category : #ui }
-GtGsBareProxy >> gtInspectProxyClassFor: anAction [
-	<gtAction>
-
-	^ proxyObject gtInspectProxyClassFor: anAction
-]
-
-{ #category : #ui }
-GtGsBareProxy >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ proxyObject gtInspectSessionFor: anAction
-]
-
 { #category : #printing }
 GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 	super gtInspectorRemoteSideTitleStringOn: aStream.

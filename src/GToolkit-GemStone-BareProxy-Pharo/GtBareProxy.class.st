@@ -78,6 +78,20 @@ GtBareProxy >> filterLocalProxyViews: localViews [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtActions [
+	| proxyActions |
+
+	proxyActions := (proxyObject 
+			ifNil: [ #() ]
+			ifNotNil: [ proxyObject gtActions ]).
+	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
+	proxyActions := proxyActions reject: [ :action | action definingMethod selector == #gtActionInspectFor: ].
+		
+	^ super gtActions, proxyActions.
+		
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
