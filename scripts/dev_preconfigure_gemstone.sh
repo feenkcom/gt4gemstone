@@ -44,5 +44,6 @@ chmod +x gt4gemstone/scripts/*.sh
 chmod +x gt4gemstone/scripts/release/*.sh
 chmod +x gtoolkit-remote/scripts/*.sh
 
+export STONE=gs64stone
 export GT4GEMSTONE_VERSION=dev
 export RELEASED_PACKAGE_GEMSTONE_NAME="gt4gemstone-3.7.0-dev"
