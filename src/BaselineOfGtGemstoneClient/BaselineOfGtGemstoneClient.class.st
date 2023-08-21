@@ -12,7 +12,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 		spec postLoadDoIt: #'postLoadSetup:'.
 		spec
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
-			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:main/src' ].
+			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:martin-136PortRange/src' ].
 		spec
 			baseline: 'SparkleFFIForGlamorousToolkit'
 			with: [ spec repository: 'github://feenkcom/SparkleFFI:main/src' ].
