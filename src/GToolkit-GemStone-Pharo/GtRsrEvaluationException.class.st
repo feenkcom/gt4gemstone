@@ -7,7 +7,7 @@ Class {
 		'frames',
 		'stackFrames'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
