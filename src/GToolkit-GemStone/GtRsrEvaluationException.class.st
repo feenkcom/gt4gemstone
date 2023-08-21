@@ -23,12 +23,6 @@ GtRsrEvaluationException >> evaluator [
 ]
 
 { #category : #accessing }
-GtRsrEvaluationException >> exception [
-
-	^ exception
-]
-
-{ #category : #accessing }
 GtRsrEvaluationException >> frames [
 
 	^ process evaluateAndWait:
