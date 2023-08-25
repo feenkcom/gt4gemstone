@@ -168,11 +168,13 @@ GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self isProxyObjectActive ifTrue: 
-		[ aStream << ([self proxyPerform: #gtDisplayString]
-			on: Error 
-			do: [ :e | 'Error printing'  ]) ]
+		[ aStream 
+			<< 'Service Client Proxy: ';
+			<< ([self proxyPerform: #gtDisplayString]
+				on: Error 
+				do: [ :e | 'Service Client Proxy: Error printing'  ]) ]
 	ifFalse: 
-		[ aStream << 'Service Client Proxy on: <not connected>' ].
+		[ aStream << 'Service Client Proxy: <not connected>' ].
 ]
 
 { #category : #accessing }
@@ -218,7 +220,13 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
-	self gtDisplayOn: aStream
+	self gtDisplayOn: aStream.
+	
+	self gtSession ifNotNil:
+		[ :aGtSession | aStream
+			<< ' [';
+			<< aGtSession name;
+			<< ']' ]
 ]
 
 { #category : #initialization }

@@ -183,9 +183,11 @@ GtBareProxy >> gtPrintFor: aView [
 		title: 'Print';
 		priority: 110;
 		aptitude: BrGlamorousCodeEditorAptitude;
-		text: [ ([proxyObject proxyPerform: #gtDisplayString]
-			on: Error 
-			do: [ :e | 'Error printing'  ])  asRopedText ];
+		text: [ 
+			String 	
+				streamContents: [ :aStream | 
+					self gtDisplayOn: aStream ] 
+				limitedTo: 1000 ];
 		actionUpdateButton
 ]
 
