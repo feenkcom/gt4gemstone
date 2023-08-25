@@ -78,6 +78,12 @@ GtBareProxy >> filterLocalProxyViews: localViews [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtActionBrowseFor: anAction [
+	<gtAction>
+	^ anAction noAction
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtActions [
 	| proxyActions |
 
@@ -85,7 +91,8 @@ GtBareProxy >> gtActions [
 			ifNil: [ #() ]
 			ifNotNil: [ proxyObject gtActions ]).
 	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
-	proxyActions := proxyActions reject: [ :action | action definingMethod selector == #gtActionInspectFor: ].
+	proxyActions := proxyActions reject: [ :action | 
+		action definingMethod selector == #gtActionInspectFor: ].
 		
 	^ super gtActions, proxyActions.
 		
