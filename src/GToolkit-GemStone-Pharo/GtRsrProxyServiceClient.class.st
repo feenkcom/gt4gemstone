@@ -142,9 +142,23 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 	<gtAction>
 
+	^ anAction button
+		priority: 1;
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect GemStone Class';
+		action: [ :button |
+			button phlow spawnObject: (self proxyPerform: #class) ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
+	<gtAction>
+
 	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
 		[ ^ anAction noAction ].
 	^ anAction button
+		priority: 1.1;
+		label: 'Local';
 		icon: BrGlamorousVectorIcons browse;
 		tooltip: 'Inspect Local Class';
 		action: [ :button |
@@ -154,37 +168,13 @@ GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self isProxyObjectActive ifTrue: 
-		[ aStream << ([self proxyPerform: #gtDisplayString]
-			on: Error 
-			do: [ :e | 'Error printing'  ]) ]
+		[ aStream 
+			<< 'Service Client Proxy: ';
+			<< ([self proxyPerform: #gtDisplayString]
+				on: Error 
+				do: [ :e | 'Service Client Proxy: Error printing'  ]) ]
 	ifFalse: 
-		[ aStream << 'Service Client Proxy on: <not connected>' ].
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectClassFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		icon: BrGlamorousVectorIcons browse;
-		tooltip: 'Inspect GemStone Class';
-		action: [ :button |
-			button phlow spawnObject: (self proxyPerform: #class) ].
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectProxyClassFor: anAction [
-	<gtAction>
-
-	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
-		[ ^ anAction noAction ].
-	^ anAction button
-		label: 'Proxy';
-		icon: BrGlamorousVectorIcons browse;
-		tooltip: 'Inspect Local Class';
-		action: [ :button |
-			button phlow spawnTool: (GtClassCoderTool forClass: self class) ].
+		[ aStream << 'Service Client Proxy: <not connected>' ].
 ]
 
 { #category : #accessing }
@@ -193,6 +183,7 @@ GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
 
 	^ anAction button
 		label: 'GS';
+		priority: 10;
 		icon: BrGlamorousVectorIcons inspect;
 		tooltip: 'Inspect GemStone Session';
 		action: [ :button |
@@ -229,7 +220,13 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
-	self gtDisplayOn: aStream
+	self gtDisplayOn: aStream.
+	
+	self gtSession ifNotNil:
+		[ :aGtSession | aStream
+			<< ' [';
+			<< aGtSession name;
+			<< ']' ]
 ]
 
 { #category : #initialization }
