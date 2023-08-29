@@ -34,3 +34,15 @@ GspoGtRmGeoGpsRecord >> gtViewOnMapFor: aView [
 			targetPoint: (self proxyPerform: #longitude) 
 				@ (self proxyPerform: #latitude) ]
 ]
+
+{ #category : #'gt - extensions' }
+GspoGtRmGeoGpsRecord >> gtViewOnOsmFor: aView [ 
+	<gtView>
+	
+	^ aView explicit
+		title: 'On OSM';
+		priority: 55;
+		stencil: [ GtOpenStreetMapTiles new 
+			tileWithMarkerAt:  (self proxyPerform: #longitude) 
+				@ (self proxyPerform: #latitude) zoom: 15 ]
+]
