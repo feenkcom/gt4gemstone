@@ -30,6 +30,7 @@ doit
 	options: #( #logCreation )
 )
 		category: 'GToolkit-GemStone';
+		comment: 'GtRsrEvaluationExceptionInformation is used to pass information about an exception that occurred in GemStone back to GT, allowing a debugger to be opened on the exception.';
 		immediateInvariant.
 true.
 %
@@ -497,6 +498,21 @@ testSimpleScript
 	self assert: result equals: 7.
 %
 
+! Class extensions for 'AbstractCollisionBucket'
+
+!		Instance methods for 'AbstractCollisionBucket'
+
+category: '*GToolkit-GemStone'
+method: AbstractCollisionBucket
+asGtRsrProxyObjectForConnection: aRsrConnection
+	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
+	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
+
+	(GtRsrEvaluatorService isRsrImmediate: self) ifFalse: 
+		[ ^ GtRsrProxyServiceServer object: self ].
+	^ self
+%
+
 ! Class extensions for 'Array'
 
 !		Instance methods for 'Array'
@@ -565,7 +581,7 @@ gtSourceFor: aView
 
 !		Instance methods for 'GsStackBuffer'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: GsStackBuffer
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
