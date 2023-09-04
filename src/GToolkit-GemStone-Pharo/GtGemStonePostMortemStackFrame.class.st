@@ -34,6 +34,30 @@ GtGemStonePostMortemStackFrame >> exception: anObject [
 ]
 
 { #category : #accessing }
+GtGemStonePostMortemStackFrame >> gtInspectMethodFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		icon: BrGlamorousVectorIcons inspect;
+		label: 'Method';
+		tooltip: 'Inspect GemStone method';
+		action: [ :button |
+			button phlow spawnObject: (exception gtMethodFromStackString: displayString) ]
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> gtSourceFor: aView [
+	<gtView>
+
+	exception ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Source';
+		priority: 20;
+		object: [ exception gtMethodFromStackString: displayString ];
+		view: #gtSourceFor:
+]
+
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> line [
 	| re |
 
