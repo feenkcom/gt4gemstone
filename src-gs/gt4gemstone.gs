@@ -502,7 +502,7 @@ testSimpleScript
 
 !		Instance methods for 'AbstractCollisionBucket'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: AbstractCollisionBucket
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
