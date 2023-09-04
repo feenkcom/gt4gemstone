@@ -23,6 +23,15 @@ GspoGtRmGeoGpsTrajectory >> gtActionDownloadFor: anAction [
 					proxyPerform: #asJsonDictionary))  ]
 ]
 
+{ #category : #accessing }
+GspoGtRmGeoGpsTrajectory >> gtViewMapFor: aView [
+
+	^ aView explicit
+		title: 'OSM';
+		priority: 20;
+		stencil: [ self osmMap ]
+]
+
 { #category : #'gt - extensions' }
 GspoGtRmGeoGpsTrajectory >> gtViewPathShapeFor: aView [ 
 	<gtView>
@@ -34,4 +43,25 @@ GspoGtRmGeoGpsTrajectory >> gtViewPathShapeFor: aView [
 			pathPoints:  ((self proxyPerform: #recordsAsJsonData)
 				collect: [ :aData | 
 					GtRmGeoGpsRecord fromJsonDictionary: aData ])]
+]
+
+{ #category : #accessing }
+GspoGtRmGeoGpsTrajectory >> osmMap [
+	| map path points |
+
+	map := GtOsmMap new zoom: 15.
+	points := self records collect: #asPoint.
+	points do: 
+		[ :point | map includeCoordinate: point ].
+	map addChildren.
+	path := GtOsmPath new coordinates: points.
+	path addToMap: map.
+	^ map asScalableElement
+]
+
+{ #category : #accessing }
+GspoGtRmGeoGpsTrajectory >> records [
+
+	^ ((self proxyPerform: #asJsonDictionary) at: #records)
+		collect: [ :each | GtRmGeoGpsRecord fromJsonDictionary: each ].
 ]
