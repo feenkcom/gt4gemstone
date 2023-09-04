@@ -31,6 +31,6 @@ GspoGtRmGeoGpsRecord >> gtViewOnMapFor: aView [
 		title: 'On Map';
 		priority: 78;
 		stencil: [ GtRmGeoGpsWorldWithPointStencil new 
-			targetPoint: (self proxyPerform: #latitude) 
-				@ (self proxyPerform: #longitude) ]
+			targetPoint: (self proxyPerform: #longitude) 
+				@ (self proxyPerform: #latitude) ]
 ]
