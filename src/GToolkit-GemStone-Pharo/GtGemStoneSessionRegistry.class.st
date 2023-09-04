@@ -171,6 +171,19 @@ GtGemStoneSessionRegistry >> connectorNamed: aString [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> connectorNamed: aString ifPresent: presentBlock ifAbsent: absentBlock [
+	"Answer the connector at the supplied name"
+
+	aString = GtGemStoneNullConnector connectorName ifTrue:
+		[ ^ GtGemStoneNullConnector new ].
+
+	^ self connectors 
+		at: aString
+		ifPresent: presentBlock
+		ifAbsent: absentBlock
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNames [ 
 	"Answer the list of known session names"
 	<return: #Array>
@@ -196,7 +209,15 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 { #category : #accessing }
 GtGemStoneSessionRegistry >> defaultSession [
 
-	^ defaultSession
+	^ defaultSession ifNil: 
+		[ defaultSession := self
+			sessionWithConnectorNamed: 'default'
+			ifAbsent:
+				[ self
+					connectorNamed: 'default'
+					ifPresent: [ :connector | 
+						self newSessionWithConnectorNamed: 'default'  ]
+					ifAbsent: [ nil ] ] ].
 ]
 
 { #category : #accessing }
@@ -531,6 +552,17 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 
 	^ (self sessions select: [ :each | each connector name = aString ])
 		ifEmpty: [ self newSessionWithConnectorNamed: aString ]
+		ifNotEmpty: [ :sessionCollection |
+			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absentBlock [
+	"Answer a session with the supplied connector name.
+	Create the session if required."
+
+	^ (self sessions select: [ :each | each connector name = aString ])
+		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
 ]
