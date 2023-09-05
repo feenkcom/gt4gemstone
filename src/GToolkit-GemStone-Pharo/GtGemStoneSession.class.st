@@ -70,7 +70,11 @@ GtGemStoneSession >> commitTransaction [
 { #category : #actions }
 GtGemStoneSession >> connect [
 
-	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
+	connection ifNotNil:
+		[ connection isOpen ifTrue: [ ^ self ].
+		"Sessions can't be re-established as OIDs may be reused after an abort
+		(which is implied if the session is disconnected)"
+		self error: 'GemStone sessions cannot be reestablished' ].
 
 	session := connector newSession.
 	connection := connector connectionForSession: session.
@@ -161,10 +165,65 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
+	^ self ensureRunning
+		evaluateAndWaitReturnProxy: remoteScript
+		for: nil 
+		bindings: Dictionary new
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
+	| computedProxy |
+
+	computedProxy := evaluator 
+		evaluateAndWaitReturnProxy: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings).
+	computedProxy gtPharoProxyInitializeWithSession: self.
+	^ computedProxy
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnSerialized: remoteScript [
+	^ self ensureRunning
+		evaluateAndWaitReturnSerialized: remoteScript
+		for: nil 
+		bindings: Dictionary new
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
+
+	^ evaluator 
+		evaluateAndWaitReturnSerialized: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings).
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAsRemoteStream: aString [
 	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
 		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
 			format: {aString}))
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
+
+	^ evaluator 
+		evaluateReturnProxy: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
+
+	^ evaluator 
+		evaluateReturnSerialized: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
 ]
 
 { #category : #accessing }
@@ -392,13 +451,6 @@ GtGemStoneSession >> printOn: aStream [
 		<< ', ';
 		<< (self isRunning ifTrue: [ 'running' ] ifFalse: [ 'closed' ]);
 		nextPut: $).
-]
-
-{ #category : #actions }
-GtGemStoneSession >> reconnect [
-
-	self close.
-	self connect.
 ]
 
 { #category : #accessing }

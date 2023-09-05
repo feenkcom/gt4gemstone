@@ -13,5 +13,5 @@ GtRsrEvaluatorServiceServer >> gtEvaluate: remoteScript for: anObject bindings: 
 		noPattern: true;
 		evaluate.
 
-	^ result asGtRsrProxyObjectForConnection: _connection.
+	^ result
 ]

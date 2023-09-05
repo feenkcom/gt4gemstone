@@ -138,6 +138,58 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	^ computedProxy
 ]
 
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| computedProxy |
+
+	computedProxy := gtSession evaluator
+		evaluateAndWaitReturnProxy: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnSerialized: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| computedProxy |
+
+	computedProxy := gtSession evaluator
+		evaluateAndWaitReturnProxy: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| computedProxy |
+
+	computedProxy := gtSession evaluator
+		evaluateAndWaitReturnProxy: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateReturnSerialized: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| computedProxy |
+
+	computedProxy := gtSession evaluator
+		evaluateAndWaitReturnProxy: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 	<gtAction>
@@ -316,6 +368,15 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 	| computedProxy |
 	computedProxy := (remoteSelf 
 		proxyPerform: aSymbol withArguments: anArray) wait.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
+	| computedProxy |
+
+	computedProxy := (remoteSelf proxyPerform: aSymbol) wait.
 	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
 	^ computedProxy
 ]
