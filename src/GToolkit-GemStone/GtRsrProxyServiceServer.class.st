@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'object'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #other }
@@ -42,4 +42,16 @@ GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray [
 			ifTrue: [ anObject object ]
 			ifFalse: [ anObject ] ].
 	^ (object perform: aSymbol withArguments: convertedArguments) asGtRsrProxyObjectForConnection: _connection
+]
+
+{ #category : #performing }
+GtRsrProxyServiceServer >> proxyPerformReturn: aSymbol serializationStrategy: serializationSymbol [
+
+	^ (#Globals at: serializationSymbol) new serialize: (object perform: aSymbol)
+]
+
+{ #category : #performing }
+GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol [
+
+	^ GtRsrProxyServiceServer object: (object perform: aSymbol)
 ]

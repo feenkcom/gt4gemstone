@@ -1,16 +1,18 @@
 Class {
 	#name : #GtRsrEvaluatorServiceServer,
 	#superclass : #GtRsrEvaluatorService,
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
-	"Evaluate the receiver's script, answering the result"
+	"Evaluate the receiver's script, answering the result.
+	On the server this is a synchronous operation."
 
-	^ self
+	^ (self
 		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
+			asGtRsrProxyObjectForConnection: _connection
 ]
 
 { #category : #actions }
@@ -19,6 +21,46 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 	 On the server it is always synchronous"
 
 	^ self evaluate: aString for: anObject bindings: aDictionary
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceServer >> evaluateAndWaitReturnProxy: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the result as a proxy object.
+	 On the server it is always synchronous"
+
+	^ self evaluateReturnProxy: aString for: anObject bindings: aDictionary
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceServer >> evaluateAndWaitReturnSerialized: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the serialized result.
+	 On the server it is always synchronous"
+
+	^ self evaluateReturnSerialized: aString for: anObject bindings: aDictionary
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the result as a proxy.
+	On the server this is a synchronous operation."
+	| result |
+
+	result := self
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	^ GtRsrProxyServiceServer object: result.
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceServer >> evaluateReturnSerialized: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the result as a proxy.
+	On the server this is a synchronous operation."
+	| result |
+
+	result := self
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	^ STON toString: result.
 ]
 
 { #category : #'private - GemStone' }
@@ -59,7 +101,7 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 		priority: 15;
 		breakpointLevel: 1.
 	evaluationProcess resume.
-	semaphore waitForSeconds: 10.
+	semaphore wait.
 
-	^ result asGtRsrProxyObjectForConnection: _connection
+	^ result
 ]
