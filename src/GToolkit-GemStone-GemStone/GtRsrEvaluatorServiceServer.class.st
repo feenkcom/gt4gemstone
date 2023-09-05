@@ -1,7 +1,7 @@
 Class {
 	#name : #GtRsrEvaluatorServiceServer,
 	#superclass : #GtRsrEvaluatorService,
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #actions }

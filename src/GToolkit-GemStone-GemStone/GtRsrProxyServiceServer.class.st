@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'object'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #other }
