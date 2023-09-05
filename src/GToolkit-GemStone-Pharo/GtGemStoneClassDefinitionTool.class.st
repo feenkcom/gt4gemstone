@@ -126,6 +126,19 @@ GtGemStoneClassDefinitionTool >> gsProxy [
 		gsProxy := self getGsClassProxy ] ].
 ]
 
+{ #category : #ui }
+GtGemStoneClassDefinitionTool >> gtActionBrowseFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		priority: 1;
+		icon: BrGlamorousVectorIcons browse;
+		label: 'GS';
+		tooltip: 'Inspect GemStone Class';
+		action: [ :button |
+			button phlow spawnObject: (self session evaluateAndWait: targetClassName) ].
+]
+
 { #category : #accessing }
 GtGemStoneClassDefinitionTool >> gtClass [
 

@@ -160,7 +160,7 @@ GtpoGsNMethod >> inClassName [
 
 { #category : #private }
 GtpoGsNMethod >> removeFromTab: aTab [
-	"Compile the receiver's method based on the current editor contents"
+	"Remove the receiver's method"
 	| tabGroup |
 
 	"Work our way up to the BrTabGroup and then down to the BrEditor"
