@@ -4,6 +4,12 @@ Trait {
 }
 
 { #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> flushItemsIterator [
+	^ self
+		proxyPerform: #flushItemsIterator
+]
+
+{ #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: anIndex [
 	^ self
 		proxyPerform: #retrieveItems:fromIndex:
