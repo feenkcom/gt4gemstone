@@ -28,16 +28,18 @@ GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 									semaphore signal ]
 		on: Exception
 		do: [ :ex |
-			result := GtRsrEvaluationExceptionInformation new
+			result := (GtRsrEvaluationExceptionInformation new
 				exception: ex;
-				process: evaluationProcess.
+				process: evaluationProcess)
+					asGtRsrProxyObjectForConnection: _connection.
 			semaphore signal.
 			evaluationProcess suspend ]
 				] newProcess.
 	evaluationProcess debugActionBlock: [ :ex |
-		result := GtRsrEvaluationExceptionInformation new
+		result := (GtRsrEvaluationExceptionInformation new
 			exception: ex;
-			process: evaluationProcess.
+			process: evaluationProcess)
+				asGtRsrProxyObjectForConnection: _connection.
 		semaphore signal.
 		evaluationProcess suspend ].
 	evaluationProcess
@@ -74,8 +76,7 @@ GtRsrProxyServiceServer >> proxyPerform: aSymbol [
 { #category : 'performing' }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
 
-	^ ((Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #()))
-		 asGtRsrProxyObjectForConnection: _connection
+	^ (Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #())
 ]
 
 { #category : 'performing' }
@@ -87,9 +88,8 @@ GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray [
 { #category : 'performing' }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
 
-	^ ((Globals at: serializationSymbol) new serialize:
-		(self basicPerform: aSymbol withArguments: anArray))
-			 asGtRsrProxyObjectForConnection: _connection
+	^ (Globals at: serializationSymbol) new serialize:
+		(self basicPerform: aSymbol withArguments: anArray)
 ]
 
 { #category : 'performing' }
