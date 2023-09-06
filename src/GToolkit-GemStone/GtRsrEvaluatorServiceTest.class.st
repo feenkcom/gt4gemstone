@@ -1,16 +1,16 @@
 Class {
-	#name : #GtRsrEvaluatorServiceTest,
-	#superclass : #TestCase,
+	#name : 'GtRsrEvaluatorServiceTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,18 +21,18 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	| script evaluator |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self error:'. 
 	self
-		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
+		should: [ evaluator evaluate: script for: nil bindings: Dictionary new ]
 		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -50,7 +50,7 @@ anArray at: 1 put: 3.
 anArray at: 2 put: aDict.
 anArray at: 3 put: #d -> 4.
 anArray.'. 
-	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	result := evaluator evaluate: script for: nil bindings: Dictionary new.
 	self assert: result class equals: Array.
 	self assert: result size equals: 3.
 	self assert: (result at: 1) equals: 3.
@@ -63,7 +63,7 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator |
 
@@ -71,30 +71,29 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	script := 'self + ''NaN'''.
 	"'4 + ''NaN''' raises a MNU"
 	self
-		should: [ evaluator evaluateAndWait: script for: 4 bindings: Dictionary new ]
+		should: [ evaluator evaluate: script for: 4 bindings: Dictionary new ]
 		raise: MessageNotUnderstood
 		withExceptionDo: [ :ex | 
 			"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
 			self assert: (#(#adaptToNumber:andSend: #'_generality') includes: ex message selector) ].
-
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self + 3'. 
-	result := evaluator evaluateAndWait: script for: 4 bindings: Dictionary new.
+	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
 	self assert: result equals: 7.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := '4+3'. 
-	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	result := evaluator evaluate: script for: nil bindings: Dictionary new.
 	self assert: result equals: 7.
 ]
