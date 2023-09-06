@@ -71,45 +71,6 @@ GtRsrEvaluatorServiceClient >> evaluateReturnProxy: remoteScript for: anObject b
 ]
 
 { #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
-	<gemstoneDebuggerSignal>
-	| value exception |
-
-	value := (self evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings) wait.
-	gtSession ifNotNil: [ value gtPharoProxyInitializeWithSession: gtSession ].
-	(value class = GtpoGtRsrEvaluationExceptionInformation) ifTrue: 
-		[ exception := GtRsrEvaluationException new
-			originalException: (value proxyPerform: #exception);
-			process: (value proxyPerform: #process).
-		exception signal ].
-	^ value
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateAndWaitReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
-	<gemstoneDebuggerSignal>
-	| value exception |
-
-	value := (self evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings) wait.
-	gtSession ifNotNil: [ value gtPharoProxyInitializeWithSession: gtSession ].
-	(value class = GtpoGtRsrEvaluationExceptionInformation) ifTrue: 
-		[ exception := GtRsrEvaluationException new
-			originalException: (value proxyPerform: #exception);
-			process: (value proxyPerform: #process).
-		exception signal ].
-	^ STON fromString: value
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
-
-	^ remoteSelf 
-		evaluateReturnProxy: remoteScript asString 
-		for: anObject 
-		bindings: remoteBindings asDictionary
-]
-
-{ #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
 
 	^ remoteSelf 

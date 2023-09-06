@@ -43,6 +43,39 @@ GtRemoteGemStoneDebuggerExamples >> testEvaluateExceptionInformation [
 	self assert: value remoteClass equals: #GtRsrEvaluationExceptionInformation.
 ]
 
+{ #category : #tests }
+GtRemoteGemStoneDebuggerExamples >> testEvaluateReturnProxyExceptionInformation [
+	<gtExample>
+	| session result rsrPromise value |
+
+	session := self runningServer.
+	result := session evaluateReturnProxy: 'self error: ''oops'''.
+	rsrPromise := result rsrPromise.
+	value := rsrPromise value.
+	self assert: value remoteClass equals: #GtRsrEvaluationExceptionInformation.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneDebuggerExamples >> testEvaluateSerializationStrategyExceptionInformation [
+	<gtExample>
+	| session result rsrPromise value |
+
+	session := self runningServer.
+	result := session 
+		evaluate: 'self error: ''oops'''
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	rsrPromise := result rsrPromise.
+	value := rsrPromise value.
+	self assert: value remoteClass equals: #GtRsrEvaluationExceptionInformation.
+
+	result := session 
+		evaluate: 'self error: ''oops'''
+		serializationStrategy: #GtRsrStonSerializationStrategy.
+	rsrPromise := result rsrPromise.
+	value := rsrPromise value.
+	self assert: value remoteClass equals: #GtRsrEvaluationExceptionInformation.
+]
+
 { #category : #private }
 GtRemoteGemStoneDebuggerExamples >> testPerformBlock: aBlock [
 	| session signalled |

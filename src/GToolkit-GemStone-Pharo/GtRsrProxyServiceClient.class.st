@@ -410,15 +410,6 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArr
 		gtSession: gtSession) wait
 ]
 
-{ #category : #performing }
-GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
-	| computedProxy |
-
-	computedProxy := (remoteSelf proxyPerform: aSymbol) wait.
-	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
-	^ computedProxy
-]
-
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 	"Should be all views, but just get Raw and Print views for now"
