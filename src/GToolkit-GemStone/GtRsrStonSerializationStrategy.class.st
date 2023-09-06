@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrStonSerializationStrategy',
-	#superclass : 'GtRsrSerializationStrategy',
+	#name : #GtRsrStonSerializationStrategy,
+	#superclass : #GtRsrSerializationStrategy,
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtRsrStonSerializationStrategy >> deserialize: anObject [
 	"Deserialize the supplied object"
 	
@@ -12,7 +12,7 @@ GtRsrStonSerializationStrategy >> deserialize: anObject [
 	^ STON fromString: anObject
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtRsrStonSerializationStrategy >> serialize: anObject [
 	"Serialize the object to a String, except RSR services"
 

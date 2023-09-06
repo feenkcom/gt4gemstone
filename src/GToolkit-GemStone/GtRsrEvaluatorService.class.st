@@ -4,7 +4,7 @@ GtRsrEvaluatorService provides the ability to evaluate scripts on a GemStone ser
 Class {
 	#name : #GtRsrEvaluatorService,
 	#superclass : #RsrService,
-	#category : #'GToolkit-GemStone'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : #testing }
@@ -31,24 +31,6 @@ GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBi
 
 { #category : #actions }
 GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #actions }
-GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #actions }
-GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #actions }
-GtRsrEvaluatorService >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ self subclassResponsibility
 ]
