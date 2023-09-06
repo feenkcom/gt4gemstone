@@ -126,6 +126,17 @@ GtRsrProxyServiceClient >> evaluate: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ gtSession evaluator
+		evaluate: aString
+		for: self
+		bindings: Dictionary new
+		serializationStrategy: aSymbol.
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 	| computedProxy |
@@ -136,6 +147,31 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 		bindings: Dictionary new.
 	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
 	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString serializationStrategy: aSymbol [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluate: aString serializationStrategy: aSymbol) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluateReturnProxy: aString) wait
+		gtPharoProxyInitializeWithSession: self gtSession
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ gtSession evaluator
+		evaluateReturnProxy: aString
+		for: self
+		bindings: Dictionary new.
 ]
 
 { #category : #accessing }
@@ -305,19 +341,73 @@ GtRsrProxyServiceClient >> printOn: aStream [
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
-	| computedProxy |
-	computedProxy := (remoteSelf proxyPerform: aSymbol) wait.
-	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
-	^ computedProxy
+	| rsrPromise |
+
+	rsrPromise := remoteSelf proxyPerform: aSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol
+		serializationStrategy: serializationSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: serializationSymbol
+		gtSession: gtSession) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
-	| computedProxy |
-	computedProxy := (remoteSelf 
-		proxyPerform: aSymbol withArguments: anArray) wait.
-	computedProxy gtPharoProxyInitializeWithSession: self gtSession.
-	^ computedProxy
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol 
+		withArguments: anArray.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol 
+		withArguments: anArray
+		serializationStrategy: serializationSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: serializationSymbol
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf proxyPerformReturnProxy: aSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerformReturnProxy: aSymbol
+		withArguments: anArray.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
 ]
 
 { #category : #'gt inspector' }
