@@ -117,12 +117,41 @@ GtGemStoneSession >> ensureRunning [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript [
+
+	^ evaluator 
+		evaluate: remoteScript 
+		for: nil 
+		bindings: Dictionary new
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator 
 		evaluate: remoteScript 
 		for: anObject 
 		bindings: (self updatedBindings: remoteBindings)
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
+
+	^ evaluator 
+		evaluate: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
+		serializationStrategy: aSymbol
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol [
+
+	^ evaluator 
+		evaluate: remoteScript 
+		for: nil 
+		bindings: Dictionary new
+		serializationStrategy: aSymbol
 ]
 
 { #category : #actions }
@@ -147,7 +176,7 @@ GtGemStoneSession >> evaluateAndCollect: aString [
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
-	^ self ensureRunning
+	^ evaluator
 		evaluateAndWait: remoteScript
 		for: nil 
 		bindings: Dictionary new
@@ -165,8 +194,28 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
+
+	^ evaluator 
+		evaluateAndWait: remoteScript 
+		for: anObject 
+		bindings: (self updatedBindings: remoteBindings)
+		serializationStrategy: aSymbol.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol [
+
+	^ evaluator
+		evaluateAndWait: remoteScript
+		for: nil 
+		bindings: Dictionary new
+		serializationStrategy: aSymbol
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
-	^ self ensureRunning
+	^ evaluator
 		evaluateAndWaitReturnProxy: remoteScript
 		for: nil 
 		bindings: Dictionary new
@@ -185,23 +234,6 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bind
 ]
 
 { #category : #actions }
-GtGemStoneSession >> evaluateAndWaitReturnSerialized: remoteScript [
-	^ self ensureRunning
-		evaluateAndWaitReturnSerialized: remoteScript
-		for: nil 
-		bindings: Dictionary new
-]
-
-{ #category : #actions }
-GtGemStoneSession >> evaluateAndWaitReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
-
-	^ evaluator 
-		evaluateAndWaitReturnSerialized: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings).
-]
-
-{ #category : #actions }
 GtGemStoneSession >> evaluateAsRemoteStream: aString [
 	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
 		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
@@ -209,19 +241,19 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateReturnProxy: remoteScript [
+
+	^ evaluator 
+		evaluateReturnProxy: remoteScript 
+		for: nil
+		bindings: Dictionary new
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ evaluator 
 		evaluateReturnProxy: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
-]
-
-{ #category : #actions }
-GtGemStoneSession >> evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
-
-	^ evaluator 
-		evaluateReturnSerialized: remoteScript 
 		for: anObject 
 		bindings: (self updatedBindings: remoteBindings)
 ]

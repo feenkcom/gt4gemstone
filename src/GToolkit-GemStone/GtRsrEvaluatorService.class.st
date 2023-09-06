@@ -30,7 +30,19 @@ GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBi
 ]
 
 { #category : #actions }
+GtRsrEvaluatorService >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #actions }
 GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #actions }
+GtRsrEvaluatorService >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
 
 	^ self subclassResponsibility
 ]
@@ -42,19 +54,7 @@ GtRsrEvaluatorService >> evaluateAndWaitReturnProxy: remoteScript for: anObject 
 ]
 
 { #category : #actions }
-GtRsrEvaluatorService >> evaluateAndWaitReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #actions }
 GtRsrEvaluatorService >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #actions }
-GtRsrEvaluatorService >> evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
 
 	^ self subclassResponsibility
 ]
