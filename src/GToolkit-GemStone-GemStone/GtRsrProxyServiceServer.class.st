@@ -1,19 +1,19 @@
 Class {
-	#name : 'GtRsrProxyServiceServer',
-	#superclass : 'GtRsrProxyService',
+	#name : #GtRsrProxyServiceServer,
+	#superclass : #GtRsrProxyService,
 	#instVars : [
 		'object'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'other' }
+{ #category : #other }
 GtRsrProxyServiceServer class >> object: anObject [
 
 	^ self new object: anObject
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	"Perform the requested operation, catching errors and returning exception information"
 	| convertedArguments semaphore evaluationProcess result |
@@ -28,16 +28,18 @@ GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 									semaphore signal ]
 		on: Exception
 		do: [ :ex |
-			result := GtRsrEvaluationExceptionInformation new
+			result := (GtRsrEvaluationExceptionInformation new
 				exception: ex;
-				process: evaluationProcess.
+				process: evaluationProcess)
+					asGtRsrProxyObjectForConnection: _connection.
 			semaphore signal.
 			evaluationProcess suspend ]
 				] newProcess.
 	evaluationProcess debugActionBlock: [ :ex |
-		result := GtRsrEvaluationExceptionInformation new
+		result := (GtRsrEvaluationExceptionInformation new
 			exception: ex;
-			process: evaluationProcess.
+			process: evaluationProcess)
+				asGtRsrProxyObjectForConnection: _connection.
 		semaphore signal.
 		evaluationProcess suspend ].
 	evaluationProcess
@@ -50,14 +52,14 @@ GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	^ result
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrProxyServiceServer >> object [
 	"Answer the object being proxied"
 
 	^ object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrProxyServiceServer >> object: anObject [
 	"Set the object being proxied"
 
@@ -65,34 +67,32 @@ GtRsrProxyServiceServer >> object: anObject [
 	remoteClass := anObject class name.
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol [
 
 	^ (self basicPerform: aSymbol withArguments: #()) asGtRsrProxyObjectForConnection: _connection
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
 
-	^ ((Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #()))
-		 asGtRsrProxyObjectForConnection: _connection
+	^ (Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #())
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray [
 
 	^ (self basicPerform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
 
-	^ ((Globals at: serializationSymbol) new serialize:
-		(self basicPerform: aSymbol withArguments: anArray))
-			 asGtRsrProxyObjectForConnection: _connection
+	^ (Globals at: serializationSymbol) new serialize:
+		(self basicPerform: aSymbol withArguments: anArray)
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol [
 	| result |
 
@@ -101,7 +101,7 @@ GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol [
 	^ self class object: result.
 ]
 
-{ #category : 'performing' }
+{ #category : #performing }
 GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
 	| result |
 

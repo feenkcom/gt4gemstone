@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrEvaluatorServiceServer',
-	#superclass : 'GtRsrEvaluatorService',
+	#name : #GtRsrEvaluatorServiceServer,
+	#superclass : #GtRsrEvaluatorService,
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
@@ -15,7 +15,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 			asGtRsrProxyObjectForConnection: _connection
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -27,7 +27,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	^ (Globals at: aSymbol) new serialize: result.
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	 On the server it is always synchronous"
@@ -35,7 +35,7 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 	^ self evaluate: aString for: anObject bindings: aDictionary
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the serialized result.
 	 On the server it is always synchronous"
@@ -43,7 +43,7 @@ GtRsrEvaluatorServiceServer >> evaluateAndWait: aString for: anObject bindings: 
 	^ self evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateAndWaitReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy object.
 	 On the server it is always synchronous"
@@ -51,7 +51,7 @@ GtRsrEvaluatorServiceServer >> evaluateAndWaitReturnProxy: aString for: anObject
 	^ self evaluateReturnProxy: aString for: anObject bindings: aDictionary
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -64,7 +64,7 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 	^ GtRsrProxyServiceServer object: result.
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
 	| method result receiver symbolDictionary bindings object semaphore evaluationProcess |
