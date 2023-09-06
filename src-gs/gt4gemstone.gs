@@ -303,9 +303,10 @@ category: 'converting'
 method: GtRsrStonSerializationStrategy
 deserialize: anObject
 	"Deserialize the supplied object"
-	
+
 	anObject isString ifFalse: [ ^ anObject ].
-	^ STON fromString: anObject
+
+	^ self stonClass fromString: anObject
 %
 
 category: 'converting'
@@ -314,7 +315,18 @@ serialize: anObject
 	"Serialize the object to a String, except RSR services"
 
 	(anObject isKindOf: RsrService) ifTrue: [ ^ anObject ].
-	^ STON toString: anObject
+	^ self stonClass toString: anObject
+%
+
+category: 'private'
+method: GtRsrStonSerializationStrategy
+stonClass
+	| stonClass |
+
+	stonClass := GsCurrentSession currentSession symbolList objectNamed: #STON.
+	stonClass ifNil: [ self error: 'STON not installed' ].
+
+	^ stonClass
 %
 
 ! Class implementation for 'GtRsrEvaluatorService'
