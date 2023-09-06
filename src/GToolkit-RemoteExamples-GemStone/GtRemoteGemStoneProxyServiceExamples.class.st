@@ -220,7 +220,7 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnSerializedPrimitive [
 	"Ensure that a non-primitive return value raises the appropriate exception"
 	self
 		should: [ proxy 
-			proxyPerform: #yourself 
+			proxyPerform: #copy 
 			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
 		raise: RsrBrokenPromise.
 
