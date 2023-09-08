@@ -70,11 +70,7 @@ GtGemStoneSession >> commitTransaction [
 { #category : #actions }
 GtGemStoneSession >> connect [
 
-	connection ifNotNil:
-		[ connection isOpen ifTrue: [ ^ self ].
-		"Sessions can't be re-established as OIDs may be reused after an abort
-		(which is implied if the session is disconnected)"
-		self error: 'GemStone sessions cannot be reestablished' ].
+	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
 
 	session := connector newSession.
 	connection := connector connectionForSession: session.
@@ -483,6 +479,13 @@ GtGemStoneSession >> printOn: aStream [
 		<< ', ';
 		<< (self isRunning ifTrue: [ 'running' ] ifFalse: [ 'closed' ]);
 		nextPut: $).
+]
+
+{ #category : #actions }
+GtGemStoneSession >> reconnect [
+
+	self close.
+	self connect.
 ]
 
 { #category : #accessing }
