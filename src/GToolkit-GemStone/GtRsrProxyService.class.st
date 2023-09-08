@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'remoteClass'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }

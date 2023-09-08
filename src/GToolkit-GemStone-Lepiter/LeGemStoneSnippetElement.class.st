@@ -11,9 +11,8 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 	| stencil element |
 
 	stencil := GtGemStoneSessionSelectionStencil new
-		registry: GtGemStoneSessionRegistry default;
-		selectAction: [ :connector :button |
-			snippetViewModel sessionName: connector name.
+		selectAction: [ :session :button |
+			snippetViewModel session: session asGemStoneSession.
 			self updateLanguageLabel.
 			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
 		currentSessionNameComputation: [ snippetViewModel sessionName ].
@@ -28,29 +27,36 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 { #category : #'api - snippet view model' }
 LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
-
+	
 	self updateLanguageLabel.
 	self coder
-		sessionName: self sessionName;
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetElement >> sessionName [
 
-	^ nil
+	^ snippetViewModel sessionName
 ]
 
 { #category : #private }
 LeGemStoneSnippetElement >> updateLanguageLabel [
-	| label |
+	"Update the receiver's label"
+	| sessionName label |
 
+	"Ensure that an error while retrieving the session name doesn't cause the label to not be drawn"
+	 
+	sessionName := [ snippetViewModel sessionName ]
+		on: GciError
+		do: [ :ex | nil ].
 	label := String streamContents: [ :stream |
 		stream
 			<< 'GemStone (';
-			<< (snippetViewModel sessionName ifNil: [ 
-				GtGemStoneSessionRegistry default defaultConnectorName ]);
+			<< (sessionName ifNil: [ GtGemStoneNullConnector connectorName ]);
 			<< ')' ].
+	
+	
+	languageElement registry: snippetViewModel gemstoneSessionRegistry.
 	languageElement label: (label asRopedText glamorousRegularFont 
 		foreground: BrGlamorousColors textMarkupColor).
 

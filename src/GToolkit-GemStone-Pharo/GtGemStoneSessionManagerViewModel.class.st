@@ -11,9 +11,9 @@ Class {
 }
 
 { #category : #actions }
-GtGemStoneSessionManagerViewModel >> addNewConnector [ 
+GtGemStoneSessionManagerViewModel >> addNewSession [
 
-	gemStoneSessionRegistry addNewConnector
+	gemStoneSessionsViewModel activeSessions: gemStoneSessionRegistry allConnectors.
 ]
 
 { #category : #accessing }
@@ -43,7 +43,7 @@ GtGemStoneSessionManagerViewModel >> createGemStoneSessionsViewModel [
 
 	childObject := GtGemStoneSessionsViewModel new.
 	childObject parentGemStoneSessionManagerViewModel: self.
-	childObject activeSessions: self gemStoneSessionRegistry allSessions.
+	childObject activeSessions: self gemStoneSessionRegistry activeSessions.
 	^ childObject
 ]
 

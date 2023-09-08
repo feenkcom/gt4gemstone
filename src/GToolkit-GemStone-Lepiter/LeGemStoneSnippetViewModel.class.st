@@ -7,6 +7,28 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
+	^ sharedContext externalSnippetContext gemstoneSessionRegistry
+]
+
+{ #category : #private }
+LeGemStoneSnippetViewModel >> getSessionName [
+	| registry |
+
+	sessionName ifNotNil: [ ^ sessionName ].
+	self snippetModel sessionName ifNotNil: [ :aName | ^ aName ].
+	registry := self gemstoneSessionRegistry.
+	^ snippetModel page allChildrenDepthFirst
+		detect: [ :snippet | snippet ~~ snippetModel and:
+			[ snippet class = snippetModel class and:
+			[ snippet sessionName isNotNil ] ] ]
+		ifFound: [ :snippet | snippet sessionName ]
+		ifNone: [ ^ registry defaultSession
+			ifNil: [ GtGemStoneNullConnector connectorName ]
+			ifNotNil: [ :defaultSession | defaultSession name ] ].
+]
+
 { #category : #initialization }
 LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 	"Initialise the keyboard shortcuts in the code editor"
@@ -26,28 +48,79 @@ LeGemStoneSnippetViewModel >> initializeCoderAddOns: aCoderViewModel [
 		addShortcut: (LeSnippetMoveSnippetDownShortcut new combination: (self keyboardShortcut: #MoveSnippetDown))
 ]
 
-{ #category : #accessing }
-LeGemStoneSnippetViewModel >> sessionName [
+{ #category : #private }
+LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 
-	^ sessionName
+	coderViewModel selfObject: sharedContext selfObject.
+	(sharedContext selfObject asGtProxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
+		[ coderViewModel session: sharedContext selfObject asGtProxyObject gtSession.
+		sessionName := coderViewModel session name ].
 ]
 
 { #category : #accessing }
-LeGemStoneSnippetViewModel >> sessionName: aString [
+LeGemStoneSnippetViewModel >> onSnippetContentChanged [
 
-	sessionName := aString.
-	coderViewModel coderModel sessionName: aString.
+	snippetModel sessionName ifNil: [ ^ self ].
+	coderViewModel session: (self gemstoneSessionRegistry 
+		sessionNamed: snippetModel sessionName).
+	sessionName := snippetModel sessionName.
+]
+
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
+	"This is called when the session is explicitly set.
+	In other cases the snippet isn't updated."
+
+	sessionName := aGtGemStoneSession name.
+	self snippetModel sessionName: aGtGemStoneSession name.
+]
+
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> sessionName [
+
+	^ self getSessionName
 ]
 
 { #category : #'api - bindings' }
 LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
-	
-	super sharedSnippetContext: aLeSharedSnippetContext.
 
+	super sharedSnippetContext: aLeSharedSnippetContext.
+	
+	self updateGemstoneSession.
+		
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
+	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
+	(sharedContext selfObject asGtProxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
+		[ coderViewModel session: sharedContext selfObject asGtProxyObject gtSession.
+		sessionName := coderViewModel session name ].
+
+	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self.
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> snippetElementClass [
 	^ LeGemStoneSnippetElement
+]
+
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> subscribeToSnippetModel [
+	super subscribeToSnippetModel.
+ 
+	self snippetModel weak
+		when: LeSnippetContentChanged 
+		send: #onSnippetContentChanged 
+		to: self.
+]
+
+{ #category : #'api - bindings' }
+LeGemStoneSnippetViewModel >> updateGemstoneSession [
+	| session |
+	
+	session := snippetModel sessionName ifNil: 
+		[ self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
+	ifNotNil: [ :aString |
+		self gemstoneSessionRegistry sessionNamed: aString ].
+	coderViewModel session: session.
+	
+	sessionName := session name.
 ]

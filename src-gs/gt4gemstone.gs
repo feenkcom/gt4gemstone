@@ -20,6 +20,79 @@ removeallmethods GtGsRelease
 removeallclassmethods GtGsRelease
 
 doit
+(Object
+	subclass: 'GtRsrEvaluationExceptionInformation'
+	instVarNames: #( exception process )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'GtRsrEvaluationExceptionInformation is used to pass information about an exception that occurred in GemStone back to GT, allowing a debugger to be opened on the exception.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrEvaluationExceptionInformation
+removeallclassmethods GtRsrEvaluationExceptionInformation
+
+doit
+(Object
+	subclass: 'GtRsrSerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrSerializationStrategy
+removeallclassmethods GtRsrSerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrPrimitiveOnlySerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrPrimitiveOnlySerializationStrategy
+removeallclassmethods GtRsrPrimitiveOnlySerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrStonSerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrStonSerializationStrategy
+removeallclassmethods GtRsrStonSerializationStrategy
+
+doit
 (RsrService
 	subclass: 'GtRsrEvaluatorService'
 	instVarNames: #(  )
@@ -48,7 +121,7 @@ doit
 	inDictionary: Globals
 	options: #( #logCreation )
 )
-		category: 'GToolkit-GemStone';
+		category: 'GToolkit-GemStone-GemStone';
 		immediateInvariant.
 true.
 %
@@ -84,7 +157,7 @@ doit
 	inDictionary: Globals
 	options: #( #logCreation )
 )
-		category: 'GToolkit-GemStone';
+		category: 'GToolkit-GemStone-GemStone';
 		immediateInvariant.
 true.
 %
@@ -149,6 +222,113 @@ versionString: aString
 	versionString := aString
 %
 
+! Class implementation for 'GtRsrEvaluationExceptionInformation'
+
+!		Instance methods for 'GtRsrEvaluationExceptionInformation'
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+exception
+
+	^ exception
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+exception: anException
+
+	exception := anException
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+process
+
+	^ process
+%
+
+category: 'accessing'
+method: GtRsrEvaluationExceptionInformation
+process: aGsProcess
+
+	process := aGsProcess
+%
+
+! Class implementation for 'GtRsrSerializationStrategy'
+
+!		Instance methods for 'GtRsrSerializationStrategy'
+
+category: 'converting'
+method: GtRsrSerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+	
+	^ self subclassResponsibility
+%
+
+category: 'converting'
+method: GtRsrSerializationStrategy
+serialize: anObject
+	"Serialize the object to something that RSR can return"
+	
+	^ self subclassResponsibility
+%
+
+! Class implementation for 'GtRsrPrimitiveOnlySerializationStrategy'
+
+!		Instance methods for 'GtRsrPrimitiveOnlySerializationStrategy'
+
+category: 'accessing'
+method: GtRsrPrimitiveOnlySerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+	
+	^ anObject
+%
+
+category: 'accessing'
+method: GtRsrPrimitiveOnlySerializationStrategy
+serialize: anObject
+	"Serialize the object to something that RSR can return.
+	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
+	
+	^ anObject
+%
+
+! Class implementation for 'GtRsrStonSerializationStrategy'
+
+!		Instance methods for 'GtRsrStonSerializationStrategy'
+
+category: 'converting'
+method: GtRsrStonSerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+
+	anObject isString ifFalse: [ ^ anObject ].
+
+	^ self stonClass fromString: anObject
+%
+
+category: 'converting'
+method: GtRsrStonSerializationStrategy
+serialize: anObject
+	"Serialize the object to a String, except RSR services"
+
+	(anObject isKindOf: RsrService) ifTrue: [ ^ anObject ].
+	^ self stonClass toString: anObject
+%
+
+category: 'private'
+method: GtRsrStonSerializationStrategy
+stonClass
+	| stonClass |
+
+	stonClass := GsCurrentSession currentSession symbolList objectNamed: #STON.
+	stonClass ifNil: [ self error: 'STON not installed' ].
+
+	^ stonClass
+%
+
 ! Class implementation for 'GtRsrEvaluatorService'
 
 !		Class methods for 'GtRsrEvaluatorService'
@@ -182,7 +362,14 @@ evaluate: remoteScript for: anObject bindings: remoteBindings
 
 category: 'actions'
 method: GtRsrEvaluatorService
-evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
+evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol
+
+	^ self subclassResponsibility
+%
+
+category: 'actions'
+method: GtRsrEvaluatorService
+evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings
 
 	^ self subclassResponsibility
 %
@@ -194,27 +381,47 @@ evaluateAndWait: remoteScript for: anObject bindings: remoteBindings
 category: 'actions'
 method: GtRsrEvaluatorServiceServer
 evaluate: aString for: anObject bindings: aDictionary
-	"Evaluate the receiver's script, answering the result"
+	"Evaluate the receiver's script, answering the result.
+	On the server this is a synchronous operation."
 
-	^ self
+	^ (self
 		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
+			asGtRsrProxyObjectForConnection: _connection
 %
 
 category: 'actions'
 method: GtRsrEvaluatorServiceServer
-evaluateAndWait: aString for: anObject bindings: aDictionary
-	"Evaluate the receiver's script, answering the result.
-	 On the server it is always synchronous"
+evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
+	"Evaluate the receiver's script, answering the result as a proxy.
+	On the server this is a synchronous operation."
+	| result |
 
-	^ self evaluate: aString for: anObject bindings: aDictionary
+	result := self
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	^ (Globals at: aSymbol) new serialize: result.
+%
+
+category: 'actions'
+method: GtRsrEvaluatorServiceServer
+evaluateReturnProxy: aString for: anObject bindings: aDictionary
+	"Evaluate the receiver's script, answering the result as a proxy.
+	On the server this is a synchronous operation."
+	| result |
+
+	result := self
+		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
+		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	result class == GtRsrProxyServiceServer ifTrue: [ ^ result ].
+	^ GtRsrProxyServiceServer object: result.
 %
 
 category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings object |
+	| method result receiver symbolDictionary bindings object semaphore evaluationProcess |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -226,11 +433,34 @@ gsEvaluate: aString for: anObject bindings: aDictionary
 			ifFalse: [ value ].
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
-
 	method := aString _compileInContext: receiver symbolList: bindings.
-	result := method _executeInContext: receiver.
+	semaphore := Semaphore new.
 
-	^ result asGtRsrProxyObjectForConnection: _connection
+	evaluationProcess := [ [ result := method _executeInContext: receiver. semaphore signal ]
+		on: Exception
+		do: [ :ex |
+			result := (GtRsrEvaluationExceptionInformation new
+				exception: ex;
+				process: evaluationProcess)
+					asGtRsrProxyObjectForConnection: _connection.
+			semaphore signal.
+			evaluationProcess suspend ]
+				] newProcess.
+	evaluationProcess debugActionBlock: [ :ex |
+		result := (GtRsrEvaluationExceptionInformation new
+			exception: ex;
+			process: evaluationProcess)
+					asGtRsrProxyObjectForConnection: _connection.
+		semaphore signal.
+		evaluationProcess suspend ].
+	evaluationProcess
+		name: 'GT evaluation';
+		priority: 15;
+		breakpointLevel: 1.
+	evaluationProcess resume.
+	semaphore wait.
+
+	^ result
 %
 
 ! Class implementation for 'GtRsrProxyService'
@@ -286,6 +516,46 @@ object: anObject
 
 !		Instance methods for 'GtRsrProxyServiceServer'
 
+category: 'private'
+method: GtRsrProxyServiceServer
+basicPerform: aSymbol withArguments: anArray
+	"Perform the requested operation, catching errors and returning exception information"
+	| convertedArguments semaphore evaluationProcess result |
+
+	convertedArguments := anArray collect: [ :anObject |
+		(anObject isKindOf: self class) 
+			ifTrue: [ anObject object ]
+			ifFalse: [ anObject ] ].
+
+	semaphore := Semaphore new.
+	evaluationProcess := [ [ result := object perform: aSymbol withArguments: convertedArguments.
+									semaphore signal ]
+		on: Exception
+		do: [ :ex |
+			result := (GtRsrEvaluationExceptionInformation new
+				exception: ex;
+				process: evaluationProcess)
+					asGtRsrProxyObjectForConnection: _connection.
+			semaphore signal.
+			evaluationProcess suspend ]
+				] newProcess.
+	evaluationProcess debugActionBlock: [ :ex |
+		result := (GtRsrEvaluationExceptionInformation new
+			exception: ex;
+			process: evaluationProcess)
+				asGtRsrProxyObjectForConnection: _connection.
+		semaphore signal.
+		evaluationProcess suspend ].
+	evaluationProcess
+		name: 'GT proxyPerform';
+		priority: 15;
+		breakpointLevel: 1.
+	evaluationProcess resume.
+	semaphore wait.
+
+	^ result
+%
+
 category: 'accessing'
 method: GtRsrProxyServiceServer
 object
@@ -307,18 +577,49 @@ category: 'performing'
 method: GtRsrProxyServiceServer
 proxyPerform: aSymbol
 
-	^ (object perform: aSymbol) asGtRsrProxyObjectForConnection: _connection
+	^ (self basicPerform: aSymbol withArguments: #()) asGtRsrProxyObjectForConnection: _connection
+%
+
+category: 'performing'
+method: GtRsrProxyServiceServer
+proxyPerform: aSymbol serializationStrategy: serializationSymbol
+
+	^ (Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #())
 %
 
 category: 'performing'
 method: GtRsrProxyServiceServer
 proxyPerform: aSymbol withArguments: anArray
-	| convertedArguments |
-	convertedArguments := anArray collect: [ :anObject |
-		(anObject isKindOf: self class) 
-			ifTrue: [ anObject object ]
-			ifFalse: [ anObject ] ].
-	^ (object perform: aSymbol withArguments: convertedArguments) asGtRsrProxyObjectForConnection: _connection
+
+	^ (self basicPerform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
+%
+
+category: 'performing'
+method: GtRsrProxyServiceServer
+proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol
+
+	^ (Globals at: serializationSymbol) new serialize:
+		(self basicPerform: aSymbol withArguments: anArray)
+%
+
+category: 'performing'
+method: GtRsrProxyServiceServer
+proxyPerformReturnProxy: aSymbol
+	| result |
+
+	result := self basicPerform: aSymbol withArguments: #().
+	result class == self class ifTrue: [ ^ result ].
+	^ self class object: result.
+%
+
+category: 'performing'
+method: GtRsrProxyServiceServer
+proxyPerformReturnProxy: aSymbol withArguments: anArray
+	| result |
+
+	result := self basicPerform: aSymbol withArguments: anArray.
+	result class = self class ifTrue: [ ^ result ].
+	^ self class object: result.
 %
 
 ! Class implementation for 'GtRsrEvaluatorServiceTest'
@@ -352,7 +653,7 @@ testCompilationError
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self error:'. 
 	self
-		should: [ evaluator evaluateAndWait: script for: nil bindings: Dictionary new ]
+		should: [ evaluator evaluate: script for: nil bindings: Dictionary new ]
 		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 %
 
@@ -375,7 +676,7 @@ anArray at: 1 put: 3.
 anArray at: 2 put: aDict.
 anArray at: 3 put: #d -> 4.
 anArray.'. 
-	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	result := evaluator evaluate: script for: nil bindings: Dictionary new.
 	self assert: result class equals: Array.
 	self assert: result size equals: 3.
 	self assert: (result at: 1) equals: 3.
@@ -397,7 +698,7 @@ testRuntimeErrorScript
 	script := 'self + ''NaN'''.
 	"'4 + ''NaN''' raises a MNU"
 	self
-		should: [ evaluator evaluateAndWait: script for: 4 bindings: Dictionary new ]
+		should: [ evaluator evaluate: script for: 4 bindings: Dictionary new ]
 		raise: MessageNotUnderstood
 		withExceptionDo: [ :ex | 
 			"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
@@ -411,7 +712,7 @@ testSelfScript
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self + 3'. 
-	result := evaluator evaluateAndWait: script for: 4 bindings: Dictionary new.
+	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
 	self assert: result equals: 7.
 %
 
@@ -422,13 +723,28 @@ testSimpleScript
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := '4+3'. 
-	result := evaluator evaluateAndWait: script for: nil bindings: Dictionary new.
+	result := evaluator evaluate: script for: nil bindings: Dictionary new.
 	self assert: result equals: 7.
 %
 
-! Class extensions for #'Array'
+! Class extensions for 'AbstractCollisionBucket'
 
-!		Instance methods for #'Array'
+!		Instance methods for 'AbstractCollisionBucket'
+
+category: '*GToolkit-GemStone-GemStone'
+method: AbstractCollisionBucket
+asGtRsrProxyObjectForConnection: aRsrConnection
+	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
+	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
+
+	(GtRsrEvaluatorService isRsrImmediate: self) ifFalse: 
+		[ ^ GtRsrProxyServiceServer object: self ].
+	^ self
+%
+
+! Class extensions for 'Array'
+
+!		Instance methods for 'Array'
 
 category: '*GToolkit-GemStone'
 method: Array
@@ -452,21 +768,21 @@ readFrom: aStream
 	^ self fromString: aStream upToEnd
 %
 
-! Class extensions for #'Dictionary'
+! Class extensions for 'Dictionary'
 
-!		Instance methods for #'Dictionary'
+!		Instance methods for 'Dictionary'
 
 category: '*GToolkit-GemStone'
 method: Dictionary
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported (non-immediate) objects converted to GtRsrProxyServiceServers.
 	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet.
-	For Dictionaries, for now all keys must be immediate."
+	If not all keys are immediate, answer the entire dictionary as a proxy."
 
 	| proxyDict |
 
 	(self keys allSatisfy: [ :key | GtRsrEvaluatorService isRsrImmediate: key ]) ifFalse:
-		[ self error: 'GtRsr dictionary keys must be primitive types (immediate)' ].
+		[ ^ GtRsrProxyServiceServer object: self ].
 	proxyDict := self class new: self size.
 	self keysAndValuesDo: [ :key :value |
 		proxyDict
@@ -475,12 +791,27 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ proxyDict
 %
 
-! Class extensions for #'Object'
+! Class extensions for 'ExecBlock'
 
-!		Instance methods for #'Object'
+!		Instance methods for 'ExecBlock'
 
-category: '*GToolkit-GemStone'
-method: Object
+category: '*GToolkit-GemStone-GemStone'
+method: ExecBlock
+gtSourceFor: aView
+	<gtView>
+
+	^ aView textEditor
+		title: 'Source';
+		priority: 10;
+		text: [ self _sourceString ].
+%
+
+! Class extensions for 'GsStackBuffer'
+
+!		Instance methods for 'GsStackBuffer'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GsStackBuffer
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
 	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
@@ -494,6 +825,17 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 !		Instance methods for 'Object'
 
+category: '*GToolkit-GemStone'
+method: Object
+asGtRsrProxyObjectForConnection: aRsrConnection
+	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
+	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
+
+	(GtRsrEvaluatorService isRsrImmediate: self) ifFalse: 
+		[ ^ GtRsrProxyServiceServer object: self ].
+	^ self
+%
+
 category: '*GToolkit-GemStone-GemStone'
 method: Object
 gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
@@ -502,9 +844,9 @@ gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	^ gemstoneBlock value
 %
 
-! Class extensions for #'OrderedCollection'
+! Class extensions for 'OrderedCollection'
 
-!		Instance methods for #'OrderedCollection'
+!		Instance methods for 'OrderedCollection'
 
 category: '*GToolkit-GemStone'
 method: OrderedCollection
@@ -528,9 +870,9 @@ allButFirstDo: block
 		[ :index | block value: (self at: index) ]
 %
 
-! Class extensions for #'Set'
+! Class extensions for 'Set'
 
-!		Instance methods for #'Set'
+!		Instance methods for 'Set'
 
 category: '*GToolkit-GemStone'
 method: Set

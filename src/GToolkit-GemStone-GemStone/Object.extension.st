@@ -1,6 +1,6 @@
-Extension { #name : 'Object' }
+Extension { #name : #Object }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Object >> gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock [
 	"Evaluate the supplied platform specific block"
 

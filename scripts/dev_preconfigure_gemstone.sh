@@ -11,24 +11,39 @@
 
 echo "Starting Remote Examples Development Setup"
 
-imageDirectory=`pwd`
-echo "imageDirectory=${imageDirectory}"
+ls *.image
+status_ls=$?
+if [ $status_ls -ne 0 ]
+then
+	echo "No image file found.  CWD should be the image directory."
+	exit 1
+fi
 
-DIR=`readlink "$0"` || DIR="$0";
-SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
+imageDirectory=`pwd`
+SCRIPT_DIR="./pharo-local/iceberg/feenkcom/gt4gemstone/scripts"
 source $SCRIPT_DIR/remote-gemstone-env.sh
 
 #
 # Link the required repositories to the imageDirectory so they can be found by
 # later scripts
 #
-ln -s pharo-local/iceberg/feenkcom/gt4gemstone
-ln -s pharo-local/iceberg/feenkcom/gtoolkit-remote
-git clone --depth=1 https://github.com/feenkcom/Sparkle.git
+if [ ! -d gt4gemstone ]
+then
+	ln -s pharo-local/iceberg/feenkcom/gt4gemstone
+fi
+if [ ! -d gtoolkit-remote ]
+then
+	ln -s pharo-local/iceberg/feenkcom/gtoolkit-remote
+fi
+if [ ! -d Sparkle ]
+then
+	git clone https://github.com/feenkcom/Sparkle.git
+fi
 
 chmod +x gt4gemstone/scripts/*.sh
 chmod +x gt4gemstone/scripts/release/*.sh
 chmod +x gtoolkit-remote/scripts/*.sh
 
+export STONE=gs64stone
 export GT4GEMSTONE_VERSION=dev
 export RELEASED_PACKAGE_GEMSTONE_NAME="gt4gemstone-3.7.0-dev"

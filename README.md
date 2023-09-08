@@ -28,8 +28,10 @@ connection := (RsrInitiateConnection host: 'localhost' port: 29299) connect.
 evaluatorServiceClient := GtRsrEvaluatorServiceClient new.
 evaluatorServiceClient registerWith: connection.
 
-evaluatorServiceClient script: '4+3'.
-result := evaluatorServiceClient doIt.
+result := evaluatorServiceClient 
+	evaluateAndWait: 'self + three' 
+	for: 4 
+	bindings: { #three -> 3 } asDictionary.
 { result. connection.  evaluatorServiceClient. }
 ```
 

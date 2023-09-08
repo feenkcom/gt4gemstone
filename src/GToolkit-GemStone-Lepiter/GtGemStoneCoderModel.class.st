@@ -3,7 +3,6 @@ Class {
 	#superclass : #GtSourceCoder,
 	#instVars : [
 		'pharoBindings',
-		'sessionName',
 		'remoteScript',
 		'remoteBindings'
 	],
@@ -13,14 +12,14 @@ Class {
 { #category : #converting }
 GtGemStoneCoderModel >> asCoderViewModel [
 
-	^ GtSourceCoderViewModel new coder: self
+	^ GtGemStoneSourceCoderViewModel new coder: self
 ]
 
 { #category : #'api - ast' }
 GtGemStoneCoderModel >> computeAst: theSourceString [
-	^ GtPharoParser
+	^ GtGemStoneParser
 		parseWithErrors: theSourceString
-		startingAt: GtPharoParser startingStateForMethodSequence
+		startingAt: GtGemStoneParser startingStateForMethodSequence
 ]
 
 { #category : #'api - ast' }
@@ -33,9 +32,9 @@ GtGemStoneCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
 { #category : #initialize }
 GtGemStoneCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
-	
-	addOns addStyler: (GtCoderAstSmaCCParserStyler new smaccStyler: StParser gtStyler).
-	
+
+	addOns addStyler: GtGemStoneStyler new.
+
 	addOns
 		addMainAction: 'Evaluate' translated
 		icon: BrGlamorousVectorIcons play
@@ -53,7 +52,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoActionId.
+		id: GtSourceCoderDoItAndGoActionId
 ]
 
 { #category : #initialize }
@@ -96,6 +95,12 @@ GtGemStoneCoderModel >> newCompletionStrategy [
 ]
 
 { #category : #accessing }
+GtGemStoneCoderModel >> newEvaluationContext [
+
+	^ GtGemStoneSourceCoderEvaluationContext new
+]
+
+{ #category : #accessing }
 GtGemStoneCoderModel >> pharoBindings [
 	^ pharoBindings
 ]
@@ -114,7 +119,7 @@ GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 	visitor globalVariableNames do: [ :name |
 		(pharoBindings hasBindingOf: name) ifTrue: 
 			[ value := (pharoBindings bindingOf: name) value asGtProxyObject.
-			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
+			((value isBlock and: [ value isClean]) or: [GtRsrEvaluatorService isRsrImmediate: value ]) ifTrue:
 				[ bindings at: name put: value ] ] ].
 	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
 			[ value := (pharoBindings bindingOf: #snippetResult) value asGtProxyObject.
@@ -134,7 +139,9 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 	| result gemstoneSession boundObject |
 
 	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession := GtGemStoneSessionRegistry default sessionNamed: sessionName.
+	gemstoneSession := aGtSourceCoderEvaluationContext session.
+	gemstoneSession ifNil:
+		[ self error: 'GemStone session not set' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
@@ -144,13 +151,17 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 		(boundObject isKindOf: RsrService) ifTrue:
 			[ (boundObject isProxyObjectActive not or: 
 				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
-					[ pharoBindings remove: name ] ] ].
+					[ pharoBindings removeBindingOf: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
 
-	result := gemstoneSession evaluateAndWait: remoteScript for: nil bindings: remoteBindings.
+	result := gemstoneSession 
+		evaluateAndWait: remoteScript 
+		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
+		bindings: remoteBindings.
 	result associationsDo: [ :binding |
-		(pharoBindings bindingOf: binding key asSymbol) value: binding value asGtBareProxyObject ].
+		(pharoBindings bindingOf: binding key asSymbol) 
+			value: (binding value asGtBareProxyObject) ].
 
 	^ (result
 		at: 'snippetResult'
@@ -187,15 +198,13 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionName [
-
-	^ sessionName
+GtGemStoneCoderModel >> sessionHolder [
+	^ sessionHolder
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionName: anObject [
-
-	sessionName := anObject
+GtGemStoneCoderModel >> sessionHolder: anObject [
+	sessionHolder := anObject
 ]
 
 { #category : #'private - execution' }

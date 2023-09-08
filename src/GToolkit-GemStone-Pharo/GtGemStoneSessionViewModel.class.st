@@ -47,6 +47,12 @@ GtGemStoneSessionViewModel >> announce: anAnnouncement [
 ]
 
 { #category : #'api - activation' }
+GtGemStoneSessionViewModel >> beDefaultSession [
+
+	gemStoneSession beDefaultSession.
+]
+
+{ #category : #'api - activation' }
 GtGemStoneSessionViewModel >> deactivateAllFromTopMostParent [
 	"Deactivate any activated child starting from the top most parent"
 	<propertyUnsetFromParent: #activatedSessionViewModel>
@@ -86,6 +92,17 @@ GtGemStoneSessionViewModel >> gtActivateFor: anAction [
 		label: 'Activate';
 		icon: BrGlamorousVectorIcons accept;
 		action: [ :button | self activateSession ];
+		target: GtGemStoneSessionActionTarget uniqueInstance
+]
+
+{ #category : #'api - actions' }
+GtGemStoneSessionViewModel >> gtBeDefaultFor: anAction [
+	<gtAction>
+	
+	^ anAction button
+		label: 'Be Default';
+		icon: BrGlamorousIcons greencircle;
+		action: [ :button | self beDefaultSession ];
 		target: GtGemStoneSessionActionTarget uniqueInstance
 ]
 
@@ -138,6 +155,12 @@ GtGemStoneSessionViewModel >> isActivatedSession [
 
 	^ self parentGemStoneSessionsViewModel hasActivatedSessionViewModel
 		and: [ self parentGemStoneSessionsViewModel activatedSessionViewModel == self ]
+]
+
+{ #category : #'api - testing' }
+GtGemStoneSessionViewModel >> isDefaultSession [
+
+	^ gemStoneSession isDefaultSession
 ]
 
 { #category : #'api - activation' }

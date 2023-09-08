@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'TAssertable',
 	#classTraits : 'TAssertable classTrait',
-	#category : 'GToolkit-GemStone-Pharo-Examples'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #examples }
@@ -19,6 +19,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 		do: [ :anAnnouncement | additionAnnouncement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
+	self assert: registry connectors size equals: 0.
 
 	connector := registry addNewConnector.
 
@@ -37,7 +38,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	"Confirm that a name change announcement is received from the session registry when a connector is renamed"
 	<gtExample>
-	| registry oldName connector session announcement |
+	| registry oldName connector announcement |
 
 	registry := self addNewConnectorAnnouncement.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
@@ -46,14 +47,12 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 		do: [ :anAnnouncement | announcement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry allConnectors size equals: 2.
+	self assert: registry allConnectors size equals: 1.
 
 	connector := registry connectorNamed: #session1.
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	oldName := connector name.
-	session := registry sessionNamed: oldName.
-	self assert: session class equals: GtGemStoneSession.
 
 	"Change the connector name.
 	To allow for batched changes, it is up to the user to notify dependents of the name change."
@@ -68,9 +67,7 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 
 	"Ensure the registry and properties file have updated their indexes"
 	self deny: (registry hasConnectorNamed: oldName).
-	self deny: (registry hasSessionNamed: oldName).
 	self assert: (registry hasConnectorNamed: connector name).
-	self assert: (registry hasSessionNamed: connector name).
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
@@ -88,8 +85,7 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 	propertiesFile := GtGemStonePropertiesFile file: file.
 	"The properties file contains namedConnectors"
 	self assert: propertiesFile size equals: 1.
-	"A default connector is always provided"
-	self assert: propertiesFile allConnectors size equals: 1.
+	self assert: propertiesFile allConnectors size equals: 0.
 	^ propertiesFile
 ]
 
@@ -106,7 +102,7 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 		do: [ :anAnnouncement | announcement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry allConnectors size equals: 2.
+	self assert: registry allConnectors size equals: 1.
 
 	connector := registry connectorNamed: #session1.
 	self assert: connector class equals: GtGemStoneGciConnector.

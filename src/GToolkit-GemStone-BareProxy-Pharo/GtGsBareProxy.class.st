@@ -4,7 +4,7 @@ GtGsBareProxy is the bare-proxy object class for GemStone remote objects.
 Class {
 	#name : #GtGsBareProxy,
 	#superclass : #GtBareProxy,
-	#category : 'GToolkit-GemStone-BareProxy-Pharo-Model'
+	#category : #'GToolkit-GemStone-BareProxy-Pharo-Model'
 }
 
 { #category : #'instance creation' }
@@ -12,7 +12,13 @@ GtGsBareProxy class >> forProxyObject: aProxyObject [
 	| proxyClass |
 
 	proxyClass := self subclassForRemoteClass: aProxyObject remoteClass.
-	^ proxyClass new proxyObject: aProxyObject
+	^ proxyClass new 
+		proxyObject: aProxyObject
+]
+
+{ #category : #accessing }
+GtGsBareProxy class >> leProxyTypeForPlaygroundPage [
+	^ GtGsBareProxy
 ]
 
 { #category : #private }
@@ -38,4 +44,31 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 		detect: [ :each | each remoteClassMatcher value: aSymbol ]
 		ifNone: [ self ].
 
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
+	super gtInspectorRemoteSideTitleStringOn: aStream.
+	
+	proxyObject gtSession ifNotNil:
+		[ :gtSession | aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
+	super gtInspectorTitleStringOn: aStream.
+	
+	proxyObject gtSession ifNotNil:
+		[ :gtSession | aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
+	^ LeGemStoneSnippet new
 ]

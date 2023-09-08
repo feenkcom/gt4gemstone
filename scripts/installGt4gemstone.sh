@@ -10,6 +10,12 @@ then
 	exit 1
 fi
 
+if [ -z "$STONE" ]
+then
+	echo "STONE must be defined"
+	exit 1
+fi
+
 gt4GemstoneHome=${ROWAN_PROJECTS_HOME}/gt4gemstone
 ## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
 topaz -l -I ${gt4GemstoneHome}/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/scripts/installGtoolkit-gemstone.topaz < /dev/zero

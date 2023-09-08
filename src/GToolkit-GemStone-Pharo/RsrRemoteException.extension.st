@@ -16,15 +16,15 @@ RsrRemoteException >> gtDisplayedStackFrames [
 { #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteException >> gtMethodFromStackString: aString [ 
 	"Answer the Method based on the supplied string"
-	| start end evaluator methodOop |
+	| start end session methodOop |
 
 	start := aString indexOfSubCollection: '[GsNMethod '.
 	start = 0 ifTrue: [ ^ nil ].
 	end := aString indexOf: $] startingAt: start+11.
 	end = 0 ifTrue: [ ^ nil ].
 	methodOop := aString copyFrom: start+11 to: end-1.
-	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	^ evaluator evaluateAndWait: 'Object objectForOop: ', methodOop
+	session := GtGemStoneSessionRegistry default sessionWithConnection: _connection.
+	^ session evaluateAndWait: 'Object objectForOop: ', methodOop
 		for: nil
 		bindings: Dictionary new.
 ]

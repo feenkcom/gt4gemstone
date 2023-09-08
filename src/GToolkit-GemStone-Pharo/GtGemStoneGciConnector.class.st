@@ -11,7 +11,7 @@ Class {
 		'libraryPath',
 		'gemstoneVersion'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #connecting }
@@ -30,6 +30,19 @@ GtGemStoneGciConnector >> gemstoneVersion [
 { #category : #accessing }
 GtGemStoneGciConnector >> gemstoneVersion: anObject [
 	gemstoneVersion := anObject
+]
+
+{ #category : #ui }
+GtGemStoneGciConnector >> gtLiveFor: aView [
+	<gtView>
+
+	^ aView explicit
+		title: 'Live';
+		priority: 10;
+		stencil: [ (GtGemStoneGciConnectorWidget 
+			onConnector: self
+			propertiesFile: self propertiesFile )
+				padding: (BlInsets all: 5) ]
 ]
 
 { #category : #accessing }
@@ -109,7 +122,6 @@ GtGemStoneGciConnector >> newSession [
 
 	GciInterface libraryDirectory: libraryPath fullName.
 	^ self loggedInSession. 
-
 ]
 
 { #category : #accessing }
@@ -129,7 +141,7 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 
 	detailBytes := gsSession executeStringAndFetchResultByteArray:
 		'| acceptor port detailBytes |
-		acceptor := RsrGciAcceptConnection port: RsrAcceptConnection wildcardPort.
+		acceptor := RsrGciAcceptConnection portRange: (10800 to: 10805).
 		acceptor ensureListening.
 		SessionTemps current
 			at: #PendingConnectionAcceptor

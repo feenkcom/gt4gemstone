@@ -6,7 +6,7 @@ Class {
 		'displayString',
 		'exception'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
@@ -31,6 +31,30 @@ GtGemStonePostMortemStackFrame >> exception [
 GtGemStonePostMortemStackFrame >> exception: anObject [
 
 	exception := anObject
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> gtInspectMethodFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		icon: BrGlamorousVectorIcons inspect;
+		label: 'Method';
+		tooltip: 'Inspect GemStone method';
+		action: [ :button |
+			button phlow spawnObject: (exception gtMethodFromStackString: displayString) ]
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> gtSourceFor: aView [
+	<gtView>
+
+	exception ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Source';
+		priority: 20;
+		object: [ exception gtMethodFromStackString: displayString ];
+		view: #gtSourceFor:
 ]
 
 { #category : #accessing }
@@ -77,4 +101,11 @@ GtGemStonePostMortemStackFrame >> sourceText [
 			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler  ].
 	^ text
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> variablesAssociations [
+	"Variables aren't available from an RsrBrokenPromise"
+
+	^ #()
 ]

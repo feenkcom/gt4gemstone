@@ -7,6 +7,6 @@ GtGemStoneConnector class >> leJsonV4AttributeMapping [
 
 	^ Array streamContents: [ :stream |
 		self allInstVarNames do: [ :instVarName |
-			(#(propertiesFile announcer) includes: instVarName) ifFalse:
+			(#(propertiesFile announcer registry) includes: instVarName) ifFalse:
 				[ stream nextPut: instVarName -> instVarName ] ] ]
 ]

@@ -8,7 +8,7 @@ The properties file is not normally manipulated directly, but through the regist
 Class {
 	#name : #GtGemStonePropertiesFile,
 	#superclass : #GtPropertiesFile,
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #adding }
@@ -20,7 +20,7 @@ GtGemStonePropertiesFile >> addNewConnector [
 
 { #category : #adding }
 GtGemStonePropertiesFile >> addNewConnectorClass: aGtGemStoneConnectorClass [
-	| sessionNames number newName |
+	| sessionNames number newName newConnector |
 
 	sessionNames := self connectorNames.
 	number := 1.
@@ -28,7 +28,9 @@ GtGemStonePropertiesFile >> addNewConnectorClass: aGtGemStoneConnectorClass [
 	[ sessionNames includes: newName ] whileTrue:
 		[ number := number + 1.
 		newName := 'session', number asString ].
-	^ self connectorNamed: newName put: aGtGemStoneConnectorClass new.
+	newConnector := aGtGemStoneConnectorClass new.
+	newConnector propertiesFile: self.
+	^ self connectorNamed: newName put: newConnector.
 
 ]
 
@@ -118,6 +120,16 @@ GtGemStonePropertiesFile >> gtPropertiesFor: aView [
 		view: #gtLiveFor:
 ]
 
+{ #category : #ui }
+GtGemStonePropertiesFile >> gtViewConnectorsFor: aView [
+	<gtView>
+
+	properties ifNil: [ ^ aView empty ].
+	^ aView list 
+		title: 'Connectors';
+		items: [ self allConnectors]
+]
+
 { #category : #testing }
 GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
@@ -140,12 +152,8 @@ GtGemStonePropertiesFile >> loadProperties [
 
 	"Subscribe for update notifications"
 	self allConnectors do: [ :connector |
+		connector propertiesFile: self.
 		self subscribeToConnector: connector ].
-
-	"Ensure there is always a default connector"
-	self namedConnectors ifEmpty:
-		[ self connectorNamed: self defaultConnectorName put: GtGemStoneGciConnector new ].
-
 ]
 
 { #category : #private }

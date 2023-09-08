@@ -1,6 +1,7 @@
 #! /bin/bash
 ### Export gt4gemstone to a .gs file.
-### Requires loginSystemUser.topaz be configured with the correct credentials.
+### Requires loginSystemUser.topaz be configured with the correct credentials,
+### and the environmental variable STONE to indicate the target stone name.
 ### Exits with 0 if success, topaz status if failed.
 
 set -e
@@ -8,6 +9,12 @@ set -e
 if [ -z "$ROWAN_PROJECTS_HOME" ]
 then
 	echo "ROWAN_PROJECTS_HOME must be defined"
+	exit 1
+fi
+
+if [ -z "$STONE" ]
+then
+	echo "STONE must be defined"
 	exit 1
 fi
 

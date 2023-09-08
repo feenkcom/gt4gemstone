@@ -1,13 +1,46 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
+	#traits : 'TGtRemoteLanguageProxyViewsAttachment + TGtRemoteLanguageProxySpecificViews',
+	#classTraits : 'TGtRemoteLanguageProxyViewsAttachment classTrait + TGtRemoteLanguageProxySpecificViews classTrait',
+	#instVars : [
+		'gtSession'
+	],
+	#classVars : [
+		'ObjectMap'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> bareProxyObjectAt: anObject ifAbsent: absentBlock [
+
+	^ self proxyObjectMap at: anObject ifAbsent: absentBlock
+]
 
 { #category : #testing }
 GtRsrProxyServiceClient class >> isClientClass [
 
 	^ true
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> leProxyTypeForPlaygroundPage [
+	^ GtRsrProxyServiceClient
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> proxyObjectAt: anObject ifAbsent: absentBlock [
+
+	^ self proxyObjectMap at: anObject 
+		ifPresent: #asGtProxyObject
+		ifAbsent: absentBlock
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient class >> proxyObjectMap [
+
+	^ ObjectMap ifNil: [ ObjectMap := WeakIdentityKeyDictionary new ]
 ]
 
 { #category : #private }
@@ -29,18 +62,10 @@ GtRsrProxyServiceClient class >> remoteClassName [
 GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 	"Answer the subclass that represents the supplied class name"
 
-	^ self subclasses
+	^ self allSubclasses
 		detect: [ :each | each remoteClassMatcher value: aSymbol ]
 		ifNone: [ nil ].
 
-]
-
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
 ]
 
 { #category : #private }
@@ -52,6 +77,24 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject r
 	remoteClass := aString.
 ]
 
+{ #category : #converting }
+GtRsrProxyServiceClient >> asGtpoLocalObject [
+	"Answer a local copy of the receiver"
+	| instVarDict localObject |
+
+	instVarDict := self evaluateAndWait: '| names dict |
+names := self class allInstVarNames.
+dict := Dictionary new.
+1 to: names size do: [ :i |
+	dict at: (names at: i) put: (self instVarAt: i) ].
+dict.'.
+	localObject := (self class environment at: remoteClass) basicNew.
+	instVarDict associationsDo: [ :assoc |
+		localObject instVarNamed: assoc key put: assoc value ].
+	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
+	^ localObject.
+]
+
 { #category : #private }
 GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	"Convert the to the appropriate subclass.
@@ -60,8 +103,7 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 
 	proxyClass := self class subclassForRemoteClass: remoteClass.
 	proxyClass ifNil: [ ^ self ].
-	newProxy := proxyClass new.
-	newProxy 
+	newProxy := proxyClass new
 		_id: _id 
 		connection: _connection 
 		remoteSelf: remoteSelf
@@ -70,111 +112,191 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	^ newProxy
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> declarativeViews [
-	"Answer the views for the receiver"
-	| rawViews |
-
-	self viewProxyDo: [ :remoteInspectorProxy |
-		| declarativeData declarativeViewDeclarations |
-		declarativeData := remoteInspectorProxy getViewsDeclarations.
-		declarativeViewDeclarations := declarativeData at: 'views' ifAbsent: [ #() ].
-		rawViews := declarativeViewDeclarations collect: [ :declarativeViewData |
-			| declarativeView |
-			declarativeView := GtPhlowDeclarativeView fromDictionary: declarativeViewData.
-			declarativeView
-				initializeFromInspector: remoteInspectorProxy.
-			declarativeView ] ].
-
-	^ rawViews
-]
-
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| evaluator |
+	| computedProxy |
 
-	evaluator := GtRsrEvaluatorServiceClient new registerWith: _connection.
-	^ evaluator
+	computedProxy := gtSession evaluator
 		evaluateAndWait: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ gtSession evaluator
+		evaluate: aString
+		for: self
+		bindings: Dictionary new
+		serializationStrategy: aSymbol.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+	| computedProxy |
+
+	computedProxy := gtSession evaluator
+		evaluateAndWait: aString
+		for: self
+		bindings: Dictionary new.
+	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
+	^ computedProxy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString serializationStrategy: aSymbol [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluate: aString serializationStrategy: aSymbol) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluateReturnProxy: aString) wait
+		gtPharoProxyInitializeWithSession: self gtSession
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ gtSession evaluator
+		evaluateReturnProxy: aString
 		for: self
 		bindings: Dictionary new.
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getViewProxy [
-	"Answer a GtViewedProxy on the receiver"
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
+	<gtAction>
 
-	^ self evaluate: 'GtRemotePhlowViewedObject object: self'
+	^ anAction button
+		priority: 1;
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect GemStone Class';
+		action: [ :button |
+			button phlow spawnObject: (self proxyPerform: #class) ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
+	<gtAction>
+
+	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
+		[ ^ anAction noAction ].
+	^ anAction button
+		priority: 1.1;
+		label: 'Local';
+		icon: BrGlamorousVectorIcons browse;
+		tooltip: 'Inspect Local Class';
+		action: [ :button |
+			button phlow spawnTool: (GtClassCoderTool forClass: (self class environment classOrTraitNamed: remoteClass asSymbol)) ].
 ]
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
-	aStream << ([ self 
-		proxyPerform: #gtDisplayString ] 
-			on: Error do: [ self class name, ': Unable to retrieve gtDisplayString' ])
+	self isProxyObjectActive ifTrue: 
+		[ aStream 
+			<< 'Service Client Proxy: ';
+			<< ([self proxyPerform: #gtDisplayString]
+				on: Error 
+				do: [ :e | 'Service Client Proxy: Error printing'  ]) ]
+	ifFalse: 
+		[ aStream << 'Service Client Proxy: <not connected>' ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 10;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtInspectorTitleString [ 
-	^ String streamContents: [ :stream |
-		stream
-			<< 'Proxy to a(n): ';
-			<< (remoteClass ifNil: [ '<None>' ]) ].
+GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil:[ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtMetaFor: aView [ 
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorTitleString [
+	| limitedString limit |
+	limit := 1000.
+	limitedString := String 	
+		streamContents: [ :s | self gtInspectorTitleStringOn: s ] 
+		limitedTo: limit.
+	limitedString size < limit ifTrue: [^ limitedString].
+	^ limitedString , ' ...'
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
+	self gtDisplayOn: aStream.
+	
+	self gtSession ifNotNil:
+		[ :aGtSession | aStream
+			<< ' [';
+			<< aGtSession name;
+			<< ']' ]
+]
+
+{ #category : #initialization }
+GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
+	"Update the session from the given context".
+	
+	gtSession := aSession
+]
+
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtPrintFor: aView [
 	<gtProxy>
-	^ super gtMetaFor: aView 
+	
+	^ aView textEditor
+		title: 'Print';
+		priority: 110;
+		aptitude: BrGlamorousCodeEditorAptitude;
+		text: [ self gtDisplayString asRopedText ];
+		actionUpdateButton
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtPrintFor: aView [ 
-	<gtProxy>
-	^ super gtPrintFor: aView 
+GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
+	^ LeGemStoneSnippet new
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyRemoveViewsListFor: aView [
-	<gtProxy>
-	^ aView list
-		title: 'Remote views' translated;
-		priority: 10001;
-		items: [ self declarativeViews ];
-		itemText: [ :aViewAccessor | aViewAccessor title ];
-		send: [ :aDeclarativeView | aDeclarativeView ]
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtSession [
+	^ gtSession
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtProxyViewsFor: aView [
-	<gtView>
-	^ aView composite
-		title: 'Proxy';
-		priority: 10000;
-		collectorDo: [ :aCollector |
-			aCollector 
-				pragmaName: #gtProxy;
-				fromObject: self ]
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtRawFor: aView [ 
-	<gtProxy>
-	^ super gtRawFor: aView 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtViewsInContext: aContext [
-	"This collects all views for the current object, both local and remote."
-	| localViews collectedViews |
-	localViews := super gtViewsInContext: aContext.
-	collectedViews := OrderedCollection new
-		addAll: (self updateLocalProxyViews: localViews);
-		addAll: (self remoteViewsFor: GtPhlowEmptyView new);
-		yourself.
-	GtPhlowUtility sortByPriority: collectedViews.
-	^ collectedViews
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtSession: anObject [
+	gtSession := anObject
 ]
 
 { #category : #introspection }
@@ -198,43 +320,102 @@ GtRsrProxyServiceClient >> object [
 	^ remoteSelf object wait
 ]
 
+{ #category : #printing }
+GtRsrProxyServiceClient >> printOn: aStream [
+
+	self isProxyObjectActive 
+		ifTrue: [
+			aStream 
+				<< 'Service Client Proxy on: ';
+				<< ([self proxyPerform: #gtDisplayString]
+					on: Error 
+					do: [ :e | 'Error printing'  ]) ]
+		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+	
+	gtSession ifNotNil: [ 
+		aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
+]
+
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
+	| rsrPromise |
 
-	^ (remoteSelf proxyPerform: aSymbol) wait.
+	rsrPromise := remoteSelf proxyPerform: aSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol
+		serializationStrategy: serializationSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: serializationSymbol
+		gtSession: gtSession) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
+	| rsrPromise |
 
-	^ (remoteSelf proxyPerform: aSymbol withArguments: anArray) wait
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol 
+		withArguments: anArray.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerform: aSymbol 
+		withArguments: anArray
+		serializationStrategy: serializationSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: serializationSymbol
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf proxyPerformReturnProxy: aSymbol.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf 
+		proxyPerformReturnProxy: aSymbol
+		withArguments: anArray.
+	^ (GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		gtSession: gtSession) wait
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> remoteViewsFor: aView [
+GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 	"Should be all views, but just get Raw and Print views for now"
 
 	^ self isProxyObjectActive
-		ifTrue: [ self declarativeViews collect: [ :declarativeView | declarativeView viewFor: aView ] ]
+		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
+			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
-
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> updateLocalProxyViews: localViews [
-	^ localViews reject: [ :each |
-		#(Raw Print Connections Meta) includes: each title ].
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> viewProxyDo: aBlock [
-	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
-
-	| viewProxy |
-
-	viewProxy := (#(GtRemotePhlowViewedObject) includes: remoteClass)
-		ifTrue: [ self ]
-		ifFalse: [ self getViewProxy ].
-	^ aBlock value: viewProxy.
-
 ]

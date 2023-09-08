@@ -10,9 +10,11 @@ Class {
 		'name',
 		'propertiesFile',
 		'host',
-		'announcer'
+		'announcer',
+		'serviceName',
+		'registry'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #'api - announcer' }
@@ -26,12 +28,24 @@ GtGemStoneConnector >> announcer [
 	^ announcer ifNil: [ announcer := Announcer new ]
 ]
 
+{ #category : #converting }
+GtGemStoneConnector >> asGemStoneSession [
+
+	^ registry newSessionWithConnector: self.
+]
+
 { #category : #connecting }
 GtGemStoneConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
 	<return: #RsrConnection>
 
 	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> connector [
+
+	^ self
 ]
 
 { #category : #accessing }
@@ -48,6 +62,20 @@ GtGemStoneConnector >> host: anObject [
 GtGemStoneConnector >> initialize [ 
 	super initialize.
 	host := 'localhost'.
+]
+
+{ #category : #testing }
+GtGemStoneConnector >> isDefaultSession [
+	"Answer a boolean indicating if the receiver is the default sessions.
+	This is a bit of a hack to allow the UI to work with either sessions or connectors."
+
+	^ false.
+]
+
+{ #category : #testing }
+GtGemStoneConnector >> isNull [
+
+	^ false
 ]
 
 { #category : #accessing }
@@ -104,6 +132,51 @@ GtGemStoneConnector >> printOn: aStream [
 		nextPut: $(;
 		<< self name;
 		nextPut: $).
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> propertiesFile [
+	^ propertiesFile
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> propertiesFile: anObject [
+	propertiesFile := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> registry [
+	<return: #GtGemStoneSessionRegistry>
+
+	^ registry
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> registry: aGtGemStoneSessionRegistry [
+
+	registry := aGtGemStoneSessionRegistry
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> serviceName [
+	^ serviceName ifNil: [ 'gemnetobject' ].
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> serviceName: anObject [
+	serviceName := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> stone [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> stoneName [
+
+	^ self stone
 ]
 
 { #category : #'api - announcer' }

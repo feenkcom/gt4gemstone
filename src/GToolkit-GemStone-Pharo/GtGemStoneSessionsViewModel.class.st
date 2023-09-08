@@ -38,6 +38,7 @@ GtGemStoneSessionsViewModel >> activeSessions: aActiveSessions [
 
 	activeSessions ifNotNil: [ self unsubscribeFromActiveSessions ].
 	activeSessions := aActiveSessions.
+	gemStoneSessionViewModels := nil.
 
 	self onActiveSessionsChanged.
 	self subscribeToActiveSessions.
@@ -136,6 +137,12 @@ GtGemStoneSessionsViewModel >> findGemStoneSessionViewModels: aSession ifFound: 
 			eachGemStoneSessionViewModels gemStoneSession = aSession ]
 		ifFound: aFoundBlock
 		ifNone: aNoneBlock
+]
+
+{ #category : #accessing }
+GtGemStoneSessionsViewModel >> gemStoneSessionRegistry [
+
+	^ parentGemStoneSessionManagerViewModel gemStoneSessionRegistry
 ]
 
 { #category : #'api - accessing' }
