@@ -106,7 +106,6 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnSerializedPrimitive [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnStonSerialized [
 	<gtExample>
-	<noTest>
 	| proxy result |
 
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
@@ -242,7 +241,6 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnSerializedPrimitive [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testPerformReturnStonSerialized [
 	<gtExample>
-	<noTest>
 	| proxy result |
 
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.

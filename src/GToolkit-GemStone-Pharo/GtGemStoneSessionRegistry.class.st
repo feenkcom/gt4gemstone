@@ -360,8 +360,9 @@ GtGemStoneSessionRegistry >> newSessionNamed: aString [
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector"
 
-	^ self newSessionWithConnector: aGtGemStoneConnector
-		id: (lastSessionId := lastSessionId + 1) asString
+	^ (self newSessionWithConnector: aGtGemStoneConnector
+		id: (lastSessionId := lastSessionId + 1) asString)
+			connect.
 ]
 
 { #category : #accessing }
