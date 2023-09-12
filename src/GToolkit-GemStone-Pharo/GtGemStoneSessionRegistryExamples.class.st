@@ -49,7 +49,7 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
 	self assert: registry allConnectors size equals: 1.
 
-	connector := registry connectorNamed: #session1.
+	connector := registry connectorNamed: #connector1.
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	oldName := connector name.
@@ -104,7 +104,7 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
 	self assert: registry allConnectors size equals: 1.
 
-	connector := registry connectorNamed: #session1.
+	connector := registry connectorNamed: #connector1.
 	self assert: connector class equals: GtGemStoneGciConnector.
 
 	registry removeConnector: connector.
