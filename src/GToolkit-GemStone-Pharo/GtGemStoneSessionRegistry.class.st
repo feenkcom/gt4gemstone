@@ -323,6 +323,12 @@ GtGemStoneSessionRegistry >> hasConnectors [
 ]
 
 { #category : #testing }
+GtGemStoneSessionRegistry >> hasDefaultSession [
+
+	^ defaultSession isNotNil
+]
+
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
@@ -360,8 +366,9 @@ GtGemStoneSessionRegistry >> newSessionNamed: aString [
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector"
 
-	^ self newSessionWithConnector: aGtGemStoneConnector
-		id: (lastSessionId := lastSessionId + 1) asString
+	^ (self newSessionWithConnector: aGtGemStoneConnector
+		id: (lastSessionId := lastSessionId + 1) asString)
+			connect.
 ]
 
 { #category : #accessing }

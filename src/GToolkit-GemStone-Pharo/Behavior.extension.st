@@ -5,7 +5,7 @@ Behavior >> gtGsClassEditorButtonFor: anAction [
 	<gtClassAction>
 
 	(GtGemStoneSessionRegistry hasUniqueInstance not or:
-		[ GtGemStoneSessionRegistry default defaultSession isNil ])
+		[ GtGemStoneSessionRegistry default hasDefaultSession not ])
 			ifTrue: [ ^ anAction noAction ].
 	^ anAction button
 		label: 'GS';

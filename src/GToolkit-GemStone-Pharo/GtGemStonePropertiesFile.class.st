@@ -20,14 +20,14 @@ GtGemStonePropertiesFile >> addNewConnector [
 
 { #category : #adding }
 GtGemStonePropertiesFile >> addNewConnectorClass: aGtGemStoneConnectorClass [
-	| sessionNames number newName newConnector |
+	| connectorNames number newName newConnector |
 
-	sessionNames := self connectorNames.
+	connectorNames := self connectorNames.
 	number := 1.
-	newName := 'session', number asString.
-	[ sessionNames includes: newName ] whileTrue:
+	newName := 'connector', number asString.
+	[ connectorNames includes: newName ] whileTrue:
 		[ number := number + 1.
-		newName := 'session', number asString ].
+		newName := 'connector', number asString ].
 	newConnector := aGtGemStoneConnectorClass new.
 	newConnector propertiesFile: self.
 	^ self connectorNamed: newName put: newConnector.
