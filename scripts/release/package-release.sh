@@ -47,6 +47,7 @@ mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-remote/src-gs
 
 cp ${SPARKLE_HOME}/src-gs/bootstrapSparkle.gs ${GT4GEMSTONE_RELEASE_FOLDER}/Sparkle/src-gs/
+cp ${GT4GEMSTONE_HOME}/src-gs/STON.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GT4GEMSTONE_HOME}/src-gs/gt4gemstone.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GTOOLKIT_REMOTE_HOME}/src-gs/gtoolkit-remote.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-remote/src-gs/
 
