@@ -160,6 +160,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnRe
 		for: scripter.
 	
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
+	self gemstoneSessionRegistry sessions values anyOne close.
 	self assert: self gemstoneSessionRegistry sessions values first isRunning not.
 	self 
 		assert: self gemstoneSessionRegistry sessions values first name
