@@ -183,6 +183,9 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 	"Answer return expression for the remote script"
 
 	^ String streamContents: [ :stream |
+		stream
+			cr;
+			<< 'snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].'.
 		stream 
 			cr
 			<< '{ '.
@@ -194,7 +197,7 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 				<< varName;
 				<< '. ' ].
 		stream
-			<< ' #snippetResult -> snippetResult. } asDictionary' ]
+			<< '#snippetResult -> snippetResult. } asDictionary' ]
 ]
 
 { #category : #accessing }
