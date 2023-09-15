@@ -104,8 +104,10 @@ GtGemStoneSessionKeepAlive >> modifiedPostAction: anObject [
 { #category : #private }
 GtGemStoneSessionKeepAlive >> pollSession: session [ 
 	| neededCommit |
-	session isRunning ifFalse: [ ^ self ].
+
 	shouldExit ifTrue: [ ^ self ].
+	(session isRunning not or:
+		[ session isAutoMode not ]) ifTrue: [ ^ self ].
 	neededCommit := session evaluateAndWait:
 			'| needsCommit |
 			(needsCommit := System needsCommit)
