@@ -19,7 +19,8 @@ Class {
 		'evaluator',
 		'connector',
 		'mutex',
-		'sessionId'
+		'sessionId',
+		'transactionMode'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -103,6 +104,19 @@ GtGemStoneSession >> connector: aGtGemstoneConnector [
 		when: GtGemStoneConnectorAnnouncement 
 		send: #onConnectorChanged:
 		to: self
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> dbSize [
+
+	^ self evaluateAndWait: 'SystemRepository fileSize - SystemRepository freeSpace'
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+]
+
+{ #category : #ui }
+GtGemStoneSession >> dbSizeHumanReadable [
+
+	^ self dbSize humanReadableSIByteSize
 ]
 
 { #category : #actions }
@@ -343,14 +357,18 @@ GtGemStoneSession >> gtLiveFor: aView [
 		items: [ { 
 			'Connected' -> #isRunning.
 			'Changed' -> #needsCommit.
-			'Default' -> #isDefaultSession } ];
+			'Default' -> #isDefaultSession.
+			'Size' -> #dbSizeHumanReadable. } ];
 		column: 'Attribute' text: [ :item | item key ];
-		column: 'Status' 
-			icon: [ :item |
-				(item value value: self)
-					ifTrue: [ BrGlamorousVectorIcons accept ]
-					ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 70;
+		column: 'Value' 
+			text: [ :item | | value |
+				value := item value value: self.
+				value isBoolean ifTrue:
+					[ value
+						ifTrue: [ (Character value: 16r2713) asString ]
+						ifFalse: [ '-' ] ]
+				ifFalse:
+					[ value ] ];
 		actionUpdateButton
 ]
 
@@ -430,6 +448,12 @@ GtGemStoneSession >> initialize [
 
 	super initialize.
 	mutex := Mutex new.
+]
+
+{ #category : #testing }
+GtGemStoneSession >> isAutoMode [ 
+
+	^ self transactionMode = #autoBegin
 ]
 
 { #category : #testing }
@@ -529,6 +553,22 @@ GtGemStoneSession >> stop [
 	"Synonym for #close"
 
 	^ self close
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> transactionMode [
+
+	^ transactionMode ifNil:
+		[ self evaluateAndWait: 'System transactionMode'
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> transactionMode: aSymbol [
+
+	self evaluateAndWait: 'System transactionMode: #', aSymbol
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	transactionMode := aSymbol
 ]
 
 { #category : #private }
