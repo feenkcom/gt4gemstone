@@ -119,7 +119,9 @@ LeGemStoneSnippetViewModel >> updateGemstoneSession [
 	session := snippetModel sessionName ifNil: 
 		[ self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
 	ifNotNil: [ :aString |
-		self gemstoneSessionRegistry sessionNamed: aString ].
+		self gemstoneSessionRegistry 
+			sessionNamed: aString
+			ifAbsent: [ ^ self ] ].
 	coderViewModel session: session.
 	
 	sessionName := session name.

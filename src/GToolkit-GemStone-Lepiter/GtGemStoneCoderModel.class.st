@@ -141,7 +141,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
 	gemstoneSession ifNil:
-		[ self error: 'GemStone session not set' ].
+		[ self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
