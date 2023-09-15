@@ -185,9 +185,10 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 	^ String streamContents: [ :stream |
 		stream
 			cr;
-			<< '(snippetResult class == GtRsrProxyServiceServer or:
+			<< '(snippetResult isNil or:
+				[ snippetResult class == GtRsrProxyServiceServer or:
 				[ snippetResult isNumber or:
-				[ snippetResult class == Boolean ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].'.
+				[ snippetResult class == Boolean ] ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].'.
 		stream 
 			cr
 			<< '{ '.

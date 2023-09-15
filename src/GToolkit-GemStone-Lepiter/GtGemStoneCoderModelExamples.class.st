@@ -20,9 +20,10 @@ GtGemStoneCoderModelExamples >> simpleExpression [
 	self assert: coderModel remoteScript withUnixLineEndings equals: 
 '| snippetResult |
 snippetResult := 4+3.
-(snippetResult class == GtRsrProxyServiceServer or:
+(snippetResult isNil or:
+				[ snippetResult class == GtRsrProxyServiceServer or:
 				[ snippetResult isNumber or:
-				[ snippetResult class == Boolean ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
+				[ snippetResult class == Boolean ] ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #snippetResult -> snippetResult. } asDictionary'.
 	self assert: coderModel remoteBindings size equals: 0.
 
@@ -44,9 +45,10 @@ g + 3'.
 '| g snippetResult |
 g := 4.
 snippetResult := g + 3.
-(snippetResult class == GtRsrProxyServiceServer or:
+(snippetResult isNil or:
+				[ snippetResult class == GtRsrProxyServiceServer or:
 				[ snippetResult isNumber or:
-				[ snippetResult class == Boolean ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
+				[ snippetResult class == Boolean ] ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #g -> g. #snippetResult -> snippetResult. } asDictionary'.
 	self assert: coderModel remoteBindings size equals: 0.
 
@@ -73,9 +75,10 @@ answer'.
 answer := inputVariable + 2.
 inputVariable := ''Used''.
 snippetResult := answer.
-(snippetResult class == GtRsrProxyServiceServer or:
+(snippetResult isNil or:
+				[ snippetResult class == GtRsrProxyServiceServer or:
 				[ snippetResult isNumber or:
-				[ snippetResult class == Boolean ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
+				[ snippetResult class == Boolean ] ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #inputVariable -> inputVariable. #answer -> answer. #snippetResult -> snippetResult. } asDictionary'.
 	self assert: coderModel remoteBindings size equals: 1.
 	self assert: (coderModel remoteBindings at: #inputVariable) equals: 40.
@@ -100,9 +103,10 @@ a + 3'.
 '| snippetResult  a |
 a := 4.
 snippetResult := a + 3.
-(snippetResult class == GtRsrProxyServiceServer or:
+(snippetResult isNil or:
+				[ snippetResult class == GtRsrProxyServiceServer or:
 				[ snippetResult isNumber or:
-				[ snippetResult class == Boolean ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
+				[ snippetResult class == Boolean ] ] ]) ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #snippetResult -> snippetResult. } asDictionary'.
 	self assert: coderModel remoteBindings size equals: 0.
 
