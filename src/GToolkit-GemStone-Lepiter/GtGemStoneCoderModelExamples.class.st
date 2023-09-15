@@ -21,7 +21,7 @@ GtGemStoneCoderModelExamples >> simpleExpression [
 '| snippetResult |
 snippetResult := 4+3.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #snippetResult -> snippetResult. } asDictionary'.
+{ #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
 
 ]
@@ -43,7 +43,7 @@ g + 3'.
 g := 4.
 snippetResult := g + 3.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #g -> g. #snippetResult -> snippetResult. } asDictionary'.
+{ #g -> g. #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
 
 ]
@@ -70,7 +70,7 @@ answer := inputVariable + 2.
 inputVariable := ''Used''.
 snippetResult := answer.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #inputVariable -> inputVariable. #answer -> answer. #snippetResult -> snippetResult. } asDictionary'.
+{ #inputVariable -> inputVariable. #answer -> answer. #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 1.
 	self assert: (coderModel remoteBindings at: #inputVariable) equals: 40.
 	^ coderModel
@@ -95,7 +95,7 @@ a + 3'.
 a := 4.
 snippetResult := a + 3.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #snippetResult -> snippetResult. } asDictionary'.
+{ #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
 
 ]
