@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtSourceCoderEvaluationContext,
 	#instVars : [
 		'receiverObject',
-		'session'
+		'session',
+		'serializationStrategy'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -19,6 +20,16 @@ GtGemStoneSourceCoderEvaluationContext >> receiverObject [
 GtGemStoneSourceCoderEvaluationContext >> receiverObject: anObject [ 
 
 	receiverObject := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderEvaluationContext >> serializationStrategy [
+	^ serializationStrategy
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderEvaluationContext >> serializationStrategy: aSymbol [
+	serializationStrategy := aSymbol
 ]
 
 { #category : #accessing }

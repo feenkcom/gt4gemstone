@@ -52,7 +52,16 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoActionId
+		id: GtSourceCoderDoItAndGoActionId.
+	addOns
+		addMainAction: 'Inspect serialized' translated
+		icon: BrGlamorousIcons tohere
+		action: [ :aCoderUIModel :anElement | 
+			GtCoderCodeExecutor doItAndGoSerialized
+				coderViewModel: aCoderUIModel;
+				element: anElement;
+				execute ]
+		id: GtSourceCoderDoItAndGoSerializedActionId
 ]
 
 { #category : #initialize }
@@ -165,6 +174,11 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	^ (result
 		at: 'snippetResult'
+		ifPresent: [ :obj | 
+			aGtSourceCoderEvaluationContext serializationStrategy
+				ifNil: [ obj ]
+				ifNotNil: [ :strategy | obj
+					proxyPerform: #yourself serializationStrategy: strategy ] ]
 		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
 ]
 
