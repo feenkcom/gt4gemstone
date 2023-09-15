@@ -201,6 +201,20 @@ GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 			button phlow spawnTool: (GtClassCoderTool forClass: (self class environment classOrTraitNamed: remoteClass asSymbol)) ].
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		priority: 1;
+		icon: BrGlamorousVectorIcons down;
+		tooltip: 'Download local instance';
+		action: [ :button |
+			button phlow spawnObject: 
+				(self proxyPerform: #yourself
+					serializationStrategy: #GtRsrStonSerializationStrategy) ].
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self isProxyObjectActive ifTrue: 

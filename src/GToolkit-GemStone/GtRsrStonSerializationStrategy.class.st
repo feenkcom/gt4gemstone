@@ -1,3 +1,6 @@
+"
+STON serialisation answers everything by value, using STON to serialise the object tree.
+"
 Class {
 	#name : #GtRsrStonSerializationStrategy,
 	#superclass : #GtRsrSerializationStrategy,

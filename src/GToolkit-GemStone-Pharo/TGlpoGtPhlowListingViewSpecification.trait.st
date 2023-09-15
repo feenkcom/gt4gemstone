@@ -27,4 +27,5 @@ TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [
 	^ self
 		proxyPerform: #retriveSentItemAt:
 		withArguments: { aSelectionIndex }
+		"serializationStrategy: #GtRsrLiteralAndProxySerializationStrategy"
 ]

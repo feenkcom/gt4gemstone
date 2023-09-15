@@ -1,3 +1,6 @@
+"
+GtRsrPrimitiveOnlySerializationStrategy will answer anything that RSR regards as a primitive type by value, everything else is will trigger an exception.
+"
 Class {
 	#name : #GtRsrPrimitiveOnlySerializationStrategy,
 	#superclass : #GtRsrSerializationStrategy,

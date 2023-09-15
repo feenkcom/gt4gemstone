@@ -52,7 +52,16 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoActionId
+		id: GtSourceCoderDoItAndGoActionId.
+	addOns
+		addMainAction: 'Inspect serialized' translated
+		icon: BrGlamorousIcons tohere
+		action: [ :aCoderUIModel :anElement | 
+			GtCoderCodeExecutor doItAndGoSerialized
+				coderViewModel: aCoderUIModel;
+				element: anElement;
+				execute ]
+		id: GtSourceCoderDoItAndGoSerializedActionId
 ]
 
 { #category : #initialize }
@@ -141,7 +150,7 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
 	gemstoneSession ifNil:
-		[ self error: 'GemStone session not set' ].
+		[ self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
@@ -165,6 +174,11 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 
 	^ (result
 		at: 'snippetResult'
+		ifPresent: [ :obj | 
+			aGtSourceCoderEvaluationContext serializationStrategy
+				ifNil: [ obj ]
+				ifNotNil: [ :strategy | obj
+					proxyPerform: #yourself serializationStrategy: strategy ] ]
 		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
 ]
 
@@ -183,6 +197,9 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 	"Answer return expression for the remote script"
 
 	^ String streamContents: [ :stream |
+		stream
+			cr;
+			<< 'snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].'.
 		stream 
 			cr
 			<< '{ '.
@@ -194,7 +211,7 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 				<< varName;
 				<< '. ' ].
 		stream
-			<< ' #snippetResult -> snippetResult. } asDictionary' ]
+			<< '#snippetResult -> snippetResult. } asDictionary' ]
 ]
 
 { #category : #accessing }
