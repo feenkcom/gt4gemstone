@@ -24,7 +24,11 @@ Class {
 		'connectors',
 		'lastSessionId',
 		'defaultName',
-		'defaultSession'
+		'defaultSession',
+		'keepAlive'
+	],
+	#classInstVars : [
+		'uniqueInstance'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
@@ -45,6 +49,7 @@ GtGemStoneSessionRegistry class >> default [
 	uniqueInstance := self new 
 		propertiesFilename: LeDatabasesRegistry defaultPrimaryDatabase 
 			properties gemStonePropertiesFile.
+	uniqueInstance ensureKeepAlive.
 	^ uniqueInstance
 ]
 
@@ -62,7 +67,10 @@ GtGemStoneSessionRegistry class >> initialize [
 GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
 	"Classes may perform some activities on a singleton that is about to be released"
 	
-	uniqueInstance ifNotNil: [ uniqueInstance resetSessions ].
+	uniqueInstance ifNotNil: 
+		[ uniqueInstance 
+			resetSessions;
+			stopKeepAlive ].
 ]
 
 { #category : #accessing }
@@ -225,6 +233,15 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 
 	defaultSession := aGtGemStoneSession.
 	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
+]
+
+{ #category : #'keep alive' }
+GtGemStoneSessionRegistry >> ensureKeepAlive [
+
+	keepAlive ifNotNil: [ ^ self ].
+	keepAlive := GtGemStoneSessionKeepAlive new
+		registry: self;
+		start.
 ]
 
 { #category : #ui }
@@ -544,6 +561,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -574,17 +597,19 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 			(sessionCollection sorted: #sessionId ascending) first ].
 ]
 
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
-]
-
 { #category : #'system startup' }
 GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"
 
 	isImageStarting ifTrue: [ self reload ]
+]
+
+{ #category : #'keep alive' }
+GtGemStoneSessionRegistry >> stopKeepAlive [
+
+	keepAlive ifNil: [ ^ self ].
+	keepAlive stop.
+	keepAlive := nil.
 ]
 
 { #category : #'api - announcer' }
