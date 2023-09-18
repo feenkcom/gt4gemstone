@@ -107,7 +107,8 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 
 	shouldExit ifTrue: [ ^ self ].
 	(session isRunning not or:
-		[ session isAutoMode not ]) ifTrue: [ ^ self ].
+		[ session isAutoMode not or:
+		[ session isBusy ] ]) ifTrue: [ ^ self ].
 	neededCommit := session evaluateAndWait:
 			'| needsCommit |
 			(needsCommit := System needsCommit)

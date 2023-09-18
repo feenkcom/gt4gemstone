@@ -88,3 +88,9 @@ GtRsrEvaluatorServiceClient >> gtSession [
 GtRsrEvaluatorServiceClient >> gtSession: anObject [
 	gtSession := anObject
 ]
+
+{ #category : #testing }
+GtRsrEvaluatorServiceClient >> isBusy [
+
+	^ _connection isBusy
+]
