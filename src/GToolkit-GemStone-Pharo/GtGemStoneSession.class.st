@@ -20,7 +20,8 @@ Class {
 		'connector',
 		'mutex',
 		'sessionId',
-		'transactionMode'
+		'transactionMode',
+		'gt4gemstoneVersion'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -283,6 +284,15 @@ GtGemStoneSession >> gemLogFileReference [
 	^ (self evaluateAndWait: 'System gemLogPath') asFileReference / (self evaluateAndWait: 'System gemLogFileName')
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> gt4gemstoneVersion [
+
+	^ gt4gemstoneVersion ifNil:
+		[ gt4gemstoneVersion := self 
+			evaluateAndWait: 'GtGsRelease default versionString'
+			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+]
+
 { #category : #ui }
 GtGemStoneSession >> gtAbortActionFor: anAction [
 	<gtAction>
@@ -355,10 +365,12 @@ GtGemStoneSession >> gtLiveFor: aView [
 		title: 'Status';
 		priority: 10;
 		items: [ { 
+			'Name' -> #name.
 			'Connected' -> #isRunning.
 			'Changed' -> #needsCommit.
 			'Default' -> #isDefaultSession.
-			'Size' -> #dbSizeHumanReadable. } ];
+			'Size' -> #dbSizeHumanReadable.
+			'gt4gemstone' -> #gt4gemstoneVersion } ];
 		column: 'Attribute' text: [ :item | item key ];
 		column: 'Value' 
 			text: [ :item | | value |
