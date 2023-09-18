@@ -364,17 +364,11 @@ GtGemStoneSession >> gtLiveFor: aView [
 	^ aView columnedList
 		title: 'Status';
 		priority: 10;
-		items: [ { 
-			'Name' -> #name.
-			'Connected' -> #isRunning.
-			'Changed' -> #needsCommit.
-			'Default' -> #isDefaultSession.
-			'Size' -> #dbSizeHumanReadable.
-			'gt4gemstone' -> #gt4gemstoneVersion } ];
+		items: [ self statusAttributes];
 		column: 'Attribute' text: [ :item | item key ];
 		column: 'Value' 
 			text: [ :item | | value |
-				value := item value value: self.
+				value := item value.
 				value isBoolean ifTrue:
 					[ value
 						ifTrue: [ (Character value: 16r2713) asString ]
@@ -560,6 +554,33 @@ GtGemStoneSession >> sessionId: anObject [
 	sessionId := anObject
 ]
 
+{ #category : #ui }
+GtGemStoneSession >> statusAttributes [
+	| attributes gsAttributes |
+
+	attributes := OrderedCollection new.
+	attributes
+		add: 'Name' -> self name;
+		add: 'Connected' -> self isRunning;
+		add: 'Changed' -> self needsCommit;
+		add: 'Default' -> self isDefaultSession.
+
+	gsAttributes := self evaluateAndWait:
+'Dictionary new
+	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
+	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
+	at: ''Time'' put: DateAndTime now;
+	yourself'
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+
+	attributes
+		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
+		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
+		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
+
+	^ attributes
+]
+
 { #category : #accessing }
 GtGemStoneSession >> stoneName [
 
@@ -571,6 +592,15 @@ GtGemStoneSession >> stop [
 	"Synonym for #close"
 
 	^ self close
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> timeDelta [
+	"Answer the difference in time between GT and GS."
+
+	^ DateAndTime now - 
+		(self evaluateAndWait: 'DateAndTime now'
+			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy)
 ]
 
 { #category : #accessing }
