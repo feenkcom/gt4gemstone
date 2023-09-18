@@ -8,6 +8,18 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneKeepAliveSessionSignal class >> eventType [
+	^GtGemStoneKeepAliveSingleSessionEvent
+]
+
+{ #category : #accessing }
+GtGemStoneKeepAliveSessionSignal >> printOneLineContentsOn: aStream [
+	aStream  
+		<< 'session: ';
+		print: session name
+]
+
+{ #category : #accessing }
 GtGemStoneKeepAliveSessionSignal >> session [
 	^ session
 ]

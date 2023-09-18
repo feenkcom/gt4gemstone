@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneKeepAliveSessionModifiedSignal,
-	#superclass : #GtGemStoneKeepAliveSessionSignal,
+	#superclass : #GtGemStoneKeepAliveSessionEndSignal,
 	#category : #'GToolkit-GemStone-Pharo-Beacon'
 }

@@ -1,5 +1,10 @@
 Class {
 	#name : #GtGemStoneKeepAlivePollCompletedSignal,
-	#superclass : #GtGemStoneKeepAliveSignal,
+	#superclass : #GtGemStoneKeepAlivePollSignal,
 	#category : #'GToolkit-GemStone-Pharo-Beacon'
 }
+
+{ #category : #testing }
+GtGemStoneKeepAlivePollCompletedSignal >> isEndSignalType [
+	^ true
+]
