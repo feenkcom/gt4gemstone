@@ -70,7 +70,8 @@ GtGemStoneCoderModel >> initializeShortcuts: addOns [
 
 	addOns
 		addShortcut: GtSourceCoderDoItShortcut new;
-		addShortcut: GtSourceCoderDoItAndInspectShortcut new
+		addShortcut: GtSourceCoderDoItAndInspectShortcut new;
+		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new
 ]
 
 { #category : #'private - execution' }
