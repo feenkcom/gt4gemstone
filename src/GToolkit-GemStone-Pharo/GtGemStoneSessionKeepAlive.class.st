@@ -4,8 +4,6 @@ GtGemStoneSessionKeepAlive periodically scans the active sessions in the supplie
 Class {
 	#name : #GtGemStoneSessionKeepAlive,
 	#superclass : #Object,
-	#traits : 'TGtUniqueInstance',
-	#classTraits : 'TGtUniqueInstance classTrait',
 	#instVars : [
 		'registry',
 		'delay',
@@ -17,21 +15,11 @@ Class {
 		'cleanPostAction',
 		'modifiedPostAction'
 	],
+	#classInstVars : [
+		'uniqueInstance'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
-
-{ #category : #'instance creation' }
-GtGemStoneSessionKeepAlive class >> onDefaultRegistry [
-
-	^ self new
-		registry: GtGemStoneSessionRegistry default;
-		start
-]
-
-{ #category : #accessing }
-GtGemStoneSessionKeepAlive class >> uniqueInstance [
-	^ uniqueInstance ifNil: [ uniqueInstance := self onDefaultRegistry ]
-]
 
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> cleanPostAction [
