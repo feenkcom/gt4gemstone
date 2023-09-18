@@ -7,10 +7,25 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Beacon'
 }
 
+{ #category : #accessing }
+GtGemStoneKeepAliveSignal class >> eventType [
+	^ GtBeaconLogEvent
+]
+
 { #category : #'instance creation' }
 GtGemStoneKeepAliveSignal class >> keepAlive: aGtGemStoneSessionKeepAlive [
 
 	^ self new keepAlive: aGtGemStoneSessionKeepAlive
+]
+
+{ #category : #testing }
+GtGemStoneKeepAliveSignal >> isEndSignalType [
+	^ false
+]
+
+{ #category : #testing }
+GtGemStoneKeepAliveSignal >> isStartSignalType [
+	^ false
 ]
 
 { #category : #accessing }
