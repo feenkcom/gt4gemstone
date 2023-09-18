@@ -457,6 +457,12 @@ GtGemStoneSession >> isAutoMode [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> isBusy [
+
+	^ connection isBusy
+]
+
+{ #category : #testing }
 GtGemStoneSession >> isDefaultSession [
 
 	^ registry defaultSession == self
