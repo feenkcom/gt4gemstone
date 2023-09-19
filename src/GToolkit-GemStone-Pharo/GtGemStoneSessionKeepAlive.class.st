@@ -58,6 +58,23 @@ GtGemStoneSessionKeepAlive >> delay: anObject [
 	delay := anObject
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> gtLiveFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ {
+			'Status' -> self status.
+			'Next poll' -> self nextPollTime.
+			'Max keep alive (minutes)' -> self class maxKeepAlive.
+			} ];
+		column: 'Attribute' text: #key;
+		column: 'Value' text: #value;
+		actionUpdateButton.
+]
+
 { #category : #initialialize }
 GtGemStoneSessionKeepAlive >> initialize [
 
@@ -104,6 +121,13 @@ GtGemStoneSessionKeepAlive >> modifiedPostAction [
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> modifiedPostAction: anObject [
 	modifiedPostAction := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> nextPollTime [
+
+	^ scheduleTask ifNotNil:
+		[ scheduleTask scheduledTime asTime print24 ].
 ]
 
 { #category : #private }
@@ -200,6 +224,19 @@ GtGemStoneSessionKeepAlive >> start [
 		at: DateAndTime now + delay
 		entryIdentifier: Object new.
 	TaskAtQueue schedule: scheduleTask.
+]
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> status [
+	"Answer a basic status:
+	#stopping, #stopped, #running, #stuck"
+
+	pollPromise ifNil: [ ^ #stopped ].
+	shouldExit ifTrue: [ ^ #stopping ].
+	scheduleTask scheduledTime > DateAndTime now
+		ifTrue: [ ^ #running ]
+		ifFalse: [ ^ #stuck ].
+	^ #unknown
 ]
 
 { #category : #actions }
