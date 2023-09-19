@@ -465,7 +465,8 @@ GtGemStoneSession >> isBusy [
 { #category : #testing }
 GtGemStoneSession >> isDefaultSession [
 
-	^ registry defaultSession == self
+	^ registry hasDefaultSession and:
+		[ registry defaultSession == self ]
 ]
 
 { #category : #testing }
