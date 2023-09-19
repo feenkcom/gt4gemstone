@@ -21,7 +21,8 @@ Class {
 		'mutex',
 		'sessionId',
 		'transactionMode',
-		'gt4gemstoneVersion'
+		'gt4gemstoneVersion',
+		'connectionTime'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -80,6 +81,7 @@ GtGemStoneSession >> connect [
 		registerWith: connection;
 		gtSession: self;
 		yourself.
+	connectionTime := DateAndTime now.
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 
@@ -87,6 +89,12 @@ GtGemStoneSession >> connect [
 GtGemStoneSession >> connection [
 
 	^ connection
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> connectionTime [
+
+	^ connectionTime
 ]
 
 { #category : #accessing }
@@ -577,6 +585,7 @@ GtGemStoneSession >> statusAttributes [
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
+		add: 'Connection time' -> connectionTime;
 		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
 
 	^ attributes

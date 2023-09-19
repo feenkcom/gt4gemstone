@@ -15,11 +15,28 @@ Class {
 		'cleanPostAction',
 		'modifiedPostAction'
 	],
+	#classVars : [
+		'MaxKeepAlive'
+	],
 	#classInstVars : [
 		'uniqueInstance'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive class >> maxKeepAlive [
+	"Answer the number of minutes to keep the session alive"
+	
+	^ MaxKeepAlive ifNil: [ 30 ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive class >> maxKeepAlive: aNumber [
+	"Set the number of minutes to keep the session alive"
+	
+	MaxKeepAlive := aNumber
+]
 
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> cleanPostAction [
@@ -97,7 +114,9 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 	
 	(session isRunning not or:
 		[ session isAutoMode not or:
-		[ session isBusy ] ]) ifTrue: [ ^ self ].
+		[ session isBusy or:
+		[ (DateAndTime now - session connectionTime) asMinutes > 
+			self class maxKeepAlive ] ] ]) ifTrue: [ ^ self ].
 		
 	GtGemStoneKeepAliveSessionPollStartedSignal new
 		keepAlive: self;
