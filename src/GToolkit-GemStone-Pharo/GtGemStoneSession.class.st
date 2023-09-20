@@ -22,7 +22,8 @@ Class {
 		'sessionId',
 		'transactionMode',
 		'gt4gemstoneVersion',
-		'connectionTime'
+		'connectionTime',
+		'cacheName'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -50,6 +51,21 @@ GtGemStoneSession >> asGemStoneSession [
 GtGemStoneSession >> beDefaultSession [
 
 	registry defaultSession: self.
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> cacheName [
+
+	^ cacheName ifNil: 
+		[ cacheName := self evaluateAndWait: 'System getSharedCacheAttributes at: #cacheName'
+			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> cacheName: aString [
+
+	self evaluateAndWait: 'System cacheName: ''', aString, ''''.
+	cacheName := nil.
 ]
 
 { #category : #actions }
@@ -82,6 +98,7 @@ GtGemStoneSession >> connect [
 		gtSession: self;
 		yourself.
 	connectionTime := DateAndTime now.
+	self runPostConnectActions.
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 
@@ -553,6 +570,18 @@ GtGemStoneSession >> removeSelf [
 	registry removeSession: self.
 ]
 
+{ #category : #private }
+GtGemStoneSession >> runPostConnectActions [
+	"Run any post-connect actions.
+	These are methods with pragma #gsPostConnectAction"
+
+	^ self class allMethods 
+		select: [ :method | method hasPragmaNamed: #gsPostConnectAction ]
+		thenCollect: [ :method |
+			self perform: method selector.
+			method selector ].
+]
+
 { #category : #accessing }
 GtGemStoneSession >> sessionId [
 	^ sessionId
@@ -578,12 +607,17 @@ GtGemStoneSession >> statusAttributes [
 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
 	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
+	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
+	at: ''fpExceptions'' put: (
+(System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
 	at: ''Time'' put: DateAndTime now;
 	yourself'
 		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
+		add: 'Cache name' -> (gsAttributes at: 'CacheName');
+		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
 		add: 'Connection time' -> connectionTime;
 		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
