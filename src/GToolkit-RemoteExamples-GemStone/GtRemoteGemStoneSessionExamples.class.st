@@ -88,7 +88,6 @@ GtRemoteGemStoneSessionExamples >> testEvaluateReturnSerializedPrimitive [
 { #category : #tests }
 GtRemoteGemStoneSessionExamples >> testEvaluateReturnStonSerialized [
 	<gtExample>
-	<noTest>
 	| session result |
 
 	session := self runningServer.
