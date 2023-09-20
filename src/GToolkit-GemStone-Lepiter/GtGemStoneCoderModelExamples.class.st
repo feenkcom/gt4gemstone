@@ -14,7 +14,7 @@ GtGemStoneCoderModelExamples >> simpleExpression [
 
 	source := '4+3'.
 	coderModel := GtGemStoneCoderModel new.
-	coderModel sourceCode: (GtCoderExplicitSourceCode new source: source).
+	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
 	self assert: coderModel remoteScript withUnixLineEndings equals: 
@@ -35,7 +35,7 @@ GtGemStoneCoderModelExamples >> simpleExpressionWithGlobal [
 'g := 4.
 g + 3'.
 	coderModel := GtGemStoneCoderModel new.
-	coderModel sourceCode: (GtCoderExplicitSourceCode new source: source).
+	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
 	self assert: coderModel remoteScript withUnixLineEndings equals: 
@@ -58,7 +58,7 @@ GtGemStoneCoderModelExamples >> simpleExpressionWithModifiedGlobal [
 inputVariable := ''Used''.
 answer'.
 	coderModel := GtGemStoneCoderModel new.
-	coderModel sourceCode: (GtCoderExplicitSourceCode new source: source).
+	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	pharoBindings := GtLocalVariablesBindings new.
 	pharoBindings localAt: #inputVariable put: 40.
 	coderModel pharoBindings: pharoBindings.
@@ -87,7 +87,7 @@ GtGemStoneCoderModelExamples >> simpleExpressionWithTemps [
 a := 4.
 a + 3'.
 	coderModel := GtGemStoneCoderModel new.
-	coderModel sourceCode: (GtCoderExplicitSourceCode new source: source).
+	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
 	self assert: coderModel remoteScript withUnixLineEndings equals: 
