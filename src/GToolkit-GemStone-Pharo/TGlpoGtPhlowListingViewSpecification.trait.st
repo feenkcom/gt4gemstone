@@ -17,6 +17,13 @@ TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: a
 ]
 
 { #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> retrieveSentItemAt: aSelectionIndex [ 
+	^ self
+		proxyPerformReturnProxy: #retrieveSentItemAt:
+		withArguments: { aSelectionIndex }
+]
+
+{ #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retrieveTotalItemsCount [
 	^ self
 		proxyPerform: #retrieveTotalItemsCount
@@ -25,7 +32,6 @@ TGlpoGtPhlowListingViewSpecification >> retrieveTotalItemsCount [
 { #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [ 
 	^ self
-		proxyPerform: #retriveSentItemAt:
+		proxyPerformReturnProxy: #retriveSentItemAt:
 		withArguments: { aSelectionIndex }
-		"serializationStrategy: #GtRsrLiteralAndProxySerializationStrategy"
 ]

@@ -275,6 +275,19 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSessionRegistry >> gtInspectKeepAliveFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'log';
+		priority: 10;
+		icon: BrGlamorousVectorIcons transcript;
+		tooltip: 'Inspect KeepAlive log';
+		action: [ :button |
+			button phlow spawnObject: GtGemStoneKeepAliveCollector start ].
+]
+
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 

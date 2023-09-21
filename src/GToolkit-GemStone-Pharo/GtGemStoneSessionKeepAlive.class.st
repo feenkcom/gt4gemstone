@@ -171,7 +171,7 @@ GtGemStoneSessionKeepAlive >> pollSessions [
 	registry activeSessions do: [ :session |
 		[ self pollSession: session ]
 			on: Error
-			do: [ :ex | GtGemStoneKeepAliveSessionErrorSignal new halt
+			do: [ :ex | GtGemStoneKeepAliveSessionErrorSignal new
 				keepAlive: self;
 				session: session;
 				exception: ex;
