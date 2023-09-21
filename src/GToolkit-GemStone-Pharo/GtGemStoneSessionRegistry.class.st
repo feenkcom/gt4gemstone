@@ -275,6 +275,19 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSessionRegistry >> gtInspectKeepAliveFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'log';
+		priority: 10;
+		icon: BrGlamorousVectorIcons transcript;
+		tooltip: 'Inspect KeepAlive log';
+		action: [ :button |
+			button phlow spawnObject: GtGemStoneKeepAliveCollector start ].
+]
+
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtLiveFor: aView [
 	<gtView>
 
@@ -561,6 +574,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -589,12 +608,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
 ]
 
 { #category : #'system startup' }
