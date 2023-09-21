@@ -8,6 +8,19 @@ Class {
 }
 
 { #category : #accessing }
+GtRemoteGemstoneForwarderViewExamples >> assertTransformedValueInListFor: aTransformedValue [ 
+	self assert: aTransformedValue size equals: 2.
+	self assert: (aTransformedValue 
+		allSatisfy: [ :each | each class == GtGsBareProxy ]).
+	self 
+		assert: (aTransformedValue collect: [ :aProxy |
+			aProxy asGtProxyObject 
+				proxyPerform: #yourself 
+				serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy. ])
+		equals: { 42 . 42 }
+]
+
+{ #category : #accessing }
 GtRemoteGemstoneForwarderViewExamples >> computeObject [
 	<gtExample>
 	^ self runningServer 
