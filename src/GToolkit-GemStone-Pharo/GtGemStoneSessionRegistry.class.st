@@ -53,6 +53,11 @@ GtGemStoneSessionRegistry class >> default [
 	^ uniqueInstance
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry class >> defaultSession [
+	^ self default defaultSession
+]
+
 { #category : #initialization }
 GtGemStoneSessionRegistry class >> initialize [ 
 	"Reload the registry after lepiter has been notified of a session start"
@@ -295,20 +300,13 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		title: 'Sessions';
 		priority: 10;
 		items: [ sessions values sorted: #name ascending ];
-		column: 'Name' text: [ :item | | text |
-			text := item name asRopedText.
-			item isDefaultSession ifTrue: [ text bold ].
-			text ];
-		column: 'Connected' icon: [ :item |
-			item isRunning
-				ifTrue: [ BrGlamorousVectorIcons accept ]
-				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 70;
-		column: 'Changed' icon: [ :item |
-			item needsCommit
-				ifTrue: [ BrGlamorousVectorIcons accept ]
-				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 60;
+		column: 'Name' 
+			text: [ :aSession |
+				aSession formatBasedOnStatusText: aSession name ];
+		column: 'Status' 
+			text: [ :aSession | 
+				aSession formatBasedOnStatusText: aSession statusDescription ]
+			width: 175;
 		column: 'Default' icon: [ :item |
 			item isDefaultSession
 				ifTrue: [ BrGlamorousVectorIcons accept ]
