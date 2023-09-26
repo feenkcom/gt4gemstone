@@ -58,7 +58,7 @@ GtGemStoneSessionsCardWidget >> createAddNewSessionButton [
 		icon: BrGlamorousVectorIcons add;
 		label: 'Add a new session';
 		aptitude: BrGlamorousButtonWithIconAptitude;
-		addAptitude: (BrGlamorousWithDropdownAptitude 
+		addAptitude: ((BrGlamorousWithDropdownAptitude 
 			handle:[ 
 				BrButton new
 					icon: BrGlamorousVectorIcons add;
@@ -66,8 +66,10 @@ GtGemStoneSessionsCardWidget >> createAddNewSessionButton [
 			content: [
 				| connectorsList |
 				connectorsList := self createConnectorList.
+				connectorsList padding: (BlInsets left: 10 right: 10).
 				connectorsList items: (self registry connectors
-					sorted: #name ascending) ] ).
+					sorted: #name ascending) ] )
+			preferredExtent: 350 @250).
 	
 	^ selectionButton
 ]
@@ -78,12 +80,11 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 	newList := BrColumnedList new.
 	newList 
 		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
-		margin: (BlInsets top: 5 left: 10);
 		matchParent.
 
 	newList column
 		title: 'Name' translated;
-		width: 90;
+		width: 100;
 		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem | 
 			| sessionName sessionLabel |
@@ -92,13 +93,13 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 			aLabel text: sessionLabel ].
 	newList column 
 		title: 'Username' translated;
-		width: 90;
+		width: 125;
 		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem username ].
 	newList column 
 		title: 'Stone' translated;
-		width: 90;
+		width: 100;
 		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem stoneName ].

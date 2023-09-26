@@ -53,6 +53,11 @@ GtGemStoneSessionRegistry class >> default [
 	^ uniqueInstance
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry class >> defaultSession [
+	^ self default defaultSession
+]
+
 { #category : #initialization }
 GtGemStoneSessionRegistry class >> initialize [ 
 	"Reload the registry after lepiter has been notified of a session start"
