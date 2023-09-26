@@ -300,6 +300,15 @@ GtGemStoneSession >> evaluator [
 	^ evaluator
 ]
 
+{ #category : #'ui - utils' }
+GtGemStoneSession >> formatBasedOnStatusText: aText [
+	| ropedText |
+	ropedText := aText asRopedText.
+	"self isDefaultSession ifTrue: [ropedText bold]."
+	self isRunning ifFalse: [ropedText foreground: Color gray].
+	^ ropedText
+]
+
 { #category : #accessing }
 GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
@@ -626,6 +635,16 @@ GtGemStoneSession >> statusAttributes [
 		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
 
 	^ attributes
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> statusDescription [
+	^ self isRunning
+		ifTrue: [
+			'Connected',( self needsCommit
+				ifTrue: [ ', changed' ] 
+				ifFalse: [ '' ]) ]
+		ifFalse: [ 'Disconnected' ]
 ]
 
 { #category : #accessing }

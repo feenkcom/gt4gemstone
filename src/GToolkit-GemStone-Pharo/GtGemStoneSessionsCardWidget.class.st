@@ -44,9 +44,80 @@ GtGemStoneSessionsCardWidget >> activeMark [
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> buildUI [
 
-	self 
+	self
 		addChild: (sessionList := self createList);
-		addChild: self createToolbar.
+		addChild: self createToolbar
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> createAddNewSessionButton [
+	| selectionButton |
+	
+	selectionButton := BrButton new.
+	selectionButton 
+		icon: BrGlamorousVectorIcons add;
+		label: 'Add a new session';
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		addAptitude: (BrGlamorousWithDropdownAptitude 
+			handle:[ 
+				BrButton new
+					icon: BrGlamorousVectorIcons add;
+					aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude ]
+			content: [
+				| connectorsList |
+				connectorsList := self createConnectorList.
+				connectorsList items: (self registry connectors
+					sorted: #name ascending) ] ).
+	
+	^ selectionButton
+]
+
+{ #category : #'private - children' }
+GtGemStoneSessionsCardWidget >> createConnectorList [
+	| newList |
+	newList := BrColumnedList new.
+	newList 
+		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
+		margin: (BlInsets top: 5 left: 10);
+		matchParent.
+
+	newList column
+		title: 'Name' translated;
+		width: 90;
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem | 
+			| sessionName sessionLabel |
+			sessionName := eachItem name.
+			sessionLabel := sessionName asRopedText.
+			aLabel text: sessionLabel ].
+	newList column 
+		title: 'Username' translated;
+		width: 90;
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem |
+			aLabel text: eachItem username ].
+	newList column 
+		title: 'Stone' translated;
+		width: 90;
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem |
+			aLabel text: eachItem stoneName ].
+
+	newList
+		when: BrSelectionDoubleClicked
+		do: [ :anEvent | 
+			anEvent selection ifNotEmpty: [ :theIndices | 
+				| aWidgetElement selectedConnector |
+				aWidgetElement := anEvent currentTarget.
+				selectedConnector := aWidgetElement viewModel
+					itemAt: theIndices first.
+				self registry newSessionWithConnector: selectedConnector.
+				self updateContent.
+				anEvent target fireEvent: BrDropdownHideWish new] ].
+
+	newList addAptitude: BrColumnedListHeaderAptitude.
+
+	^ newList
 ]
 
 { #category : #'private - ui' }
@@ -69,7 +140,7 @@ GtGemStoneSessionsCardWidget >> createList [
 		padding: (BlInsets top: 5);
 		matchParent.
 	newList column
-		title: 'Session';
+		title: 'Name';
 		width: 100;
 		cellStencil:
 			[ BrLabel new
@@ -80,21 +151,18 @@ GtGemStoneSessionsCardWidget >> createList [
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
 						[ self sessionActionsFor: aSession ]).
-			aLabel text: aSession name ].
+			aLabel text: (aSession formatBasedOnStatusText: aSession name)].
 	newList column
-		title: 'Connected';
-		width: 70;
-		stencil: [ :aSession |
-			aSession isRunning
-				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
-	newList column
-		title: 'Changed';
-		width: 60;
-		stencil: [ :aSession |
-			aSession needsCommit
-				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
+		title: 'Status';
+		width: 125;
+		cellStencil:
+			[ BrLabel new
+				aptitude: BrGlamorousLabelAptitude new;
+				hMatchParent;
+				vFitContent ];
+		dataBinder: [ :aLabel :aSession |
+			aLabel text: (aSession formatBasedOnStatusText: aSession statusDescription) ].
+	
 	newList column
 		title: 'Default';
 		width: 50;
@@ -140,6 +208,7 @@ GtGemStoneSessionsCardWidget >> createToolbar [
 		vFitContent;
 		layout: BlLinearLayout horizontal alignTopRight;
 		addChild: self createTitleLabel;
+		addChild: (self createAddNewSessionButton margin: (BlInsets right: 5));
 		addChild: (self createRefreshButton margin: (BlInsets right: 5));
 		addChild: self createInspectButton;
 		yourself.
@@ -162,8 +231,8 @@ GtGemStoneSessionsCardWidget >> doSelectionChanged: anEvent [
 
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> initialize [
-
 	super initialize.
+	
 	self buildUI.
 	self updateContent.
 ]
@@ -243,6 +312,7 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aSession [
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> updateContent [
 
-	sessionList items: (self registry activeSessions ifEmpty:
-		[ { GtGemStoneCardWidgetNoSessions new } ]).
+	sessionList items: ((self registry activeSessions 
+		sorted: #name ascending) ifEmpty:[ 
+			{ GtGemStoneCardWidgetNoSessions new } ]).
 ]

@@ -122,8 +122,23 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 
 	newList column
 		title: 'Name' translated;
-		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		width: 120;
+		cellStencil:
+			[ BrLabel new
+				aptitude: BrGlamorousLabelAptitude new;
+				hMatchParent;
+				vFitContent ];
+		dataBinder: [ :aLabel :aSession |
+			| sessionName sessionLabel |
+			aLabel parent addAptitude: 
+				(BrGlamorousWithContextMenuAptitude content: [ 
+					self sessionActionsFor: aSession ]).
+			sessionName := aSession name.
+			sessionLabel := aSession formatBasedOnStatusText: sessionName.
+			sessionName = currentSessionNameComputation value ifTrue:
+				[ sessionLabel bold ].
+			aLabel text: sessionLabel ].
+		"cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem | | sessionName sessionLabel |
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
@@ -132,24 +147,27 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 			sessionLabel := sessionName asRopedText.
 			sessionName = currentSessionNameComputation value ifTrue:
 				[ sessionLabel bold ].
-			aLabel text: sessionLabel ].
+			aLabel text: sessionLabel ]."
 	newList column
-		title: 'Connected';
-		width: 70;
-		stencil: [ :aSession |
-			aSession isRunning
-				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
-	newList column
-		title: 'Changed';
-		width: 60;
-		stencil: [ :aSession |
-			aSession needsCommit
-				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
+		title: 'Status';
+		width: 150;
+		cellStencil:[ 
+			BrLabel new
+				aptitude: BrGlamorousLabelAptitude new;
+				hMatchParent;
+				vFitContent ];
+		dataBinder: [ :aLabel :aSession |
+			| statusLabel |
+			aLabel parent addAptitude: 
+				(BrGlamorousWithContextMenuAptitude content: [ 
+					self sessionActionsFor: aSession ]).
+			statusLabel := aSession formatBasedOnStatusText: aSession statusDescription.
+			aSession name = currentSessionNameComputation value ifTrue:
+				[ statusLabel bold ].
+			aLabel text: statusLabel ].
 	newList column
 		title: 'Default';
-		width: 50;
+		width: 60;
 		stencil: [ :aSession |
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
