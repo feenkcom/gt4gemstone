@@ -3,13 +3,19 @@ Extension { #name : #GtPharoMethodCoder }
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 303>
-
+	| sessionName |
+	
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
 		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
 			[ ^ self ].
+	sessionName := GtGemStoneSessionRegistry default defaultSession
+		ifNotNil: [ :aSession | aSession name ].
+		
 	coderAddOns
-		addContextMenuItem: 'Compile from GemStone' translated
+		addContextMenuItem: (self
+				createLabel: 'Compile from GemStone'
+				description: sessionName asString)
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
@@ -34,13 +40,18 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 302>
-
+	| sessionName |
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
 		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
 			[ ^ self ].
+			
+	sessionName := GtGemStoneSessionRegistry default defaultSession
+		ifNotNil: [ :aSession | aSession name ].
 	coderAddOns
-		addContextMenuItem: 'Compile to GemStone' translated
+		addContextMenuItem: (self
+				createLabel: 'Compile to GemStone'
+				description: sessionName asString)
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
@@ -66,13 +77,18 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 304>
-
+	| sessionName |
 	(anAST methodNode isNil or: 
 		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
 		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
 			[ ^ self ].
+	sessionName := GtGemStoneSessionRegistry default defaultSession
+		ifNotNil: [ :aSession | aSession name ].
+		
 	coderAddOns
-		addContextMenuItem: 'Inspect from GemStone' translated
+		addContextMenuItem: (self
+				createLabel: 'Inspect from GemStone'
+				description: sessionName asString)
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
