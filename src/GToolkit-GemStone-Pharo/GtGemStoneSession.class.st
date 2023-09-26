@@ -594,15 +594,18 @@ GtGemStoneSession >> sessionId: anObject [
 
 { #category : #ui }
 GtGemStoneSession >> statusAttributes [
-	| attributes gsAttributes |
+	| isRunning attributes gsAttributes |
 
+	isRunning := self isRunning.
 	attributes := OrderedCollection new.
 	attributes
 		add: 'Name' -> self name;
-		add: 'Connected' -> self isRunning;
+		add: 'Connected' -> isRunning;
 		add: 'Changed' -> self needsCommit;
 		add: 'Default' -> self isDefaultSession.
 
+	isRunning ifFalse: [ ^ attributes ].
+	
 	gsAttributes := self evaluateAndWait:
 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
