@@ -5,6 +5,11 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneCardWidgetNoSessions >> formatBasedOnStatusText: aText [
+	^ aText
+]
+
+{ #category : #accessing }
 GtGemStoneCardWidgetNoSessions >> isDefaultSession [
 
 	^ false
@@ -26,4 +31,9 @@ GtGemStoneCardWidgetNoSessions >> name [
 GtGemStoneCardWidgetNoSessions >> needsCommit [
 
 	^ false
+]
+
+{ #category : #accessing }
+GtGemStoneCardWidgetNoSessions >> statusDescription [
+	^ ''
 ]
