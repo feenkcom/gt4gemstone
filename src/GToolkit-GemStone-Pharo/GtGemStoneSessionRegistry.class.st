@@ -522,22 +522,22 @@ GtGemStoneSessionRegistry >> removeConnector: aGtGemStoneConnector [
 
 { #category : #removing }
 GtGemStoneSessionRegistry >> removeConnectorNamed: aString [
-	"Remove the supplied connector from the properties file.
-	This implies removing the associated session (if it exists)."
-
-	sessions
-		at: aString 
-		ifPresent: [ :session | session close ].
-	sessions removeKey: aString ifAbsent: [ ].
+	"Remove the supplied connector from the receiver and its properties file."
+	| removedConnector |
+	
+	removedConnector := connectors removeKey: aString.
 	propertiesFile removeConnectorNamed: aString.
-
+	removedConnector notifyRemoved.
 ]
 
 { #category : #removing }
 GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 	"Remove the supplied session and its definition"
 
-	self removeConnectorNamed: aGtGemStoneSession name.
+	aGtGemStoneSession close.
+	sessions
+		removeKey: aGtGemStoneSession name
+		ifAbsent: [ ^ self ].
 	self announce: (GtGemStoneSessionRemovedAnnouncement session: aGtGemStoneSession).
 ]
 
