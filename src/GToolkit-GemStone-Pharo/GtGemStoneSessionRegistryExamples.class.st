@@ -35,6 +35,37 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 ]
 
 { #category : #examples }
+GtGemStoneSessionRegistryExamples >> addSessionAnnouncement [
+	"Confirm that an announcement is received from the session registry when a session is added"
+	<gtExample>
+	| registry connector announcements session |
+
+	registry := self addNewConnectorAnnouncement.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
+	announcements := OrderedCollection new.
+	registry 
+		when: GtGemStoneSessionAnnouncement 
+		do: [ :anAnnouncement | announcements add: anAnnouncement ]
+		for: self.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
+	self assert: registry connectors size equals: 1.
+	self assert: registry activeSessions size equals: 0.
+
+	connector := registry connectors anyOne.
+	session := registry newSessionWithConnector: connector id: '11'.
+
+	self assert: session class equals: GtGemStoneSession.
+	self assert: announcements size equals: 2.
+	self assert: announcements first class equals: GtGemStoneSessionAddedAnnouncement.
+	self assert: announcements second class equals: GtGemStoneSessionDefaultAnnouncement.
+
+	registry unsubscribe: self.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
+
+	^ registry
+]
+
+{ #category : #examples }
 GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	"Confirm that a name change announcement is received from the session registry when a connector is renamed"
 	<gtExample>
@@ -93,25 +124,54 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is removed"
 	<gtExample>
-	| registry connector announcement |
+	| registry connector additionAnnouncement |
 
 	registry := self addNewConnectorAnnouncement.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
 	registry 
 		when: GtGemStoneConnectorAnnouncement 
-		do: [ :anAnnouncement | announcement := anAnnouncement ]
+		do: [ :anAnnouncement | additionAnnouncement := anAnnouncement ]
 		for: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry allConnectors size equals: 1.
+	self assert: registry connectors size equals: 1.
 
-	connector := registry connectorNamed: #connector1.
+	connector := registry connectors anyOne.
+	registry removeConnectorNamed: connector name.
+
 	self assert: connector class equals: GtGemStoneGciConnector.
+	self assert: additionAnnouncement isNotNil.
+	self assert: additionAnnouncement operation equals: #removed.
+	self assert: additionAnnouncement connector equals: connector.
 
-	registry removeConnector: connector.
-	self assert: announcement isNotNil.
-	self assert: announcement operation equals: #removed.
-	self assert: announcement connector equals: connector.
-	self assert: registry allConnectors size equals: 1.
+	registry unsubscribe: self.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
+
+	^ registry
+]
+
+{ #category : #examples }
+GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
+	"Confirm that an announcement is received from the session registry when a session is added"
+	<gtExample>
+	| registry announcements session |
+
+	registry := self addSessionAnnouncement.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
+	announcements := OrderedCollection new.
+	registry 
+		when: GtGemStoneSessionAnnouncement 
+		do: [ :anAnnouncement | announcements add: anAnnouncement ]
+		for: self.
+	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
+	self assert: registry connectors size equals: 1.
+	self assert: registry activeSessions size equals: 1.
+
+	session := registry activeSessions anyOne.
+	registry removeSession: session.
+
+	self assert: session class equals: GtGemStoneSession.
+	self assert: announcements size equals: 1.
+	self assert: announcements first class equals: GtGemStoneSessionRemovedAnnouncement.
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.

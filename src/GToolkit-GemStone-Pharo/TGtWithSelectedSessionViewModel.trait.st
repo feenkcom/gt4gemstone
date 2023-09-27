@@ -52,15 +52,6 @@ TGtWithSelectedSessionViewModel >> onPreviousSelectedSessionViewModelUnset: aPre
 ]
 
 { #category : #'api - selected session view model' }
-TGtWithSelectedSessionViewModel >> selectedSessionViewModel [
-	<return: #GtGemStoneSessionViewModel>
-	<propertyGetter: #selectedSessionViewModel>
-	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
-
-	^ selectedSessionViewModel
-]
-
-{ #category : #'api - selected session view model' }
 TGtWithSelectedSessionViewModel >> selectSessionViewModel: aNewSelectedSessionViewModel [
 	<propertySetter: #selectedSessionViewModel>
 	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertySetterTemplate'>
@@ -78,4 +69,13 @@ TGtWithSelectedSessionViewModel >> selectSessionViewModel: aNewSelectedSessionVi
 	selectedSessionViewModel := aNewSelectedSessionViewModel.
 	self onNewSelectedSessionViewModelSet: aNewSelectedSessionViewModel.
 	self notifySelectedSessionViewModelChanged
+]
+
+{ #category : #'api - selected session view model' }
+TGtWithSelectedSessionViewModel >> selectedSessionViewModel [
+	<return: #GtGemStoneSessionViewModel>
+	<propertyGetter: #selectedSessionViewModel>
+	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
+
+	^ selectedSessionViewModel
 ]
