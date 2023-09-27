@@ -132,8 +132,16 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 		when: GtGemStoneConnectorAnnouncement 
 		do: [ :anAnnouncement | additionAnnouncement := anAnnouncement ]
 		for: self.
-	self assert: registry announcer subscriptions numberOfSubscriptions equals: 1.
-	self assert: registry connectors size equals: 1.
+	self assert: registry announcer subscriptions numberOfSubscriptions = 1
+		description: [ String streamContents: [ :stream |
+			stream
+				<< 'registry announcer should have a single subscription, not: ';
+				print: registry announcer subscriptions ] ].
+	self assert: registry connectors size = 1
+		description: [ String streamContents: [ : stream |
+			stream
+				<< 'registry connectors should have a single entry, not: ';
+				print: registry connectors ] ].
 
 	connector := registry connectors anyOne.
 	registry removeConnectorNamed: connector name.
@@ -145,6 +153,11 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
+	self assert: registry announcer subscriptions numberOfSubscriptions = 0
+		description: [ String streamContents: [ :stream |
+			stream
+				<< 'registry announcer subscriptions should be empty, not: ';
+				print: registry announcer subscriptions ] ].
 
 	^ registry
 ]
