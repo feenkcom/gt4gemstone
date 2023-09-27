@@ -179,13 +179,16 @@ GtGemStonePropertiesFile >> onConnectorChanged: aGtGemStoneConnectorAnnouncement
 
 { #category : #removing }
 GtGemStonePropertiesFile >> removeConnectorNamed: aString [
+	"Remove the named connector from the receiver.
+	If the connector isn't known, quietly return"
 	| namedConnections connector |
 
 	namedConnections := properties at: #namedConnectors.
-	connector := namedConnections at: aString.
+	connector := namedConnections 
+		at: aString
+		ifAbsent: [ ^ self ].
 	namedConnections removeKey: aString.
 	self saveProperties.
-	connector notifyRemoved.
 	^ connector
 ]
 
