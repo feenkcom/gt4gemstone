@@ -307,32 +307,42 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			text: [ :aSession | 
 				aSession formatBasedOnStatusText: aSession statusDescription ]
 			width: 175;
-		column: 'Default' icon: [ :item |
-			item isDefaultSession
+		column: 'Default' icon: [ :aSession |
+			aSession isDefaultSession
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
 			width: 50;
 		contextItemLabel: 'Playground' action:
 			[ :anElement :aGtGemStoneSession | 
 				self openPlaygroundOn: aGtGemStoneSession from: anElement ];
-		contextItemLabel: 'Commit' action:
-			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession commitTransaction ];
-		contextItemLabel: 'Abort' action:
-			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession abortTransaction ];
-		contextItemLabel: 'Connect' action:
-			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession connect ];
-		contextItemLabel: 'Disconnect' action:
-			[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession close ];
-		contextItemLabel: 'Be Default' action: 
-			[ :anElement :aGtGemStoneSession | 
+		contextItemLabel: 'Commit' 
+			action: [ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession commitTransaction.
+				anElement phlow firstParentWithView phlow update ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
+		contextItemLabel: 'Abort' 
+			action: [ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession abortTransaction.
+				anElement phlow firstParentWithView phlow update ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
+		contextItemLabel: 'Connect' 
+			action:[ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession connect.
+				anElement phlow firstParentWithView phlow update ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning not ];
+		contextItemLabel: 'Disconnect' 
+			action: [ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession close.
+				anElement phlow firstParentWithView phlow update ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
+		contextItemLabel: 'Be Default' 
+			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession.
-				anElement phlow firstParentWithView phlow update ];
-		contextItemLabel: 'Inspect' action: 
-			[ :anElement :aGtGemStoneSession | anElement phlow spawnObject: aGtGemStoneSession ];
+				anElement phlow firstParentWithView phlow update ]
+			if: [ :aSession | aSession isDefaultSession not ];
+		contextItemLabel: 'Inspect' 
+			action: [ :anElement :aGtGemStoneSession | 
+				anElement phlow spawnObject: aGtGemStoneSession ];
 		actionUpdateButton
 ]
 
