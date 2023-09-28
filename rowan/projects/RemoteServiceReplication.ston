@@ -2,7 +2,7 @@ RwLoadSpecificationV2 {
 	#specName : 'RemoteServiceReplication',
 	#projectName : 'RemoteServiceReplication',
 	#gitUrl : 'git@github.com:feenkcom/RemoteServiceReplication.git',
-	#revision : 'development',
+	#revision : 'martin-136PortRange',
 	#projectSpecFile : 'rowan/project.ston',
 	#componentNames : [
 		'RemoteServiceReplication'
