@@ -604,7 +604,6 @@ GtGemStoneSession >> sessionId: anObject [
 { #category : #ui }
 GtGemStoneSession >> statusAttributes [
 	| isRunning attributes gsAttributes |
-
 	isRunning := self isRunning.
 	attributes := OrderedCollection new.
 	attributes
@@ -614,9 +613,9 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Default' -> self isDefaultSession.
 
 	isRunning ifFalse: [ ^ attributes ].
-	
-	gsAttributes := self evaluateAndWait:
-'Dictionary new
+
+	gsAttributes := self
+			evaluateAndWait: 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
 	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
 	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
@@ -624,10 +623,10 @@ GtGemStoneSession >> statusAttributes [
 (System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
 	at: ''Time'' put: DateAndTime now;
 	yourself'
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 
 	attributes
-		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
+		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
 		add: 'Cache name' -> (gsAttributes at: 'CacheName');
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
