@@ -591,6 +591,15 @@ GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection ifAbsent: absentBlock [
+	<return: #GtGemStoneSession>
+
+	^ sessions 
+		detect: [ :each | each connection = aRsrConnection ]
+		ifNone: absentBlock
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString [
 	"Answer a session with the supplied connector name.
 	Create the session if required."

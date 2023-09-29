@@ -141,7 +141,7 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 	| computedProxy |
 
-	computedProxy := gtSession evaluator
+	computedProxy := self gtSession evaluator
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
@@ -172,6 +172,17 @@ GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 		evaluateReturnProxy: aString
 		for: self
 		bindings: Dictionary new.
+]
+
+{ #category : #'private-accessing' }
+GtRsrProxyServiceClient >> getGtSession [
+	"Attempt to get the GT session based on the _connection"
+
+	gtSession ifNotNil: [ ^ gtSession ].
+
+	^ GtGemStoneSessionRegistry default 
+		sessionWithConnection: _connection
+		ifAbsent: [ nil ].
 ]
 
 { #category : #accessing }
@@ -305,7 +316,7 @@ GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtSession [
-	^ gtSession
+	^ gtSession ifNil: [ gtSession := self getGtSession ]
 ]
 
 { #category : #accessing }
