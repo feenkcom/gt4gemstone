@@ -68,15 +68,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -165,6 +156,15 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self 
+		evaluateAndWait: aString
+		serializationStrategy: #GtRsrStonSerializationStrategy
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -238,19 +238,6 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 		[ aStream << 'Service Client Proxy: <not connected>' ].
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		priority: 10;
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
-]
-
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 	self isProxyObjectActive 
@@ -288,6 +275,19 @@ GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 			<< ' [';
 			<< aGtSession name;
 			<< ']' ]
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 10;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #initialization }
@@ -435,6 +435,14 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArr
 		gtSession: gtSession) wait
 ]
 
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: anArray [
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: anArray 
+		serializationStrategy: #GtRsrStonSerializationStrategy.
+]
+
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 	"Should be all views, but just get Raw and Print views for now"
@@ -443,4 +451,13 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]
