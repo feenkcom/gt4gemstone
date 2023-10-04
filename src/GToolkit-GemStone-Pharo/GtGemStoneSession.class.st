@@ -601,6 +601,11 @@ GtGemStoneSession >> sessionId: anObject [
 	sessionId := anObject
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> sessionParameters [
+	^ session sessionParameters
+]
+
 { #category : #ui }
 GtGemStoneSession >> statusAttributes [
 	| isRunning attributes gsAttributes |
