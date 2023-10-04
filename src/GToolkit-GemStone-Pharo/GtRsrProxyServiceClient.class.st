@@ -165,6 +165,15 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self 
+		evaluateAndWait: aString
+		serializationStrategy: #GtRsrStonSerializationStrategy
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -433,6 +442,14 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArr
 	^ (GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
 		gtSession: gtSession) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: anArray [
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: anArray 
+		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
 { #category : #'gt inspector' }
