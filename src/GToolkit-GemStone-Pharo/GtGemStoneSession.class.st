@@ -626,7 +626,7 @@ GtGemStoneSession >> statusAttributes [
 			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 
 	attributes
-		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
+		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
 		add: 'Cache name' -> (gsAttributes at: 'CacheName');
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
