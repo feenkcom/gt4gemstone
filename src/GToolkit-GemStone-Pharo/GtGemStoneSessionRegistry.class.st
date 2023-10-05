@@ -25,7 +25,8 @@ Class {
 		'lastSessionId',
 		'defaultName',
 		'defaultSession',
-		'keepAlive'
+		'keepAlive',
+		'codeSync'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -171,6 +172,18 @@ GtGemStoneSessionRegistry >> cleanSessionWithConnectorNamed: aString [
 			each connector name = aString
 				and: [ each isRunning and: [ each needsCommit not ] ] ]
 		ifNone: [ self newSessionWithConnectorNamed: aString ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> codeSync [
+	^ codeSync
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> codeSync: aGtGemStoneCodeSync [
+
+	codeSync := aGtGemStoneCodeSync.
+	codeSync registry: self.
 ]
 
 { #category : #accessing }
