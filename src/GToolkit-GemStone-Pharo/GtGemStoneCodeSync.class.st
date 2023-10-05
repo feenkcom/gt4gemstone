@@ -42,8 +42,11 @@ GtGemStoneCodeSync >> initialize [
 GtGemStoneCodeSync >> onEntryAdded: anEntryAddedEvent [
 	| content |
 	content := anEntryAddedEvent entry content.
-	"Ignore non-code changes and changes to traits (which GemStone doesn't support)"
-	(content isCodeChange not or: [ content isEpTraitChange ]) ifTrue: 
+	"Ignore non-code changes and changes to traits (which GemStone doesn't support).
+	Category changes aren't yet implemented."
+	(content isCodeChange not or: 
+	[ content isEpTraitChange or:
+	[ content isEpCategoryChange ] ]) ifTrue: 
 		[ ^ self ].
 	events nextPut: anEntryAddedEvent entry content.
 	self scheduleFlush.
@@ -64,7 +67,9 @@ GtGemStoneCodeSync >> scheduleFlush [
 
 	flusher := [ self flush ] asAsyncPromise
 		then: [ ]
-		otherwise: [ :ex | self halt ].
+		otherwise: [ :ex |
+			ex freeze.
+			[ self error: ex printString ] fork ].
 ]
 
 { #category : #accessing }

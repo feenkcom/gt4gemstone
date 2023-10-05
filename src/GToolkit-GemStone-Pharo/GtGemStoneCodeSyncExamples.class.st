@@ -46,11 +46,11 @@ GtGemStoneCodeSyncExamples >> addMethod [
 ]
 
 { #category : #private }
-GtGemStoneCodeSyncExamples >> exampleCodeSync [
+GtGemStoneCodeSyncExamples >> ensureCodeSync [
 	"Answer a code sync configured for testing"
 	| registry classStrategy sessionStrategy |
 
-	codeSync ifNotNil: [ self error: 'codeSync already set' ].
+	codeSync ifNotNil: [ ^ codeSync ].
 	registry := GtGemStoneSessionRegistry new.
 	classStrategy := GtGemStoneCodeSyncExplicitClassStrategy new.
 	classStrategy classes: #(GtGemStoneCodeSyncExampleClass).
@@ -165,7 +165,7 @@ GtGemStoneCodeSyncExamples >> onBeaconSignal: aSignal [
 { #category : #accessing }
 GtGemStoneCodeSyncExamples >> registry [
 
-	^ codeSync registry
+	^ self ensureCodeSync registry
 ]
 
 { #category : #helper }
@@ -214,7 +214,7 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSession: aGtGemStoneSession [
 	(self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	[ self
-		exampleCodeSync;
+		ensureCodeSync;
 		setSession: aGtGemStoneSession;
 		addClass;
 		modifyClass;
