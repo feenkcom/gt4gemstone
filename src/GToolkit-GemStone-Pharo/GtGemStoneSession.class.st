@@ -593,12 +593,15 @@ GtGemStoneSession >> runPostConnectActions [
 
 { #category : #accessing }
 GtGemStoneSession >> sessionId [
+	<return: #String>
+
 	^ sessionId
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> sessionId: anObject [
-	sessionId := anObject
+GtGemStoneSession >> sessionId: aString [
+
+	sessionId := aString
 ]
 
 { #category : #accessing }
