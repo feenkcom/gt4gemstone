@@ -1,3 +1,8 @@
+"
+GtGemStoneCodeSyncExplicitClassStrategy syncs the named classes.
+
+Note that this should be used with care since renaming the class to something outside the list will cause it to no longer be synced.
+"
 Class {
 	#name : #GtGemStoneCodeSyncExplicitClassStrategy,
 	#superclass : #GtGemStoneCodeSyncClassStrategy,

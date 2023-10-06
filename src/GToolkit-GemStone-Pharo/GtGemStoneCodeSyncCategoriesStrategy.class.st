@@ -9,12 +9,15 @@ Class {
 
 { #category : #accessing }
 GtGemStoneCodeSyncCategoriesStrategy >> categories [
+	<return: #Collection of: #String>
+
 	^ categories
 ]
 
 { #category : #accessing }
-GtGemStoneCodeSyncCategoriesStrategy >> categories: anObject [
-	categories := anObject
+GtGemStoneCodeSyncCategoriesStrategy >> categories: aCollectionOfStrings [
+
+	categories := aCollectionOfStrings
 ]
 
 { #category : #testing }

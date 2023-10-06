@@ -147,6 +147,23 @@ GtGemStoneCodeSync >> syncClassCommentChange: anEpChange session: session [
 ]
 
 { #category : #'event handling' }
+GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
+	"Not yet working: this will fail if attempted"
+	| cmd |
+
+	cmd := String streamContents: [ :stream |
+		stream
+			<< anEpChange behaviorAffectedName;
+			<< ' renameTo: ';
+			print: anEpChange newName ].
+	session evaluateAndWait:  cmd.
+	GtGemStoneClassRenameCodeSyncSignal new
+		change: anEpChange;
+		session: session;
+		emit
+]
+
+{ #category : #'event handling' }
 GtGemStoneCodeSync >> syncClassRemoval: anEpChange session: session [
 
 	"session evaluateAndWait: (self error: 'not yet supported')."
