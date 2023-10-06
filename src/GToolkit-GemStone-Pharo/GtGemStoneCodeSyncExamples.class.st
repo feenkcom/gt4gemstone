@@ -23,7 +23,7 @@ GtGemStoneCodeSyncExamples >> addClass [
 		package: 'GtGemStoneExamples'.
 	semaphore wait.
 	signal := logger recordings last.
-	self assert: signal class equals: GtGemStoneClassCodeSyncSignal.
+	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpClassAddition.
 ]
@@ -43,6 +43,18 @@ GtGemStoneCodeSyncExamples >> addMethod [
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpMethodAddition.
 	self assert: signal change selector equals: #method1.
+]
+
+{ #category : #helper }
+GtGemStoneCodeSyncExamples >> commentClass [
+	| signal |
+
+	GtGemStoneCodeSyncExampleClass comment: 'comment 1'.
+	semaphore wait.
+	signal := logger recordings last.
+	self assert: signal class equals: GtGemStoneClassCommentCodeSyncSignal.
+	self assert: signal session identicalTo: codeSync registry defaultSession.
+	self assert: signal change isEpBehaviorCommentChange.
 ]
 
 { #category : #private }
@@ -133,7 +145,7 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 		package: 'GtGemStoneExamples'.
 	semaphore wait.
 	signal := logger recordings last.
-	self assert: signal class equals: GtGemStoneClassCodeSyncSignal.
+	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpClassModification.
 ]
@@ -175,7 +187,7 @@ GtGemStoneCodeSyncExamples >> removeClass [
 	(self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass) removeFromSystem.
 	semaphore wait.
 	signal := logger recordings last.
-	self assert: signal class equals: GtGemStoneClassCodeSyncSignal.
+	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpClassRemoval.
 	self assert: signal change behaviorAffectedName equals: #GtGemStoneCodeSyncExampleClass.
@@ -218,6 +230,7 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSession: aGtGemStoneSession [
 		setSession: aGtGemStoneSession;
 		addClass;
 		modifyClass;
+		commentClass;
 		addMethod;
 		modifyMethod;
 		removeMethod;
@@ -253,6 +266,7 @@ GtGemStoneCodeSyncExamples >> stopCodeSync [
 GtGemStoneCodeSyncExamples >> tidyUp [
 
 	logger announcer unsubscribe: self.
+	logger stop.
 	logger := nil.
 	self stopCodeSync.
 ]
