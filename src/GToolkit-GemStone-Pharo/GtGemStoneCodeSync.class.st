@@ -124,7 +124,23 @@ GtGemStoneCodeSync >> syncChange: change session: session [
 GtGemStoneCodeSync >> syncClassChange: anEpChange session: session [
 
 	session evaluateAndWait: anEpChange behaviorAffected gemstoneDefinitionScript.
-	GtGemStoneClassCodeSyncSignal new
+	GtGemStoneClassDefinitionCodeSyncSignal new
+		change: anEpChange;
+		session: session;
+		emit
+]
+
+{ #category : #'event handling' }
+GtGemStoneCodeSync >> syncClassCommentChange: anEpChange session: session [
+	| cmd |
+
+	cmd := String streamContents: [ :stream |
+		stream
+			<< anEpChange behaviorAffectedName;
+			<< ' comment: ';
+			print: anEpChange newComment ].
+	session evaluateAndWait:  cmd.
+	GtGemStoneClassCommentCodeSyncSignal new
 		change: anEpChange;
 		session: session;
 		emit
@@ -134,7 +150,7 @@ GtGemStoneCodeSync >> syncClassChange: anEpChange session: session [
 GtGemStoneCodeSync >> syncClassRemoval: anEpChange session: session [
 
 	"session evaluateAndWait: (self error: 'not yet supported')."
-	GtGemStoneClassCodeSyncSignal new
+	GtGemStoneClassDefinitionCodeSyncSignal new
 		change: anEpChange;
 		session: session;
 		emit
