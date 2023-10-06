@@ -1,16 +1,25 @@
 Class {
 	#name : #GtGemStoneCodeSync,
 	#superclass : #Object,
+	#traits : 'TGtAnnouncer',
+	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
 		'registry',
 		'sessionStrategy',
 		'classStrategy',
 		'events',
 		'subscription',
-		'flusher'
+		'flusher',
+		'announcer'
 	],
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
+
+{ #category : #private }
+GtGemStoneCodeSync >> announcer [
+
+	^ announcer
+]
 
 { #category : #accessing }
 GtGemStoneCodeSync >> classStrategy [
@@ -31,11 +40,45 @@ GtGemStoneCodeSync >> flush [
 		repeat.
 ]
 
+{ #category : #printing }
+GtGemStoneCodeSync >> gtDisplayOn: aStream [
+	"Write a detailed status of the receiver, suitable for displaying in a text editor"
+
+	aStream
+		<< 'GemStoneCodeSync: ';
+			<< self state;
+			cr.
+]
+
+{ #category : #accessing }
+GtGemStoneCodeSync >> gtStatusFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ self statusAttributes ];
+		column: #Attribute text: [ :item | item first ];
+		column: #Value text: [ :item | item second ];
+		send: [ :item | item third ];
+		actionButtonLabel: 'Start' action: [ self start ];
+		actionButtonLabel: 'Stop' action: [ self stop ];
+		updateWhen: GtGemStoneCodeSyncStateSignal in: [ self announcer ];
+		actionUpdateButton 
+]
+
 { #category : #accessing }
 GtGemStoneCodeSync >> initialize [
 
 	super initialize.
 	events := WaitfreeQueue new.
+	announcer := Announcer new.
+]
+
+{ #category : #testing }
+GtGemStoneCodeSync >> isRunning [
+
+	^ subscription isNotNil
 ]
 
 { #category : #'private - event handling' }
@@ -89,7 +132,43 @@ GtGemStoneCodeSync >> start [
 		[ subscription := EpMonitor current log announcer
 			when: EpEntryAdded
 			send: #onEntryAdded:
-			to: self ].
+			to: self.
+		self announce: GtGemStoneCodeSyncStateSignal new ].
+]
+
+{ #category : #accessing }
+GtGemStoneCodeSync >> state [
+
+	^ self isRunning
+		ifTrue: [ #running ]
+		ifFalse: [ #stopped ]
+]
+
+{ #category : #accessing }
+GtGemStoneCodeSync >> statusAttributes [
+
+	^ Array streamContents: [ :stream |
+		stream
+			nextPut: { #State. self state. self. };
+			nextPut: { 'Class strategy'. classStrategy gtDisplayString. classStrategy. };
+			nextPut: { 'Session strategy'. sessionStrategy gtDisplayString. sessionStrategy. } ].
+
+]
+
+{ #category : #printing }
+GtGemStoneCodeSync >> statusOn: aStream [
+	"Write a detailed status of the receiver, suitable for displaying in a text editor"
+
+	aStream
+		<< 'State: ';
+			<< self state;
+			cr;
+		<< 'Class Strategy: '.
+	classStrategy gtDisplayOn: aStream.
+	aStream
+		cr;
+		<< 'Session strategy: '.
+	sessionStrategy gtDisplayOn: aStream.
 ]
 
 { #category : #actions }
@@ -97,7 +176,8 @@ GtGemStoneCodeSync >> stop [
 
 	subscription ifNotNil: [ 
 		subscription announcer removeSubscription: subscription.
-		subscription := nil ]
+		subscription := nil.
+		self announce: GtGemStoneCodeSyncStateSignal new ]
 ]
 
 { #category : #private }

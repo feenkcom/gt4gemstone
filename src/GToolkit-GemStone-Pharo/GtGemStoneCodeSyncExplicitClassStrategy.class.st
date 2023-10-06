@@ -25,6 +25,14 @@ GtGemStoneCodeSyncExplicitClassStrategy >> classes: aCollectionOfClassNames [
 	classes := aCollectionOfClassNames
 ]
 
+{ #category : #accessing }
+GtGemStoneCodeSyncExplicitClassStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'one of: ';
+		print: classes
+]
+
 { #category : #testing }
 GtGemStoneCodeSyncExplicitClassStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied class should be synced"

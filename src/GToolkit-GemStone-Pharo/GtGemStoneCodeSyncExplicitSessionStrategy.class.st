@@ -8,6 +8,14 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneCodeSyncExplicitSessionStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'one of: ';
+		print: sessions
+]
+
+{ #category : #accessing }
 GtGemStoneCodeSyncExplicitSessionStrategy >> sessions [
 	^ sessions
 ]

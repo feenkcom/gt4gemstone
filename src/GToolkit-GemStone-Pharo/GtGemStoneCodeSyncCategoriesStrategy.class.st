@@ -20,6 +20,14 @@ GtGemStoneCodeSyncCategoriesStrategy >> categories: aCollectionOfStrings [
 	categories := aCollectionOfStrings
 ]
 
+{ #category : #printing }
+GtGemStoneCodeSyncCategoriesStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'classes in categories: ';
+		print: categories
+]
+
 { #category : #testing }
 GtGemStoneCodeSyncCategoriesStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied class should be synced"

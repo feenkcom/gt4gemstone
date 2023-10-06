@@ -277,6 +277,18 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSessionRegistry >> gtCodeSyncSummaryFor: aView [
+	<gtView>
+
+	codeSync ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Code Sync';
+		priority: 40;
+		object: [ codeSync ];
+		view: #gtStatusFor:
+]
+
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 	<gtView>
 
