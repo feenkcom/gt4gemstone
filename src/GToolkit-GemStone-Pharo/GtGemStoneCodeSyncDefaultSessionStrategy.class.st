@@ -4,6 +4,13 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
+{ #category : #accessing }
+GtGemStoneCodeSyncDefaultSessionStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'the default session'
+]
+
 { #category : #testing }
 GtGemStoneCodeSyncDefaultSessionStrategy >> syncSession: aGtGemStoneSession registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied session should be synced"
