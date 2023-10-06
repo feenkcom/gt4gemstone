@@ -121,6 +121,22 @@ GtGemStoneCodeSync >> syncChange: change session: session [
 ]
 
 { #category : #'event handling' }
+GtGemStoneCodeSync >> syncClassCategoryChange: anEpChange session: session [
+	| cmd |
+
+	cmd := String streamContents: [ :stream |
+		stream
+			<< anEpChange behaviorAffectedName;
+			<< ' category: ';
+			print: anEpChange newCategory ].
+	session evaluateAndWait:  cmd.
+	GtGemStoneClassCategoryChangeCodeSyncSignal new
+		change: anEpChange;
+		session: session;
+		emit
+]
+
+{ #category : #'event handling' }
 GtGemStoneCodeSync >> syncClassChange: anEpChange session: session [
 
 	session evaluateAndWait: anEpChange behaviorAffected gemstoneDefinitionScript.

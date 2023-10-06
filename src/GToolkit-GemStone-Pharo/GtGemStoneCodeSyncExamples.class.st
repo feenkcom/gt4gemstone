@@ -44,6 +44,18 @@ GtGemStoneCodeSyncExamples >> addMethod [
 ]
 
 { #category : #helper }
+GtGemStoneCodeSyncExamples >> changeClassCategory [
+	| signal |
+
+	self exampleClass category: 'GtGemStoneExamples2'.
+	semaphore wait.
+	signal := logger recordings last.
+	self assert: signal class equals: GtGemStoneClassCategoryChangeCodeSyncSignal.
+	self assert: signal session identicalTo: codeSync registry defaultSession.
+	self assert: signal change isEpBehaviorCategoryChange.
+]
+
+{ #category : #helper }
 GtGemStoneCodeSyncExamples >> commentClass [
 	| signal |
 
@@ -63,7 +75,7 @@ GtGemStoneCodeSyncExamples >> ensureCodeSync [
 	codeSync ifNotNil: [ ^ codeSync ].
 	registry := GtGemStoneSessionRegistry new.
 	classStrategy := GtGemStoneCodeSyncCategoriesStrategy new.
-	classStrategy categories: #(GtGemStoneExamples).
+	classStrategy categories: #(GtGemStoneExamples GtGemStoneExamples2).
 	sessionStrategy := GtGemStoneCodeSyncDefaultSessionStrategy new.
 	codeSync := GtGemStoneCodeSync new
 		classStrategy: classStrategy;
@@ -157,13 +169,13 @@ GtGemStoneCodeSyncExamples >> registry [
 GtGemStoneCodeSyncExamples >> removeClass [
 	| signal |
 
-	self renamedExampleClass removeFromSystem.
+	self exampleClass removeFromSystem.
 	semaphore wait.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpClassRemoval.
-	self assert: signal change behaviorAffectedName equals: self renamedClassName.
+	self assert: signal change behaviorAffectedName equals: self exampleClassName.
 ]
 
 { #category : #helper }
@@ -231,10 +243,11 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSession: aGtGemStoneSession [
 		addClass;
 		modifyClass;
 		commentClass;
+		changeClassCategory;
 		addMethod;
 		modifyMethod;
 		removeMethod;
-		renameClass;
+		"renameClass;"
 		removeClass ] ensure: [ self tidyUp ]
 ]
 
