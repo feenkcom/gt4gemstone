@@ -17,7 +17,7 @@ GtGemStoneCodeSyncExamples >> addClass [
 	| signal |
 
 	Object 
-		subclass: #GtGemStoneCodeSyncExampleClass
+		subclass: self exampleClassName
 		instanceVariableNames: '' 
 		classVariableNames: '' 
 		package: 'GtGemStoneExamples'.
@@ -30,11 +30,9 @@ GtGemStoneCodeSyncExamples >> addClass [
 
 { #category : #helper }
 GtGemStoneCodeSyncExamples >> addMethod [
-	| signal cls |
+	| signal |
 
-	cls := self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass.
-	cls ifNil: [ self error: 'Example class not defined' ].
-	cls
+	self exampleClass
 		compile: 'method1 ^ 1'
 		classified: 'category 1'.
 	semaphore wait.
@@ -46,10 +44,22 @@ GtGemStoneCodeSyncExamples >> addMethod [
 ]
 
 { #category : #helper }
+GtGemStoneCodeSyncExamples >> changeClassCategory [
+	| signal |
+
+	self exampleClass category: 'GtGemStoneExamples2'.
+	semaphore wait.
+	signal := logger recordings last.
+	self assert: signal class equals: GtGemStoneClassCategoryChangeCodeSyncSignal.
+	self assert: signal session identicalTo: codeSync registry defaultSession.
+	self assert: signal change isEpBehaviorCategoryChange.
+]
+
+{ #category : #helper }
 GtGemStoneCodeSyncExamples >> commentClass [
 	| signal |
 
-	GtGemStoneCodeSyncExampleClass comment: 'comment 1'.
+	self exampleClass comment: 'comment 1'.
 	semaphore wait.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassCommentCodeSyncSignal.
@@ -64,19 +74,13 @@ GtGemStoneCodeSyncExamples >> ensureCodeSync [
 
 	codeSync ifNotNil: [ ^ codeSync ].
 	registry := GtGemStoneSessionRegistry new.
-	classStrategy := GtGemStoneCodeSyncExplicitClassStrategy new.
-	classStrategy classes: #(GtGemStoneCodeSyncExampleClass).
+	classStrategy := GtGemStoneCodeSyncCategoriesStrategy new.
+	classStrategy categories: #(GtGemStoneExamples GtGemStoneExamples2).
 	sessionStrategy := GtGemStoneCodeSyncDefaultSessionStrategy new.
 	codeSync := GtGemStoneCodeSync new
 		classStrategy: classStrategy;
 		sessionStrategy: sessionStrategy.
-	"session := GtGemStoneTestingSession new.
-	session sessionId: '1'.
-	session registry: registry."
-	registry 
-		codeSync: codeSync ";
-		addSession: session named: 'default:1'.
-	session beDefaultSession".
+	registry codeSync: codeSync.
 	codeSync start.
 
 	semaphore := Semaphore new.
@@ -89,35 +93,18 @@ GtGemStoneCodeSyncExamples >> ensureCodeSync [
 	^ codeSync
 ]
 
-{ #category : #private }
-GtGemStoneCodeSyncExamples >> exampleCodeSyncWithSession: session [
-	"Answer a code sync configured for testing"
-	| registry classStrategy sessionStrategy |
+{ #category : #'private - accessing' }
+GtGemStoneCodeSyncExamples >> exampleClass [
 
-	codeSync ifNotNil: [ self error: 'codeSync already set' ].
-	registry := GtGemStoneSessionRegistry new.
-	classStrategy := GtGemStoneCodeSyncExplicitClassStrategy new.
-	classStrategy classes: #(GtGemStoneCodeSyncExampleClass).
-	sessionStrategy := GtGemStoneCodeSyncDefaultSessionStrategy new.
-	codeSync := GtGemStoneCodeSync new
-		classStrategy: classStrategy;
-		sessionStrategy: sessionStrategy.
-	sessionId := session sessionId.
-	session registry: registry.
-	registry 
-		codeSync: codeSync;
-		addSession: session named: 'default:1'.
-	session beDefaultSession.
-	codeSync start.
+	^ (self class environment classOrTraitNamed: self exampleClassName).
+]
 
-	semaphore := Semaphore new.
-	logger := MemoryLogger new startFor: GtGemStoneCodeSyncSignal.
-	logger announcer
-		when: GtGemStoneCodeSyncSignal
-		send: #onBeaconSignal:
-		to: self.
+{ #category : #'private - accessing' }
+GtGemStoneCodeSyncExamples >> exampleClassName [
+	"Answer the example class name.
+	Note that we can't use a symbol directly as it would be modified by the example."
 
-	^ codeSync
+	^ 'GtGemStoneCodeSyncExampleClass' asSymbol
 ]
 
 { #category : #private }
@@ -139,7 +126,7 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 	| signal |
 
 	Object 
-		subclass: #GtGemStoneCodeSyncExampleClass
+		subclass: self exampleClassName
 		instanceVariableNames: 'iVar1' 
 		classVariableNames: '' 
 		package: 'GtGemStoneExamples'.
@@ -152,11 +139,9 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 
 { #category : #helper }
 GtGemStoneCodeSyncExamples >> modifyMethod [
-	| signal cls |
+	| signal |
 
-	cls := self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass.
-	cls ifNil: [ self error: 'Example class not defined' ].
-	cls
+	self exampleClass
 		compile: 'method1 ^ 2'
 		classified: 'category 1'.
 	semaphore wait.
@@ -184,22 +169,20 @@ GtGemStoneCodeSyncExamples >> registry [
 GtGemStoneCodeSyncExamples >> removeClass [
 	| signal |
 
-	(self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass) removeFromSystem.
+	self exampleClass removeFromSystem.
 	semaphore wait.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpClassRemoval.
-	self assert: signal change behaviorAffectedName equals: #GtGemStoneCodeSyncExampleClass.
+	self assert: signal change behaviorAffectedName equals: self exampleClassName.
 ]
 
 { #category : #helper }
 GtGemStoneCodeSyncExamples >> removeMethod [
-	| signal cls |
+	| signal |
 
-	cls := self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass.
-	cls ifNil: [ self error: 'Example class not defined' ].
-	cls removeSelector: #method1.
+	self exampleClass removeSelector: #method1.
 	"Removing a selector generates a method modified event followed by the removed event"
 	semaphore wait; wait.
 	signal := logger recordings last.
@@ -207,7 +190,34 @@ GtGemStoneCodeSyncExamples >> removeMethod [
 	self assert: signal session identicalTo: codeSync registry defaultSession.
 	self assert: signal change isEpMethodRemoval.
 	self assert: signal change selector equals: #method1.
-	self assert: signal change behaviorAffectedName equals: #GtGemStoneCodeSyncExampleClass.
+	self assert: signal change behaviorAffectedName equals: self exampleClassName.
+]
+
+{ #category : #helper }
+GtGemStoneCodeSyncExamples >> renameClass [
+	| signal |
+
+	(RBRenameClassRefactoring
+		rename: self exampleClassName
+		to: self renamedClassName)
+			execute.
+	semaphore wait.
+	signal := logger recordings last.
+	self assert: signal class equals: GtGemStoneClassRenameCodeSyncSignal.
+	self assert: signal session identicalTo: codeSync registry defaultSession.
+	self assert: signal change isEpBehaviorNameChange.
+]
+
+{ #category : #'private - accessing' }
+GtGemStoneCodeSyncExamples >> renamedClassName [
+
+	^ #GtGemStoneCodeSyncExampleClassRenamed
+]
+
+{ #category : #'private - accessing' }
+GtGemStoneCodeSyncExamples >> renamedExampleClass [
+
+	^ self class environment classOrTraitNamed: self renamedClassName.
 ]
 
 { #category : #examples }
@@ -219,11 +229,13 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithDefaultSession [
 	self runAllChangesWithSession: self getDefaultSession
 ]
 
-{ #category : #private }
+{ #category : #'private - execution' }
 GtGemStoneCodeSyncExamples >> runAllChangesWithSession: aGtGemStoneSession [
 	"All changes are tested in a single example as class addition and removal is (relatively) slow and polutes the epicea log"
 
-	(self class environment classOrTraitNamed: #GtGemStoneCodeSyncExampleClass)
+	(self class environment classOrTraitNamed: self exampleClassName)
+		ifNotNil: [ :cls | cls removeFromSystem ].
+	(self class environment classOrTraitNamed: self renamedClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	[ self
 		ensureCodeSync;
@@ -231,9 +243,11 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSession: aGtGemStoneSession [
 		addClass;
 		modifyClass;
 		commentClass;
+		changeClassCategory;
 		addMethod;
 		modifyMethod;
 		removeMethod;
+		"renameClass;"
 		removeClass ] ensure: [ self tidyUp ]
 ]
 
@@ -269,4 +283,6 @@ GtGemStoneCodeSyncExamples >> tidyUp [
 	logger stop.
 	logger := nil.
 	self stopCodeSync.
+	self exampleClass ifNotNil: [ :cls | cls removeFromSystem ].
+	self renamedExampleClass ifNotNil: [ :cls | cls removeFromSystem ].
 ]

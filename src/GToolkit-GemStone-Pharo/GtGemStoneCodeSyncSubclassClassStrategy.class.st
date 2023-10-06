@@ -8,6 +8,14 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneCodeSyncSubclassClassStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'subclasses of: ';
+		print: superclass
+]
+
+{ #category : #accessing }
 GtGemStoneCodeSyncSubclassClassStrategy >> superclass [
 	^ superclass
 ]

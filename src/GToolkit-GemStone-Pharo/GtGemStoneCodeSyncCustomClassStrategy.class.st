@@ -7,6 +7,14 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
+{ #category : #printing }
+GtGemStoneCodeSyncCustomClassStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'classes matching: ';
+		print: valuable
+]
+
 { #category : #accessing }
 GtGemStoneCodeSyncCustomClassStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied class should be synced"

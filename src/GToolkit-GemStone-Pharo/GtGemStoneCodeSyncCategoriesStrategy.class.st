@@ -9,12 +9,23 @@ Class {
 
 { #category : #accessing }
 GtGemStoneCodeSyncCategoriesStrategy >> categories [
+	<return: #Collection of: #String>
+
 	^ categories
 ]
 
 { #category : #accessing }
-GtGemStoneCodeSyncCategoriesStrategy >> categories: anObject [
-	categories := anObject
+GtGemStoneCodeSyncCategoriesStrategy >> categories: aCollectionOfStrings [
+
+	categories := aCollectionOfStrings
+]
+
+{ #category : #printing }
+GtGemStoneCodeSyncCategoriesStrategy >> gtDisplayOn: aStream [
+
+	aStream
+		<< 'classes in categories: ';
+		print: categories
 ]
 
 { #category : #testing }
