@@ -1,3 +1,10 @@
+"
+Provide the ability to synchronise code from GT to GemStone.
+
+Note that this only works for classes that are not managed by Rowan (V2 at the time of writing).
+
+For information on how to configure and use code sync, see ""GemStone code synchronisation"" in the Glamorous Toolkit Book.
+"
 Class {
 	#name : #GtGemStoneCodeSync,
 	#superclass : #Object,
