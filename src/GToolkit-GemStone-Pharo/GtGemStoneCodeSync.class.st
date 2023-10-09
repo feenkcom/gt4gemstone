@@ -249,9 +249,7 @@ GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
 
 	cmd := String streamContents: [ :stream |
 		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' renameTo: ';
-			print: anEpChange newName ].
+			<< 'self error: ''GtGemStoneCodeSync rename not yet implemented' ].
 	session evaluateAndWait:  cmd.
 	GtGemStoneClassRenameCodeSyncSignal new
 		change: anEpChange;
@@ -262,7 +260,7 @@ GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
 { #category : #'event handling' }
 GtGemStoneCodeSync >> syncClassRemoval: anEpChange session: session [
 
-	"session evaluateAndWait: (self error: 'not yet supported')."
+	session evaluateAndWait: 'Globals removeKey: #', anEpChange behaviorAffectedName.
 	GtGemStoneClassDefinitionCodeSyncSignal new
 		change: anEpChange;
 		session: session;
