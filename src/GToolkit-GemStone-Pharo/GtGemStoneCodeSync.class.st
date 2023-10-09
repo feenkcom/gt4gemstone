@@ -1,3 +1,10 @@
+"
+Provide the ability to synchronise code from GT to GemStone.
+
+Note that this only works for classes that are not managed by Rowan (V2 at the time of writing).
+
+For information on how to configure and use code sync, see ""GemStone code synchronisation"" in the Glamorous Toolkit Book.
+"
 Class {
 	#name : #GtGemStoneCodeSync,
 	#superclass : #Object,
@@ -249,9 +256,7 @@ GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
 
 	cmd := String streamContents: [ :stream |
 		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' renameTo: ';
-			print: anEpChange newName ].
+			<< 'self error: ''GtGemStoneCodeSync rename not yet implemented' ].
 	session evaluateAndWait:  cmd.
 	GtGemStoneClassRenameCodeSyncSignal new
 		change: anEpChange;
@@ -262,7 +267,7 @@ GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
 { #category : #'event handling' }
 GtGemStoneCodeSync >> syncClassRemoval: anEpChange session: session [
 
-	"session evaluateAndWait: (self error: 'not yet supported')."
+	session evaluateAndWait: 'Globals removeKey: #', anEpChange behaviorAffectedName.
 	GtGemStoneClassDefinitionCodeSyncSignal new
 		change: anEpChange;
 		session: session;
