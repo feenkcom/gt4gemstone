@@ -8,6 +8,12 @@ Class {
 }
 
 { #category : #testing }
+GtGemStoneCodeSyncSessionStrategy >> isCodeSyncEnabledFor: aGtGemStoneSession registry: aGtGemStoneSessionRegistry [
+
+	^ self syncSession: aGtGemStoneSession registry: aGtGemStoneSessionRegistry
+]
+
+{ #category : #testing }
 GtGemStoneCodeSyncSessionStrategy >> syncSession: aGtGemStoneSession registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied session should be synced.
 	The default is to sync all sessions.

@@ -78,7 +78,7 @@ GtGemStoneCodeSyncExamples >> ensureCodeSync [
 	classStrategy categories: #(GtGemStoneExamples GtGemStoneExamples2).
 	sessionStrategy := GtGemStoneCodeSyncDefaultSessionStrategy new.
 	codeSync := GtGemStoneCodeSync new
-		classStrategy: classStrategy;
+		defaultClassStrategy: classStrategy;
 		sessionStrategy: sessionStrategy.
 	registry codeSync: codeSync.
 	codeSync start.

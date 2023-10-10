@@ -277,6 +277,30 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSessionRegistry >> gtCodeSyncLogGroupedFor: aView [
+	<gtView>
+
+	codeSync ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Code Sync Log Grouped';
+		priority: 44;
+		object: [ codeSync ];
+		view: #gtGroupedFor:
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> gtCodeSyncLogRecordsFor: aView [
+	<gtView>
+
+	codeSync ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Code Sync Log Records';
+		priority: 45;
+		object: [ codeSync ];
+		view: #gtRecordingsFor:
+]
+
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtCodeSyncSummaryFor: aView [
 	<gtView>
 
@@ -413,6 +437,14 @@ GtGemStoneSessionRegistry >> initialize [
 	super initialize.
 	lastSessionId := 0.
 	self reload "resetSessions".
+]
+
+{ #category : #testing }
+GtGemStoneSessionRegistry >> isCodeSyncEnabledFor: aGtGemStoneSession [
+	"Answer a boolean indicating whether code sync is enabled for the supplied session"
+
+	^ codeSync isNotNil and:
+		[ codeSync sessionStrategy isCodeSyncEnabledFor: aGtGemStoneSession registry: self ]
 ]
 
 { #category : #accessing }
