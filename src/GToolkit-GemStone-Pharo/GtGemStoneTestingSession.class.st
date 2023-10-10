@@ -137,6 +137,8 @@ GtGemStoneTestingSession >> initialize [
 	super initialize.
 	commandHistory := OrderedCollection new.
 	state := #disconnected.
+	"We want all changes propagated to the test session"
+	eventStrategy := GtGemStoneCodeSyncEpEventStrategy new.
 ]
 
 { #category : #accessing }

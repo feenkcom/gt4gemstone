@@ -65,6 +65,14 @@ GtGemStoneConnector >> initialize [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isCodeSyncAllowed [
+	"Answer a boolean indicating whether code sync is allowed for this connector.
+	This overrides the sessionStrategy."
+
+	^ true
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isDefaultSession [
 	"Answer a boolean indicating if the receiver is the default sessions.
 	This is a bit of a hack to allow the UI to work with either sessions or connectors."

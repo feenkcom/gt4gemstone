@@ -23,7 +23,10 @@ Class {
 		'transactionMode',
 		'gt4gemstoneVersion',
 		'connectionTime',
-		'cacheName'
+		'cacheName',
+		'enableCodeSync',
+		'classStrategy',
+		'eventStrategy'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -66,6 +69,17 @@ GtGemStoneSession >> cacheName: aString [
 
 	self evaluateAndWait: 'System cacheName: ''', aString, ''''.
 	cacheName := nil.
+]
+
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> classStrategy [
+
+	^ classStrategy ifNil: [ registry codeSync defaultClassStrategy ]
+]
+
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> classStrategy: anObject [
+	classStrategy := anObject
 ]
 
 { #category : #actions }
@@ -143,6 +157,16 @@ GtGemStoneSession >> dbSize [
 GtGemStoneSession >> dbSizeHumanReadable [
 
 	^ self dbSize humanReadableSIByteSize
+]
+
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> enableCodeSync [
+	^ enableCodeSync
+]
+
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> enableCodeSync: anObject [
+	enableCodeSync := anObject
 ]
 
 { #category : #actions }
@@ -300,6 +324,16 @@ GtGemStoneSession >> evaluator [
 	^ evaluator
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> eventStrategy [
+	^ eventStrategy
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> eventStrategy: anObject [
+	eventStrategy := anObject
+]
+
 { #category : #'ui - utils' }
 GtGemStoneSession >> formatBasedOnStatusText: aText [
 	| ropedText |
@@ -338,6 +372,23 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 		action: [ :button | 
 			self abortTransaction.
 			button phlow spawnObject: 'Aborted transaction' ]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtCodeSyncFor: aView [
+	<gtView>
+
+	(registry isNil or: 
+		[ registry codeSync isNil or:
+		[ connector isNil or:
+		[ connector isCodeSyncAllowed not ] ] ]) 
+			ifTrue: [ ^ aView empty ].
+
+	^ aView explicit
+		title: 'Code Sync.';
+		priority: 30;
+		stencil: [ GtGemStoneSessionCodeSyncWidget new session: self ];
+		actionUpdateButton.
 ]
 
 { #category : #ui }
@@ -488,6 +539,8 @@ GtGemStoneSession >> initialize [
 
 	super initialize.
 	mutex := Mutex new.
+	enableCodeSync := false.
+	eventStrategy := GtGemStoneCodeSyncBasicEpEventStrategy new.
 ]
 
 { #category : #testing }
@@ -500,6 +553,15 @@ GtGemStoneSession >> isAutoMode [
 GtGemStoneSession >> isBusy [
 
 	^ connection isBusy
+]
+
+{ #category : #testing }
+GtGemStoneSession >> isCodeSyncEnabled [
+	"Answer a boolean indicating whether the receiver has code sync running"
+
+	^ connector isCodeSyncAllowed and:
+		[ registry isNotNil and: 
+		[ registry isCodeSyncEnabledFor: self ] ]
 ]
 
 { #category : #testing }
@@ -621,6 +683,10 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Changed' -> self needsCommit;
 		add: 'Default' -> self isDefaultSession.
 
+	attributes add: (connector isCodeSyncAllowed
+		ifTrue: [ 'Code Sync enabled' -> self isCodeSyncEnabled ]
+		ifFalse: [ 'Code Sync Allowed' -> false ]).
+
 	isRunning ifFalse: [ ^ attributes ].
 
 	gsAttributes := self
@@ -668,6 +734,18 @@ GtGemStoneSession >> stop [
 	^ self close
 ]
 
+{ #category : #'code sync' }
+GtGemStoneSession >> syncChange: change in: aGtGemStoneCodeSync [
+	| behavior |
+
+	behavior := change behaviorAffected.
+	behavior ifNil: [ ^ self ].
+	(self classStrategy syncClass: behavior registry: registry) ifFalse: 
+		[ ^ false ].
+
+	change gtGemStoneCodeSyncIn: aGtGemStoneCodeSync session: self
+]
+
 { #category : #accessing }
 GtGemStoneSession >> timeDelta [
 	"Answer the difference in time between GT and GS."
@@ -675,6 +753,12 @@ GtGemStoneSession >> timeDelta [
 	^ DateAndTime now - 
 		(self evaluateAndWait: 'DateAndTime now'
 			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy)
+]
+
+{ #category : #actions }
+GtGemStoneSession >> toggleCodeSync [
+
+	enableCodeSync := enableCodeSync not.
 ]
 
 { #category : #accessing }

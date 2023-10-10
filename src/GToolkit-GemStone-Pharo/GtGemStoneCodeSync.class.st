@@ -12,12 +12,12 @@ Class {
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
 		'registry',
-		'sessionStrategy',
-		'classStrategy',
 		'events',
 		'subscription',
 		'flusher',
-		'announcer'
+		'announcer',
+		'defaultClassStrategy',
+		'sessionStrategy'
 	],
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
@@ -29,13 +29,13 @@ GtGemStoneCodeSync >> announcer [
 ]
 
 { #category : #accessing }
-GtGemStoneCodeSync >> classStrategy [
-	^ classStrategy
+GtGemStoneCodeSync >> defaultClassStrategy [
+	^ defaultClassStrategy
 ]
 
 { #category : #accessing }
-GtGemStoneCodeSync >> classStrategy: anObject [
-	classStrategy := anObject
+GtGemStoneCodeSync >> defaultClassStrategy: anObject [
+	defaultClassStrategy := anObject
 ]
 
 { #category : #private }
@@ -80,6 +80,7 @@ GtGemStoneCodeSync >> initialize [
 	super initialize.
 	events := WaitfreeQueue new.
 	announcer := Announcer new.
+	sessionStrategy := GtGemStoneCodeSyncSessionFlagStrategy new.
 ]
 
 { #category : #testing }
@@ -135,6 +136,10 @@ GtGemStoneCodeSync >> sessionStrategy: anObject [
 { #category : #actions }
 GtGemStoneCodeSync >> start [
 
+	sessionStrategy ifNil:
+		[ self error: 'Default session strategy must be defined' ].
+	defaultClassStrategy ifNil:
+		[ self error: 'Default class strategy must be defined' ].
 	subscription ifNil: 
 		[ subscription := EpMonitor current log announcer
 			when: EpEntryAdded
@@ -157,7 +162,7 @@ GtGemStoneCodeSync >> statusAttributes [
 	^ Array streamContents: [ :stream |
 		stream
 			nextPut: { #State. self state. self. };
-			nextPut: { 'Class strategy'. classStrategy gtDisplayString. classStrategy. };
+			nextPut: { 'Default class strategy'. defaultClassStrategy gtDisplayString. defaultClassStrategy. };
 			nextPut: { 'Session strategy'. sessionStrategy gtDisplayString. sessionStrategy. } ].
 
 ]
@@ -170,8 +175,8 @@ GtGemStoneCodeSync >> statusOn: aStream [
 		<< 'State: ';
 			<< self state;
 			cr;
-		<< 'Class Strategy: '.
-	classStrategy gtDisplayOn: aStream.
+		<< 'Default class Strategy: '.
+	defaultClassStrategy gtDisplayOn: aStream.
 	aStream
 		cr;
 		<< 'Session strategy: '.
@@ -189,131 +194,8 @@ GtGemStoneCodeSync >> stop [
 
 { #category : #private }
 GtGemStoneCodeSync >> syncChange: change [
-	| behavior |
-
-	behavior := change behaviorAffected.
-	behavior ifNil: [ ^ false ].
-	(classStrategy syncClass: behavior
-		registry: registry) ifFalse: [ ^ false ].
 
 	registry activeSessions do: [ :session |
 		(sessionStrategy syncSession: session registry: registry) ifTrue:
-			[ self syncChange: change session: session ] ]
-]
-
-{ #category : #private }
-GtGemStoneCodeSync >> syncChange: change session: session [
-
-	change gtGemStoneCodeSyncIn: self session: session
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncClassCategoryChange: anEpChange session: session [
-	| cmd |
-
-	cmd := String streamContents: [ :stream |
-		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' category: ';
-			print: anEpChange newCategory ].
-	session evaluateAndWait:  cmd.
-	GtGemStoneClassCategoryChangeCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncClassChange: anEpChange session: session [
-
-	session evaluateAndWait: anEpChange behaviorAffected gemstoneDefinitionScript.
-	GtGemStoneClassDefinitionCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncClassCommentChange: anEpChange session: session [
-	| cmd |
-
-	cmd := String streamContents: [ :stream |
-		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' comment: ';
-			print: anEpChange newComment ].
-	session evaluateAndWait:  cmd.
-	GtGemStoneClassCommentCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncClassNameChange: anEpChange session: session [
-	"Not yet working: this will fail if attempted"
-	| cmd |
-
-	cmd := String streamContents: [ :stream |
-		stream
-			<< 'self error: ''GtGemStoneCodeSync rename not yet implemented' ].
-	session evaluateAndWait:  cmd.
-	GtGemStoneClassRenameCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncClassRemoval: anEpChange session: session [
-
-	session evaluateAndWait: 'Globals removeKey: #', anEpChange behaviorAffectedName.
-	GtGemStoneClassDefinitionCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncIgnore: anEpChange session: session [
-
-	GtGemStoneIgnoredCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncMethodChange: anEpChange session: session [
-	| cmd |
-
-	cmd := String streamContents: [ :stream |
-		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' compileMethod: ';
-			print: anEpChange methodAffected sourceCode; cr;
-			<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
-			<< 'category: #'''; << anEpChange protocol; << ''''; cr;
-			<< 'environmentId: 0' ].
-	session evaluateAndWait: cmd.
-	GtGemStoneMethodCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
-]
-
-{ #category : #'event handling' }
-GtGemStoneCodeSync >> syncMethodRemoval: anEpChange session: session [
-	| cmd |
-
-	cmd := String streamContents: [ :stream |
-		stream
-			<< anEpChange behaviorAffectedName;
-			<< ' removeSelector: ';
-			print: anEpChange selector; cr ].
-	session evaluateAndWait: cmd.
-	GtGemStoneMethodCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		emit
+			[ session syncChange: change in: self ] ]
 ]
