@@ -107,7 +107,7 @@ GtGemStoneCodeSyncExamples >> exampleClassName [
 	^ 'GtGemStoneCodeSyncExampleClass' asSymbol
 ]
 
-{ #category : #private }
+{ #category : #'private - execution' }
 GtGemStoneCodeSyncExamples >> getDefaultSession [
 	"Connect the receiver's registry to the default properties file and use the default connector"
 
@@ -116,7 +116,7 @@ GtGemStoneCodeSyncExamples >> getDefaultSession [
 	^ self registry newSessionWithConnectorNamed: 'default'.
 ]
 
-{ #category : #private }
+{ #category : #'private - execution' }
 GtGemStoneCodeSyncExamples >> getSimulatedSession [
 	^ GtGemStoneTestingSession new sessionId: '1'
 ]
@@ -262,7 +262,9 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 { #category : #private }
 GtGemStoneCodeSyncExamples >> setSession: aGtGemStoneSession [
 
-	aGtGemStoneSession registry: self registry.
+	aGtGemStoneSession 
+		registry: self registry;
+		codeSyncEnabled: true.
 	self registry addSession: aGtGemStoneSession named: aGtGemStoneSession name.
 	aGtGemStoneSession beDefaultSession.
 	codeSync start.

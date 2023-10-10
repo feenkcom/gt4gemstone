@@ -41,7 +41,7 @@ GtGemStoneSessionCodeSyncWidget >> isRunning [
 		ifNil: [ false ]
 		ifNotNil: [ :codeSync |
 			codeSync isRunning and:
-			[ session enableCodeSync ] ]
+			[ session codeSyncEnabled ] ]
 ]
 
 { #category : #'private - ui' }

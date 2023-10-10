@@ -105,7 +105,7 @@ GtGemStoneCodeSync >> initialize [
 	super initialize.
 	events := WaitfreeQueue new.
 	announcer := Announcer new.
-	sessionStrategy := GtGemStoneCodeSyncSessionFlagStrategy new.
+	sessionStrategy := GtGemStoneCodeSyncSessionStrategy new.
 ]
 
 { #category : #testing }
@@ -237,6 +237,6 @@ GtGemStoneCodeSync >> stopLogging [
 GtGemStoneCodeSync >> syncChange: change [
 
 	registry activeSessions do: [ :session |
-		(sessionStrategy syncSession: session registry: registry) ifTrue:
+		session codeSyncEnabled ifTrue:
 			[ session syncChange: change in: self ] ]
 ]
