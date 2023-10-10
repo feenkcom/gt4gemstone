@@ -541,7 +541,7 @@ GtGemStoneSession >> initialize [
 	super initialize.
 	mutex := Mutex new.
 	codeSyncEnabled := false.
-	eventStrategy := GtGemStoneCodeSyncBasicEpEventStrategy new.
+	eventStrategy := GtGemStoneCodeSyncEpEventStrategy new.
 ]
 
 { #category : #testing }
