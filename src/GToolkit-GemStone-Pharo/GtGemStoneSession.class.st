@@ -24,9 +24,9 @@ Class {
 		'gt4gemstoneVersion',
 		'connectionTime',
 		'cacheName',
-		'enableCodeSync',
 		'classStrategy',
-		'eventStrategy'
+		'eventStrategy',
+		'codeSyncEnabled'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -93,6 +93,17 @@ GtGemStoneSession >> close [
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
 ]
 
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> codeSyncEnabled [
+	^ codeSyncEnabled
+]
+
+{ #category : #'accessing - code sync' }
+GtGemStoneSession >> codeSyncEnabled: aBoolean [
+
+	codeSyncEnabled := aBoolean
+]
+
 { #category : #actions }
 GtGemStoneSession >> commitTransaction [
 
@@ -157,16 +168,6 @@ GtGemStoneSession >> dbSize [
 GtGemStoneSession >> dbSizeHumanReadable [
 
 	^ self dbSize humanReadableSIByteSize
-]
-
-{ #category : #'accessing - code sync' }
-GtGemStoneSession >> enableCodeSync [
-	^ enableCodeSync
-]
-
-{ #category : #'accessing - code sync' }
-GtGemStoneSession >> enableCodeSync: anObject [
-	enableCodeSync := anObject
 ]
 
 { #category : #actions }
@@ -539,7 +540,7 @@ GtGemStoneSession >> initialize [
 
 	super initialize.
 	mutex := Mutex new.
-	enableCodeSync := false.
+	codeSyncEnabled := false.
 	eventStrategy := GtGemStoneCodeSyncBasicEpEventStrategy new.
 ]
 
@@ -629,9 +630,11 @@ GtGemStoneSession >> registry [
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> registry: anObject [
+GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 
-	registry := anObject
+	registry := aGtGemStoneSessionRegistry.
+	registry codeSync ifNotNil: [ :codeSync |
+		codeSyncEnabled := codeSync sessionStrategy syncSession: self registry: registry ].
 ]
 
 { #category : #removing }
@@ -758,7 +761,7 @@ GtGemStoneSession >> timeDelta [
 { #category : #actions }
 GtGemStoneSession >> toggleCodeSync [
 
-	enableCodeSync := enableCodeSync not.
+	codeSyncEnabled := codeSyncEnabled not.
 ]
 
 { #category : #accessing }

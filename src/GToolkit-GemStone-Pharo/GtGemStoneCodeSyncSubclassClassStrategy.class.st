@@ -30,5 +30,5 @@ GtGemStoneCodeSyncSubclassClassStrategy >> superclass: aClass [
 GtGemStoneCodeSyncSubclassClassStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
 	"Answer a boolean indicating whether the supplied class should be synced"
 
-	^ aClass instanceSide inheritsFrom: superclass
+	^ aClass instanceSide inheritedFrom: superclass
 ]
