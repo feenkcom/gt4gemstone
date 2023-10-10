@@ -8,13 +8,14 @@ Class {
 }
 
 { #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertGemStoneSessionLabel: aString for: aScripter [ 
-	aScripter assert
-		label: 'Tab label exists';
-		// GtGemStoneSessionSelectionBadgeElement;
-		value: [ :aSelectionElement | aSelectionElement label asString ] 
-			equals: ('GemStone (', aString, ')');
-		play.
+GtRemoteGemStonePlaygroundExamples >> assertGemStoneSessionLabel: aString for: aScripter [
+	aScripter
+		assertStep: [ :s | 
+			s
+				label: 'Tab label exists';
+				// GtGemStoneSessionSelectionBadgeElement;
+				value: [ :aSelectionElement | aSelectionElement label asString ]
+					equals: 'GemStone (' , aString , ')' ]
 ]
 
 { #category : #'tear down' }
