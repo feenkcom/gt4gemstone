@@ -48,6 +48,27 @@ GtGemStoneConnector >> connector [
 	^ self
 ]
 
+{ #category : #ui }
+GtGemStoneConnector >> gtStatusFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ self statusAttributes];
+		column: 'Attribute' text: [ :item | item key ];
+		column: 'Value' 
+			text: [ :item | | value |
+				value := item value.
+				value isBoolean ifTrue:
+					[ value
+						ifTrue: [ (Character value: 16r2713) asString ]
+						ifFalse: [ '-' ] ]
+				ifFalse:
+					[ value ] ];
+		actionUpdateButton
+]
+
 { #category : #accessing }
 GtGemStoneConnector >> host [
 	^ host
@@ -173,6 +194,18 @@ GtGemStoneConnector >> serviceName [
 { #category : #accessing }
 GtGemStoneConnector >> serviceName: anObject [
 	serviceName := anObject
+]
+
+{ #category : #ui }
+GtGemStoneConnector >> statusAttributes [
+	| attributes |
+
+	attributes := OrderedCollection new.
+	attributes
+		add: 'Name' -> self name;
+		add: 'Code Sync Allowed' -> self isCodeSyncAllowed.
+
+	^ attributes
 ]
 
 { #category : #accessing }
