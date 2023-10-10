@@ -277,6 +277,30 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSessionRegistry >> gtCodeSyncLogGroupedFor: aView [
+	<gtView>
+
+	codeSync ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Code Sync Log Grouped';
+		priority: 44;
+		object: [ codeSync ];
+		view: #gtGroupedFor:
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> gtCodeSyncLogRecordsFor: aView [
+	<gtView>
+
+	codeSync ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Code Sync Log Records';
+		priority: 45;
+		object: [ codeSync ];
+		view: #gtRecordingsFor:
+]
+
+{ #category : #ui }
 GtGemStoneSessionRegistry >> gtCodeSyncSummaryFor: aView [
 	<gtView>
 

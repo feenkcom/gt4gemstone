@@ -11,13 +11,14 @@ Class {
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
-		'registry',
+		'log',
 		'events',
-		'subscription',
-		'flusher',
 		'announcer',
+		'sessionStrategy',
 		'defaultClassStrategy',
-		'sessionStrategy'
+		'subscription',
+		'registry',
+		'flusher'
 	],
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
@@ -57,7 +58,31 @@ GtGemStoneCodeSync >> gtDisplayOn: aStream [
 			cr.
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
+GtGemStoneCodeSync >> gtGroupedFor: aView [
+	<gtView>
+
+	log ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Log Grouped';
+		priority: 20;
+		object: [ log ];
+		view: #gtGroupedFor:
+]
+
+{ #category : #ui }
+GtGemStoneCodeSync >> gtRecordingsFor: aView [
+	<gtView>
+
+	log ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Log Recordings';
+		priority: 21;
+		object: [ log ];
+		view: #gtRecordingsFor:
+]
+
+{ #category : #ui }
 GtGemStoneCodeSync >> gtStatusFor: aView [
 	<gtView>
 
@@ -146,6 +171,14 @@ GtGemStoneCodeSync >> start [
 			send: #onEntryAdded:
 			to: self.
 		self announce: GtGemStoneCodeSyncStateSignal new ].
+	self startLogging.
+]
+
+{ #category : #'private - actions' }
+GtGemStoneCodeSync >> startLogging [
+
+	log ifNil: [ log := CircularMemoryLogger new ].
+	log isRunning ifFalse: [ log startFor: GtGemStoneCodeSyncSignal ].
 ]
 
 { #category : #accessing }
@@ -189,7 +222,15 @@ GtGemStoneCodeSync >> stop [
 	subscription ifNotNil: [ 
 		subscription announcer removeSubscription: subscription.
 		subscription := nil.
-		self announce: GtGemStoneCodeSyncStateSignal new ]
+		self announce: GtGemStoneCodeSyncStateSignal new ].
+	self stopLogging.
+]
+
+{ #category : #'private - actions' }
+GtGemStoneCodeSync >> stopLogging [
+
+	log ifNotNil:
+		[ log stop ].
 ]
 
 { #category : #private }
