@@ -74,9 +74,7 @@ GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
 	"Classes may perform some activities on a singleton that is about to be released"
 	
 	uniqueInstance ifNotNil: 
-		[ uniqueInstance 
-			resetSessions;
-			stopKeepAlive ].
+		[ uniqueInstance shutdown ].
 ]
 
 { #category : #accessing }
@@ -684,11 +682,27 @@ GtGemStoneSessionRegistry >> sessions [
 	^ sessions
 ]
 
+{ #category : #initialization }
+GtGemStoneSessionRegistry >> shutdown [
+
+	self resetSessions.
+	self stopKeepAlive.
+	self stopCodeSync.
+]
+
 { #category : #'system startup' }
 GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"
 
 	isImageStarting ifTrue: [ self reload ]
+]
+
+{ #category : #initialization }
+GtGemStoneSessionRegistry >> stopCodeSync [
+
+	codeSync ifNotNil:
+		[ codeSync stop.
+		codeSync := nil ]
 ]
 
 { #category : #'keep alive' }
