@@ -14,6 +14,46 @@ Class {
 }
 
 { #category : #'event handling' }
+GtGemStoneCodeSyncEpEventStrategy >> copyClass: anEpNameChange session: session [
+	"Create a newclass based on anEpNameChange and copy the methods from the old class"
+	| script |
+
+	session evaluateAndWait: anEpNameChange behaviorAffected gemstoneDefinitionScript.
+
+	script := String streamContents: [ :stream |
+			stream
+				<< anEpNameChange oldName;
+					<< ' methodsDo: [ :selector :method | | category |'; cr;
+					<< 'category := ';
+						<< anEpNameChange oldName;
+						<< ' categoryOfSelector: selector.'; cr;
+					<< anEpNameChange newName;
+					<< ' compileMethod: method sourceString'; cr;
+					<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
+					<< 'category: category'; cr;
+					<< 'environmentId: 0';
+					<< ' ].';
+					cr;
+				<< anEpNameChange oldName;
+					<< ' class methodsDo: [ :selector :method | | category |'; cr;
+					<< 'category := ';
+						<< anEpNameChange oldName;
+						<< ' class categoryOfSelector: selector.'; cr;
+					<< anEpNameChange newName;
+					<< ' class compileMethod: method sourceString'; cr;
+					<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
+					<< 'category: category'; cr;
+					<< 'environmentId: 0';
+					<< ' ].';
+					cr;
+				<< anEpNameChange newName;
+					<< ' comment: ';
+					<< anEpNameChange oldName;
+					<< ' comment.' ].
+	session evaluateAndWait: script.
+]
+
+{ #category : #'event handling' }
 GtGemStoneCodeSyncEpEventStrategy >> syncClassCategoryChange: anEpChange session: session [
 	| cmd |
 
@@ -57,13 +97,9 @@ GtGemStoneCodeSyncEpEventStrategy >> syncClassCommentChange: anEpChange session:
 
 { #category : #'event handling' }
 GtGemStoneCodeSyncEpEventStrategy >> syncClassNameChange: anEpChange session: session [
-	"Not yet working: this will fail if attempted"
-	| cmd |
+	"The default action when renaming classes is to copy the class to the new name and leave the old definition untouched (for manual data migration later)"
 
-	cmd := String streamContents: [ :stream |
-		stream
-			<< 'self error: ''GtGemStoneCodeSync rename not yet implemented' ].
-	session evaluateAndWait:  cmd.
+	self copyClass: anEpChange session: session.
 	GtGemStoneClassRenameCodeSyncSignal new
 		change: anEpChange;
 		session: session;
@@ -72,11 +108,18 @@ GtGemStoneCodeSyncEpEventStrategy >> syncClassNameChange: anEpChange session: se
 
 { #category : #'event handling' }
 GtGemStoneCodeSyncEpEventStrategy >> syncClassRemoval: anEpChange session: session [
+	| script removed |
 
-	session evaluateAndWait: 'Globals removeKey: #', anEpChange behaviorAffectedName.
-	GtGemStoneClassDefinitionCodeSyncSignal new
+	script := String streamContents: [ :stream |
+		stream
+			<< '(Globals removeKey: #';
+			<< anEpChange behaviorAffectedName;
+			<< ' ifAbsent: []) ifNil: [ false ] ifNotNil: [ true ]' ].
+	removed  := session evaluateAndWait: script .
+	GtGemStoneClassRemovalCodeSyncSignal new
 		change: anEpChange;
 		session: session;
+		removed: removed;
 		emit
 ]
 
