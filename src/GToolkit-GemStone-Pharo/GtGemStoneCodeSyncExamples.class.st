@@ -333,6 +333,8 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithDefaultSession [
 GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 	"All changes are tested in a single example as class addition and removal is (relatively) slow and polutes the epicea log"
 	<gtExample>
+	"noTest as the event sequencer for RemoteRunner appears to be buggy"
+	<noTest>
 	
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
