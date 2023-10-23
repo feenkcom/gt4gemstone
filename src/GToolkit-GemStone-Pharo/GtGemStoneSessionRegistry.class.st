@@ -437,14 +437,6 @@ GtGemStoneSessionRegistry >> initialize [
 	self reload "resetSessions".
 ]
 
-{ #category : #testing }
-GtGemStoneSessionRegistry >> isCodeSyncEnabledFor: aGtGemStoneSession [
-	"Answer a boolean indicating whether code sync is enabled for the supplied session"
-
-	^ codeSync isNotNil and:
-		[ codeSync sessionStrategy isCodeSyncEnabledFor: aGtGemStoneSession registry: self ]
-]
-
 { #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionNamed: aString [
 	| connectorName sessionId |

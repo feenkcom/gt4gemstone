@@ -137,6 +137,8 @@ GtGemStoneTestingSession >> initialize [
 	super initialize.
 	commandHistory := OrderedCollection new.
 	state := #disconnected.
+	"The connector only needs to answer whether code sync is allowed"
+	connector := GtGemStoneConnector new.
 	"We want all changes propagated to the test session"
 	eventStrategy := GtGemStoneCodeSyncEpEventStrategy new.
 ]
