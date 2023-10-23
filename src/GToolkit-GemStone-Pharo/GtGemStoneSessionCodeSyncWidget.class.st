@@ -128,7 +128,7 @@ GtGemStoneSessionCodeSyncWidget >> statusAttributes [
 { #category : #'private - accessing' }
 GtGemStoneSessionCodeSyncWidget >> toggleButtonLabel [
 
-	^ session isCodeSyncEnabled
+	^ session codeSyncEnabled
 		ifTrue: [ 'Disable' ]
 		ifFalse: [ 'Enable' ]
 ]

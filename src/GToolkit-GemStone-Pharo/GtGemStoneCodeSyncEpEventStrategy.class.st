@@ -1,15 +1,6 @@
 Class {
 	#name : #GtGemStoneCodeSyncEpEventStrategy,
 	#superclass : #Object,
-	#instVars : [
-		'registry',
-		'events',
-		'subscription',
-		'flusher',
-		'announcer',
-		'defaultClassStrategy',
-		'sessionStrategy'
-	],
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 

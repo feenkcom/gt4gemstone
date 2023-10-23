@@ -100,8 +100,10 @@ GtGemStoneSession >> codeSyncEnabled [
 
 { #category : #'accessing - code sync' }
 GtGemStoneSession >> codeSyncEnabled: aBoolean [
+	"Set the code sync flag.
+	It can only be true if the connector allows code sync."
 
-	codeSyncEnabled := aBoolean
+	codeSyncEnabled := aBoolean and: [ connector isCodeSyncAllowed ].
 ]
 
 { #category : #actions }
@@ -557,15 +559,6 @@ GtGemStoneSession >> isBusy [
 ]
 
 { #category : #testing }
-GtGemStoneSession >> isCodeSyncEnabled [
-	"Answer a boolean indicating whether the receiver has code sync running"
-
-	^ connector isCodeSyncAllowed and:
-		[ registry isNotNil and: 
-		[ registry isCodeSyncEnabledFor: self ] ]
-]
-
-{ #category : #testing }
 GtGemStoneSession >> isDefaultSession [
 
 	^ registry isNotNil and:
@@ -634,7 +627,7 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :codeSync |
-		codeSyncEnabled := codeSync sessionStrategy syncSession: self registry: registry ].
+		self codeSyncEnabled: (codeSync sessionStrategy syncSession: self registry: registry) ].
 ]
 
 { #category : #removing }
@@ -687,7 +680,7 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Default' -> self isDefaultSession.
 
 	attributes add: (connector isCodeSyncAllowed
-		ifTrue: [ 'Code Sync enabled' -> self isCodeSyncEnabled ]
+		ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
 		ifFalse: [ 'Code Sync Allowed' -> false ]).
 
 	isRunning ifFalse: [ ^ attributes ].
