@@ -16,10 +16,10 @@ GtGemStoneCodeSyncCustomClassStrategy >> gtDisplayOn: aStream [
 ]
 
 { #category : #accessing }
-GtGemStoneCodeSyncCustomClassStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
+GtGemStoneCodeSyncCustomClassStrategy >> syncClass: aClass session: aGtGemStoneSession [
 	"Answer a boolean indicating whether the supplied class should be synced"
 
-	^ valuable value: aClass value: aGtGemStoneSessionRegistry
+	^ valuable value: aClass value: aGtGemStoneSession
 ]
 
 { #category : #accessing }
