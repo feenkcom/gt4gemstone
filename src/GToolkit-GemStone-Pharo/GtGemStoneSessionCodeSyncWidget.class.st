@@ -21,6 +21,12 @@ GtGemStoneSessionCodeSyncWidget >> codeSync [
 	^ self registry ifNotNil: [ :registry | registry codeSync ]
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionCodeSyncWidget >> eventStrategy [
+
+	^ session eventStrategy
+]
+
 { #category : #intialization }
 GtGemStoneSessionCodeSyncWidget >> initialize [
 
@@ -121,7 +127,8 @@ GtGemStoneSessionCodeSyncWidget >> statusAttributes [
 	^ Array streamContents: [ :stream |
 		stream
 			nextPut: { #State. self state. self. };
-			nextPut: { 'Class strategy'. self classStrategy gtDisplayString. self classStrategy. } ].
+			nextPut: { 'Class strategy'. self classStrategy gtDisplayString. self classStrategy. };
+			nextPut: { 'Event strategy'. self eventStrategy gtDisplayString. self eventStrategy. } ].
 
 ]
 

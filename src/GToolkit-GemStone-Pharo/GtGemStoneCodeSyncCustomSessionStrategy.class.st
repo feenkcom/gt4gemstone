@@ -8,10 +8,10 @@ Class {
 }
 
 { #category : #printing }
-GtGemStoneCodeSyncCustomSessionStrategy >> gtDisplayOn: aStream [
+GtGemStoneCodeSyncCustomSessionStrategy >> printOn: aStream [
 
 	aStream
-		<< 'sessions matching: ';
+		<< 'Sessions matching: ';
 		print: valuable
 ]
 
