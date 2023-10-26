@@ -38,6 +38,6 @@ TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [
 	^ (self performEvaluation
 		selector: #retriveSentItemAt:;
 		arguments: { aSelectionIndex };
-		returnLegacy;
+		returnProxy;
 		evaluate) wait
 ]
