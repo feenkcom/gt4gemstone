@@ -123,6 +123,17 @@ GtRsrProxyServiceClient >> evaluate: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluate: aString autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluate: aString
+		for: self
+		bindings: Dictionary new
+		autoCommit: aBoolean.
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -131,6 +142,18 @@ GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
 		for: self
 		bindings: Dictionary new
 		serializationStrategy: aSymbol.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluate: aString
+		for: self
+		bindings: Dictionary new
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean.
 ]
 
 { #category : #performing }
@@ -144,10 +167,30 @@ GtRsrProxyServiceClient >> evaluateAndWait: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateAndWait: aString
+		for: self
+		bindings: Dictionary new
+		autoCommit: aBoolean
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateAndWait: aString serializationStrategy: aSymbol [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
 	^ (self evaluate: aString serializationStrategy: aSymbol) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWait: aString serializationStrategy: aSymbol autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluate: aString 
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) wait
 ]
 
 { #category : #performing }
@@ -159,6 +202,14 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ (self evaluateReturnProxy: aString
+		autoCommit: aBoolean) wait
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -166,6 +217,17 @@ GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 		evaluateReturnProxy: aString
 		for: self
 		bindings: Dictionary new.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateReturnProxy: aString autoCommit: aBoolean [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateReturnProxy: aString
+		for: self
+		bindings: Dictionary new
+		autoCommit: aBoolean.
 ]
 
 { #category : #'private-accessing' }
@@ -383,31 +445,54 @@ GtRsrProxyServiceClient >> printOn: aStream [
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
 
+	^ self proxyPerform: aSymbol 
+		autoCommit: self gtSession autoCommitEnabled
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol autoCommit: autoCommit [
+
 	^ (self performEvaluation
 		selector: aSymbol;
 		returnLegacy;
-		autoCommit: self gtSession autoCommitEnabled;
+		autoCommit: autoCommit;
 		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
 
+	^ self proxyPerform: aSymbol
+		serializationStrategy: serializationSymbol
+		autoCommit: self gtSession autoCommitEnabled
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol autoCommit: aBoolean [
+
 	^ (self performEvaluation
 		selector: aSymbol;
 		serialisationStrategy: serializationSymbol;
-		autoCommit: self gtSession autoCommitEnabled;
+		autoCommit: aBoolean;
 		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
 
+	^ self proxyPerform: aSymbol
+		withArguments: anArray
+		autoCommit: self gtSession autoCommitEnabled
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray autoCommit: autoCommit [
+
 	^ (self performEvaluation
 		selector: aSymbol;
 		arguments: anArray;
 		returnLegacy;
-		autoCommit: self gtSession autoCommitEnabled;
+		autoCommit: autoCommit;
 		evaluate) wait
 ]
 
@@ -423,23 +508,48 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializ
 ]
 
 { #category : #performing }
-GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
+GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol autoCommit: aBoolean [
 
 	^ (self performEvaluation
 		selector: aSymbol;
-		returnProxy;
-		autoCommit: self gtSession autoCommitEnabled;
+		arguments: anArray;
+		serialisationStrategy: serializationSymbol;
+		autoCommit: aBoolean;
 		evaluate) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
+
+	^ self proxyPerformReturnProxy: aSymbol
+		withArguments: #()
+		autoCommit: self gtSession autoCommitEnabled
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol autoCommit: aBoolean [
+
+	^ self proxyPerformReturnProxy: aSymbol
+		withArguments: #()
+		autoCommit: aBoolean
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
 
+	^ self proxyPerformReturnProxy: aSymbol
+		withArguments: anArray
+		autoCommit: self gtSession autoCommitEnabled
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray autoCommit: aBoolean [
+
 	^ (self performEvaluation
 		selector: aSymbol;
 		arguments: anArray;
 		returnProxy;
-		autoCommit: self gtSession autoCommitEnabled;
+		autoCommit: aBoolean;
 		evaluate) wait
 ]
 

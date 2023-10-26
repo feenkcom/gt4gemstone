@@ -229,22 +229,37 @@ GtGemStoneSession >> ensureRunning [
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript [
 
+	^ self evaluate: remoteScript autoCommit: autoCommit
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript autoCommit: aBoolean [
+
 	^ self scriptEvaluation
 		script: remoteScript;
-		serialisationStrategy: #GtRsrLegacySerializationStrategy;
-		autoCommit: autoCommit;
+		returnLegacy;
+		autoCommit: aBoolean;
 		evaluate
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
+	^ self evaluate: remoteScript
+		for: anObject
+		bindings: remoteBindings
+		autoCommit: autoCommit
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
+
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
 		bindings: (self updatedBindings: remoteBindings);
 		returnLegacy;
-		autoCommit: autoCommit;
+		autoCommit: aBoolean;
 		evaluate
 ]
 
@@ -261,12 +276,34 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: (self updatedBindings: remoteBindings);
+		serialisationStrategy: aSymbol;
+		autoCommit: aBoolean;
+		evaluate
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol [
 
 	^ self scriptEvaluation
 		script: remoteScript;
 		serialisationStrategy: aSymbol;
 		autoCommit: autoCommit;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		serialisationStrategy: aSymbol;
+		autoCommit: aBoolean;
 		evaluate
 ]
 
@@ -297,12 +334,28 @@ GtGemStoneSession >> evaluateAndWait: remoteScript [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript autoCommit: aBoolean [
+
+	^ (self evaluate: remoteScript autoCommit: aBoolean) wait
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self
 		evaluate: remoteScript 
 		for: anObject 
 		bindings: remoteBindings) wait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
+
+	^ (self
+		evaluate: remoteScript 
+		for: anObject 
+		bindings: remoteBindings
+		autoCommit: aBoolean) wait
 ]
 
 { #category : #actions }
@@ -316,11 +369,31 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self 
+		evaluate: remoteScript 
+		for: anObject 
+		bindings: remoteBindings
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol [
 
 	^ (self
 		evaluate: remoteScript
 		serializationStrategy: aSymbol) wait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self
+		evaluate: remoteScript
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) wait
 ]
 
 { #category : #actions }
@@ -330,9 +403,24 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript autoCommit: aBoolean [
+
+	^ (self evaluateReturnProxy: remoteScript autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings) wait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
+
+	^ (self evaluateReturnProxy: remoteScript 
+		for: anObject 
+		bindings: remoteBindings
+		autoCommit: aBoolean) wait
 ]
 
 { #category : #actions }
@@ -353,6 +441,16 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateReturnProxy: remoteScript autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		returnProxy;
+		autoCommit: aBoolean;
+		evaluate
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ self scriptEvaluation
@@ -361,6 +459,18 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: r
 		bindings: (self updatedBindings: remoteBindings);
 		returnProxy;
 		autoCommit: autoCommit;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: (self updatedBindings: remoteBindings);
+		returnProxy;
+		autoCommit: aBoolean;
 		evaluate
 ]
 
