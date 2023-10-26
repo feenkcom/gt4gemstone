@@ -115,21 +115,18 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| computedProxy |
 
-	computedProxy := gtSession evaluator
-		evaluateAndWait: aString
+	^ self gtSession
+		evaluate: aString
 		for: self
 		bindings: Dictionary new.
-	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
-	^ computedProxy
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
-	^ gtSession evaluator
+	^ self gtSession
 		evaluate: aString
 		for: self
 		bindings: Dictionary new
@@ -139,14 +136,11 @@ GtRsrProxyServiceClient >> evaluate: aString serializationStrategy: aSymbol [
 { #category : #performing }
 GtRsrProxyServiceClient >> evaluateAndWait: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
-	| computedProxy |
 
-	computedProxy := self gtSession evaluator
+	^ self gtSession
 		evaluateAndWait: aString
 		for: self
 		bindings: Dictionary new.
-	computedProxy gtPharoProxyInitializeWithSession: self gtSession.	
-	^ computedProxy
 ]
 
 { #category : #performing }
@@ -165,19 +159,10 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString [
 ]
 
 { #category : #performing }
-GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
-	"Evaluate the supplied string with `self` bound to the receiver"
-
-	^ self 
-		evaluateAndWait: aString
-		serializationStrategy: #GtRsrStonSerializationStrategy
-]
-
-{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
-	^ gtSession evaluator
+	^ gtSession
 		evaluateReturnProxy: aString
 		for: self
 		bindings: Dictionary new.
@@ -192,6 +177,17 @@ GtRsrProxyServiceClient >> getGtSession [
 	^ GtGemStoneSessionRegistry default 
 		sessionWithConnection: _connection
 		ifAbsent: [ nil ].
+]
+
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getViewProxy [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ (self gtSession scriptEvaluation
+			script: 'GtRemotePhlowViewedObject object: self';
+			receiver: self;
+			returnLegacy;
+			evaluate) wait
 ]
 
 { #category : #accessing }
@@ -237,14 +233,22 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtDisplayOn: aStream [
-	self isProxyObjectActive ifTrue: 
-		[ aStream 
+	| gtDisplayString |
+
+	self isProxyObjectActive ifFalse:
+		[ aStream << 'Service Client Proxy: <not connected>'.
+		^ self ].
+
+	gtDisplayString := [
+		(self performEvaluation
+			selector: #gtDisplayString;
+			returnPrimitiveOnly;
+			evaluate) wait ]
+				on: Error
+				do: [ :ex | 'Error printing bare proxy' ].
+	aStream
 			<< 'Service Client Proxy: ';
-			<< ([self proxyPerform: #gtDisplayString]
-				on: Error 
-				do: [ :e | 'Service Client Proxy: Error printing'  ]) ]
-	ifFalse: 
-		[ aStream << 'Service Client Proxy: <not connected>' ].
+			<< gtDisplayString
 ]
 
 { #category : #accessing }
@@ -262,13 +266,8 @@ GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
 
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
-	self isProxyObjectActive 
-		ifTrue: [
-			aStream 
-				<< ([self proxyPerform: #gtDisplayString]
-					on: Error 
-					do: [ :e | 'Error printing'  ]) ]
-		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].
+
+	self gtDisplayOn: aStream.
 	
 	gtSession ifNotNil:[ 
 		aStream
@@ -354,6 +353,14 @@ GtRsrProxyServiceClient >> object [
 	^ remoteSelf object wait
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> performEvaluation [
+
+	^ GtRsrPerformEvaluation new
+		receiver: self;
+		gtSession: self gtSession
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> printOn: aStream [
 
@@ -375,81 +382,71 @@ GtRsrProxyServiceClient >> printOn: aStream [
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf proxyPerform: aSymbol.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		returnLegacy;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf 
-		proxyPerform: aSymbol
-		serializationStrategy: serializationSymbol.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: serializationSymbol
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		serialisationStrategy: serializationSymbol;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf 
-		proxyPerform: aSymbol 
-		withArguments: anArray.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		arguments: anArray;
+		returnLegacy;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf 
-		proxyPerform: aSymbol 
-		withArguments: anArray
-		serializationStrategy: serializationSymbol.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: serializationSymbol
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		arguments: anArray;
+		serialisationStrategy: serializationSymbol;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf proxyPerformReturnProxy: aSymbol.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		returnProxy;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
-	| rsrPromise |
 
-	rsrPromise := remoteSelf 
-		proxyPerformReturnProxy: aSymbol
-		withArguments: anArray.
-	^ (GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		gtSession: gtSession) wait
+	^ (self performEvaluation
+		selector: aSymbol;
+		arguments: anArray;
+		returnProxy;
+		autoCommit: self gtSession autoCommitEnabled;
+		evaluate) wait
 ]
 
-{ #category : #performing }
-GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: anArray [
-	^ self 
-		proxyPerform: aSymbol 
-		withArguments: anArray 
-		serializationStrategy: #GtRsrStonSerializationStrategy.
+{ #category : #private }
+GtRsrProxyServiceClient >> remoteSelf [
+
+	^ remoteSelf
 ]
 
 { #category : #'gt inspector' }
@@ -460,4 +457,12 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			declarativeView viewFor: aView ] ]
 		ifFalse: [ #() ].
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> scriptEvaluation [
+
+	^ GtRsrScriptEvaluation new
+		receiver: self;
+		gtSession: self gtSession
 ]

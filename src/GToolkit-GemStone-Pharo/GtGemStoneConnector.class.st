@@ -86,6 +86,13 @@ GtGemStoneConnector >> initialize [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isAutoCommitAllowed [
+	"Answer a boolean indicating whether auto-commit is allowed for this connector"
+
+	^ true
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isCodeSyncAllowed [
 	"Answer a boolean indicating whether code sync is allowed for this connector.
 	This overrides the sessionStrategy."

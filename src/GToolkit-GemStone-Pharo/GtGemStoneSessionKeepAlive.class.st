@@ -147,17 +147,17 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 		session: session;
 		emit.
 		
-	neededCommit := session evaluateAndWait:
-			'| needsCommit |
+	neededCommit := (session scriptEvaluation
+		script: '| needsCommit |
 			(needsCommit := System needsCommit)
 				ifTrue: modifiedBlock
 				ifFalse: cleanBlock.
-			needsCommit'
-		for: nil
+			needsCommit';
 		bindings: {
 			#modifiedBlock -> modifiedBlock.
 			#cleanBlock -> cleanBlock.
-			} asDictionary.
+			} asDictionary;
+		evaluate) wait.
 	neededCommit
 		ifTrue: [ self logModified: session ]
 		ifFalse: [ self logClean: session ].

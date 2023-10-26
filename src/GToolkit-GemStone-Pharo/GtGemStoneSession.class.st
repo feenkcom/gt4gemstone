@@ -26,15 +26,22 @@ Class {
 		'cacheName',
 		'classStrategy',
 		'eventStrategy',
-		'codeSyncEnabled'
+		'codeSyncEnabled',
+		'autoCommit'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
+	"Abort the current transaction.
+	autoCommit is always false for this operation"
 
-	self isRunning ifTrue: [ self evaluateAndWait: 'System abortTransaction' ].
+	self isRunning ifTrue: [ 
+		(self scriptEvaluation
+			script: 'System abortTransaction. nil';
+			returnPrimitiveOnly;
+			evaluate) wait ].
 	self announce: (GtGemStoneSessionAbortedAnnouncement session: self).
 ]
 
@@ -50,6 +57,31 @@ GtGemStoneSession >> asGemStoneSession [
 	^ self
 ]
 
+{ #category : #testing }
+GtGemStoneSession >> autoCommitEnabled [
+
+	^ autoCommit
+]
+
+{ #category : #private }
+GtGemStoneSession >> autoCommitIfRequired [
+
+	autoCommit ifTrue: [ self commitTransaction ]
+]
+
+{ #category : #private }
+GtGemStoneSession >> autoCommitPromise: aGtRsrEvaluatorPromise [
+	"Commit the receiver.
+	Even though the promise has requested auto-commit, only do it if autoCommit has been successfully enabled"
+
+	autoCommit ifTrue: 
+		[ [ self commitTransaction ] ensure:
+			[ (GtGemStoneSessionAutoCommitSignal
+				session: self
+				promise: aGtRsrEvaluatorPromise)
+					emit ] ]
+]
+
 { #category : #actions }
 GtGemStoneSession >> beDefaultSession [
 
@@ -60,8 +92,10 @@ GtGemStoneSession >> beDefaultSession [
 GtGemStoneSession >> cacheName [
 
 	^ cacheName ifNil: 
-		[ cacheName := self evaluateAndWait: 'System getSharedCacheAttributes at: #cacheName'
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+		[ cacheName := (self scriptEvaluation
+			script: 'System getSharedCacheAttributes at: #cacheName';
+			returnPrimitiveOnly;
+			evaluate) wait ]
 ]
 
 { #category : #accessing }
@@ -80,6 +114,13 @@ GtGemStoneSession >> classStrategy [
 { #category : #'accessing - code sync' }
 GtGemStoneSession >> classStrategy: anObject [
 	classStrategy := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> clearAutoCommit [
+	"Clear the auto-commit flag"
+
+	autoCommit := false.
 ]
 
 { #category : #actions }
@@ -109,7 +150,11 @@ GtGemStoneSession >> codeSyncEnabled: aBoolean [
 { #category : #actions }
 GtGemStoneSession >> commitTransaction [
 
-	self isRunning ifTrue: [ self evaluateAndWait: 'System commitTransaction' ].
+	self isRunning ifTrue: [ 
+		(self scriptEvaluation
+			script: 'System commitTransaction. nil';
+			returnPrimitiveOnly;
+			evaluate) wait ].
 	self announce: (GtGemStoneSessionCommittedAnnouncement session: self).
 ]
 
@@ -162,8 +207,10 @@ GtGemStoneSession >> connector: aGtGemstoneConnector [
 { #category : #accessing }
 GtGemStoneSession >> dbSize [
 
-	^ self evaluateAndWait: 'SystemRepository fileSize - SystemRepository freeSpace'
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+	^ (self scriptEvaluation
+		script: 'System commitTransaction. nil';
+		returnPrimitiveOnly;
+		evaluate) wait
 ]
 
 { #category : #ui }
@@ -182,39 +229,45 @@ GtGemStoneSession >> ensureRunning [
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript [
 
-	^ evaluator 
-		evaluate: remoteScript 
-		for: nil 
-		bindings: Dictionary new
+	^ self scriptEvaluation
+		script: remoteScript;
+		serialisationStrategy: #GtRsrLegacySerializationStrategy;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
-	^ evaluator 
-		evaluate: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: (self updatedBindings: remoteBindings);
+		returnLegacy;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
 
-	^ evaluator 
-		evaluate: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
-		serializationStrategy: aSymbol
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: (self updatedBindings: remoteBindings);
+		serialisationStrategy: aSymbol;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol [
 
-	^ evaluator 
-		evaluate: remoteScript 
-		for: nil 
-		bindings: Dictionary new
-		serializationStrategy: aSymbol
+	^ self scriptEvaluation
+		script: remoteScript;
+		serialisationStrategy: aSymbol;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #actions }
@@ -239,61 +292,47 @@ GtGemStoneSession >> evaluateAndCollect: aString [
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
-	^ evaluator
-		evaluateAndWait: remoteScript
-		for: nil 
-		bindings: Dictionary new
+
+	^ (self evaluate: remoteScript) wait
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
-	| computedProxy |
-	computedProxy := evaluator 
-		evaluateAndWait: remoteScript 
+
+	^ (self
+		evaluate: remoteScript 
 		for: anObject 
-		bindings: (self updatedBindings: remoteBindings).
-	computedProxy gtPharoProxyInitializeWithSession: self.
-	^ computedProxy
+		bindings: remoteBindings) wait
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
 
-	^ evaluator 
-		evaluateAndWait: remoteScript 
+	^ (self 
+		evaluate: remoteScript 
 		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
-		serializationStrategy: aSymbol.
+		bindings: remoteBindings
+		serializationStrategy: aSymbol) wait.
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol [
 
-	^ evaluator
-		evaluateAndWait: remoteScript
-		for: nil 
-		bindings: Dictionary new
-		serializationStrategy: aSymbol
+	^ (self
+		evaluate: remoteScript
+		serializationStrategy: aSymbol) wait
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
-	^ evaluator
-		evaluateAndWaitReturnProxy: remoteScript
-		for: nil 
-		bindings: Dictionary new
+
+	^ (self evaluateReturnProxy: remoteScript) wait.
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
-	| computedProxy |
 
-	computedProxy := evaluator 
-		evaluateAndWaitReturnProxy: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings).
-	computedProxy gtPharoProxyInitializeWithSession: self.
-	^ computedProxy
+	^ (self evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings) wait
 ]
 
 { #category : #actions }
@@ -306,19 +345,23 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 { #category : #actions }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript [
 
-	^ evaluator 
-		evaluateReturnProxy: remoteScript 
-		for: nil
-		bindings: Dictionary new
+	^ self scriptEvaluation
+		script: remoteScript;
+		returnProxy;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #actions }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
-	^ evaluator 
-		evaluateReturnProxy: remoteScript 
-		for: anObject 
-		bindings: (self updatedBindings: remoteBindings)
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: (self updatedBindings: remoteBindings);
+		returnProxy;
+		autoCommit: autoCommit;
+		evaluate
 ]
 
 { #category : #accessing }
@@ -351,17 +394,27 @@ GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
 	This is only useful if the client and server are on the same machine, i.e. for development."
 	<return: #FileReference>
+	| logPath logFileName |
 
-	^ (self evaluateAndWait: 'System gemLogPath') asFileReference / (self evaluateAndWait: 'System gemLogFileName')
+	logPath := (self scriptEvaluation
+			script: 'System gemLogPath';
+			returnPrimitiveOnly;
+			evaluate) wait.
+	logFileName := (self scriptEvaluation
+			script: 'System gemLogFileName';
+			returnPrimitiveOnly;
+			evaluate) wait.
+	^ logPath asFileReference / logFileName
 ]
 
 { #category : #accessing }
 GtGemStoneSession >> gt4gemstoneVersion [
 
 	^ gt4gemstoneVersion ifNil:
-		[ gt4gemstoneVersion := self 
-			evaluateAndWait: 'GtGsRelease default versionString'
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+		[ gt4gemstoneVersion := (self scriptEvaluation
+			script: 'GtGsRelease default versionString';
+			returnPrimitiveOnly;
+			evaluate) wait ]
 ]
 
 { #category : #ui }
@@ -544,6 +597,7 @@ GtGemStoneSession >> initialize [
 	mutex := Mutex new.
 	codeSyncEnabled := false.
 	eventStrategy := GtGemStoneCodeSyncEpEventStrategy new.
+	autoCommit := false.
 ]
 
 { #category : #testing }
@@ -583,7 +637,10 @@ GtGemStoneSession >> name [
 GtGemStoneSession >> needsCommit [
 
 	^ self isRunning
-		ifTrue: [ self evaluateAndWait: 'System needsCommit' ]
+		ifTrue: [ (self scriptEvaluation
+			script: 'System needsCommit';
+			returnPrimitiveOnly;
+			evaluate) wait ]
 		ifFalse: [ false ]
 ]
 
@@ -595,6 +652,13 @@ GtGemStoneSession >> onConnectorChanged: aGtGemStoneConnnectorAnnouncement [
 		[ self close.
 		aGtGemStoneConnnectorAnnouncement operation ~= #removed ifTrue:
 			[ self connect. ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> performEvaluation [
+
+	^ GtRsrPerformEvaluation new
+		gtSession: self
 ]
 
 { #category : #printing }
@@ -651,6 +715,27 @@ GtGemStoneSession >> runPostConnectActions [
 ]
 
 { #category : #accessing }
+GtGemStoneSession >> scriptEvaluation [
+	"Answer a GtRsrScriptEvaluation with:
+	- the session set to self,
+	- receiver is nil
+	- and autoCommit disabled"
+
+	^ GtRsrScriptEvaluation new
+		gtSession: self
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> serverTime [
+	"Answer the time on the server"
+
+	^ (self scriptEvaluation
+			script: 'DateAndTime now';
+			returnPrimitiveOnly;
+			evaluate) wait
+]
+
+{ #category : #accessing }
 GtGemStoneSession >> sessionId [
 	<return: #String>
 
@@ -668,6 +753,16 @@ GtGemStoneSession >> sessionParameters [
 	^ session sessionParameters
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> setAutoCommit [
+	"Set the auto-commit flag.
+	If the connector disallows auto-commit, raise an error"
+
+	connector isAutoCommitAllowed ifFalse:
+		[ self error: 'Auto-commit not allowed' ].
+	autoCommit := true.
+]
+
 { #category : #ui }
 GtGemStoneSession >> statusAttributes [
 	| isRunning attributes gsAttributes |
@@ -682,19 +777,21 @@ GtGemStoneSession >> statusAttributes [
 	attributes add: (connector isCodeSyncAllowed
 		ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
 		ifFalse: [ 'Code Sync Allowed' -> false ]).
+	attributes add: 'Auto-commit' -> self autoCommitEnabled.
 
 	isRunning ifFalse: [ ^ attributes ].
 
-	gsAttributes := self
-			evaluateAndWait: 'Dictionary new
+	gsAttributes := (self scriptEvaluation
+			script: 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
 	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
 	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
 	at: ''fpExceptions'' put: (
 (System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
 	at: ''Time'' put: DateAndTime now;
-	yourself'
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	yourself';
+			returnPrimitiveOnly;
+			evaluate) wait.
 
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
@@ -746,9 +843,7 @@ GtGemStoneSession >> syncChange: change in: aGtGemStoneCodeSync [
 GtGemStoneSession >> timeDelta [
 	"Answer the difference in time between GT and GS."
 
-	^ DateAndTime now - 
-		(self evaluateAndWait: 'DateAndTime now'
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy)
+	^ DateAndTime now - self serverTime
 ]
 
 { #category : #actions }
@@ -761,15 +856,19 @@ GtGemStoneSession >> toggleCodeSync [
 GtGemStoneSession >> transactionMode [
 
 	^ transactionMode ifNil:
-		[ self evaluateAndWait: 'System transactionMode'
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
+		[ (self scriptEvaluation
+			script: 'System transactionMode';
+			returnPrimitiveOnly;
+			evaluate) wait ]
 ]
 
 { #category : #accessing }
 GtGemStoneSession >> transactionMode: aSymbol [
 
-	self evaluateAndWait: 'System transactionMode: #', aSymbol
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	(self scriptEvaluation
+			script: 'System transactionMode: #', aSymbol;
+			returnPrimitiveOnly;
+			evaluate) wait.
 	transactionMode := aSymbol
 ]
 
@@ -780,10 +879,8 @@ GtGemStoneSession >> updatedBindings: remoteBindings [
 	updatedBindings := remoteBindings copy.
 	updatedBindings associationsDo: [ :assoc |
 		(assoc value isBlock and: [ assoc value isClean ]) ifTrue:
-			[ assoc value: (evaluator
-				evaluateAndWait: assoc value printString
-				for: nil
-				bindings: Dictionary new) ] ].
+			[ assoc value: (self
+				evaluateAndWait: assoc value printString) ] ].
 	^ updatedBindings
 ]
 
@@ -796,5 +893,8 @@ GtGemStoneSession >> username [
 { #category : #accessing }
 GtGemStoneSession >> writtenObjects [
 
-	^ self evaluateAndWait: 'System _writtenObjects'
+	^ (self scriptEvaluation
+			script: 'System _writtenObjects';
+			returnPrimitiveOnly;
+			evaluate) wait
 ]

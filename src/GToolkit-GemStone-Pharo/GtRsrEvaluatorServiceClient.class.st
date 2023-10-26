@@ -8,75 +8,92 @@ Class {
 }
 
 { #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings [
+GtRsrEvaluatorServiceClient >> evaluateLegacyPerform: aGtRsrPerformEvaluation [
 	| rsrPromise |
 
-	rsrPromise := remoteSelf 
-		evaluate: remoteScript asString 
-		for: anObject 
-		bindings: remoteBindings asDictionary.
+	rsrPromise := aGtRsrPerformEvaluation remoteSelf
+		proxyPerform: aGtRsrPerformEvaluation selector
+		withArguments: aGtRsrPerformEvaluation arguments.
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
+		serializationStrategy: nil
 		gtSession: gtSession
+		autoCommit: aGtRsrPerformEvaluation autoCommit
 ]
 
 { #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
-	| rsrPromise |
-
-	rsrPromise := remoteSelf
-		evaluate: remoteScript asString
-		for: anObject
-		bindings: remoteBindings asDictionary
-		serializationStrategy: aSymbol.
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: aSymbol
-		gtSession: gtSession
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
-
-	^ (self evaluate: remoteScript for: anObject bindings: remoteBindings) wait.
-
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
-
-	^ (self evaluate: remoteScript 
-		for: anObject 
-		bindings: remoteBindings
-		serializationStrategy: aSymbol) wait
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
-
-	^ (self evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings) wait
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
+GtRsrEvaluatorServiceClient >> evaluateLegacyScript: aGtRsrScriptEvaluation [
 	| rsrPromise |
 
 	rsrPromise := remoteSelf
-		evaluateReturnProxy: remoteScript asString
-		for: anObject
-		bindings: remoteBindings asDictionary.
+		evaluate: aGtRsrScriptEvaluation script
+		for: aGtRsrScriptEvaluation receiver
+		bindings: aGtRsrScriptEvaluation bindings.
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
+		serializationStrategy: nil
 		gtSession: gtSession
+		autoCommit: aGtRsrScriptEvaluation autoCommit
 ]
 
 { #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateReturnSerialized: remoteScript for: anObject bindings: remoteBindings [
+GtRsrEvaluatorServiceClient >> evaluatePerform: aGtRsrPerformEvaluation [
+	| rsrPromise |
 
-	^ remoteSelf 
-		evaluateReturnSerialized: remoteScript asString 
-		for: anObject 
-		bindings: remoteBindings asDictionary
+	rsrPromise := aGtRsrPerformEvaluation remoteSelf
+		proxyPerform: aGtRsrPerformEvaluation selector
+		withArguments: aGtRsrPerformEvaluation arguments
+		serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy.
+	^ GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy
+		gtSession: gtSession
+		autoCommit: aGtRsrPerformEvaluation autoCommit
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceClient >> evaluateProxyOnlyPerform: aGtRsrPerformEvaluation [
+	| rsrPromise |
+
+	rsrPromise := aGtRsrPerformEvaluation remoteSelf
+		proxyPerformReturnProxy: aGtRsrPerformEvaluation selector
+		withArguments: aGtRsrPerformEvaluation arguments.
+	^ GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: nil
+		gtSession: gtSession
+		autoCommit: aGtRsrPerformEvaluation autoCommit
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceClient >> evaluateProxyOnlyScript: aGtRsrScriptEvaluation [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf
+		evaluateReturnProxy: aGtRsrScriptEvaluation script
+		for: aGtRsrScriptEvaluation receiver
+		bindings: aGtRsrScriptEvaluation bindings.
+	^ GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: nil
+		gtSession: gtSession
+		autoCommit: aGtRsrScriptEvaluation autoCommit
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceClient >> evaluateScript: aGtRsrScriptEvaluation [
+	| rsrPromise |
+
+	rsrPromise := remoteSelf
+		evaluate: aGtRsrScriptEvaluation script
+		for: aGtRsrScriptEvaluation receiver
+		bindings: aGtRsrScriptEvaluation bindings
+		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
+	^ GtRsrEvaluatorPromise
+		rsrPromise: rsrPromise
+		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
+		gtSession: gtSession
+		autoCommit: aGtRsrScriptEvaluation autoCommit
 ]
 
 { #category : #accessing }

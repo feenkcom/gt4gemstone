@@ -29,7 +29,7 @@ GtpoGsNMethod >> compileFromTab: aTab [
 		ifFound: [ :aBrEditor |
 			code := aBrEditor text asString.
 			environmentId := (self proxyPerform: #environmentId) asString.
-			category := self evaluate:
+			category := self evaluateAndWait:
 				'self inClass categoryOfSelector: #', self selector, ' environmentId: ', environmentId.
 			script := String streamContents: [ :stream |
 				stream 
@@ -38,7 +38,7 @@ GtpoGsNMethod >> compileFromTab: aTab [
 					<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
 					<< 'category: #'''; << category; << ''''; cr;
 					<< 'environmentId: '; << environmentId ].
-			result := self evaluate: script. ]
+			result := self evaluateAndWait: script. ]
 		ifNone: [ result := 'Unable to find editor' ].
 	aTab phlow spawnObject: result.
 ]

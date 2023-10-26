@@ -62,7 +62,9 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 
 { #category : #accessing }
 GtpoMetaclass3 >> definitionString [
-	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
+	^ definitionString ifNil: [ definitionString := self performEvaluation
+	selector: #definition;
+	evaluateAndWait ]
 ]
 
 { #category : #accessing }
@@ -93,7 +95,7 @@ GtpoMetaclass3 >> gtClassDefinitionFor: aView [
 		priority: 5;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
-		text: [ self proxyPerform: #definition ];
+		text: [ self definitionString ];
 		actionButtonIcon: BrGlamorousVectorIcons accept
 			tooltip: 'Compile' 
 			action: [ :aButton :aTab :aButtonModel | 

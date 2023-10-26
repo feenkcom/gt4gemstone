@@ -10,27 +10,29 @@ Class {
 }
 
 { #category : #'instance creation' }
-GtRsrEvaluatorPromise class >> rsrPromise: aPromise gtSession: aSession [
-
-	^ self new
-		setPromise: aPromise
-		strategy: nil
-		session: aSession
-]
-
-{ #category : #'instance creation' }
-GtRsrEvaluatorPromise class >> rsrPromise: aPromise serializationStrategy: aSymbol gtSession: aSession [
+GtRsrEvaluatorPromise class >> rsrPromise: aPromise serializationStrategy: aSymbol gtSession: aSession autoCommit: autoCommit [
 
 	^ self new
 		setPromise: aPromise
 		strategy: aSymbol
 		session: aSession
+		autoCommit: autoCommit
 ]
 
 { #category : #testing }
 GtRsrEvaluatorPromise >> isBroken [
 
 	^ rsrPromise isBroken
+]
+
+{ #category : #private }
+GtRsrEvaluatorPromise >> registerAutoCommit [
+	"Register a notification action with the {{gtClass:RsrPromise}} to autoCommit on success"
+
+	AkgContextStackSignal emit.
+	rsrPromise
+		when: [ :value | gtSession autoCommitPromise: self ]
+		catch: [ :value | ].
 ]
 
 { #category : #accessing }
@@ -40,11 +42,12 @@ GtRsrEvaluatorPromise >> rsrPromise [
 ]
 
 { #category : #initialization }
-GtRsrEvaluatorPromise >> setPromise: aPromise strategy: aSymbol session: aSession [
+GtRsrEvaluatorPromise >> setPromise: aPromise strategy: aSymbol session: aSession autoCommit: autoCommit [
 
 	rsrPromise := aPromise.
 	serializationStrategy := aSymbol.
 	gtSession := aSession.
+	autoCommit ifTrue: [ self registerAutoCommit ].
 ]
 
 { #category : #accessing }
