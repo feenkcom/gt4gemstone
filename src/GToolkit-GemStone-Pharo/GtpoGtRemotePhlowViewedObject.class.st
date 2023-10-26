@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoGtRemotePhlowViewedObject,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }
@@ -11,10 +11,15 @@ GtpoGtRemotePhlowViewedObject class >> remoteClassName [
 ]
 
 { #category : #accessing }
-GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [ 
-	^ self
-		proxyPerform: #getDeclarativeViewFor:
-		withArguments: { aViewSelector asSymbol }
+GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [
+
+
+	^ (self gtSession performEvaluation
+		receiver: self;
+		selector: #getDeclarativeViewFor:;
+		arguments: { aViewSelector asSymbol };
+		returnLegacy;
+		evaluate) wait
 ]
 
 { #category : #accessing }
@@ -31,5 +36,10 @@ GtpoGtRemotePhlowViewedObject >> getViewDeclaration: aViewSelector [
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
-	^ self proxyPerform: #getViewsDeclarations
+
+	^ (self gtSession performEvaluation
+		receiver: self;
+		selector: #getViewsDeclarations;
+		returnLegacy;
+		evaluate) wait
 ]

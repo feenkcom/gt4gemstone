@@ -47,9 +47,31 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 ]
 
 { #category : #printing }
-GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
-	super gtInspectorRemoteSideTitleStringOn: aStream.
+GtGsBareProxy >> gtDisplayOn: aStream [
+	proxyObject ifNil: [ 
+		aStream << 'Bare Proxy on: <not configured>'.
+		^ self ].
 	
+	proxyObject isProxyObjectActive ifFalse: [ 
+		aStream << 'Bare Proxy on: <not connected>'.
+		^ self ].
+	
+	aStream << 'Bare Proxy on: '.
+	proxyObject gtDisplayOn: aStream
+]
+
+{ #category : #printing }
+GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
+	proxyObject ifNil: [ 
+		aStream << 'a GtGsBareProxy'.
+		^ self ].
+	
+	proxyObject isProxyObjectActive ifFalse: [ 
+		aStream << 'Bare Proxy on: <not connected>'.
+		^ self ].
+
+	proxyObject gtDisplayOn: aStream.
+
 	proxyObject gtSession ifNotNil:
 		[ :gtSession | aStream
 			<< ' [';

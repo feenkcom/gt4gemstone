@@ -11,9 +11,12 @@ TGlpoGtPhlowListingViewSpecification >> flushItemsIterator [
 
 { #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: anIndex [
-	^ self
-		proxyPerform: #retrieveItems:fromIndex:
-		withArguments: { anItemsCount . anIndex  }
+
+	^ (self performEvaluation
+		selector: #retrieveItems:fromIndex:;
+		arguments: { anItemsCount . anIndex  };
+		returnLegacy;
+		evaluate) wait
 ]
 
 { #category : #accessing }
@@ -30,8 +33,11 @@ TGlpoGtPhlowListingViewSpecification >> retrieveTotalItemsCount [
 ]
 
 { #category : #accessing }
-TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [ 
-	^ self
-		proxyPerformReturnProxy: #retriveSentItemAt:
-		withArguments: { aSelectionIndex }
+TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [
+
+	^ (self performEvaluation
+		selector: #retriveSentItemAt:;
+		arguments: { aSelectionIndex };
+		returnLegacy;
+		evaluate) wait
 ]

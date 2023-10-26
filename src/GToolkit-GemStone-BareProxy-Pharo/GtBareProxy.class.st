@@ -139,7 +139,7 @@ GtBareProxy >> gtDisplayText [
 { #category : #printing }
 GtBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 	proxyObject ifNil: [ 
-		aStream << 'a GtGsBareProxy'.
+		aStream << 'a GtBareProxy'.
 		^ self ].
 	
 	proxyObject isProxyObjectActive ifFalse: [ 

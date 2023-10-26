@@ -7,14 +7,14 @@ Class {
 	#category : #'GToolkit-GemStone'
 }
 
-{ #category : #accessing }
+{ #category : #converting }
 GtRsrLiteralAndProxySerializationStrategy >> deserialize: anObject [
 	"Deserialize the supplied object"
 	
 	^ anObject
 ]
 
-{ #category : #accessing }
+{ #category : #converting }
 GtRsrLiteralAndProxySerializationStrategy >> serialize: anObject [
 	"Serialize the object to something that RSR can return.
 	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
