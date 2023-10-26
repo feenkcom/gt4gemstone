@@ -179,6 +179,17 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getViewProxy [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ (self gtSession scriptEvaluation
+			script: 'GtRemotePhlowViewedObject object: self';
+			receiver: self;
+			returnLegacy;
+			evaluate) wait
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 	<gtAction>
