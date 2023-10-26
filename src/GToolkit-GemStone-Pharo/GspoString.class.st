@@ -36,5 +36,5 @@ GspoString >> limitedDisplayString [
 { #category : #accessing }
 GspoString >> size [
 
-	^ self proxyPerform: #size
+	^ self proxyPerform: #size autoCommit: false
 ]

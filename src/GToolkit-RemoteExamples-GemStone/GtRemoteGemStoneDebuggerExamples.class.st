@@ -85,7 +85,7 @@ GtRemoteGemStoneDebuggerExamples >> testPerformBlock: aBlock [
 	[ aBlock value: session ]
 		on: GtRsrEvaluationException
 		do: [ :ex | 
-			self assert: ((ex originalException proxyPerform: #messageText) indexOfSubCollection: 'iDontUnderstandThis') > 0.
+			self assert: ((ex originalException proxyPerform: #messageText autoCommit: false) indexOfSubCollection: 'iDontUnderstandThis') > 0.
 			signalled := true ].
 	self assert: signalled.
 ]

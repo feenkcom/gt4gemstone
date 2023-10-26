@@ -125,7 +125,7 @@ GtBareProxy >> gtDisplayOn: aStream [
 	
 	aStream 
 		<< 'Bare Proxy on: ';
-		<< ([proxyObject proxyPerform: #gtDisplayString]
+		<< ([ proxyObject proxyPerform: #gtDisplayString autoCommit: false]
 				on: Error 
 				do: [ :e | 'Error printing'  ]) 
 ]
@@ -147,7 +147,7 @@ GtBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 		^ self ].
 	
 	aStream 
-		<< ([proxyObject proxyPerform: #gtDisplayString]
+		<< ([ proxyObject proxyPerform: #gtDisplayString autoCommit: false]
 				on: Error 
 				do: [ :e | 'Error printing'  ]) 
 ]

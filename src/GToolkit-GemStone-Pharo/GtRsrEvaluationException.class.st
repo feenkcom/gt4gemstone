@@ -87,7 +87,7 @@ GtRsrEvaluationException >> summaryString [
 	| string originalString |
 
 	string := messageText ifNil: [ '' ].
-	originalString := originalException proxyPerform: #buildMessageText.
+	originalString := originalException proxyPerform: #buildMessageText autoCommit: false.
 	(originalString isNotNil and: [ originalString isNotEmpty ]) ifTrue:
 		[ string := string, String crlf, originalString ].
 	^ string trimBoth.
@@ -100,7 +100,7 @@ GtRsrEvaluationException >> summaryText [
 	| text stack originalText |
 
 	text := (messageText ifNil: [ '' ]).
-	originalText := originalException proxyPerform: #buildMessageText.
+	originalText := originalException proxyPerform: #buildMessageText autoCommit: false.
 	(originalText isNotNil and: [ originalText isNotEmpty ]) ifTrue:
 		[ text := text, String crlf, originalText ].
 	text := text trimBoth.

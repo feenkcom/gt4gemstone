@@ -24,7 +24,7 @@ GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getDeclarativeViewMethodNames [
-	^ (self proxyPerform: #getDeclarativeViewMethodNames) object
+	^ (self proxyPerform: #getDeclarativeViewMethodNames autoCommit: false) object
 ]
 
 { #category : #accessing }

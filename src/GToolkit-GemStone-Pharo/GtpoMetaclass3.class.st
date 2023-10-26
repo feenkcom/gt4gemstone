@@ -175,12 +175,13 @@ GtpoMetaclass3 >> pharoEquivalentDefinitionString [
 GtpoMetaclass3 >> poolDictionaries [
 
 	^ self proxyPerform: #_poolDictionaries
+		autoCommit: false
 ]
 
 { #category : #printing }
 GtpoMetaclass3 >> printOn: aStream [
 
-	[ aStream << (self proxyPerform: #printString) ]
+	[ aStream << (self proxyPerform: #printString autoCommit: false) ]
 		on: Error 
 		do: [ :ex | super printOn: aStream ]
 ]
