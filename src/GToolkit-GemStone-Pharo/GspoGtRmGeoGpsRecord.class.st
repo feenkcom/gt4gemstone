@@ -20,7 +20,8 @@ GspoGtRmGeoGpsRecord >> gtActionDownloadFor: anAction [
 		action: [ :aButton |
 			aButton phlow spawnObject: (GtRmGeoGpsRecord 
 				fromJsonDictionary: (self 
-					proxyPerform: #asJsonDictionary))  ]
+					proxyPerform: #asJsonDictionary
+					autoCommit: false))  ]
 ]
 
 { #category : #'gt - extensions' }

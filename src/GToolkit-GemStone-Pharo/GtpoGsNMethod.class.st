@@ -178,17 +178,17 @@ GtpoGsNMethod >> removeFromTab: aTab [
 { #category : #accessing }
 GtpoGsNMethod >> selector [
 
-	^ selector ifNil: [ selector := (self proxyPerform: #selector) ifNil: [ #nil ] ]
+	^ selector ifNil: [ selector := (self proxyPerform: #selector autoCommit: false) ifNil: [ #nil ] ]
 ]
 
 { #category : #accessing }
 GtpoGsNMethod >> sourceCode [
 
-	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString ]
+	^ sourceCode ifNil: [ sourceCode := self proxyPerform: #sourceString autoCommit: false ]
 ]
 
 { #category : #accessing }
 GtpoGsNMethod >> sourceString [
 
-	^ self proxyPerform: #sourceString
+	^ self sourceCode
 ]

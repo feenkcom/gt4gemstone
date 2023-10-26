@@ -67,8 +67,8 @@ GtRsrEvaluatorPromise >> wait [
 	(result class = GtpoGtRsrEvaluationExceptionInformation) ifTrue: 
 		[ | exception |
 		 exception := GtRsrEvaluationException new
-			originalException: (result proxyPerform: #exception);
-			process: (result proxyPerform: #process).
+			originalException: (result proxyPerform: #exception autoCommit: false);
+			process: (result proxyPerform: #process autoCommit: false).
 		exception signal ].
 	serializationStrategy ifNotNil:
 		[ result := (self class environment at: serializationStrategy) new 

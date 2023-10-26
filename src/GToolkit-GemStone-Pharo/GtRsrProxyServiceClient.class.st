@@ -261,7 +261,7 @@ GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 		icon: BrGlamorousVectorIcons browse;
 		tooltip: 'Inspect GemStone Class';
 		action: [ :button |
-			button phlow spawnObject: (self proxyPerform: #class) ].
+			button phlow spawnObject: (self proxyPerform: #class autoCommit: false) ].
 ]
 
 { #category : #accessing }
@@ -430,7 +430,7 @@ GtRsrProxyServiceClient >> printOn: aStream [
 		ifTrue: [
 			aStream 
 				<< 'Service Client Proxy on: ';
-				<< ([self proxyPerform: #gtDisplayString]
+				<< ([self proxyPerform: #gtDisplayString autoCommit: false]
 					on: Error 
 					do: [ :e | 'Error printing'  ]) ]
 		ifFalse: [ aStream << 'Service Client Proxy on: <not connected>' ].

@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoDateTime,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }
@@ -13,7 +13,8 @@ GtpoDateTime class >> remoteClassName [
 { #category : #converting }
 GtpoDateTime >> asDateAndTime [
 
-	^ DateAndTime fromSeconds: (self proxyPerform: #asSeconds)
+	^ DateAndTime fromSeconds: 
+		(self proxyPerform: #asSeconds autoCommit: false)
 ]
 
 { #category : #ui }
@@ -32,5 +33,5 @@ GtpoDateTime >> gtDetailsFor: aView [
 GtpoDateTime >> printOn: aStream [
 
 	remoteSelf ifNil: [ ^ super printOn: aStream ].
-	aStream << (self proxyPerform: #printString).
+	aStream << (self proxyPerform: #printString autoCommit: false).
 ]

@@ -20,10 +20,12 @@ GtpoGtPhlowForwardViewSpecification >> getDeclarativeViewFor: aViewSelector [
 GtpoGtPhlowForwardViewSpecification >> retrieveForwardTargetDataSource [
 	^ self
 		proxyPerform: #retrieveForwardTargetDataSource
+		autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtPhlowForwardViewSpecification >> retrieveViewSpecificationForForwarding [
 	^ self
 		proxyPerform: #retrieveViewSpecificationForForwarding
+		autoCommit: false
 ]
