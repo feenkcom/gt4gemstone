@@ -833,7 +833,7 @@ GtGemStoneSession >> syncChange: change in: aGtGemStoneCodeSync [
 
 	behavior := change behaviorAffected.
 	behavior ifNil: [ ^ self ].
-	(self classStrategy syncClass: behavior registry: registry) ifFalse: 
+	(self classStrategy syncClass: behavior session: self) ifFalse: 
 		[ ^ false ].
 
 	change gtGemStoneCodeSyncIn: aGtGemStoneCodeSync session: self

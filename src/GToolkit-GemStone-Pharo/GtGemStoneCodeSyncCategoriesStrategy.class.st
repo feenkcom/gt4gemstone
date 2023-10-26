@@ -29,7 +29,7 @@ GtGemStoneCodeSyncCategoriesStrategy >> gtDisplayOn: aStream [
 ]
 
 { #category : #testing }
-GtGemStoneCodeSyncCategoriesStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
+GtGemStoneCodeSyncCategoriesStrategy >> syncClass: aClass session: aGtGemStoneSession [
 	"Answer a boolean indicating whether the supplied class should be synced"
 	| category |
 

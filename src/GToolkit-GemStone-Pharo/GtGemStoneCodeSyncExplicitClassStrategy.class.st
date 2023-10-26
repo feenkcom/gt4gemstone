@@ -34,7 +34,7 @@ GtGemStoneCodeSyncExplicitClassStrategy >> gtDisplayOn: aStream [
 ]
 
 { #category : #testing }
-GtGemStoneCodeSyncExplicitClassStrategy >> syncClass: aClass registry: aGtGemStoneSessionRegistry [
+GtGemStoneCodeSyncExplicitClassStrategy >> syncClass: aClass session: aGtGemStoneSession [
 	"Answer a boolean indicating whether the supplied class should be synced"
 
 	^ classes includes: aClass instanceSide name
