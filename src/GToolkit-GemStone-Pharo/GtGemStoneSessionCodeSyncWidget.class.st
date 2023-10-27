@@ -12,19 +12,19 @@ Class {
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> classStrategy [
 
-	^ self registry codeSync defaultClassStrategy
+	^ session codeSync classStrategy
 ]
 
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> codeSync [
 
-	^ self registry ifNotNil: [ :registry | registry codeSync ]
+	^ self session ifNotNil: [ :aSession | aSession codeSync ]
 ]
 
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> eventStrategy [
 
-	^ session eventStrategy
+	^ session codeSync eventStrategy
 ]
 
 { #category : #intialization }
@@ -43,11 +43,11 @@ GtGemStoneSessionCodeSyncWidget >> initialize [
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> isRunning [
 
-	^ self codeSync
+	^ self session
 		ifNil: [ false ]
-		ifNotNil: [ :codeSync |
-			codeSync isRunning and:
-			[ session codeSyncEnabled ] ]
+		ifNotNil: [ :aSession |
+			aSession isRunning and:
+			[ aSession codeSyncEnabled ] ]
 ]
 
 { #category : #'private - ui' }
@@ -127,8 +127,8 @@ GtGemStoneSessionCodeSyncWidget >> statusAttributes [
 	^ Array streamContents: [ :stream |
 		stream
 			nextPut: { #State. self state. self. };
-			nextPut: { 'Class strategy'. self classStrategy gtDisplayString. self classStrategy. };
-			nextPut: { 'Event strategy'. self eventStrategy gtDisplayString. self eventStrategy. } ].
+			nextPut: { 'Class strategy'. self codeSync classStrategy gtDisplayString. self classStrategy. };
+			nextPut: { 'Event strategy'. self codeSync eventStrategy gtDisplayString. self eventStrategy. } ].
 
 ]
 

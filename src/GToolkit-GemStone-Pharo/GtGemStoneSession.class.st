@@ -24,10 +24,8 @@ Class {
 		'gt4gemstoneVersion',
 		'connectionTime',
 		'cacheName',
-		'classStrategy',
-		'eventStrategy',
-		'codeSyncEnabled',
-		'autoCommit'
+		'autoCommit',
+		'codeSync'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -105,17 +103,6 @@ GtGemStoneSession >> cacheName: aString [
 	cacheName := nil.
 ]
 
-{ #category : #'accessing - code sync' }
-GtGemStoneSession >> classStrategy [
-
-	^ classStrategy ifNil: [ registry codeSync defaultClassStrategy ]
-]
-
-{ #category : #'accessing - code sync' }
-GtGemStoneSession >> classStrategy: anObject [
-	classStrategy := anObject
-]
-
 { #category : #accessing }
 GtGemStoneSession >> clearAutoCommit [
 	"Clear the auto-commit flag"
@@ -134,17 +121,15 @@ GtGemStoneSession >> close [
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
 ]
 
-{ #category : #'accessing - code sync' }
-GtGemStoneSession >> codeSyncEnabled [
-	^ codeSyncEnabled
+{ #category : #accessing }
+GtGemStoneSession >> codeSync [
+
+	^ codeSync ifNil: [ codeSync := GtGemStoneSessionCodeSync gtSession: self ]
 ]
 
 { #category : #'accessing - code sync' }
-GtGemStoneSession >> codeSyncEnabled: aBoolean [
-	"Set the code sync flag.
-	It can only be true if the connector allows code sync."
-
-	codeSyncEnabled := aBoolean and: [ connector isCodeSyncAllowed ].
+GtGemStoneSession >> codeSyncEnabled [
+	^ codeSync isNotNil and: [ codeSync enabled ]
 ]
 
 { #category : #actions }
@@ -480,16 +465,6 @@ GtGemStoneSession >> evaluator [
 	^ evaluator
 ]
 
-{ #category : #accessing }
-GtGemStoneSession >> eventStrategy [
-	^ eventStrategy
-]
-
-{ #category : #accessing }
-GtGemStoneSession >> eventStrategy: anObject [
-	eventStrategy := anObject
-]
-
 { #category : #'ui - utils' }
 GtGemStoneSession >> formatBasedOnStatusText: aText [
 	| ropedText |
@@ -705,8 +680,6 @@ GtGemStoneSession >> initialize [
 
 	super initialize.
 	mutex := Mutex new.
-	codeSyncEnabled := false.
-	eventStrategy := GtGemStoneCodeSyncEpEventStrategy new.
 	autoCommit := false.
 ]
 
@@ -800,8 +773,8 @@ GtGemStoneSession >> registry [
 GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 
 	registry := aGtGemStoneSessionRegistry.
-	registry codeSync ifNotNil: [ :codeSync |
-		self codeSyncEnabled: (codeSync sessionStrategy syncSession: self registry: registry) ].
+	registry codeSync ifNotNil: [ :registryCodeSyn |
+		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].
 ]
 
 { #category : #removing }
@@ -916,12 +889,23 @@ GtGemStoneSession >> statusAttributes [
 
 { #category : #accessing }
 GtGemStoneSession >> statusDescription [
-	^ self isRunning
-		ifTrue: [
-			'Connected',( self needsCommit
-				ifTrue: [ ', changed' ] 
-				ifFalse: [ '' ]) ]
-		ifFalse: [ 'Disconnected' ]
+	"Answer a short description of the receiver's state"
+	| words |
+
+	self isRunning ifFalse: [ ^ 'Disconnected' ].
+
+	words := OrderedCollection new: 5.
+	(self codeSyncEnabled or: [ autoCommit ]) ifFalse:
+		[ words add: 'Connected' ]
+	ifTrue:
+		[ self codeSyncEnabled ifTrue: [ words add: 'CodeSync' ].
+		autoCommit ifTrue: [ words add: 'AutoCommit' ] ].
+	self needsCommit ifTrue: [ words add: 'changed' ].
+
+	^ String streamContents: [ :stream | 
+		words
+			do: [ :word | stream << word ]
+			separatedBy: [ stream << ', ' ] ]
 ]
 
 { #category : #accessing }
@@ -943,7 +927,7 @@ GtGemStoneSession >> syncChange: change in: aGtGemStoneCodeSync [
 
 	behavior := change behaviorAffected.
 	behavior ifNil: [ ^ self ].
-	(self classStrategy syncClass: behavior session: self) ifFalse: 
+	(codeSync classStrategy syncClass: behavior session: self) ifFalse: 
 		[ ^ false ].
 
 	change gtGemStoneCodeSyncIn: aGtGemStoneCodeSync session: self
@@ -959,7 +943,7 @@ GtGemStoneSession >> timeDelta [
 { #category : #actions }
 GtGemStoneSession >> toggleCodeSync [
 
-	codeSyncEnabled := codeSyncEnabled not.
+	codeSync enabled: codeSync enabled not
 ]
 
 { #category : #accessing }
