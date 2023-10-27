@@ -62,9 +62,7 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 
 { #category : #accessing }
 GtpoMetaclass3 >> definitionString [
-	^ definitionString ifNil: [ definitionString := self performEvaluation
-	selector: #definition;
-	evaluateAndWait ]
+	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
 ]
 
 { #category : #accessing }

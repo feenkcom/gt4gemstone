@@ -916,12 +916,23 @@ GtGemStoneSession >> statusAttributes [
 
 { #category : #accessing }
 GtGemStoneSession >> statusDescription [
-	^ self isRunning
-		ifTrue: [
-			'Connected',( self needsCommit
-				ifTrue: [ ', changed' ] 
-				ifFalse: [ '' ]) ]
-		ifFalse: [ 'Disconnected' ]
+	"Answer a short description of the receiver's state"
+	| words |
+
+	self isRunning ifFalse: [ ^ 'Disconnected' ].
+
+	words := OrderedCollection new: 5.
+	(self codeSyncEnabled or: [ autoCommit ]) ifFalse:
+		[ words add: 'Connected' ]
+	ifTrue:
+		[ self codeSyncEnabled ifTrue: [ words add: 'CodeSync' ].
+		autoCommit ifTrue: [ words add: 'AutoCommit' ] ].
+	self needsCommit ifTrue: [ words add: 'changed' ].
+
+	^ String streamContents: [ :stream | 
+		words
+			do: [ :word | stream << word ]
+			separatedBy: [ stream << ', ' ] ]
 ]
 
 { #category : #accessing }
