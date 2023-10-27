@@ -12,7 +12,7 @@ Class {
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> classStrategy [
 
-	^ self registry codeSync defaultClassStrategy
+	^ session codeSync classStrategy
 ]
 
 { #category : #accessing }
@@ -24,7 +24,7 @@ GtGemStoneSessionCodeSyncWidget >> codeSync [
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> eventStrategy [
 
-	^ session eventStrategy
+	^ session codeSync eventStrategy
 ]
 
 { #category : #intialization }
@@ -127,8 +127,8 @@ GtGemStoneSessionCodeSyncWidget >> statusAttributes [
 	^ Array streamContents: [ :stream |
 		stream
 			nextPut: { #State. self state. self. };
-			nextPut: { 'Class strategy'. self classStrategy gtDisplayString. self classStrategy. };
-			nextPut: { 'Event strategy'. self eventStrategy gtDisplayString. self eventStrategy. } ].
+			nextPut: { 'Class strategy'. self codeSync classStrategy gtDisplayString. self classStrategy. };
+			nextPut: { 'Event strategy'. self codeSync eventStrategy gtDisplayString. self eventStrategy. } ].
 
 ]
 
