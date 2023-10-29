@@ -68,15 +68,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -313,19 +304,6 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 			<< gtDisplayString
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		priority: 10;
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
-]
-
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 
@@ -358,6 +336,19 @@ GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 			<< ' [';
 			<< aGtSession name;
 			<< ']' ]
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 10;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #initialization }
@@ -575,4 +566,13 @@ GtRsrProxyServiceClient >> scriptEvaluation [
 	^ GtRsrScriptEvaluation new
 		receiver: self;
 		gtSession: self gtSession
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]
