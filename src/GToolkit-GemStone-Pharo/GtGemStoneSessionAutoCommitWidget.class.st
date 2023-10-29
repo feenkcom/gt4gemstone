@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneSessionCodeSyncWidget,
+	#name : #GtGemStoneSessionAutoCommitWidget,
 	#superclass : #BrVerticalPane,
 	#instVars : [
 		'session',
@@ -9,26 +9,8 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> classStrategy [
-
-	^ session codeSync classStrategy
-]
-
-{ #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> codeSync [
-
-	^ self session ifNotNil: [ :aSession | aSession codeSync ]
-]
-
-{ #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> eventStrategy [
-
-	^ session codeSync eventStrategy
-]
-
 { #category : #intialization }
-GtGemStoneSessionCodeSyncWidget >> initialize [
+GtGemStoneSessionAutoCommitWidget >> initialize [
 
 	super initialize.
 	toggleButton := self newToggleButton.
@@ -41,14 +23,14 @@ GtGemStoneSessionCodeSyncWidget >> initialize [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> isRunning [
+GtGemStoneSessionAutoCommitWidget >> isRunning [
 
 	^ session isRunning and:
-		[ session codeSyncEnabled ]
+		[ session autoCommitEnabled ]
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionCodeSyncWidget >> newStatusList [
+GtGemStoneSessionAutoCommitWidget >> newStatusList [
 	| list |
 
 	list := BrColumnedList new
@@ -80,36 +62,36 @@ GtGemStoneSessionCodeSyncWidget >> newStatusList [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionCodeSyncWidget >> newToggleButton [
+GtGemStoneSessionAutoCommitWidget >> newToggleButton [
 	"Answer the button used to toggle code sync on and off in the receiver"
 
 	^ BrButton new
 		aptitude: BrGlamorousButtonWithLabelAptitude;
 		label: 'starting';
 		fitContent;
-		action: [ :aButton | self toggleCodeSync ]
+		action: [ :aButton | self toggleAutoCommit ]
 ]
 
 { #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> registry [
+GtGemStoneSessionAutoCommitWidget >> registry [
 
 	^ session registry
 ]
 
 { #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> session [
+GtGemStoneSessionAutoCommitWidget >> session [
 	^ session
 ]
 
 { #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> session: aGtGemStoneSession [
+GtGemStoneSessionAutoCommitWidget >> session: aGtGemStoneSession [
 
 	session := aGtGemStoneSession.
 	self updateContent.
 ]
 
 { #category : #accessing }
-GtGemStoneSessionCodeSyncWidget >> state [
+GtGemStoneSessionAutoCommitWidget >> state [
 
 	^ self isRunning
 		ifTrue: [ #running ]
@@ -117,35 +99,33 @@ GtGemStoneSessionCodeSyncWidget >> state [
 ]
 
 { #category : #'private - accessing' }
-GtGemStoneSessionCodeSyncWidget >> statusAttributes [
+GtGemStoneSessionAutoCommitWidget >> statusAttributes [
 
-	session codeSync ifNil:
-		[ ^ { { #State. self state. self. } } ].
 	^ Array streamContents: [ :stream |
 		stream
-			nextPut: { #State. self state. self. };
-			nextPut: { 'Class strategy'. self codeSync classStrategy gtDisplayString. self classStrategy. };
-			nextPut: { 'Event strategy'. self codeSync eventStrategy gtDisplayString. self eventStrategy. } ].
+			nextPut: { #State. self state. self. } ].
 
 ]
 
-{ #category : #'private - accessing' }
-GtGemStoneSessionCodeSyncWidget >> toggleButtonLabel [
+{ #category : #private }
+GtGemStoneSessionAutoCommitWidget >> toggleAutoCommit [
 
-	^ session codeSyncEnabled
+	session autoCommitEnabled
+		ifTrue: [ session clearAutoCommit ]
+		ifFalse: [ session setAutoCommit ].
+	self updateContent.
+]
+
+{ #category : #'private - accessing' }
+GtGemStoneSessionAutoCommitWidget >> toggleButtonLabel [
+
+	^ session autoCommitEnabled
 		ifTrue: [ 'Disable' ]
 		ifFalse: [ 'Enable' ]
 ]
 
-{ #category : #private }
-GtGemStoneSessionCodeSyncWidget >> toggleCodeSync [
-
-	session toggleCodeSync.
-	self updateContent.
-]
-
 { #category : #'private - ui' }
-GtGemStoneSessionCodeSyncWidget >> updateContent [
+GtGemStoneSessionAutoCommitWidget >> updateContent [
 
 	toggleButton label: self toggleButtonLabel.
 	statusList items: self statusAttributes.

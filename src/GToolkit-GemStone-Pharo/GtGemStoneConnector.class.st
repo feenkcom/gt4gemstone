@@ -210,8 +210,8 @@ GtGemStoneConnector >> statusAttributes [
 	attributes := OrderedCollection new.
 	attributes
 		add: 'Name' -> self name;
-		add: 'Code Sync Allowed' -> self isCodeSyncAllowed.
-
+		add: 'Code Sync Allowed' -> self isCodeSyncAllowed;
+		add: 'Auto-commit Allowed' -> self isAutoCommitAllowed.
 	^ attributes
 ]
 
