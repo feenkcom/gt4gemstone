@@ -516,6 +516,21 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 ]
 
 { #category : #ui }
+GtGemStoneSession >> gtAutoCommitFor: aView [
+	<gtView>
+
+	(connector isNil or:
+		[ connector isAutoCommitAllowed not ]) 
+			ifTrue: [ ^ aView empty ].
+
+	^ aView explicit
+		title: 'Auto-commit';
+		priority: 40;
+		stencil: [ GtGemStoneSessionAutoCommitWidget new session: self ];
+		actionUpdateButton.
+]
+
+{ #category : #ui }
 GtGemStoneSession >> gtCodeSyncFor: aView [
 	<gtView>
 
