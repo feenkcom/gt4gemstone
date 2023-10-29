@@ -18,7 +18,7 @@ GtGemStoneSessionCodeSyncWidget >> classStrategy [
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> codeSync [
 
-	^ self registry ifNotNil: [ :registry | registry codeSync ]
+	^ self session ifNotNil: [ :aSession | aSession codeSync ]
 ]
 
 { #category : #accessing }
@@ -43,11 +43,8 @@ GtGemStoneSessionCodeSyncWidget >> initialize [
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> isRunning [
 
-	^ self codeSync
-		ifNil: [ false ]
-		ifNotNil: [ :codeSync |
-			codeSync isRunning and:
-			[ session codeSyncEnabled ] ]
+	^ session isRunning and:
+		[ session codeSyncEnabled ]
 ]
 
 { #category : #'private - ui' }
