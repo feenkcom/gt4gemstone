@@ -43,11 +43,8 @@ GtGemStoneSessionCodeSyncWidget >> initialize [
 { #category : #accessing }
 GtGemStoneSessionCodeSyncWidget >> isRunning [
 
-	^ self session
-		ifNil: [ false ]
-		ifNotNil: [ :aSession |
-			aSession isRunning and:
-			[ aSession codeSyncEnabled ] ]
+	^ session isRunning and:
+		[ session codeSyncEnabled ]
 ]
 
 { #category : #'private - ui' }
