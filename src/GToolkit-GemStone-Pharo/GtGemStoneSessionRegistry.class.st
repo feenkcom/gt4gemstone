@@ -393,6 +393,27 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		actionUpdateButton
 ]
 
+{ #category : #ui }
+GtGemStoneSessionRegistry >> gtStatusFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 10;
+		items: [ self statusAttributes ];
+		column: #Attribute text: [ :item | item first ];
+		column: #Value text: [ :item | | value |
+				value := item second.
+				value isBoolean ifTrue:
+					[ value
+						ifTrue: [ (Character value: 16r2713) asString ]
+						ifFalse: [ '-' ] ]
+				ifFalse:
+					[ value ] ];
+		send: [ :item | item third ];
+		actionUpdateButton 
+]
+
 { #category : #testing }
 GtGemStoneSessionRegistry >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
@@ -687,6 +708,29 @@ GtGemStoneSessionRegistry >> startUp: isImageStarting [
 	"A new Pharo session is being started, if this is a new image (from disk) reload the properties file"
 
 	isImageStarting ifTrue: [ self reload ]
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> statusAttributes [
+
+	^ Array streamContents: [ :stream |
+		stream
+			nextPut: { 'Code Sync.'. codeSync isNotNil. codeSync. };
+			nextPut: { 'Keep Alive'. 
+						keepAlive ifNotNil: 
+							[ keepAlive isRunning
+								ifTrue: [ true ]
+								ifFalse: [ keepAlive status ] ]
+						ifNil: 
+							[ false ]. keepAlive. };
+			nextPut: { 'Default Session'.
+						self hasDefaultSession
+							ifTrue: [ self defaultSession name ]
+							ifFalse: [ false ]. 
+						self hasDefaultSession
+							ifTrue: [ self defaultSession ]
+							ifFalse: [ nil ]. } ].
+
 ]
 
 { #category : #initialization }
