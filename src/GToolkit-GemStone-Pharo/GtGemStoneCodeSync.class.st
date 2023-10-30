@@ -195,9 +195,8 @@ GtGemStoneCodeSync >> statusAttributes [
 	^ Array streamContents: [ :stream |
 		stream
 			nextPut: { #State. self state. self. };
-			nextPut: { 'Default class strategy'. defaultClassStrategy gtDisplayString. defaultClassStrategy. };
-			nextPut: { 'Session strategy'. sessionStrategy gtDisplayString. sessionStrategy. } ].
-
+			nextPut: { 'Session strategy'. sessionStrategy gtDisplayString. sessionStrategy. };
+			nextPut: { 'Default class strategy'. defaultClassStrategy gtDisplayString. defaultClassStrategy. } ]
 ]
 
 { #category : #printing }
