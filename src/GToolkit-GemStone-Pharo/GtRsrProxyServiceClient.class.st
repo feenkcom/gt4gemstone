@@ -201,6 +201,15 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnProxy: aString autoCommit: aBool
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
+	"Evaluate the supplied string with `self` bound to the receiver and answer the result by value (transferred with STON serialisation)"
+
+	^ self 
+		evaluateAndWait: aString
+		serializationStrategy: #GtRsrStonSerializationStrategy
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -542,6 +551,15 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArr
 		returnProxy;
 		autoCommit: aBoolean;
 		evaluate) wait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: anArray [
+
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: anArray 
+		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
 { #category : #private }
