@@ -945,6 +945,7 @@ GtGemStoneSession >> syncChange: change in: aGtGemStoneCodeSync [
 	(codeSync classStrategy syncClass: behavior session: self) ifFalse: 
 		[ ^ false ].
 
+	self isRunning ifFalse: [ self connect ].
 	change gtGemStoneCodeSyncIn: aGtGemStoneCodeSync session: self
 ]
 
