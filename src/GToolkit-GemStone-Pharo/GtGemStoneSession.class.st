@@ -25,7 +25,8 @@ Class {
 		'connectionTime',
 		'cacheName',
 		'autoCommit',
-		'codeSync'
+		'codeSync',
+		'keepAlive'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -117,7 +118,7 @@ GtGemStoneSession >> close [
 
 	connection close.
 	session ifNotNil: [ session logout ].
-	session := connection := evaluator := nil.
+	session := connection := evaluator := keepAlive := nil.
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
 ]
 
@@ -189,6 +190,28 @@ GtGemStoneSession >> connector: aGtGemstoneConnector [
 		to: self
 ]
 
+{ #category : #'ui - utils' }
+GtGemStoneSession >> contextMenuContent [
+	"Answer the default set of actions that can be performed on the receiver"
+
+	^ BrGlamorousSimpleContextMenuContent new items:
+		(Array streamContents: [ :stream |
+			stream nextPut: (self isRunning
+				ifTrue: [ 'Disconnect' -> [ :anElement | self close ] ]
+				ifFalse: [ 'Connect' -> [ :anElement | self connect ] ]).
+			self needsCommit ifTrue:
+				[ stream 
+					nextPut: 'Commit' -> [ :anElement | self commitTransaction ];
+					nextPut: 'Abort' -> [ :anElement | self abortTransaction ] ].
+			self isDefaultSession ifFalse:
+				[ stream nextPut: 'Be Default' -> [ :anElement | self beDefaultSession ] ].
+			stream nextPut: 'Inspect' -> [ :anElement | 
+					GtPager
+						openWrappedOn: (GtInspector newOn: self)
+						title: self name
+						from: anElement. ] ])
+]
+
 { #category : #accessing }
 GtGemStoneSession >> dbSize [
 
@@ -242,7 +265,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		bindings: (self updatedBindings: remoteBindings);
+		bindings: remoteBindings;
 		returnLegacy;
 		autoCommit: aBoolean;
 		evaluate
@@ -254,7 +277,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		bindings: (self updatedBindings: remoteBindings);
+		bindings: remoteBindings;
 		serialisationStrategy: aSymbol;
 		autoCommit: autoCommit;
 		evaluate
@@ -266,7 +289,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		bindings: (self updatedBindings: remoteBindings);
+		bindings: remoteBindings;
 		serialisationStrategy: aSymbol;
 		autoCommit: aBoolean;
 		evaluate
@@ -441,7 +464,7 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: r
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		bindings: (self updatedBindings: remoteBindings);
+		bindings: remoteBindings;
 		returnProxy;
 		autoCommit: autoCommit;
 		evaluate
@@ -453,7 +476,7 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: r
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		bindings: (self updatedBindings: remoteBindings);
+		bindings: remoteBindings;
 		returnProxy;
 		autoCommit: aBoolean;
 		evaluate
@@ -690,6 +713,12 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 			button phlow spawnObject: 'Deleted Session Definition' ]
 ]
 
+{ #category : #testing }
+GtGemStoneSession >> hasKeepAlive [
+
+	^ keepAlive isNotNil
+]
+
 { #category : #initialization }
 GtGemStoneSession >> initialize [ 
 
@@ -723,6 +752,12 @@ GtGemStoneSession >> isRunning [
 
 	connection ifNil: [ ^ false ].
 	^ connection isOpen
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> keepAlive [
+
+	^ keepAlive ifNil: [ keepAlive := GtGemStoneKeepAliveSession session: self ]
 ]
 
 { #category : #accessing }
@@ -871,6 +906,8 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Connected' -> isRunning;
 		add: 'Changed' -> self needsCommit;
 		add: 'Default' -> self isDefaultSession.
+	(keepAlive isNotNil and: [ keepAlive isDirty ]) ifTrue:
+		[ attributes add: 'Keep Alive' -> 'dirty' ].
 
 	attributes add: (connector isCodeSyncAllowed
 		ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]

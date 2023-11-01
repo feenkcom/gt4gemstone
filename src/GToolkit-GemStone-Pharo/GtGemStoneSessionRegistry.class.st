@@ -459,6 +459,12 @@ GtGemStoneSessionRegistry >> initialize [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> keepAlive [
+
+	^ keepAlive
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionNamed: aString [
 	| connectorName sessionId |
 
