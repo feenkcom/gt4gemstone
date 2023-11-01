@@ -12,6 +12,12 @@ Class {
 }
 
 { #category : #actions }
+GtGemStoneTestingSession >> abortTransaction [
+
+	^ self
+]
+
+{ #category : #actions }
 GtGemStoneTestingSession >> close [
 
 	state := #disconnected.
