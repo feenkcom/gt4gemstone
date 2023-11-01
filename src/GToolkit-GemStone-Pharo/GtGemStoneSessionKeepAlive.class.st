@@ -4,6 +4,8 @@ GtGemStoneSessionKeepAlive periodically scans the active sessions in the supplie
 Class {
 	#name : #GtGemStoneSessionKeepAlive,
 	#superclass : #Object,
+	#traits : 'TGtAnnouncer',
+	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
 		'registry',
 		'delay',
@@ -13,7 +15,9 @@ Class {
 		'modifiedBlock',
 		'cleanBlock',
 		'cleanPostAction',
-		'modifiedPostAction'
+		'modifiedPostAction',
+		'announcer',
+		'notification'
 	],
 	#classVars : [
 		'MaxKeepAlive'
@@ -38,6 +42,20 @@ GtGemStoneSessionKeepAlive class >> maxKeepAlive: aNumber [
 	MaxKeepAlive := aNumber
 ]
 
+{ #category : #announcer }
+GtGemStoneSessionKeepAlive >> announceAndLog: aBeaconSignal [
+	"Announce the supplied signal to the receiver's announcer and then emit the signal for logging"
+
+	self announce: aBeaconSignal.
+	aBeaconSignal emit.
+]
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> announcer [
+
+	^ announcer
+]
+
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> cleanPostAction [
 	^ cleanPostAction
@@ -59,6 +77,14 @@ GtGemStoneSessionKeepAlive >> delay: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionKeepAlive >> dirtySessions [
+	"Answer the collection of dirty sessions"
+
+	^ registry activeSessions select: 
+		[ :session | session keepAlive isDirty ]
+]
+
+{ #category : #accessing }
 GtGemStoneSessionKeepAlive >> gtLiveFor: aView [
 	<gtView>
 
@@ -75,12 +101,33 @@ GtGemStoneSessionKeepAlive >> gtLiveFor: aView [
 		actionUpdateButton.
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Sessions';
+		priority: 20;
+		items: [ self nonCleanSessions ];
+		column: 'Session' text: [ :session | session name ];
+		column: 'Count' text: [ :session | session keepAlive dirtyCount ];
+		actionUpdateButton
+]
+
+{ #category : #testing }
+GtGemStoneSessionKeepAlive >> hasDirtySession [
+
+	^ registry activeSessions anySatisfy: 
+		[ :session | session hasKeepAlive and: [ session keepAlive isDirty ] ]
+]
+
 { #category : #initialialize }
 GtGemStoneSessionKeepAlive >> initialize [
 
 	super initialize.
 	delay := 5 minutes.
 	shouldExit := false.
+	announcer := Announcer new.
 	cleanBlock := [ System abortTransaction ].
 	cleanPostAction := [ :session |
 		GtGemStoneKeepAliveSessionCleanSignal new
@@ -130,6 +177,27 @@ GtGemStoneSessionKeepAlive >> nextPollTime [
 		[ scheduleTask scheduledTime asTime print24 ].
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> nonCleanSessions [
+	"Answer the collection of sessions that are either dirty or needCommit"
+
+	^ registry activeSessions select: 
+		[ :session | session keepAlive dirtyCount > 0 ]
+]
+
+{ #category : #private }
+GtGemStoneSessionKeepAlive >> notification [
+
+	^ notification ifNil: [ notification := GtGemStoneKeepAliveNotification registry: self registry ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionKeepAlive >> onSessionTransaction: anAnnouncement [
+
+	self pollSession: anAnnouncement session.
+	self updateNotification.
+]
+
 { #category : #private }
 GtGemStoneSessionKeepAlive >> pollSession: session [ 
 	| neededCommit |
@@ -138,16 +206,19 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 	
 	(session isRunning not or:
 		[ session isAutoMode not or:
-		[ session isBusy or:
-		[ (DateAndTime now - session connectionTime) asMinutes > 
-			self class maxKeepAlive ] ] ]) ifTrue: [ ^ self ].
+		[ session isBusy ] ]) ifTrue: 
+			[ session keepAlive resetDirtyCount.
+			^ self ].
+	(DateAndTime now - session connectionTime) asMinutes > self class maxKeepAlive ifTrue:
+		[ session needsCommit ifFalse: [ session keepAlive resetDirtyCount ].
+		^ self ].
 		
 	GtGemStoneKeepAliveSessionPollStartedSignal new
 		keepAlive: self;
 		session: session;
 		emit.
 		
-	neededCommit := (session scriptEvaluation
+	neededCommit := session scriptEvaluation
 		script: '| needsCommit |
 			(needsCommit := System needsCommit)
 				ifTrue: modifiedBlock
@@ -157,25 +228,42 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 			#modifiedBlock -> modifiedBlock.
 			#cleanBlock -> cleanBlock.
 			} asDictionary;
-		evaluate) wait.
-	neededCommit
-		ifTrue: [ self logModified: session ]
-		ifFalse: [ self logClean: session ].
+		returnPrimitiveOnly;
+		evaluateAndWait.
+	neededCommit ifTrue: 
+		[ self processModifiedSession: session ]
+	ifFalse: 
+		[ self processCleanSession: session ].
 ]
 
 { #category : #private }
 GtGemStoneSessionKeepAlive >> pollSessions [
+	self assert: registry isNotNil description: 'Registry not supplied'.
+	registry activeSessions
+		do: [ :session | 
+			[ self pollSession: session ]
+				on: Error
+				do: [ :ex | 
+					GtGemStoneKeepAliveSessionErrorSignal new
+						keepAlive: self;
+						session: session;
+						exception: ex;
+						emit ] ].
+	self updateNotification
+]
 
-	self assert: registry isNotNil
-		description: 'Registry not supplied'.
-	registry activeSessions do: [ :session |
-		[ self pollSession: session ]
-			on: Error
-			do: [ :ex | GtGemStoneKeepAliveSessionErrorSignal new
-				keepAlive: self;
-				session: session;
-				exception: ex;
-				emit ] ]
+{ #category : #private }
+GtGemStoneSessionKeepAlive >> processCleanSession: session [ 
+
+	session keepAlive resetDirtyCount.
+	self logClean: session.
+]
+
+{ #category : #private }
+GtGemStoneSessionKeepAlive >> processModifiedSession: session [
+
+	session keepAlive incrementDirtyCount.
+	self logModified: session.
 ]
 
 { #category : #accessing }
@@ -184,8 +272,14 @@ GtGemStoneSessionKeepAlive >> registry [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionKeepAlive >> registry: anObject [
-	registry := anObject
+GtGemStoneSessionKeepAlive >> registry: aGtGemStoneSessionRegistry [
+
+	self assert: registry isNil.
+	registry := aGtGemStoneSessionRegistry.
+	registry
+		when: GtGemStoneSessionAbortedAnnouncement, GtGemStoneSessionCommittedAnnouncement
+		send: #onSessionTransaction:
+		to: self.
 ]
 
 { #category : #private }
@@ -195,14 +289,12 @@ GtGemStoneSessionKeepAlive >> schedulePollSessions [
 		[ pollPromise := scheduleTask := nil.
 		shouldExit := false.
 		^ self ].
-	GtGemStoneKeepAlivePollStartedSignal new
-		keepAlive: self;
-		emit.
+	self announceAndLog: (GtGemStoneKeepAlivePollStartedSignal new
+		keepAlive: self).
 	pollPromise := [ self pollSessions ] asAsyncPromise.
 	pollPromise
-		then: [ GtGemStoneKeepAlivePollCompletedSignal new
-			keepAlive: self;
-			emit ]
+		then: [ self announceAndLog: (GtGemStoneKeepAlivePollCompletedSignal new
+			keepAlive: self) ]
 		otherwise: [ :ex | 
 			ex freeze.
 			[ self error: ex printString ] fork].
@@ -243,4 +335,11 @@ GtGemStoneSessionKeepAlive >> status [
 GtGemStoneSessionKeepAlive >> stop [
 
 	shouldExit := true.
+]
+
+{ #category : #private }
+GtGemStoneSessionKeepAlive >> updateNotification [
+	self hasDirtySession
+		ifTrue: [ self notification registerNotifications ]
+		ifFalse: [ self notification requestRemoval ]
 ]

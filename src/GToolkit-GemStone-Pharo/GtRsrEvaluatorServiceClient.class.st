@@ -84,10 +84,12 @@ GtRsrEvaluatorServiceClient >> evaluateProxyOnlyScript: aGtRsrScriptEvaluation [
 GtRsrEvaluatorServiceClient >> evaluateScript: aGtRsrScriptEvaluation [
 	| rsrPromise |
 
+	aGtRsrScriptEvaluation serialisationStrategy ifNil:
+		[ self error: 'Serialization strategy not yet set' ].
 	rsrPromise := remoteSelf
 		evaluate: aGtRsrScriptEvaluation script
 		for: aGtRsrScriptEvaluation receiver
-		bindings: aGtRsrScriptEvaluation bindings
+		bindings: (gtSession updatedBindings: aGtRsrScriptEvaluation bindings)
 		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
