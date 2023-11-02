@@ -99,19 +99,7 @@ GtGemStoneCodeSyncEpEventStrategy >> syncClassNameChange: anEpChange session: se
 
 { #category : #'event handling' }
 GtGemStoneCodeSyncEpEventStrategy >> syncClassRemoval: anEpChange session: session [
-	| script removed |
-
-	script := String streamContents: [ :stream |
-		stream
-			<< '(Globals removeKey: #';
-			<< anEpChange behaviorAffectedName;
-			<< ' ifAbsent: []) ifNil: [ false ] ifNotNil: [ true ]' ].
-	removed  := session evaluateAndWait: script .
-	GtGemStoneClassRemovalCodeSyncSignal new
-		change: anEpChange;
-		session: session;
-		removed: removed;
-		emit
+	"Ignore class removal"
 ]
 
 { #category : #'event handling' }
