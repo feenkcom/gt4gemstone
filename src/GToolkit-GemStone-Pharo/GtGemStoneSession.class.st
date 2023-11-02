@@ -199,10 +199,9 @@ GtGemStoneSession >> contextMenuContent [
 			stream nextPut: (self isRunning
 				ifTrue: [ 'Disconnect' -> [ :anElement | self close ] ]
 				ifFalse: [ 'Connect' -> [ :anElement | self connect ] ]).
-			self needsCommit ifTrue:
-				[ stream 
-					nextPut: 'Commit' -> [ :anElement | self commitTransaction ];
-					nextPut: 'Abort' -> [ :anElement | self abortTransaction ] ].
+			stream 
+				nextPut: 'Commit' -> [ :anElement | self commitTransaction ];
+				nextPut: 'Abort' -> [ :anElement | self abortTransaction ].
 			self isDefaultSession ifFalse:
 				[ stream nextPut: 'Be Default' -> [ :anElement | self beDefaultSession ] ].
 			stream nextPut: 'Inspect' -> [ :anElement | 
