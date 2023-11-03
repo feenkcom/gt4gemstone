@@ -44,6 +44,12 @@ GtGemStoneCodeSyncEpEventStrategy >> copyClass: anEpNameChange session: session 
 	session evaluateAndWait: script.
 ]
 
+{ #category : #ui }
+GtGemStoneCodeSyncEpEventStrategy >> gtDisplayOn: aStream [
+
+	aStream << 'sync class additions and modifications and all method changes'
+]
+
 { #category : #'event handling' }
 GtGemStoneCodeSyncEpEventStrategy >> syncClassCategoryChange: anEpChange session: session [
 	| cmd |
