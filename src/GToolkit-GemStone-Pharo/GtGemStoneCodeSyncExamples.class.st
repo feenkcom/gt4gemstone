@@ -228,18 +228,11 @@ GtGemStoneCodeSyncExamples >> registry [
 
 { #category : #helper }
 GtGemStoneCodeSyncExamples >> removeClass [
-	| signal |
+	"The default event strategy ignores class removal.
+	Just check that the class is gone from the local image."
 
 	self renamedExampleClass removeFromSystem.
-	semaphore wait.
-	signal := logger recordings last.
-	self assert: signal class equals: GtGemStoneClassRemovalCodeSyncSignal.
-	self assert: signal session identicalTo: codeSync registry defaultSession.
-	self assert: signal change isEpClassRemoval.
-	self assert: signal change behaviorAffectedName equals: self renamedExampleClassName.
-	"When running with the simulated session, removed gets set to the session, not a boolean"
-		self assert: (signal removed == true or: 
-			[ signal removed == self registry defaultSession ]).
+	self deny: (self class environment includesKey: self renamedExampleClassName).
 ]
 
 { #category : #helper }
