@@ -163,8 +163,28 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 ]
 
 { #category : #examples }
+GtGemStoneSessionRegistryExamples >> removeDefaultSession [
+	"Confirm that removing a session that is the default results in the registy no longer having a default session"
+	<gtExample>
+	| registry session |
+
+	registry := self addSessionAnnouncement.
+	self assert: registry connectors size equals: 1.
+	self assert: registry activeSessions size equals: 1.
+
+	session := registry activeSessions anyOne.
+	self assert: session identicalTo: registry defaultSession.
+
+	registry removeSession: session.
+
+	self deny: registry hasDefaultSession.
+
+	^ registry
+]
+
+{ #category : #examples }
 GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
-	"Confirm that an announcement is received from the session registry when a session is added"
+	"Confirm that an announcement is received from the session registry when a session is removed"
 	<gtExample>
 	| registry announcements session |
 
