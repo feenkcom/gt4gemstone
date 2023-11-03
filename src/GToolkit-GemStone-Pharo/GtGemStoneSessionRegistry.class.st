@@ -618,7 +618,8 @@ GtGemStoneSessionRegistry >> removeConnectorNamed: aString [
 GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 	"Remove the supplied session and its definition"
 
-	aGtGemStoneSession close.
+	aGtGemStoneSession isRunning ifTrue:
+		[ aGtGemStoneSession close ].
 	sessions
 		removeKey: aGtGemStoneSession name
 		ifAbsent: [ ^ self ].
