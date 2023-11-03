@@ -303,11 +303,11 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtDisplayOn: aStream [
+GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 	| gtDisplayString |
 
 	self isProxyObjectActive ifFalse:
-		[ aStream << 'Service Client Proxy: <not connected>'.
+		[ aStream << '<not connected>'.
 		^ self ].
 
 	gtDisplayString := [
@@ -317,9 +317,14 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 			evaluate) wait ]
 				on: Error
 				do: [ :ex | 'Error printing bare proxy' ].
-	aStream
-			<< 'Service Client Proxy: ';
-			<< gtDisplayString
+	aStream << gtDisplayString.
+]
+
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtDisplayOn: aStream [
+
+	aStream << 'Service Client Proxy: '.
+	self gtBasicDisplayOn: aStream.
 ]
 
 { #category : #accessing }
@@ -338,7 +343,7 @@ GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
 { #category : #printing }
 GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 
-	self gtDisplayOn: aStream.
+	self gtBasicDisplayOn: aStream.
 	
 	gtSession ifNotNil:[ 
 		aStream

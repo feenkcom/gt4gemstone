@@ -133,8 +133,8 @@ GtGemStoneSessionCodeSyncWidget >> statusAttributes [
 GtGemStoneSessionCodeSyncWidget >> toggleButtonLabel [
 
 	^ session codeSyncEnabled
-		ifTrue: [ 'Disable' ]
-		ifFalse: [ 'Enable' ]
+		ifTrue: [ 'Stop' ]
+		ifFalse: [ 'Start' ]
 ]
 
 { #category : #private }

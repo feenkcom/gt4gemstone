@@ -4,6 +4,12 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
+{ #category : #ui }
+GtGemStoneCodeSyncBasicEpEventStrategy >> gtDisplayOn: aStream [
+
+	aStream << 'sync method changes only'
+]
+
 { #category : #'event handling' }
 GtGemStoneCodeSyncBasicEpEventStrategy >> syncClassCategoryChange: anEpChange session: session [
 	"Ignore class changes"
