@@ -23,6 +23,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 			clsName := self compiledMethod methodClass name.
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
+			session connect.
 			cmd := String streamContents: [ :stream |
 				stream
 					<< '(';
@@ -60,6 +61,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 			source := anAST source.
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
+			session connect.
 			category := self compiledMethod category.
 			cmd := String streamContents: [ :stream |
 				stream
@@ -96,6 +98,7 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 			clsName := self compiledMethod methodClass name.
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default session available' ].
+			session connect.
 			cmd := String streamContents: [ :stream |
 				stream 
 					<< '(';
