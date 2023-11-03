@@ -139,8 +139,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnRe
 	"Example with a GemStone snippet with no session name,
 	and a registry with a default session."
 	<gtExample>
-	| pageTool scripter |
-	
+	| pageTool scripter session |
+
 	self gemstoneSessionRegistry connectors
 		at: 'test1'
 		put: (GtRemoteGemstoneExamplesSessionBuilder 
@@ -161,11 +161,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnRe
 		for: scripter.
 	
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
-	self gemstoneSessionRegistry sessions values anyOne close.
-	self assert: self gemstoneSessionRegistry sessions values first isRunning not.
-	self 
-		assert: self gemstoneSessionRegistry sessions values first name
-		equals: 'test1:1'.
+	session := self gemstoneSessionRegistry sessions values anyOne.
+	session close.
+	self assert: session isRunning not.
+	self assert: session name equals: 'test1:1'.
+	self assert: self gemstoneSessionRegistry sessions isEmpty.
 	
 	^ scripter
 ]
