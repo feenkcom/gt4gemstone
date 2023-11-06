@@ -242,7 +242,7 @@ GtGemStoneSessionsCardWidget >> initialize [
 GtGemStoneSessionsCardWidget >> inspectRegistryFrom: aButton [ 
 
 	GtPager
-		openWrappedOn: (GtInspector newOn: registry)
+		openWrappedOn: (GtInspector newOn: self registry)
 		title: 'GemStone Registry'
 		from: aButton.
 ]
@@ -279,8 +279,7 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> registry [
 
-	registry ifNil: [ self registry: GtGemStoneSessionRegistry default ].
-	^ registry
+	^ registry ifNil: [ GtGemStoneSessionRegistry default ]
 ]
 
 { #category : #accessing }

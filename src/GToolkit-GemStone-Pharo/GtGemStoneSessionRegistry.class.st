@@ -620,6 +620,7 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 
 	aGtGemStoneSession isRunning ifTrue:
 		[ aGtGemStoneSession close ].
+	aGtGemStoneSession = defaultSession ifTrue: [ defaultSession := nil ].
 	sessions
 		removeKey: aGtGemStoneSession name
 		ifAbsent: [ ^ self ].

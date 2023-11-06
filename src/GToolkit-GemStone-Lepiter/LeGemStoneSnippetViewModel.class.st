@@ -12,6 +12,11 @@ LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
 	^ sharedContext externalSnippetContext gemstoneSessionRegistry
 ]
 
+{ #category : #accessing }
+LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
+	^ sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry
+]
+
 { #category : #private }
 LeGemStoneSnippetViewModel >> getSessionName [
 	| registry |
