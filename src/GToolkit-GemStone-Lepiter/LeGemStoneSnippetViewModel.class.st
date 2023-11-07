@@ -125,7 +125,7 @@ LeGemStoneSnippetViewModel >> updateGemstoneSession [
 		[ self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
 	ifNotNil: [ :aString |
 		self gemstoneSessionRegistry sessionNamed: aString ] ]
-			on: KeyNotFound
+			on: KeyNotFound, GciError
 			do: [ :ex | ^ self ].
 				.
 	coderViewModel session: session.
