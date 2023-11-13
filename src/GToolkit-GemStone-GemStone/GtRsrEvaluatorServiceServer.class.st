@@ -1,21 +1,22 @@
 Class {
-	#name : #GtRsrEvaluatorServiceServer,
-	#superclass : #GtRsrEvaluatorService,
+	#name : 'GtRsrEvaluatorServiceServer',
+	#superclass : 'GtRsrEvaluatorService',
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
+	aString = 'oops' ifTrue: [ self error: 'Special oops error' ].
 	^ (self
 		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
 		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
 			asGtRsrProxyObjectForConnection: _connection
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -27,7 +28,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	^ (Globals at: aSymbol) new serialize: result.
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -40,10 +41,10 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 	^ GtRsrProxyServiceServer object: result.
 ]
 
-{ #category : #'private - GemStone' }
+{ #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings object semaphore evaluationProcess |
+	| method receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -56,31 +57,8 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 	method := aString _compileInContext: receiver symbolList: bindings.
-	semaphore := Semaphore new.
 
-	evaluationProcess := [ [ result := method _executeInContext: receiver. semaphore signal ]
-		on: Exception
-		do: [ :ex |
-			result := (GtRsrEvaluationExceptionInformation new
-				exception: ex;
-				process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-			semaphore signal.
-			evaluationProcess suspend ]
-				] newProcess.
-	evaluationProcess debugActionBlock: [ :ex |
-		result := (GtRsrEvaluationExceptionInformation new
-			exception: ex;
-			process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-		semaphore signal.
-		evaluationProcess suspend ].
-	evaluationProcess
-		name: 'GT evaluation';
-		priority: 15;
-		breakpointLevel: 1.
-	evaluationProcess resume.
-	semaphore wait.
-
-	^ result
+	^ GtGemStoneEvaluationContext new
+		evaluateBlock: [ method _executeInContext: receiver ]
+		from: self.
 ]

@@ -1,16 +1,16 @@
 Class {
-	#name : #GtRsrEvaluatorServiceTest,
-	#superclass : #TestCase,
+	#name : 'GtRsrEvaluatorServiceTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	| script evaluator |
 
@@ -32,7 +32,36 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
+GtRsrEvaluatorServiceTest >> testInitialState [
+	"Check that the initial state answers the expected information"
+	| process exception state encodedState deserializedState |
+
+	process := [ [ self halt ]
+		on: Exception
+		do: [ :ex | 
+			exception := ex.
+			process suspend ] ] fork.
+	(Delay forMilliseconds: 100) wait.
+	self assert: process _isSuspended.
+	self assert: exception notNil.
+	state := GtGemStoneDebuggerInitialState
+		process: process
+		exception: exception.
+	self assert: state summary = 'a Halt occurred (error 2709)'.
+	self assert: state callStack size = 15.
+	self assert: (state callStack at: 10) = { #GtRsrEvaluatorServiceTest. #testInitialState. true }.
+
+	encodedState := state asJsonForExport.
+	self assert: encodedState isString.
+	deserializedState := GtGemStoneDebuggerInitialState fromJsonString: encodedState.
+	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
+	self assert: deserializedState callStack size = 15.
+	self assert: (deserializedState callStack at: 10) = { 'GtRsrEvaluatorServiceTest'. 'testInitialState'. true }.
+self halt.
+]
+
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -63,22 +92,22 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
-	| script evaluator |
+	| script evaluator result object |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self + ''NaN'''.
-	"'4 + ''NaN''' raises a MNU"
-	self
-		should: [ evaluator evaluate: script for: 4 bindings: Dictionary new ]
-		raise: MessageNotUnderstood
-		withExceptionDo: [ :ex | 
-			"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
-			self assert: (#(#adaptToNumber:andSend: #'_generality') includes: ex message selector) ].
+	"'4 + ''NaN''' raises a MNU which is trapped, resulting in a GtGemStoneEvaluationContext being returned"
+	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
+	self assert: result class = GtRsrProxyServiceServer.
+	object := result object.
+	self assert: object class = GtGemStoneEvaluationContext.
+	"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
+	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
@@ -88,7 +117,7 @@ GtRsrEvaluatorServiceTest >> testSelfScript [
 	self assert: result equals: 7.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 
