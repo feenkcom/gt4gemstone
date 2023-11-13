@@ -64,12 +64,19 @@ GtRsrEvaluatorPromise >> wait [
 	result := rsrPromise wait.
 	gtSession ifNotNil:
 		[ result gtPharoProxyInitializeWithSession: gtSession ].
-	(result class = GtpoGtRsrEvaluationExceptionInformation) ifTrue: 
+		
+	"Temporarily handle the old post-mortem debugger notification"
+	(result class = GtpoGtRsrEvaluationExceptionInformation) ifTrue:
+ 		[ self error: 'Evaluation error, see result' ].
+ 
+	(result class = GtpoGtGemStoneEvaluationContext) ifTrue: 
 		[ | exception |
 		 exception := GtRsrEvaluationException new
-			originalException: (result proxyPerform: #exception autoCommit: false);
-			process: (result proxyPerform: #process autoCommit: false).
-		exception signal ].
+		 	debuggerProxy: result.
+		exception signal.
+		exception hasDebugResult ifTrue:
+			[ result := exception debugResult ]. ].
+	
 	serializationStrategy ifNotNil:
 		[ result := (self class environment at: serializationStrategy) new 
 			deserialize: result.

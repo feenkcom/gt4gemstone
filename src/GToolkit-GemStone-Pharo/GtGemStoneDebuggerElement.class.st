@@ -7,7 +7,6 @@ Class {
 		'callFramesList',
 		'sourceCode',
 		'currentCallFrame',
-		'currentThread',
 		'debuggerState',
 		'stdout',
 		'stderr',
@@ -66,17 +65,21 @@ GtGemStoneDebuggerElement class >> sessionClass [
 
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnBrowserClosing: ann [
-	"If the remote debugger is stopped, resume it, otherwise the remote is effectively locked up"
+	"Terminate the remote process if required and notify the toolbar"
 
-	"Tell the debugger directly to resume, since we are already closing"
+	self exception isTerminated ifFalse:
+		[ [self debuggerProxy
+			proxyPerform: #terminateProcess
+			autoCommit: false ]
+				on: GtRsrEvaluationException
+				do: [ :ex | ex isTerminated ifFalse:
+					[ ex pass ] ] ].
 	toolbar actOnBrowserClosing: ann.
-
 ]
 
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 
-	currentCallFrame := self debuggerClient stackFrames first.
 	sourceCode styler: self debuggerClient sourceStyler.
 	toolbar actOnDebugSessionChanged.
 	self scheduleUpdateUI.
@@ -126,7 +129,7 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 		margin: (BlInsets top: 10);
 		background: Color white;
 		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :variableNode | variableNode value value asGtBareProxyObject ]).
+			transformation: [ :variableNode :index | (self currentFrameVariableNamed: variableNode value first) asGtBareProxyObject ]).
 
 	tree column 
 		title: 'Variable';
@@ -138,7 +141,7 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
 		dataBinder: [ :aCellElement :anAssociation |
-			aCellElement text: anAssociation key asRopedText ].
+			aCellElement text: anAssociation first asRopedText ].
 	tree column
 		title: 'Value';
 		cellStencil: [
@@ -148,7 +151,8 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
 		dataBinder: [ :aCellElement :anAssociation |
-			aCellElement text: anAssociation value gtDisplayString asRopedText ].
+			aCellElement text: anAssociation second asRopedText ].
+
 	^ tree
 ]
 
@@ -156,6 +160,15 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 GtGemStoneDebuggerElement >> cellSpacing [ 
 
 	^ 10
+]
+
+{ #category : #private }
+GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
+
+	^ self debuggerProxy
+		proxyPerform: #variable:atFrameLevel:
+		withArguments: { aSymbol. currentCallFrame ordinal. }
+		autoCommit: false.
 ]
 
 { #category : #'private - accessing' }
@@ -171,6 +184,12 @@ GtGemStoneDebuggerElement >> debuggerClient: aDAPDebugger [
 	self actOnDebugSessionChanged.
 ]
 
+{ #category : #accessing }
+GtGemStoneDebuggerElement >> debuggerProxy [
+
+	^ debuggerClient debuggerProxy
+]
+
 { #category : #'private - accessing' }
 GtGemStoneDebuggerElement >> defaultMargin [ 
 
@@ -178,10 +197,10 @@ GtGemStoneDebuggerElement >> defaultMargin [
 ]
 
 { #category : #'private - update ui' }
-GtGemStoneDebuggerElement >> displayStackFrame: aDAPStackFrame [
+GtGemStoneDebuggerElement >> displayStackFrame: aGtGemStoneStackFrame [
 	"Set the supplied frame as the current frame and update the rest of the UI"
 
-	currentCallFrame := aDAPStackFrame.
+	currentCallFrame := aGtGemStoneStackFrame.
 	toolbar updateUI.
 	self updateDisplay.
 ]
@@ -190,6 +209,54 @@ GtGemStoneDebuggerElement >> displayStackFrame: aDAPStackFrame [
 GtGemStoneDebuggerElement >> exception [
 
 	^ self debuggerClient exception
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsRestartFrame [
+
+	debuggerClient gsRestartFrameLevel: currentCallFrame ordinal.
+	currentCallFrame := nil.
+	self scheduleUpdateUI.
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsResume [
+
+	debuggerClient gsResume.
+	currentCallFrame := nil.
+	(ResumeDebugAction forDebugger: self) executeAction.
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsStepInto [
+
+	debuggerClient gsStepIntoFrameLevel: currentCallFrame ordinal.
+	currentCallFrame := nil.
+	self scheduleUpdateUI.
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsStepOut [
+
+	debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal + 1.
+	currentCallFrame := nil.
+	self scheduleUpdateUI.
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsStepOver [
+
+	debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal.
+	currentCallFrame := nil.
+	self scheduleUpdateUI.
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerElement >> gsStepThrough [
+
+	debuggerClient gsStepThroughFrameLevel: currentCallFrame ordinal.
+	currentCallFrame := nil.
+	self scheduleUpdateUI.
 ]
 
 { #category : #initialization }
@@ -255,14 +322,6 @@ GtGemStoneDebuggerElement >> initialize [
 ]
 
 { #category : #testing }
-GtGemStoneDebuggerElement >> isDisplayingTopFrame [
-	"Answer a boolean indicating whether the top call frame is being displayed.
-	DAP debuggers only allow stepping and continuing from the top frame."
-
-	^ debuggerClient isStopped and: [ currentCallFrame == debuggerClient stackFrames first ]
-]
-
-{ #category : #testing }
 GtGemStoneDebuggerElement >> isResumable [
 
 	^ self exception isResumable
@@ -321,7 +380,7 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 		background: Color white;
 		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
 		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :aDAPStackFrame | self displayStackFrame: aDAPStackFrame. aDAPStackFrame ]);
+			transformation: [ :aGtGemStoneStackFrame | self displayStackFrame: aGtGemStoneStackFrame. aGtGemStoneStackFrame ]);
 		yourself.
 
 	list column 
@@ -332,8 +391,8 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 				hExact: 30;
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
-		dataBinder: [ :aCellElement :aCDTCallFrame |
-			aCellElement text: aCDTCallFrame ordinal asString asRopedText ].
+		dataBinder: [ :aCellElement :aGtGemStoneStackFrame |
+			aCellElement text: aGtGemStoneStackFrame ordinal asString asRopedText ].
 	list column
 		title: 'Frame';
 		cellStencil: [
@@ -342,8 +401,8 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 				hMatchParent;
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
-		dataBinder: [ :aCellElement :aCDTCallFrame |
-			aCellElement text: aCDTCallFrame gtDisplayString asRopedText ].
+		dataBinder: [ :aCellElement :aGtGemStoneStackFrame |
+			aCellElement text: aGtGemStoneStackFrame gtDisplayString asRopedText ].
 
 	^ list
 ]
@@ -371,8 +430,7 @@ GtGemStoneDebuggerElement >> newRightTabGroup [
 		addTab: self summaryTab;
 		addTab: self variablesTab;
 		addTab: self breakpointsTab;
-		addTab: self stdoutTab;
-		addTab: self stderrTab.
+		addTab: self stdoutTab.
 ]
 
 { #category : #'private - element creation' }
@@ -381,14 +439,6 @@ GtGemStoneDebuggerElement >> newSourceEditor [
 	^ BrEditor new
 		aptitude: BrGlamorousCodeEditorAptitude new + BrShadowAptitude new;
 		margin: (BlInsets all: self defaultMargin);
-		background: Color white.
-]
-
-{ #category : #'private - element creation' }
-GtGemStoneDebuggerElement >> newStderrView [
-
-	^ BrEditor new
-		aptitude: BrGlamorousCodeEditorAptitude new + BrShadowAptitude new;
 		background: Color white.
 ]
 
@@ -487,6 +537,16 @@ GtGemStoneDebuggerElement >> scheduleUpdateUI [
 
 ]
 
+{ #category : #private }
+GtGemStoneDebuggerElement >> selectDefaultCallFrame [
+	"The GS debugger leaves stack frames at the top that we aren't interested in.
+	Try and find the first interesting (user) call frame."
+
+	currentCallFrame := self debuggerClient stackFrames 
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ :array | array at: debuggerClient defaultFrameOrdinal ].
+]
+
 { #category : #'private - accessing' }
 GtGemStoneDebuggerElement >> sourceCode [
 
@@ -500,19 +560,6 @@ GtGemStoneDebuggerElement >> sourceText [
 	^ currentCallFrame
 		ifNil: [ '' ]
 		ifNotNil: [ currentCallFrame sourceText ]
-]
-
-{ #category : #'private - element creation' }
-GtGemStoneDebuggerElement >> stderrTab [
-
-	^ BrTab new 
-		aptitude: BrGlamorousTabAptitude;
-		label: 'stderr';
-		stencil: 
-			[ stderr ifNil: 
-				[ stderr := self newStderrView.
-				self scheduleUpdateStderr.
-				stderr ] ]
 ]
 
 { #category : #'private - element creation' }
@@ -543,10 +590,7 @@ GtGemStoneDebuggerElement >> summaryTab [
 
 { #category : #actions }
 GtGemStoneDebuggerElement >> terminateSession [
-
-	super terminateSession.
-	debuggerClient ifNotNil: 
-		[ debuggerClient announcer unsubscribe: self ]
+	"No action at the moment"
 ]
 
 { #category : #'private - update ui' }
@@ -559,9 +603,13 @@ GtGemStoneDebuggerElement >> updateBreakpoints [
 
 { #category : #'private - update ui' }
 GtGemStoneDebuggerElement >> updateCallFrame [
+	| stackFrames |
 
-	callFramesList items: self debuggerClient stackFrames.
-
+	stackFrames := self debuggerClient stackFrames.
+	currentCallFrame ifNil:
+		[ currentCallFrame := stackFrames at: self debuggerClient defaultFrameOrdinal ].
+	callFramesList items: stackFrames.
+	callFramesList selectOne: currentCallFrame ordinal.
 ]
 
 { #category : #'private - update ui' }
@@ -570,7 +618,7 @@ GtGemStoneDebuggerElement >> updateDisplay [
 	self updateCallFrame.
 	self updateVariables.
 	self updateSource.
-
+	self updateStdout.
 ]
 
 { #category : #'private - update ui' }
@@ -592,27 +640,22 @@ GtGemStoneDebuggerElement >> updateSource [
 ]
 
 { #category : #callbacks }
-GtGemStoneDebuggerElement >> updateStderr [
-
-	stderr text: self debuggerClient stderr asRopedText
-]
-
-{ #category : #callbacks }
 GtGemStoneDebuggerElement >> updateStdout [
 
+	stdout ifNil: [ ^ self ].
 	stdout text: self debuggerClient stdout asRopedText
 ]
 
 { #category : #accessing }
 GtGemStoneDebuggerElement >> updateSummary [
 
-	summary text: self exception summaryText
+	summary text: self debuggerClient summaryString
 ]
 
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> updateUI [
 
-	debuggerState text: self exception summaryString.
+	debuggerState text: self debuggerClient messageText.
 	self updateDisplay.
 	toolbar updateUI.
 ]

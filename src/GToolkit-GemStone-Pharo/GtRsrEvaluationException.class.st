@@ -2,18 +2,42 @@ Class {
 	#name : #GtRsrEvaluationException,
 	#superclass : #Error,
 	#instVars : [
-		'process',
-		'originalException',
-		'frames',
-		'stackFrames'
+		'stackFrames',
+		'isResumable',
+		'debuggerProxy',
+		'gtSession',
+		'isTerminated',
+		'hasDebugResult',
+		'debugResult',
+		'summaryString'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
-GtRsrEvaluationException >> debuggerClient [
+GtRsrEvaluationException >> debugResult [
+	^ debugResult
+]
 
-	^ GtGemStonePostMortemDebugger new exception: self.
+{ #category : #accessing }
+GtRsrEvaluationException >> debugResult: anObject [
+	debugResult := anObject
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debuggerClient [
+AkgContextStackSignal emit.
+	^ GtGemStoneDebugger new exception: self.
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debuggerProxy [
+	^ debuggerProxy
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debuggerProxy: anObject [
+	debuggerProxy := anObject
 ]
 
 { #category : #accessing }
@@ -22,88 +46,131 @@ GtRsrEvaluationException >> evaluator [
 	^ self gtSession evaluator
 ]
 
-{ #category : #accessing }
-GtRsrEvaluationException >> frames [
+{ #category : #actions }
+GtRsrEvaluationException >> gsRestartFrameLevel: anInteger [
 
-	^ process evaluateAndWait:
-'(1 to: self stackDepth) collect: [ :i |
-	self _frameContentsAt: i ]'.
+	[ debuggerProxy
+		proxyPerform: #restartFrameLevel:
+		withArguments: { anInteger }
+		autoCommit: false ]
+			on: self class
+			do: [ :ex | self halt. ].
+]
+
+{ #category : #actions }
+GtRsrEvaluationException >> gsResume [
+	| result |
+
+	result := debuggerProxy
+		proxyPerform: #resume
+		autoCommit: false.
+	^ result
+]
+
+{ #category : #actions }
+GtRsrEvaluationException >> gsStepIntoFrameLevel: anInteger [
+	"Perform a step-over at the supplied frame level.
+	If a Halt exception is raised, do nothing as we are already in the debugger."
+
+	[ debuggerProxy
+		proxyPerform: #stepIntoFrameLevel:
+		withArguments: { anInteger. }
+		autoCommit: false ]
+			on: self class
+			do: [ :ex | self halt. ].
+]
+
+{ #category : #actions }
+GtRsrEvaluationException >> gsStepOverFrameLevel: anInteger [
+	"Perform a step-over at the supplied frame level.
+	If a Halt exception is raised, do nothing as we are already in the debugger."
+
+	[ debuggerProxy
+		proxyPerform: #stepOverFrameLevel:
+		withArguments: { anInteger. }
+		autoCommit: false ]
+			on: self class
+			do: [ :ex | self halt. ].
+]
+
+{ #category : #actions }
+GtRsrEvaluationException >> gsStepThroughFrameLevel: anInteger [
+	"Perform a step-over at the supplied frame level.
+	If a Halt exception is raised, do nothing as we are already in the debugger."
+
+	[ debuggerProxy
+		proxyPerform: #stepThroughFrameLevel:
+		withArguments: { anInteger. }
+		autoCommit: false ]
+			on: self class
+			do: [ :ex | self halt. ].
+]
+
+{ #category : #initialize }
+GtRsrEvaluationException >> gtPharoProxyInitializeWithSession: aGtGemStoneSession [
+	"Provide a callback from initializing proxy objects."
+
+	gtSession := aGtGemStoneSession
 ]
 
 { #category : #accessing }
 GtRsrEvaluationException >> gtSession [
 
-	^ originalException gtSession
+	^ gtSession ifNil: [ gtSession := debuggerProxy gtSession ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> gtSession: aGtGemStoneSession [
+
+	gtSession ifNil:
+		[ gtSession := aGtGemStoneSession ]
+	ifNotNil:
+		[ self assert: gtSession == aGtGemStoneSession ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> hasDebugResult [
+	^ hasDebugResult
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> hasDebugResult: anObject [
+	hasDebugResult := anObject
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> initialize [
+
+	super initialize.
+	hasDebugResult := false.
 ]
 
 { #category : #testing }
 GtRsrEvaluationException >> isPaused [
 
-	^ false
+	^ debuggerProxy
+		proxyPerform: #isSuspended
+		autoCommit: false
 ]
 
 { #category : #testing }
 GtRsrEvaluationException >> isResumable [
-	"Only the post-mortem debugger is working at the moment"
 
-	^ false
+	^ isResumable ifNil: [ isResumable := debuggerProxy proxyPerform: #isResumable autoCommit: false ]
+]
+
+{ #category : #testing }
+GtRsrEvaluationException >> isTerminated [
+
+	^ isTerminated ifNil: [ isTerminated := debuggerProxy proxyPerform: #isTerminated autoCommit: false ]
 ]
 
 { #category : #accessing }
-GtRsrEvaluationException >> originalException [
-	^ originalException
-]
+GtRsrEvaluationException >> messageText [
 
-{ #category : #accessing }
-GtRsrEvaluationException >> originalException: anObject [
-	originalException := anObject
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> process [
-
-	^ process
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> process: aGsProcess [
-
-	process := aGsProcess
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> stackFrames [
-
-	^ stackFrames ifNil: [ stackFrames := self frames collectWithIndex:
-		[ :frameArray :index | GtGemStoneStackFrame new
-			frameArray: frameArray;
-			ordinal: index;
-			exception: self ] ]
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> summaryString [
-	"Answer a short string summarising the receiver's exception"
-	| string originalString |
-
-	string := messageText ifNil: [ '' ].
-	originalString := originalException proxyPerform: #buildMessageText autoCommit: false.
-	(originalString isNotNil and: [ originalString isNotEmpty ]) ifTrue:
-		[ string := string, String crlf, originalString ].
-	^ string trimBoth.
-
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> summaryText [
-	"Answer a formatted BlText summarising the receiver's exception"
-	| text stack originalText |
-
-	text := (messageText ifNil: [ '' ]).
-	originalText := originalException proxyPerform: #buildMessageText autoCommit: false.
-	(originalText isNotNil and: [ originalText isNotEmpty ]) ifTrue:
-		[ text := text, String crlf, originalText ].
-	text := text trimBoth.
-	stack ifNotNil: [ text := (text, String crlfcrlf) asRopedText, stack asRopedText glamorousCodeFont ].
-	^ text asRopedText
+	(messageText isNil and: [ debuggerProxy isNotNil ]) ifTrue:
+		[ messageText := debuggerProxy 
+			evaluateAndWait: 'self exception messageText'
+			autoCommit: false ].
+	^ super messageText
 ]

@@ -2,7 +2,7 @@ Extension { #name : #RsrRemoteExceptionServer }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteExceptionServer >> debuggerClient [
-
+AkgContextStackSignal emit.
 	^ GtGemStonePostMortemDebugger new exception: self.
 ]
 
@@ -20,6 +20,14 @@ RsrRemoteExceptionServer >> isResumable [
 	The GemStone debugger is only post-mortem, so... no"
 
 	^ false
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+RsrRemoteExceptionServer >> isTerminated [
+	"Answer a boolean indicating whether the receiver's process has terminated.
+	RsrRemoteExceptionServer is only used by the post-mortem debugger, so is always terminated"
+
+	^ true
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
@@ -46,7 +54,7 @@ RsrRemoteExceptionServer >> summaryString [
 	| string |
 
 	string := messageText ifNil: [ '' ].
-	"(stack isNotNil and: [ stack isNotEmpty ]) ifTrue:
-		[ string := string, String cr, String cr, stack ]."
+	(stack isNotNil and: [ stack isNotEmpty ]) ifTrue:
+		[ string := string, String cr, String cr, stack ].
 	^ string trimBoth.
 ]

@@ -16,6 +16,17 @@ GtGemStonePostMortemDebugger >> breakpoints [
 ]
 
 { #category : #accessing }
+GtGemStonePostMortemDebugger >> defaultFrameOrdinal [
+	"Answer the ordinal (level) of the frame that should be displayed in the debugger.
+	The stack normally includes a number of frames that relate to a halt or breakpoint, which the user isn't interested in.  Select the first frame that is probably user code."
+
+	self stackFrames size - 1 to: 1 by: -1 do: [ :i |
+		(#(halt _signalAsync: doesNotUnderstand:) includes: (stackFrames at: i) selector) ifTrue:
+			[ ^ i + 1 ] ].
+	^ 1
+]
+
+{ #category : #accessing }
 GtGemStonePostMortemDebugger >> exception [
 
 	^ exception
@@ -28,10 +39,9 @@ GtGemStonePostMortemDebugger >> exception: anObject [
 ]
 
 { #category : #accessing }
-GtGemStonePostMortemDebugger >> isStopped [
-	"While the debugger is post-mortem the process is always stopped"
-	
-	^ true
+GtGemStonePostMortemDebugger >> messageText [
+
+	^ exception messageText
 ]
 
 { #category : #accessing }
@@ -73,5 +83,12 @@ GtGemStonePostMortemDebugger >> stdout [
 	logFile := self session gemLogFileReference.
 	^ logFile exists
 		ifTrue: [ logFile contents ]
-		ifFalse: [ '' ]
+		ifFalse: [ self session evaluateAndWait: 'System gemLogFileName asFileReference contents' ]
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemDebugger >> summaryString [
+	"Answer a short string summarising the receiver's exception"
+
+	^ self exception summaryString
 ]

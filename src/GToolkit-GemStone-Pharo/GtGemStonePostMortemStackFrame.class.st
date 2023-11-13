@@ -4,7 +4,10 @@ Class {
 	#instVars : [
 		'ordinal',
 		'displayString',
-		'exception'
+		'exception',
+		'selector',
+		'sourceCode',
+		'method'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -68,6 +71,12 @@ GtGemStonePostMortemStackFrame >> line [
 ]
 
 { #category : #accessing }
+GtGemStonePostMortemStackFrame >> method [
+
+	^ method ifNil: [ method := exception gtMethodFromStackString: displayString ]
+]
+
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> ordinal [
 
 	^ ordinal
@@ -88,17 +97,29 @@ GtGemStonePostMortemStackFrame >> printOn: aStream [
 ]
 
 { #category : #accessing }
+GtGemStonePostMortemStackFrame >> selector [
+
+	^ selector ifNil: [ selector := self method selector ]
+]
+
+{ #category : #accessing }
+GtGemStonePostMortemStackFrame >> sourceCode [
+
+	^ sourceCode ifNil: [self method sourceCode ].
+]
+
+{ #category : #accessing }
 GtGemStonePostMortemStackFrame >> sourceText [
 	| source lineNumber text indexes |
-	
-	source := (exception gtMethodFromStackString: displayString) sourceCode.
+
+	source := self sourceCode.
 	lineNumber := self line.
 	text := source asRopedText.
 	lineNumber = 0 ifTrue: [ ^ text ].
 	indexes := source gtIndexOfLineNumber: lineNumber.
 	indexes ifNotNil: 
 		[ (text from: indexes key to: indexes value) 
-			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors errorBackgroundColor)
+			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler  ].
 	^ text
 ]
