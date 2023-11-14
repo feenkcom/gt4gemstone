@@ -26,8 +26,6 @@ GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock 
 GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
 
-	addOns addStyler: GtGemStoneStyler new.
-
 	addOns
 		addMainAction: 'Evaluate' translated
 		icon: BrGlamorousVectorIcons play
@@ -201,6 +199,11 @@ GtGemStoneSnippetCoderModel >> returnExpressionWithNames: varNames [
 				<< '. ' ].
 		stream
 			<< '#snippetResult -> snippetResult. } asDictionary' ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
+	^ GtGemStoneParser startingStateForMethodSequence
 ]
 
 { #category : #'private - execution' }

@@ -23,7 +23,6 @@ snippetResult := 4+3.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
-
 ]
 
 { #category : #examples }

@@ -6,5 +6,23 @@ Class {
 
 { #category : #accessing }
 GtGemStoneCoderBehavior class >> named: aBehaviorName [
-	^ GtGemStoneCoderNamedBehavior new behaviorName: aBehaviorName
+	^ self named: aBehaviorName isMeta: false 
+]
+
+{ #category : #initialization }
+GtGemStoneCoderBehavior class >> named: aBehaviorName isMeta: aBoolean [ 
+
+	^ GtGemStoneCoderNamedBehavior new 
+		behaviorName: aBehaviorName;
+		isMeta: aBoolean 
+]
+
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> isMeta [
+	self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> printBehaviorName [
+	self subclassResponsibility
 ]

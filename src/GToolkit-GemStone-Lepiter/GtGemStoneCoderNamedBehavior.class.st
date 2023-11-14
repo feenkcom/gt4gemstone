@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneCoderNamedBehavior,
 	#superclass : #GtGemStoneCoderBehavior,
 	#instVars : [
-		'behaviorName'
+		'behaviorName',
+		'isMeta'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -15,4 +16,21 @@ GtGemStoneCoderNamedBehavior >> behaviorName [
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> behaviorName: aBehaviorName [
 	behaviorName := aBehaviorName
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> isMeta [
+	^ isMeta
+]
+
+{ #category : #initialization }
+GtGemStoneCoderNamedBehavior >> isMeta: aBoolean [
+	isMeta := aBoolean 
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> printBehaviorName [
+	^ self isMeta 
+		ifTrue: [ self behaviorName, ' class' ] 
+		ifFalse: [ self behaviorName ]
 ]
