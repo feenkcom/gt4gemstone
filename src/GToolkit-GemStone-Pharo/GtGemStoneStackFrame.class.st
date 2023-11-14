@@ -63,6 +63,16 @@ GtGemStoneStackFrame >> exception: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
+	<gtView>
+	
+	^ aView textEditor 
+		title: 'Source code';
+		text: [ self sourceText ];
+		styler: BrRBTextStyler new
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> inBlock [
 	^ inBlock
 ]
