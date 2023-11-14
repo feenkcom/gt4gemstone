@@ -5,7 +5,6 @@ Class {
 		'toolbar',
 		'variableList',
 		'callFramesList',
-		'sourceCode',
 		'currentCallFrame',
 		'debuggerState',
 		'stdout',
@@ -14,7 +13,8 @@ Class {
 		'variablesContainer',
 		'modules',
 		'debuggerClient',
-		'summary'
+		'summary',
+		'sourceCodeEditorElement'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -80,8 +80,11 @@ GtGemStoneDebuggerElement >> actOnBrowserClosing: ann [
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 
-	sourceCode styler: self debuggerClient sourceStyler.
+	debuggerClient := debuggingSession ifNotNil: [ 
+		debuggingSession debuggerClient ].
+	sourceCodeEditorElement styler: self debuggerClient sourceStyler.
 	toolbar actOnDebugSessionChanged.
+	
 	self scheduleUpdateUI.
 ]
 
@@ -174,7 +177,7 @@ GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
 { #category : #'private - accessing' }
 GtGemStoneDebuggerElement >> debuggerClient [ 
 
-	^ debuggerClient ifNil: [ debuggerClient := debuggingSession ifNotNil: [ debuggingSession debuggerClient ] ]
+	^ debuggerClient 
 ]
 
 { #category : #accessing }
@@ -283,14 +286,14 @@ GtGemStoneDebuggerElement >> initialize [
 			c horizontal matchParent.
 			c linear weight: 0.3 ];
 		addChild: callFramesList.
-	sourceCode := self newSourceEditor.
+	sourceCodeEditorElement := self newSourceEditor.
 	sourceContainer := BlElement new.
 	sourceContainer
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical matchParent.
 			c linear weight: 1.0 ];
-		addChild: sourceCode.
+		addChild: sourceCodeEditorElement.
 	leftPane
 		addChild: cfContainer;
 		addChild: sourceContainer.
@@ -632,7 +635,7 @@ GtGemStoneDebuggerElement >> updateModules [
 { #category : #'private - update ui' }
 GtGemStoneDebuggerElement >> updateSource [ 
 
-	sourceCode text: self sourceText.
+	sourceCodeEditorElement text: self sourceText.
 	"self lineNumber > 5 ifTrue:
 		[ StringSignal emit: 'Scrolling to line: ', self lineNumber asString.
 		sourceCode scrollToPosition: self lineNumber + 5 ]."
