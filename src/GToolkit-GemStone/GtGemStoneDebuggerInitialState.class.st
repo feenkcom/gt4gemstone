@@ -11,7 +11,7 @@ Class {
 		'callStack',
 		'summary'
 	],
-	#category : #'GToolkit-GemStone-Temporary'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
