@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneSourceCoderViewModel,
+	#name : #GtGemStoneSnippetCoderViewModel,
 	#superclass : #GtSourceCoderViewModel,
 	#instVars : [
 		'selfObject',
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneSourceCoderViewModel >> evaluationContext [
+GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	| receiverObject proxyObject |
 
 	proxyObject := selfObject asGtProxyObject.
@@ -22,33 +22,33 @@ GtGemStoneSourceCoderViewModel >> evaluationContext [
 ]
 
 { #category : #testing }
-GtGemStoneSourceCoderViewModel >> hasDeclaredGlobalNamed: aVariableName [
+GtGemStoneSnippetCoderViewModel >> hasDeclaredGlobalNamed: aVariableName [
 	^ false
 ]
 
 { #category : #testing }
-GtGemStoneSourceCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
+GtGemStoneSnippetCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 	^ false
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderViewModel >> selfObject [
+GtGemStoneSnippetCoderViewModel >> selfObject [
 	^ selfObject
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderViewModel >> selfObject: anObject [
+GtGemStoneSnippetCoderViewModel >> selfObject: anObject [
 
 	selfObject := anObject
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderViewModel >> session [
+GtGemStoneSnippetCoderViewModel >> session [
 	^ session
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderViewModel >> session: anObject [
+GtGemStoneSnippetCoderViewModel >> session: anObject [
 
 	session := anObject
 ]

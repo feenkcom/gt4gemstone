@@ -58,7 +58,7 @@ LeGemStoneSnippet >> connectorName: aString [
 
 { #category : #initialization }
 LeGemStoneSnippet >> newCoder [
-	^ GtGemStoneCoderModel new
+	^ GtGemStoneSnippetCoderModel new
 ]
 
 { #category : #accessing }
