@@ -16,7 +16,7 @@ GtRsrProxyServiceServer class >> object: anObject [
 { #category : 'private' }
 GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	"Perform the requested operation, catching errors and returning exception information"
-	| convertedArguments semaphore evaluationProcess result |
+	| convertedArguments  |
 
 	convertedArguments := anArray collect: [ :anObject |
 		(anObject isKindOf: self class) 
