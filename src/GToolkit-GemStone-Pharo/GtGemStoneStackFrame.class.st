@@ -16,13 +16,26 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneStackFrame >> className1 [
-	^ className
-]
-
-{ #category : #accessing }
 GtGemStoneStackFrame >> className: anObject [
 	className := anObject
+]
+
+{ #category : #private }
+GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: endPoint [
+	"Answer the indexes for the message send starting at anInteger in method source aString"
+	| ast messageNode |
+
+	ast := [ RBParser parseMethod: aString ]
+		on: Error
+		do: [ : ex1 |
+			[ RBParser parseExpression: aString ]
+				on: Error
+				do: [ :ex2 | nil ] ].
+	ast ifNil: [ ^ anInteger to: endPoint ].
+	ast nodesDo: [ :each |
+		((each start to: each stop) includes: anInteger) ifTrue:
+			[ messageNode := each ] ].
+	^ anInteger to: messageNode stop
 ]
 
 { #category : #accessing }
@@ -118,15 +131,22 @@ GtGemStoneStackFrame >> sourceCode [
 
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceText [
-	| sourceInfo |
+	| sourceInfo sourceString currentMessageRange |
 
 	sourceText ifNotNil: [ ^ sourceText ].
 	sourceInfo := self debuggerProxy 
 		proxyPerform: #sourceInfoAtFrameLevel: 
 		withArguments: { ordinal }
 		autoCommit: false.
-	sourceText := sourceInfo third asRopedText glamorousCodeFont.
-	(sourceText from: sourceInfo first to: sourceInfo second) attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
+	sourceString := sourceInfo third.
+	sourceText := sourceString asRopedText glamorousCodeFont.
+	currentMessageRange := self currentMessageRangeAt: sourceInfo first 
+		in: sourceString 
+		fallBack: sourceInfo second.
+	(sourceText 
+		from: (currentMessageRange first max: 1) 
+		to: (currentMessageRange last min: sourceInfo third size))
+			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler.
 	^ sourceText
 ]
