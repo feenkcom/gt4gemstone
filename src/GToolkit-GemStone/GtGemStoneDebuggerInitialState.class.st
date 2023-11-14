@@ -1,12 +1,12 @@
-Class {
-	#name : #GtGemStoneDebuggerInitialState,
-	#superclass : #Object,
 "
 GtGemStoneDebuggerInitialState holds the information required to open the GS debugger in GT:
 
 - display information for the call stack
 - exception displayString
 "
+Class {
+	#name : #GtGemStoneDebuggerInitialState,
+	#superclass : #Object,
 	#instVars : [
 		'callStack',
 		'summary'
