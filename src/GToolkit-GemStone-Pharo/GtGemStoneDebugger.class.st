@@ -46,6 +46,21 @@ GtGemStoneDebugger >> gsStepThroughFrameLevel: anInteger [
 	self resetState.
 ]
 
+{ #category : #accessing }
+GtGemStoneDebugger >> gtViewStackFramesFor: aView [ 
+	<gtView>
+	
+	^ aView columnedList 
+		title: 'GemStone stack frames';
+		items: [ self stackFrames ];
+		column: 'Index' 
+			text: [ :aStackFrame |
+				aStackFrame ordinal ]
+			width: 75;
+		column: 'Method' text: [ :aStackFrame |
+			aStackFrame printString ]
+]
+
 { #category : #private }
 GtGemStoneDebugger >> resetState [
 
