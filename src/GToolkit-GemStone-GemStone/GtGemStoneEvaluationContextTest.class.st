@@ -19,6 +19,7 @@ GtGemStoneEvaluationContextTest >> testSourceInfoAtFrameLevel [
 	"This is wrong, but let the test pass for now"
 	self assert: info second = 61.
 	self assert: info third size = 80.
+	context process terminate.
 ]
 
 { #category : 'tests' }
@@ -32,4 +33,5 @@ GtGemStoneEvaluationContextTest >> testVariableInfoAtFrameLevel [
 
 	self assert: variables first first = #self.
 	self assert: variables first second class = String.
+	context process terminate.
 ]

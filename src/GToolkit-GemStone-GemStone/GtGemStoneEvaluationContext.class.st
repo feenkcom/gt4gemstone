@@ -30,7 +30,7 @@ GtGemStoneEvaluationContext >> buildMessageText [
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerState [
 
-	^ GtGemStoneDebuggerInitialState
+	^ GtGemStoneDebuggerState
 		process: process
 		exception: exception
 ]

@@ -45,20 +45,27 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	(Delay forMilliseconds: 100) wait.
 	self assert: process _isSuspended.
 	self assert: exception notNil.
-	state := GtGemStoneDebuggerInitialState
+	state := GtGemStoneDebuggerState
 		process: process
 		exception: exception.
 	self assert: state summary = 'a Halt occurred (error 2709)'.
 	self assert: state callStack size = 15.
 	self assert: (state callStack at: 10) = { #GtRsrEvaluatorServiceTest. #testInitialState. true }.
+	self assert: state messageText = 'a Halt occurred (error 2709)'.
+	self assert: state isResumable.
+	self assert: state isSuspended.
+	self deny: state isTerminated.
 
 	encodedState := state asJsonForExport.
 	self assert: encodedState isString.
-	deserializedState := GtGemStoneDebuggerInitialState fromJsonString: encodedState.
+	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
 	self assert: deserializedState callStack size = 15.
 	self assert: (deserializedState callStack at: 10) = { 'GtRsrEvaluatorServiceTest'. 'testInitialState'. true }.
-self halt.
+	self assert: deserializedState messageText = 'a Halt occurred (error 2709)'.
+	self assert: deserializedState isResumable.
+	self assert: deserializedState isSuspended.
+	self deny: deserializedState isTerminated.
 ]
 
 { #category : 'tests' }
