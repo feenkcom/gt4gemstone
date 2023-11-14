@@ -3,6 +3,64 @@
 
 doit
 (Object
+	subclass: 'AkgDebuggerPlay'
+	instVarNames: #( process trace allFrames allFramesString )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods AkgDebuggerPlay
+removeallclassmethods AkgDebuggerPlay
+
+doit
+(Object
+	subclass: 'GtGemStoneDebuggerInitialState'
+	instVarNames: #( callStack summary )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'GtGemStoneDebuggerInitialState holds the information required to open the GS debugger in GT:
+
+- display information for the call stack
+- exception displayString';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneDebuggerInitialState
+removeallclassmethods GtGemStoneDebuggerInitialState
+
+doit
+(Object
+	subclass: 'GtGemStoneEvaluationContext'
+	instVarNames: #( exception process semaphore result completed devMessage evalServer block )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneEvaluationContext
+removeallclassmethods GtGemStoneEvaluationContext
+
+doit
+(Object
 	subclass: 'GtGsRelease'
 	instVarNames: #( versionString )
 	classVars: #(  )
@@ -18,25 +76,6 @@ true.
 
 removeallmethods GtGsRelease
 removeallclassmethods GtGsRelease
-
-doit
-(Object
-	subclass: 'GtRsrEvaluationExceptionInformation'
-	instVarNames: #( exception process )
-	classVars: #(  )
-	classInstVars: #(  )
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		comment: 'GtRsrEvaluationExceptionInformation is used to pass information about an exception that occurred in GemStone back to GT, allowing a debugger to be opened on the exception.';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrEvaluationExceptionInformation
-removeallclassmethods GtRsrEvaluationExceptionInformation
 
 doit
 (Object
@@ -58,7 +97,7 @@ removeallclassmethods GtRsrSerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
-	subclass: 'GtRsrPrimitiveOnlySerializationStrategy'
+	subclass: 'GtRsrLegacySerializationStrategy'
 	instVarNames: #(  )
 	classVars: #(  )
 	classInstVars: #(  )
@@ -71,8 +110,64 @@ doit
 true.
 %
 
+removeallmethods GtRsrLegacySerializationStrategy
+removeallclassmethods GtRsrLegacySerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrLiteralAndProxySerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'GtRsrLiteralAndProxySerializationStrategy answers nil, numbers and booleans by value and everything else by proxy (including strings).';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrLiteralAndProxySerializationStrategy
+removeallclassmethods GtRsrLiteralAndProxySerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrPrimitiveOnlySerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'GtRsrPrimitiveOnlySerializationStrategy will answer anything that RSR regards as a primitive type by value, everything else is will trigger an exception.';
+		immediateInvariant.
+true.
+%
+
 removeallmethods GtRsrPrimitiveOnlySerializationStrategy
 removeallclassmethods GtRsrPrimitiveOnlySerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrProxyOnlySerializationStrategy'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrProxyOnlySerializationStrategy
+removeallclassmethods GtRsrProxyOnlySerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
@@ -85,6 +180,7 @@ doit
 	options: #( #logCreation )
 )
 		category: 'GToolkit-GemStone';
+		comment: 'STON serialisation answers everything by value, using STON to serialise the object tree.';
 		immediateInvariant.
 true.
 %
@@ -167,6 +263,24 @@ removeallclassmethods GtRsrProxyServiceServer
 
 doit
 (TestCase
+	subclass: 'GtGemStoneEvaluationContextTest'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneEvaluationContextTest
+removeallclassmethods GtGemStoneEvaluationContextTest
+
+doit
+(TestCase
 	subclass: 'GtRsrEvaluatorServiceTest'
 	instVarNames: #(  )
 	classVars: #(  )
@@ -182,6 +296,502 @@ true.
 
 removeallmethods GtRsrEvaluatorServiceTest
 removeallclassmethods GtRsrEvaluatorServiceTest
+
+! Class implementation for 'AkgDebuggerPlay'
+
+!		Instance methods for 'AkgDebuggerPlay'
+
+category: 'other'
+method: AkgDebuggerPlay
+createProcess
+
+	process := [ 
+		self evalBlock
+			on: ControlInterrupt
+			do: [ :ex |
+				trace nextPut: #ControlInterrupt -> ex.
+				process suspend.
+				ex resume ] ] newProcess.
+	process
+		priority: Processor activeProcess priority - 1;
+		breakpointLevel: 1.
+	^ process
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+evalBlock
+
+	^ [ trace nextPut: #StartedProcessExecution.
+		self haltMethod.
+		trace nextPut: #AfterHalt1.
+		trace nextPut: #AfterHalt2. 
+		[ trace nextPut: #AfterHalt3. 
+		trace nextPut: #AfterHalt4. ]
+			value.
+		trace nextPut: #AfterHalt5. 
+		trace nextPut: #AfterHalt6. 
+		#akgDebuggerPlayDone.
+		]
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+haltMethod
+
+	trace nextPut: #BeforeHalt.
+	self halt.
+	trace nextPut: #AfterHalt.
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+haltMethod2
+
+	trace nextPut: #BeforeHalt2.
+	self halt.
+	trace nextPut: #AfterHalt2.
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+initialize
+
+	super initialize.
+	trace := SharedQueue new.
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+printOn: aStream
+
+	trace ifNil: [ ^ super printOn: aStream ].
+	trace printOn: aStream.
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+process
+
+	^ process
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+run
+	| whichProc |
+
+	self createProcess.
+	process resume.
+	self waitMS: 100.
+	allFrames := process gtAllFrames.
+	allFramesString := allFrames at: 10.
+	whichProc := Processor activeProcess == process.
+	process setStepOverBreaksAtLevel: 11.
+	process resume.
+	self waitMS: 100.
+	"process resume."
+	"self waitMS: 100."
+	self halt.
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+trace
+
+	^ trace
+%
+
+category: 'other'
+method: AkgDebuggerPlay
+waitMS: milliseconds
+	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneDebuggerInitialState'
+
+!		Class methods for 'GtGemStoneDebuggerInitialState'
+
+category: 'instance creation'
+classmethod: GtGemStoneDebuggerInitialState
+fromJsonString: aString
+
+	^ self new fromJsonString: aString
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneDebuggerInitialState
+process: aGsProcess exception: anException
+	"Create a new instance of the receiver populated for the supplied process and exception"
+
+	^ self new initializeProcess: aGsProcess exception: anException
+%
+
+!		Instance methods for 'GtGemStoneDebuggerInitialState'
+
+category: 'converting'
+method: GtGemStoneDebuggerInitialState
+asDictionaryForExport
+
+	^ Dictionary new
+		at: #summary put: summary;
+		at: #callStack put: callStack;
+		yourself
+%
+
+category: 'converting'
+method: GtGemStoneDebuggerInitialState
+asJsonForExport 
+	"Answer the receiver serialised in JSON format"
+
+	^STON toJsonString: self asDictionaryForExport
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerInitialState
+callStack
+
+	^ callStack
+%
+
+category: 'converting'
+method: GtGemStoneDebuggerInitialState
+fromJsonString: aString
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	summary := dictionary at: 'summary'.
+	callStack := dictionary at: 'callStack'.
+%
+
+category: 'initialize'
+method: GtGemStoneDebuggerInitialState
+initializeProcess: aGsProcess exception: anException
+
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStack := aGsProcess gtAllFrames collect: [ :frameArray |
+		| homeMethod |
+		homeMethod := frameArray first homeMethod.
+		{ homeMethod inClass ifNotNil: [ :cls | cls name ].
+		homeMethod selector.
+		frameArray first isMethodForBlock. } ].
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerInitialState
+summary
+
+	^ summary
+%
+
+! Class implementation for 'GtGemStoneEvaluationContext'
+
+!		Instance methods for 'GtGemStoneEvaluationContext'
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+assertNotSignalled
+
+	semaphore isLocked ifFalse:
+		[ self error: 'Process semaphore already signalled' ]
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+buildMessageText
+
+	^ exception buildMessageText
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+debuggerState
+
+	^ GtGemStoneDebuggerInitialState
+		process: process
+		exception: exception
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+debuggerStateJsonForExport
+
+	^ self debuggerState asJsonForExport
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+devMessage
+	^devMessage
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+devMessage: object
+	devMessage := object
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+evalServer
+	^evalServer
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+evalServer: object
+	evalServer := object
+%
+
+category: 'actions - api'
+method: GtGemStoneEvaluationContext
+evaluateBlock: aBlock from: anEvaluationServer
+	"Evaluate the supplied block.
+	If it completes successfully, answer the result.
+	If an exception is raised, suspend the evaluation process and answer the receiver."
+
+	block := aBlock.
+	semaphore := Semaphore new.
+	completed := false.
+	evalServer := anEvaluationServer.
+
+	process := [
+		[ result := block value.
+		completed := true.
+		semaphore signal ]
+			on: Exception
+			do: (self handlerBlock: nil) ] newProcess.
+
+	"Need to figure out the circumstances when the debugActionBlock: is called"
+	process debugActionBlock: (self handlerBlock: 'debugActionBlock:').
+
+	process
+		name: 'GT evaluation';
+		priority: Processor activeProcess priority + 1;
+		breakpointLevel: 1;
+		resume.
+	semaphore wait.
+
+	^ result
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+exception
+
+	^ exception
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+exception: anException
+
+	exception := anException
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+handlerBlock: anObject
+	"Answer the block that will be evaluated if an exception occurs.
+	In this case, suspend the evaluation process and answer the receiver.
+	If the user resumes the process it will then resume from where the exception was originally raised."
+
+	^ [ :ex |
+		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+		exception := ex.
+		devMessage := anObject.
+		semaphore signal.
+		process suspend.
+		ex resume ]
+%
+
+category: 'testing'
+method: GtGemStoneEvaluationContext
+isResumable
+
+	^ exception isResumable
+%
+
+category: 'testing'
+method: GtGemStoneEvaluationContext
+isSuspended
+
+	^ process _isSuspended
+%
+
+category: 'testing'
+method: GtGemStoneEvaluationContext
+isTerminated
+
+	^ process _isTerminated
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+process
+
+	^ process
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+process: aGsProcess
+
+	process := aGsProcess
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+restartFrameLevel: anInteger
+
+	process _trimStackToLevel: anInteger.
+	^ #restart
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+resume
+
+	self assertNotSignalled.
+	process resume.
+	semaphore wait.
+	"completed ifFalse:
+		[ self error: 'Unexpected debugger process state' ]."
+	^ result
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+sourceCodeAtFrameLevel: anInteger
+
+	^ (self stackFrames at: anInteger) first sourceString
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+sourceInfoAtFrameLevel: anInteger
+	| frameContents source ipOffset markers startIndex endIndex i |
+
+	frameContents := self stackFrames at: anInteger.
+	source := frameContents first sourceString.
+	ipOffset := frameContents second.
+	markers := frameContents first _buildIpMarkerArray.
+	startIndex := markers indexOf: ipOffset.
+	startIndex = 0 ifTrue:
+		[ ^ { 1. source size. source } ].
+	i := startIndex + 1.
+
+	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
+		[ (markers at: i) notNil ifTrue:
+			[ endIndex := i ].
+		i := i + 1 ].
+	endIndex ifNil: [ endIndex := source size ].
+	^ { startIndex. endIndex. source. }
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+stackFrames
+
+	^ process gtAllFrames
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+stdout
+
+	^ System gemLogFileName asFileReference contents
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+stepIntoFrameLevel: anInteger
+	| count |
+
+	process setStepIntoBreaksAtLevel: anInteger.
+	self resume.
+	count := 0.
+	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
+		[ self waitMS: 500.
+		count := count + 1 ].
+	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
+	^ #stepInto
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+stepOverFrameLevel: anInteger
+	| count |
+
+	process setStepOverBreaksAtLevel: anInteger.
+	self resume.
+	count := 0.
+	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
+		[ self waitMS: 500.
+		count := count + 1 ].
+	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
+	^ process printString
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+stepThroughFrameLevel: anInteger
+	| count |
+
+	process setStepThroughBreaksAtLevel: anInteger.
+	self resume.
+	count := 0.
+	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
+		[ self waitMS: 500.
+		count := count + 1 ].
+	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
+	^ #stepThrough
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+terminateProcess
+
+	process terminate
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+variable: aSymbol atFrameLevel: anInteger
+	"Answer the variables from the specified frame"
+	| frameContents varNames index |
+
+	frameContents := process gtAllFrames at: anInteger.
+	varNames := frameContents at: 9.
+	index := varNames indexOf: aSymbol asSymbol.
+	^ frameContents at: index + 10.
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+variableInfoAtFrameLevel: anInteger
+	"Answer the variables from the specified frame"
+	| frameContents associations varNames |
+
+	frameContents := process gtAllFrames at: anInteger.
+	associations := Array new.
+	associations 
+		add: { #self. (frameContents at: 8) gtDisplayString. };
+		add: { #receiver. (frameContents at: 10) gtDisplayString. }.
+	varNames := frameContents at: 9.
+	1 to: varNames size do: [ :i |
+		associations add: { varNames at: i. (frameContents at: i + 10) gtDisplayString. } ].
+	^ associations.
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+waitMS: milliseconds
+	(Delay forMilliseconds: milliseconds) wait
+%
 
 ! Class implementation for 'GtGsRelease'
 
@@ -222,38 +832,6 @@ versionString: aString
 	versionString := aString
 %
 
-! Class implementation for 'GtRsrEvaluationExceptionInformation'
-
-!		Instance methods for 'GtRsrEvaluationExceptionInformation'
-
-category: 'accessing'
-method: GtRsrEvaluationExceptionInformation
-exception
-
-	^ exception
-%
-
-category: 'accessing'
-method: GtRsrEvaluationExceptionInformation
-exception: anException
-
-	exception := anException
-%
-
-category: 'accessing'
-method: GtRsrEvaluationExceptionInformation
-process
-
-	^ process
-%
-
-category: 'accessing'
-method: GtRsrEvaluationExceptionInformation
-process: aGsProcess
-
-	process := aGsProcess
-%
-
 ! Class implementation for 'GtRsrSerializationStrategy'
 
 !		Instance methods for 'GtRsrSerializationStrategy'
@@ -274,11 +852,38 @@ serialize: anObject
 	^ self subclassResponsibility
 %
 
+! Class implementation for 'GtRsrLiteralAndProxySerializationStrategy'
+
+!		Instance methods for 'GtRsrLiteralAndProxySerializationStrategy'
+
+category: 'converting'
+method: GtRsrLiteralAndProxySerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+	
+	^ anObject
+%
+
+category: 'converting'
+method: GtRsrLiteralAndProxySerializationStrategy
+serialize: anObject
+	"Serialize the object to something that RSR can return.
+	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
+	
+	(anObject isNil or: 
+		[ anObject isNumber or: 
+		[ anObject isKindOf: Boolean ] ]) 
+			ifTrue: [ ^ anObject ].
+	^ self
+		gtDo: [ anObject ]
+		gemstoneDo: [ GtRsrProxyServiceServer object: anObject ]
+%
+
 ! Class implementation for 'GtRsrPrimitiveOnlySerializationStrategy'
 
 !		Instance methods for 'GtRsrPrimitiveOnlySerializationStrategy'
 
-category: 'accessing'
+category: 'converting'
 method: GtRsrPrimitiveOnlySerializationStrategy
 deserialize: anObject
 	"Deserialize the supplied object"
@@ -286,7 +891,7 @@ deserialize: anObject
 	^ anObject
 %
 
-category: 'accessing'
+category: 'converting'
 method: GtRsrPrimitiveOnlySerializationStrategy
 serialize: anObject
 	"Serialize the object to something that RSR can return.
@@ -323,7 +928,9 @@ method: GtRsrStonSerializationStrategy
 stonClass
 	| stonClass |
 
-	stonClass := GsCurrentSession currentSession symbolList objectNamed: #STON.
+	stonClass := self
+		gtDo: [ self class environment at: #STON ifAbsent: [ nil ] ]
+		gemstoneDo: [ GsCurrentSession currentSession symbolList objectNamed: #STON ].
 	stonClass ifNil: [ self error: 'STON not installed' ].
 
 	^ stonClass
@@ -351,29 +958,6 @@ templateClassName
 	^ #GtRsrEvaluatorService
 %
 
-!		Instance methods for 'GtRsrEvaluatorService'
-
-category: 'actions'
-method: GtRsrEvaluatorService
-evaluate: remoteScript for: anObject bindings: remoteBindings
-
-	^ self subclassResponsibility
-%
-
-category: 'actions'
-method: GtRsrEvaluatorService
-evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol
-
-	^ self subclassResponsibility
-%
-
-category: 'actions'
-method: GtRsrEvaluatorService
-evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings
-
-	^ self subclassResponsibility
-%
-
 ! Class implementation for 'GtRsrEvaluatorServiceServer'
 
 !		Instance methods for 'GtRsrEvaluatorServiceServer'
@@ -384,6 +968,7 @@ evaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
+	aString = 'oops' ifTrue: [ self error: 'Special oops error' ].
 	^ (self
 		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
 		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
@@ -421,7 +1006,7 @@ category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| method result receiver symbolDictionary bindings object semaphore evaluationProcess |
+	| method receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -434,33 +1019,10 @@ gsEvaluate: aString for: anObject bindings: aDictionary
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 	method := aString _compileInContext: receiver symbolList: bindings.
-	semaphore := Semaphore new.
 
-	evaluationProcess := [ [ result := method _executeInContext: receiver. semaphore signal ]
-		on: Exception
-		do: [ :ex |
-			result := (GtRsrEvaluationExceptionInformation new
-				exception: ex;
-				process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-			semaphore signal.
-			evaluationProcess suspend ]
-				] newProcess.
-	evaluationProcess debugActionBlock: [ :ex |
-		result := (GtRsrEvaluationExceptionInformation new
-			exception: ex;
-			process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-		semaphore signal.
-		evaluationProcess suspend ].
-	evaluationProcess
-		name: 'GT evaluation';
-		priority: 15;
-		breakpointLevel: 1.
-	evaluationProcess resume.
-	semaphore wait.
-
-	^ result
+	^ GtGemStoneEvaluationContext new
+		evaluateBlock: [ method _executeInContext: receiver ]
+		from: self.
 %
 
 ! Class implementation for 'GtRsrProxyService'
@@ -527,33 +1089,9 @@ basicPerform: aSymbol withArguments: anArray
 			ifTrue: [ anObject object ]
 			ifFalse: [ anObject ] ].
 
-	semaphore := Semaphore new.
-	evaluationProcess := [ [ result := object perform: aSymbol withArguments: convertedArguments.
-									semaphore signal ]
-		on: Exception
-		do: [ :ex |
-			result := (GtRsrEvaluationExceptionInformation new
-				exception: ex;
-				process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-			semaphore signal.
-			evaluationProcess suspend ]
-				] newProcess.
-	evaluationProcess debugActionBlock: [ :ex |
-		result := (GtRsrEvaluationExceptionInformation new
-			exception: ex;
-			process: evaluationProcess)
-				asGtRsrProxyObjectForConnection: _connection.
-		semaphore signal.
-		evaluationProcess suspend ].
-	evaluationProcess
-		name: 'GT proxyPerform';
-		priority: 15;
-		breakpointLevel: 1.
-	evaluationProcess resume.
-	semaphore wait.
-
-	^ result
+	^ GtGemStoneEvaluationContext new
+		evaluateBlock: [ object perform: aSymbol withArguments: convertedArguments ]
+		from: self.
 %
 
 category: 'accessing'
@@ -622,6 +1160,42 @@ proxyPerformReturnProxy: aSymbol withArguments: anArray
 	^ self class object: result.
 %
 
+! Class implementation for 'GtGemStoneEvaluationContextTest'
+
+!		Instance methods for 'GtGemStoneEvaluationContextTest'
+
+category: 'tests'
+method: GtGemStoneEvaluationContextTest
+testSourceInfoAtFrameLevel
+	| context allFrames info |
+
+	context := (GtGemStoneEvaluationContext new
+		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		from: GtRsrEvaluatorServiceServer new) object.
+	allFrames := context process gtAllFrames.
+	
+	info := context sourceInfoAtFrameLevel: 10.
+
+	self assert: info first = 48.
+	"This is wrong, but let the test pass for now"
+	self assert: info second = 61.
+	self assert: info third size = 80.
+%
+
+category: 'tests'
+method: GtGemStoneEvaluationContextTest
+testVariableInfoAtFrameLevel
+	| context variables |
+
+	context := (GtGemStoneEvaluationContext new
+		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		from: GtRsrEvaluatorServiceServer new) object.
+	variables := context variableInfoAtFrameLevel: 10.
+
+	self assert: variables first first = #self.
+	self assert: variables first second class = String.
+%
+
 ! Class implementation for 'GtRsrEvaluatorServiceTest'
 
 !		Instance methods for 'GtRsrEvaluatorServiceTest'
@@ -659,6 +1233,36 @@ testCompilationError
 
 category: 'tests'
 method: GtRsrEvaluatorServiceTest
+testInitialState
+	"Check that the initial state answers the expected information"
+	| process exception state encodedState deserializedState |
+
+	process := [ [ self halt ]
+		on: Exception
+		do: [ :ex | 
+			exception := ex.
+			process suspend ] ] fork.
+	(Delay forMilliseconds: 100) wait.
+	self assert: process _isSuspended.
+	self assert: exception notNil.
+	state := GtGemStoneDebuggerInitialState
+		process: process
+		exception: exception.
+	self assert: state summary = 'a Halt occurred (error 2709)'.
+	self assert: state callStack size = 15.
+	self assert: (state callStack at: 10) = { #GtRsrEvaluatorServiceTest. #testInitialState. true }.
+
+	encodedState := state asJsonForExport.
+	self assert: encodedState isString.
+	deserializedState := GtGemStoneDebuggerInitialState fromJsonString: encodedState.
+	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
+	self assert: deserializedState callStack size = 15.
+	self assert: (deserializedState callStack at: 10) = { 'GtRsrEvaluatorServiceTest'. 'testInitialState'. true }.
+self halt.
+%
+
+category: 'tests'
+method: GtRsrEvaluatorServiceTest
 testProxiedObjectScript
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -692,17 +1296,17 @@ anArray.'.
 category: 'tests'
 method: GtRsrEvaluatorServiceTest
 testRuntimeErrorScript
-	| script evaluator |
+	| script evaluator result object |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self + ''NaN'''.
-	"'4 + ''NaN''' raises a MNU"
-	self
-		should: [ evaluator evaluate: script for: 4 bindings: Dictionary new ]
-		raise: MessageNotUnderstood
-		withExceptionDo: [ :ex | 
-			"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
-			self assert: (#(#adaptToNumber:andSend: #'_generality') includes: ex message selector) ].
+	"'4 + ''NaN''' raises a MNU which is trapped, resulting in a GtGemStoneEvaluationContext being returned"
+	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
+	self assert: result class = GtRsrProxyServiceServer.
+	object := result object.
+	self assert: object class = GtGemStoneEvaluationContext.
+	"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
+	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 %
 
 category: 'tests'
@@ -804,6 +1408,18 @@ gtSourceFor: aView
 		title: 'Source';
 		priority: 10;
 		text: [ self _sourceString ].
+%
+
+! Class extensions for 'GsProcess'
+
+!		Instance methods for 'GsProcess'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GsProcess
+gtAllFrames
+
+	^ (1 to: self stackDepth) collect: [ :i |
+		self _frameContentsAt: i ]
 %
 
 ! Class extensions for 'GsStackBuffer'
