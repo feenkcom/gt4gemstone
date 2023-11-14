@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneSnippetCoderViewModel,
-	#superclass : #GtSourceCoderViewModel,
+	#superclass : #GtGemStoneSourceCoderViewModel,
 	#instVars : [
 		'selfObject',
 		'session'

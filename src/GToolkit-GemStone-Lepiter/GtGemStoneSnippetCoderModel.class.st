@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneSnippetCoderModel,
-	#superclass : #GtSourceCoder,
+	#superclass : #GtGemStoneSourceCoderModel,
 	#instVars : [
 		'pharoBindings',
 		'remoteScript',
@@ -13,13 +13,6 @@ Class {
 GtGemStoneSnippetCoderModel >> asCoderViewModel [
 
 	^ GtGemStoneSnippetCoderViewModel new coder: self
-]
-
-{ #category : #'api - ast' }
-GtGemStoneSnippetCoderModel >> computeAst: theSourceString [
-	^ GtGemStoneParser
-		parseWithErrors: theSourceString
-		startingAt: GtGemStoneParser startingStateForMethodSequence
 ]
 
 { #category : #'api - ast' }
@@ -97,11 +90,6 @@ GtGemStoneSnippetCoderModel >> insert: varNames asTemporariesIn: trimmedSource l
 		ifNil: [ 1 ]
 		ifNotNil: [ leftBar + 1 ].
 	trimmedSource insert: temporaries at: index.
-]
-
-{ #category : #'instance creation' }
-GtGemStoneSnippetCoderModel >> newCompletionStrategy [
-	^ GtCompletionStrategy new
 ]
 
 { #category : #accessing }
@@ -213,16 +201,6 @@ GtGemStoneSnippetCoderModel >> returnExpressionWithNames: varNames [
 				<< '. ' ].
 		stream
 			<< '#snippetResult -> snippetResult. } asDictionary' ]
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> sessionHolder [
-	^ sessionHolder
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> sessionHolder: anObject [
-	sessionHolder := anObject
 ]
 
 { #category : #'private - execution' }
