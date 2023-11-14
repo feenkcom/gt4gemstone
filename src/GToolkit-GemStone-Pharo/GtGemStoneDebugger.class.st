@@ -1,9 +1,6 @@
 Class {
 	#name : #GtGemStoneDebugger,
 	#superclass : #GtGemStonePostMortemDebugger,
-	#instVars : [
-		'debuggerState'
-	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -11,15 +8,6 @@ Class {
 GtGemStoneDebugger >> debuggerProxy [
 
 	^ exception debuggerProxy
-]
-
-{ #category : #private }
-GtGemStoneDebugger >> getDebuggerState [
-
-	debuggerState := GtGemStoneDebuggerInitialState fromJsonString:
-		(self debuggerProxy 
-			proxyPerform: #debuggerStateJsonForExport
-			autoCommit: false).
 ]
 
 { #category : #actions }
@@ -61,7 +49,7 @@ GtGemStoneDebugger >> gsStepThroughFrameLevel: anInteger [
 { #category : #private }
 GtGemStoneDebugger >> resetState [
 
-	debuggerState := stackFrames := nil.
+	stackFrames := nil.
 ]
 
 { #category : #accessing }
@@ -70,8 +58,7 @@ GtGemStoneDebugger >> stackFrames [
 	This is called many times by the debugger, so cache"
 
 	stackFrames ifNil:
-		[ debuggerState ifNil: [ self getDebuggerState ].
-		stackFrames := debuggerState callStack collectWithIndex: [ :frameData :index |
+		[ stackFrames := exception debuggerState callStack collectWithIndex: [ :frameData :index |
 			GtGemStoneStackFrame new
 				className: frameData first;
 				selector: frameData second;
@@ -84,6 +71,5 @@ GtGemStoneDebugger >> stackFrames [
 { #category : #accessing }
 GtGemStoneDebugger >> summaryString [
 
-	debuggerState ifNil: [ self getDebuggerState ].
-	^ debuggerState summary
+	^ exception debuggerState summary
 ]

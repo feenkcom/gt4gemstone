@@ -429,7 +429,7 @@ GtGemStoneDebuggerElement >> newRightTabGroup [
 		background: Color white;
 		addTab: self summaryTab;
 		addTab: self variablesTab;
-		addTab: self breakpointsTab;
+		"addTab: self breakpointsTab;"
 		addTab: self stdoutTab.
 ]
 

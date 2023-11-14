@@ -2,14 +2,14 @@ Class {
 	#name : #GtRsrEvaluationException,
 	#superclass : #Error,
 	#instVars : [
-		'stackFrames',
 		'isResumable',
 		'debuggerProxy',
 		'gtSession',
 		'isTerminated',
 		'hasDebugResult',
 		'debugResult',
-		'summaryString'
+		'summaryString',
+		'debuggerState'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -41,9 +41,24 @@ GtRsrEvaluationException >> debuggerProxy: anObject [
 ]
 
 { #category : #accessing }
+GtRsrEvaluationException >> debuggerState [
+
+	^ debuggerState ifNil: [ debuggerState := self getDebuggerState ]
+]
+
+{ #category : #accessing }
 GtRsrEvaluationException >> evaluator [
 
 	^ self gtSession evaluator
+]
+
+{ #category : #private }
+GtRsrEvaluationException >> getDebuggerState [
+
+	^ GtGemStoneDebuggerState fromJsonString:
+		(self debuggerProxy 
+			proxyPerform: #debuggerStateJsonForExport
+			autoCommit: false).
 ]
 
 { #category : #actions }
@@ -54,7 +69,8 @@ GtRsrEvaluationException >> gsRestartFrameLevel: anInteger [
 		withArguments: { anInteger }
 		autoCommit: false ]
 			on: self class
-			do: [ :ex | self halt. ].
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	self resetState.
 ]
 
 { #category : #actions }
@@ -64,6 +80,7 @@ GtRsrEvaluationException >> gsResume [
 	result := debuggerProxy
 		proxyPerform: #resume
 		autoCommit: false.
+	self resetState.
 	^ result
 ]
 
@@ -77,7 +94,8 @@ GtRsrEvaluationException >> gsStepIntoFrameLevel: anInteger [
 		withArguments: { anInteger. }
 		autoCommit: false ]
 			on: self class
-			do: [ :ex | self halt. ].
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	self resetState.
 ]
 
 { #category : #actions }
@@ -90,7 +108,8 @@ GtRsrEvaluationException >> gsStepOverFrameLevel: anInteger [
 		withArguments: { anInteger. }
 		autoCommit: false ]
 			on: self class
-			do: [ :ex | self halt. ].
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	self resetState.
 ]
 
 { #category : #actions }
@@ -103,7 +122,8 @@ GtRsrEvaluationException >> gsStepThroughFrameLevel: anInteger [
 		withArguments: { anInteger. }
 		autoCommit: false ]
 			on: self class
-			do: [ :ex | self halt. ].
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	self resetState.
 ]
 
 { #category : #initialize }
@@ -146,31 +166,31 @@ GtRsrEvaluationException >> initialize [
 ]
 
 { #category : #testing }
-GtRsrEvaluationException >> isPaused [
+GtRsrEvaluationException >> isResumable [
 
-	^ debuggerProxy
-		proxyPerform: #isSuspended
-		autoCommit: false
+	^ self debuggerState isResumable
 ]
 
 { #category : #testing }
-GtRsrEvaluationException >> isResumable [
+GtRsrEvaluationException >> isSuspended [
 
-	^ isResumable ifNil: [ isResumable := debuggerProxy proxyPerform: #isResumable autoCommit: false ]
+	^ self debuggerState isSuspended
 ]
 
 { #category : #testing }
 GtRsrEvaluationException >> isTerminated [
 
-	^ isTerminated ifNil: [ isTerminated := debuggerProxy proxyPerform: #isTerminated autoCommit: false ]
+	^ self debuggerState isTerminated
 ]
 
 { #category : #accessing }
 GtRsrEvaluationException >> messageText [
 
-	(messageText isNil and: [ debuggerProxy isNotNil ]) ifTrue:
-		[ messageText := debuggerProxy 
-			evaluateAndWait: 'self exception messageText'
-			autoCommit: false ].
-	^ super messageText
+	^ self debuggerState messageText
+]
+
+{ #category : #private }
+GtRsrEvaluationException >> resetState [
+
+	debuggerState := nil.
 ]
