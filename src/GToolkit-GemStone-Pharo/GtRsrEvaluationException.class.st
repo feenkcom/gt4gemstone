@@ -26,7 +26,7 @@ GtRsrEvaluationException >> debugResult: anObject [
 
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
-AkgContextStackSignal emit.
+
 	^ GtGemStoneDebugger new exception: self.
 ]
 

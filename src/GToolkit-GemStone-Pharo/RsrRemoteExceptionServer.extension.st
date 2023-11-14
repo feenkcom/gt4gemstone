@@ -2,7 +2,7 @@ Extension { #name : #RsrRemoteExceptionServer }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 RsrRemoteExceptionServer >> debuggerClient [
-AkgContextStackSignal emit.
+
 	^ GtGemStonePostMortemDebugger new exception: self.
 ]
 

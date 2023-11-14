@@ -29,7 +29,6 @@ GtRsrEvaluatorPromise >> isBroken [
 GtRsrEvaluatorPromise >> registerAutoCommit [
 	"Register a notification action with the {{gtClass:RsrPromise}} to autoCommit on success"
 
-	AkgContextStackSignal emit.
 	rsrPromise
 		when: [ :value | gtSession autoCommitPromise: self ]
 		catch: [ :value | ].
