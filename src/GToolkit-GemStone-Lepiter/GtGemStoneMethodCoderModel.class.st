@@ -8,6 +8,12 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
+{ #category : #'instance creation' }
+GtGemStoneMethodCoderModel class >> fromCoderSpecification: aMethodCoderSpecification [
+	^ self new 
+		initializeFromCoderSpecification: aMethodCoderSpecification
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> asCoderViewModel [
 	^ GtGemStoneMethodCoderViewModel new coder: self
@@ -49,6 +55,16 @@ GtGemStoneMethodCoderModel >> initializeForClassName: aClassName isMeta: isMeta 
 	self selector: aSelector.
 	self sourceCode: (GtCoderExplicitStringSource new source: aSourceCode).
 	self protocol: aProtocol
+]
+
+{ #category : #initialization }
+GtGemStoneMethodCoderModel >> initializeFromCoderSpecification: aMethodCoderSpecification [ 
+	^ self 
+		initializeForClassName: aMethodCoderSpecification coderClassName 
+		isMeta: aMethodCoderSpecification isMeta 
+		selector: aMethodCoderSpecification selector 
+		sourceString: aMethodCoderSpecification sourceString 
+		protocol: aMethodCoderSpecification protocol
 ]
 
 { #category : #accessing }

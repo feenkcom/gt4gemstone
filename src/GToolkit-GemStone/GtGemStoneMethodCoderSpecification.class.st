@@ -65,6 +65,16 @@ GtGemStoneMethodCoderSpecification >> coderClassName [
 	^ coderClassName
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneMethodCoderSpecification >> gtViewSourceStringFor: aView [ 
+	<gtView>
+	
+	^ aView textEditor 
+		title: 'Source string';
+		priority: 25;
+		text: [ self sourceString ]
+]
+
 { #category : #initialization }
 GtGemStoneMethodCoderSpecification >> initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName [
 	coderClassName := aClassName.
@@ -98,6 +108,24 @@ GtGemStoneMethodCoderSpecification >> packageName [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderSpecification >> printBehaviorName [
+	^ self isMeta 
+		ifTrue: [ self className, ' class' ] 
+		ifFalse: [ self className ]
+]
+
+{ #category : #printing }
+GtGemStoneMethodCoderSpecification >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream 
+			<< self printBehaviorName;
+			<< '>>';
+			<< self selector ]
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderSpecification >> protocol [
 	^ protocolName
 ]
@@ -105,4 +133,9 @@ GtGemStoneMethodCoderSpecification >> protocol [
 { #category : #accessing }
 GtGemStoneMethodCoderSpecification >> selector [
 	^ selector
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderSpecification >> sourceString [
+	^ sourceString
 ]
