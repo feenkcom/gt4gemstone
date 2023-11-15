@@ -1,16 +1,16 @@
 Class {
-	#name : 'GtRsrEvaluatorServiceTest',
-	#superclass : 'TestCase',
+	#name : #GtRsrEvaluatorServiceTest,
+	#superclass : #TestCase,
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	| script evaluator |
 
@@ -32,7 +32,7 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testInitialState [
 	"Check that the initial state answers the expected information"
 	| process exception state encodedState deserializedState |
@@ -68,7 +68,7 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	self deny: deserializedState isTerminated.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -99,7 +99,7 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator result object |
 
@@ -114,7 +114,7 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
@@ -124,7 +124,7 @@ GtRsrEvaluatorServiceTest >> testSelfScript [
 	self assert: result equals: 7.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 

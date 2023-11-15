@@ -5,8 +5,8 @@ GtGemStoneDebuggerInitialState holds the information required to open the GS deb
 - exception displayString
 "
 Class {
-	#name : 'GtGemStoneDebuggerState',
-	#superclass : 'Object',
+	#name : #GtGemStoneDebuggerState,
+	#superclass : #Object,
 	#instVars : [
 		'callStack',
 		'summary',
@@ -18,20 +18,20 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneDebuggerState class >> fromJsonString: aString [
 
 	^ self new fromJsonString: aString
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneDebuggerState class >> process: aGsProcess exception: anException [
 	"Create a new instance of the receiver populated for the supplied process and exception"
 
 	^ self new initializeProcess: aGsProcess exception: anException
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> asDictionaryForExport [
 
 	^ Dictionary new
@@ -44,20 +44,20 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		yourself
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> asJsonForExport [ 
 	"Answer the receiver serialised in JSON format"
 
 	^STON toJsonString: self asDictionaryForExport
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> callStack [
 
 	^ callStack
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> fromJsonString: aString [
 	| dictionary |
 
@@ -70,7 +70,7 @@ GtGemStoneDebuggerState >> fromJsonString: aString [
 	callStack := dictionary at: 'callStack'.
 ]
 
-{ #category : 'initialize' }
+{ #category : #initialize }
 GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException [
 
 	messageText := anException messageText.
@@ -89,31 +89,31 @@ GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException 
 		frameArray first isMethodForBlock. } ].
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isResumable [
 
 	^ isResumable
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isSuspended [
 
 	^ isSuspended
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isTerminated [
 
 	^ isTerminated
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> messageText [
 
 	^ messageText
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> summary [
 
 	^ summary
