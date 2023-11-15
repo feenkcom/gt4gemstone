@@ -24,6 +24,13 @@ GtGemStoneCoderSpecification >> asDictionaryForExport [
 	^ Dictionary new
 ]
 
+{ #category : #converting }
+GtGemStoneCoderSpecification >> asJsonForExport [ 
+	"Answer the receiver serialised in JSON format"
+
+	^STON toJsonString: self asDictionaryForExport
+]
+
 { #category : #accessing }
 GtGemStoneCoderSpecification >> initializeFromJSONDictionary: aDictionary [
 ]

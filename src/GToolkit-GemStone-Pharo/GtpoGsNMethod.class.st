@@ -161,8 +161,7 @@ GtpoGsNMethod >> gtViewCoderFor: aView [
 		title: 'Source';
 		priority: 5;
 		stencil: [
-			GtGemStoneMethodCoderModel 
-				fromCoderSpecification: self methodCoderSpecification ];
+			GtGemStoneMethodCoderModel fromGsMethod: self ];
 		actionUpdateButton
 ]
 

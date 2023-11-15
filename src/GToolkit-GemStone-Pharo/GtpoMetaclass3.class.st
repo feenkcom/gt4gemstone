@@ -115,6 +115,27 @@ GtpoMetaclass3 >> gtCommitActionFor: anAction [
 			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 
+{ #category : #ui }
+GtpoMetaclass3 >> gtMethodCodersFor: aView [
+	<gtView>
+
+	^ aView explicit 
+		title: 'Meta';
+		priority: 200;
+		stencil: [
+			| methodSpecifications |
+			methodSpecifications := self evaluateAndWaitReturnProxy: 'GtGemStoneMethodCodersSpecification 
+	forGsMethods: ((self methodDictForEnv: 0) values 
+		asSortedCollection: [ :a :b | a selector < b selector ]).'.
+		
+		GtGemStoneMethodCodersModel 
+			forMethodSpecifications:(GtGemStoneMethodCodersSpecification 
+				fromJsonString: (methodSpecifications
+					proxyPerform: #asJsonForExport) )
+			inSession: methodSpecifications gtSession ];
+		actionUpdateButton
+]
+
 { #category : #accessing }
 GtpoMetaclass3 >> pharoEquivalentDefinitionString [
 	"Answer a string that defines an equivalent of the receiver in Pharo."

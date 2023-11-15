@@ -96,8 +96,8 @@ GtGemStoneMethodCoderSpecification >> packageName [
 { #category : #accessing }
 GtGemStoneMethodCoderSpecification >> printBehaviorName [
 	^ self isMeta 
-		ifTrue: [ self className, ' class' ] 
-		ifFalse: [ self className ]
+		ifTrue: [ self coderClassName, ' class' ] 
+		ifFalse: [ self coderClassName ]
 ]
 
 { #category : #printing }

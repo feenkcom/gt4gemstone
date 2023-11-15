@@ -17,7 +17,9 @@ GtGemStoneMethodCodersSpecification class >> forGsMethods: aCollection [
 GtGemStoneMethodCodersSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
-		at: #methodCoderSpecifications put: methodCoderSpecifications;
+		at: #methodCoderSpecifications put: (methodCoderSpecifications
+			collect: [ :aMethodCoderSpecification |
+				aMethodCoderSpecification asDictionaryForExport]);
 		yourself
 ]
 
@@ -30,5 +32,12 @@ GtGemStoneMethodCodersSpecification >> initializeForGsMethods: aCollectionOfGsMe
 
 { #category : #accessing }
 GtGemStoneMethodCodersSpecification >> initializeFromJSONDictionary: aDictionary [
-	methodCoderSpecifications := aDictionary at: #methodCoderSpecifications
+	methodCoderSpecifications := (aDictionary at: #methodCoderSpecifications)
+		collect: [ :aMethodCoderJsonData  |
+			GtGemStoneMethodCoderSpecification  fromJSONDictionary: aMethodCoderJsonData]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCodersSpecification >> methodCoderSpecifications [
+	^ methodCoderSpecifications
 ]

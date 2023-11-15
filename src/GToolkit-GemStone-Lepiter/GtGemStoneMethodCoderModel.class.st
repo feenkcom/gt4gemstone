@@ -17,6 +17,13 @@ GtGemStoneMethodCoderModel class >> fromCoderSpecification: aMethodCoderSpecific
 ]
 
 { #category : #'instance creation' }
+GtGemStoneMethodCoderModel class >> fromCoderSpecification: aMethodCoderSpecification inSession: aGtSession [
+	^ self new 
+		initializeWithSession: aGtSession 
+		fromCoderSpecification: aMethodCoderSpecification 
+]
+
+{ #category : #'instance creation' }
 GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 	^ self new 
 		initializeFromGsMethod: aGsMethod
@@ -49,7 +56,7 @@ GtGemStoneMethodCoderModel >> compileInContext: aGtPharoSourceCoderEvaluationCon
 			<< 'environmentId: 0' ].
 			
 	newCompiledMethod := self handleCompilerErrorsDuring: [
-		(previousGsMethod proxyObject 
+		(previousGsMethod asGtProxyObject 
 			evaluateAndWait: script) asGtBareProxyObject ]. 
 	newCompiledMethod ifNil: [ ^ false ].
 	
@@ -235,8 +242,8 @@ GtGemStoneMethodCoderModel >> initializeFromCoderSpecification: aMethodCoderSpec
 GtGemStoneMethodCoderModel >> initializeFromGsMethod: aGsMethod [
 	targetGsMethod := aGsMethod.
 	self 
-		initializeWithSession: aGsMethod proxyObject gtSession
-		fromCoderSpecification: aGsMethod proxyObject methodCoderSpecification 
+		initializeWithSession: aGsMethod asGtProxyObject gtSession
+		fromCoderSpecification: aGsMethod asGtProxyObject methodCoderSpecification 
 ]
 
 { #category : #initialization }
