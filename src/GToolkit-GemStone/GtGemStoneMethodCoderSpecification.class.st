@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneMethodCoderSpecification,
-	#superclass : #Object,
+	#superclass : #GtGemStoneCoderSpecification,
 	#instVars : [
 		'coderClassName',
 		'selector',
@@ -33,24 +33,10 @@ GtGemStoneMethodCoderSpecification class >> forGsMethod: aGsMethod [
 			categoryOfSelector: aGsMethod selector )
 ]
 
-{ #category : #'instance creation' }
-GtGemStoneMethodCoderSpecification class >> fromJSONDictionary: aDictionary [
-	^ self new  
-		initializeFromJSONDictionary: aDictionary
-]
-
-{ #category : #'instance creation' }
-GtGemStoneMethodCoderSpecification class >> fromJsonString: aString [
-	| dictionary |
-
-	dictionary := STON fromString: aString.
-	^ self fromJSONDictionary: dictionary
-]
-
 { #category : #converting }
 GtGemStoneMethodCoderSpecification >> asDictionaryForExport [
 
-	^ Dictionary new
+	^ super asDictionaryForExport
 		at: #coderClassName put: coderClassName;
 		at: #isMeta put: isMeta;
 		at: #categoryName put: categoryName;
