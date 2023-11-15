@@ -19,6 +19,11 @@ GtGemStoneCoderNamedBehavior >> behaviorName: aBehaviorName [
 ]
 
 { #category : #accessing }
+GtGemStoneCoderNamedBehavior >> behaviorNameDo: aBlock [
+	^ aBlock value: self printBehaviorName
+]
+
+{ #category : #accessing }
 GtGemStoneCoderNamedBehavior >> isMeta [
 	^ isMeta
 ]

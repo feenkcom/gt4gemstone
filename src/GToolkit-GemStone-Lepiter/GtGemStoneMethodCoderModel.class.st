@@ -3,7 +3,9 @@ Class {
 	#superclass : #GtGemStoneSourceCoderModel,
 	#instVars : [
 		'methodBehavior',
-		'selector'
+		'selector',
+		'session',
+		'targetGsMethod'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -14,9 +16,131 @@ GtGemStoneMethodCoderModel class >> fromCoderSpecification: aMethodCoderSpecific
 		initializeFromCoderSpecification: aMethodCoderSpecification
 ]
 
-{ #category : #accessing }
+{ #category : #'instance creation' }
+GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
+	^ self new 
+		initializeFromGsMethod: aGsMethod
+]
+
+{ #category : #converting }
 GtGemStoneMethodCoderModel >> asCoderViewModel [
 	^ GtGemStoneMethodCoderViewModel new coder: self
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> compileInContext: aGtPharoSourceCoderEvaluationContext [
+	"Try to compile the current source code and return true if it was successful, false otherwise"
+	<return: #Boolean>
+	| previousGsMethod newCompiledMethod currentSourceString script |
+	self halt.
+	previousGsMethod := self gsMethod.
+
+	"We should use #currentSelector instead of #selector because we care
+	about the `current` state of the coder (#selector may be nil for new methods)"
+	self currentSelector ifNil: [ ^ false ].
+		
+	currentSourceString := self currentSourceString.
+	script := String streamContents: [ :stream |
+		stream 
+			<< 'self inClass compileMethod: ';
+			print: currentSourceString; cr;
+			<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
+			<< 'category: #'''; << self protocol; << ''''; cr;
+			<< 'environmentId: 0' ].
+			
+	newCompiledMethod := self handleCompilerErrorsDuring: [
+		(previousGsMethod proxyObject 
+			evaluateAndWait: script) asGtBareProxyObject ]. 
+	newCompiledMethod ifNil: [ ^ false ].
+	
+	"aGtPharoSourceCoderEvaluationContext hasTargetBehavior
+		ifFalse: [ ^ GtPharoMethodCoderTargetBehaviorNotDefined signal ]."
+	
+	self initializeFromGsMethod: newCompiledMethod.
+	
+	self notifyMethodRecompiledFrom: previousGsMethod to: newCompiledMethod.
+	
+	^ true
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> copyMethodNameToClipboard [
+	self selector ifNil: [ ^ self ].
+	
+	self methodBehavior 
+		behaviorNameDo: [ :aBehaviourName |
+			| methodName |
+			methodName := aBehaviourName, '>>#', self selector.
+			Clipboard clipboardText: methodName ]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> currentSelector [
+	<return: #Symbol>
+
+	^ self currentSelectorPromise wait
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> currentSelectorPromise [
+	<return: #Symbol>
+
+	selector
+		ifNotNil: [ ^ selector asAsyncPromise ].
+
+	^ self ast then: [ :aGtCoderAst |
+		| anAst |
+		
+		anAst := aGtCoderAst ast.
+		anAst isMethod
+			ifFalse: [ #faulty ]
+			ifTrue: [ anAst selector ifNil: [ #faulty ] ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> gsMethod [
+	^ targetGsMethod
+	"^ self existsInTheSystem
+		ifTrue: [ self behavior >> self selector ]
+		ifFalse: [ nil ]"
+]
+
+{ #category : #printing }
+GtGemStoneMethodCoderModel >> gtInspectorTitleString [.
+	
+	^ super gtInspectorTitleString, (self session 
+		ifNil: [ '' asRopedText ]
+		ifNotNil:
+			[ :aGtSession | (' [', aGtSession name, ']') asRopedText ])
+]
+
+{ #category : #printing }
+GtGemStoneMethodCoderModel >> gtInspectorTitleStringOn: aStream [
+	self gtDisplayOn: aStream.
+	
+	self session ifNotNil:
+		[ :aGtSession | aStream
+			<< ' [';
+			<< aGtSession name;
+			<< ']' ]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
+	^ [ aBlock value ]
+		on: GtRsrEvaluationException
+		do: [ :ex |
+			| remoteException |
+			remoteException := ex debuggerProxy proxyPerform: #exception.
+			(remoteException remoteClass = #CompileError)
+				ifTrue: [
+					| errorDetails |
+					errorDetails := remoteException proxyPerform: #errorDetails.
+					self
+						notifyParseError: errorDetails first last
+						at: errorDetails first second.
+					ex return: nil ]
+				ifFalse: [ ex resume ] ]
 ]
 
 { #category : #initialization }
@@ -26,11 +150,17 @@ GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethod
 		initializeAddOns: addOns
 		viewModel: aGtPharoMethodCoderViewModel.
 
+	addOns
+		addMainAction: 'Save' translated
+		icon: BrGlamorousVectorIcons accept
+		action: [ :aCoderUIModel :anElement | 
+			aCoderUIModel save ]
+		id: GtMethodCoderSaveActionId.	
 
 	"addOns addMainAction: (GtCoderCustomAction new stencil: [ 
 			 GtPharoMethodCoderSaveButton new pharoMethodCoderViewModel:
-				 aGtPharoMethodCoderViewModel ]).
-	addOns
+				 aGtPharoMethodCoderViewModel ])."
+	"addOns
 		addDropDownWithPreviewAction: 'Remove' translated
 		icon: BrGlamorousVectorIcons remove
 		action: [ :aButtonElement :aButtonModel :anEvent | self remove ]
@@ -40,12 +170,12 @@ GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethod
 		addMainAction: 'Inspect Method' translated
 		icon: BrGlamorousVectorIcons inspect
 		action: [ :aCoderUIModel :anElement | 
-			self notifyObjectSpawn: aCoderUIModel compiledMethod ].
+			self notifyObjectSpawn: aCoderUIModel gsMethod ].
 	addOns
 		addMainAction: 'Copy Method Name' translated
 		icon: BrGlamorousVectorIcons clipboard
 		action: [ :aCoderUIModel :anElement | 
-		self copyMethodNameToClipboard ]
+			self copyMethodNameToClipboard ]
 ]
 
 { #category : #initialization }
@@ -59,7 +189,7 @@ GtGemStoneMethodCoderModel >> initializeForClassName: aClassName isMeta: isMeta 
 
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeFromCoderSpecification: aMethodCoderSpecification [ 
-	^ self 
+	self 
 		initializeForClassName: aMethodCoderSpecification coderClassName 
 		isMeta: aMethodCoderSpecification isMeta 
 		selector: aMethodCoderSpecification selector 
@@ -67,13 +197,27 @@ GtGemStoneMethodCoderModel >> initializeFromCoderSpecification: aMethodCoderSpec
 		protocol: aMethodCoderSpecification protocol
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
+GtGemStoneMethodCoderModel >> initializeFromGsMethod: aGsMethod [
+	targetGsMethod := aGsMethod.
+	self 
+		initializeWithSession: aGsMethod proxyObject gtSession
+		fromCoderSpecification: aGsMethod proxyObject methodCoderSpecification 
+]
+
+{ #category : #initialization }
+GtGemStoneMethodCoderModel >> initializeWithSession: aGtSession fromCoderSpecification: aMethodCoderSpecification [ 
+	self session: aGtSession.
+	self initializeFromCoderSpecification: aMethodCoderSpecification 
+]
+
+{ #category : #testing }
 GtGemStoneMethodCoderModel >> isFromTrait [
 	"Needed by GtPharoMethodCoderTagsElement; we could remove this if we'd use a dedicated element"
 	^ false
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GtGemStoneMethodCoderModel >> isMeta [
 	"Return true if the method is implemented in the metaclass (~ class side)"
 	<return: #Boolean>
@@ -97,6 +241,35 @@ GtGemStoneMethodCoderModel >> methodBehavior: aGtMethodCoderBehavior [
 		self announce: (GtCoderBehaviorChanged new 
 			newBehavior: aGtMethodCoderBehavior;
 			coder: self) ]
+]
+
+{ #category : #'add-ons' }
+GtGemStoneMethodCoderModel >> modifiedMessageAstFor: anAST into: coderAddOns [
+	<gtAstCoderAddOns: 1>
+
+	self isModified
+		ifFalse: [ ^ self ].
+
+	coderAddOns
+		addMainAction: 'Discard Changes' translated
+		icon: BrGlamorousVectorIcons cancel
+		action: [ :aCoderUIModel :anElement | aCoderUIModel discardChanges ]
+		id: GtMethodCoderDiscardChangesActionId
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> newEvaluationContext [
+
+	^ GtGemStoneSnippetCoderEvaluationContext new
+		session: self session
+]
+
+{ #category : #notifying }
+GtGemStoneMethodCoderModel >> notifyMethodRecompiledFrom: aPreviousCompiledMethod to: aNewCompiledMethod [
+	self announce: (GtPharoMethodCoderCompiled new 
+		methodCoder: self;
+		previousMethod: aPreviousCompiledMethod; 
+		newMethod: aNewCompiledMethod)
 ]
 
 { #category : #printing }
@@ -125,6 +298,20 @@ GtGemStoneMethodCoderModel >> protocol: aSymbol [
 	^ self attributeNamed: #category put: aSymbol
 ]
 
+{ #category : #'actions - save' }
+GtGemStoneMethodCoderModel >> saveInContext: aGtPharoSourceCoderEvaluationContext [
+	"Try to save the current method validating syntax and return `true` if save was succesful, false otherwise"
+	<return: #Boolean>
+
+	self validateSyntax
+		ifFalse: [ ^ false ].
+
+	(self compileInContext: aGtPharoSourceCoderEvaluationContext)
+		ifFalse: [ ^ false ].
+
+	^ true
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> selector [
 	"Assign an original selector which changes when the compiled method is assigned.
@@ -138,6 +325,18 @@ GtGemStoneMethodCoderModel >> selector [
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> selector: aSelector [
 	selector := aSelector
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> session [
+
+	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> session: aGtSession [
+
+	session := aGtSession
 ]
 
 { #category : #accessing }

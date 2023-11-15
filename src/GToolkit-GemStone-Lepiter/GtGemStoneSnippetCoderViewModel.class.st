@@ -48,7 +48,7 @@ GtGemStoneSnippetCoderViewModel >> session [
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetCoderViewModel >> session: anObject [
+GtGemStoneSnippetCoderViewModel >> session: aGtSession [
 
-	session := anObject
+	session := aGtSession
 ]

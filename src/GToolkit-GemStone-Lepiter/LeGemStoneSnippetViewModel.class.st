@@ -121,12 +121,15 @@ LeGemStoneSnippetViewModel >> subscribeToSnippetModel [
 LeGemStoneSnippetViewModel >> updateGemstoneSession [
 	| session |
 	
-	session := [ snippetModel sessionName ifNil: 
-		[ self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
-	ifNotNil: [ :aString |
-		self gemstoneSessionRegistry sessionNamed: aString ] ]
-			on: KeyNotFound, GciError
-			do: [ :ex | ^ self ].
+	session := [ 
+		snippetModel sessionName 
+			ifNil: [ 
+				self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
+			ifNotNil: [ :aString |
+				self gemstoneSessionRegistry sessionNamed: aString ] 
+	]
+		on: KeyNotFound, GciError
+		do: [ :ex | ^ self ].
 				.
 	coderViewModel session: session.
 	

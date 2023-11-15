@@ -18,6 +18,11 @@ GtGemStoneCoderBehavior class >> named: aBehaviorName isMeta: aBoolean [
 ]
 
 { #category : #accessing }
+GtGemStoneCoderBehavior >> behaviorNameDo: aBlock [
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
 GtGemStoneCoderBehavior >> isMeta [
 	self subclassResponsibility
 ]

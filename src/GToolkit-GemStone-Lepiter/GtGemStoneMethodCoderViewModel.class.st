@@ -9,6 +9,11 @@ GtGemStoneMethodCoderViewModel >> elementClass [
 	^ GtExpandableMethodCoderElement
 ]
 
+{ #category : #accessing }
+GtGemStoneMethodCoderViewModel >> gsMethod [
+	^ self coderModel gsMethod
+]
+
 { #category : #testing }
 GtGemStoneMethodCoderViewModel >> hasDeclaredGlobalNamed: aVariableName [
 	"TODO: implement"
@@ -27,4 +32,23 @@ GtGemStoneMethodCoderViewModel >> isMeta [
 	<return: #Boolean>
 
 	^ self coderModel isMeta
+]
+
+{ #category : #testing }
+GtGemStoneMethodCoderViewModel >> isSaveEnabled [
+	^ true
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderViewModel >> save [
+	| aSaveResult |
+	<return: #Boolean>
+	
+	self isSaveEnabled
+		ifFalse: [ ^ false ].
+
+	aSaveResult := self coderModel saveInContext: self evaluationContext.
+	"aSaveResult ifTrue: [ self notifySaved: self compiledMethod ]."
+
+	^ aSaveResult
 ]
