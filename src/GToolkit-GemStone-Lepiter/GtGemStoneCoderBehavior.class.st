@@ -17,17 +17,42 @@ GtGemStoneCoderBehavior class >> named: aBehaviorName isMeta: aBoolean [
 		isMeta: aBoolean 
 ]
 
+{ #category : #initialization }
+GtGemStoneCoderBehavior class >> named: aBehaviorName isMeta: aBoolean inSession: aSession [
+
+	^ GtGemStoneCoderNamedBehavior new 
+		behaviorName: aBehaviorName;
+		isMeta: aBoolean ;
+		session: aSession
+]
+
 { #category : #accessing }
 GtGemStoneCoderBehavior >> behaviorNameDo: aBlock [
 	^ self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GtGemStoneCoderBehavior >> isMeta [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : #printing }
 GtGemStoneCoderBehavior >> printBehaviorName [
 	self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> realBehaviorDo: aBlock [
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> realBehaviorDo: aBlock ifAbsent: anAbsentBlock [
+	self realBehaviorDo: [ :aBehavior | ^ aBlock value: aBehavior ].
+	^ anAbsentBlock value
+]
+
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> theNonMetaClassorUndefinedDo: aBlock [
+	^ self subclassResponsibility
 ]

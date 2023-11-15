@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtGemStoneCoderBehavior,
 	#instVars : [
 		'behaviorName',
-		'isMeta'
+		'isMeta',
+		'session'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -38,4 +39,30 @@ GtGemStoneCoderNamedBehavior >> printBehaviorName [
 	^ self isMeta 
 		ifTrue: [ self behaviorName, ' class' ] 
 		ifFalse: [ self behaviorName ]
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> realBehaviorDo: aBlock [
+	self realBehaviour
+		ifNotNil: [ :aGsBehaviour | ^ aBlock value: aGsBehaviour ]
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> session [
+	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> session: anObject [
+	session := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneCoderNamedBehavior >> theNonMetaClassorUndefinedDo: aBlock [
+	| behaviourOrUndefined|
+	
+	behaviourOrUndefined := session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1}) 
+		ifNil: [ UndefinedObject ]' format: {self behaviorName} ).
+
+	^ aBlock value: behaviourOrUndefined asGtBareProxyObject
 ]

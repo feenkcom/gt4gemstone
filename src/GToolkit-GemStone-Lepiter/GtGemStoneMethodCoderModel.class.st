@@ -32,7 +32,7 @@ GtGemStoneMethodCoderModel >> compileInContext: aGtPharoSourceCoderEvaluationCon
 	"Try to compile the current source code and return true if it was successful, false otherwise"
 	<return: #Boolean>
 	| previousGsMethod newCompiledMethod currentSourceString script |
-	self halt.
+	
 	previousGsMethod := self gsMethod.
 
 	"We should use #currentSelector instead of #selector because we care
@@ -98,6 +98,19 @@ GtGemStoneMethodCoderModel >> currentSelectorPromise [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderModel >> evaluationContext [
+	^ super evaluationContext
+		receiverObject: self gsBehavior theNonMetaClass
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> gsBehavior [
+	
+	^ self methodBehavior
+		theNonMetaClassorUndefinedDo: [ :aBehavior | aBehavior ]
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderModel >> gsMethod [
 	^ targetGsMethod
 	"^ self existsInTheSystem
@@ -143,6 +156,27 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
 				ifFalse: [ ex resume ] ]
 ]
 
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationErrorDo: anErrorBlock [
+	^ [ aBlock value ]
+		on: GtRsrEvaluationException", RsrBrokenPromise"
+		do: [ :ex |
+			| remoteException |
+			remoteException := (ex isKindOf: RsrBrokenPromise)
+				ifTrue: [ ex reason ]
+				ifFalse: [ ex debuggerProxy proxyPerform: #exception ].
+			(remoteException remoteClass = #CompileError)
+				ifTrue: [
+					| errorDetails |
+					errorDetails := remoteException proxyPerform: #errorDetails.
+					self
+						notifyParseError: errorDetails first last
+						at: errorDetails first second.
+					anErrorBlock value.
+					ex return: nil ]
+				ifFalse: [ ex resume ] ]
+]
+
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel [
 
@@ -181,7 +215,7 @@ GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethod
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeForClassName: aClassName isMeta: isMeta selector: aSelector sourceString: aSourceCode protocol: aProtocol [
 	self methodBehavior:(GtGemStoneCoderBehavior 
-		named: aClassName isMeta: isMeta).
+		named: aClassName isMeta: isMeta inSession: session).
 	self selector: aSelector.
 	self sourceCode: (GtCoderExplicitStringSource new source: aSourceCode).
 	self protocol: aProtocol
@@ -203,6 +237,16 @@ GtGemStoneMethodCoderModel >> initializeFromGsMethod: aGsMethod [
 	self 
 		initializeWithSession: aGsMethod proxyObject gtSession
 		fromCoderSpecification: aGsMethod proxyObject methodCoderSpecification 
+]
+
+{ #category : #initialization }
+GtGemStoneMethodCoderModel >> initializeShortcuts: addOns [
+	super initializeShortcuts: addOns.
+
+	addOns
+		addShortcut: GtSourceCoderPlayShortcut new;
+		addShortcut: GtSourceCoderPlayAndInspectShortcut new;
+		addShortcut: GtSourceCoderSaveShortcut new
 ]
 
 { #category : #initialization }
@@ -270,6 +314,32 @@ GtGemStoneMethodCoderModel >> notifyMethodRecompiledFrom: aPreviousCompiledMetho
 		methodCoder: self;
 		previousMethod: aPreviousCompiledMethod; 
 		newMethod: aNewCompiledMethod)
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
+	"Evaluate the supplied GemStone script."
+	| result gemstoneSession |
+	
+	"Ensure the GtgemstoneSession is connected"
+	gemstoneSession := aGtSourceCoderEvaluationContext session.
+	gemstoneSession ifNil:
+		[ self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
+
+	self 
+		handleCompilerErrorsDuring: [ 
+			result := gemstoneSession 
+				evaluateAndWait: aSourceString 
+				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
+				bindings: Dictionary empty ].
+	
+	^ result
+
+	"^ aGtSourceCoderEvaluationContext serializationStrategy
+		ifNil: [ result ]
+		ifNotNil: [ :strategy | result
+			proxyPerform: #yourself serializationStrategy: strategy ]"
 ]
 
 { #category : #printing }
