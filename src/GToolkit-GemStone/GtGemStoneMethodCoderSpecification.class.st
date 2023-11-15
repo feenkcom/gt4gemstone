@@ -24,24 +24,38 @@ GtGemStoneMethodCoderSpecification class >> forGsMethod: aGsMethod [
 	| methodBehaviour |
 	methodBehaviour := aGsMethod inClass.
 	^ self new 
-		initializeForClassName: methodBehaviour theNonMetaClass name;
+		initializeForClassName: methodBehaviour theNonMetaClass name
 		isMeta: methodBehaviour isMeta  
 		categoryName: methodBehaviour category 
 		selector: aGsMethod selector 
 		sourceString: aGsMethod sourceString 
-		protocol: (methodBehaviour 
+		protocolName: (methodBehaviour 
 			categoryOfSelector: aGsMethod selector )
 ]
 
-{ #category : #accessing }
+{ #category : #'instance creation' }
+GtGemStoneMethodCoderSpecification class >> fromJSONDictionary: aDictionary [
+	^ self new  
+		initializeFromJSONDictionary: aDictionary
+]
+
+{ #category : #'instance creation' }
+GtGemStoneMethodCoderSpecification class >> fromJsonString: aString [
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	^ self fromJSONDictionary: dictionary
+]
+
+{ #category : #converting }
 GtGemStoneMethodCoderSpecification >> asDictionaryForExport [
 
 	^ Dictionary new
 		at: #coderClassName put: coderClassName;
 		at: #isMeta put: isMeta;
-		at: #packageName put: categoryName;
+		at: #categoryName put: categoryName;
 		at: #sourceString put: sourceString;
-		at: #protocol put: protocolName;
+		at: #protocolName put: protocolName;
 		at: #selector put: selector;
 		yourself
 ]
@@ -52,7 +66,7 @@ GtGemStoneMethodCoderSpecification >> coderClassName [
 ]
 
 { #category : #initialization }
-GtGemStoneMethodCoderSpecification >> initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocol: aProtocolName [
+GtGemStoneMethodCoderSpecification >> initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName [
 	coderClassName := aClassName.
 	isMeta := aBoolean.
 	categoryName := aCategoryName.
@@ -60,6 +74,17 @@ GtGemStoneMethodCoderSpecification >> initializeForClassName: aClassName isMeta:
 	sourceString := aSourceCode.
 	selector := aSelector.
 	protocolName := aProtocolName.
+]
+
+{ #category : #initialization }
+GtGemStoneMethodCoderSpecification >> initializeFromJSONDictionary: aDictionary [
+	self 
+		initializeForClassName: (aDictionary at: #coderClassName) 
+		isMeta: (aDictionary at: #isMeta)  
+		categoryName: (aDictionary at: #categoryName)  
+		selector: (aDictionary at: #selector)  
+		sourceString: (aDictionary at: #sourceString)  
+		protocolName: (aDictionary at: #protocolName) 
 ]
 
 { #category : #accessing }
