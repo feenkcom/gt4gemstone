@@ -246,7 +246,7 @@ GtGemStoneMethodCoderModel >> initializeShortcuts: addOns [
 	addOns
 		addShortcut: GtSourceCoderPlayShortcut new;
 		addShortcut: GtSourceCoderPlayAndInspectShortcut new;
-		addShortcut: GtSourceCoderSaveShortcut new
+		addShortcut: GtSourceCoderSaveShortcut new.
 ]
 
 { #category : #initialization }
