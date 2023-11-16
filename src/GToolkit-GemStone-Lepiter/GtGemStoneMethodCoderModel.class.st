@@ -147,6 +147,16 @@ GtGemStoneMethodCoderModel >> gtInspectorTitleStringOn: aStream [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
+	^ self 
+		handleCompilerErrorsDuring: aBlock 
+		errorDo: [ :errorDetails |
+			self
+				notifyParseError: errorDetails first last
+				at: errorDetails first second ]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErrorBlock [
 	^ [ aBlock value ]
 		on: GtRsrEvaluationException
 		do: [ :ex |
@@ -156,9 +166,7 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
 				ifTrue: [
 					| errorDetails |
 					errorDetails := remoteException proxyPerform: #errorDetails.
-					self
-						notifyParseError: errorDetails first last
-						at: errorDetails first second.
+					anErrorBlock value: errorDetails.
 					ex return: nil ]
 				ifFalse: [ ex resume ] ]
 ]
@@ -330,8 +338,8 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 	
 	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	gemstoneSession ifNil:
-		[ self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession ifNil: [ 
+		self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
 	self 
@@ -339,7 +347,13 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 			result := gemstoneSession 
 				evaluateAndWait: aSourceString 
 				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
-				bindings: Dictionary empty ].
+				bindings: Dictionary empty ]
+		errorDo: [ :errorDetails |
+			self
+				notifyParseError: errorDetails first last
+				at: aGtSourceCoderEvaluationContext sourceInterval  startPosition
+					+ errorDetails first second.
+			^ anEvaluationFailBlock value].
 	
 	^ result
 
