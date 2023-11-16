@@ -35,6 +35,13 @@ GtGemStoneMethodCoderModel >> asCoderViewModel [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderModel >> collapsedTextPromise [
+	<return: #TAsyncPromise of: #BlText>
+
+	^ self currentSelectorPromise then: [ :aSelector | aSelector asRopedText ]
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderModel >> compileInContext: aGtPharoSourceCoderEvaluationContext [
 	"Try to compile the current source code and return true if it was successful, false otherwise"
 	<return: #Boolean>
