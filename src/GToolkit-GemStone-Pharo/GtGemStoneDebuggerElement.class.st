@@ -6,15 +6,14 @@ Class {
 		'variableList',
 		'callFramesList',
 		'currentCallFrame',
-		'debuggerState',
 		'stdout',
 		'stderr',
 		'breakpoints',
 		'variablesContainer',
 		'modules',
-		'debuggerClient',
 		'summary',
-		'sourceCodeEditorElement'
+		'sourceCodeEditorElement',
+		'debuggerMessageEditor'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -60,7 +59,7 @@ GtGemStoneDebuggerElement class >> registerToolsOn: registry [
 { #category : #accessing }
 GtGemStoneDebuggerElement class >> sessionClass [
 
-	^ GtPostMortemSession 
+	^ GtGemStoneDebuggerSession 
 ]
 
 { #category : #callbacks }
@@ -80,8 +79,6 @@ GtGemStoneDebuggerElement >> actOnBrowserClosing: ann [
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 
-	debuggerClient := debuggingSession ifNotNil: [ 
-		debuggingSession debuggerClient ].
 	sourceCodeEditorElement styler: self debuggerClient sourceStyler.
 	toolbar actOnDebugSessionChanged.
 	
@@ -177,20 +174,13 @@ GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
 { #category : #'private - accessing' }
 GtGemStoneDebuggerElement >> debuggerClient [ 
 
-	^ debuggerClient 
-]
-
-{ #category : #accessing }
-GtGemStoneDebuggerElement >> debuggerClient: aDAPDebugger [
-
-	debuggerClient := aDAPDebugger.
-	self actOnDebugSessionChanged.
+	^ debuggingSession debuggerClient 
 ]
 
 { #category : #accessing }
 GtGemStoneDebuggerElement >> debuggerProxy [
 
-	^ debuggerClient debuggerProxy
+	^ self debuggerClient debuggerProxy
 ]
 
 { #category : #'private - accessing' }
@@ -217,7 +207,7 @@ GtGemStoneDebuggerElement >> exception [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsRestartFrame [
 
-	debuggerClient gsRestartFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsRestartFrameLevel: currentCallFrame ordinal.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -225,7 +215,7 @@ GtGemStoneDebuggerElement >> gsRestartFrame [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsResume [
 
-	debuggerClient gsResume.
+	self debuggerClient gsResume.
 	currentCallFrame := nil.
 	(ResumeDebugAction forDebugger: self) executeAction.
 ]
@@ -233,7 +223,7 @@ GtGemStoneDebuggerElement >> gsResume [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepInto [
 
-	debuggerClient gsStepIntoFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsStepIntoFrameLevel: currentCallFrame ordinal.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -241,7 +231,7 @@ GtGemStoneDebuggerElement >> gsStepInto [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepOut [
 
-	debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal + 1.
+	self debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal + 1.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -249,7 +239,7 @@ GtGemStoneDebuggerElement >> gsStepOut [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepOver [
 
-	debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -257,7 +247,7 @@ GtGemStoneDebuggerElement >> gsStepOver [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepThrough [
 
-	debuggerClient gsStepThroughFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsStepThroughFrameLevel: currentCallFrame ordinal.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -302,10 +292,10 @@ GtGemStoneDebuggerElement >> initialize [
 		constraintsDo: [ :c |
 			c linear weight: 0.7 ].
 	rightTabGroup := self newRightTabGroup.
-	debuggerState := self newDebuggerState.
+	debuggerMessageEditor := self newExceptionMessageEditor.
 	toolbar := self newToolbar.
 	rightPane
-		addChild: debuggerState;
+		addChild: debuggerMessageEditor;
 		addChild: rightTabGroup.
 	mainPane
 		addChild: leftPane;
@@ -411,7 +401,7 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 ]
 
 { #category : #'instance creation' }
-GtGemStoneDebuggerElement >> newDebuggerState [
+GtGemStoneDebuggerElement >> newExceptionMessageEditor [
 
 	^ BrEditor new
 		aptitude: BrGlamorousEditorAptitude + BrShadowAptitude;
@@ -650,7 +640,7 @@ GtGemStoneDebuggerElement >> updateSummary [
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> updateUI [
 
-	debuggerState text: self debuggerClient messageText.
+	debuggerMessageEditor text: self debuggerClient messageText.
 	self updateDisplay.
 	toolbar updateUI.
 ]

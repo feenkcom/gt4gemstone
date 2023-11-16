@@ -6,7 +6,8 @@ Class {
 		'gtSession',
 		'hasDebugResult',
 		'debugResult',
-		'debuggerState'
+		'debuggerState',
+		'debuggerClient'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -24,7 +25,7 @@ GtRsrEvaluationException >> debugResult: anObject [
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
 
-	^ GtGemStoneDebugger new exception: self.
+	^ debuggerClient ifNil: [ debuggerClient := GtGemStoneDebugger new exception: self ].
 ]
 
 { #category : #accessing }
