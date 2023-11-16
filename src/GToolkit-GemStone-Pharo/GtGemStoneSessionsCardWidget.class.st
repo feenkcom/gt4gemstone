@@ -295,18 +295,37 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> sessionActionsFor: aSession [
-
-	aSession class = GtGemStoneCardWidgetNoSessions ifTrue: [ ^ BrGlamorousSimpleContextMenuContent new ].
-
-	^ BrGlamorousSimpleContextMenuContent new items: {
-		'Playground' -> [ :aStatusLineElement | self openPlaygroundOn: aSession from: aStatusLineElement ].
-		'Commit' -> [ :aStatusLineElement | aSession commitTransaction ].
-		'Abort' -> [ :aStatusLineElement | aSession abortTransaction ].
-		'Connect' -> [ :aStatusLineElement | aSession connect ].
-		'Disconnect' -> [ :aStatusLineElement | aSession close ].
-		'Be Default' -> [ :aStatusLineElement | aSession beDefaultSession ].
-		'Inspect' -> [ :aStatusLineElement | self inspectSession: aSession from: aStatusLineElement ].
-	}
+	aSession class = GtGemStoneCardWidgetNoSessions
+		ifTrue: [^BrGlamorousSimpleContextMenuContent new].
+	^BrGlamorousSimpleContextMenuContent new items: 
+			{'Playground'
+				-> [:aStatusLineElement | self openPlaygroundOn: aSession from: aStatusLineElement].
+			'Commit' -> 
+					[:aStatusLineElement |
+					aSession commitTransaction.
+					self updateContent].
+			'Abort' -> 
+					[:aStatusLineElement |
+					aSession abortTransaction.
+					self updateContent].
+			'Connect' -> 
+					[:aStatusLineElement |
+					aSession connect.
+					self updateContent].
+			'Disconnect' -> 
+					[:aStatusLineElement |
+					aSession close.
+					self updateContent].
+			'Be Default' -> 
+					[:aStatusLineElement |
+					aSession beDefaultSession.
+					self updateContent].
+			'Toggle CodeSync' -> 
+					[:aStatusLineElement |
+					aSession toggleCodeSync.
+					self updateContent].
+			'Inspect'
+				-> [:aStatusLineElement | self inspectSession: aSession from: aStatusLineElement]}
 ]
 
 { #category : #'private - ui' }
