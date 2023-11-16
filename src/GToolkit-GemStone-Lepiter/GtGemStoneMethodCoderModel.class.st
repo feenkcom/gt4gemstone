@@ -114,7 +114,7 @@ GtGemStoneMethodCoderModel >> evaluationContext [
 GtGemStoneMethodCoderModel >> gsBehavior [
 	
 	^ self methodBehavior
-		theNonMetaClassorUndefinedDo: [ :aBehavior | aBehavior ]
+		theNonMetaClassOrUndefinedDo: [ :aBehavior | aBehavior ]
 ]
 
 { #category : #accessing }

@@ -53,6 +53,6 @@ GtGemStoneCoderBehavior >> realBehaviorDo: aBlock ifAbsent: anAbsentBlock [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderBehavior >> theNonMetaClassorUndefinedDo: aBlock [
+GtGemStoneCoderBehavior >> theNonMetaClassOrUndefinedDo: aBlock [
 	^ self subclassResponsibility
 ]

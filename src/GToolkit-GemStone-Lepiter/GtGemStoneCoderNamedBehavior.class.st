@@ -58,7 +58,7 @@ GtGemStoneCoderNamedBehavior >> session: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderNamedBehavior >> theNonMetaClassorUndefinedDo: aBlock [
+GtGemStoneCoderNamedBehavior >> theNonMetaClassOrUndefinedDo: aBlock [
 	| behaviourOrUndefined|
 	
 	behaviourOrUndefined := session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1}) 
