@@ -44,7 +44,7 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 { #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
-	| method receiver symbolDictionary bindings object |
+	| receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -56,9 +56,11 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 			ifFalse: [ value ].
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
-	method := aString _compileInContext: receiver symbolList: bindings.
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ method _executeInContext: receiver ]
+		evaluateBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: bindings.
+			method _executeInContext: receiver ]
 		from: self.
 ]
