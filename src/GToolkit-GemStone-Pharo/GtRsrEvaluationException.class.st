@@ -2,13 +2,10 @@ Class {
 	#name : #GtRsrEvaluationException,
 	#superclass : #Error,
 	#instVars : [
-		'isResumable',
 		'debuggerProxy',
 		'gtSession',
-		'isTerminated',
 		'hasDebugResult',
 		'debugResult',
-		'summaryString',
 		'debuggerState'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
