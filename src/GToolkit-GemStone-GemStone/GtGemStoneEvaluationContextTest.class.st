@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtGemStoneEvaluationContextTest',
-	#superclass : 'TestCase',
+	#name : #GtGemStoneEvaluationContextTest,
+	#superclass : #TestCase,
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtGemStoneEvaluationContextTest >> testSourceInfoAtFrameLevel [
 	| context allFrames info |
 
@@ -22,7 +22,7 @@ GtGemStoneEvaluationContextTest >> testSourceInfoAtFrameLevel [
 	context process terminate.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 GtGemStoneEvaluationContextTest >> testVariableInfoAtFrameLevel [
 	| context variables |
 

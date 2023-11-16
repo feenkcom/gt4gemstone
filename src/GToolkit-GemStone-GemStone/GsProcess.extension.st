@@ -1,6 +1,6 @@
-Extension { #name : 'GsProcess' }
+Extension { #name : #GsProcess }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GsProcess >> gtAllFrames [
 
 	^ (1 to: self stackDepth) collect: [ :i |
