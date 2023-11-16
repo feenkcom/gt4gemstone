@@ -345,7 +345,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 	self 
 		handleCompilerErrorsDuring: [ 
 			result := gemstoneSession 
-				evaluateAndWait: aSourceString 
+				evaluateAndWaitReturnProxy: aSourceString 
 				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 				bindings: Dictionary empty ]
 		errorDo: [ :errorDetails |
@@ -355,12 +355,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 					+ errorDetails first second.
 			^ anEvaluationFailBlock value].
 	
-	^ result
-
-	"^ aGtSourceCoderEvaluationContext serializationStrategy
-		ifNil: [ result ]
-		ifNotNil: [ :strategy | result
-			proxyPerform: #yourself serializationStrategy: strategy ]"
+	^ result asGtBareProxyObject
 ]
 
 { #category : #printing }
