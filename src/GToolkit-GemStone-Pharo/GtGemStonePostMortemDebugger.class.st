@@ -21,8 +21,12 @@ GtGemStonePostMortemDebugger >> defaultFrameOrdinal [
 	The stack normally includes a number of frames that relate to a halt or breakpoint, which the user isn't interested in.  Select the first frame that is probably user code."
 
 	self stackFrames size - 1 to: 1 by: -1 do: [ :i |
-		(#(halt _signalAsync: doesNotUnderstand:) includes: (stackFrames at: i) selector) ifTrue:
-			[ ^ i + 1 ] ].
+		(#(halt 
+		_signalAsync: 
+		doesNotUnderstand: 
+		_compileInContext:symbolList:) 
+			includes: (stackFrames at: i) selector) ifTrue:
+				[ ^ i + 1 ] ].
 	^ 1
 ]
 

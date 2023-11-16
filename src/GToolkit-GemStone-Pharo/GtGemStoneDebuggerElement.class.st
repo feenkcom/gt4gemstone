@@ -540,16 +540,6 @@ GtGemStoneDebuggerElement >> scheduleUpdateUI [
 
 ]
 
-{ #category : #private }
-GtGemStoneDebuggerElement >> selectDefaultCallFrame [
-	"The GS debugger leaves stack frames at the top that we aren't interested in.
-	Try and find the first interesting (user) call frame."
-
-	currentCallFrame := self debuggerClient stackFrames 
-		ifEmpty: [ nil ]
-		ifNotEmpty: [ :array | array at: debuggerClient defaultFrameOrdinal ].
-]
-
 { #category : #'private - accessing' }
 GtGemStoneDebuggerElement >> sourceCode [
 
