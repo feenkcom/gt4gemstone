@@ -46,9 +46,20 @@ GtGemStoneStackFrame >> debuggerProxy [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> descriptionOn: aStream [
+
+	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
+	aStream
+		<< (className ifNil: [ '<none> ' ]);
+		<< '>>';
+		<< (selector ifNil: [ ' <none>' ])
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> displayString [
 
-	^ self printString
+	^ String streamContents: [ :aStream |
+		self descriptionOn: aStream ]
 ]
 
 { #category : #accessing }
@@ -135,11 +146,7 @@ GtGemStoneStackFrame >> ordinal: anObject [
 { #category : #accessing }
 GtGemStoneStackFrame >> printOn: aStream [
 
-	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
-	aStream
-		<< (className ifNil: [ '<none> ' ]);
-		<< '>>';
-		<< (selector ifNil: [ ' <none>' ])
+	self descriptionOn: aStream
 ]
 
 { #category : #accessing }
