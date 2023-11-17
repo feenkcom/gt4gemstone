@@ -115,6 +115,20 @@ GtGemStoneDebuggerElement >> buildLeftPane [
 ]
 
 { #category : #initialization }
+GtGemStoneDebuggerElement >> buildMainContent [
+	| container mainPane |
+	container := BrVerticalPane new matchParent.
+	mainPane := self buildPanesStructure.
+	toolbar := self newToolbar.
+	
+	container
+		addChild: toolbar;
+		addChild: mainPane.
+	
+	^ container.
+]
+
+{ #category : #initialization }
 GtGemStoneDebuggerElement >> buildPanesStructure [
 	| rightPane mainPane leftPane |
 	mainPane := BrHorizontalPane new matchParent.
@@ -209,6 +223,11 @@ GtGemStoneDebuggerElement >> currentCallFrame [
 	^ currentCallFrame
 ]
 
+{ #category : #actions }
+GtGemStoneDebuggerElement >> currentCallFrame: aStackFrame [
+	"do nothing" 
+]
+
 { #category : #private }
 GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
 
@@ -286,8 +305,8 @@ GtGemStoneDebuggerElement >> gsStepOut [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepOver [
 
-	self debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal.
-	currentCallFrame := nil.
+	self debuggerClient gsStepOverFrameLevel: self currentCallFrame ordinal.
+	self currentCallFrame: nil.
 	self scheduleUpdateUI.
 ]
 
@@ -301,7 +320,6 @@ GtGemStoneDebuggerElement >> gsStepThrough [
 
 { #category : #initialization }
 GtGemStoneDebuggerElement >> initialize [
-	| container mainPane |
 	super initialize.
 	
 	self
@@ -310,15 +328,7 @@ GtGemStoneDebuggerElement >> initialize [
 			c horizontal matchParent ].
 	self userData at: #debuggerContainer put: #debuggerElement.
 	
-	container := BrVerticalPane new matchParent.
-	mainPane := self buildPanesStructure.
-	toolbar := self newToolbar.
-	
-	container
-		addChild: toolbar;
-		addChild: mainPane.
-	self addChild: container.
-	
+	self addChild: self buildMainContent.
 	self
 		addChild: (BlElement new
 				constraintsDo: [ :c | 
