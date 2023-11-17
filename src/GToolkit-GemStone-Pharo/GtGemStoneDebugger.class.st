@@ -72,14 +72,16 @@ GtGemStoneDebugger >> stackFrames [
 	"Answer a ordered collection of stack frames.
 	This is called many times by the debugger, so cache"
 
-	stackFrames ifNil:
-		[ stackFrames := exception debuggerState callStack collectWithIndex: [ :frameData :index |
-			GtGemStoneStackFrame new
-				className: frameData first;
-				selector: frameData second;
-				inBlock: frameData third;
-				exception: exception;
-				ordinal: index ] ].
+	stackFrames ifNil: [ 
+		stackFrames := exception debuggerState callStack 
+			collectWithIndex: [ :aFrameSpecification :index |
+				GtGemStoneStackFrame new
+					className: aFrameSpecification coderClassName;
+					selector: aFrameSpecification selector;
+					inBlock: aFrameSpecification isForBlock;
+					frameSpecification: aFrameSpecification;
+					exception: exception;
+					ordinal: index ] ].
 	^ stackFrames
 ]
 

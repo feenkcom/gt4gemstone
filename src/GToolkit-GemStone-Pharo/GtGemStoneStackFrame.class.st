@@ -10,7 +10,8 @@ Class {
 		'selector',
 		'inBlock',
 		'sourceText',
-		'variableAssociations'
+		'variableAssociations',
+		'frameSpecification'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -60,6 +61,16 @@ GtGemStoneStackFrame >> exception [
 GtGemStoneStackFrame >> exception: anObject [
 
 	exception := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> frameSpecification [
+	^ frameSpecification
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> frameSpecification: anObject [
+	frameSpecification := anObject
 ]
 
 { #category : #accessing }

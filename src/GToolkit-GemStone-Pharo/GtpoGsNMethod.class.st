@@ -174,7 +174,7 @@ GtpoGsNMethod >> inClassName [
 
 { #category : #accessing }
 GtpoGsNMethod >> methodCoderSpecification [ 
-	^ GtGemStoneMethodCoderSpecification forGsMethodProxy: self
+	^ GtGemStoneMethodSpecification forGsMethodProxy: self
 ]
 
 { #category : #private }

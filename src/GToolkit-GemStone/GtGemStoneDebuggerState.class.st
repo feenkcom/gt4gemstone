@@ -15,7 +15,7 @@ Class {
 		'isTerminated',
 		'messageText'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -28,7 +28,9 @@ GtGemStoneDebuggerState class >> fromJsonString: aString [
 GtGemStoneDebuggerState class >> process: aGsProcess exception: anException [
 	"Create a new instance of the receiver populated for the supplied process and exception"
 
-	^ self new initializeProcess: aGsProcess exception: anException
+	^ self new 
+		initializeProcess: aGsProcess 
+		exception: anException
 ]
 
 { #category : #converting }
@@ -40,7 +42,7 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		at: #isResumable put: isResumable;
 		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
-		at: #callStack put: callStack;
+		at: #callStack put: callStack asDictionaryForExport;
 		yourself
 ]
 
@@ -62,16 +64,19 @@ GtGemStoneDebuggerState >> fromJsonString: aString [
 	| dictionary |
 
 	dictionary := STON fromString: aString.
+	
 	messageText := dictionary at: 'messageText'.
 	isResumable := dictionary at: 'isResumable'.
 	isSuspended := dictionary at: 'isSuspended'.
 	isTerminated := dictionary at: 'isTerminated'.
 	summary := dictionary at: 'summary'.
-	callStack := dictionary at: 'callStack'.
+	
+	callStack := GtGemStoneProcessSpecification 
+		fromJSONDictionary:  (dictionary at: 'callStack').
 ]
 
 { #category : #initialize }
-GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException [
+GtGemStoneDebuggerState >> initializeProcess2: aGsProcess exception: anException [
 
 	messageText := anException messageText.
 	isResumable := anException isResumable.
@@ -87,6 +92,20 @@ GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException 
 		{ homeMethod inClass ifNotNil: [ :cls | cls name ].
 		homeMethod selector.
 		frameArray first isMethodForBlock. } ].
+]
+
+{ #category : #initialize }
+GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException [
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStack := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
 ]
 
 { #category : #accessing }

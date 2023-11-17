@@ -1,7 +1,7 @@
-Extension { #name : #GtGemStoneMethodCoderSpecification }
+Extension { #name : #GtGemStoneMethodSpecification }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
-GtGemStoneMethodCoderSpecification class >> forGsMethodProxy: aGsMethodProxy [
+GtGemStoneMethodSpecification class >> forGsMethodProxy: aGsMethodProxy [
 	^ self fromJSONDictionary: (aGsMethodProxy gtSession 
 		evaluateAndWait: '(GtGemStoneMethodCoderSpecification forGsMethod: self)
 			asDictionaryForExport' 
@@ -11,7 +11,7 @@ GtGemStoneMethodCoderSpecification class >> forGsMethodProxy: aGsMethodProxy [
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
-GtGemStoneMethodCoderSpecification >> gtViewCoderFor: aView [ 
+GtGemStoneMethodSpecification >> gtViewCoderFor: aView [ 
 	<gtView>
 	
 	^ aView explicit 

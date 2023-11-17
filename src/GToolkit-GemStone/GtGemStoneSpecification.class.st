@@ -1,17 +1,17 @@
 Class {
-	#name : #GtGemStoneCoderSpecification,
+	#name : #GtGemStoneSpecification,
 	#superclass : #Object,
 	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
-GtGemStoneCoderSpecification class >> fromJSONDictionary: aDictionary [
+GtGemStoneSpecification class >> fromJSONDictionary: aDictionary [
 	^ self new  
 		initializeFromJSONDictionary: aDictionary
 ]
 
 { #category : #'instance creation' }
-GtGemStoneCoderSpecification class >> fromJsonString: aString [
+GtGemStoneSpecification class >> fromJsonString: aString [
 	| dictionary |
 
 	dictionary := STON fromString: aString.
@@ -19,18 +19,18 @@ GtGemStoneCoderSpecification class >> fromJsonString: aString [
 ]
 
 { #category : #converting }
-GtGemStoneCoderSpecification >> asDictionaryForExport [
+GtGemStoneSpecification >> asDictionaryForExport [
 
 	^ Dictionary new
 ]
 
 { #category : #converting }
-GtGemStoneCoderSpecification >> asJsonForExport [ 
+GtGemStoneSpecification >> asJsonForExport [ 
 	"Answer the receiver serialised in JSON format"
 
 	^STON toJsonString: self asDictionaryForExport
 ]
 
 { #category : #accessing }
-GtGemStoneCoderSpecification >> initializeFromJSONDictionary: aDictionary [
+GtGemStoneSpecification >> initializeFromJSONDictionary: aDictionary [
 ]

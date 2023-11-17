@@ -407,7 +407,7 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 		asSortedCollection: [ :a :b | a selector < b selector ]).'.
 		
 		GtGemStoneMethodCodersModel 
-			forMethodSpecifications:(GtGemStoneMethodCodersSpecification 
+			forMethodSpecifications:(GtGemStoneMethodsSpecification 
 				fromJsonString: (methodSpecifications
 					proxyPerform: #asJsonForExport) )
 			inSession: methodSpecifications gtSession ];
