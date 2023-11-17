@@ -19,8 +19,8 @@ GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedFor: aContext 
 GtGemStoneExpandableDebuggerElement >> buildLeftPane [
 	| leftPane |
 	leftPane := BrVerticalPane new
-			matchParent;
-			constraintsDo: [ :c | c linear weight: 1.0 ].
+		matchParent;
+		constraintsDo: [ :c | c linear weight: 2 ].
 	callFramesList := self buildStackElement.
 	leftPane
 		addChild: callFramesList.
@@ -38,6 +38,18 @@ GtGemStoneExpandableDebuggerElement >> buildStackElement [
 { #category : #accessing }
 GtGemStoneExpandableDebuggerElement >> currentCallFrame [
 	^ callFramesList selectedContext
+]
+
+{ #category : #accessing }
+GtGemStoneExpandableDebuggerElement >> newRightTabGroup [
+
+	^ BrTabGroup new 
+		aptitude: BrGlamorousTabGroupAptitude + BrShadowAptitude;
+		margin: (BlInsets all: self defaultMargin);
+		background: Color white;
+		"addTab: self summaryTab;"
+		addTab: self variablesTab;
+		addTab: self stdoutTab.
 ]
 
 { #category : #accessing }
