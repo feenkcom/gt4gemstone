@@ -63,20 +63,6 @@ GtGemStoneDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
-GtGemStoneDebuggerElement >> actOnBrowserClosing: ann [
-	"Terminate the remote process if required and notify the toolbar"
-
-	self exception isTerminated ifFalse:
-		[ [self debuggerProxy
-			proxyPerform: #terminateProcess
-			autoCommit: false ]
-				on: GtRsrEvaluationException
-				do: [ :ex | ex isTerminated ifFalse:
-					[ ex pass ] ] ].
-	toolbar actOnBrowserClosing: ann.
-]
-
-{ #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 
 	sourceCodeEditorElement ifNotNil: [ :anEditor | 		
@@ -218,12 +204,17 @@ GtGemStoneDebuggerElement >> cellSpacing [
 	^ 10
 ]
 
+{ #category : #accessing }
+GtGemStoneDebuggerElement >> currentCallFrame [
+	^ currentCallFrame
+]
+
 { #category : #private }
 GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
 
 	^ self debuggerProxy
 		proxyPerform: #variable:atFrameLevel:
-		withArguments: { aSymbol. currentCallFrame ordinal. }
+		withArguments: { aSymbol. self currentCallFrame ordinal. }
 		autoCommit: false.
 ]
 
@@ -595,11 +586,6 @@ GtGemStoneDebuggerElement >> summaryTab [
 				summary ] ]
 ]
 
-{ #category : #actions }
-GtGemStoneDebuggerElement >> terminateSession [
-	"No action at the moment"
-]
-
 { #category : #'private - update ui' }
 GtGemStoneDebuggerElement >> updateBreakpoints [
 
@@ -674,9 +660,9 @@ GtGemStoneDebuggerElement >> updateVariables [
 
 	variableList ifNil: [ ^ self ].
 	variableList 
-		items: (currentCallFrame
+		items: (self currentCallFrame
 			ifNil: [ #() ]
-			ifNotNil: [ currentCallFrame variablesAssociations ])
+			ifNotNil: [ self currentCallFrame variablesAssociations ])
 		immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]

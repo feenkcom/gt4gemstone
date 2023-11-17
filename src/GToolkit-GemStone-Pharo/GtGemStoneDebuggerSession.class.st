@@ -20,6 +20,12 @@ GtGemStoneDebuggerSession >> debuggerClient [
 ]
 
 { #category : #'private - accessing' }
+GtGemStoneDebuggerSession >> debuggerProxy [
+
+	^ self exception debuggerProxy
+]
+
+{ #category : #'private - accessing' }
 GtGemStoneDebuggerSession >> exception [
 	"Answer the exception that triggered the debug session."
 
@@ -33,4 +39,16 @@ GtGemStoneDebuggerSession >> modules [
 	<return: #Dictionary>
 
 	^ Dictionary new
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> terminate [
+	self exception isTerminated ifFalse:
+		[ [self debuggerProxy
+			proxyPerform: #terminateProcess
+			autoCommit: false ]
+				on: GtRsrEvaluationException
+				do: [ :ex | ex isTerminated ifFalse:
+					[ ex pass ] ] ].
+	super terminate.
 ]

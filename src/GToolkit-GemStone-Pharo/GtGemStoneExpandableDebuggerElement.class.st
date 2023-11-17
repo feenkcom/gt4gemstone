@@ -12,6 +12,7 @@ GtGemStoneExpandableDebuggerElement class >> registerToolsOn: registry [
 
 { #category : #accessing }
 GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedFor: aContext [
+	self updateVariables.
 ]
 
 { #category : #accessing }
@@ -32,6 +33,11 @@ GtGemStoneExpandableDebuggerElement >> buildStackElement [
 	newStackElement := GtGemStoneExpandableStackElement new.
 	newStackElement containerName: #stackElement.
 	^ newStackElement
+]
+
+{ #category : #accessing }
+GtGemStoneExpandableDebuggerElement >> currentCallFrame [
+	^ callFramesList selectedContext
 ]
 
 { #category : #accessing }
