@@ -11,6 +11,13 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneContextCoderViewModel >> initialize [
+	super initialize.
+	
+	expanded := false
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderViewModel >> onCoderModelChanged [
 	super onCoderModelChanged.
 	

@@ -3,7 +3,7 @@ Extension { #name : #GtGemStoneMethodSpecification }
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtGemStoneMethodSpecification class >> forGsMethodProxy: aGsMethodProxy [
 	^ self fromJSONDictionary: (aGsMethodProxy gtSession 
-		evaluateAndWait: '(GtGemStoneMethodCoderSpecification forGsMethod: self)
+		evaluateAndWait: '(GtGemStoneMethodSpecification forGsMethod: self)
 			asDictionaryForExport' 
 		for: aGsMethodProxy 
 		bindings: {} 
