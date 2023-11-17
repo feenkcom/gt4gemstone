@@ -125,6 +125,7 @@ GtGemStoneMethodSpecification >> packageName [
 
 { #category : #accessing }
 GtGemStoneMethodSpecification >> printBehaviorName [
+	self coderClassName ifNil: [ ^ '<none>' ].
 	^ self isMeta 
 		ifTrue: [ self coderClassName, ' class' ] 
 		ifFalse: [ self coderClassName ]
@@ -138,7 +139,7 @@ GtGemStoneMethodSpecification >> printOn: aStream [
 		aStream 
 			<< self printBehaviorName;
 			<< '>>';
-			<< self selector ]
+			<< (self selector ifNil: [ ^ '<none>' ]) ]
 ]
 
 { #category : #accessing }

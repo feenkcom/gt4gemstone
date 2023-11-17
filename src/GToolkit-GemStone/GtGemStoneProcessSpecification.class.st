@@ -11,7 +11,7 @@ GtGemStoneProcessSpecification class >> forGsCallStack: aCallStack [
 ]
 
 { #category : #accessing }
-GtGemStoneProcessSpecification >> callStackCoderSpecifications [
+GtGemStoneProcessSpecification >> frameSpecifications [
 	^ self methodCoderSpecifications
 ]
 

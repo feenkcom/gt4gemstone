@@ -73,7 +73,7 @@ GtGemStoneDebugger >> stackFrames [
 	This is called many times by the debugger, so cache"
 
 	stackFrames ifNil: [ 
-		stackFrames := exception debuggerState callStack 
+		stackFrames := exception debuggerState callStack frameSpecifications
 			collectWithIndex: [ :aFrameSpecification :index |
 				GtGemStoneStackFrame new
 					className: aFrameSpecification coderClassName;
