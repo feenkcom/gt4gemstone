@@ -79,7 +79,8 @@ GtGemStoneDebuggerElement >> actOnBrowserClosing: ann [
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 
-	sourceCodeEditorElement styler: self debuggerClient sourceStyler.
+	sourceCodeEditorElement ifNotNil: [ :anEditor | 		
+		anEditor styler: self debuggerClient sourceStyler ].
 	toolbar actOnDebugSessionChanged.
 	
 	self scheduleUpdateUI.
@@ -96,6 +97,61 @@ GtGemStoneDebuggerElement >> breakpointsTab [
 				[ breakpoints := self newBreakpointsList.
 				self scheduleUpdateBreakpoints.
 				breakpoints ] ]
+]
+
+{ #category : #initialization }
+GtGemStoneDebuggerElement >> buildLeftPane [
+	| cfContainer sourceContainer leftPane |
+	leftPane := BrVerticalPane new
+			matchParent;
+			constraintsDo: [ :c | c linear weight: 1.0 ].
+	callFramesList := self newCallFramesList.
+	cfContainer := BlElement new
+			aptitude: BrShadowAptitude;
+			margin: (BlInsets all: self defaultMargin);
+			constraintsDo: [ :c | 
+				c vertical matchParent.
+				c horizontal matchParent.
+				c linear weight: 0.3 ];
+			addChild: callFramesList.
+	sourceCodeEditorElement := self newSourceEditor.
+	sourceContainer := BlElement new.
+	sourceContainer
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical matchParent.
+			c linear weight: 1.0 ];
+		addChild: sourceCodeEditorElement.
+	leftPane
+		addChild: cfContainer;
+		addChild: sourceContainer.
+	^ leftPane
+]
+
+{ #category : #initialization }
+GtGemStoneDebuggerElement >> buildPanesStructure [
+	| rightPane mainPane leftPane |
+	mainPane := BrHorizontalPane new matchParent.
+	leftPane := self buildLeftPane.
+	rightPane := self buildRightPane.
+	mainPane
+		addChild: leftPane;
+		addChild: rightPane.
+	^ mainPane
+]
+
+{ #category : #initialization }
+GtGemStoneDebuggerElement >> buildRightPane [
+	| rightPane rightTabGroup |
+	rightPane := BrVerticalPane new
+			matchParent;
+			constraintsDo: [ :c | c linear weight: 0.7 ].
+	rightTabGroup := self newRightTabGroup.
+	debuggerMessageEditor := self newExceptionMessageEditor.
+	rightPane
+		addChild: debuggerMessageEditor;
+		addChild: rightTabGroup.
+	^ rightPane
 ]
 
 { #category : #'private - element creation' }
@@ -254,64 +310,32 @@ GtGemStoneDebuggerElement >> gsStepThrough [
 
 { #category : #initialization }
 GtGemStoneDebuggerElement >> initialize [
-	| container mainPane leftPane rightTabGroup rightPane cfContainer sourceContainer |
-
+	| container mainPane |
 	super initialize.
-	self 
-		constraintsDo: [ :c |
+	
+	self
+		constraintsDo: [ :c | 
 			c vertical matchParent.
 			c horizontal matchParent ].
+	self userData at: #debuggerContainer put: #debuggerElement.
+	
 	container := BrVerticalPane new matchParent.
-	mainPane := BrHorizontalPane new matchParent.
-	leftPane := BrVerticalPane new
-		matchParent;
-		constraintsDo: [ :c |
-			c linear weight: 1.0 ].
-	callFramesList := self newCallFramesList.
-	cfContainer := BlElement new 
-		aptitude: BrShadowAptitude;
-		margin: (BlInsets all: self defaultMargin);
-		constraintsDo: [ :c |
-			c vertical matchParent.
-			c horizontal matchParent.
-			c linear weight: 0.3 ];
-		addChild: callFramesList.
-	sourceCodeEditorElement := self newSourceEditor.
-	sourceContainer := BlElement new.
-	sourceContainer
-		constraintsDo: [ :c | 
-			c horizontal matchParent.
-			c vertical matchParent.
-			c linear weight: 1.0 ];
-		addChild: sourceCodeEditorElement.
-	leftPane
-		addChild: cfContainer;
-		addChild: sourceContainer.
-	rightPane := BrVerticalPane new
-		matchParent;
-		constraintsDo: [ :c |
-			c linear weight: 0.7 ].
-	rightTabGroup := self newRightTabGroup.
-	debuggerMessageEditor := self newExceptionMessageEditor.
+	mainPane := self buildPanesStructure.
 	toolbar := self newToolbar.
-	rightPane
-		addChild: debuggerMessageEditor;
-		addChild: rightTabGroup.
-	mainPane
-		addChild: leftPane;
-		addChild: rightPane.
-	container 
+	
+	container
 		addChild: toolbar;
 		addChild: mainPane.
 	self addChild: container.
-	self addChild: (BlElement new
+	
+	self
+		addChild: (BlElement new
 				constraintsDo: [ :c | 
 					c ignoreByLayout.
 					c horizontal matchParent.
 					c vertical exact: 5 ];
 				background: BrGlamorousColors errorBackgroundColor;
-				yourself).
-
+				yourself)
 ]
 
 { #category : #testing }

@@ -48,6 +48,10 @@ GtGemStoneContextCoderViewModel >> programCounterTextAttribute [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderViewModel >> updateProgramCounterRange [
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderViewModel >> updateProgramCounterRange: aSourceCode [
 	aSourceCode currentSourceText
 		then: [ :aSourceText | 

@@ -36,6 +36,8 @@ GtGemStoneCoderNamedBehavior >> isMeta: aBoolean [
 
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> printBehaviorName [
+	self behaviorName ifNil: [ ^ '<none>' ].
+	
 	^ self isMeta 
 		ifTrue: [ self behaviorName, ' class' ] 
 		ifFalse: [ self behaviorName ]

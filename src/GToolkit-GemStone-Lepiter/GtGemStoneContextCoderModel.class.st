@@ -20,6 +20,11 @@ GtGemStoneContextCoderModel >> asCoderViewModel [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderModel >> context [
+	^ self stackFrame
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderModel >> initializeFromStackFrame: aStackFrame [
 	stackFrame := aStackFrame.
 	self initializeFromCoderSpecification: aStackFrame frameSpecification
@@ -33,4 +38,8 @@ GtGemStoneContextCoderModel >> programCounterRange [
 { #category : #accessing }
 GtGemStoneContextCoderModel >> stackFrame [
 	^ stackFrame
+]
+
+{ #category : #accessing }
+GtGemStoneContextCoderModel >> updateSourceFromContext [
 ]
