@@ -115,7 +115,7 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 
 { #category : #accessing }
 GtGemStoneMethodSpecification >> isMeta [
-	^ isMeta
+	^ isMeta ifNil: [ false ]
 ]
 
 { #category : #accessing }

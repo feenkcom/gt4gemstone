@@ -75,6 +75,16 @@ GtGemStoneDebuggerState >> fromJsonString: aString [
 		fromJSONDictionary:  (dictionary at: 'callStack').
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [ 
+	<gtView>
+	
+	^ aView forward 
+		title: 'Frame specifications';
+		object: [ self callStack ];
+		view: #gtViewCallFrameSpecificationsFor: 
+]
+
 { #category : #initialize }
 GtGemStoneDebuggerState >> initializeProcess2: aGsProcess exception: anException [
 

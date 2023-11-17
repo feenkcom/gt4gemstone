@@ -74,6 +74,17 @@ GtGemStoneStackFrame >> frameSpecification: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
+	<gtView>
+	
+	^ aView explicit 
+		title: 'Coder';
+		priority: 5;
+		stencil: [
+			GtGemStoneContextCoderModel fromStackFrame: self ]
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
 	<gtView>
 	
@@ -129,6 +140,19 @@ GtGemStoneStackFrame >> printOn: aStream [
 		<< (className ifNil: [ '<none> ' ]);
 		<< '>>';
 		<< (selector ifNil: [ ' <none>' ])
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> programCounterRange [
+	| sourceInfo sourceString |
+	sourceInfo := self debuggerProxy 
+		proxyPerform: #sourceInfoAtFrameLevel: 
+		withArguments: { ordinal }
+		autoCommit: false.
+	sourceString := sourceInfo third.
+	^ self currentMessageRangeAt: sourceInfo first 
+		in: sourceString 
+		fallBack: sourceInfo second.
 ]
 
 { #category : #accessing }

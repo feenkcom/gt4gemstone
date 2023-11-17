@@ -402,7 +402,7 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 		priority: 250;
 		stencil: [
 			| methodSpecifications |
-			methodSpecifications := self evaluateAndWaitReturnProxy: 'GtGemStoneMethodCodersSpecification 
+			methodSpecifications := self evaluateAndWaitReturnProxy: 'GtGemStoneMethodsSpecification 
 	forGsMethods: ((self class theNonMetaClass methodDictForEnv: 0) values 
 		asSortedCollection: [ :a :b | a selector < b selector ]).'.
 		

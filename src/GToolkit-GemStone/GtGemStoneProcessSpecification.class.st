@@ -15,6 +15,16 @@ GtGemStoneProcessSpecification >> frameSpecifications [
 	^ self methodCoderSpecifications
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneProcessSpecification >> gtViewCallFrameSpecificationsFor: aView [ 
+	<gtView>
+	
+	^ aView forward 
+		title: 'Frame specifications';
+		object: [ self frameSpecifications];
+		view: #gtItemsFor:
+]
+
 { #category : #accessing }
 GtGemStoneProcessSpecification >> initializeForGsCallStack: aCallStack [
 	methodCoderSpecifications := aCallStack callFrames 

@@ -28,5 +28,5 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 
 { #category : #accessing }
 GtGemStoneContextSpecification >> isForBlock [
-	^ isForBlock
+	^ isForBlock ifNil: [ false ]
 ]
