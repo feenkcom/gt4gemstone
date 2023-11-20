@@ -32,7 +32,7 @@ AkgDebuggerPlay >> evalBlock [
 	^ [ trace nextPut: #StartedProcessExecution.
 		self haltMethod.
 		trace nextPut: #AfterHalt1.
-		trace nextPut: #AfterHalt2. 
+		trace nextPut: self getString. 
 		[ trace nextPut: #AfterHalt3. 
 		trace nextPut: #AfterHalt4. ]
 			value.
@@ -40,6 +40,12 @@ AkgDebuggerPlay >> evalBlock [
 		trace nextPut: #AfterHalt6. 
 		#akgDebuggerPlayDone.
 		]
+]
+
+{ #category : #accessing }
+AkgDebuggerPlay >> getString [
+
+	^ 'get', 'String'
 ]
 
 { #category : #other }
