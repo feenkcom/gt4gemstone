@@ -60,6 +60,16 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
+	self debuggerClient
+		when: GtGemStoneDebuggerStateChanged
+		send: #actOnDebuggerStateChanged
+		to: self.
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
 	self scheduleUpdateUI.
 ]
 
@@ -261,7 +271,7 @@ GtGemStoneExpandableDebuggerElement >> exception [
 GtGemStoneExpandableDebuggerElement >> gsRestartFrame [
 
 	self debuggerClient gsRestartFrameLevel: self currentCallFrame ordinal.
-	self scheduleUpdateUI.
+	"self scheduleUpdateUI."
 ]
 
 { #category : #actions }
@@ -275,14 +285,14 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 GtGemStoneExpandableDebuggerElement >> gsStepInto [
 
 	self debuggerClient gsStepIntoFrameLevel: self currentCallFrame ordinal.
-	self scheduleUpdateUI.
+	"self scheduleUpdateUI."
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepOut [
 
 	self debuggerClient gsStepOverFrameLevel: self currentCallFrame ordinal + 1.
-	self scheduleUpdateUI.
+	"self scheduleUpdateUI."
 ]
 
 { #category : #actions }
@@ -290,14 +300,14 @@ GtGemStoneExpandableDebuggerElement >> gsStepOver [
 
 	self debuggerClient 
 		gsStepOverFrameLevel: self currentCallFrame ordinal.
-	self scheduleUpdateUI.
+	"self scheduleUpdateUI."
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepThrough [
 
 	self debuggerClient gsStepThroughFrameLevel: self currentCallFrame ordinal.
-	self scheduleUpdateUI.
+	"self scheduleUpdateUI."
 ]
 
 { #category : #initialization }

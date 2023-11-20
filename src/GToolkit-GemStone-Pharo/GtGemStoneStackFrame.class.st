@@ -11,7 +11,8 @@ Class {
 		'inBlock',
 		'sourceText',
 		'variableAssociations',
-		'frameSpecification'
+		'frameSpecification',
+		'method'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -85,6 +86,12 @@ GtGemStoneStackFrame >> frameSpecification: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> gsSession [
+
+	^ exception gtSession
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
 	<gtView>
 	
@@ -128,7 +135,8 @@ self _lineNumberForStep: stepPoint.') + 1.
 { #category : #accessing }
 GtGemStoneStackFrame >> method [
 
-	^ self debuggerProxy methodAtFrameLevel: ordinal
+	^ method ifNil:
+		[ method := self debuggerProxy asGtBareProxyObject methodAtFrameLevel: ordinal ]
 ]
 
 { #category : #accessing }

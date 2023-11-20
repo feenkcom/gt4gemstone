@@ -16,6 +16,12 @@ GtGemStoneContextCoderViewModel >> context [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderViewModel >> gsSession [
+
+	^ self coderModel gsSession
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderViewModel >> initialize [
 	super initialize.
 	
@@ -57,6 +63,13 @@ GtGemStoneContextCoderViewModel >> programCounterTextAttribute [
 		ifNil: [ ProgramCounterTextAttribute := (BlTextDecorationAttribute new underline
 					color: BrGlamorousColors errorBackgroundColor;
 					thickness: 1.5) beNotOverwritableByStyler ]
+]
+
+{ #category : #accessing }
+GtGemStoneContextCoderViewModel >> save [
+
+	super save ifFalse: [ ^ self ].
+	coderModel debuggingSession debuggerClient  gsRestartFrameLevel: coderModel stackFrame ordinal.
 ]
 
 { #category : #accessing }

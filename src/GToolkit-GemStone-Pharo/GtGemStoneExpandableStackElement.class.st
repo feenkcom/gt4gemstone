@@ -146,7 +146,9 @@ GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 		
 			self stackFramesList items: (stackFrames collect: [ :aGsFrame |
 		 		(GtGemStoneContextCoderModel 
-		 			fromStackFrame: aGsFrame) asCoderViewModel ]).
+		 			fromStackFrame: aGsFrame) 
+		 				debuggingSession: aDebuggingSession;
+		 				asCoderViewModel ]).
 		 			
 			self selectContext:  currentCallFrame ].
 	
