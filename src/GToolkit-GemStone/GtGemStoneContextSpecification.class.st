@@ -1,32 +1,40 @@
 Class {
-	#name : #GtGemStoneContextSpecification,
-	#superclass : #GtGemStoneMethodSpecification,
+	#name : 'GtGemStoneContextSpecification',
+	#superclass : 'GtGemStoneMethodSpecification',
 	#instVars : [
 		'isForBlock'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtGemStoneContextSpecification class >> forGsCallFrame: aGsCallFrame [
 	^ self new 
 		initializeForGsCallFrame: aGsCallFrame 
 ]
 
-{ #category : #initialization }
+{ #category : 'converting' }
+GtGemStoneContextSpecification >> asDictionaryForExport [
+
+	^ super asDictionaryForExport
+		at: #isForBlock put: isForBlock;
+		yourself
+]
+
+{ #category : 'initialization' }
 GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [ 
 	self initializeForGsMethod: aGsCallFrame homeMethod.
 	isForBlock := aGsCallFrame isForBlock
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	isForBlock := (aDictionary at: #isMeta)  
+	isForBlock := (aDictionary at: 'isForBlock')
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneContextSpecification >> isForBlock [
 	^ isForBlock ifNil: [ false ]
 ]

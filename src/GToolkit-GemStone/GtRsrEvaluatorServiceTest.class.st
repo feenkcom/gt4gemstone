@@ -1,16 +1,16 @@
 Class {
-	#name : #GtRsrEvaluatorServiceTest,
-	#superclass : #TestCase,
+	#name : 'GtRsrEvaluatorServiceTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,21 +21,24 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
-	| script evaluator |
+	"Confirm that a compilation error is caught and returned in"
+	| script evaluator context |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self error:'. 
-	self
-		should: [ evaluator evaluate: script for: nil bindings: Dictionary new ]
-		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
+	context := (evaluator evaluate: script for: nil bindings: Dictionary new) object.
+	self deny: context isCompleted.
+	self assert: context isSuspended.
+	self assert: context exception class = CompileError.
+	self assert: context exception messageText = 'a CompileError occurred (error 1001), expected a primary expression '.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testInitialState [
 	"Check that the initial state answers the expected information"
-	| process exception state encodedState deserializedState |
+	| process exception state encodedState deserializedState contextSpecification |
 
 	process := [ [ self halt ]
 		on: Exception
@@ -48,9 +51,13 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	state := GtGemStoneDebuggerState
 		process: process
 		exception: exception.
+
 	self assert: state summary = 'a Halt occurred (error 2709)'.
 	self assert: state callStack size = 15.
-	self assert: (state callStack at: 10) = { #GtRsrEvaluatorServiceTest. #testInitialState. true }.
+	contextSpecification := state callStack at: 10.
+	self assert: contextSpecification coderClassName = #GtRsrEvaluatorServiceTest.
+	self assert: contextSpecification selector = #testInitialState.
+	self assert: contextSpecification isForBlock.
 	self assert: state messageText = 'a Halt occurred (error 2709)'.
 	self assert: state isResumable.
 	self assert: state isSuspended.
@@ -61,14 +68,17 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
 	self assert: deserializedState callStack size = 15.
-	self assert: (deserializedState callStack at: 10) = { 'GtRsrEvaluatorServiceTest'. 'testInitialState'. true }.
+	contextSpecification := deserializedState callStack at: 10.
+	self assert: contextSpecification coderClassName = 'GtRsrEvaluatorServiceTest'.
+	self assert: contextSpecification selector = 'testInitialState'.
+	self assert: contextSpecification isForBlock.
 	self assert: deserializedState messageText = 'a Halt occurred (error 2709)'.
 	self assert: deserializedState isResumable.
 	self assert: deserializedState isSuspended.
 	self deny: deserializedState isTerminated.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -99,7 +109,7 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator result object |
 
@@ -114,7 +124,7 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
@@ -124,7 +134,7 @@ GtRsrEvaluatorServiceTest >> testSelfScript [
 	self assert: result equals: 7.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 
