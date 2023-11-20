@@ -21,8 +21,8 @@ removeallclassmethods AkgDebuggerPlay
 
 doit
 (Object
-	subclass: 'GtGemStoneDebuggerInitialState'
-	instVarNames: #( callStack summary )
+	subclass: 'GtGemStoneDebuggerState'
+	instVarNames: #( callStack summary isResumable isSuspended isTerminated messageText )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -38,8 +38,8 @@ doit
 true.
 %
 
-removeallmethods GtGemStoneDebuggerInitialState
-removeallclassmethods GtGemStoneDebuggerInitialState
+removeallmethods GtGemStoneDebuggerState
+removeallclassmethods GtGemStoneDebuggerState
 
 doit
 (Object
@@ -58,6 +58,132 @@ true.
 
 removeallmethods GtGemStoneEvaluationContext
 removeallclassmethods GtGemStoneEvaluationContext
+
+doit
+(Object
+	subclass: 'GtGemStoneLocalCallFrame'
+	instVarNames: #( frameArray homeMethod )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneLocalCallFrame
+removeallclassmethods GtGemStoneLocalCallFrame
+
+doit
+(Object
+	subclass: 'GtGemStoneLocalCallStack'
+	instVarNames: #( callFrames gsProcess )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneLocalCallStack
+removeallclassmethods GtGemStoneLocalCallStack
+
+doit
+(Object
+	subclass: 'GtGemStoneSpecification'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSpecification
+removeallclassmethods GtGemStoneSpecification
+
+doit
+(GtGemStoneSpecification
+	subclass: 'GtGemStoneMethodSpecification'
+	instVarNames: #( coderClassName selector isMeta sourceString protocolName categoryName )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneMethodSpecification
+removeallclassmethods GtGemStoneMethodSpecification
+
+doit
+(GtGemStoneMethodSpecification
+	subclass: 'GtGemStoneContextSpecification'
+	instVarNames: #( isForBlock )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneContextSpecification
+removeallclassmethods GtGemStoneContextSpecification
+
+doit
+(GtGemStoneSpecification
+	subclass: 'GtGemStoneMethodsSpecification'
+	instVarNames: #( methodCoderSpecifications )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneMethodsSpecification
+removeallclassmethods GtGemStoneMethodsSpecification
+
+doit
+(GtGemStoneMethodsSpecification
+	subclass: 'GtGemStoneProcessSpecification'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneProcessSpecification
+removeallclassmethods GtGemStoneProcessSpecification
 
 doit
 (Object
@@ -289,7 +415,7 @@ doit
 	inDictionary: Globals
 	options: #( #logCreation )
 )
-		category: 'GToolkit-GemStone';
+		category: 'GToolkit-GemStone-GemStone';
 		immediateInvariant.
 true.
 %
@@ -325,7 +451,7 @@ evalBlock
 	^ [ trace nextPut: #StartedProcessExecution.
 		self haltMethod.
 		trace nextPut: #AfterHalt1.
-		trace nextPut: #AfterHalt2. 
+		trace nextPut: self getString. 
 		[ trace nextPut: #AfterHalt3. 
 		trace nextPut: #AfterHalt4. ]
 			value.
@@ -333,6 +459,13 @@ evalBlock
 		trace nextPut: #AfterHalt6. 
 		#akgDebuggerPlayDone.
 		]
+%
+
+category: 'accessing'
+method: AkgDebuggerPlay
+getString
+
+	^ 'get', 'String'
 %
 
 category: 'other'
@@ -408,39 +541,45 @@ waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
 %
 
-! Class implementation for 'GtGemStoneDebuggerInitialState'
+! Class implementation for 'GtGemStoneDebuggerState'
 
-!		Class methods for 'GtGemStoneDebuggerInitialState'
+!		Class methods for 'GtGemStoneDebuggerState'
 
 category: 'instance creation'
-classmethod: GtGemStoneDebuggerInitialState
+classmethod: GtGemStoneDebuggerState
 fromJsonString: aString
 
 	^ self new fromJsonString: aString
 %
 
 category: 'instance creation'
-classmethod: GtGemStoneDebuggerInitialState
+classmethod: GtGemStoneDebuggerState
 process: aGsProcess exception: anException
 	"Create a new instance of the receiver populated for the supplied process and exception"
 
-	^ self new initializeProcess: aGsProcess exception: anException
+	^ self new 
+		initializeProcess: aGsProcess 
+		exception: anException
 %
 
-!		Instance methods for 'GtGemStoneDebuggerInitialState'
+!		Instance methods for 'GtGemStoneDebuggerState'
 
 category: 'converting'
-method: GtGemStoneDebuggerInitialState
+method: GtGemStoneDebuggerState
 asDictionaryForExport
 
 	^ Dictionary new
+		at: #messageText put: messageText;
+		at: #isSuspended put: isSuspended;
+		at: #isResumable put: isResumable;
+		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
-		at: #callStack put: callStack;
+		at: #callStack put: callStack asDictionaryForExport;
 		yourself
 %
 
 category: 'converting'
-method: GtGemStoneDebuggerInitialState
+method: GtGemStoneDebuggerState
 asJsonForExport 
 	"Answer the receiver serialised in JSON format"
 
@@ -448,26 +587,48 @@ asJsonForExport
 %
 
 category: 'accessing'
-method: GtGemStoneDebuggerInitialState
+method: GtGemStoneDebuggerState
 callStack
 
 	^ callStack
 %
 
 category: 'converting'
-method: GtGemStoneDebuggerInitialState
+method: GtGemStoneDebuggerState
 fromJsonString: aString
 	| dictionary |
 
 	dictionary := STON fromString: aString.
+	
+	messageText := dictionary at: 'messageText'.
+	isResumable := dictionary at: 'isResumable'.
+	isSuspended := dictionary at: 'isSuspended'.
+	isTerminated := dictionary at: 'isTerminated'.
 	summary := dictionary at: 'summary'.
-	callStack := dictionary at: 'callStack'.
+	
+	callStack := GtGemStoneProcessSpecification 
+		fromJSONDictionary:  (dictionary at: 'callStack').
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDebuggerState
+gtViewCallFrameSpecificationsFor: aView 
+	<gtView>
+	
+	^ aView forward 
+		title: 'Frame specifications';
+		object: [ self callStack ];
+		view: #gtViewCallFrameSpecificationsFor: 
 %
 
 category: 'initialize'
-method: GtGemStoneDebuggerInitialState
-initializeProcess: aGsProcess exception: anException
+method: GtGemStoneDebuggerState
+initializeProcess2: aGsProcess exception: anException
 
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
 	summary := aGsProcess _isTerminated
 		ifTrue: [ 'Terminated: ', anException messageText ]
 		ifFalse: [ anException messageText ].
@@ -480,8 +641,51 @@ initializeProcess: aGsProcess exception: anException
 		frameArray first isMethodForBlock. } ].
 %
 
+category: 'initialize'
+method: GtGemStoneDebuggerState
+initializeProcess: aGsProcess exception: anException
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStack := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+%
+
 category: 'accessing'
-method: GtGemStoneDebuggerInitialState
+method: GtGemStoneDebuggerState
+isResumable
+
+	^ isResumable
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerState
+isSuspended
+
+	^ isSuspended
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerState
+isTerminated
+
+	^ isTerminated
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerState
+messageText
+
+	^ messageText
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerState
 summary
 
 	^ summary
@@ -510,7 +714,7 @@ category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 debuggerState
 
-	^ GtGemStoneDebuggerInitialState
+	^ GtGemStoneDebuggerState
 		process: process
 		exception: exception
 %
@@ -610,6 +814,14 @@ handlerBlock: anObject
 
 category: 'testing'
 method: GtGemStoneEvaluationContext
+isCompleted
+	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
+
+	^ completed
+%
+
+category: 'testing'
+method: GtGemStoneEvaluationContext
 isResumable
 
 	^ exception isResumable
@@ -627,6 +839,13 @@ method: GtGemStoneEvaluationContext
 isTerminated
 
 	^ process _isTerminated
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+methodAtFrameLevel: anInteger
+
+	^ (process _frameContentsAt: anInteger) first
 %
 
 category: 'accessing'
@@ -658,8 +877,6 @@ resume
 	self assertNotSignalled.
 	process resume.
 	semaphore wait.
-	"completed ifFalse:
-		[ self error: 'Unexpected debugger process state' ]."
 	^ result
 %
 
@@ -709,15 +926,9 @@ stdout
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 stepIntoFrameLevel: anInteger
-	| count |
 
 	process setStepIntoBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
 	^ #stepInto
 %
 
@@ -728,26 +939,15 @@ stepOverFrameLevel: anInteger
 
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
-	^ process printString
+	^ #stepOver
 %
 
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 stepThroughFrameLevel: anInteger
-	| count |
 
 	process setStepThroughBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
 	^ #stepThrough
 %
 
@@ -791,6 +991,466 @@ category: 'private'
 method: GtGemStoneEvaluationContext
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneLocalCallFrame'
+
+!		Class methods for 'GtGemStoneLocalCallFrame'
+
+category: 'accessing'
+classmethod: GtGemStoneLocalCallFrame
+forFrameArray: aFrameArray 
+	^ self new 
+		initializeForFrameArray: aFrameArray 
+%
+
+!		Instance methods for 'GtGemStoneLocalCallFrame'
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+homeMethod
+	^ homeMethod
+%
+
+category: 'initialization'
+method: GtGemStoneLocalCallFrame
+initializeForFrameArray: aFrameArray 
+	frameArray := aFrameArray.
+	homeMethod := frameArray first homeMethod.
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+isForBlock
+	^ frameArray first isMethodForBlock
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+methodClass
+	^ homeMethod inClass
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+methodClassName
+	^ self methodClass ifNotNil: [ :aClass | 
+		aClass name ]
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+selector
+	^ homeMethod selector.
+%
+
+! Class implementation for 'GtGemStoneLocalCallStack'
+
+!		Class methods for 'GtGemStoneLocalCallStack'
+
+category: 'instance creation'
+classmethod: GtGemStoneLocalCallStack
+forProcess: aGsProcess 
+	^ self new 
+		initializeForProcess: aGsProcess 
+%
+
+!		Instance methods for 'GtGemStoneLocalCallStack'
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+callFrames
+	^ callFrames
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+createSpecification
+	^ GtGemStoneProcessSpecification forGsCallStack: self
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+initializeForProcess: aGsProcess 
+	gsProcess := aGsProcess.
+	callFrames := aGsProcess gtAllFrames collect: [ :frameArray |
+		GtGemStoneLocalCallFrame forFrameArray:frameArray ].
+%
+
+! Class implementation for 'GtGemStoneSpecification'
+
+!		Class methods for 'GtGemStoneSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneSpecification
+fromJSONDictionary: aDictionary
+	^ self new  
+		initializeFromJSONDictionary: aDictionary
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSpecification
+fromJsonString: aString
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	^ self fromJSONDictionary: dictionary
+%
+
+!		Instance methods for 'GtGemStoneSpecification'
+
+category: 'converting'
+method: GtGemStoneSpecification
+asDictionaryForExport
+
+	^ Dictionary new
+%
+
+category: 'converting'
+method: GtGemStoneSpecification
+asJsonForExport 
+	"Answer the receiver serialised in JSON format"
+
+	^STON toJsonString: self asDictionaryForExport
+%
+
+category: 'accessing'
+method: GtGemStoneSpecification
+initializeFromJSONDictionary: aDictionary
+%
+
+! Class implementation for 'GtGemStoneMethodSpecification'
+
+!		Class methods for 'GtGemStoneMethodSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneMethodSpecification
+forClass: aClass selector: aSelector
+	| gsMethod | 
+	gsMethod := (aClass methodDictForEnv: 0) at: aSelector.
+	^ self forGsMethod: gsMethod.
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneMethodSpecification
+forGsMethod: aGsMethod 
+	^ self new 
+		initializeForGsMethod: aGsMethod 
+%
+
+!		Instance methods for 'GtGemStoneMethodSpecification'
+
+category: 'converting'
+method: GtGemStoneMethodSpecification
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: #coderClassName put: coderClassName;
+		at: #isMeta put: isMeta;
+		at: #categoryName put: categoryName;
+		at: #sourceString put: sourceString;
+		at: #protocolName put: protocolName;
+		at: #selector put: selector;
+		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+categoryName
+	^categoryName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+coderClassName
+	^ coderClassName
+%
+
+category: 'gt - extensions'
+method: GtGemStoneMethodSpecification
+gtViewSourceStringFor: aView 
+	<gtView>
+	
+	^ aView textEditor 
+		title: 'Source string';
+		priority: 25;
+		text: [ self sourceString ]
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeForBehaviour: aMethodBehaviour ofMethod: aGsMethod
+	self 
+		initializeForClassName: aMethodBehaviour theNonMetaClass name
+		isMeta: aMethodBehaviour isMeta  
+		categoryName: aMethodBehaviour category 
+		protocolName: (aMethodBehaviour 
+			categoryOfSelector: aGsMethod selector )
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName protocolName: aProtocolName
+	coderClassName := aClassName.
+	isMeta := aBoolean.
+	categoryName := aCategoryName.
+	protocolName := aProtocolName.
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName
+	self 
+		initializeForClassName: aClassName 
+		isMeta: aBoolean 
+		categoryName: aCategoryName 
+		protocolName: aProtocolName.
+	
+	sourceString := aSourceCode.
+	selector := aSelector.
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeForGsMethod: aGsMethod 
+	| methodBehavior |
+	selector := aGsMethod selector.
+	sourceString := aGsMethod sourceString.
+	
+	methodBehavior := aGsMethod inClass.
+	methodBehavior ifNotNil: [
+		self 
+			initializeForBehaviour: methodBehavior 
+			ofMethod: aGsMethod ]
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeForSelector: aSelector sourceString: aSourceString 
+	selector := aSelector.
+	sourceString := aSourceString.
+%
+
+category: 'initialization'
+method: GtGemStoneMethodSpecification
+initializeFromJSONDictionary: aDictionary
+	self 
+		initializeForClassName: (aDictionary at: 'coderClassName') 
+		isMeta: (aDictionary at: 'isMeta')  
+		categoryName: (aDictionary at: 'categoryName')  
+		selector: (aDictionary at: 'selector')  
+		sourceString: (aDictionary at: 'sourceString')  
+		protocolName: (aDictionary at: 'protocolName') 
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+isMeta
+	^ isMeta ifNil: [ false ]
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+packageName
+	^ categoryName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+printBehaviorName
+	self coderClassName ifNil: [ ^ '<none>' ].
+	^ self isMeta 
+		ifTrue: [ self coderClassName, ' class' ] 
+		ifFalse: [ self coderClassName ]
+%
+
+category: 'printing'
+method: GtGemStoneMethodSpecification
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream 
+			<< self printBehaviorName;
+			<< '>>';
+			<< (self selector ifNil: [ ^ '<none>' ]) ]
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+protocol
+	^ protocolName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+protocolName
+	^protocolName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+selector
+	^ selector
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+sourceString
+	^ sourceString
+%
+
+! Class implementation for 'GtGemStoneContextSpecification'
+
+!		Class methods for 'GtGemStoneContextSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneContextSpecification
+forGsCallFrame: aGsCallFrame
+	^ self new 
+		initializeForGsCallFrame: aGsCallFrame 
+%
+
+!		Instance methods for 'GtGemStoneContextSpecification'
+
+category: 'converting'
+method: GtGemStoneContextSpecification
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: #isForBlock put: isForBlock;
+		yourself
+%
+
+category: 'initialization'
+method: GtGemStoneContextSpecification
+initializeForGsCallFrame: aGsCallFrame 
+	self initializeForGsMethod: aGsCallFrame homeMethod.
+	isForBlock := aGsCallFrame isForBlock
+%
+
+category: 'initialization'
+method: GtGemStoneContextSpecification
+initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
+	isForBlock := (aDictionary at: 'isForBlock')
+%
+
+category: 'accessing'
+method: GtGemStoneContextSpecification
+isForBlock
+	^ isForBlock ifNil: [ false ]
+%
+
+! Class implementation for 'GtGemStoneMethodsSpecification'
+
+!		Class methods for 'GtGemStoneMethodsSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneMethodsSpecification
+forGsMethods: aCollection 
+	^ self new 
+		initializeForGsMethods: aCollection 
+%
+
+!		Instance methods for 'GtGemStoneMethodsSpecification'
+
+category: 'accessing'
+method: GtGemStoneMethodsSpecification
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: #methodCoderSpecifications put: (methodCoderSpecifications
+			collect: [ :aMethodCoderSpecification |
+				aMethodCoderSpecification asDictionaryForExport]);
+		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneMethodsSpecification
+at: anInteger
+
+	^ methodCoderSpecifications at: anInteger
+%
+
+category: 'accessing'
+method: GtGemStoneMethodsSpecification
+initializeForGsMethods: aCollectionOfGsMethods
+	methodCoderSpecifications := aCollectionOfGsMethods asArray 
+		collect: [ :aGsMethod |
+			GtGemStoneMethodSpecification forGsMethod: aGsMethod ]
+%
+
+category: 'initialization'
+method: GtGemStoneMethodsSpecification
+initializeFromJSONDictionary: aDictionary
+	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
+		collect: [ :aCoderJsonData  |
+			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]
+%
+
+category: 'initialization'
+method: GtGemStoneMethodsSpecification
+instantiateCoderSpecificationFromJsonData: aCoderJsonData 
+	^ GtGemStoneMethodSpecification  fromJSONDictionary: aCoderJsonData
+%
+
+category: 'accessing'
+method: GtGemStoneMethodsSpecification
+methodCoderSpecifications
+	^ methodCoderSpecifications
+%
+
+category: 'accessing'
+method: GtGemStoneMethodsSpecification
+size
+
+	^ methodCoderSpecifications size
+%
+
+! Class implementation for 'GtGemStoneProcessSpecification'
+
+!		Class methods for 'GtGemStoneProcessSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneProcessSpecification
+forGsCallStack: aCallStack
+	^ self new 
+		initializeForGsCallStack: aCallStack
+%
+
+!		Instance methods for 'GtGemStoneProcessSpecification'
+
+category: 'accessing'
+method: GtGemStoneProcessSpecification
+frameSpecifications
+	^ self methodCoderSpecifications
+%
+
+category: 'gt - extensions'
+method: GtGemStoneProcessSpecification
+gtViewCallFrameSpecificationsFor: aView 
+	<gtView>
+	
+	^ aView forward 
+		title: 'Frame specifications';
+		object: [ self frameSpecifications];
+		view: #gtItemsFor:
+%
+
+category: 'accessing'
+method: GtGemStoneProcessSpecification
+initializeForGsCallStack: aCallStack
+	methodCoderSpecifications := aCallStack callFrames 
+		collect: [ :aGsCallFrame |
+			GtGemStoneContextSpecification forGsCallFrame: aGsCallFrame ]
+%
+
+category: 'accessing'
+method: GtGemStoneProcessSpecification
+instantiateCoderSpecificationFromJsonData: aCoderJsonData 
+	^ GtGemStoneContextSpecification  fromJSONDictionary: aCoderJsonData
 %
 
 ! Class implementation for 'GtGsRelease'
@@ -968,7 +1628,6 @@ evaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
-	aString = 'oops' ifTrue: [ self error: 'Special oops error' ].
 	^ (self
 		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
 		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
@@ -1006,7 +1665,7 @@ category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| method receiver symbolDictionary bindings object |
+	| receiver symbolDictionary bindings object |
 
 	receiver := anObject class == GtRsrProxyServiceServer
 		ifTrue: [ anObject object ]
@@ -1018,10 +1677,12 @@ gsEvaluate: aString for: anObject bindings: aDictionary
 			ifFalse: [ value ].
 		symbolDictionary at: key put: object ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
-	method := aString _compileInContext: receiver symbolList: bindings.
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ method _executeInContext: receiver ]
+		evaluateBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: bindings.
+			method _executeInContext: receiver ]
 		from: self.
 %
 
@@ -1082,7 +1743,7 @@ category: 'private'
 method: GtRsrProxyServiceServer
 basicPerform: aSymbol withArguments: anArray
 	"Perform the requested operation, catching errors and returning exception information"
-	| convertedArguments semaphore evaluationProcess result |
+	| convertedArguments  |
 
 	convertedArguments := anArray collect: [ :anObject |
 		(anObject isKindOf: self class) 
@@ -1180,6 +1841,7 @@ testSourceInfoAtFrameLevel
 	"This is wrong, but let the test pass for now"
 	self assert: info second = 61.
 	self assert: info third size = 80.
+	context process terminate.
 %
 
 category: 'tests'
@@ -1194,6 +1856,7 @@ testVariableInfoAtFrameLevel
 
 	self assert: variables first first = #self.
 	self assert: variables first second class = String.
+	context process terminate.
 %
 
 ! Class implementation for 'GtRsrEvaluatorServiceTest'
@@ -1222,20 +1885,23 @@ should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock
 category: 'tests'
 method: GtRsrEvaluatorServiceTest
 testCompilationError
-	| script evaluator |
+	"Confirm that a compilation error is caught and returned in"
+	| script evaluator context |
 
 	evaluator := GtRsrEvaluatorServiceServer new.
 	script := 'self error:'. 
-	self
-		should: [ evaluator evaluate: script for: nil bindings: Dictionary new ]
-		raise: (self gtDo: [ self gtErrorClass ] gemstoneDo: [ self gsErrorClass ]).
+	context := (evaluator evaluate: script for: nil bindings: Dictionary new) object.
+	self deny: context isCompleted.
+	self assert: context isSuspended.
+	self assert: context exception class = CompileError.
+	self assert: context exception messageText = 'a CompileError occurred (error 1001), expected a primary expression '.
 %
 
 category: 'tests'
 method: GtRsrEvaluatorServiceTest
 testInitialState
 	"Check that the initial state answers the expected information"
-	| process exception state encodedState deserializedState |
+	| process exception state encodedState deserializedState contextSpecification |
 
 	process := [ [ self halt ]
 		on: Exception
@@ -1245,20 +1911,34 @@ testInitialState
 	(Delay forMilliseconds: 100) wait.
 	self assert: process _isSuspended.
 	self assert: exception notNil.
-	state := GtGemStoneDebuggerInitialState
+	state := GtGemStoneDebuggerState
 		process: process
 		exception: exception.
+
 	self assert: state summary = 'a Halt occurred (error 2709)'.
 	self assert: state callStack size = 15.
-	self assert: (state callStack at: 10) = { #GtRsrEvaluatorServiceTest. #testInitialState. true }.
+	contextSpecification := state callStack at: 10.
+	self assert: contextSpecification coderClassName = #GtRsrEvaluatorServiceTest.
+	self assert: contextSpecification selector = #testInitialState.
+	self assert: contextSpecification isForBlock.
+	self assert: state messageText = 'a Halt occurred (error 2709)'.
+	self assert: state isResumable.
+	self assert: state isSuspended.
+	self deny: state isTerminated.
 
 	encodedState := state asJsonForExport.
 	self assert: encodedState isString.
-	deserializedState := GtGemStoneDebuggerInitialState fromJsonString: encodedState.
+	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
 	self assert: deserializedState callStack size = 15.
-	self assert: (deserializedState callStack at: 10) = { 'GtRsrEvaluatorServiceTest'. 'testInitialState'. true }.
-self halt.
+	contextSpecification := deserializedState callStack at: 10.
+	self assert: contextSpecification coderClassName = 'GtRsrEvaluatorServiceTest'.
+	self assert: contextSpecification selector = 'testInitialState'.
+	self assert: contextSpecification isForBlock.
+	self assert: deserializedState messageText = 'a Halt occurred (error 2709)'.
+	self assert: deserializedState isResumable.
+	self assert: deserializedState isSuspended.
+	self deny: deserializedState isTerminated.
 %
 
 category: 'tests'
