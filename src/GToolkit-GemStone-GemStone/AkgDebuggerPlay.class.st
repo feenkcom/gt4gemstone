@@ -1,6 +1,6 @@
 Class {
-	#name : #AkgDebuggerPlay,
-	#superclass : #Object,
+	#name : 'AkgDebuggerPlay',
+	#superclass : 'Object',
 	#instVars : [
 		'process',
 		'trace',
@@ -10,7 +10,7 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> createProcess [
 
 	process := [ 
@@ -26,13 +26,13 @@ AkgDebuggerPlay >> createProcess [
 	^ process
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> evalBlock [
 
 	^ [ trace nextPut: #StartedProcessExecution.
 		self haltMethod.
 		trace nextPut: #AfterHalt1.
-		trace nextPut: #AfterHalt2. 
+		trace nextPut: self getString. 
 		[ trace nextPut: #AfterHalt3. 
 		trace nextPut: #AfterHalt4. ]
 			value.
@@ -42,7 +42,13 @@ AkgDebuggerPlay >> evalBlock [
 		]
 ]
 
-{ #category : #other }
+{ #category : 'accessing' }
+AkgDebuggerPlay >> getString [
+
+	^ 'get', 'String'
+]
+
+{ #category : 'other' }
 AkgDebuggerPlay >> haltMethod [
 
 	trace nextPut: #BeforeHalt.
@@ -50,7 +56,7 @@ AkgDebuggerPlay >> haltMethod [
 	trace nextPut: #AfterHalt.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> haltMethod2 [
 
 	trace nextPut: #BeforeHalt2.
@@ -58,27 +64,27 @@ AkgDebuggerPlay >> haltMethod2 [
 	trace nextPut: #AfterHalt2.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> initialize [
 
 	super initialize.
 	trace := SharedQueue new.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> printOn: aStream [
 
 	trace ifNil: [ ^ super printOn: aStream ].
 	trace printOn: aStream.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> process [
 
 	^ process
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> run [
 	| whichProc |
 
@@ -96,13 +102,13 @@ AkgDebuggerPlay >> run [
 	self halt.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> trace [
 
 	^ trace
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> waitMS: milliseconds [
 	(Delay forMilliseconds: milliseconds) wait
 ]

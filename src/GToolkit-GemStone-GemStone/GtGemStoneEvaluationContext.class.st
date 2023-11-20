@@ -144,6 +144,12 @@ GtGemStoneEvaluationContext >> isTerminated [
 	^ process _isTerminated
 ]
 
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> methodAtFrameLevel: anInteger [
+
+	^ (process _frameContentsAt: anInteger) first
+]
+
 { #category : 'accessing' }
 GtGemStoneEvaluationContext >> process [
 
