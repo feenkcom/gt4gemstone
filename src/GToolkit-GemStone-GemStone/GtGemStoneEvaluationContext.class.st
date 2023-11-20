@@ -169,8 +169,6 @@ GtGemStoneEvaluationContext >> resume [
 	self assertNotSignalled.
 	process resume.
 	semaphore wait.
-	"completed ifFalse:
-		[ self error: 'Unexpected debugger process state' ]."
 	^ result
 ]
 
@@ -215,15 +213,9 @@ GtGemStoneEvaluationContext >> stdout [
 
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
-	| count |
 
 	process setStepIntoBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
 	^ #stepInto
 ]
 
@@ -233,25 +225,14 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
-	^ process printString
+	^ #stepOver
 ]
 
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
-	| count |
 
 	process setStepThroughBreaksAtLevel: anInteger.
 	self resume.
-	count := 0.
-	[ (process _isSuspended or: [ process _isTerminated ]) not and: [ count < 100 ] ] whileTrue:
-		[ self waitMS: 500.
-		count := count + 1 ].
-	count >= 100 ifTrue: [ self error: 'Step over didn''t complete' ].
 	^ #stepThrough
 ]
 
