@@ -43,7 +43,8 @@ GtGemStoneDebuggerSession >> modules [
 
 { #category : #accessing }
 GtGemStoneDebuggerSession >> terminate [
-	self exception isTerminated ifFalse:
+
+	(interruptedContext isNotNil and: [ self exception isTerminated not ]) ifTrue:
 		[ [self debuggerProxy
 			proxyPerform: #terminateProcess
 			autoCommit: false ]

@@ -225,7 +225,8 @@ GtGemStoneDebuggerElement >> currentCallFrame [
 
 { #category : #actions }
 GtGemStoneDebuggerElement >> currentCallFrame: aStackFrame [
-	"do nothing" 
+
+	currentCallFrame := aStackFrame "or nil"
 ]
 
 { #category : #private }
