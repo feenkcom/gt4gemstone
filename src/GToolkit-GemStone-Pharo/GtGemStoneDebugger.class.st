@@ -4,7 +4,8 @@ Class {
 	#traits : 'TGtAnnouncer',
 	#classTraits : 'TGtAnnouncer classTrait',
 	#instVars : [
-		'announcer'
+		'announcer',
+		'allStackFrames'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -123,8 +124,8 @@ GtGemStoneDebugger >> stackFrames [
 	"Answer a ordered collection of stack frames.
 	This is called many times by the debugger, so cache"
 
-	stackFrames ifNil: [ 
-		stackFrames := exception debuggerState callStack frameSpecifications
+	stackFrames ifNil: [ | defaultFrameOrdinal |
+		allStackFrames := exception debuggerState callStack frameSpecifications
 			collectWithIndex: [ :aFrameSpecification :index |
 				GtGemStoneStackFrame new
 					className: aFrameSpecification coderClassName;
@@ -132,7 +133,12 @@ GtGemStoneDebugger >> stackFrames [
 					inBlock: aFrameSpecification isForBlock;
 					frameSpecification: aFrameSpecification;
 					exception: exception;
-					ordinal: index ] ].
+					ordinal: index ].
+		defaultFrameOrdinal := self defaultFrameOrdinalFrom: allStackFrames.
+		stackFrames := defaultFrameOrdinal > 1 ifTrue:
+			[ allStackFrames copyFrom: defaultFrameOrdinal to: allStackFrames size ]
+		ifFalse:
+			[ allStackFrames ] ].
 	^ stackFrames
 ]
 

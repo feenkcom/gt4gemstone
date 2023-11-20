@@ -134,24 +134,21 @@ GtGemStoneExpandableStackElement >> stackIndexList [
 
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
-	stackFrames := aDebuggingSession debuggerClient stackFrames.
-	
-	self
-		inUIProcessDo: [ 
-			| currentCallFrame |
 
-			currentCallFrame ifNil: [ 
-				currentCallFrame := stackFrames 
-					at: aDebuggingSession debuggerClient defaultFrameOrdinal ].
+	stackFrames := aDebuggingSession debuggerClient stackFrames.
+
+	self inUIProcessDo: [ | currentCallFrame |
+
+		currentCallFrame ifNil: 
+			[ currentCallFrame := stackFrames first ].
 		
-			self stackFramesList items: (stackFrames collect: [ :aGsFrame |
-		 		(GtGemStoneContextCoderModel 
-		 			fromStackFrame: aGsFrame) 
-		 				debuggingSession: aDebuggingSession;
-		 				asCoderViewModel ]).
-		 			
-			self selectContext:  currentCallFrame ].
-	
+		self stackFramesList items: (stackFrames collect: [ :aGsFrame |
+			(GtGemStoneContextCoderModel fromStackFrame: aGsFrame) 
+		 		debuggingSession: aDebuggingSession;
+		 		asCoderViewModel ]).
+
+		self selectContext:  currentCallFrame ].
+
 	self updateStackIndex.
 ]
 

@@ -611,11 +611,9 @@ GtGemStoneDebuggerElement >> updateCallFrame [
 
 	stackFrames := self debuggerClient stackFrames.
 	currentCallFrame ifNil:
-		[ currentCallFrame := stackFrames at: self debuggerClient defaultFrameOrdinal ].
+		[ currentCallFrame := stackFrames first ].
 	callFramesList items: stackFrames.
-	callFramesList selectOne: currentCallFrame ordinal.
-	"Possibly should only do this if there wasn't a currentCallFrame at method start"
-	callFramesList scrollToItem: (callFramesList viewModel itemAt: currentCallFrame ordinal).
+	callFramesList selectOne: (stackFrames indexOf: currentCallFrame).
 ]
 
 { #category : #'private - update ui' }
