@@ -503,17 +503,11 @@ GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
 	This is only useful if the client and server are on the same machine, i.e. for development."
 	<return: #FileReference>
-	| logPath logFileName |
 
-	logPath := (self scriptEvaluation
-			script: 'System gemLogPath';
-			returnPrimitiveOnly;
-			evaluate) wait.
-	logFileName := (self scriptEvaluation
+	^ (self scriptEvaluation
 			script: 'System gemLogFileName';
 			returnPrimitiveOnly;
-			evaluate) wait.
-	^ logPath asFileReference / logFileName
+			evaluate) wait asFileReference
 ]
 
 { #category : #accessing }

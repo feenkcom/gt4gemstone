@@ -393,6 +393,27 @@ GtRsrProxyServiceClient >> gtPrintFor: aView [
 		actionUpdateButton
 ]
 
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
+	<gtView>
+
+	^ aView explicit 
+		title: 'Meta';
+		priority: 250;
+		stencil: [
+			| methodSpecifications |
+			methodSpecifications := self evaluateAndWaitReturnProxy: 'GtGemStoneMethodsSpecification 
+	forGsMethods: ((self class theNonMetaClass methodDictForEnv: 0) values 
+		asSortedCollection: [ :a :b | a selector < b selector ]).'.
+		
+		GtGemStoneMethodCodersModel 
+			forMethodSpecifications:(GtGemStoneMethodsSpecification 
+				fromJsonString: (methodSpecifications
+					proxyPerform: #asJsonForExport) )
+			inSession: methodSpecifications gtSession ];
+		actionUpdateButton
+]
+
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new

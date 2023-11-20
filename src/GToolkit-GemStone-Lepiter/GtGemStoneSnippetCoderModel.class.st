@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneCoderModel,
-	#superclass : #GtSourceCoder,
+	#name : #GtGemStoneSnippetCoderModel,
+	#superclass : #GtGemStoneSourceCoderModel,
 	#instVars : [
 		'pharoBindings',
 		'remoteScript',
@@ -10,30 +10,21 @@ Class {
 }
 
 { #category : #converting }
-GtGemStoneCoderModel >> asCoderViewModel [
+GtGemStoneSnippetCoderModel >> asCoderViewModel [
 
-	^ GtGemStoneSourceCoderViewModel new coder: self
+	^ GtGemStoneSnippetCoderViewModel new coder: self
 ]
 
 { #category : #'api - ast' }
-GtGemStoneCoderModel >> computeAst: theSourceString [
-	^ GtGemStoneParser
-		parseWithErrors: theSourceString
-		startingAt: GtGemStoneParser startingStateForMethodSequence
-]
-
-{ #category : #'api - ast' }
-GtGemStoneCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
+GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
 	self astAwait
 		allNodesDo:
 			[ :each | (each isVariable and: [ aString = each variableName asString and: [ each whoDefines isNil ] ]) ifTrue: [ aBlock value: each ] ]
 ]
 
 { #category : #initialize }
-GtGemStoneCoderModel >> initializeAddOns: addOns [
+GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
-
-	addOns addStyler: GtGemStoneStyler new.
 
 	addOns
 		addMainAction: 'Evaluate' translated
@@ -65,7 +56,7 @@ GtGemStoneCoderModel >> initializeAddOns: addOns [
 ]
 
 { #category : #initialize }
-GtGemStoneCoderModel >> initializeShortcuts: addOns [
+GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 	super initializeShortcuts: addOns.
 
 	addOns
@@ -75,7 +66,7 @@ GtGemStoneCoderModel >> initializeShortcuts: addOns [
 ]
 
 { #category : #'private - execution' }
-GtGemStoneCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar [
+GtGemStoneSnippetCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar [
 	| temporaries index |
 
 	temporaries := String streamContents: [ :stream |
@@ -99,29 +90,24 @@ GtGemStoneCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarP
 	trimmedSource insert: temporaries at: index.
 ]
 
-{ #category : #'instance creation' }
-GtGemStoneCoderModel >> newCompletionStrategy [
-	^ GtCompletionStrategy new
+{ #category : #accessing }
+GtGemStoneSnippetCoderModel >> newEvaluationContext [
+
+	^ GtGemStoneSnippetCoderEvaluationContext new
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> newEvaluationContext [
-
-	^ GtGemStoneSourceCoderEvaluationContext new
-]
-
-{ #category : #accessing }
-GtGemStoneCoderModel >> pharoBindings [
+GtGemStoneSnippetCoderModel >> pharoBindings [
 	^ pharoBindings
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> pharoBindings: anObject [
+GtGemStoneSnippetCoderModel >> pharoBindings: anObject [
 	pharoBindings := anObject
 ]
 
 { #category : #'private - execution' }
-GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
+GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
 	"Answer a collection of bindings for variables that aren't declared in the source and are in the snippet's bindings"
 	| bindings value |
 
@@ -139,12 +125,12 @@ GtGemStoneCoderModel >> pharoBindingsFrom: visitor [
 ]
 
 { #category : #'private - actions' }
-GtGemStoneCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
+GtGemStoneSnippetCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	self flag: #TODO.
 ]
 
 { #category : #'private - actions' }
-GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
+GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
 	| result gemstoneSession boundObject |
 
@@ -184,17 +170,17 @@ GtGemStoneCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCod
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> remoteBindings [
+GtGemStoneSnippetCoderModel >> remoteBindings [
 	^ remoteBindings
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> remoteScript [
+GtGemStoneSnippetCoderModel >> remoteScript [
 	^ remoteScript
 ]
 
 { #category : #'private - execution' }
-GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
+GtGemStoneSnippetCoderModel >> returnExpressionWithNames: varNames [
 	"Answer return expression for the remote script"
 
 	^ String streamContents: [ :stream |
@@ -216,17 +202,12 @@ GtGemStoneCoderModel >> returnExpressionWithNames: varNames [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> sessionHolder [
-	^ sessionHolder
-]
-
-{ #category : #accessing }
-GtGemStoneCoderModel >> sessionHolder: anObject [
-	sessionHolder := anObject
+GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
+	^ GtGemStoneParser startingStateForMethodSequence
 ]
 
 { #category : #'private - execution' }
-GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
+GtGemStoneSnippetCoderModel >> updateRemoteFrom: sourceString [
 	"Update remoteScript and remoteBindings based on the supplied source code and the prebuild AST (newAstCache)"
 	| trimmedString trimmedSource visitor lastStatement varNames leftBar sourceAst |
 
@@ -266,7 +247,7 @@ GtGemStoneCoderModel >> updateRemoteFrom: sourceString [
 ]
 
 { #category : #accessing }
-GtGemStoneCoderModel >> variableBindings: aGtSnippetBindings [
+GtGemStoneSnippetCoderModel >> variableBindings: aGtSnippetBindings [
 
 	^ self pharoBindings: aGtSnippetBindings
 ]

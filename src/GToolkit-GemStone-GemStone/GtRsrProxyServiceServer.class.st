@@ -16,40 +16,16 @@ GtRsrProxyServiceServer class >> object: anObject [
 { #category : #private }
 GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	"Perform the requested operation, catching errors and returning exception information"
-	| convertedArguments semaphore evaluationProcess result |
+	| convertedArguments  |
 
 	convertedArguments := anArray collect: [ :anObject |
 		(anObject isKindOf: self class) 
 			ifTrue: [ anObject object ]
 			ifFalse: [ anObject ] ].
 
-	semaphore := Semaphore new.
-	evaluationProcess := [ [ result := object perform: aSymbol withArguments: convertedArguments.
-									semaphore signal ]
-		on: Exception
-		do: [ :ex |
-			result := (GtRsrEvaluationExceptionInformation new
-				exception: ex;
-				process: evaluationProcess)
-					asGtRsrProxyObjectForConnection: _connection.
-			semaphore signal.
-			evaluationProcess suspend ]
-				] newProcess.
-	evaluationProcess debugActionBlock: [ :ex |
-		result := (GtRsrEvaluationExceptionInformation new
-			exception: ex;
-			process: evaluationProcess)
-				asGtRsrProxyObjectForConnection: _connection.
-		semaphore signal.
-		evaluationProcess suspend ].
-	evaluationProcess
-		name: 'GT proxyPerform';
-		priority: 15;
-		breakpointLevel: 1.
-	evaluationProcess resume.
-	semaphore wait.
-
-	^ result
+	^ GtGemStoneEvaluationContext new
+		evaluateBlock: [ object perform: aSymbol withArguments: convertedArguments ]
+		from: self.
 ]
 
 { #category : #accessing }

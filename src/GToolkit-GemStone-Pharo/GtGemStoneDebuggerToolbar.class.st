@@ -5,9 +5,9 @@ Class {
 		'dapDebugElement',
 		'restartFrameButton',
 		'resumeButton',
-		'stepBackButton',
 		'stepIntoButton',
 		'stepOverButton',
+		'stepThroughButton',
 		'stepOutButton'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
@@ -25,7 +25,7 @@ GtGemStoneDebuggerToolbar >> actOnDebugSessionChanged [
 	visibility := self isResumable
 		ifTrue: [ BlVisibility visible ]
 		ifFalse: [ BlVisibility gone ].
-	{ restartFrameButton. resumeButton. stepBackButton. stepIntoButton. stepOutButton. stepOverButton. } do: [ :button |
+	{ restartFrameButton. resumeButton. stepIntoButton. stepOverButton. } do: [ :button |
 		button visibility: visibility ].
 ]
 
@@ -51,15 +51,14 @@ GtGemStoneDebuggerToolbar >> initialize [
 
 	super initialize.
 	self vFitContent.
-	restartFrameButton := self newRestartFrameButton.
 	resumeButton := self newResumeButton.
-	stepBackButton := self newStepBackButton.
+	restartFrameButton := self newRestartFrameButton.
 	stepIntoButton := self newStepIntoButton.
-	stepOutButton := self newStepOutButton.
 	stepOverButton := self newStepOverButton.
+	stepThroughButton := self newStepThroughButton.
+	stepOutButton := self newStepOutButton.
+	self addChildren: { resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. stepOutButton. }.
 	self addChild: self newInspectButton.
-	self addChildren: { restartFrameButton. resumeButton. stepBackButton. stepIntoButton. stepOutButton. stepOverButton. }.
-
 ]
 
 { #category : #testing }
@@ -76,7 +75,7 @@ GtGemStoneDebuggerToolbar >> newInspectButton [
 		margin: (BlInsets left: 5);
 		label: 'Inspect the DAP Debugger';
 		icon: BrGlamorousVectorIcons emphasizedInspect;
-		action: [ :aButton | self inspect ]
+		action: [ :aButton | dapDebugElement inspect ]
 ]
 
 { #category : #'private - element creation' }
@@ -87,7 +86,7 @@ GtGemStoneDebuggerToolbar >> newRestartFrameButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousIcons restart;
 		label: 'Restart Frame';
-		action: [ :aButton | dapDebugElement dapRestartFrame ]
+		action: [ :aButton | dapDebugElement gsRestartFrame ]
 ]
 
 { #category : #'private - element creation' }
@@ -98,18 +97,7 @@ GtGemStoneDebuggerToolbar >> newResumeButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons play;
 		label: 'Resume';
-		action: [ :aButton | dapDebugElement dapResume ]
-]
-
-{ #category : #'private - element creation' }
-GtGemStoneDebuggerToolbar >> newStepBackButton [
-
-	^ BrButton new 
-		aptitude: BrGlamorousButtonWithIconAptitude;
-		margin: (BlInsets left: 5);
-		icon: BrGlamorousIcons down;
-		label: 'Step Back';
-		action: [ :aButton | dapDebugElement dapStepBack ]
+		action: [ :aButton | dapDebugElement gsResume ]
 ]
 
 { #category : #'private - element creation' }
@@ -120,7 +108,7 @@ GtGemStoneDebuggerToolbar >> newStepIntoButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousIcons into;
 		label: 'Step Into';
-		action: [ :aButton | dapDebugElement dapStepInto ]
+		action: [ :aButton | dapDebugElement gsStepInto ]
 ]
 
 { #category : #'private - element creation' }
@@ -131,7 +119,7 @@ GtGemStoneDebuggerToolbar >> newStepOutButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousIcons down;
 		label: 'Step Out';
-		action: [ :aButton | dapDebugElement dapStepOut ]
+		action: [ :aButton | dapDebugElement gsStepOut ]
 ]
 
 { #category : #'private - element creation' }
@@ -142,7 +130,18 @@ GtGemStoneDebuggerToolbar >> newStepOverButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousIcons over;
 		label: 'Step Over';
-		action: [ :aButton | dapDebugElement dapStepOver ]
+		action: [ :aButton | dapDebugElement gsStepOver ]
+]
+
+{ #category : #'private - element creation' }
+GtGemStoneDebuggerToolbar >> newStepThroughButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		margin: (BlInsets left: 5);
+		icon: BrGlamorousIcons through;
+		label: 'Step Through';
+		action: [ :aButton | dapDebugElement gsStepThrough ]
 ]
 
 { #category : #private }
@@ -151,11 +150,10 @@ GtGemStoneDebuggerToolbar >> updateUI [
 	The buttons should only be active if the debugger is stopped and the top call frame is being displayed."
 	| actionsAllowed |
 
-	actionsAllowed := dapDebugElement isDisplayingTopFrame.
+	actionsAllowed := true.
 	restartFrameButton enabled: actionsAllowed.
 	resumeButton enabled: actionsAllowed.
-	stepBackButton enabled: actionsAllowed.
 	stepIntoButton enabled: actionsAllowed.
 	stepOverButton enabled: actionsAllowed.
-	stepOutButton enabled: actionsAllowed.
+	stepThroughButton enabled: actionsAllowed.
 ]

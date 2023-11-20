@@ -89,6 +89,8 @@ GtpoGsNMethod >> gtCommitActionFor: anAction [
 
 { #category : #accessing }
 GtpoGsNMethod >> gtDisplayOn: aStream [
+	aStream << 'Service Client Proxy: '.
+	
 	self isProxyObjectActive ifTrue: 
 		[ [ aStream 
 				<< self inClassName;
@@ -97,7 +99,7 @@ GtpoGsNMethod >> gtDisplayOn: aStream [
 					on: Error 
 					do: [ :e | 'Error printing' ] ]
 	ifFalse: 
-		[ aStream << 'Service Client Proxy on: <not connected>' ].
+		[ aStream << '<not connected>' ].
 ]
 
 { #category : #ui }
@@ -105,7 +107,7 @@ GtpoGsNMethod >> gtSourceFor: aView [
 	<gtView>
 
 	^ aView textEditor 
-		title: 'Source';
+		title: 'Source string';
 		priority: 10;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
@@ -151,11 +153,28 @@ GtpoGsNMethod >> gtTwoPanesDiffFor: aView [
 		yourself
 ]
 
+{ #category : #ui }
+GtpoGsNMethod >> gtViewCoderFor: aView [
+	<gtView>
+
+	^ aView explicit 
+		title: 'Source';
+		priority: 5;
+		stencil: [
+			GtGemStoneMethodCoderModel fromGsMethod: self ];
+		actionUpdateButton
+]
+
 { #category : #accessing }
 GtpoGsNMethod >> inClassName [
 	"Answer the name of the class the receiver is attached to"
 
 	^ inClassName ifNil: [ inClassName := self evaluateAndWait: 'self inClass ifNil: [ #nil ] ifNotNil: [ :cls | cls name ]' ]
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> methodCoderSpecification [ 
+	^ GtGemStoneMethodSpecification forGsMethodProxy: self
 ]
 
 { #category : #private }

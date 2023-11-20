@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneSourceCoderEvaluationContext,
+	#name : #GtGemStoneSnippetCoderEvaluationContext,
 	#superclass : #GtSourceCoderEvaluationContext,
 	#instVars : [
 		'receiverObject',
@@ -10,34 +10,34 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> receiverObject [
+GtGemStoneSnippetCoderEvaluationContext >> receiverObject [
 	"Return an object that should be bound to `self`"
 	^ receiverObject
 	
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> receiverObject: anObject [ 
+GtGemStoneSnippetCoderEvaluationContext >> receiverObject: anObject [ 
 
 	receiverObject := anObject
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> serializationStrategy [
+GtGemStoneSnippetCoderEvaluationContext >> serializationStrategy [
 	^ serializationStrategy
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> serializationStrategy: aSymbol [
+GtGemStoneSnippetCoderEvaluationContext >> serializationStrategy: aSymbol [
 	serializationStrategy := aSymbol
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> session [
+GtGemStoneSnippetCoderEvaluationContext >> session [
 	^ session
 ]
 
 { #category : #accessing }
-GtGemStoneSourceCoderEvaluationContext >> session: anObject [
+GtGemStoneSnippetCoderEvaluationContext >> session: anObject [
 	session := anObject
 ]

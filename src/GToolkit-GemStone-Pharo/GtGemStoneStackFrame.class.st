@@ -4,17 +4,63 @@ Class {
 	#instVars : [
 		'frameArray',
 		'ordinal',
-		'displayString',
 		'exception',
-		'line'
+		'line',
+		'className',
+		'selector',
+		'inBlock',
+		'sourceText',
+		'variableAssociations',
+		'frameSpecification',
+		'method'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
+GtGemStoneStackFrame >> className: anObject [
+	className := anObject
+]
+
+{ #category : #private }
+GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: endPoint [
+	"Answer the indexes for the message send starting at anInteger in method source aString"
+	| ast messageNode |
+
+	ast := [ RBParser parseMethod: aString ]
+		on: Error
+		do: [ : ex1 |
+			[ RBParser parseExpression: aString ]
+				on: Error
+				do: [ :ex2 | nil ] ].
+	ast ifNil: [ ^ anInteger to: endPoint ].
+	ast nodesDo: [ :each |
+		((each start to: each stop) includes: anInteger) ifTrue:
+			[ messageNode := each ] ].
+	^ anInteger to: messageNode stop
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> debuggerProxy [
+
+	^ exception debuggerProxy
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> descriptionOn: aStream [
+
+	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
+	aStream
+		<< (className ifNil: [ '<none> ' ]);
+		<< '>>';
+		<< (selector ifNil: [ ' <none>' ])
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> displayString [
 
-	^ displayString ifNil: [ displayString := self method gtDisplayString ]
+	^ String streamContents: [ :aStream |
+		self descriptionOn: aStream ]
 ]
 
 { #category : #accessing }
@@ -30,13 +76,50 @@ GtGemStoneStackFrame >> exception: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> frameArray [
-	^ frameArray
+GtGemStoneStackFrame >> frameSpecification [
+	^ frameSpecification
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> frameArray: anObject [
-	frameArray := anObject
+GtGemStoneStackFrame >> frameSpecification: anObject [
+	frameSpecification := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> gsSession [
+
+	^ exception gtSession
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
+	<gtView>
+	
+	^ aView explicit 
+		title: 'Coder';
+		priority: 5;
+		stencil: [
+			GtGemStoneContextCoderModel fromStackFrame: self ]
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
+	<gtView>
+	
+	^ aView textEditor 
+		title: 'Source code';
+		text: [ self sourceText ];
+		styler: BrRBTextStyler new
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> inBlock [
+	^ inBlock
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> inBlock: anObject [
+	inBlock := anObject
 ]
 
 { #category : #accessing }
@@ -52,7 +135,8 @@ self _lineNumberForStep: stepPoint.') + 1.
 { #category : #accessing }
 GtGemStoneStackFrame >> method [
 
-	^ frameArray first
+	^ method ifNil:
+		[ method := self debuggerProxy asGtBareProxyObject methodAtFrameLevel: ordinal ]
 ]
 
 { #category : #accessing }
@@ -67,43 +151,71 @@ GtGemStoneStackFrame >> ordinal: anObject [
 	ordinal := anObject
 ]
 
-{ #category : #printing }
+{ #category : #accessing }
 GtGemStoneStackFrame >> printOn: aStream [
 
-	self displayString
-		ifNil: [ super printOn: aStream ]
-		ifNotNil: [ aStream << displayString ]
+	self descriptionOn: aStream
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> programCounterRange [
+	| sourceInfo sourceString |
+	sourceInfo := self debuggerProxy 
+		proxyPerform: #sourceInfoAtFrameLevel: 
+		withArguments: { ordinal }
+		autoCommit: false.
+	sourceString := sourceInfo third.
+	^ self currentMessageRangeAt: sourceInfo first 
+		in: sourceString 
+		fallBack: sourceInfo second.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> selector [
+
+	^ selector
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> selector: anObject [
+	selector := anObject
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceCode [
 
-	^ self method sourceString
+	^ self debuggerProxy 
+		proxyPerform: #sourceCodeAtFrameLevel:
+		withArguments: { ordinal }
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceText [
-	| source lineNumber text indexes |
-	
-	source := self sourceCode.
-	lineNumber := self line.
-	text := source asRopedText.
-	lineNumber = 0 ifTrue: [ ^ text ].
-	indexes := source gtIndexOfLineNumber: lineNumber.
-	indexes ifNotNil: 
-		[ (text from: indexes key to: indexes value) 
-			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors errorBackgroundColor)
-				beNotOverwritableByStyler  ].
-	^ text
+	| sourceInfo sourceString currentMessageRange |
+
+	sourceText ifNotNil: [ ^ sourceText ].
+	sourceInfo := self debuggerProxy 
+		proxyPerform: #sourceInfoAtFrameLevel: 
+		withArguments: { ordinal }
+		autoCommit: false.
+	sourceString := sourceInfo third.
+	sourceText := sourceString asRopedText glamorousCodeFont.
+	currentMessageRange := self currentMessageRangeAt: sourceInfo first 
+		in: sourceString 
+		fallBack: sourceInfo second.
+	(sourceText 
+		from: (currentMessageRange first max: 1) 
+		to: (currentMessageRange last min: sourceInfo third size))
+			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
+				beNotOverwritableByStyler.
+	^ sourceText
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> variablesAssociations [
 
-	^ Array streamContents: [ :stream |
-		stream 
-			nextPut: #self -> (frameArray at: 8);
-			nextPut: #receiver -> (frameArray at: 10).
-		(frameArray at: 9) doWithIndex: [ :name :index |
-			stream nextPut: (name -> (frameArray at: index + 10)) ] ].
+	^ variableAssociations ifNil: [ variableAssociations := self debuggerProxy
+		proxyPerform: #variableInfoAtFrameLevel:
+		withArguments: { ordinal }
+		autoCommit: false ].
 ]

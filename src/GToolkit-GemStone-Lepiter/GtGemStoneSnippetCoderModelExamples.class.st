@@ -2,18 +2,18 @@
 LeGemStoneVarNodeVisitorExamples demonstrates the variable categorisation required to set the bindings and temporary variable declarations when passing scripts to GemStone.
 "
 Class {
-	#name : #GtGemStoneCoderModelExamples,
+	#name : #GtGemStoneSnippetCoderModelExamples,
 	#superclass : #Object,
 	#category : #'GToolkit-GemStone-Lepiter-Examples'
 }
 
 { #category : #examples }
-GtGemStoneCoderModelExamples >> simpleExpression [
+GtGemStoneSnippetCoderModelExamples >> simpleExpression [
 	<gtExample>
 	| source coderModel |
 
 	source := '4+3'.
-	coderModel := GtGemStoneCoderModel new.
+	coderModel := GtGemStoneSnippetCoderModel new.
 	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
@@ -23,18 +23,17 @@ snippetResult := 4+3.
 snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
 { #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
-
 ]
 
 { #category : #examples }
-GtGemStoneCoderModelExamples >> simpleExpressionWithGlobal [
+GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithGlobal [
 	<gtExample>
 	| source coderModel |
 
 	source := 
 'g := 4.
 g + 3'.
-	coderModel := GtGemStoneCoderModel new.
+	coderModel := GtGemStoneSnippetCoderModel new.
 	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
@@ -49,7 +48,7 @@ snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsr
 ]
 
 { #category : #examples }
-GtGemStoneCoderModelExamples >> simpleExpressionWithModifiedGlobal [
+GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithModifiedGlobal [
 	<gtExample>
 	| source coderModel pharoBindings |
 
@@ -57,7 +56,7 @@ GtGemStoneCoderModelExamples >> simpleExpressionWithModifiedGlobal [
 'answer := inputVariable + 2.
 inputVariable := ''Used''.
 answer'.
-	coderModel := GtGemStoneCoderModel new.
+	coderModel := GtGemStoneSnippetCoderModel new.
 	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	pharoBindings := GtLocalVariablesBindings new.
 	pharoBindings localAt: #inputVariable put: 40.
@@ -78,7 +77,7 @@ snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsr
 ]
 
 { #category : #examples }
-GtGemStoneCoderModelExamples >> simpleExpressionWithTemps [
+GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithTemps [
 	<gtExample>
 	| source coderModel |
 
@@ -86,7 +85,7 @@ GtGemStoneCoderModelExamples >> simpleExpressionWithTemps [
 '| a |
 a := 4.
 a + 3'.
-	coderModel := GtGemStoneCoderModel new.
+	coderModel := GtGemStoneSnippetCoderModel new.
 	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
 	coderModel updateRemoteFrom: source.
 
