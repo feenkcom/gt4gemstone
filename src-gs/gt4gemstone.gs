@@ -499,6 +499,7 @@ method: AkgDebuggerPlay
 initialize
 
 	super initialize.
+	trace := SharedQueue new.
 	count := 0.
 %
 
@@ -993,7 +994,7 @@ variable: aSymbol atFrameLevel: anInteger
 	"Answer the variables from the specified frame"
 	| frameContents varNames index |
 
-	frameContents := process gtAllFrames at: anInteger.
+	frameContents := process _frameContentsAt: anInteger.
 	varNames := frameContents at: 9.
 	index := varNames indexOf: aSymbol asSymbol.
 	^ frameContents at: index + 10.
@@ -1005,7 +1006,7 @@ variableInfoAtFrameLevel: anInteger
 	"Answer the variables from the specified frame"
 	| frameContents associations varNames |
 
-	frameContents := process gtAllFrames at: anInteger.
+	frameContents := process _frameContentsAt: anInteger.
 	associations := Array new.
 	associations 
 		add: { #self. (frameContents at: 8) gtDisplayString. };
