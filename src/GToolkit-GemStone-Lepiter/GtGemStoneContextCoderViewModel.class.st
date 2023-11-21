@@ -22,6 +22,24 @@ GtGemStoneContextCoderViewModel >> gsSession [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderViewModel >> homeFrameOrdinal [
+	"Answer the home frame ordinal.
+	For a frame that isn't in a block, this is the frame's ordinal.
+	For a frame in a block, it is the ordinal of the block's defining frame."
+	| currentFrame callStack |
+
+	currentFrame := coderModel stackFrame.
+	currentFrame inBlock ifFalse: [ ^ currentFrame ordinal ].
+	callStack := coderModel debuggingSession exception debuggerClient stackFrames.
+	callStack do: [ :frame |
+		(frame inBlock not and:
+		[ frame className = currentFrame className and:
+		[ frame selector = currentFrame selector ] ]) ifTrue:
+			[ ^ frame ordinal ] ].
+	self error: 'Unable to find homeFrameOrdinal'.
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderViewModel >> initialize [
 	super initialize.
 	
@@ -67,9 +85,13 @@ GtGemStoneContextCoderViewModel >> programCounterTextAttribute [
 
 { #category : #accessing }
 GtGemStoneContextCoderViewModel >> save [
+	"Save the receiver and restart at the home frame.
+	Note that GemStone doesn't provide a point back to the home frame, only the home method.
+	Which means that where a block is being modified and is later invoked, a later invocation of the creating method may be chosen than actually created the block."
 
 	super save ifFalse: [ ^ self ].
-	coderModel debuggingSession debuggerClient  gsRestartFrameLevel: coderModel stackFrame ordinal.
+	coderModel debuggingSession debuggerClient  
+		gsRestartFrameLevel: self homeFrameOrdinal.
 ]
 
 { #category : #accessing }
