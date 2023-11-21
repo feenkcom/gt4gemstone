@@ -1,16 +1,25 @@
 Class {
-	#name : #AkgDebuggerPlay,
-	#superclass : #Object,
+	#name : 'AkgDebuggerPlay',
+	#superclass : 'Object',
 	#instVars : [
 		'process',
 		'trace',
 		'allFrames',
-		'allFramesString'
+		'allFramesString',
+		'count',
+		'block'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #other }
+{ #category : 'playing' }
+AkgDebuggerPlay class >> two [
+	"AkgDebuggerPlay two"
+
+	^ self new initialize two
+]
+
+{ #category : 'other' }
 AkgDebuggerPlay >> createProcess [
 
 	process := [ 
@@ -26,7 +35,13 @@ AkgDebuggerPlay >> createProcess [
 	^ process
 ]
 
-{ #category : #other }
+{ #category : 'rewind' }
+AkgDebuggerPlay >> doBlock: aBlock [
+self halt.
+	^ aBlock value
+]
+
+{ #category : 'other' }
 AkgDebuggerPlay >> evalBlock [
 
 	^ [ trace nextPut: #StartedProcessExecution.
@@ -42,13 +57,13 @@ AkgDebuggerPlay >> evalBlock [
 		]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 AkgDebuggerPlay >> getString [
 
 	^ 'get', 'String'
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> haltMethod [
 
 	trace nextPut: #BeforeHalt.
@@ -56,35 +71,27 @@ AkgDebuggerPlay >> haltMethod [
 	trace nextPut: #AfterHalt.
 ]
 
-{ #category : #other }
-AkgDebuggerPlay >> haltMethod2 [
-
-	trace nextPut: #BeforeHalt2.
-	self halt.
-	trace nextPut: #AfterHalt2.
-]
-
-{ #category : #other }
+{ #category : 'initialization' }
 AkgDebuggerPlay >> initialize [
 
 	super initialize.
-	trace := SharedQueue new.
+	count := 0.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> printOn: aStream [
 
 	trace ifNil: [ ^ super printOn: aStream ].
 	trace printOn: aStream.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> process [
 
 	^ process
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> run [
 	| whichProc |
 
@@ -102,13 +109,26 @@ AkgDebuggerPlay >> run [
 	self halt.
 ]
 
-{ #category : #other }
+{ #category : 'other' }
 AkgDebuggerPlay >> trace [
 
 	^ trace
 ]
 
-{ #category : #other }
+{ #category : 'rewind' }
+AkgDebuggerPlay >> two [
+
+	count := count + 1.
+	count = 1 ifTrue: [ block := [ ^ 'v 001' ] ].
+	count = 2 ifTrue: 
+		[ self doBlock: block ]
+	ifFalse: 
+		[ count < 2 ifTrue: [ self two ] ].
+	count := count + 1.
+	^ count
+]
+
+{ #category : 'other' }
 AkgDebuggerPlay >> waitMS: milliseconds [
 	(Delay forMilliseconds: milliseconds) wait
 ]
