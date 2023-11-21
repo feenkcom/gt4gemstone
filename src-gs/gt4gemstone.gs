@@ -4,7 +4,7 @@
 doit
 (Object
 	subclass: 'AkgDebuggerPlay'
-	instVarNames: #( process trace allFrames allFramesString )
+	instVarNames: #( process trace allFrames allFramesString count block )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -425,6 +425,16 @@ removeallclassmethods GtRsrEvaluatorServiceTest
 
 ! Class implementation for 'AkgDebuggerPlay'
 
+!		Class methods for 'AkgDebuggerPlay'
+
+category: 'playing'
+classmethod: AkgDebuggerPlay
+two
+	"AkgDebuggerPlay two"
+
+	^ self new initialize two
+%
+
 !		Instance methods for 'AkgDebuggerPlay'
 
 category: 'other'
@@ -442,6 +452,13 @@ createProcess
 		priority: Processor activeProcess priority - 1;
 		breakpointLevel: 1.
 	^ process
+%
+
+category: 'rewind'
+method: AkgDebuggerPlay
+doBlock: aBlock
+self halt.
+	^ aBlock value
 %
 
 category: 'other'
@@ -477,21 +494,13 @@ haltMethod
 	trace nextPut: #AfterHalt.
 %
 
-category: 'other'
-method: AkgDebuggerPlay
-haltMethod2
-
-	trace nextPut: #BeforeHalt2.
-	self halt.
-	trace nextPut: #AfterHalt2.
-%
-
-category: 'other'
+category: 'initialization'
 method: AkgDebuggerPlay
 initialize
 
 	super initialize.
 	trace := SharedQueue new.
+	count := 0.
 %
 
 category: 'other'
@@ -533,6 +542,20 @@ method: AkgDebuggerPlay
 trace
 
 	^ trace
+%
+
+category: 'rewind'
+method: AkgDebuggerPlay
+two
+
+	count := count + 1.
+	count = 1 ifTrue: [ block := [ ^ 'v 001' ] ].
+	count = 2 ifTrue: 
+		[ self doBlock: block ]
+	ifFalse: 
+		[ count < 2 ifTrue: [ self two ] ].
+	count := count + 1.
+	^ count
 %
 
 category: 'other'
@@ -796,6 +819,13 @@ exception: anException
 	exception := anException
 %
 
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+frameContentsAtLevel: anInteger
+
+	^ process _frameContentsAt: anInteger
+%
+
 category: 'private'
 method: GtGemStoneEvaluationContext
 handlerBlock: anObject
@@ -964,7 +994,7 @@ variable: aSymbol atFrameLevel: anInteger
 	"Answer the variables from the specified frame"
 	| frameContents varNames index |
 
-	frameContents := process gtAllFrames at: anInteger.
+	frameContents := process _frameContentsAt: anInteger.
 	varNames := frameContents at: 9.
 	index := varNames indexOf: aSymbol asSymbol.
 	^ frameContents at: index + 10.
@@ -976,7 +1006,7 @@ variableInfoAtFrameLevel: anInteger
 	"Answer the variables from the specified frame"
 	| frameContents associations varNames |
 
-	frameContents := process gtAllFrames at: anInteger.
+	frameContents := process _frameContentsAt: anInteger.
 	associations := Array new.
 	associations 
 		add: { #self. (frameContents at: 8) gtDisplayString. };

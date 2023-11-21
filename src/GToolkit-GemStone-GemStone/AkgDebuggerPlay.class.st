@@ -75,6 +75,7 @@ AkgDebuggerPlay >> haltMethod [
 AkgDebuggerPlay >> initialize [
 
 	super initialize.
+	trace := SharedQueue new.
 	count := 0.
 ]
 
