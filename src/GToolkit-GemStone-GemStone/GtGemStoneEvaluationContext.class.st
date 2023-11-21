@@ -104,6 +104,12 @@ GtGemStoneEvaluationContext >> exception: anException [
 	exception := anException
 ]
 
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
+
+	^ process _frameContentsAt: anInteger
+]
+
 { #category : #private }
 GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	"Answer the block that will be evaluated if an exception occurs.

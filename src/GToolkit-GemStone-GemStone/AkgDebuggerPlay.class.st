@@ -5,10 +5,19 @@ Class {
 		'process',
 		'trace',
 		'allFrames',
-		'allFramesString'
+		'allFramesString',
+		'count',
+		'block'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
+
+{ #category : #playing }
+AkgDebuggerPlay class >> two [
+	"AkgDebuggerPlay two"
+
+	^ self new initialize two
+]
 
 { #category : #other }
 AkgDebuggerPlay >> createProcess [
@@ -24,6 +33,12 @@ AkgDebuggerPlay >> createProcess [
 		priority: Processor activeProcess priority - 1;
 		breakpointLevel: 1.
 	^ process
+]
+
+{ #category : #rewind }
+AkgDebuggerPlay >> doBlock: aBlock [
+self halt.
+	^ aBlock value
 ]
 
 { #category : #other }
@@ -56,19 +71,11 @@ AkgDebuggerPlay >> haltMethod [
 	trace nextPut: #AfterHalt.
 ]
 
-{ #category : #other }
-AkgDebuggerPlay >> haltMethod2 [
-
-	trace nextPut: #BeforeHalt2.
-	self halt.
-	trace nextPut: #AfterHalt2.
-]
-
-{ #category : #other }
+{ #category : #initialization }
 AkgDebuggerPlay >> initialize [
 
 	super initialize.
-	trace := SharedQueue new.
+	count := 0.
 ]
 
 { #category : #other }
@@ -106,6 +113,19 @@ AkgDebuggerPlay >> run [
 AkgDebuggerPlay >> trace [
 
 	^ trace
+]
+
+{ #category : #rewind }
+AkgDebuggerPlay >> two [
+
+	count := count + 1.
+	count = 1 ifTrue: [ block := [ ^ 'v 001' ] ].
+	count = 2 ifTrue: 
+		[ self doBlock: block ]
+	ifFalse: 
+		[ count < 2 ifTrue: [ self two ] ].
+	count := count + 1.
+	^ count
 ]
 
 { #category : #other }
