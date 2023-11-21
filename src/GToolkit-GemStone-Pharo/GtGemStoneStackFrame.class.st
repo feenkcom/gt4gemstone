@@ -75,6 +75,16 @@ GtGemStoneStackFrame >> exception: anObject [
 	exception := anObject
 ]
 
+{ #category : #'private - accessing' }
+GtGemStoneStackFrame >> frameArray [
+	"Only for debugging the debugger"
+
+	^ frameArray ifNil: [ frameArray := exception debuggerProxy
+		proxyPerform: #frameContentsAtLevel:
+		withArguments: { self ordinal }
+		autoCommit: false ]
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> frameSpecification [
 	^ frameSpecification
@@ -120,16 +130,6 @@ GtGemStoneStackFrame >> inBlock [
 { #category : #accessing }
 GtGemStoneStackFrame >> inBlock: anObject [
 	inBlock := anObject
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> line [
-
-	line ifNotNil: [ ^ line ].
-	^ line := (self method evaluateAndWait:
-'| stepPoint |
-stepPoint := self _previousStepPointForIp: ', frameArray second asString, '.
-self _lineNumberForStep: stepPoint.') + 1.
 ]
 
 { #category : #accessing }
