@@ -233,8 +233,6 @@ GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 
 { #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
-	| count |
-
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
 	^ #stepOver
