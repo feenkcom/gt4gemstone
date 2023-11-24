@@ -72,6 +72,23 @@ GtGemStoneDebuggerElement >> actOnDebugSessionChanged [
 	self scheduleUpdateUI.
 ]
 
+{ #category : #'instance creation' }
+GtGemStoneDebuggerElement >> actOnSelectedContextChanged: aGtGemStoneStackFrame [ 
+	self updateVariables.
+	self updateSource.
+	self updateStdout.
+]
+
+{ #category : #'instance creation' }
+GtGemStoneDebuggerElement >> actOnSelectedStackFrameIndexChangedEvent: anEvent [ 
+	anEvent indices
+		ifNotEmpty: [ :theIndices | 
+			| aWidgetElement gemStoneStackFrame |
+			aWidgetElement := anEvent currentTarget.
+			gemStoneStackFrame := aWidgetElement viewModel itemAt: theIndices first.
+			self selectStackFrame: gemStoneStackFrame ]
+]
+
 { #category : #'private - element creation' }
 GtGemStoneDebuggerElement >> breakpointsTab [
 
@@ -398,8 +415,9 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 		margin: (BlInsets top: 10);
 		background: Color white;
 		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
-		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :aGtGemStoneStackFrame | self displayStackFrame: aGtGemStoneStackFrame. aGtGemStoneStackFrame ]);
+		when: BrSelectionChanged
+			do: [ :anEvent | 
+				self actOnSelectedStackFrameIndexChangedEvent: anEvent ];
 		yourself.
 
 	list column 
@@ -554,6 +572,16 @@ GtGemStoneDebuggerElement >> scheduleUpdateUI [
 
 	self enqueueTask: (BlTaskAction new action: [ self updateUI ]).
 
+]
+
+{ #category : #'private - update ui' }
+GtGemStoneDebuggerElement >> selectStackFrame: aGtGemStoneStackFrame [
+	"Set the supplied frame as the current frame and update the rest of the UI"
+
+	currentCallFrame := aGtGemStoneStackFrame.
+	toolbar updateUI.
+	
+	self actOnSelectedContextChanged: aGtGemStoneStackFrame
 ]
 
 { #category : #'private - accessing' }
