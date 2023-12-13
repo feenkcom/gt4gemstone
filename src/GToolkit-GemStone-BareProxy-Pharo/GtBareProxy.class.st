@@ -59,6 +59,11 @@ GtBareProxy >> asLink [
 	^ ValueLink value: self
 ]
 
+{ #category : #'gt inspector' }
+GtBareProxy >> buildLocalViewSpecificationFor: aViewSelector [
+	^ proxyObject buildLocalViewSpecificationFor: aViewSelector
+]
+
 { #category : #'reflective operations' }
 GtBareProxy >> doesNotUnderstand: aMessage [ 
 	"In case the proxy has no remote client or the client is not logged in
