@@ -6,9 +6,8 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	| sessionName |
 	
 	(anAST methodNode isNil or: 
-		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
-		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
-			[ ^ self ].
+		[ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not]) 
+			ifTrue: [ ^ self ].
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 		ifNotNil: [ :aSession | aSession name ].
 		
@@ -43,9 +42,8 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 302>
 	| sessionName |
 	(anAST methodNode isNil or: 
-		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
-		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
-			[ ^ self ].
+		[ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ]) 
+			ifTrue: [ ^ self ].
 			
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 		ifNotNil: [ :aSession | aSession name ].
@@ -81,9 +79,8 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 304>
 	| sessionName |
 	(anAST methodNode isNil or: 
-		[ GtGemStoneSessionRegistry hasUniqueInstance not or: [
-		GtGemStoneSessionRegistry default hasConnectors not ] ]) ifTrue: 
-			[ ^ self ].
+		[ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ]) 
+			ifTrue: [ ^ self ].
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 		ifNotNil: [ :aSession | aSession name ].
 		

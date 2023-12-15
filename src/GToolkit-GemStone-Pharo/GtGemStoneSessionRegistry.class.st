@@ -59,6 +59,13 @@ GtGemStoneSessionRegistry class >> defaultSession [
 	^ self default defaultSession
 ]
 
+{ #category : #testing }
+GtGemStoneSessionRegistry class >> hasRegistryWithDefaultSession [
+	^ self hasUniqueInstance and: [
+		self default hasConnectors and: [
+			self default hasDefaultSession ] ]
+]
+
 { #category : #initialization }
 GtGemStoneSessionRegistry class >> initialize [ 
 	"Reload the registry after lepiter has been notified of a session start"
@@ -658,12 +665,6 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
-]
-
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -701,6 +702,12 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
 ]
 
 { #category : #initialization }
