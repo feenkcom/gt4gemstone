@@ -57,6 +57,12 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
@@ -64,12 +70,6 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		when: GtGemStoneDebuggerStateChanged
 		send: #actOnDebuggerStateChanged
 		to: self.
-	self scheduleUpdateUI.
-]
-
-{ #category : #callbacks }
-GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
-
 	self scheduleUpdateUI.
 ]
 
