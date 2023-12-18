@@ -10,17 +10,17 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
+{ #category : #announcer }
+GtGemStoneDebugger >> announcer [
+	<return: #Announcer>
+	^ announcer
+]
+
 { #category : #private }
 GtGemStoneDebugger >> announceStateChange [
 	"Announce that the receiver's state has changed"
 	
 	self announcer announce: (GtGemStoneDebuggerStateChanged new debugger: self)
-]
-
-{ #category : #announcer }
-GtGemStoneDebugger >> announcer [
-	<return: #Announcer>
-	^ announcer
 ]
 
 { #category : #accessing }
