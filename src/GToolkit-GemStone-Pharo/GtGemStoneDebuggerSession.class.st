@@ -56,6 +56,11 @@ GtGemStoneDebuggerSession >> remoteSchemaVersion [
 	^ self remoteMetadata schemaVersion
 ]
 
+{ #category : #'testing - api' }
+GtGemStoneDebuggerSession >> supportsByIndexFrameVariableCalls [
+	^ self remoteApiVersion isZero not
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> terminate [
 
