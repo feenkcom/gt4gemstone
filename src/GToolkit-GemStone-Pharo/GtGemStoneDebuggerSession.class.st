@@ -75,6 +75,7 @@ GtGemStoneDebuggerSession >> serverApiVersion [
 		[ serverApiVersion := [ self debuggerProxy proxyPerform: #__apiVersion ]
 			on: Error
 			do: [ :ex | 0 ] ]
+]
 
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteApiVersion [
