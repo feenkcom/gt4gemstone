@@ -348,3 +348,8 @@ GtBareProxy >> remoteClass [
 	^ proxyObject ifNotNil: [ :aProxy | 
 		aProxy  remoteClass ]
 ]
+
+{ #category : #'memory usage' }
+GtBareProxy >> sizeInMemory [
+	^ self class byteSizeOfInstance 
+]
