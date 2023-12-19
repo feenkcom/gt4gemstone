@@ -8,7 +8,7 @@ GtGemStoneMethodSpecification class >> forGsMethodProxy: aGsMethodProxy [
 		evaluateBlockAndWait: [ :currentMethod |
 			(GtGemStoneMethodSpecification forGsMethod: currentMethod)
 				asDictionaryForExport ]
-		withArguments: {aGsMethodProxy asGtProxyObject}
+		withArguments: {aGsMethodProxy}
 		autoCommit: false)
 ]
 
