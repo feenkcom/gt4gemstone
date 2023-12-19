@@ -24,13 +24,11 @@ GtGemStoneSpecificationMedatada class >> fromJsonString: aString [
 
 { #category : #'instance creation' }
 GtGemStoneSpecificationMedatada class >> fromObjectDictionary: aDictionary [ 
-	^ aDictionary 
+	^ self fromJSONDictionary: (aDictionary 
 		at: '__metadata' 
-		ifPresent: [ :metadataDictionary |
-			self fromJSONDictionary: metadataDictionary ]
-		ifAbsent: [ self new
+		ifAbsent: [ ^ self new
 			apiVersion: 0;
-			schemaVersion: 0 ].
+			schemaVersion: 0 ])
 ]
 
 { #category : #accessing }
