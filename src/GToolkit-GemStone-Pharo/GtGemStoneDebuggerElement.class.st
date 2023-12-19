@@ -202,7 +202,9 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 		margin: (BlInsets top: 10);
 		background: Color white;
 		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :variableNode :index | (self currentFrameVariableNamed: variableNode value first) asGtBareProxyObject ]).
+			transformation: [ :variableNode :index | 
+				(self currentFrameVariable: variableNode value first
+				atIndex: index first) asGtBareProxyObject ]).
 
 	tree column 
 		title: 'Variable';
@@ -247,12 +249,11 @@ GtGemStoneDebuggerElement >> currentCallFrame: aStackFrame [
 ]
 
 { #category : #private }
-GtGemStoneDebuggerElement >> currentFrameVariableNamed: aSymbol [
+GtGemStoneDebuggerElement >> currentFrameVariable: variableName atIndex: anInteger [
 
-	^ self debuggerProxy
-		proxyPerform: #variable:atFrameLevel:
-		withArguments: { aSymbol. self currentCallFrame ordinal. }
-		autoCommit: false.
+	^ debuggingSession currentFrameVariable: variableName 
+		atIndex: anInteger
+		frameLevel: self currentCallFrame ordinal
 ]
 
 { #category : #'private - accessing' }

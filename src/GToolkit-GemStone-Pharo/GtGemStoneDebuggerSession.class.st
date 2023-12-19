@@ -1,6 +1,9 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
 	#superclass : #DebugSession,
+	#instVars : [
+		'serverApiVersion'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -9,6 +12,18 @@ GtGemStoneDebuggerSession >> breakpoints [
 	<return: #Dictionary>
 
 	^ self debuggerClient breakpoints
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
+
+	self serverApiVersion < 1 ifTrue:
+		[ ^ self oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger ].
+
+	^ self debuggerProxy
+		proxyPerformReturnProxy: #variableIndex:atFrameLevel:
+		withArguments: { anInteger. ordinalInteger. }
+		autoCommit: false.
 ]
 
 { #category : #'private - accessing' }
@@ -39,6 +54,27 @@ GtGemStoneDebuggerSession >> modules [
 	<return: #Dictionary>
 
 	^ Dictionary new
+]
+
+{ #category : #'backward compatibility' }
+GtGemStoneDebuggerSession >> oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
+
+	self assert: self serverApiVersion = 0
+		description: 'Attempt to use debugger API v0 call on later version'.
+
+	^ self debuggerProxy
+		proxyPerform: #variable:atFrameLevel:
+		withArguments: { variableName. ordinalInteger. }
+		autoCommit: false.
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> serverApiVersion [
+
+	^ serverApiVersion ifNil:
+		[ serverApiVersion := [ self debuggerProxy proxyPerform: #__apiVersion ]
+			on: Error
+			do: [ :ex | 0 ] ]
 ]
 
 { #category : #accessing }

@@ -57,12 +57,6 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
-GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
-
-	self scheduleUpdateUI.
-]
-
-{ #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
@@ -70,6 +64,12 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		when: GtGemStoneDebuggerStateChanged
 		send: #actOnDebuggerStateChanged
 		to: self.
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
 	self scheduleUpdateUI.
 ]
 
@@ -196,7 +196,9 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 		margin: (BlInsets top: 10);
 		background: Color white;
 		addEventHandler: (GtPhlowListToSelectHandler new 
-			transformation: [ :variableNode :index | (self currentFrameVariableNamed: variableNode value first) asGtBareProxyObject ]).
+			transformation: [ :variableNode :index | 
+				(self currentFrameVariable: variableNode value first
+					atIndex: index first) asGtBareProxyObject ]).
 
 	tree column 
 		title: 'Variable';
@@ -235,12 +237,11 @@ GtGemStoneExpandableDebuggerElement >> currentCallFrame [
 ]
 
 { #category : #private }
-GtGemStoneExpandableDebuggerElement >> currentFrameVariableNamed: aSymbol [
+GtGemStoneExpandableDebuggerElement >> currentFrameVariable: variableName atIndex: anInteger [
 
-	^ self debuggerProxy
-		proxyPerform: #variable:atFrameLevel:
-		withArguments: { aSymbol. self currentCallFrame ordinal. }
-		autoCommit: false.
+	^ debuggingSession currentFrameVariable: variableName 
+		atIndex: anInteger
+		frameLevel: self currentCallFrame ordinal
 ]
 
 { #category : #'private - accessing' }
