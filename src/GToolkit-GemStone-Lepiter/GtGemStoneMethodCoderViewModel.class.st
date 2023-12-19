@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneMethodCoderViewModel >> computeHeaderBreadcrumbModel [
+	^ GtGemStoneMethodCoderHeaderModel new 
+		initializeForCoderViewModel: self.
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderViewModel >> elementClass [
 	^ GtExpandableMethodCoderElement
 ]
@@ -24,6 +30,11 @@ GtGemStoneMethodCoderViewModel >> hasDeclaredGlobalNamed: aVariableName [
 GtGemStoneMethodCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 	"TODO: implement"
 	^ false
+]
+
+{ #category : #'api - header' }
+GtGemStoneMethodCoderViewModel >> headerElementClass [
+	^ GtPharoMethodCoderHeaderElement
 ]
 
 { #category : #testing }

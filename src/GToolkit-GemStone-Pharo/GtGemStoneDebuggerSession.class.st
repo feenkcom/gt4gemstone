@@ -44,8 +44,8 @@ GtGemStoneDebuggerSession >> debuggerProxy [
 GtGemStoneDebuggerSession >> exception [
 	"Answer the exception that triggered the debug session."
 
-	^ exception ifNil: [ exception := self interruptedContext receiver exception ].
-
+	^ exception ifNil: [ 
+		exception := self interruptedContext receiver exception ]
 ]
 
 { #category : #accessing }
@@ -75,6 +75,25 @@ GtGemStoneDebuggerSession >> serverApiVersion [
 		[ serverApiVersion := [ self debuggerProxy proxyPerform: #__apiVersion ]
 			on: Error
 			do: [ :ex | 0 ] ]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteApiVersion [
+	^ self remoteMetadata apiVersion
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteMetadata [
+	^ self exception debuggerState remoteMetadata
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteSchemaVersion [
+	^ self remoteMetadata schemaVersion
+]
+
+{ #category : #'testing - api' }
+GtGemStoneDebuggerSession >> supportsByIndexFrameVariableCalls [
+	^ self remoteApiVersion isZero not
 ]
 
 { #category : #accessing }

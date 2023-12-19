@@ -5,7 +5,8 @@ Class {
 		'methodBehavior',
 		'selector',
 		'session',
-		'targetGsMethod'
+		'targetGsMethod',
+		'initialMethodCoderSpecification'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -199,6 +200,11 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationEr
 				ifFalse: [ ex resume ] ]
 ]
 
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
+	^ initialMethodCoderSpecification
+]
+
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel [
 
@@ -245,6 +251,8 @@ GtGemStoneMethodCoderModel >> initializeForClassName: aClassName isMeta: isMeta 
 
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeFromCoderSpecification: aMethodCoderSpecification [ 
+	initialMethodCoderSpecification := aMethodCoderSpecification.
+	
 	self 
 		initializeForClassName: aMethodCoderSpecification coderClassName 
 		isMeta: aMethodCoderSpecification isMeta 

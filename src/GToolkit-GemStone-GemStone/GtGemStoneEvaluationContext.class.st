@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneEvaluationContext',
-	#superclass : 'Object',
+	#name : #GtGemStoneEvaluationContext,
+	#superclass : #Object,
 	#instVars : [
 		'exception',
 		'process',
@@ -14,20 +14,20 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> assertNotSignalled [
 
 	semaphore isLocked ifFalse:
 		[ self error: 'Process semaphore already signalled' ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> buildMessageText [
 
 	^ exception buildMessageText
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerState [
 
 	^ GtGemStoneDebuggerState
@@ -35,33 +35,33 @@ GtGemStoneEvaluationContext >> debuggerState [
 		exception: exception
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerStateJsonForExport [
 
 	^ self debuggerState asJsonForExport
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> devMessage [
 	^devMessage
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> devMessage: object [
 	devMessage := object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> evalServer [
 	^evalServer
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> evalServer: object [
 	evalServer := object
 ]
 
-{ #category : 'actions - api' }
+{ #category : #'actions - api' }
 GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 	"Evaluate the supplied block.
 	If it completes successfully, answer the result.
@@ -92,25 +92,25 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 	^ result
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> exception [
 
 	^ exception
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> exception: anException [
 
 	exception := anException
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
 
 	^ process _frameContentsAt: anInteger
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	"Answer the block that will be evaluated if an exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
@@ -125,57 +125,57 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		ex resume ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
 
 	^ completed
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isResumable [
 
 	^ exception isResumable
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isSuspended [
 
 	^ process _isSuspended
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isTerminated [
 
 	^ process _isTerminated
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> methodAtFrameLevel: anInteger [
 
 	^ (process _frameContentsAt: anInteger) first
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> process [
 
 	^ process
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> process: aGsProcess [
 
 	process := aGsProcess
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> restartFrameLevel: anInteger [
 
 	process _trimStackToLevel: anInteger.
 	^ #restart
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> resume [
 
 	self assertNotSignalled.
@@ -184,13 +184,13 @@ GtGemStoneEvaluationContext >> resume [
 	^ result
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> sourceCodeAtFrameLevel: anInteger [
 
 	^ (self stackFrames at: anInteger) first sourceString
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
 	| frameContents source ipOffset markers startIndex endIndex i |
 
@@ -211,19 +211,19 @@ GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
 	^ { startIndex. endIndex. source. }
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> stackFrames [
 
 	^ process gtAllFrames
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stdout [
 
 	^ System gemLogFileName asFileReference contents
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 
 	process setStepIntoBreaksAtLevel: anInteger.
@@ -231,14 +231,14 @@ GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 	^ #stepInto
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
 	^ #stepOver
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
 
 	process setStepThroughBreaksAtLevel: anInteger.
@@ -246,13 +246,13 @@ GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
 	^ #stepThrough
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> terminateProcess [
 
 	process terminate
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	"Answer the variables from the specified frame.
 
@@ -265,7 +265,7 @@ GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	^ frameContents at: index + 10.
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
 	| frameContents associations varNames selfObject |
@@ -291,14 +291,14 @@ GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 	^ associations asArray.
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> variableIndex: index atFrameLevel: anInteger [
 	"Answer the variable from the specified frame"
 
 	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 	"Answer the variables from the specified frame, including self's instance variables"
 
@@ -308,7 +308,7 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 		displayData ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> waitMS: milliseconds [
 	(Delay forMilliseconds: milliseconds) wait
 ]
