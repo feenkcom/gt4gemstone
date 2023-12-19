@@ -40,7 +40,7 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 GtGemStoneContextSpecification >> initializeProviderBehaviorFromFrame: aGsCallFrame [ 
 	| receiverClass |
 	receiverClass := aGsCallFrame receiverClass.
-	aGsCallFrame receiverClass ~= receiverClass ifTrue: [
+	aGsCallFrame methodClass ~= receiverClass ifTrue: [
 		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
 			forClass: receiverClass ]
 ]

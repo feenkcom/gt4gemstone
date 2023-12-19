@@ -46,7 +46,7 @@ GtGemStoneMethodSpecification >> asDictionaryForExport [
 	self explicitProviderBehaviourDetails ifNotNil: [ :anObject | 
 		exportData 
 			at: #explicitProviderBehaviourDetails 
-			put: anObject explicitProviderBehaviourDetails ].
+			put: anObject asDictionaryForExport ].
 	
 	^ exportData
 ]
