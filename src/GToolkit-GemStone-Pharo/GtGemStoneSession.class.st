@@ -234,8 +234,10 @@ GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArgum
 	aCleanBlock numArgs = anArray size
 		ifFalse: [self error: 'wrong number of arguments'].
 	anArray do: [:e |
-		(e isKindOf: BlockClosure) ifTrue: 
-			[e isClean ifFalse: [self error: 'the block must be clean']]].
+		(e isGtBareProxyObject not and:
+		[ (e isKindOf: BlockClosure) and:
+		[ e isClean not ] ]) ifTrue: 
+			[self error: 'the block must be clean' ] ].
 	argNames := aCleanBlock argumentNames.
 	bindings := (argNames collectWithIndex: [ :name :index | 
 		name -> (anArray at: index) ]) asDictionary.
@@ -249,7 +251,6 @@ GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArgum
 				separatedBy: [ stream << '. ' ].
 			stream << ' }' ])
 		with: bindings.
-	
 ]
 
 { #category : #accessing }
@@ -1224,18 +1225,6 @@ GtGemStoneSession >> transactionMode: aSymbol [
 			returnPrimitiveOnly;
 			evaluate) wait.
 	transactionMode := aSymbol
-]
-
-{ #category : #private }
-GtGemStoneSession >> updatedBindings: remoteBindings [ 
-	| updatedBindings |
-
-	updatedBindings := remoteBindings copy.
-	updatedBindings associationsDo: [ :assoc |
-		(assoc value isBlock and: [ assoc value isClean ]) ifTrue:
-			[ assoc value: (self
-				evaluateAndWait: assoc value printString) ] ].
-	^ updatedBindings
 ]
 
 { #category : #accessing }

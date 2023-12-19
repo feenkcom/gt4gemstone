@@ -291,6 +291,12 @@ GtBareProxy >> hash [
 ]
 
 { #category : #testing }
+GtBareProxy >> isGtBareProxyObject [
+
+	^ true
+]
+
+{ #category : #testing }
 GtBareProxy >> isProxyObjectActive [
 	^ self proxyObject 
 		ifNil: [ false ] 

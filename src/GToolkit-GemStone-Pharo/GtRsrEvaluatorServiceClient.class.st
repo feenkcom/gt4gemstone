@@ -7,13 +7,56 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
 
+{ #category : #private }
+GtRsrEvaluatorServiceClient >> argumentsFrom: aSequencableCollection [
+	"Answer a copy of the arguments, replacing any bare proxies with the service client"
+	| arguments |
+
+	(aSequencableCollection isEmpty or:
+	[ aSequencableCollection noneSatisfy: [ :each | 
+		each isGtBareProxyObject or: [ each isBlock ] ] ])
+			ifTrue: [ ^ aSequencableCollection ].
+
+	arguments := aSequencableCollection copy.
+	arguments doWithIndex: [ :value :index |
+		value isGtBareProxyObject ifTrue:
+			[ arguments at: index put: value proxyObject ]
+		ifFalse: [ value isBlock ifTrue:
+			[ value isClean
+				ifTrue: [ arguments at: index put: (gtSession
+					evaluateAndWait: value printString) ]
+				ifFalse: [ self error: 'Block arguments must be clean' ] ] ] ].
+	^ arguments
+]
+
+{ #category : #private }
+GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
+	"Answer a copy of the bindings dictionary, replacing any bare proxies with the service client"
+	| bindings |
+
+	(aDictionary isEmpty or:
+	[ aDictionary noneSatisfy: [ :each | 
+		each isGtBareProxyObject or: [ each isBlock ] ] ])
+			ifTrue: [ ^ aDictionary ].
+
+	bindings := aDictionary copy.
+	bindings associationsDo: [ :assoc |
+		assoc value isGtBareProxyObject ifTrue:
+			[ assoc value: assoc value proxyObject ]
+		ifFalse: [ assoc value isBlock ifTrue:
+			[ assoc value isClean
+				ifTrue: [ assoc value: (gtSession
+					evaluateAndWait: assoc value printString) ] ] ] ].
+	^ bindings
+]
+
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateLegacyPerform: aGtRsrPerformEvaluation [
 	| rsrPromise |
 
 	rsrPromise := aGtRsrPerformEvaluation remoteSelf
 		proxyPerform: aGtRsrPerformEvaluation selector
-		withArguments: aGtRsrPerformEvaluation arguments.
+		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments).
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
 		serializationStrategy: nil
@@ -28,7 +71,7 @@ GtRsrEvaluatorServiceClient >> evaluateLegacyScript: aGtRsrScriptEvaluation [
 	rsrPromise := remoteSelf
 		evaluate: aGtRsrScriptEvaluation script
 		for: aGtRsrScriptEvaluation receiver
-		bindings: aGtRsrScriptEvaluation bindings.
+		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings).
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
 		serializationStrategy: nil
@@ -42,7 +85,7 @@ GtRsrEvaluatorServiceClient >> evaluatePerform: aGtRsrPerformEvaluation [
 
 	rsrPromise := aGtRsrPerformEvaluation remoteSelf
 		proxyPerform: aGtRsrPerformEvaluation selector
-		withArguments: aGtRsrPerformEvaluation arguments
+		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments)
 		serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy.
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
@@ -57,7 +100,7 @@ GtRsrEvaluatorServiceClient >> evaluateProxyOnlyPerform: aGtRsrPerformEvaluation
 
 	rsrPromise := aGtRsrPerformEvaluation remoteSelf
 		proxyPerformReturnProxy: aGtRsrPerformEvaluation selector
-		withArguments: aGtRsrPerformEvaluation arguments.
+		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments).
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
 		serializationStrategy: nil
@@ -72,7 +115,7 @@ GtRsrEvaluatorServiceClient >> evaluateProxyOnlyScript: aGtRsrScriptEvaluation [
 	rsrPromise := remoteSelf
 		evaluateReturnProxy: aGtRsrScriptEvaluation script
 		for: aGtRsrScriptEvaluation receiver
-		bindings: aGtRsrScriptEvaluation bindings.
+		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings).
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
 		serializationStrategy: nil
@@ -89,7 +132,7 @@ GtRsrEvaluatorServiceClient >> evaluateScript: aGtRsrScriptEvaluation [
 	rsrPromise := remoteSelf
 		evaluate: aGtRsrScriptEvaluation script
 		for: aGtRsrScriptEvaluation receiver
-		bindings: (gtSession updatedBindings: aGtRsrScriptEvaluation bindings)
+		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings)
 		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
 	^ GtRsrEvaluatorPromise
 		rsrPromise: rsrPromise
