@@ -1,11 +1,11 @@
 Class {
-	#name : #GtGemStoneMethodCoderHeaderData,
-	#superclass : #GtMethodCoderHeaderData,
+	#name : #GtGemStoneMethodCoderHeaderModel,
+	#superclass : #GtMethodCoderHeaderModel,
 	#category : #'GToolkit-GemStone-Lepiter-Coder-Support'
 }
 
 { #category : #initialization }
-GtGemStoneMethodCoderHeaderData >> initializeForCoderViewModel: aCoderViewModel [ 
+GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel [ 
 	
 	targetBehaviourName := aCoderViewModel coderModel methodBehavior
 		behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
@@ -16,12 +16,12 @@ GtGemStoneMethodCoderHeaderData >> initializeForCoderViewModel: aCoderViewModel 
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderData >> spawnBehaviorFor: aCoderViewModel  from: anElement [
+GtGemStoneMethodCoderHeaderModel >> spawnBehaviorFor: aCoderViewModel  from: anElement [
 	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
 		anElement phlow spawnObject:  aGsBehavior ]
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderData >> spawnPackageFor: aCoderViewModel from: anElement [
+GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anElement [
 	"No package spawning supported at the moment"
 ]

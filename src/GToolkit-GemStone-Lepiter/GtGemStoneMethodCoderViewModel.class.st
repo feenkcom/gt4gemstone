@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneMethodCoderViewModel >> computeHeaderBreadcrumbData [
-	^ GtGemStoneMethodCoderHeaderData new 
+GtGemStoneMethodCoderViewModel >> computeHeaderBreadcrumbModel [
+	^ GtGemStoneMethodCoderHeaderModel new 
 		initializeForCoderViewModel: self.
 ]
 
