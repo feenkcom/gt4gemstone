@@ -6,15 +6,19 @@ Class {
 
 { #category : #initialization }
 GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel [ 
+	| coderSpecification |
+	coderSpecification := aCoderViewModel coderModel initialMethodCoderSpecification.
 	
 	targetBehaviourName := aCoderViewModel coderModel methodBehavior
 		behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
-	targetBehaviourIconName := aCoderViewModel coderModel 
-		initialMethodCoderSpecification coderClassIconName.
+	targetBehaviourIconName := coderSpecification coderClassIconName.
 	
-	packageName := aCoderViewModel coderModel 
-		initialMethodCoderSpecification 
-		categoryName.
+	coderSpecification explicitProviderBehaviourDetails 
+		ifNotNil: [ :aProviderDetails |
+			providerBehaviourName := aProviderDetails targetClassName.
+			providerBehaviourIconName := aProviderDetails targetClassIconName ].
+
+	packageName := coderSpecification categoryName.
 ]
 
 { #category : #'actions - spawning' }

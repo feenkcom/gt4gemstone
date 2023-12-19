@@ -146,8 +146,10 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 		selector: (aDictionary at: 'selector')
 		sourceString: (aDictionary at: 'sourceString')
 		protocolName: (aDictionary at: 'protocolName')
-		explicitProvider: (aDictionary 
-			at: 'explicitProviderBehaviourDetails' ifAbsent: [ nil ])
+		explicitProvider: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')
+			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
+				aDictionary at: 'explicitProviderBehaviourDetails')]
+			ifFalse: [ nil ])
 ]
 
 { #category : #accessing }

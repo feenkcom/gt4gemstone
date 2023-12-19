@@ -51,7 +51,7 @@ GtGemStoneSpecificationMedatada >> asDictionaryForExport [
 
 { #category : #converting }
 GtGemStoneSpecificationMedatada >> asMetadataAttributesForExport [
-	^ {'__metadata' -> self asDictionaryForExport}
+	^ {'__metadata' -> self asDictionaryForExport} asDictionary
 ]
 
 { #category : #initialization }
