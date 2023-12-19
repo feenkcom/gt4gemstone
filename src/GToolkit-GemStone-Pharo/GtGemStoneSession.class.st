@@ -213,6 +213,45 @@ GtGemStoneSession >> contextMenuContent [
 						from: anElement. ] ])
 ]
 
+{ #category : #private }
+GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock [
+
+	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
+	aCleanBlock numArgs = 0
+		ifFalse: [self error: 'wrong number of arguments'].
+	^ String streamContents: [ :stream |
+		stream 
+			<< aCleanBlock printString;
+			<< ' value' ].
+]
+
+{ #category : #private }
+GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray [
+	"Answer an array containing the source of the supplied clean block and the arguments converted to a set of bindings"
+	| argNames bindings |
+
+	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
+	aCleanBlock numArgs = anArray size
+		ifFalse: [self error: 'wrong number of arguments'].
+	anArray do: [:e |
+		(e isKindOf: BlockClosure) ifTrue: 
+			[e isClean ifFalse: [self error: 'the block must be clean']]].
+	argNames := aCleanBlock argumentNames.
+	bindings := (argNames collectWithIndex: [ :name :index | 
+		name -> (anArray at: index) ]) asDictionary.
+	^ Array
+		with: (String streamContents: [ :stream |
+			stream 
+				<< aCleanBlock printString;
+				<< ' valueWithArguments: { '.
+			argNames
+				do: [ :name | stream << name ]
+				separatedBy: [ stream << '. ' ].
+			stream << ' }' ])
+		with: bindings.
+	
+]
+
 { #category : #accessing }
 GtGemStoneSession >> dbSize [
 
@@ -437,6 +476,179 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
 		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
 			format: {aString}))
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock [
+
+	^ self evaluateBlock: aCleanBlock autoCommit: autoCommit
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock autoCommit: aBoolean [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ self scriptEvaluation
+		script: cmd;
+		returnLegacy;
+		autoCommit: aBoolean;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol [
+
+	^ self evaluateBlock: aCleanBlock 
+		serializationStrategy: aSymbol
+		autoCommit: autoCommit
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol autoCommit: aBoolean [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ self scriptEvaluation
+		script: cmd;
+		returnLegacy;
+		autoCommit: aBoolean;
+		serializationStrategy: aSymbol;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ self scriptEvaluation
+		script: evalFields first;
+		returnLegacy;
+		autoCommit: autoCommit;
+		bindings: evalFields second;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray autoCommit: aBoolean [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ self scriptEvaluation
+		script: evalFields first;
+		returnLegacy;
+		autoCommit: aBoolean;
+		bindings: evalFields second;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializationStrategy: aSymbol [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ self scriptEvaluation
+		script: evalFields first;
+		returnLegacy;
+		serializationStrategy: aSymbol;
+		autoCommit: autoCommit;
+		bindings: evalFields second;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ self scriptEvaluation
+		script: evalFields first;
+		returnLegacy;
+		serializationStrategy: aSymbol;
+		autoCommit: aBoolean;
+		bindings: evalFields second;
+		evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock [
+
+	^ (self evaluateBlock: aCleanBlock) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock autoCommit: aBoolean [
+
+	^ (self evaluateBlock: aCleanBlock 
+		autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aSymbol [
+
+	^ (self 
+		evaluateBlock: aCleanBlock 
+		serializationStrategy: aSymbol) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self 
+		evaluateBlock: aCleanBlock 
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray [
+
+	^ (self evaluateBlock: aCleanBlock 
+		withArguments: anArray) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray autoCommit: aBoolean [
+
+	^ (self evaluateBlock: aCleanBlock
+		withArguments: anArray
+		autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray serializationStrategy: aSymbol [
+
+	^ (self evaluateBlock: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: aSymbol) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self evaluateBlock: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self evaluateReturnProxy: cmd) wait.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ (self evaluateReturnProxy: evalFields first
+		for: nil
+		bindings: evalFields second) wait.
 ]
 
 { #category : #actions }

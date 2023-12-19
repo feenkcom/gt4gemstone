@@ -1,6 +1,6 @@
 Class {
-	#name : 'AkgDebuggerPlay',
-	#superclass : 'Object',
+	#name : #AkgDebuggerPlay,
+	#superclass : #Object,
 	#instVars : [
 		'process',
 		'trace',
@@ -12,14 +12,14 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'playing' }
+{ #category : #playing }
 AkgDebuggerPlay class >> two [
 	"AkgDebuggerPlay two"
 
 	^ self new initialize two
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> createProcess [
 
 	process := [ 
@@ -35,13 +35,13 @@ AkgDebuggerPlay >> createProcess [
 	^ process
 ]
 
-{ #category : 'rewind' }
+{ #category : #rewind }
 AkgDebuggerPlay >> doBlock: aBlock [
 self halt.
 	^ aBlock value
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> evalBlock [
 
 	^ [ trace nextPut: #StartedProcessExecution.
@@ -57,13 +57,13 @@ AkgDebuggerPlay >> evalBlock [
 		]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 AkgDebuggerPlay >> getString [
 
 	^ 'get', 'String'
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> haltMethod [
 
 	trace nextPut: #BeforeHalt.
@@ -71,7 +71,7 @@ AkgDebuggerPlay >> haltMethod [
 	trace nextPut: #AfterHalt.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 AkgDebuggerPlay >> initialize [
 
 	super initialize.
@@ -79,20 +79,20 @@ AkgDebuggerPlay >> initialize [
 	count := 0.
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> printOn: aStream [
 
 	trace ifNil: [ ^ super printOn: aStream ].
 	trace printOn: aStream.
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> process [
 
 	^ process
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> run [
 	| whichProc |
 
@@ -110,13 +110,13 @@ AkgDebuggerPlay >> run [
 	self halt.
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> trace [
 
 	^ trace
 ]
 
-{ #category : 'rewind' }
+{ #category : #rewind }
 AkgDebuggerPlay >> two [
 
 	count := count + 1.
@@ -129,7 +129,7 @@ AkgDebuggerPlay >> two [
 	^ count
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 AkgDebuggerPlay >> waitMS: milliseconds [
 	(Delay forMilliseconds: milliseconds) wait
 ]
