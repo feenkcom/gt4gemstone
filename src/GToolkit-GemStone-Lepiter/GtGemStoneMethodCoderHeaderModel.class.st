@@ -9,6 +9,8 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 	
 	targetBehaviourName := aCoderViewModel coderModel methodBehavior
 		behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
+	targetBehaviourIconName := aCoderViewModel coderModel 
+		initialMethodCoderSpecification coderClassIconName.
 	
 	packageName := aCoderViewModel coderModel 
 		initialMethodCoderSpecification 

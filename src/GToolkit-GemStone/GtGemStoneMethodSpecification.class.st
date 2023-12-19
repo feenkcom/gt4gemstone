@@ -8,7 +8,8 @@ Class {
 		'sourceString',
 		'protocolName',
 		'categoryName',
-		'coderClassIconName'
+		'coderClassIconName',
+		'explicitProviderBehaviourDetails'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -31,15 +32,23 @@ GtGemStoneMethodSpecification class >> forGsMethod: aGsMethod [
 { #category : #converting }
 GtGemStoneMethodSpecification >> asDictionaryForExport [
 
-	^ super asDictionaryForExport
+	| exportData| 
+	exportData := super asDictionaryForExport.
+	exportData
 		at: #coderClassName put: coderClassName;
 		at: #coderClassIconName put: coderClassIconName;
 		at: #isMeta put: isMeta;
 		at: #categoryName put: categoryName;
 		at: #sourceString put: sourceString;
 		at: #protocolName put: protocolName;
-		at: #selector put: selector;
-		yourself
+		at: #selector put: selector.
+		
+	self explicitProviderBehaviourDetails ifNotNil: [ :anObject | 
+		exportData 
+			at: #explicitProviderBehaviourDetails 
+			put: anObject explicitProviderBehaviourDetails ].
+	
+	^ exportData
 ]
 
 { #category : #accessing }
@@ -48,8 +57,18 @@ GtGemStoneMethodSpecification >> categoryName [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodSpecification >> coderClassIconName [
+	^ coderClassIconName
+]
+
+{ #category : #accessing }
 GtGemStoneMethodSpecification >> coderClassName [
 	^ coderClassName
+]
+
+{ #category : #accessing }
+GtGemStoneMethodSpecification >> explicitProviderBehaviourDetails [
+	^ explicitProviderBehaviourDetails
 ]
 
 { #category : #'gt - extensions' }
@@ -83,7 +102,7 @@ GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aC
 ]
 
 { #category : #initialization }
-GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aClassIconName  isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName [
+GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitProvider: aProviderDetails [
 	self 
 		initializeForClassName: aClassName 
 		iconName: aClassIconName 
@@ -93,6 +112,7 @@ GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aC
 	
 	sourceString := aSourceCode.
 	selector := aSelector.
+	explicitProviderBehaviourDetails := aProviderDetails.
 ]
 
 { #category : #initialization }
@@ -117,15 +137,17 @@ GtGemStoneMethodSpecification >> initializeForSelector: aSelector sourceString: 
 { #category : #initialization }
 GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
-	
-	self 
-		initializeForClassName: (aDictionary at: 'coderClassName') 
-		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ]) 
-		isMeta: (aDictionary at: 'isMeta')  
-		categoryName: (aDictionary at: 'categoryName')  
-		selector: (aDictionary at: 'selector')  
-		sourceString: (aDictionary at: 'sourceString')  
-		protocolName: (aDictionary at: 'protocolName') 
+
+	self
+		initializeForClassName: (aDictionary at: 'coderClassName')
+		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
+		isMeta: (aDictionary at: 'isMeta')
+		categoryName: (aDictionary at: 'categoryName')
+		selector: (aDictionary at: 'selector')
+		sourceString: (aDictionary at: 'sourceString')
+		protocolName: (aDictionary at: 'protocolName')
+		explicitProvider: (aDictionary 
+			at: 'explicitProviderBehaviourDetails' ifAbsent: [ nil ])
 ]
 
 { #category : #accessing }
