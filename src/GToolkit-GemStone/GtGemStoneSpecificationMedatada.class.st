@@ -22,6 +22,17 @@ GtGemStoneSpecificationMedatada class >> fromJsonString: aString [
 	^ self fromJSONDictionary: dictionary
 ]
 
+{ #category : #'instance creation' }
+GtGemStoneSpecificationMedatada class >> fromObjectDictionary: aDictionary [ 
+	^ aDictionary 
+		at: '__metadata' 
+		ifPresent: [ :metadataDictionary |
+			self fromJSONDictionary: metadataDictionary ]
+		ifAbsent: [ self new
+			apiVersion: 0;
+			schemaVersion: 0 ].
+]
+
 { #category : #accessing }
 GtGemStoneSpecificationMedatada >> apiVersion [
 	^ apiVersion
@@ -38,6 +49,11 @@ GtGemStoneSpecificationMedatada >> asDictionaryForExport [
 		'apiVersion' -> self apiVersion.
 		'schemaVersion' -> self schemaVersion
 	}
+]
+
+{ #category : #converting }
+GtGemStoneSpecificationMedatada >> asMetadataAttributesForExport [
+	^ {'__metadata' -> self asDictionaryForExport}
 ]
 
 { #category : #initialization }

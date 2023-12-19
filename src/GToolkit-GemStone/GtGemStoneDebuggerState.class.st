@@ -44,7 +44,7 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
 		at: #callStack put: callStack asDictionaryForExport;
-		addAll: self asMetadataAttributesForExport;
+		addAll: self localMetadata asMetadataAttributesForExport;
 		yourself
 ]
 
@@ -53,11 +53,6 @@ GtGemStoneDebuggerState >> asJsonForExport [
 	"Answer the receiver serialised in JSON format"
 
 	^STON toJsonString: self asDictionaryForExport
-]
-
-{ #category : #converting }
-GtGemStoneDebuggerState >> asMetadataAttributesForExport [
-	^ {'__meta' -> self localMetadata asDictionaryForExport}
 ]
 
 { #category : #accessing }
@@ -102,13 +97,8 @@ GtGemStoneDebuggerState >> initializeFromJsonString: aString [
 
 { #category : #converting }
 GtGemStoneDebuggerState >> initializeMetadataFromJSONDictionary: aDictionary [ 
-	remoteMetadata := aDictionary 
-		at: '__metadata' 
-		ifPresent: [ :metadataDictionary |
-			GtGemStoneSpecificationMedatada fromJSONDictionary: metadataDictionary ]
-		ifAbsent: [ GtGemStoneSpecificationMedatada new
-			apiVersion: 0;
-			schemaVersion: 0 ].
+	remoteMetadata := GtGemStoneSpecificationMedatada 
+		fromObjectDictionary: aDictionary
 ]
 
 { #category : #initialize }

@@ -9,7 +9,7 @@ Class {
 		'protocolName',
 		'categoryName'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -109,6 +109,8 @@ GtGemStoneMethodSpecification >> initializeForSelector: aSelector sourceString: 
 
 { #category : #initialization }
 GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
+	super initializeFromJSONDictionary: aDictionary.
+	
 	self 
 		initializeForClassName: (aDictionary at: 'coderClassName') 
 		isMeta: (aDictionary at: 'isMeta')  
