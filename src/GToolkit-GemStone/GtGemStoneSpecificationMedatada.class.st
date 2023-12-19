@@ -48,7 +48,7 @@ GtGemStoneSpecificationMedatada >> asDictionaryForExport [
 	^ {
 		'apiVersion' -> self apiVersion.
 		'schemaVersion' -> self schemaVersion
-	} asOrderedDictionary
+	} asDictionary
 ]
 
 { #category : #converting }

@@ -33,6 +33,7 @@ GtGemStoneMethodSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
 		at: #coderClassName put: coderClassName;
+		at: #coderClassIconName put: coderClassIconName;
 		at: #isMeta put: isMeta;
 		at: #categoryName put: categoryName;
 		at: #sourceString put: sourceString;
