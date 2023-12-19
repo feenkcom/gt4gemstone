@@ -17,7 +17,7 @@ GtGemStoneDebuggerSession >> breakpoints [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
 
-	self serverApiVersion < 1 ifTrue:
+	self remoteApiVersion < 1 ifTrue:
 		[ ^ self oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger ].
 
 	^ self debuggerProxy
@@ -59,22 +59,13 @@ GtGemStoneDebuggerSession >> modules [
 { #category : #'backward compatibility' }
 GtGemStoneDebuggerSession >> oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
 
-	self assert: self serverApiVersion = 0
+	self assert: self remoteApiVersion = 0
 		description: 'Attempt to use debugger API v0 call on later version'.
 
 	^ self debuggerProxy
-		proxyPerform: #variable:atFrameLevel:
+		proxyPerformReturnProxy: #variable:atFrameLevel:
 		withArguments: { variableName. ordinalInteger. }
 		autoCommit: false.
-]
-
-{ #category : #accessing }
-GtGemStoneDebuggerSession >> serverApiVersion [
-
-	^ serverApiVersion ifNil:
-		[ serverApiVersion := [ self debuggerProxy proxyPerform: #__apiVersion ]
-			on: Error
-			do: [ :ex | 0 ] ]
 ]
 
 { #category : #'accessing - metadata' }
