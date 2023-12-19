@@ -29,8 +29,8 @@ GtGemStoneDebuggerSession >> debuggerProxy [
 GtGemStoneDebuggerSession >> exception [
 	"Answer the exception that triggered the debug session."
 
-	^ exception ifNil: [ exception := self interruptedContext receiver exception ].
-
+	^ exception ifNil: [ 
+		exception := self interruptedContext receiver exception ]
 ]
 
 { #category : #accessing }
@@ -39,6 +39,21 @@ GtGemStoneDebuggerSession >> modules [
 	<return: #Dictionary>
 
 	^ Dictionary new
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteApiVersion [
+	^ self remoteMetadata apiVersion
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteMetadata [
+	^ self exception debuggerState remoteMetadata
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteSchemaVersion [
+	^ self remoteMetadata schemaVersion
 ]
 
 { #category : #accessing }
