@@ -2,11 +2,13 @@ Extension { #name : #GtGemStoneMethodSpecification }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtGemStoneMethodSpecification class >> forGsMethodProxy: aGsMethodProxy [
-	^ self fromJSONDictionary: (aGsMethodProxy gtSession 
-		evaluateAndWait: '(GtGemStoneMethodSpecification forGsMethod: self)
-			asDictionaryForExport' 
-		for: aGsMethodProxy 
-		bindings: {} 
+	"Creation method on the GT side starting from a proxy to a GemStone method"
+	
+	^ self fromJSONDictionary: (aGsMethodProxy asGtProxyObject gtSession 
+		evaluateBlockAndWait: [ :currentMethod |
+			(GtGemStoneMethodSpecification forGsMethod: currentMethod)
+				asDictionaryForExport ]
+		withArguments: {aGsMethodProxy}
 		autoCommit: false)
 ]
 

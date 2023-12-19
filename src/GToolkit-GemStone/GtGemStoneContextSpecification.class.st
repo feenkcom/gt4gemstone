@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'isForBlock'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -24,6 +24,8 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 { #category : #initialization }
 GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [ 
 	self initializeForGsMethod: aGsCallFrame homeMethod.
+	self initializeProviderBehaviorFromFrame: aGsCallFrame.
+	
 	isForBlock := aGsCallFrame isForBlock
 ]
 
@@ -31,7 +33,16 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	isForBlock := (aDictionary at: 'isForBlock')
+	isForBlock := aDictionary at: 'isForBlock'.
+]
+
+{ #category : #initialization }
+GtGemStoneContextSpecification >> initializeProviderBehaviorFromFrame: aGsCallFrame [ 
+	| receiverClass |
+	receiverClass := aGsCallFrame receiverClass.
+	aGsCallFrame methodClass ~= receiverClass ifTrue: [
+		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
+			forClass: receiverClass ]
 ]
 
 { #category : #accessing }

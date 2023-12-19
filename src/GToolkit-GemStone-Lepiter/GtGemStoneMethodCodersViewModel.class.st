@@ -7,6 +7,7 @@ Class {
 { #category : #accessing }
 GtGemStoneMethodCodersViewModel >> coderUIModelFor: aCoder [
 	^ aCoder asCoderViewModel
-		expanded: false";
+		expanded: false;
+		withoutHeader";
 		selfObject: self coder object"
 ]

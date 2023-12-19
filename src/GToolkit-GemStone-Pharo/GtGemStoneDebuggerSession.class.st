@@ -1,6 +1,9 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
 	#superclass : #DebugSession,
+	#instVars : [
+		'serverApiVersion'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -9,6 +12,18 @@ GtGemStoneDebuggerSession >> breakpoints [
 	<return: #Dictionary>
 
 	^ self debuggerClient breakpoints
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
+
+	self remoteApiVersion < 1 ifTrue:
+		[ ^ self oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger ].
+
+	^ self debuggerProxy
+		proxyPerformReturnProxy: #variableIndex:atFrameLevel:
+		withArguments: { anInteger. ordinalInteger. }
+		autoCommit: false.
 ]
 
 { #category : #'private - accessing' }
@@ -29,8 +44,8 @@ GtGemStoneDebuggerSession >> debuggerProxy [
 GtGemStoneDebuggerSession >> exception [
 	"Answer the exception that triggered the debug session."
 
-	^ exception ifNil: [ exception := self interruptedContext receiver exception ].
-
+	^ exception ifNil: [ 
+		exception := self interruptedContext receiver exception ]
 ]
 
 { #category : #accessing }
@@ -39,6 +54,38 @@ GtGemStoneDebuggerSession >> modules [
 	<return: #Dictionary>
 
 	^ Dictionary new
+]
+
+{ #category : #'backward compatibility' }
+GtGemStoneDebuggerSession >> oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
+
+	self assert: self remoteApiVersion = 0
+		description: 'Attempt to use debugger API v0 call on later version'.
+
+	^ self debuggerProxy
+		proxyPerformReturnProxy: #variable:atFrameLevel:
+		withArguments: { variableName. ordinalInteger. }
+		autoCommit: false.
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteApiVersion [
+	^ self remoteMetadata apiVersion
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteMetadata [
+	^ self exception debuggerState remoteMetadata
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerSession >> remoteSchemaVersion [
+	^ self remoteMetadata schemaVersion
+]
+
+{ #category : #'testing - api' }
+GtGemStoneDebuggerSession >> supportsByIndexFrameVariableCalls [
+	^ self remoteApiVersion isZero not
 ]
 
 { #category : #accessing }

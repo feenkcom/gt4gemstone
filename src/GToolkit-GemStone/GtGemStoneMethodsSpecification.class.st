@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'methodCoderSpecifications'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -38,6 +38,8 @@ GtGemStoneMethodsSpecification >> initializeForGsMethods: aCollectionOfGsMethods
 
 { #category : #initialization }
 GtGemStoneMethodsSpecification >> initializeFromJSONDictionary: aDictionary [
+	super initializeFromJSONDictionary: aDictionary.
+	
 	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
 		collect: [ :aCoderJsonData  |
 			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]

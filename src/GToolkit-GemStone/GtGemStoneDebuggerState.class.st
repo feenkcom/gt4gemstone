@@ -13,15 +13,16 @@ Class {
 		'isResumable',
 		'isSuspended',
 		'isTerminated',
-		'messageText'
+		'messageText',
+		'remoteMetadata'
 	],
 	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
 GtGemStoneDebuggerState class >> fromJsonString: aString [
-
-	^ self new fromJsonString: aString
+	^ self new 
+		initializeFromJsonString: aString
 ]
 
 { #category : #'instance creation' }
@@ -43,6 +44,7 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
 		at: #callStack put: callStack asDictionaryForExport;
+		addAll: self localMetadata asMetadataAttributesForExport;
 		yourself
 ]
 
@@ -59,22 +61,6 @@ GtGemStoneDebuggerState >> callStack [
 	^ callStack
 ]
 
-{ #category : #converting }
-GtGemStoneDebuggerState >> fromJsonString: aString [
-	| dictionary |
-
-	dictionary := STON fromString: aString.
-	
-	messageText := dictionary at: 'messageText'.
-	isResumable := dictionary at: 'isResumable'.
-	isSuspended := dictionary at: 'isSuspended'.
-	isTerminated := dictionary at: 'isTerminated'.
-	summary := dictionary at: 'summary'.
-	
-	callStack := GtGemStoneProcessSpecification 
-		fromJSONDictionary:  (dictionary at: 'callStack').
-]
-
 { #category : #'gt - extensions' }
 GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [ 
 	<gtView>
@@ -83,6 +69,36 @@ GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [
 		title: 'Frame specifications';
 		object: [ self callStack ];
 		view: #gtViewCallFrameSpecificationsFor: 
+]
+
+{ #category : #converting }
+GtGemStoneDebuggerState >> initializeFromJSONDictionary: aDictionary [
+	
+	messageText := aDictionary at: 'messageText'.
+	isResumable := aDictionary at: 'isResumable'.
+	isSuspended := aDictionary at: 'isSuspended'.
+	isTerminated := aDictionary at: 'isTerminated'.
+	summary := aDictionary at: 'summary'.
+	
+	callStack := GtGemStoneProcessSpecification 
+		fromJSONDictionary:  (aDictionary at: 'callStack').
+		
+	self initializeMetadataFromJSONDictionary: aDictionary.
+]
+
+{ #category : #converting }
+GtGemStoneDebuggerState >> initializeFromJsonString: aString [
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	
+	self initializeFromJSONDictionary: dictionary.
+]
+
+{ #category : #converting }
+GtGemStoneDebuggerState >> initializeMetadataFromJSONDictionary: aDictionary [ 
+	remoteMetadata := GtGemStoneSpecificationMedatada 
+		fromObjectDictionary: aDictionary
 ]
 
 { #category : #initialize }
@@ -136,10 +152,32 @@ GtGemStoneDebuggerState >> isTerminated [
 	^ isTerminated
 ]
 
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerState >> localApiVersion [
+	^ 1.0
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerState >> localMetadata [
+	^ GtGemStoneSpecificationMedatada new 
+		apiVersion: self localApiVersion;
+		schemaVersion: self localSchemaVersion
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerState >> localSchemaVersion [
+	^ 1.0
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerState >> messageText [
 
 	^ messageText
+]
+
+{ #category : #'accessing - metadata' }
+GtGemStoneDebuggerState >> remoteMetadata [
+	^ remoteMetadata
 ]
 
 { #category : #accessing }

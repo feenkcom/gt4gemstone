@@ -42,6 +42,21 @@ GtGemStoneLocalCallFrame >> methodClassName [
 ]
 
 { #category : #accessing }
+GtGemStoneLocalCallFrame >> receiver [
+	^ frameArray at: 10
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> receiverClass [
+	^ self receiver class
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> receiverClassName [
+	^ self receiverClass name
+]
+
+{ #category : #accessing }
 GtGemStoneLocalCallFrame >> selector [
 	^ homeMethod selector.
 ]

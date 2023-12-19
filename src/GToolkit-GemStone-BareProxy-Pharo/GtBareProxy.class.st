@@ -291,6 +291,12 @@ GtBareProxy >> hash [
 ]
 
 { #category : #testing }
+GtBareProxy >> isGtBareProxyObject [
+
+	^ true
+]
+
+{ #category : #testing }
 GtBareProxy >> isProxyObjectActive [
 	^ self proxyObject 
 		ifNil: [ false ] 
@@ -347,4 +353,9 @@ GtBareProxy >> remoteClass [
 
 	^ proxyObject ifNotNil: [ :aProxy | 
 		aProxy  remoteClass ]
+]
+
+{ #category : #'memory usage' }
+GtBareProxy >> sizeInMemory [
+	^ self class byteSizeOfInstance 
 ]
