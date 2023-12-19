@@ -1,19 +1,19 @@
 Class {
-	#name : 'GtGemStoneMethodsSpecification',
-	#superclass : 'GtGemStoneSpecification',
+	#name : #GtGemStoneMethodsSpecification,
+	#superclass : #GtGemStoneSpecification,
 	#instVars : [
 		'methodCoderSpecifications'
 	],
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneMethodsSpecification class >> forGsMethods: aCollection [ 
 	^ self new 
 		initializeForGsMethods: aCollection 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneMethodsSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
@@ -23,37 +23,37 @@ GtGemStoneMethodsSpecification >> asDictionaryForExport [
 		yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneMethodsSpecification >> at: anInteger [
 
 	^ methodCoderSpecifications at: anInteger
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneMethodsSpecification >> initializeForGsMethods: aCollectionOfGsMethods [
 	methodCoderSpecifications := aCollectionOfGsMethods asArray 
 		collect: [ :aGsMethod |
 			GtGemStoneMethodSpecification forGsMethod: aGsMethod ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneMethodsSpecification >> initializeFromJSONDictionary: aDictionary [
 	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
 		collect: [ :aCoderJsonData  |
 			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneMethodsSpecification >> instantiateCoderSpecificationFromJsonData: aCoderJsonData [ 
 	^ GtGemStoneMethodSpecification  fromJSONDictionary: aCoderJsonData
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneMethodsSpecification >> methodCoderSpecifications [
 	^ methodCoderSpecifications
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneMethodsSpecification >> size [
 
 	^ methodCoderSpecifications size
