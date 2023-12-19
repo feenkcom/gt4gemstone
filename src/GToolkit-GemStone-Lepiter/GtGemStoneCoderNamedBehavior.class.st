@@ -25,6 +25,11 @@ GtGemStoneCoderNamedBehavior >> behaviorNameDo: aBlock [
 ]
 
 { #category : #accessing }
+GtGemStoneCoderNamedBehavior >> computeRealBehaviour [
+	^ session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1})' format: {self behaviorName} ).
+]
+
+{ #category : #accessing }
 GtGemStoneCoderNamedBehavior >> isMeta [
 	^ isMeta
 ]
@@ -45,7 +50,7 @@ GtGemStoneCoderNamedBehavior >> printBehaviorName [
 
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> realBehaviorDo: aBlock [
-	self realBehaviour
+	self computeRealBehaviour
 		ifNotNil: [ :aGsBehaviour | ^ aBlock value: aGsBehaviour ]
 ]
 
@@ -61,7 +66,7 @@ GtGemStoneCoderNamedBehavior >> session: anObject [
 
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> theNonMetaClassOrUndefinedDo: aBlock [
-	| behaviourOrUndefined|
+	| behaviourOrUndefined |
 	
 	behaviourOrUndefined := session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1}) 
 		ifNil: [ UndefinedObject ]' format: {self behaviorName} ).

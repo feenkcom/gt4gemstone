@@ -4,7 +4,7 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder-Support'
 }
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneMethodCoderHeaderData >> initializeForCoderViewModel: aCoderViewModel [ 
 	
 	targetBehaviourName := aCoderViewModel coderModel methodBehavior
@@ -13,4 +13,15 @@ GtGemStoneMethodCoderHeaderData >> initializeForCoderViewModel: aCoderViewModel 
 	packageName := aCoderViewModel coderModel 
 		initialMethodCoderSpecification 
 		categoryName.
+]
+
+{ #category : #'actions - spawning' }
+GtGemStoneMethodCoderHeaderData >> spawnBehaviorFor: aCoderViewModel  from: anElement [
+	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
+		anElement phlow spawnObject:  aGsBehavior ]
+]
+
+{ #category : #'actions - spawning' }
+GtGemStoneMethodCoderHeaderData >> spawnPackageFor: aCoderViewModel from: anElement [
+	"No package spawning supported at the moment"
 ]
