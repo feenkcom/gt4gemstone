@@ -27,8 +27,8 @@ GtGemStoneSpecificationMedatada class >> fromObjectDictionary: aDictionary [
 	^ self fromJSONDictionary: (aDictionary 
 		at: '__metadata' 
 		ifAbsent: [ ^ self new
-			apiVersion: 0;
-			schemaVersion: 0 ])
+			apiVersion: GtGemStoneSemanticVersionNumber zero;
+			schemaVersion: GtGemStoneSemanticVersionNumber zero ])
 ]
 
 { #category : #accessing }
@@ -44,8 +44,8 @@ GtGemStoneSpecificationMedatada >> apiVersion: anObject [
 { #category : #converting }
 GtGemStoneSpecificationMedatada >> asDictionaryForExport [
 	^ {
-		'apiVersion' -> self apiVersion.
-		'schemaVersion' -> self schemaVersion
+		'apiVersion' -> self apiVersion versionString.
+		'schemaVersion' -> self schemaVersion versionString
 	} asDictionary
 ]
 
@@ -56,8 +56,10 @@ GtGemStoneSpecificationMedatada >> asMetadataAttributesForExport [
 
 { #category : #initialization }
 GtGemStoneSpecificationMedatada >> initializeFromJSONDictionary: aDictionary [
-	apiVersion := aDictionary at: 'apiVersion'.
-	schemaVersion := aDictionary at: 'schemaVersion'.
+	apiVersion := GtGemStoneSemanticVersionNumber 
+		readFromString: (aDictionary at: 'apiVersion').
+	schemaVersion := GtGemStoneSemanticVersionNumber 
+		readFromString: (aDictionary at: 'schemaVersion').
 ]
 
 { #category : #accessing }

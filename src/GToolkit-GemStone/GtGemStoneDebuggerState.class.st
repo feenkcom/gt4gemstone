@@ -154,7 +154,7 @@ GtGemStoneDebuggerState >> isTerminated [
 
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> localApiVersion [
-	^ 1.0
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
 { #category : #'accessing - metadata' }
@@ -166,7 +166,7 @@ GtGemStoneDebuggerState >> localMetadata [
 
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> localSchemaVersion [
-	^ 1.0
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
 { #category : #accessing }
