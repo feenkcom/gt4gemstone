@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneContextSpecification,
 	#superclass : #GtGemStoneMethodSpecification,
 	#instVars : [
-		'isForBlock'
+		'isForBlock',
+		'ipOffset'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -18,6 +19,7 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
 		at: #isForBlock put: isForBlock;
+		at: #ipOffset put: ipOffset;
 		yourself
 ]
 
@@ -26,7 +28,8 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	self initializeForGsMethod: aGsCallFrame homeMethod.
 	self initializeProviderBehaviorFromFrame: aGsCallFrame.
 	
-	isForBlock := aGsCallFrame isForBlock
+	isForBlock := aGsCallFrame isForBlock.
+	ipOffset := aGsCallFrame ipOffset.
 ]
 
 { #category : #initialization }
@@ -34,6 +37,7 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
 	isForBlock := aDictionary at: 'isForBlock'.
+	ipOffset := aDictionary at: 'ipOffset' ifAbsent: [ nil ]
 ]
 
 { #category : #initialization }
@@ -43,6 +47,11 @@ GtGemStoneContextSpecification >> initializeProviderBehaviorFromFrame: aGsCallFr
 	aGsCallFrame methodClass ~= receiverClass ifTrue: [
 		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
 			forClass: receiverClass ]
+]
+
+{ #category : #accessing }
+GtGemStoneContextSpecification >> ipOffset [
+	^ ipOffset
 ]
 
 { #category : #accessing }

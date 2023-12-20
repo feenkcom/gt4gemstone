@@ -12,14 +12,23 @@ Class {
 		'sourceText',
 		'variableAssociations',
 		'frameSpecification',
-		'method'
+		'method',
+		'ipOffset'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
+{ #category : #'instance creation' }
+GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification atIndex: anIndex forException: anException [
+	^ self new 
+		initializeFromSpecification: aFrameSpecification 
+		atIndex: anIndex 
+		forException: anException
+]
+
 { #category : #accessing }
-GtGemStoneStackFrame >> className: anObject [
-	className := anObject
+GtGemStoneStackFrame >> className: aClassName [
+	className := aClassName
 ]
 
 { #category : #private }
@@ -70,9 +79,9 @@ GtGemStoneStackFrame >> exception [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> exception: anObject [
+GtGemStoneStackFrame >> exception: anException [
 
-	exception := anObject
+	exception := anException
 ]
 
 { #category : #'private - accessing' }
@@ -91,8 +100,8 @@ GtGemStoneStackFrame >> frameSpecification [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> frameSpecification: anObject [
-	frameSpecification := anObject
+GtGemStoneStackFrame >> frameSpecification: aFrameSpecification [
+	frameSpecification := aFrameSpecification
 ]
 
 { #category : #accessing }
@@ -101,7 +110,7 @@ GtGemStoneStackFrame >> gsSession [
 	^ exception gtSession
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
 	<gtView>
 	
@@ -112,7 +121,7 @@ GtGemStoneStackFrame >> gtViewCoderFor: aView [
 			GtGemStoneContextCoderModel fromStackFrame: self ]
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
 	<gtView>
 	
@@ -128,8 +137,36 @@ GtGemStoneStackFrame >> inBlock [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> inBlock: anObject [
-	inBlock := anObject
+GtGemStoneStackFrame >> inBlock: aBoolean [
+	inBlock := aBoolean
+]
+
+{ #category : #initization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [ 
+	self 
+		className: aFrameSpecification coderClassName;
+		selector: aFrameSpecification selector;
+		inBlock: aFrameSpecification isForBlock;
+		ipOffset: aFrameSpecification ipOffset;
+		frameSpecification: aFrameSpecification
+]
+
+{ #category : #initization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification atIndex: anIndex forException: anException [ 
+	self initializeFromSpecification: aFrameSpecification.
+	
+	self ordinal: anIndex.
+	self exception: anException.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> ipOffset [
+	^ ipOffset
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> ipOffset: aNumber [
+	ipOffset := aNumber
 ]
 
 { #category : #accessing }
@@ -140,15 +177,20 @@ GtGemStoneStackFrame >> method [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> methodSelector [
+	^ self frameSpecification selector
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> ordinal [
 
 	^ ordinal
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> ordinal: anObject [
+GtGemStoneStackFrame >> ordinal: aNumber [
 
-	ordinal := anObject
+	ordinal := aNumber
 ]
 
 { #category : #accessing }
@@ -171,14 +213,22 @@ GtGemStoneStackFrame >> programCounterRange [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> remoteIdentity [
+	^ GtGemStoneCallFrameIdentity 
+		className: className 
+		methodSelector: self methodSelector 
+		ipOffset: self ipOffset
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> selector [
 
 	^ selector
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> selector: anObject [
-	selector := anObject
+GtGemStoneStackFrame >> selector: aMethodSelector [
+	selector := aMethodSelector
 ]
 
 { #category : #accessing }
@@ -209,6 +259,11 @@ GtGemStoneStackFrame >> sourceText [
 			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler.
 	^ sourceText
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> targetClassName [
+	^ className
 ]
 
 { #category : #accessing }

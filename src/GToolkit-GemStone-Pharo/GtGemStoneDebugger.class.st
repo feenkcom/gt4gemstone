@@ -127,18 +127,16 @@ GtGemStoneDebugger >> stackFrames [
 	stackFrames ifNil: [ | defaultFrameOrdinal |
 		allStackFrames := exception debuggerState callStack frameSpecifications
 			collectWithIndex: [ :aFrameSpecification :index |
-				GtGemStoneStackFrame new
-					className: aFrameSpecification coderClassName;
-					selector: aFrameSpecification selector;
-					inBlock: aFrameSpecification isForBlock;
-					frameSpecification: aFrameSpecification;
-					exception: exception;
-					ordinal: index ].
+				GtGemStoneStackFrame 
+					fromSpecification: aFrameSpecification 
+					atIndex: index 
+					forException: exception ].
 		defaultFrameOrdinal := self defaultFrameOrdinalFrom: allStackFrames.
-		stackFrames := defaultFrameOrdinal > 1 ifTrue:
-			[ allStackFrames copyFrom: defaultFrameOrdinal to: allStackFrames size ]
-		ifFalse:
-			[ allStackFrames ] ].
+		stackFrames := defaultFrameOrdinal > 1 
+			ifTrue: [ 
+				allStackFrames copyFrom: defaultFrameOrdinal to: allStackFrames size ]
+			ifFalse: [ 
+				allStackFrames ] ].
 	^ stackFrames
 ]
 

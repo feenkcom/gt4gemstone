@@ -26,6 +26,11 @@ GtGemStoneLocalCallFrame >> initializeForFrameArray: aFrameArray [
 ]
 
 { #category : #accessing }
+GtGemStoneLocalCallFrame >> ipOffset [
+	^ frameArray at: 2
+]
+
+{ #category : #accessing }
 GtGemStoneLocalCallFrame >> isForBlock [
 	^ frameArray first isMethodForBlock
 ]
