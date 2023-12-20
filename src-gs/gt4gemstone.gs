@@ -1110,16 +1110,16 @@ variableArrayAtFrameLevel: anInteger
 	varNames := frameContents at: 9.
 	1 to: varNames size do: [ :i | | object |
 		object := frameContents at: i + 10.
-		associations add: { varNames at: i. object. #frame. object gtSystemIconName.  } ].
+		associations add: { varNames at: i. object. #frame. object class gtSystemIconName.  } ].
 
 	associations := associations asOrderedCollection.
 
 	(selfObject gtRemoteVariableValuePairsWithSelfIf: false) do:
-		[ :assoc | associations add: { assoc key. assoc value. #instVar.  assoc value gtSystemIconName. }. ].
+		[ :assoc | associations add: { assoc key. assoc value. #instVar.  assoc value class gtSystemIconName. }. ].
 
 	associations addAllFirst:
-		{ { #self. selfObject. #self. selfObject gtSystemIconName. }.
-			{ #receiver. (frameContents at: 10). #receiver. (frameContents at: 10) gtSystemIconName } }.
+		{ { #self. selfObject. #self. selfObject class gtSystemIconName. }.
+			{ #receiver. (frameContents at: 10). #receiver. (frameContents at: 10) class gtSystemIconName } }.
 
 	^ associations asArray.
 %
