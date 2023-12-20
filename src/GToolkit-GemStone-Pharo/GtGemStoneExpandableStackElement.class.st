@@ -5,7 +5,7 @@ Class {
 		'stackIndexList',
 		'stackFrames'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
