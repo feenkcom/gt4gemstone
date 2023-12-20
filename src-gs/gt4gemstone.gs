@@ -22,7 +22,7 @@ removeallclassmethods AkgDebuggerPlay
 doit
 (Object
 	subclass: 'GtGemStoneDebuggerState'
-	instVarNames: #( callStack summary isResumable isSuspended isTerminated messageText )
+	instVarNames: #( callStack summary isResumable isSuspended isTerminated messageText remoteMetadata )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -97,8 +97,26 @@ removeallclassmethods GtGemStoneLocalCallStack
 
 doit
 (Object
+	subclass: 'GtGemStoneSemanticVersionNumber'
+	instVarNames: #( major minor patch iceTag )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSemanticVersionNumber
+removeallclassmethods GtGemStoneSemanticVersionNumber
+
+doit
+(Object
 	subclass: 'GtGemStoneSpecification'
-	instVarNames: #(  )
+	instVarNames: #( remoteMetadata )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -115,8 +133,26 @@ removeallclassmethods GtGemStoneSpecification
 
 doit
 (GtGemStoneSpecification
+	subclass: 'GtGemStoneClassBasicDetails'
+	instVarNames: #( targetClassName targetClassIconName )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneClassBasicDetails
+removeallclassmethods GtGemStoneClassBasicDetails
+
+doit
+(GtGemStoneSpecification
 	subclass: 'GtGemStoneMethodSpecification'
-	instVarNames: #( coderClassName selector isMeta sourceString protocolName categoryName )
+	instVarNames: #( coderClassName selector isMeta sourceString protocolName categoryName coderClassIconName explicitProviderBehaviourDetails )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -184,6 +220,24 @@ true.
 
 removeallmethods GtGemStoneProcessSpecification
 removeallclassmethods GtGemStoneProcessSpecification
+
+doit
+(Object
+	subclass: 'GtGemStoneSpecificationMedatada'
+	instVarNames: #( apiVersion schemaVersion )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSpecificationMedatada
+removeallclassmethods GtGemStoneSpecificationMedatada
 
 doit
 (Object
@@ -571,8 +625,8 @@ waitMS: milliseconds
 category: 'instance creation'
 classmethod: GtGemStoneDebuggerState
 fromJsonString: aString
-
-	^ self new fromJsonString: aString
+	^ self new 
+		initializeFromJsonString: aString
 %
 
 category: 'instance creation'
@@ -598,6 +652,7 @@ asDictionaryForExport
 		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
 		at: #callStack put: callStack asDictionaryForExport;
+		addAll: self localMetadata asMetadataAttributesForExport;
 		yourself
 %
 
@@ -616,23 +671,6 @@ callStack
 	^ callStack
 %
 
-category: 'converting'
-method: GtGemStoneDebuggerState
-fromJsonString: aString
-	| dictionary |
-
-	dictionary := STON fromString: aString.
-	
-	messageText := dictionary at: 'messageText'.
-	isResumable := dictionary at: 'isResumable'.
-	isSuspended := dictionary at: 'isSuspended'.
-	isTerminated := dictionary at: 'isTerminated'.
-	summary := dictionary at: 'summary'.
-	
-	callStack := GtGemStoneProcessSpecification 
-		fromJSONDictionary:  (dictionary at: 'callStack').
-%
-
 category: 'gt - extensions'
 method: GtGemStoneDebuggerState
 gtViewCallFrameSpecificationsFor: aView 
@@ -642,6 +680,39 @@ gtViewCallFrameSpecificationsFor: aView
 		title: 'Frame specifications';
 		object: [ self callStack ];
 		view: #gtViewCallFrameSpecificationsFor: 
+%
+
+category: 'converting'
+method: GtGemStoneDebuggerState
+initializeFromJSONDictionary: aDictionary
+	
+	messageText := aDictionary at: 'messageText'.
+	isResumable := aDictionary at: 'isResumable'.
+	isSuspended := aDictionary at: 'isSuspended'.
+	isTerminated := aDictionary at: 'isTerminated'.
+	summary := aDictionary at: 'summary'.
+	
+	callStack := GtGemStoneProcessSpecification 
+		fromJSONDictionary:  (aDictionary at: 'callStack').
+		
+	self initializeMetadataFromJSONDictionary: aDictionary.
+%
+
+category: 'converting'
+method: GtGemStoneDebuggerState
+initializeFromJsonString: aString
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	
+	self initializeFromJSONDictionary: dictionary.
+%
+
+category: 'converting'
+method: GtGemStoneDebuggerState
+initializeMetadataFromJSONDictionary: aDictionary 
+	remoteMetadata := GtGemStoneSpecificationMedatada 
+		fromObjectDictionary: aDictionary
 %
 
 category: 'initialize'
@@ -700,11 +771,37 @@ isTerminated
 	^ isTerminated
 %
 
+category: 'accessing - metadata'
+method: GtGemStoneDebuggerState
+localApiVersion
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneDebuggerState
+localMetadata
+	^ GtGemStoneSpecificationMedatada new 
+		apiVersion: self localApiVersion;
+		schemaVersion: self localSchemaVersion
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneDebuggerState
+localSchemaVersion
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
+%
+
 category: 'accessing'
 method: GtGemStoneDebuggerState
 messageText
 
 	^ messageText
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneDebuggerState
+remoteMetadata
+	^ remoteMetadata
 %
 
 category: 'accessing'
@@ -965,8 +1062,6 @@ stepIntoFrameLevel: anInteger
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 stepOverFrameLevel: anInteger
-	| count |
-
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
 	^ #stepOver
@@ -991,7 +1086,9 @@ terminateProcess
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 variable: aSymbol atFrameLevel: anInteger
-	"Answer the variables from the specified frame"
+	"Answer the variables from the specified frame.
+
+	This method is deprecated in favour of #variableIndex:atFrameLevel: as it doesn't handle instance variables."
 	| frameContents varNames index |
 
 	frameContents := process _frameContentsAt: anInteger.
@@ -1002,19 +1099,48 @@ variable: aSymbol atFrameLevel: anInteger
 
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
-variableInfoAtFrameLevel: anInteger
-	"Answer the variables from the specified frame"
-	| frameContents associations varNames |
+variableArrayAtFrameLevel: anInteger
+	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
+	| frameContents associations varNames selfObject |
 
 	frameContents := process _frameContentsAt: anInteger.
-	associations := Array new.
-	associations 
-		add: { #self. (frameContents at: 8) gtDisplayString. };
-		add: { #receiver. (frameContents at: 10) gtDisplayString. }.
+	selfObject := frameContents at: 8.
+	associations := SortedCollection sortBlock: [ :a :b | a first < b first ].
+
 	varNames := frameContents at: 9.
-	1 to: varNames size do: [ :i |
-		associations add: { varNames at: i. (frameContents at: i + 10) gtDisplayString. } ].
-	^ associations.
+	1 to: varNames size do: [ :i | | object |
+		object := frameContents at: i + 10.
+		associations add: { varNames at: i. object. #frame. object gtSystemIconName.  } ].
+
+	associations := associations asOrderedCollection.
+
+	(selfObject gtRemoteVariableValuePairsWithSelfIf: false) do:
+		[ :assoc | associations add: { assoc key. assoc value. #instVar.  assoc value gtSystemIconName. }. ].
+
+	associations addAllFirst:
+		{ { #self. selfObject. #self. selfObject gtSystemIconName. }.
+			{ #receiver. (frameContents at: 10). #receiver. (frameContents at: 10) gtSystemIconName } }.
+
+	^ associations asArray.
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+variableIndex: index atFrameLevel: anInteger
+	"Answer the variable from the specified frame"
+
+	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+variableInfoAtFrameLevel: anInteger
+	"Answer the variables from the specified frame, including self's instance variables"
+
+	^ (self variableArrayAtFrameLevel: anInteger) collect: [ :each | | displayData |
+		displayData := each copy.
+		displayData at: 2 put: each second gtDisplayString.
+		displayData ]
 %
 
 category: 'private'
@@ -1070,6 +1196,24 @@ methodClassName
 
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
+receiver
+	^ frameArray at: 10
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+receiverClass
+	^ self receiver class
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+receiverClassName
+	^ self receiverClass name
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
 selector
 	^ homeMethod selector.
 %
@@ -1107,6 +1251,181 @@ initializeForProcess: aGsProcess
 		GtGemStoneLocalCallFrame forFrameArray:frameArray ].
 %
 
+! Class implementation for 'GtGemStoneSemanticVersionNumber'
+
+!		Class methods for 'GtGemStoneSemanticVersionNumber'
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+major: majorNumber minor: minorNumber patch: patchNumber
+	^ self new 
+		initializeMajor: majorNumber
+		minor: minorNumber
+		patch: patchNumber
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+oneZeroZero
+	^ self major: 1 minor: 0 patch: 0
+%
+
+category: 'converting'
+classmethod: GtGemStoneSemanticVersionNumber
+readFromString: aString
+	| tokens |
+	tokens := (aString trimBoth trimLeft: [:char | char = $v]) findTokens: '.'.
+	^ self 
+		major: tokens first asInteger
+		minor: tokens second asInteger
+		patch: tokens third asInteger. 
+%
+
+category: 'accessing'
+classmethod: GtGemStoneSemanticVersionNumber
+versionNumberRegexString
+	^ 'v[0-9]+\.[0-9]+\.[0-9]+'
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+zero
+	^ self major: 0 minor: 0 patch: 0
+%
+
+!		Instance methods for 'GtGemStoneSemanticVersionNumber'
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+< aSemanticVersionNumber
+	self major < aSemanticVersionNumber major ifTrue: [ ^ true ].
+		self major = aSemanticVersionNumber major ifTrue: [ 
+			self minor < aSemanticVersionNumber minor ifTrue: [ ^ true ].
+			self minor = aSemanticVersionNumber minor ifTrue: [ 
+				self patch < aSemanticVersionNumber patch ifTrue: [ ^ true ]]].
+	^ false.
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+<= aSemanticVersionNumber
+	"Answer whether the receiver is less than or equal to the given version number."
+	^ (self > aSemanticVersionNumber) not
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+= anObject
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	^ self major = anObject major and: [ 
+		 self minor = anObject minor and: [ 
+			self patch = anObject patch ] ]
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+> aSemanticVersionNumber 
+	"Answer whether the receiver is greater than the argument."
+
+	^aSemanticVersionNumber < self
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+>= aSemanticVersionNumber 
+	"Answer whether the receiver is greater than or equal to the argument."
+
+	^ aSemanticVersionNumber <= self
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+hash
+	^ ((self species hash
+		bitXor: self major hash)
+		bitXor: self minor hash)
+		bitXor: self patch hash
+%
+
+category: 'initialization'
+method: GtGemStoneSemanticVersionNumber
+initializeMajor: aMajorNumber minor: aMinorNumber patch: aPatchNumber
+	 (aMajorNumber notNil and: [ aMinorNumber notNil and: [ aPatchNumber notNil ] ])
+	 	ifFalse: [ 
+	 		Error signal: 'The components of a semantic version cannot be null' ].
+	(aMajorNumber >= 0 and: [ aMinorNumber >= 0 and: [ aPatchNumber >= 0 ] ])
+		ifFalse: [ 
+			Error signal: 'The components of a semantic version should not be negative' ].
+	(major isNil and: [ minor isNil and: [ patch isNil ] ]) 
+		ifFalse: [
+			Error signal: 'Semantic version numbers are immutable' ].
+	
+	major := aMajorNumber.
+	minor := aMinorNumber.
+	patch := aPatchNumber.
+%
+
+category: 'testing'
+method: GtGemStoneSemanticVersionNumber
+isZero
+	^ self = self class zero
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+major
+	^ major
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+minor
+	^ minor
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+patch
+	^ patch 
+%
+
+category: 'printing'
+method: GtGemStoneSemanticVersionNumber
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream 
+		nextPut: $(;
+		nextPutAll: self versionString;
+		nextPut: $)
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+tag
+	^ iceTag
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+tag: anIceTag
+	iceTag := anIceTag 
+%
+
+category: 'accessing'
+method: GtGemStoneSemanticVersionNumber
+versionString
+	^ String streamContents: [ :aStream |
+		aStream 
+			<< 'v';
+			<< self major printString;
+			<< '.';
+			<< self minor printString;
+			<< '.';
+			<< self patch printString ]
+%
+
 ! Class implementation for 'GtGemStoneSpecification'
 
 !		Class methods for 'GtGemStoneSpecification'
@@ -1134,6 +1453,8 @@ method: GtGemStoneSpecification
 asDictionaryForExport
 
 	^ Dictionary new
+		addAll: self localMetadata asMetadataAttributesForExport;
+		yourself
 %
 
 category: 'converting'
@@ -1144,9 +1465,94 @@ asJsonForExport
 	^STON toJsonString: self asDictionaryForExport
 %
 
-category: 'accessing'
+category: 'initialization'
 method: GtGemStoneSpecification
 initializeFromJSONDictionary: aDictionary
+	self initializeMetadataFromJSONDictionary: aDictionary.
+%
+
+category: 'initialization'
+method: GtGemStoneSpecification
+initializeMetadataFromJSONDictionary: aDictionary 
+	remoteMetadata := GtGemStoneSpecificationMedatada 
+		fromObjectDictionary: aDictionary
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneSpecification
+localApiVersion
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneSpecification
+localMetadata
+	^ GtGemStoneSpecificationMedatada new 
+		apiVersion: self localApiVersion;
+		schemaVersion: self localSchemaVersion
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneSpecification
+localSchemaVersion
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
+%
+
+category: 'accessing - metadata'
+method: GtGemStoneSpecification
+remoteMetadata
+	^ remoteMetadata
+%
+
+! Class implementation for 'GtGemStoneClassBasicDetails'
+
+!		Class methods for 'GtGemStoneClassBasicDetails'
+
+category: 'instance creation'
+classmethod: GtGemStoneClassBasicDetails
+forClass: aGsClass
+	^ self new 
+		intializeForClass: aGsClass
+%
+
+!		Instance methods for 'GtGemStoneClassBasicDetails'
+
+category: 'converting'
+method: GtGemStoneClassBasicDetails
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: #targetClassName put: targetClassName;
+		at: #targetClassIconName put: targetClassIconName;
+		yourself
+%
+
+category: 'initialization'
+method: GtGemStoneClassBasicDetails
+initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
+	targetClassName := aDictionary at: #targetClassName.
+	targetClassIconName := aDictionary at: #targetClassIconName.
+%
+
+category: 'initialization'
+method: GtGemStoneClassBasicDetails
+intializeForClass: aGsClass 
+	targetClassName := aGsClass name.
+	targetClassIconName := aGsClass gtSystemIconName.
+%
+
+category: 'accessing'
+method: GtGemStoneClassBasicDetails
+targetClassIconName
+	^ targetClassIconName
+%
+
+category: 'accessing'
+method: GtGemStoneClassBasicDetails
+targetClassName
+	^ targetClassName
 %
 
 ! Class implementation for 'GtGemStoneMethodSpecification'
@@ -1164,6 +1570,8 @@ forClass: aClass selector: aSelector
 category: 'instance creation'
 classmethod: GtGemStoneMethodSpecification
 forGsMethod: aGsMethod 
+	"Creation method on the GemStone side starting from a GemStone method"
+	
 	^ self new 
 		initializeForGsMethod: aGsMethod 
 %
@@ -1174,14 +1582,23 @@ category: 'converting'
 method: GtGemStoneMethodSpecification
 asDictionaryForExport
 
-	^ super asDictionaryForExport
+	| exportData| 
+	exportData := super asDictionaryForExport.
+	exportData
 		at: #coderClassName put: coderClassName;
+		at: #coderClassIconName put: coderClassIconName;
 		at: #isMeta put: isMeta;
 		at: #categoryName put: categoryName;
 		at: #sourceString put: sourceString;
 		at: #protocolName put: protocolName;
-		at: #selector put: selector;
-		yourself
+		at: #selector put: selector.
+		
+	self explicitProviderBehaviourDetails ifNotNil: [ :anObject | 
+		exportData 
+			at: #explicitProviderBehaviourDetails 
+			put: anObject asDictionaryForExport ].
+	
+	^ exportData
 %
 
 category: 'accessing'
@@ -1192,8 +1609,20 @@ categoryName
 
 category: 'accessing'
 method: GtGemStoneMethodSpecification
+coderClassIconName
+	^ coderClassIconName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
 coderClassName
 	^ coderClassName
+%
+
+category: 'accessing'
+method: GtGemStoneMethodSpecification
+explicitProviderBehaviourDetails
+	^ explicitProviderBehaviourDetails
 %
 
 category: 'gt - extensions'
@@ -1212,6 +1641,7 @@ method: GtGemStoneMethodSpecification
 initializeForBehaviour: aMethodBehaviour ofMethod: aGsMethod
 	self 
 		initializeForClassName: aMethodBehaviour theNonMetaClass name
+		iconName: aMethodBehaviour gtSystemIconName
 		isMeta: aMethodBehaviour isMeta  
 		categoryName: aMethodBehaviour category 
 		protocolName: (aMethodBehaviour 
@@ -1220,8 +1650,9 @@ initializeForBehaviour: aMethodBehaviour ofMethod: aGsMethod
 
 category: 'initialization'
 method: GtGemStoneMethodSpecification
-initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName protocolName: aProtocolName
+initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName protocolName: aProtocolName
 	coderClassName := aClassName.
+	coderClassIconName := aClassIconName.
 	isMeta := aBoolean.
 	categoryName := aCategoryName.
 	protocolName := aProtocolName.
@@ -1229,15 +1660,17 @@ initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName 
 
 category: 'initialization'
 method: GtGemStoneMethodSpecification
-initializeForClassName: aClassName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName
+initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitProvider: aProviderDetails
 	self 
 		initializeForClassName: aClassName 
+		iconName: aClassIconName 
 		isMeta: aBoolean 
 		categoryName: aCategoryName 
 		protocolName: aProtocolName.
 	
 	sourceString := aSourceCode.
 	selector := aSelector.
+	explicitProviderBehaviourDetails := aProviderDetails.
 %
 
 category: 'initialization'
@@ -1264,13 +1697,20 @@ initializeForSelector: aSelector sourceString: aSourceString
 category: 'initialization'
 method: GtGemStoneMethodSpecification
 initializeFromJSONDictionary: aDictionary
-	self 
-		initializeForClassName: (aDictionary at: 'coderClassName') 
-		isMeta: (aDictionary at: 'isMeta')  
-		categoryName: (aDictionary at: 'categoryName')  
-		selector: (aDictionary at: 'selector')  
-		sourceString: (aDictionary at: 'sourceString')  
-		protocolName: (aDictionary at: 'protocolName') 
+	super initializeFromJSONDictionary: aDictionary.
+
+	self
+		initializeForClassName: (aDictionary at: 'coderClassName')
+		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
+		isMeta: (aDictionary at: 'isMeta')
+		categoryName: (aDictionary at: 'categoryName')
+		selector: (aDictionary at: 'selector')
+		sourceString: (aDictionary at: 'sourceString')
+		protocolName: (aDictionary at: 'protocolName')
+		explicitProvider: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')
+			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
+				aDictionary at: 'explicitProviderBehaviourDetails')]
+			ifFalse: [ nil ])
 %
 
 category: 'accessing'
@@ -1356,6 +1796,8 @@ category: 'initialization'
 method: GtGemStoneContextSpecification
 initializeForGsCallFrame: aGsCallFrame 
 	self initializeForGsMethod: aGsCallFrame homeMethod.
+	self initializeProviderBehaviorFromFrame: aGsCallFrame.
+	
 	isForBlock := aGsCallFrame isForBlock
 %
 
@@ -1364,7 +1806,17 @@ method: GtGemStoneContextSpecification
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 	
-	isForBlock := (aDictionary at: 'isForBlock')
+	isForBlock := aDictionary at: 'isForBlock'.
+%
+
+category: 'initialization'
+method: GtGemStoneContextSpecification
+initializeProviderBehaviorFromFrame: aGsCallFrame 
+	| receiverClass |
+	receiverClass := aGsCallFrame receiverClass.
+	aGsCallFrame methodClass ~= receiverClass ifTrue: [
+		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
+			forClass: receiverClass ]
 %
 
 category: 'accessing'
@@ -1415,6 +1867,8 @@ initializeForGsMethods: aCollectionOfGsMethods
 category: 'initialization'
 method: GtGemStoneMethodsSpecification
 initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
 	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
 		collect: [ :aCoderJsonData  |
 			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]
@@ -1481,6 +1935,86 @@ category: 'accessing'
 method: GtGemStoneProcessSpecification
 instantiateCoderSpecificationFromJsonData: aCoderJsonData 
 	^ GtGemStoneContextSpecification  fromJSONDictionary: aCoderJsonData
+%
+
+! Class implementation for 'GtGemStoneSpecificationMedatada'
+
+!		Class methods for 'GtGemStoneSpecificationMedatada'
+
+category: 'instance creation'
+classmethod: GtGemStoneSpecificationMedatada
+fromJSONDictionary: aDictionary
+	^ self new  
+		initializeFromJSONDictionary: aDictionary
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSpecificationMedatada
+fromJsonString: aString
+	| dictionary |
+
+	dictionary := STON fromString: aString.
+	^ self fromJSONDictionary: dictionary
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSpecificationMedatada
+fromObjectDictionary: aDictionary 
+	^ self fromJSONDictionary: (aDictionary 
+		at: '__metadata' 
+		ifAbsent: [ ^ self new
+			apiVersion: GtGemStoneSemanticVersionNumber zero;
+			schemaVersion: GtGemStoneSemanticVersionNumber zero ])
+%
+
+!		Instance methods for 'GtGemStoneSpecificationMedatada'
+
+category: 'accessing'
+method: GtGemStoneSpecificationMedatada
+apiVersion
+	^ apiVersion
+%
+
+category: 'accessing'
+method: GtGemStoneSpecificationMedatada
+apiVersion: anObject
+	apiVersion := anObject
+%
+
+category: 'converting'
+method: GtGemStoneSpecificationMedatada
+asDictionaryForExport
+	^ {
+		'apiVersion' -> self apiVersion versionString.
+		'schemaVersion' -> self schemaVersion versionString
+	} asDictionary
+%
+
+category: 'converting'
+method: GtGemStoneSpecificationMedatada
+asMetadataAttributesForExport
+	^ {'__metadata' -> self asDictionaryForExport} asDictionary
+%
+
+category: 'initialization'
+method: GtGemStoneSpecificationMedatada
+initializeFromJSONDictionary: aDictionary
+	apiVersion := GtGemStoneSemanticVersionNumber 
+		readFromString: (aDictionary at: 'apiVersion').
+	schemaVersion := GtGemStoneSemanticVersionNumber 
+		readFromString: (aDictionary at: 'schemaVersion').
+%
+
+category: 'accessing'
+method: GtGemStoneSpecificationMedatada
+schemaVersion
+	^ schemaVersion
+%
+
+category: 'accessing'
+method: GtGemStoneSpecificationMedatada
+schemaVersion: anObject
+	schemaVersion := anObject
 %
 
 ! Class implementation for 'GtGsRelease'

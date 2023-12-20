@@ -10,7 +10,7 @@ Class {
 		'stepThroughButton',
 		'stepOutButton'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #callbacks }

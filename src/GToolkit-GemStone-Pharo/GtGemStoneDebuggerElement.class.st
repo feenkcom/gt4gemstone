@@ -15,7 +15,7 @@ Class {
 		'sourceCodeEditorElement',
 		'debuggerMessageEditor'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #testing }

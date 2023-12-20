@@ -49,7 +49,7 @@ GtGemStoneSpecification >> initializeMetadataFromJSONDictionary: aDictionary [
 
 { #category : #'accessing - metadata' }
 GtGemStoneSpecification >> localApiVersion [
-	^ 1.0
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
 { #category : #'accessing - metadata' }
@@ -61,7 +61,7 @@ GtGemStoneSpecification >> localMetadata [
 
 { #category : #'accessing - metadata' }
 GtGemStoneSpecification >> localSchemaVersion [
-	^ 1.0
+	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
 { #category : #'accessing - metadata' }

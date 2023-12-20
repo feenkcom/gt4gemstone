@@ -17,8 +17,12 @@ GtGemStoneDebuggerSession >> breakpoints [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
 
-	self remoteApiVersion < 1 ifTrue:
-		[ ^ self oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger ].
+	self remoteApiVersion < GtGemStoneSemanticVersionNumber oneZeroZero  
+		ifTrue: [ 
+			^ self 
+				oldCurrentFrameVariable: variableName 
+				atIndex: anInteger 
+				frameLevel: ordinalInteger ].
 
 	^ self debuggerProxy
 		proxyPerformReturnProxy: #variableIndex:atFrameLevel:
@@ -59,7 +63,8 @@ GtGemStoneDebuggerSession >> modules [
 { #category : #'backward compatibility' }
 GtGemStoneDebuggerSession >> oldCurrentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
 
-	self assert: self remoteApiVersion = 0
+	self 
+		assert: self remoteApiVersion isZero
 		description: 'Attempt to use debugger API v0 call on later version'.
 
 	^ self debuggerProxy
@@ -81,11 +86,6 @@ GtGemStoneDebuggerSession >> remoteMetadata [
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteSchemaVersion [
 	^ self remoteMetadata schemaVersion
-]
-
-{ #category : #'testing - api' }
-GtGemStoneDebuggerSession >> supportsByIndexFrameVariableCalls [
-	^ self remoteApiVersion isZero not
 ]
 
 { #category : #accessing }
