@@ -92,15 +92,15 @@ GtGemStoneSemanticVersionNumber >> hash [
 
 { #category : #initialization }
 GtGemStoneSemanticVersionNumber >> initializeMajor: aMajorNumber minor: aMinorNumber patch: aPatchNumber [
-	self 
-		assert: [ aMajorNumber notNil and: [ aMinorNumber notNil and: [ aPatchNumber notNil ] ] ]
-		description: 'The components of a semantic version cannot be null'.
-	self 
-		assert: [ aMajorNumber >= 0 and: [ aMinorNumber >= 0 and: [ aPatchNumber >= 0 ] ] ]
-		description: 'The components of a semantic version should not be negative'.
-	self 
-		assert: [ major isNil and: [ minor isNil and: [ patch isNil ] ] ]
-		description: 'Semantic version numbers are immutable'.
+	 (aMajorNumber notNil and: [ aMinorNumber notNil and: [ aPatchNumber notNil ] ])
+	 	ifFalse: [ 
+	 		Error signal: 'The components of a semantic version cannot be null' ].
+	(aMajorNumber >= 0 and: [ aMinorNumber >= 0 and: [ aPatchNumber >= 0 ] ])
+		ifFalse: [ 
+			Error signal: 'The components of a semantic version should not be negative' ].
+	(major isNil and: [ minor isNil and: [ patch isNil ] ]) 
+		ifFalse: [
+			Error signal: 'Semantic version numbers are immutable' ].
 	
 	major := aMajorNumber.
 	minor := aMinorNumber.
