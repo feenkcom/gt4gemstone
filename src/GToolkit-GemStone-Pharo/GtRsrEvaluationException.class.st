@@ -41,8 +41,7 @@ GtRsrEvaluationException >> debuggerProxy: anObject [
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerState [
 
-	^ debuggerState ifNil: [ 
-		debuggerState := self getDebuggerState ]
+	^ debuggerState ifNil: [ debuggerState := self getDebuggerState ]
 ]
 
 { #category : #accessing }
