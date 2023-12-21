@@ -29,6 +29,19 @@ GtGemStoneDebugger >> debuggerProxy [
 	^ exception debuggerProxy
 ]
 
+{ #category : #accessing }
+GtGemStoneDebugger >> filterUnrelatedStackFramesFrom: aCollectionOfStackFrames [ 
+	| defaultFrameOrdinal |
+	defaultFrameOrdinal := self defaultFrameOrdinalFrom: aCollectionOfStackFrames.
+	^ defaultFrameOrdinal > 1 
+		ifTrue: [ 
+			aCollectionOfStackFrames 
+				copyFrom: defaultFrameOrdinal 
+				to: aCollectionOfStackFrames size ]
+		ifFalse: [ 
+			aCollectionOfStackFrames ]
+]
+
 { #category : #actions }
 GtGemStoneDebugger >> gsRestartFrameLevel: anInteger [
 
@@ -76,6 +89,7 @@ GtGemStoneDebugger >> gsStepOverFrameLevel: anInteger [
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	
 	self resetState.
 ]
 
@@ -122,32 +136,33 @@ GtGemStoneDebugger >> resetState [
 ]
 
 { #category : #accessing }
+GtGemStoneDebugger >> retrieveAllStackFrames [
+	| previousStackFrame currentStackFrame |
+		
+	previousStackFrame := nil.
+	currentStackFrame := nil.
+	
+	^ exception debuggerState callStack frameSpecifications
+		collectWithIndex: [ :aFrameSpecification :index |
+			currentStackFrame := GtGemStoneStackFrame 
+				fromSpecification: aFrameSpecification 
+				atIndex: index 
+				forException: exception.
+			previousStackFrame ifNotNil: [
+				previousStackFrame sender: currentStackFrame ].
+			previousStackFrame := currentStackFrame.
+			currentStackFrame ].
+]
+
+{ #category : #accessing }
 GtGemStoneDebugger >> stackFrames [
 	"Answer a ordered collection of stack frames.
 	This is called many times by the debugger, so cache"
 
 	stackFrames ifNil: [ 
-		| defaultFrameOrdinal previousStackFrame currentStackFrame |
-		
-		previousStackFrame := nil.
-		currentStackFrame := nil.
-		allStackFrames := exception debuggerState callStack frameSpecifications
-			collectWithIndex: [ :aFrameSpecification :index |
-				currentStackFrame := GtGemStoneStackFrame 
-					fromSpecification: aFrameSpecification 
-					atIndex: index 
-					forException: exception.
-				previousStackFrame ifNotNil: [
-					previousStackFrame sender: currentStackFrame ].
-				previousStackFrame := currentStackFrame.
-				currentStackFrame ].
-			
-		defaultFrameOrdinal := self defaultFrameOrdinalFrom: allStackFrames.
-		stackFrames := defaultFrameOrdinal > 1 
-			ifTrue: [ 
-				allStackFrames copyFrom: defaultFrameOrdinal to: allStackFrames size ]
-			ifFalse: [ 
-				allStackFrames ] ].
+		allStackFrames := self retrieveAllStackFrames.
+		stackFrames := self filterUnrelatedStackFramesFrom: allStackFrames ].
+	
 	^ stackFrames
 ]
 
