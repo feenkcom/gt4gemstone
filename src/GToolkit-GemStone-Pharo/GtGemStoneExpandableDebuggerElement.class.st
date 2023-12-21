@@ -64,6 +64,7 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		when: GtGemStoneDebuggerStateChanged
 		send: #actOnDebuggerStateChanged
 		to: self.
+	
 	self scheduleUpdateUI.
 ]
 

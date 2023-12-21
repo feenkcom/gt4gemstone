@@ -13,7 +13,8 @@ Class {
 		'variableAssociations',
 		'frameSpecification',
 		'method',
-		'ipOffset'
+		'ipOffset',
+		'sender'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -229,6 +230,18 @@ GtGemStoneStackFrame >> selector [
 { #category : #accessing }
 GtGemStoneStackFrame >> selector: aMethodSelector [
 	selector := aMethodSelector
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> sender [
+	^ sender
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> sender: aStackFrame [
+	self assert: [ sender isNil and: [ aStackFrame notNil ] ].
+	
+	sender := aStackFrame
 ]
 
 { #category : #accessing }

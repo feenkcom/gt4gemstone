@@ -36,8 +36,8 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	isForBlock := aDictionary at: 'isForBlock'.
-	ipOffset := aDictionary at: 'ipOffset' ifAbsent: [ nil ]
+	isForBlock := aDictionary at: #isForBlock.
+	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ]
 ]
 
 { #category : #initialization }

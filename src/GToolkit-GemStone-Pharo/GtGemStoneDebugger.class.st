@@ -38,6 +38,7 @@ GtGemStoneDebugger >> gsRestartFrameLevel: anInteger [
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	
 	self resetState.
 ]
 
@@ -50,6 +51,7 @@ GtGemStoneDebugger >> gsResume [
 		autoCommit: false.
 	exception debugResult: result.
 	exception hasDebugResult: true.
+	
 	self resetState.
 ]
 
@@ -89,7 +91,7 @@ GtGemStoneDebugger >> gsStepThroughFrameLevel: anInteger [
 	self resetState.
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtGemStoneDebugger >> gtViewStackFramesFor: aView [ 
 	<gtView>
 	
@@ -124,13 +126,22 @@ GtGemStoneDebugger >> stackFrames [
 	"Answer a ordered collection of stack frames.
 	This is called many times by the debugger, so cache"
 
-	stackFrames ifNil: [ | defaultFrameOrdinal |
+	stackFrames ifNil: [ 
+		| defaultFrameOrdinal previousStackFrame currentStackFrame |
+		
+		previousStackFrame := nil.
+		currentStackFrame := nil.
 		allStackFrames := exception debuggerState callStack frameSpecifications
 			collectWithIndex: [ :aFrameSpecification :index |
-				GtGemStoneStackFrame 
+				currentStackFrame := GtGemStoneStackFrame 
 					fromSpecification: aFrameSpecification 
 					atIndex: index 
-					forException: exception ].
+					forException: exception.
+				previousStackFrame ifNotNil: [
+					previousStackFrame sender: currentStackFrame ].
+				previousStackFrame := currentStackFrame.
+				currentStackFrame ].
+			
 		defaultFrameOrdinal := self defaultFrameOrdinalFrom: allStackFrames.
 		stackFrames := defaultFrameOrdinal > 1 
 			ifTrue: [ 

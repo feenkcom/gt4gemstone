@@ -1,9 +1,6 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
 	#superclass : #DebugSession,
-	#instVars : [
-		'serverApiVersion'
-	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -78,6 +75,11 @@ GtGemStoneDebuggerSession >> remoteApiVersion [
 	^ self remoteMetadata apiVersion
 ]
 
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> remoteContext [
+	^ self remoteStackFrames first
+]
+
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteMetadata [
 	^ self exception debuggerState remoteMetadata
@@ -86,6 +88,11 @@ GtGemStoneDebuggerSession >> remoteMetadata [
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteSchemaVersion [
 	^ self remoteMetadata schemaVersion
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> remoteStackFrames [
+	^ self debuggerClient stackFrames
 ]
 
 { #category : #accessing }
