@@ -49,6 +49,12 @@ GtGemStoneDebuggerSession >> exception [
 		exception := self interruptedContext receiver exception ]
 ]
 
+{ #category : #'api - remote' }
+GtGemStoneDebuggerSession >> gsStepOverFrameLevel: anInteger [
+	self debuggerClient 
+		gsStepOverFrameLevel: anInteger.
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> modules [ 
 	"There are never loaded modules in the postmortem debugger"
@@ -93,6 +99,11 @@ GtGemStoneDebuggerSession >> remoteSchemaVersion [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> remoteStackFrames [
 	^ self debuggerClient stackFrames
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerSession >> synchronizeCallStack [
+	self debuggerClient synchronizeCallStack
 ]
 
 { #category : #accessing }

@@ -171,3 +171,7 @@ GtGemStoneDebugger >> summaryString [
 
 	^ exception debuggerState summary
 ]
+
+{ #category : #actions }
+GtGemStoneDebugger >> synchronizeCallStack [
+]

@@ -71,6 +71,7 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 { #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
 
+	self debugSession synchronizeCallStack.
 	self scheduleUpdateUI.
 ]
 
@@ -293,16 +294,13 @@ GtGemStoneExpandableDebuggerElement >> gsStepInto [
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepOut [
 
-	self debuggerClient gsStepOverFrameLevel: self currentCallFrame ordinal + 1.
-	"self scheduleUpdateUI."
+	self debugSession gsStepOverFrameLevel: self currentCallFrame ordinal + 1.
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepOver [
 
-	self debuggerClient 
-		gsStepOverFrameLevel: self currentCallFrame ordinal.
-	"self scheduleUpdateUI."
+	self debugSession gsStepOverFrameLevel: self currentCallFrame ordinal.
 ]
 
 { #category : #actions }
@@ -437,8 +435,8 @@ GtGemStoneExpandableDebuggerElement >> scheduleUpdateStdout [
 { #category : #private }
 GtGemStoneExpandableDebuggerElement >> scheduleUpdateUI [
 
-	self enqueueTask: (BlTaskAction new action: [ self updateUI ]).
-
+	self enqueueTask: (BlTaskAction new 
+		action: [ self updateUI ]).
 ]
 
 { #category : #'private - element creation' }
