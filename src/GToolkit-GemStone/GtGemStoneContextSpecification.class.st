@@ -21,7 +21,13 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 	^ super asDictionaryForExport
 		at: #isForBlock put: isForBlock;
 		at: #ipOffset put: ipOffset;
+		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
 		yourself
+]
+
+{ #category : #accessing }
+GtGemStoneContextSpecification >> frameIdentifier [
+	^ frameIdentifier
 ]
 
 { #category : #initialization }
