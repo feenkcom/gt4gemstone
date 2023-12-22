@@ -37,7 +37,7 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	
 	isForBlock := aGsCallFrame isForBlock.
 	ipOffset := aGsCallFrame ipOffset.
-	frameIdentifier := aGsCallFrame. 
+	frameIdentifier := aGsCallFrame frameIdentifier. 
 ]
 
 { #category : #initialization }
