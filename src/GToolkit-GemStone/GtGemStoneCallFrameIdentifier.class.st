@@ -30,7 +30,7 @@ GtGemStoneCallFrameIdentifier >> = anObject [
 GtGemStoneCallFrameIdentifier >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
-		at: #identityIndex put: identityIndex;
+		at: 'identityIndex' put: identityIndex;
 		yourself
 ]
 
@@ -53,7 +53,7 @@ GtGemStoneCallFrameIdentifier >> initializeForIndex: anIndex [
 GtGemStoneCallFrameIdentifier >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	identityIndex := aDictionary at: #identityIndex.
+	identityIndex := aDictionary at: 'identityIndex'.
 ]
 
 { #category : #accessing }

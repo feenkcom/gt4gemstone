@@ -27,9 +27,9 @@ GtGemStoneProcessSpecification >> gtViewCallFrameSpecificationsFor: aView [
 
 { #category : #accessing }
 GtGemStoneProcessSpecification >> initializeForGsCallStack: aCallStack [
-	methodCoderSpecifications := aCallStack callFrames 
+	methodCoderSpecifications := (aCallStack callFrames 
 		collect: [ :aGsCallFrame |
-			GtGemStoneContextSpecification forGsCallFrame: aGsCallFrame ]
+			GtGemStoneContextSpecification forGsCallFrame: aGsCallFrame ]) asArray
 ]
 
 { #category : #accessing }
