@@ -215,10 +215,7 @@ GtGemStoneStackFrame >> programCounterRange [
 
 { #category : #accessing }
 GtGemStoneStackFrame >> remoteIdentity [
-	^ GtGemStoneCallFrameIdentity 
-		className: className 
-		methodSelector: self methodSelector 
-		ipOffset: self ipOffset
+	^ GtGemStoneCallFrameIdentifier new
 ]
 
 { #category : #accessing }

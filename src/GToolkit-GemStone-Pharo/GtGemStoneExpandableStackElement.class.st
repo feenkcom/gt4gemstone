@@ -2,16 +2,16 @@ Class {
 	#name : #GtGemStoneExpandableStackElement,
 	#superclass : #GtAbstractExpandableStackElement,
 	#instVars : [
-		'stackIndexList',
-		'stackFrames'
+		'stackIndexList'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
-{ #category : #accessing }
+{ #category : #callbacks }
 GtGemStoneExpandableStackElement >> actOnCoderInFocusFor: aContextCoderUIModel [
 	| context |
 	super actOnCoderInFocusFor: aContextCoderUIModel.
+	
 	context := aContextCoderUIModel context.
 	self updateStackIndexListTo: context.
 ]
@@ -77,12 +77,18 @@ GtGemStoneExpandableStackElement >> contextMethodText: aContext [
 ]
 
 { #category : #accessing }
+GtGemStoneExpandableStackElement >> createStackModelOnSession: aDebuggingSession [
+	^ GtGemStoneDebuggerStackModel onSession: aDebuggingSession
+]
+
+{ #category : #initialization }
 GtGemStoneExpandableStackElement >> initialize [
 	super initialize.
+	
 	self layout: BlLinearLayout horizontal.
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneExpandableStackElement >> initializeStackList [
 	| stackFramesList stackPane sidebarElement tabGroup stackTab |
 	sidebarElement := GtPhlowHorizontalSidebarElement new beLeft.
@@ -114,10 +120,26 @@ GtGemStoneExpandableStackElement >> initializeStackList [
 ]
 
 { #category : #accessing }
+GtGemStoneExpandableStackElement >> onStackChanged [
+	super onStackChanged.
+	
+	self updateStackIndex
+]
+
+{ #category : #accessing }
 GtGemStoneExpandableStackElement >> onStackIndexSelectionChanged [
 	self
 		inUIProcessDo: [ self stackIndexList
 				selectedItemDo: [ :context :index | self selectContext: context ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneExpandableStackElement >> openFirstNonFilteredContextFrom: stream [
+	(stream next then: [ :item | 
+		item isSome ifTrue: [  
+			self enqueueTask: [ 
+				self selectCoderUIModel: item value ] asBlTask ] ])
+		await
 ]
 
 { #category : #accessing }
@@ -135,7 +157,13 @@ GtGemStoneExpandableStackElement >> stackIndexList [
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 
-	stackFrames := aDebuggingSession debuggerClient stackFrames.
+	stackModel
+		ifNil: [ self initializeStackModelFor: aDebuggingSession ]
+		ifNotNil: [ stackModel updateContent ].
+		
+	self openFirstNonFilteredContextFrom: stackModel coderViewModelStream
+
+	"stackFrames := aDebuggingSession debuggerClient stackFrames.
 
 	self inUIProcessDo: [ | currentCallFrame |
 
@@ -149,15 +177,15 @@ GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 
 		self selectContext:  currentCallFrame ].
 
-	self updateStackIndex.
+	self updateStackIndex."
 ]
 
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateStackIndex [
 	self
 		inUIProcessDo: [ 
-			self stackIndexList items: stackFrames.
-			self stackIndexList scrollToIndex: self selectedContext ordinal ]
+			self stackIndexList stream: stackModel contextStream.
+			self stackIndexList scrollToIndex: 1 "self selectedContext ordinal" ]
 ]
 
 { #category : #accessing }
@@ -166,7 +194,10 @@ GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
 	
 	self stackIndexList selectedItemDo: [ :context | selected := context ].
 	selected ~~ aContext
-		ifTrue: [ (self stackIndexList scrollToItemSuchThat: [ :each | each == aContext ])
+		ifTrue: [ 
+			(self stackIndexList 
+				scrollToItemSuchThat: [ :each | 
+					each remoteIdentity = aContext remoteIdentity ])
 				then: [ :v | 
 					self stackIndexList
 						inUIProcessDo: [ | index |
