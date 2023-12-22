@@ -193,14 +193,14 @@ GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
 	| selected |
 	
 	self stackIndexList selectedItemDo: [ :context | selected := context ].
-	selected ~~ aContext
+	selected ~= aContext
 		ifTrue: [ 
 			(self stackIndexList 
-				scrollToItemSuchThat: [ :each | 
-					each remoteIdentity = aContext remoteIdentity ])
+				scrollToItemSuchThat: [ :each | each = aContext ])
 				then: [ :v | 
 					self stackIndexList
 						inUIProcessDo: [ | index |
 							index := self stackIndexList items indexOf: aContext.
-							index > 0 ifTrue: [ self stackIndexList selectOne: index ] ] ] ]
+							index > 0 ifTrue: [ 
+								self stackIndexList selectOne: index ] ] ] ]
 ]

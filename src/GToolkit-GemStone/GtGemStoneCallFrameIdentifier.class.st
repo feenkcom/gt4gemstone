@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneCallFrameIdentifier,
-	#superclass : #Object,
+	#superclass : #GtGemStoneSpecification,
 	#instVars : [
 		'identityIndex'
 	],
@@ -26,6 +26,14 @@ GtGemStoneCallFrameIdentifier >> = anObject [
 	^ self identityIndex = anObject identityIndex
 ]
 
+{ #category : #converting }
+GtGemStoneCallFrameIdentifier >> asDictionaryForExport [
+
+	^ super asDictionaryForExport
+		at: #identityIndex put: identityIndex;
+		yourself
+]
+
 { #category : #comparing }
 GtGemStoneCallFrameIdentifier >> hash [
 	^ self identityIndex hash
@@ -39,6 +47,13 @@ GtGemStoneCallFrameIdentifier >> identityIndex [
 { #category : #initialization }
 GtGemStoneCallFrameIdentifier >> initializeForIndex: anIndex [
 	identityIndex := anIndex
+]
+
+{ #category : #initialization }
+GtGemStoneCallFrameIdentifier >> initializeFromJSONDictionary: aDictionary [
+	super initializeFromJSONDictionary: aDictionary.
+	
+	identityIndex := aDictionary at: #identityIndex.
 ]
 
 { #category : #accessing }

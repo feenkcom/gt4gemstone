@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtGemStoneMethodSpecification,
 	#instVars : [
 		'isForBlock',
-		'ipOffset'
+		'ipOffset',
+		'frameIdentifier'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -30,6 +31,7 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	
 	isForBlock := aGsCallFrame isForBlock.
 	ipOffset := aGsCallFrame ipOffset.
+	frameIdentifier := aGsCallFrame. 
 ]
 
 { #category : #initialization }
@@ -37,7 +39,10 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
 	isForBlock := aDictionary at: #isForBlock.
-	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ]
+	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
+	(aDictionary includesKey: #frameIdentifier) ifTrue: [
+		frameIdentifier := GtGemStoneCallFrameIdentifier 
+			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]
 ]
 
 { #category : #initialization }

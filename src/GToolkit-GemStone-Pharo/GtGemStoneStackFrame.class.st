@@ -14,7 +14,8 @@ Class {
 		'frameSpecification',
 		'method',
 		'ipOffset',
-		'sender'
+		'sender',
+		'frameIdentifier'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -25,6 +26,14 @@ GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification atIndex: an
 		initializeFromSpecification: aFrameSpecification 
 		atIndex: anIndex 
 		forException: anException
+]
+
+{ #category : #comparing }
+GtGemStoneStackFrame >> = anObject [
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	
+	^ self frameIdentifier = anObject frameIdentifier
 ]
 
 { #category : #accessing }
@@ -96,6 +105,16 @@ GtGemStoneStackFrame >> frameArray [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> frameIdentifier [
+	^ frameIdentifier
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> frameIdentifier: anIdentifier [
+	frameIdentifier := anIdentifier
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> frameSpecification [
 	^ frameSpecification
 ]
@@ -132,6 +151,11 @@ GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
 		styler: BrRBTextStyler new
 ]
 
+{ #category : #comparing }
+GtGemStoneStackFrame >> hash [
+	^ self frameIdentifier hash
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> inBlock [
 	^ inBlock
@@ -149,7 +173,8 @@ GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
 		selector: aFrameSpecification selector;
 		inBlock: aFrameSpecification isForBlock;
 		ipOffset: aFrameSpecification ipOffset;
-		frameSpecification: aFrameSpecification
+		frameSpecification: aFrameSpecification;
+		frameIdentifier:aFrameSpecification frameIdentifier
 ]
 
 { #category : #initization }
@@ -211,11 +236,6 @@ GtGemStoneStackFrame >> programCounterRange [
 	^ self currentMessageRangeAt: sourceInfo first 
 		in: sourceString 
 		fallBack: sourceInfo second.
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> remoteIdentity [
-	^ GtGemStoneCallFrameIdentifier new
 ]
 
 { #category : #accessing }

@@ -5,8 +5,8 @@ GtGemStoneDebuggerInitialState holds the information required to open the GS deb
 - exception displayString
 "
 Class {
-	#name : 'GtGemStoneDebuggerState',
-	#superclass : 'Object',
+	#name : #GtGemStoneDebuggerState,
+	#superclass : #Object,
 	#instVars : [
 		'summary',
 		'isResumable',
@@ -19,13 +19,13 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneDebuggerState class >> fromJsonString: aString [
 	^ self new 
 		initializeFromJsonString: aString
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneDebuggerState class >> process: aGsProcess exception: anException [
 	"Create a new instance of the receiver populated for the supplied process and exception"
 
@@ -34,7 +34,7 @@ GtGemStoneDebuggerState class >> process: aGsProcess exception: anException [
 		exception: anException
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneDebuggerState class >> process: aGsProcess exception: anException callStack: aCallStack [
 	"Create a new instance of the receiver populated for the supplied process and exception"
 
@@ -44,7 +44,7 @@ GtGemStoneDebuggerState class >> process: aGsProcess exception: anException call
 		callStack: aCallStack
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> asDictionaryForExport [
 
 	^ Dictionary new
@@ -58,26 +58,26 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		yourself
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> asJsonForExport [ 
 	"Answer the receiver serialised in JSON format"
 
 	^STON toJsonString: self asDictionaryForExport
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> callStack [
 
 	^ callStackSpecification
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> callStackSpecification [
 
 	^ callStackSpecification
 ]
 
-{ #category : 'gt - extensions' }
+{ #category : #'gt - extensions' }
 GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [ 
 	<gtView>
 	
@@ -87,7 +87,7 @@ GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [
 		view: #gtViewCallFrameSpecificationsFor: 
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> initializeFromJSONDictionary: aDictionary [
 	
 	messageText := aDictionary at: #messageText.
@@ -102,7 +102,7 @@ GtGemStoneDebuggerState >> initializeFromJSONDictionary: aDictionary [
 	self initializeMetadataFromJSONDictionary: aDictionary.
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> initializeFromJsonString: aString [
 	| dictionary |
 
@@ -111,41 +111,13 @@ GtGemStoneDebuggerState >> initializeFromJsonString: aString [
 	self initializeFromJSONDictionary: dictionary.
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneDebuggerState >> initializeMetadataFromJSONDictionary: aDictionary [ 
 	remoteMetadata := GtGemStoneSpecificationMedatada 
 		fromObjectDictionary: aDictionary
 ]
 
-{ #category : 'initialize' }
-GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException [
-
-	messageText := anException messageText.
-	isResumable := anException isResumable.
-	isSuspended := aGsProcess _isSuspended.
-	isTerminated := aGsProcess _isTerminated.
-	summary := aGsProcess _isTerminated
-		ifTrue: [ 'Terminated: ', anException messageText ]
-		ifFalse: [ anException messageText ].
-
-	callStackSpecification := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
-]
-
-{ #category : 'initialize' }
-GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException callStack: aCallStack [
-
-	messageText := anException messageText.
-	isResumable := anException isResumable.
-	isSuspended := aGsProcess _isSuspended.
-	isTerminated := aGsProcess _isTerminated.
-	summary := aGsProcess _isTerminated
-		ifTrue: [ 'Terminated: ', anException messageText ]
-		ifFalse: [ anException messageText ].
-
-	callStackSpecification := aCallStack createSpecification
-]
-
-{ #category : 'initialize' }
+{ #category : #initialize }
 GtGemStoneDebuggerState >> initializeProcess2: aGsProcess exception: anException [
 
 	messageText := anException messageText.
@@ -164,53 +136,81 @@ GtGemStoneDebuggerState >> initializeProcess2: aGsProcess exception: anException
 		frameArray first isMethodForBlock. } ].
 ]
 
-{ #category : 'accessing' }
+{ #category : #initialize }
+GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException [
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStackSpecification := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+]
+
+{ #category : #initialize }
+GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException callStack: aCallStack [
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStackSpecification := aCallStack createSpecification
+]
+
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isResumable [
 
 	^ isResumable
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isSuspended [
 
 	^ isSuspended
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> isTerminated [
 
 	^ isTerminated
 ]
 
-{ #category : 'accessing - metadata' }
+{ #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> localApiVersion [
 	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
-{ #category : 'accessing - metadata' }
+{ #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> localMetadata [
 	^ GtGemStoneSpecificationMedatada new 
 		apiVersion: self localApiVersion;
 		schemaVersion: self localSchemaVersion
 ]
 
-{ #category : 'accessing - metadata' }
+{ #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> localSchemaVersion [
 	^ GtGemStoneSemanticVersionNumber oneZeroZero
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> messageText [
 
 	^ messageText
 ]
 
-{ #category : 'accessing - metadata' }
+{ #category : #'accessing - metadata' }
 GtGemStoneDebuggerState >> remoteMetadata [
 	^ remoteMetadata
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneDebuggerState >> summary [
 
 	^ summary

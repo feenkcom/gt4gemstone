@@ -7,7 +7,7 @@ Class {
 { #category : #accessing }
 GtGemStoneDebuggerStackModel >> context: aContext [
 	(context isNil or: [ 
-		context remoteIdentity ~= aContext remoteIdentity ]) ifTrue: [ 
+		context ~= aContext ]) ifTrue: [ 
 			"(context notNil and: [ context isDead ])
 				ifTrue: [ self resetCoderViewModelCache ]."
 			context := aContext.
@@ -35,7 +35,7 @@ GtGemStoneDebuggerStackModel >> getCoderViewModelForContext: aContext [
 		critical: [ | entry |
 			"method := aContext isBlockContext ifFalse: [ aContext compiledCode ]."
 			entry := coderViewModelCache
-					at: aContext remoteIdentity 
+					at: aContext 
 					ifAbsentPut: [ {
 						(self createCoderFor: aContext in: session) asCoderViewModel.
 						"method" } ].
