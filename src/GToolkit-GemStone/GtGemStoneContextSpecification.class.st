@@ -46,6 +46,7 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	
 	isForBlock := aDictionary at: #isForBlock.
 	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
+	
 	(aDictionary includesKey: #frameIdentifier) ifTrue: [
 		frameIdentifier := GtGemStoneCallFrameIdentifier 
 			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]

@@ -116,6 +116,10 @@ GtGemStoneDebugger >> gtViewStackFramesFor: aView [
 			text: [ :aStackFrame |
 				aStackFrame ordinal ]
 			width: 75;
+		column: 'Identifier' 
+			text: [ :aStackFrame |
+				aStackFrame frameIdentifier identityIndex ]
+			width: 75;
 		column: 'Method' text: [ :aStackFrame |
 			aStackFrame printString ]
 ]

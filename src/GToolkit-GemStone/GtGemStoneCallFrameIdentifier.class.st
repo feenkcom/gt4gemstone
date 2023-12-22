@@ -67,5 +67,5 @@ GtGemStoneCallFrameIdentifier >> printOn: aStream [
 	
 	aStream parenthesize: [
 		aStream
-			nextPutAll: self identityIndex ]
+			nextPutAll: self identityIndex asString ]
 ]

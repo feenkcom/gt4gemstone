@@ -17,7 +17,7 @@ GtGemStoneLocalCallStack class >> forProcess: aGsProcess [
 
 { #category : #updating }
 GtGemStoneLocalCallStack >> appendCallFramesFromIndex: anIndex from: aNewCallStack [ 
-	(aNewCallStack copyFrom: anIndex to: aNewCallStack size) 
+	(aNewCallStack callFrames copyFrom: anIndex to: aNewCallStack size) 
 		do: [ :aNewCallFrame |
 			self appendNewCallFrame: aNewCallFrame ]
 ]
