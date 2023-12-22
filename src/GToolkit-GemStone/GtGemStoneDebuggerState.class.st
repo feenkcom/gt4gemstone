@@ -8,13 +8,13 @@ Class {
 	#name : #GtGemStoneDebuggerState,
 	#superclass : #Object,
 	#instVars : [
-		'callStack',
 		'summary',
 		'isResumable',
 		'isSuspended',
 		'isTerminated',
 		'messageText',
-		'remoteMetadata'
+		'remoteMetadata',
+		'callStackSpecification'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -43,7 +43,7 @@ GtGemStoneDebuggerState >> asDictionaryForExport [
 		at: #isResumable put: isResumable;
 		at: #isTerminated put: isTerminated;
 		at: #summary put: summary;
-		at: #callStack put: callStack asDictionaryForExport;
+		at: #callStack put: callStackSpecification asDictionaryForExport;
 		addAll: self localMetadata asMetadataAttributesForExport;
 		yourself
 ]
@@ -58,7 +58,13 @@ GtGemStoneDebuggerState >> asJsonForExport [
 { #category : #accessing }
 GtGemStoneDebuggerState >> callStack [
 
-	^ callStack
+	^ callStackSpecification
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerState >> callStackSpecification [
+
+	^ callStackSpecification
 ]
 
 { #category : #'gt - extensions' }
@@ -67,21 +73,21 @@ GtGemStoneDebuggerState >> gtViewCallFrameSpecificationsFor: aView [
 	
 	^ aView forward 
 		title: 'Frame specifications';
-		object: [ self callStack ];
+		object: [ self callStackSpecification ];
 		view: #gtViewCallFrameSpecificationsFor: 
 ]
 
 { #category : #converting }
 GtGemStoneDebuggerState >> initializeFromJSONDictionary: aDictionary [
 	
-	messageText := aDictionary at: 'messageText'.
-	isResumable := aDictionary at: 'isResumable'.
-	isSuspended := aDictionary at: 'isSuspended'.
-	isTerminated := aDictionary at: 'isTerminated'.
-	summary := aDictionary at: 'summary'.
+	messageText := aDictionary at: #messageText.
+	isResumable := aDictionary at: #isResumable.
+	isSuspended := aDictionary at: #isSuspended.
+	isTerminated := aDictionary at: #isTerminated.
+	summary := aDictionary at: #summary.
 	
-	callStack := GtGemStoneProcessSpecification 
-		fromJSONDictionary:  (aDictionary at: 'callStack').
+	callStackSpecification := GtGemStoneProcessSpecification 
+		fromJSONDictionary:  (aDictionary at: #callStack).
 		
 	self initializeMetadataFromJSONDictionary: aDictionary.
 ]
@@ -112,7 +118,7 @@ GtGemStoneDebuggerState >> initializeProcess2: aGsProcess exception: anException
 		ifTrue: [ 'Terminated: ', anException messageText ]
 		ifFalse: [ anException messageText ].
 
-	callStack := aGsProcess gtAllFrames collect: [ :frameArray |
+	callStackSpecification := aGsProcess gtAllFrames collect: [ :frameArray |
 		| homeMethod |
 		homeMethod := frameArray first homeMethod.
 		{ homeMethod inClass ifNotNil: [ :cls | cls name ].
@@ -131,7 +137,21 @@ GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException 
 		ifTrue: [ 'Terminated: ', anException messageText ]
 		ifFalse: [ anException messageText ].
 
-	callStack := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+	callStackSpecification := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+]
+
+{ #category : #initialize }
+GtGemStoneDebuggerState >> initializeProcess: aGsProcess exception: anException callStack: aCallStack [
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStackSpecification := aCallStack createSpecification
 ]
 
 { #category : #accessing }

@@ -142,7 +142,7 @@ GtGemStoneDebugger >> retrieveAllStackFrames [
 	previousStackFrame := nil.
 	currentStackFrame := nil.
 	
-	^ exception debuggerState callStack frameSpecifications
+	^ exception debuggerState callStackSpecification frameSpecifications
 		collectWithIndex: [ :aFrameSpecification :index |
 			currentStackFrame := GtGemStoneStackFrame 
 				fromSpecification: aFrameSpecification 
@@ -174,4 +174,5 @@ GtGemStoneDebugger >> summaryString [
 
 { #category : #actions }
 GtGemStoneDebugger >> synchronizeCallStack [
+	exception synchronizeCallStack
 ]

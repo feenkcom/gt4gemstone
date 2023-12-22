@@ -127,3 +127,11 @@ GtRsrEvaluationException >> resetState [
 
 	debuggerState := nil.
 ]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> synchronizeCallStack [
+	debuggerState := GtGemStoneDebuggerState fromJsonString:
+		(self debuggerProxy 
+			proxyPerform: #synchronizeCallStack
+			autoCommit: false).
+]
