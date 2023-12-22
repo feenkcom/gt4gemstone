@@ -30,24 +30,27 @@ GtGemStoneEvaluationContext >> buildMessageText [
 
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> callStack [
-	^ callStack
+	^ callStack ifNil: [
+			callStack := self createNewCallStack ]
 ]
 
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> createNewCallStack [
-	^ callStack ifNil: [
-		callStack := GtGemStoneLocalCallStack forProcess: process]
+	^ GtGemStoneLocalCallStack forProcess: process
 ]
 
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerState [
+	| targetStack |
+
+	targetStack := self createNewCallStack.
 	callStack ifNil: [
-		callStack := self createNewCallStack ].
+		callStack := targetStack ].
 
 	^ GtGemStoneDebuggerState
 		process: process
 		exception: exception
-		callStack: callStack
+		callStack: targetStack
 ]
 
 { #category : 'actions - debug' }
@@ -171,6 +174,21 @@ GtGemStoneEvaluationContext >> methodAtFrameLevel: anInteger [
 	^ (process _frameContentsAt: anInteger) first
 ]
 
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> newDebuggerState [
+
+	^ GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: self createNewCallStack
+]
+
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> newDebuggerStateJsonForExport [
+
+	^ self newDebuggerState asJsonForExport
+]
+
 { #category : 'accessing' }
 GtGemStoneEvaluationContext >> process [
 
@@ -268,7 +286,10 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 
 	stackUpdater updateBasedOn: self createCallStack.
 
-	^ self debuggerStateJsonForExport
+	^ (GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: (callStack ifNil: [ self createNewCallStack ])) asJsonForExport
 ]
 
 { #category : 'actions - debug' }

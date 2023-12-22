@@ -1,16 +1,16 @@
 Class {
-	#name : #GtRsrEvaluatorServiceTest,
-	#superclass : #TestCase,
+	#name : 'GtRsrEvaluatorServiceTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	"Confirm that a compilation error is caught and returned in"
 	| script evaluator context |
@@ -35,7 +35,7 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 	self assert: context exception messageText = 'a CompileError occurred (error 1001), expected a primary expression '.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testInitialState [
 	"Check that the initial state answers the expected information"
 	| process exception state encodedState deserializedState contextSpecification |
@@ -53,8 +53,8 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 		exception: exception.
 
 	self assert: state summary = 'a Halt occurred (error 2709)'.
-	self assert: state callStack size = 15.
-	contextSpecification := state callStack at: 10.
+	self assert: state callStackSpecification size = 15.
+	contextSpecification := state callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = #GtRsrEvaluatorServiceTest.
 	self assert: contextSpecification selector = #testInitialState.
 	self assert: contextSpecification isForBlock.
@@ -67,8 +67,8 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	self assert: encodedState isString.
 	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
-	self assert: deserializedState callStack size = 15.
-	contextSpecification := deserializedState callStack at: 10.
+	self assert: deserializedState callStackSpecification size = 15.
+	contextSpecification := deserializedState callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = 'GtRsrEvaluatorServiceTest'.
 	self assert: contextSpecification selector = 'testInitialState'.
 	self assert: contextSpecification isForBlock.
@@ -78,7 +78,7 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	self deny: deserializedState isTerminated.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -109,7 +109,7 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator result object |
 
@@ -124,7 +124,7 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
@@ -134,7 +134,7 @@ GtRsrEvaluatorServiceTest >> testSelfScript [
 	self assert: result equals: 7.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 
