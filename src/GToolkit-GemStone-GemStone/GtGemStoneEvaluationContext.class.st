@@ -284,7 +284,7 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 	| stackUpdater |
 	stackUpdater := GtGemStoneLocalCallStackUpdater forCallStack: self callStack.
 
-	stackUpdater updateBasedOn: self createCallStack.
+	stackUpdater updateBasedOn: self createNewCallStack.
 
 	^ (GtGemStoneDebuggerState
 		process: process
