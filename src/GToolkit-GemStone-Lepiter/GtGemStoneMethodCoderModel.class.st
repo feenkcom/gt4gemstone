@@ -127,10 +127,8 @@ GtGemStoneMethodCoderModel >> gsBehavior [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> gsMethod [
-	^ targetGsMethod
-	"^ self existsInTheSystem
-		ifTrue: [ self behavior >> self selector ]
-		ifFalse: [ nil ]"
+	^ targetGsMethod ifNil: [ targetGsMethod := methodBehavior realBehaviorDo: 
+		[ :cls | cls compiledMethodAt: selector ] ].
 ]
 
 { #category : #printing }
@@ -198,11 +196,6 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationEr
 					anErrorBlock value.
 					ex return: nil ]
 				ifFalse: [ ex resume ] ]
-]
-
-{ #category : #accessing }
-GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
-	^ initialMethodCoderSpecification
 ]
 
 { #category : #initialization }
@@ -283,6 +276,11 @@ GtGemStoneMethodCoderModel >> initializeShortcuts: addOns [
 GtGemStoneMethodCoderModel >> initializeWithSession: aGtSession fromCoderSpecification: aMethodCoderSpecification [ 
 	self session: aGtSession.
 	self initializeFromCoderSpecification: aMethodCoderSpecification 
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
+	^ initialMethodCoderSpecification
 ]
 
 { #category : #testing }
