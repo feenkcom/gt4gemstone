@@ -14,33 +14,38 @@ GtGemStoneLocalCallStackUpdater class >> forCallStack: aCallStack [
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStackUpdater >> appendCallFramesFromIndex: currentIndex from: aNewCallStack [ 
-	targetCallStack appendCallFramesFromIndex: currentIndex from: aNewCallStack 
+GtGemStoneLocalCallStackUpdater >> appendCallFramesFromIndexPair: anIndexPair from: aNewCallStack [ 
+	targetCallStack 
+		appendCallFramesFromIndex: anIndexPair first
+		from: aNewCallStack 
 ]
 
 { #category : #accessing }
 GtGemStoneLocalCallStackUpdater >> firstDivergentContentxIndexFrom: aNewCallStack [ 
 	"This looks for the first different pair of contexts between the two stack."
-	| currentIndex |
-	currentIndex := 1.
+	| currentIndex newIndex |
+	currentIndex := targetCallStack numberOfCallFrames.
+	newIndex := aNewCallStack numberOfCallFrames.
 
 	[ 
-		(targetCallStack numberOfCallFrames <= currentIndex) and: [
-			(aNewCallStack numberOfCallFrames <= currentIndex) and: [
+		(1 <= currentIndex) and: [
+			(1 <= currentIndex) and: [
 				(targetCallStack callFramesAt: currentIndex)
-					hasSamePropertiesAs:(aNewCallStack callFramesAt: currentIndex) ] ]
+					hasSamePropertiesAs:(aNewCallStack callFramesAt: newIndex) ] ]
 	] whileTrue: [ 
-		currentIndex := currentIndex + 1 ].
+		currentIndex := currentIndex - 1.
+		newIndex := newIndex - 1 ].
 	
-	^ currentIndex
+	^ {currentIndex . newIndex}
 ]
 
 { #category : #testing }
-GtGemStoneLocalCallStackUpdater >> hasCommonMethodContextAtIndex: anIndex with: aNewCallStack [ 
-	^ (targetCallStack numberOfCallFrames <= anIndex) and: [
-			(aNewCallStack numberOfCallFrames <= anIndex) and: [
-				(targetCallStack callFramesAt: anIndex)
-					isForSameMethodOrBlockAs:(aNewCallStack callFramesAt: anIndex) ] ]
+GtGemStoneLocalCallStackUpdater >> hasCommonMethodContextAtIndex: anIndexPair with: aNewCallStack [ 
+	^ (anIndexPair first >= 1) and: [
+			(anIndexPair second >= 1) and: [
+				(targetCallStack callFramesAt: anIndexPair first)
+					isForSameMethodOrBlockAs:(aNewCallStack 
+						callFramesAt: anIndexPair second) ] ]
 ]
 
 { #category : #initialization }
@@ -49,20 +54,20 @@ GtGemStoneLocalCallStackUpdater >> initializeForCallStack: aCallStack [
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStackUpdater >> removeCallFramesFromIndex: anIndex [ 
-	targetCallStack removeCallFramesFromIndex: anIndex
+GtGemStoneLocalCallStackUpdater >> removeCallFramesFromIndexPair: anIndexPair [ 
+	targetCallStack removeCallFramesUpwardsFromIndex: anIndexPair first
 ]
 
 { #category : #updating }
 GtGemStoneLocalCallStackUpdater >> updateBasedOn: aNewCallStack [
-	| firstDifferentIndex |
+	| firstDifferentIndexes |
 	
 	aNewCallStack isEmpty ifTrue: [
 		^ self updateBasedOnEmptyStack ].
 		
-	firstDifferentIndex := self firstDivergentContentxIndexFrom: aNewCallStack.
+	firstDifferentIndexes := self firstDivergentContentxIndexFrom: aNewCallStack.
 	^ self 
-		updateStackFromIndex: firstDifferentIndex
+		updateStackFromIndex: firstDifferentIndexes
 		basedOn: aNewCallStack
 ]
 
@@ -73,26 +78,30 @@ GtGemStoneLocalCallStackUpdater >> updateBasedOnEmptyStack [
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStackUpdater >> updateStackFromIndex: anIndex basedOn: aNewCallStack [ 
-	| currentIndex |
-	currentIndex := anIndex.
-	(self hasCommonMethodContextAtIndex: currentIndex with: aNewCallStack)
+GtGemStoneLocalCallStackUpdater >> updateStackFromIndex: anIndexPair basedOn: aNewCallStack [ 
+	| currentIndexPair |
+	currentIndexPair := anIndexPair.
+	(self hasCommonMethodContextAtIndex: currentIndexPair with: aNewCallStack)
 		ifTrue: [
-			self updateTopCommonContextAtIndex: currentIndex basedOn: aNewCallStack.
-			currentIndex := currentIndex + 1 ].
+			self 
+				updateTopCommonContextAtIndexPair: currentIndexPair 
+				basedOn: aNewCallStack.
+			currentIndexPair := {
+				currentIndexPair first - 1.
+				currentIndexPair second - 1 } ].
 	
-	self removeCallFramesFromIndex: currentIndex.
-	self appendCallFramesFromIndex: currentIndex from: aNewCallStack.
+	self removeCallFramesFromIndexPair: currentIndexPair.
+	self appendCallFramesFromIndexPair: currentIndexPair from: aNewCallStack.
 	
 	^ targetCallStack
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStackUpdater >> updateTopCommonContextAtIndex: anIndex basedOn: aNewCallStack [ 
+GtGemStoneLocalCallStackUpdater >> updateTopCommonContextAtIndexPair: anIndexPair basedOn: aNewCallStack [ 
 	| existingContext newContext |
-	existingContext := targetCallStack callFramesAt: anIndex.
-	newContext := aNewCallStack callFramesAt: anIndex.
+	existingContext := targetCallStack callFramesAt: anIndexPair first.
+	newContext := aNewCallStack callFramesAt: anIndexPair second.
 	
 	newContext updateIdentifierBasedOn: existingContext.
-	targetCallStack replaceFrameAt: anIndex with: newContext.
+	targetCallStack replaceFrameAt: anIndexPair first with: newContext.
 ]

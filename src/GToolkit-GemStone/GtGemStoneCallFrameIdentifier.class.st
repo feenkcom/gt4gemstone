@@ -15,7 +15,7 @@ GtGemStoneCallFrameIdentifier class >> forIndex: anIndex [
 
 { #category : #'instance creation' }
 GtGemStoneCallFrameIdentifier class >> initialIdentifier [
-	^ self forIndex: 0
+	^ self forIndex: 1
 ]
 
 { #category : #comparing }
@@ -32,6 +32,11 @@ GtGemStoneCallFrameIdentifier >> asDictionaryForExport [
 	^ super asDictionaryForExport
 		at: 'identityIndex' put: identityIndex;
 		yourself
+]
+
+{ #category : #accessing }
+GtGemStoneCallFrameIdentifier >> description [
+	^ self identityIndex asString
 ]
 
 { #category : #comparing }
@@ -67,5 +72,5 @@ GtGemStoneCallFrameIdentifier >> printOn: aStream [
 	
 	aStream parenthesize: [
 		aStream
-			nextPutAll: self identityIndex asString ]
+			nextPutAll: self description ]
 ]

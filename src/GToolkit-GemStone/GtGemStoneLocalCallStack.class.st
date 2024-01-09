@@ -17,15 +17,15 @@ GtGemStoneLocalCallStack class >> forProcess: aGsProcess [
 
 { #category : #updating }
 GtGemStoneLocalCallStack >> appendCallFramesFromIndex: anIndex from: aNewCallStack [ 
-	(aNewCallStack callFrames copyFrom: anIndex to: aNewCallStack size) 
+	(aNewCallStack callFrames copyFrom: 1 to: anIndex) 
 		do: [ :aNewCallFrame |
-			self appendNewCallFrame: aNewCallFrame ]
+			self appendFirstNewCallFrame: aNewCallFrame ]
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStack >> appendNewCallFrame: aNewCallFrame [ 
+GtGemStoneLocalCallStack >> appendFirstNewCallFrame: aNewCallFrame [ 
 	aNewCallFrame updateIdentifierTo: self generateIdentifier.
-	callFrames addLast: aNewCallFrame
+	callFrames addFirst: aNewCallFrame
 ]
 
 { #category : #accessing }
@@ -49,6 +49,25 @@ GtGemStoneLocalCallStack >> generateIdentifier [
 	currentIdentifier := nextFrameIdentifier.
 	nextFrameIdentifier := currentIdentifier nextIdentifier.
 	^ currentIdentifier
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [ 
+	<gtView>
+	
+	^ aView columnedList 
+		title: 'Call frames';
+		items: [ self callFrames ];
+		column: 'Index' 
+			text: [ :aStackFrame :anIndex |
+				anIndex ]
+			width: 75;
+		column: 'Identifier' 
+			text: [ :aStackFrame |
+				aStackFrame frameIdentifier identityIndex ]
+			width: 75;
+		column: 'Method' text: [ :aStackFrame |
+			aStackFrame methodDescription ]
 ]
 
 { #category : #initialization }
@@ -79,9 +98,13 @@ GtGemStoneLocalCallStack >> removeAllCallFrames [
 ]
 
 { #category : #updating }
-GtGemStoneLocalCallStack >> removeCallFramesFromIndex: anIndex [ 
-	"Remove all call frames upwards starting from the given index"
-	callFrames := callFrames copyFrom: 1 to: anIndex - 1
+GtGemStoneLocalCallStack >> removeCallFramesUpwardsFromIndex: anIndex [ 
+	"Remove all call frames upwards starting from the given 1-based index"
+	
+	anIndex = 0 ifTrue: [ ^ self ].
+	callFrames := callFrames 
+		copyFrom: anIndex + 1 
+		to: callFrames size
 ]
 
 { #category : #updating }

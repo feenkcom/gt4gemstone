@@ -80,6 +80,52 @@ GtGemStoneLocalCallFrame >> methodClassName [
 		aClass name ]
 ]
 
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> methodDescription [
+	^ String streamContents: [ :aStream |
+	 	self printMethodDescriptionOn: aStream ]
+]
+
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> printClassLabelOn: aStream [
+	self selfObjectClass ~= self methodClass
+		ifTrue: [
+			aStream 
+				nextPutAll: self selfObjectClassName;
+				nextPutAll: '('; 
+				nextPutAll: self methodClassName;
+				nextPutAll: ')' ]
+		ifFalse: [
+			aStream nextPutAll: self methodClassName ]
+]
+
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> printMethodDescriptionOn: aStream [
+	self isForBlock ifTrue: [
+		aStream nextPutAll: '[] in ' ].
+	self printClassLabelOn: aStream.
+	aStream 
+		nextPutAll: '>>#'.
+	self selector 
+		ifNil: [ aStream nextPutAll: '<none>']
+		ifNotNil: [ :aSelector | 
+			aStream nextPutAll: aSelector ]
+]
+
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize:  [
+		self printMethodDescriptionOn:  aStream.
+		
+		aStream 
+			nextPutAll: ' [';
+			nextPutAll: self ipOffset asString;
+			nextPutAll: ']; id=';
+			nextPutAll: self frameIdentifier description ]
+]
+
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> receiver [
 	^ frameArray at: 10
@@ -98,6 +144,21 @@ GtGemStoneLocalCallFrame >> receiverClassName [
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> selector [
 	^ homeMethod selector.
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> selfObject [
+	^ frameArray at: 8
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> selfObjectClass [
+	^ self selfObject class
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> selfObjectClassName [
+	^ self selfObjectClass name
 ]
 
 { #category : #updating }
