@@ -28,6 +28,21 @@ GtGemStoneLocalCallFrame >> frameIdentifier [
 	^ frameIdentifier
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneLocalCallFrame >> gtFrameArrayItemsFor: aView [
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Frame Arraw';
+		priority: 25;
+		items: [ frameArray ];
+		column: 'Index' 
+			text: [ :eachItem :eachIndex | eachIndex  ]
+			width: 45;
+		column: 'Item' 
+			text: [ :eachItem | eachItem gtDisplayString ].
+]
+
 { #category : #testing }
 GtGemStoneLocalCallFrame >> hasSamePropertiesAs: anotherContext [
 	^ (self isForSameMethodOrBlockAs: anotherContext) and: [

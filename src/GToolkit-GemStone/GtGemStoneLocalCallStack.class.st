@@ -18,7 +18,7 @@ GtGemStoneLocalCallStack class >> forProcess: aGsProcess [
 { #category : #updating }
 GtGemStoneLocalCallStack >> appendCallFramesFromIndex: anIndex from: aNewCallStack [ 
 	(aNewCallStack callFrames copyFrom: 1 to: anIndex) 
-		do: [ :aNewCallFrame |
+		reverseDo: [ :aNewCallFrame |
 			self appendFirstNewCallFrame: aNewCallFrame ]
 ]
 
@@ -65,6 +65,10 @@ GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [
 		column: 'Identifier' 
 			text: [ :aStackFrame |
 				aStackFrame frameIdentifier identityIndex ]
+			width: 75;
+		column: 'IP Offset' 
+			text: [ :aStackFrame |
+				aStackFrame ipOffset ]
 			width: 75;
 		column: 'Method' text: [ :aStackFrame |
 			aStackFrame methodDescription ]

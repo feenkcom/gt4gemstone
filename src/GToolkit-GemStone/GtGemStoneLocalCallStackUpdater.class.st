@@ -16,7 +16,7 @@ GtGemStoneLocalCallStackUpdater class >> forCallStack: aCallStack [
 { #category : #updating }
 GtGemStoneLocalCallStackUpdater >> appendCallFramesFromIndexPair: anIndexPair from: aNewCallStack [ 
 	targetCallStack 
-		appendCallFramesFromIndex: anIndexPair first
+		appendCallFramesFromIndex: anIndexPair second
 		from: aNewCallStack 
 ]
 
