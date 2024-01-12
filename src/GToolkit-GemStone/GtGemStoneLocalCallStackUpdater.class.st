@@ -20,25 +20,6 @@ GtGemStoneLocalCallStackUpdater >> appendCallFramesFromIndexPair: anIndexPair fr
 		from: aNewCallStack 
 ]
 
-{ #category : #accessing }
-GtGemStoneLocalCallStackUpdater >> firstDivergentContentxIndexFrom: aNewCallStack [ 
-	"This looks for the first different pair of contexts between the two stack."
-	| currentIndex newIndex |
-	currentIndex := targetCallStack numberOfCallFrames.
-	newIndex := aNewCallStack numberOfCallFrames.
-
-	[ 
-		(1 <= currentIndex) and: [
-			(1 <= newIndex) and: [
-				(targetCallStack callFramesAt: currentIndex)
-					hasSamePropertiesAs:(aNewCallStack callFramesAt: newIndex) ] ]
-	] whileTrue: [ 
-		currentIndex := currentIndex - 1.
-		newIndex := newIndex - 1 ].
-	
-	^ {currentIndex . newIndex}
-]
-
 { #category : #testing }
 GtGemStoneLocalCallStackUpdater >> hasCommonMethodContextAtIndex: anIndexPair with: aNewCallStack [ 
 	^ (anIndexPair first >= 1) and: [
@@ -69,7 +50,7 @@ GtGemStoneLocalCallStackUpdater >> updateBasedOn: aNewCallStack [
 		forPreviousCallStack: targetCallStack 
 		newCallStack: aNewCallStack.
 	
-	firstDifferentIndexes := self firstDivergentContentxIndexFrom: aNewCallStack.
+	firstDifferentIndexes := doubleCallStack firstDivergentContentsIndex.
 	^ self 
 		updateStackFromIndex: firstDifferentIndexes
 		basedOn: aNewCallStack

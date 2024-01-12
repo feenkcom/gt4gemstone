@@ -23,6 +23,12 @@ GtGemStoneLocalCallFrame class >> forFrameArray: aFrameArray withIdentifier: aFr
 		withIdentifier: aFrameIdentifier
 ]
 
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> description [
+	^ String streamContents: [ :aStream |
+		self printDescriptionOn: aStream]
+]
+
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> frameIdentifier [
 	^ frameIdentifier
@@ -108,10 +114,26 @@ GtGemStoneLocalCallFrame >> printClassLabelOn: aStream [
 			aStream 
 				nextPutAll: self selfObjectClassName;
 				nextPutAll: '('; 
-				nextPutAll: self methodClassName;
+				nextPutAll: (self methodClassName ifNil: [ '<unknown>']);
 				nextPutAll: ')' ]
 		ifFalse: [
-			aStream nextPutAll: self methodClassName ]
+			aStream nextPutAll: (self methodClassName ifNil: [ '<unknown>']) ]
+]
+
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
+]
+
+{ #category : #printing }
+GtGemStoneLocalCallFrame >> printExtraDetailsOn: aStream [
+	aStream 
+		nextPutAll: '[';
+		nextPutAll: self ipOffset asString;
+		nextPutAll: ']; id=';
+		nextPutAll: self frameIdentifier description 
 ]
 
 { #category : #printing }
@@ -132,13 +154,7 @@ GtGemStoneLocalCallFrame >> printOn: aStream [
 	super printOn: aStream.
 	
 	aStream parenthesize:  [
-		self printMethodDescriptionOn:  aStream.
-		
-		aStream 
-			nextPutAll: ' [';
-			nextPutAll: self ipOffset asString;
-			nextPutAll: ']; id=';
-			nextPutAll: self frameIdentifier description ]
+		self printDescriptionOn: aStream ]
 ]
 
 { #category : #accessing }

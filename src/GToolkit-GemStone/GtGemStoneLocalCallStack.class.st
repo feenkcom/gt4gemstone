@@ -96,6 +96,15 @@ GtGemStoneLocalCallStack >> numberOfCallFrames [
 	^ self callFrames size
 ]
 
+{ #category : #printing }
+GtGemStoneLocalCallStack >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream print: self numberOfCallFrames.
+		aStream nextPutAll: ' frames' ]
+]
+
 { #category : #accessing }
 GtGemStoneLocalCallStack >> removeAllCallFrames [
 	self callFrames removeAll
