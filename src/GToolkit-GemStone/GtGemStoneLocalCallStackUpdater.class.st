@@ -29,7 +29,7 @@ GtGemStoneLocalCallStackUpdater >> firstDivergentContentxIndexFrom: aNewCallStac
 
 	[ 
 		(1 <= currentIndex) and: [
-			(1 <= currentIndex) and: [
+			(1 <= newIndex) and: [
 				(targetCallStack callFramesAt: currentIndex)
 					hasSamePropertiesAs:(aNewCallStack callFramesAt: newIndex) ] ]
 	] whileTrue: [ 
@@ -60,11 +60,15 @@ GtGemStoneLocalCallStackUpdater >> removeCallFramesFromIndexPair: anIndexPair [
 
 { #category : #updating }
 GtGemStoneLocalCallStackUpdater >> updateBasedOn: aNewCallStack [
-	| firstDifferentIndexes |
+	| firstDifferentIndexes doubleCallStack |
 	
 	aNewCallStack isEmpty ifTrue: [
 		^ self updateBasedOnEmptyStack ].
 		
+	doubleCallStack := GtGemStoneDoubleLocalCallStack 
+		forPreviousCallStack: targetCallStack 
+		newCallStack: aNewCallStack.
+	
 	firstDifferentIndexes := self firstDivergentContentxIndexFrom: aNewCallStack.
 	^ self 
 		updateStackFromIndex: firstDifferentIndexes
