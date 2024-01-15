@@ -159,7 +159,9 @@ GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 
 	stackModel
 		ifNil: [ self initializeStackModelFor: aDebuggingSession ]
-		ifNotNil: [ stackModel updateContent ].
+		ifNotNil: [ 
+			self halt.
+			stackModel updateContent ].
 		
 	self openFirstNonFilteredContextFrom: stackModel coderViewModelStream
 

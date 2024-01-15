@@ -42,6 +42,18 @@ GtGemStoneContextCoderModel >> initializeFromStackFrame: aStackFrame [
 	self initializeFromCoderSpecification: aStackFrame frameSpecification
 ]
 
+{ #category : #printing }
+GtGemStoneContextCoderModel >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
+]
+
+{ #category : #printing }
+GtGemStoneContextCoderModel >> printExtraDetailsOn: aStream [ 
+	self stackFrame printExtraDetailsOn: aStream 
+]
+
 { #category : #accessing }
 GtGemStoneContextCoderModel >> programCounterRange [
 	^ self stackFrame programCounterRange

@@ -98,6 +98,8 @@ GtGemStoneContextCoderViewModel >> save [
 
 { #category : #accessing }
 GtGemStoneContextCoderViewModel >> updateProgramCounterRange [
+	self updateProgramCounterRange: self coderModel sourceCode.
+	self announce: GtTextualCoderViewModelReadyToRestyle new
 ]
 
 { #category : #accessing }

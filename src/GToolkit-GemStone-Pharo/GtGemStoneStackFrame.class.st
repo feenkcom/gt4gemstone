@@ -66,20 +66,10 @@ GtGemStoneStackFrame >> debuggerProxy [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> descriptionOn: aStream [
-
-	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
-	aStream
-		<< (className ifNil: [ '<none> ' ]);
-		<< '>>';
-		<< (selector ifNil: [ ' <none>' ])
-]
-
-{ #category : #accessing }
 GtGemStoneStackFrame >> displayString [
 
 	^ String streamContents: [ :aStream |
-		self descriptionOn: aStream ]
+		self printMethodDescriptionOn: aStream ]
 ]
 
 { #category : #accessing }
@@ -219,10 +209,39 @@ GtGemStoneStackFrame >> ordinal: aNumber [
 	ordinal := aNumber
 ]
 
-{ #category : #accessing }
-GtGemStoneStackFrame >> printOn: aStream [
+{ #category : #printing }
+GtGemStoneStackFrame >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
+]
 
-	self descriptionOn: aStream
+{ #category : #accessing }
+GtGemStoneStackFrame >> printExtraDetailsOn: aStream [
+	
+	aStream 
+		nextPutAll: '[';
+		nextPutAll: self ipOffset asString;
+		nextPutAll: ']; id=';
+		nextPutAll: self frameIdentifier description 
+]
+
+{ #category : #printing }
+GtGemStoneStackFrame >> printMethodDescriptionOn: aStream [
+
+	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
+	aStream
+		<< (className ifNil: [ '<none> ' ]);
+		<< '>>';
+		<< (selector ifNil: [ ' <none>' ])
+]
+
+{ #category : #printing }
+GtGemStoneStackFrame >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize:  [
+		self printDescriptionOn:  aStream ]
 ]
 
 { #category : #accessing }
