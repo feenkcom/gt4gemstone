@@ -1,49 +1,61 @@
 Class {
-	#name : #GtGemStoneLocalCallStack,
-	#superclass : #Object,
+	#name : 'GtGemStoneLocalCallStack',
+	#superclass : 'Object',
 	#instVars : [
 		'callFrames',
 		'gsProcess',
 		'nextFrameIdentifier'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 GtGemStoneLocalCallStack class >> forProcess: aGsProcess [ 
 	^ self new 
 		initializeForProcess: aGsProcess 
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallStack >> appendCallFramesFromIndex: anIndex from: aNewCallStack [ 
 	(aNewCallStack callFrames copyFrom: 1 to: anIndex) 
 		reverseDo: [ :aNewCallFrame |
 			self appendFirstNewCallFrame: aNewCallFrame ]
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallStack >> appendFirstNewCallFrame: aNewCallFrame [ 
 	aNewCallFrame updateIdentifierTo: self generateIdentifier.
 	callFrames addFirst: aNewCallFrame
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> callFrames [
 	^ callFrames
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> callFramesAt: anIndex [
 	^ self callFrames at: anIndex
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> createSpecification [
 	^ GtGemStoneProcessSpecification forGsCallStack: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
+GtGemStoneLocalCallStack >> frameLevelForIdentifier: aFrameIdentifier [
+	aFrameIdentifier ifNil: [
+		Error signal: 'aFrameIdentifier cannot be nil' ].
+
+	1 to: self callFrames size do: [ :anIndex |
+		(self callFrames at: anIndex) frameIdentifier = aFrameIdentifier
+			ifTrue: [ ^ anIndex ] ].
+
+	Error signal: 'Could not find frame with identifier: ', aFrameIdentifier printString
+]
+
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> generateIdentifier [
 	| currentIdentifier |
 	currentIdentifier := nextFrameIdentifier.
@@ -51,7 +63,7 @@ GtGemStoneLocalCallStack >> generateIdentifier [
 	^ currentIdentifier
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : 'gt - extensions' }
 GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [ 
 	<gtView>
 	
@@ -74,7 +86,7 @@ GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [
 			aStackFrame methodDescription ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneLocalCallStack >> initializeForProcess: aGsProcess [ 
 	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
 
@@ -86,17 +98,17 @@ GtGemStoneLocalCallStack >> initializeForProcess: aGsProcess [
 				withIdentifier: self generateIdentifier ]).
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtGemStoneLocalCallStack >> isEmpty [
 	^ self numberOfCallFrames = 0
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> numberOfCallFrames [
 	^ self callFrames size
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallStack >> printOn: aStream [
 	super printOn: aStream.
 	
@@ -105,12 +117,12 @@ GtGemStoneLocalCallStack >> printOn: aStream [
 		aStream nextPutAll: ' frames' ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallStack >> removeAllCallFrames [
 	self callFrames removeAll
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallStack >> removeCallFramesUpwardsFromIndex: anIndex [ 
 	"Remove all call frames upwards starting from the given 1-based index"
 	
@@ -120,7 +132,7 @@ GtGemStoneLocalCallStack >> removeCallFramesUpwardsFromIndex: anIndex [
 		to: callFrames size
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallStack >> replaceFrameAt: anIndex with: aNewContext [
 	self callFrames at: anIndex put: aNewContext
 ]
