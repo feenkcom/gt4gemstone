@@ -286,9 +286,8 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepInto [
-
-	self debuggerClient 
-		gsStepIntoFrameLevel: self currentCallFrame ordinal.
+	self debugSession 
+		gsStepIntoFrameIdentifier:  self currentCallFrame frameIdentifier.
 ]
 
 { #category : #actions }

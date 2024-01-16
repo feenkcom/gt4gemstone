@@ -49,6 +49,25 @@ GtGemStoneDebuggerSession >> exception [
 		exception := self interruptedContext receiver exception ]
 ]
 
+{ #category : #'actions stepping' }
+GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: aFrameIdentifier [
+	[ self debuggerProxy
+		proxyPerform: aMethodSelector
+		withArguments: { aFrameIdentifier identityIndex }
+		autoCommit: false ]
+			on: GtRsrEvaluationException
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	
+	self resetState.
+]
+
+{ #category : #'actions stepping' }
+GtGemStoneDebuggerSession >> gsStepIntoFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepIntoFrameIdentifier:
+		onFrameIdentifier: aFrameIdentifier
+]
+
 { #category : #'api - remote' }
 GtGemStoneDebuggerSession >> gsStepOverFrameLevel: anInteger [
 	self debuggerClient 
@@ -99,6 +118,11 @@ GtGemStoneDebuggerSession >> remoteSchemaVersion [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> remoteStackFrames [
 	^ self debuggerClient stackFrames
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerSession >> resetState [
+	self debuggerClient resetState
 ]
 
 { #category : #actions }
