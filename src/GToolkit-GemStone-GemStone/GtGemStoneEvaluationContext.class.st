@@ -132,6 +132,11 @@ GtGemStoneEvaluationContext >> frameLevelForIdentifier: aFrameIdentifier [
 ]
 
 { #category : 'private' }
+GtGemStoneEvaluationContext >> frameLevelForIdentifierIndex: aFrameIdentifierIndex [
+	^ self frameLevelForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
+]
+
+{ #category : 'private' }
 GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	"Answer the block that will be evaluated if an exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
@@ -271,8 +276,8 @@ GtGemStoneEvaluationContext >> stdout [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepIntoFrameIdentifier: aFrameIdentifier [
-	^ self stepIntoFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> stepIntoFrameIdentifier: aFrameIdentifierIndex [
+	^ self stepIntoFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
