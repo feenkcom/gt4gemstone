@@ -206,7 +206,7 @@ GtGemStoneStackFrame >> sourceText [
 	(sourceText 
 		from: (currentMessageRange first max: 1) 
 		to: (currentMessageRange last min: sourceInfo third size))
-			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
+			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors debuggerTextHighlightColor)
 				beNotOverwritableByStyler.
 	^ sourceText
 ]

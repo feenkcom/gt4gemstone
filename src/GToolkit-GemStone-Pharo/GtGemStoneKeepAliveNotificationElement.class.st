@@ -11,6 +11,12 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Notifications'
 }
 
+{ #category : #accessing }
+GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
+	self clearNotification.
+	self clearContent.
+]
+
 { #category : #'private - accessing' }
 GtGemStoneKeepAliveNotificationElement >> activeMark [
 
@@ -20,12 +26,6 @@ GtGemStoneKeepAliveNotificationElement >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #accessing }
-GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
-	self clearNotification.
-	self clearContent.
 ]
 
 { #category : #'private - accessing' }
