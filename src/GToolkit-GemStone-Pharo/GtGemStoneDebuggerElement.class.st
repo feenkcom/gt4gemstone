@@ -251,7 +251,8 @@ GtGemStoneDebuggerElement >> currentCallFrame: aStackFrame [
 { #category : #private }
 GtGemStoneDebuggerElement >> currentFrameVariable: variableName atIndex: anInteger [
 
-	^ debuggingSession currentFrameVariable: variableName 
+	^ debuggingSession 
+		currentFrameVariable: variableName 
 		atIndex: anInteger
 		frameLevel: self currentCallFrame ordinal
 ]

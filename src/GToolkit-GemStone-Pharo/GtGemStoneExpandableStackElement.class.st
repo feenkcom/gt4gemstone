@@ -16,7 +16,7 @@ GtGemStoneExpandableStackElement >> actOnCoderInFocusFor: aContextCoderUIModel [
 	self updateStackIndexListTo: context.
 ]
 
-{ #category : #accessing }
+{ #category : #'building - widgets' }
 GtGemStoneExpandableStackElement >> buildStackIndex [
 	| indexList labelBlock |
 	indexList := BrColumnedList new
@@ -76,7 +76,7 @@ GtGemStoneExpandableStackElement >> contextMethodText: aContext [
 	^ aContext displayString
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneExpandableStackElement >> createStackModelOnSession: aDebuggingSession [
 	^ GtGemStoneDebuggerStackModel onSession: aDebuggingSession
 ]
@@ -119,18 +119,20 @@ GtGemStoneExpandableStackElement >> initializeStackList [
 	self addChild: stackPane
 ]
 
-{ #category : #accessing }
+{ #category : #callbacks }
 GtGemStoneExpandableStackElement >> onStackChanged [
 	super onStackChanged.
 	
 	self updateStackIndex
 ]
 
-{ #category : #accessing }
+{ #category : #callbacks }
 GtGemStoneExpandableStackElement >> onStackIndexSelectionChanged [
 	self
-		inUIProcessDo: [ self stackIndexList
-				selectedItemDo: [ :context :index | self selectContext: context ] ]
+		inUIProcessDo: [ 
+			self stackIndexList
+				selectedItemDo: [ :context :index | 
+					self selectContext: context ] ]
 ]
 
 { #category : #accessing }
@@ -160,7 +162,6 @@ GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 	stackModel
 		ifNil: [ self initializeStackModelFor: aDebuggingSession ]
 		ifNotNil: [ 
-			self halt.
 			stackModel updateContent ].
 		
 	self openFirstNonFilteredContextFrom: stackModel coderViewModelStream

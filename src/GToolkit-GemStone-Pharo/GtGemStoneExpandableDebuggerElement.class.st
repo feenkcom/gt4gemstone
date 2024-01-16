@@ -287,27 +287,28 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepInto [
 
-	self debuggerClient gsStepIntoFrameLevel: self currentCallFrame ordinal.
-	"self scheduleUpdateUI."
+	self debuggerClient 
+		gsStepIntoFrameLevel: self currentCallFrame ordinal.
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepOut [
 
-	self debugSession gsStepOverFrameLevel: self currentCallFrame ordinal + 1.
+	self debugSession 
+		gsStepOverFrameLevel: self currentCallFrame ordinal + 1.
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepOver [
 
-	self debugSession gsStepOverFrameLevel: self currentCallFrame ordinal.
+	self debugSession 
+		gsStepOverFrameLevel: self currentCallFrame ordinal.
 ]
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepThrough [
-
-	self debuggerClient gsStepThroughFrameLevel: self currentCallFrame ordinal.
-	"self scheduleUpdateUI."
+	self debuggerClient 
+		gsStepThroughFrameLevel: self currentCallFrame ordinal.
 ]
 
 { #category : #initialization }
