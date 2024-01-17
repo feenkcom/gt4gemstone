@@ -8,7 +8,8 @@ Class {
 		'stepIntoButton',
 		'stepOverButton',
 		'stepThroughButton',
-		'stepOutButton'
+		'stepOutButton',
+		'debuggerMessageEditor'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -27,6 +28,7 @@ GtGemStoneDebuggerToolbar >> actOnDebugSessionChanged [
 		ifFalse: [ BlVisibility gone ].
 	{ restartFrameButton. resumeButton. stepIntoButton. stepOverButton. } do: [ :button |
 		button visibility: visibility ].
+	debuggerMessageEditor text: dapDebugElement debuggerClient messageText.
 ]
 
 { #category : #accessing }
@@ -51,13 +53,14 @@ GtGemStoneDebuggerToolbar >> initialize [
 
 	super initialize.
 	self vFitContent.
+	debuggerMessageEditor := self newExceptionMessageEditor.
 	resumeButton := self newResumeButton.
 	restartFrameButton := self newRestartFrameButton.
 	stepIntoButton := self newStepIntoButton.
 	stepOverButton := self newStepOverButton.
 	stepThroughButton := self newStepThroughButton.
 	stepOutButton := self newStepOutButton.
-	self addChildren: { resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. stepOutButton. }.
+	self addChildren: { debuggerMessageEditor. resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. stepOutButton. }.
 	self addChild: self newInspectButton.
 ]
 
@@ -65,6 +68,18 @@ GtGemStoneDebuggerToolbar >> initialize [
 GtGemStoneDebuggerToolbar >> isResumable [
 
 	^ self debuggerClient exception isResumable
+]
+
+{ #category : #'private - element creation' }
+GtGemStoneDebuggerToolbar >> newExceptionMessageEditor [
+
+	^ BrEditor new
+		aptitude: BrGlamorousEditorAptitude;
+		margin: (BlInsets all: 5);
+		"background: Color white;"
+		hMatchParent;
+		vFitContent;
+		beMode: BrTextEditorReadonlyWithoutSelectionMode new.
 ]
 
 { #category : #'private - element creation' }
