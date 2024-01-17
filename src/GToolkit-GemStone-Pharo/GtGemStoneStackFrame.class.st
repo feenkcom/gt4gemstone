@@ -315,22 +315,22 @@ GtGemStoneStackFrame >> sourceCode [
 
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceText [
-	| currentSourceInfo sourceString currentMessageRange |
+	| sourceInfo sourceString currentMessageRange |
 
 	sourceText ifNotNil: [ ^ sourceText ].
-	currentSourceInfo := self debuggerProxy 
+	sourceInfo := self debuggerProxy 
 		proxyPerform: #sourceInfoAtFrameLevel: 
 		withArguments: { ordinal }
 		autoCommit: false.
-	sourceString := currentSourceInfo third.
+	sourceString := sourceInfo third.
 	sourceText := sourceString asRopedText glamorousCodeFont.
-	currentMessageRange := self currentMessageRangeAt: currentSourceInfo first 
+	currentMessageRange := self currentMessageRangeAt: sourceInfo first 
 		in: sourceString 
-		fallBack: currentSourceInfo second.
+		fallBack: sourceInfo second.
 	(sourceText 
 		from: (currentMessageRange first max: 1) 
-		to: (currentMessageRange last min: currentSourceInfo third size))
-			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
+		to: (currentMessageRange last min: sourceInfo third size))
+			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors debuggerTextHighlightColor)
 				beNotOverwritableByStyler.
 	^ sourceText
 ]
