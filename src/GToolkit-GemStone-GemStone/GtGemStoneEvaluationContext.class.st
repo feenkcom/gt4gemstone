@@ -125,6 +125,18 @@ GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
 ]
 
 { #category : 'private' }
+GtGemStoneEvaluationContext >> frameForIdentifier: aFrameIdentifier [
+	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
+
+	^ callStack frameForIdentifier: aFrameIdentifier
+]
+
+{ #category : 'private' }
+GtGemStoneEvaluationContext >> frameForIdentifierIndex: aFrameIdentifierIndex [
+	^ self frameForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
+]
+
+{ #category : 'private' }
 GtGemStoneEvaluationContext >> frameLevelForIdentifier: aFrameIdentifier [
 	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
 
@@ -211,7 +223,12 @@ GtGemStoneEvaluationContext >> process: aGsProcess [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> restartFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
+]
+
+{ #category : 'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> restartFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self restartFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
@@ -238,7 +255,7 @@ GtGemStoneEvaluationContext >> sourceCodeAtFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
@@ -276,7 +293,7 @@ GtGemStoneEvaluationContext >> stdout [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepIntoFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> stepIntoFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepIntoFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
@@ -289,7 +306,7 @@ GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepOverFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> stepOverFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepOverFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
@@ -302,7 +319,7 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepThroughFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> stepThroughFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepThroughFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
@@ -374,7 +391,7 @@ GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> variableIndex: index atFrameIdentifier: aFrameIdentifierIndex [
+GtGemStoneEvaluationContext >> variableIndex: index atFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self variableIndex: index atFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
