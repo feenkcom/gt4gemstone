@@ -49,7 +49,7 @@ GtGemStoneDebuggerSession >> exception [
 		exception := self interruptedContext receiver exception ]
 ]
 
-{ #category : #'actions stepping' }
+{ #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: aFrameIdentifier [
 	[ self debuggerProxy
 		proxyPerform: aMethodSelector
@@ -61,17 +61,38 @@ GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: a
 	self resetState.
 ]
 
-{ #category : #'actions stepping' }
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsRestartFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #restartFrameLevel:
+		onFrameIdentifier: aFrameIdentifier
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsResume [
+
+	self debuggerClient gsResume.
+]
+
+{ #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsStepIntoFrameIdentifier: aFrameIdentifier [
 	self 
 		gsPerformStep: #stepIntoFrameIdentifier:
 		onFrameIdentifier: aFrameIdentifier
 ]
 
-{ #category : #'api - remote' }
-GtGemStoneDebuggerSession >> gsStepOverFrameLevel: anInteger [
-	self debuggerClient 
-		gsStepOverFrameLevel: anInteger.
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsStepOverFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepOverFrameIdentifier:
+		onFrameIdentifier: aFrameIdentifier.
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepThroughFrameIdentifier:
+		onFrameIdentifier: aFrameIdentifier.
 ]
 
 { #category : #accessing }
