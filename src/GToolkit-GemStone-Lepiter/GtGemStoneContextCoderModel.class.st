@@ -35,10 +35,16 @@ GtGemStoneContextCoderModel >> debuggingSession: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderModel >> gsMethod [
+	^ targetGsMethod ifNil: [
+		targetGsMethod := self stackFrame method ]
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderModel >> initializeFromStackFrame: aStackFrame [
 	stackFrame := aStackFrame.
 	session := aStackFrame gsSession.
-	targetGsMethod := aStackFrame method.
+	
 	self initializeFromCoderSpecification: aStackFrame frameSpecification
 ]
 
