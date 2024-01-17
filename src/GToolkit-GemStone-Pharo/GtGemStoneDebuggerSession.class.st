@@ -64,7 +64,7 @@ GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: a
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsRestartFrameIdentifier: aFrameIdentifier [
 	self 
-		gsPerformStep: #restartFrameIdentifier:
+		gsPerformStep: #restartFrameIdentifierIndex:
 		onFrameIdentifier: aFrameIdentifier
 ]
 
@@ -77,21 +77,21 @@ GtGemStoneDebuggerSession >> gsResume [
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsStepIntoFrameIdentifier: aFrameIdentifier [
 	self 
-		gsPerformStep: #stepIntoFrameIdentifier:
+		gsPerformStep: #stepIntoFrameIdentifierIndex:
 		onFrameIdentifier: aFrameIdentifier
 ]
 
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsStepOverFrameIdentifier: aFrameIdentifier [
 	self 
-		gsPerformStep: #stepOverFrameIdentifier:
+		gsPerformStep: #stepOverFrameIdentifierIndex:
 		onFrameIdentifier: aFrameIdentifier.
 ]
 
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
 	self 
-		gsPerformStep: #stepThroughFrameIdentifier:
+		gsPerformStep: #stepThroughFrameIdentifierIndex:
 		onFrameIdentifier: aFrameIdentifier.
 ]
 

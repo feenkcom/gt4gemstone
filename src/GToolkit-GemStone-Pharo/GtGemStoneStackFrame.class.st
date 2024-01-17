@@ -268,7 +268,7 @@ GtGemStoneStackFrame >> programCounterRange [
 { #category : #accessing }
 GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
 	^ self debuggerProxy 
-		proxyPerform: #programCounterMarkersAtFrameIdentifier:
+		proxyPerform: #programCounterMarkersAtFrameIdentifierIndex:
 		withArguments: { 
 			self frameIdentifier identityIndex }
 		autoCommit: false.
