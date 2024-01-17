@@ -6,7 +6,7 @@ Class {
 		'gsProcess',
 		'nextFrameIdentifier'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -126,7 +126,7 @@ GtGemStoneLocalCallStack >> printOn: aStream [
 
 { #category : #accessing }
 GtGemStoneLocalCallStack >> removeAllCallFrames [
-	self callFrames removeAll
+	callFrames := OrderedCollection new
 ]
 
 { #category : #updating }
