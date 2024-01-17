@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneEvaluationContext',
-	#superclass : 'Object',
+	#name : #GtGemStoneEvaluationContext,
+	#superclass : #Object,
 	#instVars : [
 		'exception',
 		'process',
@@ -15,31 +15,31 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> assertNotSignalled [
 
 	semaphore isLocked ifFalse:
 		[ self error: 'Process semaphore already signalled' ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> buildMessageText [
 
 	^ exception buildMessageText
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> callStack [
 	^ callStack ifNil: [
 			callStack := self createNewCallStack ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> createNewCallStack [
 	^ GtGemStoneLocalCallStack forProcess: process
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerState [
 	callStack := self createNewCallStack.
 	
@@ -49,33 +49,33 @@ GtGemStoneEvaluationContext >> debuggerState [
 		callStack: callStack
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerStateJsonForExport [
 
 	^ self debuggerState asJsonForExport
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> devMessage [
 	^devMessage
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> devMessage: object [
 	devMessage := object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> evalServer [
 	^evalServer
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> evalServer: object [
 	evalServer := object
 ]
 
-{ #category : 'actions - api' }
+{ #category : #'actions - api' }
 GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 	"Evaluate the supplied block.
 	If it completes successfully, answer the result.
@@ -106,49 +106,49 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 	^ result
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> exception [
 
 	^ exception
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> exception: anException [
 
 	exception := anException
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
 
 	^ process _frameContentsAt: anInteger
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> frameForIdentifier: aFrameIdentifier [
 	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
 
 	^ callStack frameForIdentifier: aFrameIdentifier
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> frameForIdentifierIndex: aFrameIdentifierIndex [
 	^ self frameForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> frameLevelForIdentifier: aFrameIdentifier [
 	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
 
 	^ callStack frameLevelForIdentifier: aFrameIdentifier
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> frameLevelForIdentifierIndex: aFrameIdentifierIndex [
 	^ self frameLevelForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	"Answer the block that will be evaluated if an exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
@@ -163,38 +163,38 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		ex resume ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
 
 	^ completed
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isResumable [
 
 	^ exception isResumable
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isSuspended [
 
 	^ process _isSuspended
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneEvaluationContext >> isTerminated [
 
 	^ process _isTerminated
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> methodAtFrameLevel: anInteger [
 
 	^ (process _frameContentsAt: anInteger) first
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> newDebuggerState [
 	callStack := self createNewCallStack.
 	
@@ -204,42 +204,42 @@ GtGemStoneEvaluationContext >> newDebuggerState [
 		callStack: callStack
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> newDebuggerStateJsonForExport [
 
 	^ self newDebuggerState asJsonForExport
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> process [
 
 	^ process
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> process: aGsProcess [
 
 	process := aGsProcess
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> restartFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self restartFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> restartFrameLevel: anInteger [
 
 	process _trimStackToLevel: anInteger.
 	^ #restart
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> resume [
 
 	self assertNotSignalled.
@@ -248,18 +248,18 @@ GtGemStoneEvaluationContext >> resume [
 	^ result
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> sourceCodeAtFrameLevel: anInteger [
 
 	^ (self stackFrames at: anInteger) first sourceString
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
 	| frameContents source ipOffset markers startIndex endIndex i |
 
@@ -280,24 +280,24 @@ GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
 	^ { startIndex. endIndex. source. }
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> stackFrames [
 
 	^ process gtAllFrames
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> stdout [
 
 	^ System gemLogFileName asFileReference contents
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> stepIntoFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepIntoFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 
 	process setStepIntoBreaksAtLevel: anInteger.
@@ -305,12 +305,12 @@ GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 	^ #stepInto
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> stepOverFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepOverFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 
 	process setStepOverBreaksAtLevel: anInteger.
@@ -318,12 +318,12 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 	^ #stepOver
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> stepThroughFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepThroughFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
 
 	process setStepThroughBreaksAtLevel: anInteger.
@@ -331,7 +331,7 @@ GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
 	^ #stepThrough
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> synchronizeCallStack [
 	| currentCallStack stackUpdater |
 	currentCallStack := self callStack.
@@ -345,13 +345,13 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 		callStack: currentCallStack) asJsonForExport
 ]
 
-{ #category : 'actions - debug' }
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> terminateProcess [
 
 	process terminate
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	"Answer the variables from the specified frame.
 
@@ -364,7 +364,7 @@ GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	^ frameContents at: index + 10.
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
 	| frameContents associations varNames selfObject |
@@ -390,19 +390,19 @@ GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 	^ associations asArray.
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> variableIndex: index atFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self variableIndex: index atFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> variableIndex: index atFrameLevel: anInteger [
 	"Answer the variable from the specified frame"
 
 	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : #'actions - debug (level)' }
 GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 	"Answer the variables from the specified frame, including self's instance variables"
 
@@ -412,7 +412,7 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 		displayData ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneEvaluationContext >> waitMS: milliseconds [
 	(Delay forMilliseconds: milliseconds) wait
 ]

@@ -61,6 +61,13 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 ]
 
 { #category : #accessing }
+GtpoMetaclass3 >> compiledMethodAt: selector [
+
+	^ self proxyPerform: #compiledMethodAt:
+		withArguments: { selector }.
+]
+
+{ #category : #accessing }
 GtpoMetaclass3 >> definitionString [
 	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
 ]

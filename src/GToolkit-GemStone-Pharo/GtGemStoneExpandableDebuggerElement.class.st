@@ -168,28 +168,6 @@ GtGemStoneExpandableDebuggerElement >> buildStackTabGroupForElement: aStackConta
 ]
 
 { #category : #'private - element creation' }
-GtGemStoneExpandableDebuggerElement >> buildVariablesHeader [
-	| header |
-
-	header := BlElement new
-		layout: (BlLinearLayout horizontal alignCenterLeft cellSpacing: self cellSpacing);
-		padding: (BlInsets top: 5 bottom: 5);
-		labeled: 'Columned Header';
-		background: Color white;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical fitContent ].
-	#(Name Value) do: [ :label |
-		header addChild: (BrLabel new
-			aptitude: BrGlamorousLabelAptitude;
-			alignCenterLeft;
-			width: 100;
-			text: (label asRopedText foreground: BrGlamorousColors defaultButtonTextColor)) ].
-	header children first padding: (BlInsets left: 20).
-	^ header
-]
-
-{ #category : #'private - element creation' }
 GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 	| tree |
 
@@ -202,6 +180,17 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 				(self currentFrameVariable: variableNode value first
 					atIndex: index first) asGtBareProxyObject ]).
 
+	tree column
+		title: 'I.';
+		width: 32;
+		cellStencil: [ BlElement new
+			constraintsDo: [ :c |
+				c horizontal matchParent.
+				c vertical exact: 16 ] ];
+		dataBinder: [ :aCellElement :anArray |
+			aCellElement removeChildren.
+			anArray fourth ifNotNil:
+				[ aCellElement addChild: (Smalltalk ui icons iconNamed:  anArray fourth) asElement ] ].
 	tree column 
 		title: 'Variable';
 		width: 100;
@@ -211,8 +200,8 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 				hMatchParent;
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
-		dataBinder: [ :aCellElement :anAssociation |
-			aCellElement text: anAssociation first asRopedText ].
+		dataBinder: [ :aCellElement :anArray |
+			aCellElement text: anArray first asRopedText ].
 	tree column
 		title: 'Value';
 		cellStencil: [
@@ -221,8 +210,8 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 				hMatchParent;
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
-		dataBinder: [ :aCellElement :anAssociation |
-			aCellElement text: anAssociation second asRopedText ].
+		dataBinder: [ :aCellElement :anArray |
+			aCellElement text: anArray second asRopedText ].
 
 	^ tree
 ]
@@ -406,7 +395,7 @@ GtGemStoneExpandableDebuggerElement >> newToolbar [
 
 { #category : #'instance creation' }
 GtGemStoneExpandableDebuggerElement >> newVariablesList [
-	| container header tree |
+	| container tree |
 
 	container := BlElement new
 		aptitude: BrShadowAptitude;
@@ -415,11 +404,8 @@ GtGemStoneExpandableDebuggerElement >> newVariablesList [
 			c horizontal matchParent.
 			c vertical matchParent ];
 		layout: BlLinearLayout vertical.
-	header := self buildVariablesHeader.
 	tree := self buildVariablesTree.
-	container 
-		addChild: header;
-		addChild: tree as: #variablesList.
+	container addChild: tree as: #variablesList.
 	^ container
 ]
 

@@ -1,6 +1,6 @@
 Extension { #name : #Set }
 
-{ #category : #'*GToolkit-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Set >> asGtRsrProxyObjectForConnection: aRsrConnection [
 	"Answer the receiver as a proxy object.
 	To avoid dealing with equality at the moment, always answer as a proxy object.

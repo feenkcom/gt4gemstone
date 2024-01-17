@@ -119,7 +119,7 @@ GtGemStonePostMortemStackFrame >> sourceText [
 	indexes := source gtIndexOfLineNumber: lineNumber.
 	indexes ifNotNil: 
 		[ (text from: indexes key to: indexes value) 
-			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
+			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors debuggerTextHighlightColor)
 				beNotOverwritableByStyler  ].
 	^ text
 ]

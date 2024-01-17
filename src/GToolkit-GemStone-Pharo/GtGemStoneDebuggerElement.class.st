@@ -159,16 +159,11 @@ GtGemStoneDebuggerElement >> buildPanesStructure [
 
 { #category : #initialization }
 GtGemStoneDebuggerElement >> buildRightPane [
-	| rightPane rightTabGroup |
-	rightPane := BrVerticalPane new
-			matchParent;
-			constraintsDo: [ :c | c linear weight: 0.7 ].
-	rightTabGroup := self newRightTabGroup.
-	debuggerMessageEditor := self newExceptionMessageEditor.
-	rightPane
-		addChild: debuggerMessageEditor;
-		addChild: rightTabGroup.
-	^ rightPane
+
+	^ BrVerticalPane new
+		matchParent;
+		constraintsDo: [ :c | c linear weight: 0.7 ];
+		addChild: self newRightTabGroup.
 ]
 
 { #category : #'private - element creation' }
@@ -447,27 +442,14 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 ]
 
 { #category : #'instance creation' }
-GtGemStoneDebuggerElement >> newExceptionMessageEditor [
-
-	^ BrEditor new
-		aptitude: BrGlamorousEditorAptitude + BrShadowAptitude;
-		margin: (BlInsets all: self defaultMargin);
-		background: Color white;
-		hMatchParent;
-		vFitContent;
-		beMode: BrTextEditorReadonlyWithoutSelectionMode new.
-
-]
-
-{ #category : #'instance creation' }
 GtGemStoneDebuggerElement >> newRightTabGroup [
 
 	^ BrTabGroup new 
 		aptitude: BrGlamorousTabGroupAptitude + BrShadowAptitude;
 		margin: (BlInsets all: self defaultMargin);
 		background: Color white;
-		addTab: self summaryTab;
 		addTab: self variablesTab;
+		addTab: self summaryTab;
 		"addTab: self breakpointsTab;"
 		addTab: self stdoutTab.
 ]
@@ -689,7 +671,6 @@ GtGemStoneDebuggerElement >> updateSummary [
 { #category : #callbacks }
 GtGemStoneDebuggerElement >> updateUI [
 
-	debuggerMessageEditor text: self debuggerClient messageText.
 	self updateDisplay.
 	toolbar updateUI.
 ]

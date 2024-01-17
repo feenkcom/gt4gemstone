@@ -127,10 +127,8 @@ GtGemStoneMethodCoderModel >> gsBehavior [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> gsMethod [
-	^ targetGsMethod
-	"^ self existsInTheSystem
-		ifTrue: [ self behavior >> self selector ]
-		ifFalse: [ nil ]"
+	^ targetGsMethod ifNil: [ targetGsMethod := methodBehavior realBehaviorDo: 
+		[ :cls | cls compiledMethodAt: selector ] ].
 ]
 
 { #category : #printing }
@@ -171,12 +169,15 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 			| remoteException |
 			remoteException := ex debuggerProxy proxyPerform: #exception.
 			(remoteException remoteClass = #CompileError)
-				ifTrue: [
-					| errorDetails |
+				ifTrue:
+					[ | errorDetails |
 					errorDetails := remoteException proxyPerform: #errorDetails.
 					anErrorBlock value: errorDetails.
 					ex return: nil ]
-				ifFalse: [ ex resume ] ]
+				ifFalse: 
+					[ ex isResumable
+						ifTrue: [ ex resume ]
+						ifFalse: [ ex pass ] ] ]
 ]
 
 { #category : #accessing }
