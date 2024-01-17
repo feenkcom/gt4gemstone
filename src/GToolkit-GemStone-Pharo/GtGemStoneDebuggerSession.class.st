@@ -12,6 +12,15 @@ GtGemStoneDebuggerSession >> breakpoints [
 ]
 
 { #category : #accessing }
+GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameIndex: aFrameIndentifier [
+
+	^ self debuggerProxy
+		proxyPerformReturnProxy: #variableIndex:atFrameIdentifierIndex: 
+		withArguments: { anInteger. aFrameIndentifier identityIndex. }
+		autoCommit: false.
+]
+
+{ #category : #accessing }
 GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameLevel: ordinalInteger [
 
 	self remoteApiVersion < GtGemStoneSemanticVersionNumber oneZeroZero  
