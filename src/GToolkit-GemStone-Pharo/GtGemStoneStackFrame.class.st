@@ -225,8 +225,11 @@ GtGemStoneStackFrame >> printExtraDetailsOn: aStream [
 	aStream 
 		nextPutAll: '[';
 		nextPutAll: self ipOffset asString;
-		nextPutAll: ']; id=';
-		nextPutAll: self frameIdentifier description 
+		nextPutAll: ']'.
+	self frameIdentifier ifNotNil: [ :anIdentifier |
+		aStream 
+			nextPutAll: '; id=';
+			nextPutAll: anIdentifier description ]
 ]
 
 { #category : #printing }
