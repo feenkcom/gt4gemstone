@@ -12,7 +12,7 @@ GtGemStoneDebuggerSession >> breakpoints [
 ]
 
 { #category : #accessing }
-GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameIndex: aFrameIndentifier [
+GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameIndentifier: aFrameIndentifier [
 
 	^ self debuggerProxy
 		proxyPerformReturnProxy: #variableIndex:atFrameIdentifierIndex: 

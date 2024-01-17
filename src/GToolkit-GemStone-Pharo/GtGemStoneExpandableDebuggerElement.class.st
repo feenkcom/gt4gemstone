@@ -233,7 +233,7 @@ GtGemStoneExpandableDebuggerElement >> currentFrameVariable: variableName atInde
 	^ debuggingSession 
 		currentFrameVariable: variableName 
 		atIndex: anInteger
-		frameIndex:  self currentCallFrame frameIdentifier
+		frameIndentifier:  self currentCallFrame frameIdentifier
 ]
 
 { #category : #'private - accessing' }
