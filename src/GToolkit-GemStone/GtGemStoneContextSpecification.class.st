@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'isForBlock',
 		'ipOffset',
-		'frameIdentifier'
+		'frameIdentifier',
+		'programCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -22,6 +23,7 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 		at: #isForBlock put: isForBlock;
 		at: #ipOffset put: ipOffset;
 		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
+		at: #programCounterMarkers put: programCounterMarkers;
 		yourself
 ]
 
@@ -38,6 +40,7 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	isForBlock := aGsCallFrame isForBlock.
 	ipOffset := aGsCallFrame ipOffset.
 	frameIdentifier := aGsCallFrame frameIdentifier. 
+	programCounterMarkers := aGsCallFrame programCounterMarkers. 
 ]
 
 { #category : #initialization }
@@ -46,6 +49,7 @@ GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	
 	isForBlock := aDictionary at: #isForBlock.
 	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
+	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
 	
 	(aDictionary includesKey: #frameIdentifier) ifTrue: [
 		frameIdentifier := GtGemStoneCallFrameIdentifier 
@@ -69,4 +73,9 @@ GtGemStoneContextSpecification >> ipOffset [
 { #category : #accessing }
 GtGemStoneContextSpecification >> isForBlock [
 	^ isForBlock ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtGemStoneContextSpecification >> programCounterMarkers [
+	^ programCounterMarkers
 ]

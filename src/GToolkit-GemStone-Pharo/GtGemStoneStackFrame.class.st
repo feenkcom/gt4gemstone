@@ -15,7 +15,8 @@ Class {
 		'method',
 		'ipOffset',
 		'sender',
-		'frameIdentifier'
+		'frameIdentifier',
+		'programCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -164,7 +165,9 @@ GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
 		inBlock: aFrameSpecification isForBlock;
 		ipOffset: aFrameSpecification ipOffset;
 		frameSpecification: aFrameSpecification;
-		frameIdentifier:aFrameSpecification frameIdentifier
+		frameIdentifier:aFrameSpecification frameIdentifier.
+	
+	programCounterMarkers := aFrameSpecification programCounterMarkers 
 ]
 
 { #category : #initization }
@@ -245,16 +248,30 @@ GtGemStoneStackFrame >> printOn: aStream [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> programCounterMarkers [
+	^ programCounterMarkers ifNil: [
+		programCounterMarkers := self retrieveProgramCounterMarkers ]
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> programCounterRange [
-	| sourceInfo sourceString |
-	sourceInfo := self debuggerProxy 
-		proxyPerform: #sourceInfoAtFrameLevel: 
-		withArguments: { ordinal }
-		autoCommit: false.
-	sourceString := sourceInfo third.
-	^ self currentMessageRangeAt: sourceInfo first 
+	| currentSourceInfo sourceString |
+	currentSourceInfo := self programCounterMarkers.
+	sourceString := currentSourceInfo third.
+	
+	^ self 
+		currentMessageRangeAt: currentSourceInfo first 
 		in: sourceString 
-		fallBack: sourceInfo second.
+		fallBack: currentSourceInfo second.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
+	^ self debuggerProxy 
+		proxyPerform: #programCounterMarkersAtFrameIdentifier:
+		withArguments: { 
+			self frameIdentifier identityIndex }
+		autoCommit: false.
 ]
 
 { #category : #accessing }
@@ -290,21 +307,21 @@ GtGemStoneStackFrame >> sourceCode [
 
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceText [
-	| sourceInfo sourceString currentMessageRange |
+	| currentSourceInfo sourceString currentMessageRange |
 
 	sourceText ifNotNil: [ ^ sourceText ].
-	sourceInfo := self debuggerProxy 
+	currentSourceInfo := self debuggerProxy 
 		proxyPerform: #sourceInfoAtFrameLevel: 
 		withArguments: { ordinal }
 		autoCommit: false.
-	sourceString := sourceInfo third.
+	sourceString := currentSourceInfo third.
 	sourceText := sourceString asRopedText glamorousCodeFont.
-	currentMessageRange := self currentMessageRangeAt: sourceInfo first 
+	currentMessageRange := self currentMessageRangeAt: currentSourceInfo first 
 		in: sourceString 
-		fallBack: sourceInfo second.
+		fallBack: currentSourceInfo second.
 	(sourceText 
 		from: (currentMessageRange first max: 1) 
-		to: (currentMessageRange last min: sourceInfo third size))
+		to: (currentMessageRange last min: currentSourceInfo third size))
 			attribute: (BlTextUnderlineAttribute new color: BrGlamorousColors errorBackgroundColor)
 				beNotOverwritableByStyler.
 	^ sourceText
