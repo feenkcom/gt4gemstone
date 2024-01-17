@@ -88,8 +88,8 @@ GtGemStoneExpandableStackElement >> initializeStackList [
 	sidebarElement := GtPhlowHorizontalSidebarElement new beLeft.
 	self
 		addAptitude: (GtPhlowToolDetailAptitude new
-				normal: [ :theInstance | sidebarElement hide ];
-				detailed: [ :theInstance | sidebarElement show ]).
+				normal: [ :aStyle | aStyle do: [ sidebarElement hide ] ];
+				detailed: [ :aStyle | aStyle do: [ sidebarElement show ] ]).
 	stackIndexList := self buildStackIndex.
 	
 	tabGroup := BrTabGroup new aptitude: BrGlamorousTabGroupAptitude new.
