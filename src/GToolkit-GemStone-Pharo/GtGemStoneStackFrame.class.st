@@ -256,8 +256,16 @@ GtGemStoneStackFrame >> programCounterMarkers [
 { #category : #accessing }
 GtGemStoneStackFrame >> programCounterRange [
 	| currentSourceInfo sourceString |
+	
 	currentSourceInfo := self programCounterMarkers.
-	sourceString := currentSourceInfo third.
+	"programCounterMarkers 
+		ifNil: [ 
+			currentSourceInfo := self retrieveProgramCounterMarkers.]
+		ifNotNil: [
+			currentSourceInfo := programCounterMarkers.
+			programCounterMarkers := nil ]."
+	
+	sourceString := self frameSpecification sourceString.
 	
 	^ self 
 		currentMessageRangeAt: currentSourceInfo first 
@@ -330,6 +338,11 @@ GtGemStoneStackFrame >> sourceText [
 { #category : #accessing }
 GtGemStoneStackFrame >> targetClassName [
 	^ className
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
+	programCounterMarkers := newMarkers
 ]
 
 { #category : #accessing }
