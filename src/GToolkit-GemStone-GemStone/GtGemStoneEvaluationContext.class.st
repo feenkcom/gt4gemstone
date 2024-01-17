@@ -211,8 +211,8 @@ GtGemStoneEvaluationContext >> process: aGsProcess [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> restartFrameIdentifier: aFrameIdentifier [
-	^ self restartFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> restartFrameIdentifier: aFrameIdentifierIndex [
+	^ self restartFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
@@ -238,8 +238,8 @@ GtGemStoneEvaluationContext >> sourceCodeAtFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifier: aFrameIdentifier [
-	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifier: aFrameIdentifierIndex [
+	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
@@ -289,8 +289,8 @@ GtGemStoneEvaluationContext >> stepIntoFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepOverFrameIdentifier: aFrameIdentifier [
-	^ self stepOverFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> stepOverFrameIdentifier: aFrameIdentifierIndex [
+	^ self stepOverFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
@@ -302,8 +302,8 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> stepThroughFrameIdentifier: aFrameIdentifier [
-	^ self stepThroughFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> stepThroughFrameIdentifier: aFrameIdentifierIndex [
+	^ self stepThroughFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
@@ -374,8 +374,8 @@ GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
 ]
 
 { #category : 'actions - debug (identifier)' }
-GtGemStoneEvaluationContext >> variableIndex: index atFrameIdentifier: aFrameIdentifier [
-	^ self variableIndex: index atFrameLevel: (self frameLevelForIdentifier: aFrameIdentifier)
+GtGemStoneEvaluationContext >> variableIndex: index atFrameIdentifier: aFrameIdentifierIndex [
+	^ self variableIndex: index atFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
