@@ -305,7 +305,7 @@ GtGemStoneExpandableDebuggerElement >> gsStepOver [
 
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepThrough [
-	self debuggerClient 
+	self debugSession 
 		gsStepThroughFrameIdentifier: self currentCallFrame frameIdentifier.
 ]
 

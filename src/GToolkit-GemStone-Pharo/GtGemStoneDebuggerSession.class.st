@@ -64,7 +64,7 @@ GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: a
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsRestartFrameIdentifier: aFrameIdentifier [
 	self 
-		gsPerformStep: #restartFrameLevel:
+		gsPerformStep: #restartFrameIdentifier:
 		onFrameIdentifier: aFrameIdentifier
 ]
 
