@@ -53,8 +53,8 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 		exception: exception.
 
 	self assert: state summary = 'a Halt occurred (error 2709)'.
-	self assert: state callStack size = 15.
-	contextSpecification := state callStack at: 10.
+	self assert: state callStackSpecification size = 15.
+	contextSpecification := state callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = #GtRsrEvaluatorServiceTest.
 	self assert: contextSpecification selector = #testInitialState.
 	self assert: contextSpecification isForBlock.
@@ -67,8 +67,8 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	self assert: encodedState isString.
 	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
-	self assert: deserializedState callStack size = 15.
-	contextSpecification := deserializedState callStack at: 10.
+	self assert: deserializedState callStackSpecification size = 15.
+	contextSpecification := deserializedState callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = 'GtRsrEvaluatorServiceTest'.
 	self assert: contextSpecification selector = 'testInitialState'.
 	self assert: contextSpecification isForBlock.

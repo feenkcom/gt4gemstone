@@ -1,9 +1,6 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
 	#superclass : #DebugSession,
-	#instVars : [
-		'serverApiVersion'
-	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -12,6 +9,15 @@ GtGemStoneDebuggerSession >> breakpoints [
 	<return: #Dictionary>
 
 	^ self debuggerClient breakpoints
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> currentFrameVariable: variableName atIndex: anInteger frameIndentifier: aFrameIndentifier [
+
+	^ self debuggerProxy
+		proxyPerformReturnProxy: #variableIndex:atFrameIdentifierIndex: 
+		withArguments: { anInteger. aFrameIndentifier identityIndex. }
+		autoCommit: false.
 ]
 
 { #category : #accessing }
@@ -52,6 +58,52 @@ GtGemStoneDebuggerSession >> exception [
 		exception := self interruptedContext receiver exception ]
 ]
 
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsPerformStep: aMethodSelector onFrameIdentifier: aFrameIdentifier [
+	[ self debuggerProxy
+		proxyPerform: aMethodSelector
+		withArguments: { aFrameIdentifier identityIndex }
+		autoCommit: false ]
+			on: GtRsrEvaluationException
+			do: [ :ex | self error: 'Unexpected debugger error'. ].
+	
+	self resetState.
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsRestartFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #restartFrameIdentifierIndex:
+		onFrameIdentifier: aFrameIdentifier
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsResume [
+
+	self debuggerClient gsResume.
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsStepIntoFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepIntoFrameIdentifierIndex:
+		onFrameIdentifier: aFrameIdentifier
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsStepOverFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepOverFrameIdentifierIndex:
+		onFrameIdentifier: aFrameIdentifier.
+]
+
+{ #category : #'remote actions - stepping' }
+GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
+	self 
+		gsPerformStep: #stepThroughFrameIdentifierIndex:
+		onFrameIdentifier: aFrameIdentifier.
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> modules [ 
 	"There are never loaded modules in the postmortem debugger"
@@ -78,6 +130,11 @@ GtGemStoneDebuggerSession >> remoteApiVersion [
 	^ self remoteMetadata apiVersion
 ]
 
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> remoteContext [
+	^ self remoteStackFrames first
+]
+
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteMetadata [
 	^ self exception debuggerState remoteMetadata
@@ -86,6 +143,21 @@ GtGemStoneDebuggerSession >> remoteMetadata [
 { #category : #'accessing - metadata' }
 GtGemStoneDebuggerSession >> remoteSchemaVersion [
 	^ self remoteMetadata schemaVersion
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> remoteStackFrames [
+	^ self debuggerClient stackFrames
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerSession >> resetState [
+	self debuggerClient resetState
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerSession >> synchronizeCallStack [
+	self debuggerClient synchronizeCallStack
 ]
 
 { #category : #accessing }

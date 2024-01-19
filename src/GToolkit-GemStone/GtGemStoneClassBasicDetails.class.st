@@ -18,8 +18,8 @@ GtGemStoneClassBasicDetails class >> forClass: aGsClass [
 GtGemStoneClassBasicDetails >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
-		at: #targetClassName put: targetClassName;
-		at: #targetClassIconName put: targetClassIconName;
+		at: 'targetClassName' put: targetClassName;
+		at: 'targetClassIconName' put: targetClassIconName;
 		yourself
 ]
 
@@ -27,8 +27,8 @@ GtGemStoneClassBasicDetails >> asDictionaryForExport [
 GtGemStoneClassBasicDetails >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	targetClassName := aDictionary at: #targetClassName.
-	targetClassIconName := aDictionary at: #targetClassIconName.
+	targetClassName := aDictionary at: 'targetClassName'.
+	targetClassIconName := aDictionary at: 'targetClassIconName'.
 ]
 
 { #category : #initialization }

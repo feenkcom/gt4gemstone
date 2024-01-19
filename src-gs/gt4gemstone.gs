@@ -22,7 +22,7 @@ removeallclassmethods AkgDebuggerPlay
 doit
 (Object
 	subclass: 'GtGemStoneDebuggerState'
-	instVarNames: #( callStack summary isResumable isSuspended isTerminated messageText remoteMetadata )
+	instVarNames: #( summary isResumable isSuspended isTerminated messageText remoteMetadata callStackSpecification )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -43,8 +43,44 @@ removeallclassmethods GtGemStoneDebuggerState
 
 doit
 (Object
+	subclass: 'GtGemStoneDoubleLocalCallFrame'
+	instVarNames: #( previousCallFrame newCallFrame sender )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneDoubleLocalCallFrame
+removeallclassmethods GtGemStoneDoubleLocalCallFrame
+
+doit
+(Object
+	subclass: 'GtGemStoneDoubleLocalCallStack'
+	instVarNames: #( previousCallStack newCallStack callFrames )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneDoubleLocalCallStack
+removeallclassmethods GtGemStoneDoubleLocalCallStack
+
+doit
+(Object
 	subclass: 'GtGemStoneEvaluationContext'
-	instVarNames: #( exception process semaphore result completed devMessage evalServer block )
+	instVarNames: #( exception process semaphore result completed devMessage evalServer block callStack )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -62,7 +98,7 @@ removeallclassmethods GtGemStoneEvaluationContext
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallFrame'
-	instVarNames: #( frameArray homeMethod )
+	instVarNames: #( frameArray homeMethod frameIdentifier )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -80,7 +116,7 @@ removeallclassmethods GtGemStoneLocalCallFrame
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallStack'
-	instVarNames: #( callFrames gsProcess )
+	instVarNames: #( callFrames gsProcess nextFrameIdentifier )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -94,6 +130,24 @@ true.
 
 removeallmethods GtGemStoneLocalCallStack
 removeallclassmethods GtGemStoneLocalCallStack
+
+doit
+(Object
+	subclass: 'GtGemStoneLocalCallStackUpdater'
+	instVarNames: #( targetCallStack )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneLocalCallStackUpdater
+removeallclassmethods GtGemStoneLocalCallStackUpdater
 
 doit
 (Object
@@ -130,6 +184,24 @@ true.
 
 removeallmethods GtGemStoneSpecification
 removeallclassmethods GtGemStoneSpecification
+
+doit
+(GtGemStoneSpecification
+	subclass: 'GtGemStoneCallFrameIdentifier'
+	instVarNames: #( identityIndex )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneCallFrameIdentifier
+removeallclassmethods GtGemStoneCallFrameIdentifier
 
 doit
 (GtGemStoneSpecification
@@ -170,7 +242,7 @@ removeallclassmethods GtGemStoneMethodSpecification
 doit
 (GtGemStoneMethodSpecification
 	subclass: 'GtGemStoneContextSpecification'
-	instVarNames: #( isForBlock )
+	instVarNames: #( isForBlock ipOffset frameIdentifier programCounterMarkers )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -639,6 +711,17 @@ process: aGsProcess exception: anException
 		exception: anException
 %
 
+category: 'instance creation'
+classmethod: GtGemStoneDebuggerState
+process: aGsProcess exception: anException callStack: aCallStack
+	"Create a new instance of the receiver populated for the supplied process and exception"
+
+	^ self new 
+		initializeProcess: aGsProcess 
+		exception: anException
+		callStack: aCallStack
+%
+
 !		Instance methods for 'GtGemStoneDebuggerState'
 
 category: 'converting'
@@ -646,12 +729,12 @@ method: GtGemStoneDebuggerState
 asDictionaryForExport
 
 	^ Dictionary new
-		at: #messageText put: messageText;
-		at: #isSuspended put: isSuspended;
-		at: #isResumable put: isResumable;
-		at: #isTerminated put: isTerminated;
-		at: #summary put: summary;
-		at: #callStack put: callStack asDictionaryForExport;
+		at: 'messageText' put: messageText;
+		at: 'isSuspended' put: isSuspended;
+		at: 'isResumable' put: isResumable;
+		at: 'isTerminated' put: isTerminated;
+		at: 'summary' put: summary;
+		at: 'callStack' put: callStackSpecification asDictionaryForExport;
 		addAll: self localMetadata asMetadataAttributesForExport;
 		yourself
 %
@@ -668,7 +751,14 @@ category: 'accessing'
 method: GtGemStoneDebuggerState
 callStack
 
-	^ callStack
+	^ callStackSpecification
+%
+
+category: 'accessing'
+method: GtGemStoneDebuggerState
+callStackSpecification
+
+	^ callStackSpecification
 %
 
 category: 'gt - extensions'
@@ -678,7 +768,7 @@ gtViewCallFrameSpecificationsFor: aView
 	
 	^ aView forward 
 		title: 'Frame specifications';
-		object: [ self callStack ];
+		object: [ self callStackSpecification ];
 		view: #gtViewCallFrameSpecificationsFor: 
 %
 
@@ -692,7 +782,7 @@ initializeFromJSONDictionary: aDictionary
 	isTerminated := aDictionary at: 'isTerminated'.
 	summary := aDictionary at: 'summary'.
 	
-	callStack := GtGemStoneProcessSpecification 
+	callStackSpecification := GtGemStoneProcessSpecification 
 		fromJSONDictionary:  (aDictionary at: 'callStack').
 		
 	self initializeMetadataFromJSONDictionary: aDictionary.
@@ -727,7 +817,7 @@ initializeProcess2: aGsProcess exception: anException
 		ifTrue: [ 'Terminated: ', anException messageText ]
 		ifFalse: [ anException messageText ].
 
-	callStack := aGsProcess gtAllFrames collect: [ :frameArray |
+	callStackSpecification := aGsProcess gtAllFrames collect: [ :frameArray |
 		| homeMethod |
 		homeMethod := frameArray first homeMethod.
 		{ homeMethod inClass ifNotNil: [ :cls | cls name ].
@@ -747,7 +837,22 @@ initializeProcess: aGsProcess exception: anException
 		ifTrue: [ 'Terminated: ', anException messageText ]
 		ifFalse: [ anException messageText ].
 
-	callStack := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+	callStackSpecification := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
+%
+
+category: 'initialize'
+method: GtGemStoneDebuggerState
+initializeProcess: aGsProcess exception: anException callStack: aCallStack
+
+	messageText := anException messageText.
+	isResumable := anException isResumable.
+	isSuspended := aGsProcess _isSuspended.
+	isTerminated := aGsProcess _isTerminated.
+	summary := aGsProcess _isTerminated
+		ifTrue: [ 'Terminated: ', anException messageText ]
+		ifFalse: [ anException messageText ].
+
+	callStackSpecification := aCallStack createSpecification
 %
 
 category: 'accessing'
@@ -811,6 +916,446 @@ summary
 	^ summary
 %
 
+! Class implementation for 'GtGemStoneDoubleLocalCallFrame'
+
+!		Class methods for 'GtGemStoneDoubleLocalCallFrame'
+
+category: 'instance creation'
+classmethod: GtGemStoneDoubleLocalCallFrame
+forPreviousCallFrame: aPreviousCallFrame newCallFrame: aNewCallFrame
+	^ self new 
+		initializeForPreviousCallFrame: aPreviousCallFrame 
+		newCallFrame: aNewCallFrame
+%
+
+!		Instance methods for 'GtGemStoneDoubleLocalCallFrame'
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+frameIdentifierDescription
+	^ String streamContents: [ :aStream | 
+		self printFrameIdentifierDescriptionOn: aStream ]
+%
+
+category: 'testing'
+method: GtGemStoneDoubleLocalCallFrame
+hasCallFrames 
+	^ previousCallFrame notNil and: [ newCallFrame notNil ]
+%
+
+category: 'testing'
+method: GtGemStoneDoubleLocalCallFrame
+hasSameProperties
+	^ self hasCallFrames and: [ 
+			previousCallFrame hasSamePropertiesAs: newCallFrame ]
+%
+
+category: 'testing'
+method: GtGemStoneDoubleLocalCallFrame
+hasSamePropertiesSinceTheBeginning
+	| currentContext |
+	currentContext := self.
+	[ currentContext notNil and: [currentContext hasSameProperties ] ]
+		whileTrue: [ currentContext := currentContext sender ].
+		
+	^ currentContext isNil
+%
+
+category: 'initialization'
+method: GtGemStoneDoubleLocalCallFrame
+initializeForPreviousCallFrame: aPreviousCallFrame newCallFrame: aNewCallFrame 
+	previousCallFrame := aPreviousCallFrame.
+	newCallFrame := aNewCallFrame.
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+ipOffsetDescription
+	^ String streamContents: [ :aStream | 
+		self printIpOffsetDescriptionOn: aStream ]
+%
+
+category: 'testing'
+method: GtGemStoneDoubleLocalCallFrame
+isForSameMethodOrBlock
+	^ self hasCallFrames and: [
+			previousCallFrame isForSameMethodOrBlockAs: newCallFrame ]
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+methodDescription
+	^ String streamContents: [ :aStream | 
+		self printMethodDescriptionOn: aStream ]
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+newCallFrame
+	^ newCallFrame
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+newFrameIdentifier
+	^ newCallFrame 
+		ifNil: [ nil ]
+		ifNotNil: [ :aCallFrame | aCallFrame frameIdentifier ]
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+newIpOffset
+	^ newCallFrame 
+		ifNil: [ nil ]
+		ifNotNil: [ :aCallFrame | aCallFrame ipOffset ]
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+phlowBackgroundColor
+	^ nil
+	"| allSendersMatch |
+	allSendersMatch := self sender
+		ifNil: [true] 
+		ifNotNil: [ :aSender | aSender hasSamePropertiesSinceTheBeginning ].
+	
+	^ (self hasSameProperties and: [ allSendersMatch ])
+			ifTrue: [ GtPhlowColor named: #green alpha: 0.4 ]
+			ifFalse: [ 
+				allSendersMatch
+					ifTrue: [ GtPhlowColor named: #orange alpha: 0.4 ]
+					ifFalse: [ GtPhlowColor transparent ]  ]"
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+phlowBackgroundColorInIsolation
+	^ nil
+	"| senderMatches |
+	senderMatches := self sender
+		ifNil: [true] 
+		ifNotNil: [ :aSender | aSender hasSameProperties ].
+	
+	^ self hasSameProperties
+			ifTrue: [ GtPhlowColor named: #green alpha: 0.4 ]
+			ifFalse: [ 
+				senderMatches
+					ifTrue: [ GtPhlowColor named: #orange alpha: 0.4 ]
+					ifFalse: [ GtPhlowColor transparent ]  ]"
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+previousCallFrame
+	^ previousCallFrame
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+previousFrameIdentifier
+	^ previousCallFrame 
+		ifNil: [ nil ]
+		ifNotNil: [ :aCallFrame | aCallFrame frameIdentifier ]
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+previousIpOffset
+	^ previousCallFrame 
+		ifNil: [ nil ]
+		ifNotNil: [ :aCallFrame | aCallFrame ipOffset ]
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+printComparisonBetween: anObject and: anotherObject withFormat: aFormatBlock on: aStream
+	| previousDescription newDescription|
+	previousDescription := anObject
+		ifNil: [ ' - '] ifNotNil: [ :targetObject | aFormatBlock cull: targetObject ].
+	newDescription := anotherObject
+		ifNil: [ ' - '] ifNotNil: [ :targetObject | aFormatBlock cull: targetObject ].
+	
+	anObject = anotherObject
+		ifTrue: [
+			aStream
+				nextPutAll: previousDescription ]
+		ifFalse: [
+			aStream
+				nextPutAll: previousDescription;
+				nextPutAll: ' / ';
+				nextPutAll: newDescription ]
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+printFrameIdentifierDescriptionOn: aStream
+	^ self 
+		printComparisonBetween: self previousFrameIdentifier 
+		and: self newFrameIdentifier 
+		withFormat: [ :anIdentifier | anIdentifier description ] 
+		on: aStream
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+printIpOffsetDescriptionOn: aStream
+	^ self 
+		printComparisonBetween: self previousIpOffset 
+		and: self newIpOffset 
+		withFormat: [ :anOffset | anOffset asString ]
+		on: aStream
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+printMethodDescriptionOn: aStream
+	| previousDescription newDescription|
+	previousDescription := self previousCallFrame
+		ifNil: [ ' - '] ifNotNil: [ :aCallFrame | aCallFrame methodDescription ].
+	newDescription := self newCallFrame
+		ifNil: [ ' - '] ifNotNil: [ :aCallFrame | aCallFrame methodDescription ].
+	
+	self isForSameMethodOrBlock
+		ifTrue: [
+			aStream
+				nextPutAll: previousDescription ]
+		ifFalse: [
+			aStream
+				nextPutAll: previousDescription;
+				nextPutAll: ' / ';
+				nextPutAll: newDescription ]
+%
+
+category: 'printing'
+method: GtGemStoneDoubleLocalCallFrame
+printOn: aStream
+	super printOn: aStream.
+	
+	self isForSameMethodOrBlock ifTrue: [
+		aStream parenthesize: [ 
+			previousCallFrame printMethodDescriptionOn: aStream.
+			aStream 
+				nextPutAll: ' ['.
+			self printIpOffsetDescriptionOn: aStream.
+			aStream
+				nextPutAll: ']; id='.
+			self printFrameIdentifierDescriptionOn: aStream ].
+		^ self ].
+		
+	aStream parenthesize: [ 
+		previousCallFrame
+			ifNil: [ aStream nextPutAll: ' - ']
+			ifNotNil: [ 
+				previousCallFrame printMethodDescriptionOn: aStream.
+				aStream nextPutAll: ' '.
+				previousCallFrame printExtraDetailsOn: aStream. ].
+		aStream nextPutAll: ' / '.
+		newCallFrame
+			ifNil: [ aStream nextPutAll: ' - ']
+			ifNotNil: [ 
+				newCallFrame printMethodDescriptionOn: aStream.
+				aStream nextPutAll: ' '.
+				newCallFrame printExtraDetailsOn: aStream. ] ] 
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+sender
+	^ sender
+%
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallFrame
+sender: aDoubleStackFrame
+	(sender isNil and: [ aDoubleStackFrame notNil ]) ifFalse: [ Error signal] .
+	
+	sender := aDoubleStackFrame
+%
+
+! Class implementation for 'GtGemStoneDoubleLocalCallStack'
+
+!		Class methods for 'GtGemStoneDoubleLocalCallStack'
+
+category: 'instance creation'
+classmethod: GtGemStoneDoubleLocalCallStack
+forPreviousCallStack: aPreviousCallStack newCallStack: aNewCallStack
+	^ self new 
+		initializeForPreviousCallStack: aPreviousCallStack 
+		newCallStack: aNewCallStack
+%
+
+!		Instance methods for 'GtGemStoneDoubleLocalCallStack'
+
+category: 'accessing'
+method: GtGemStoneDoubleLocalCallStack
+firstDivergentContentsIndex
+	"This looks for the first different pair of contexts between the two stack."
+	| currentIndex newIndex |
+	currentIndex := previousCallStack numberOfCallFrames.
+	newIndex := newCallStack numberOfCallFrames.
+
+	[ 
+		(1 <= currentIndex) and: [
+			(1 <= newIndex) and: [
+				(previousCallStack callFramesAt: currentIndex)
+					hasSamePropertiesAs:(newCallStack callFramesAt: newIndex) ] ]
+	] whileTrue: [ 
+		currentIndex := currentIndex - 1.
+		newIndex := newIndex - 1 ].
+	
+	^ {currentIndex . newIndex}
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDoubleLocalCallStack
+gtViewDoubleStackFramesBasicFor: aView
+	"<gtView>"
+	"Create a view where the background color is determined by doing looking
+	only at the context in isolation (ignoring senders)"
+	
+	^ (self 
+		gtViewDoubleStackFramesFor: aView 
+		withBackground:  [ :aDescription :aDoubleFrame |
+			aDoubleFrame phlowBackgroundColorInIsolation ])
+				title: 'Call Frames - in isolation';
+				priority: 15
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDoubleLocalCallStack
+gtViewDoubleStackFramesFor: aView withBackground: aBackgroundBlock
+	
+	^ aView columnedList 
+		items: [ callFrames ];
+		column: 'Index' textDo: [ :aColumn |
+			aColumn
+				format: [ :aDoubleFrame :anIndex | anIndex ];
+				width: 75;
+				background: aBackgroundBlock ];
+		column: 'Identifier' textDo: [ :aColumn | 
+			aColumn
+				format: [ :aDoubleFrame |
+					aDoubleFrame frameIdentifierDescription ];
+				width: 75;
+				background: aBackgroundBlock ];
+		column: 'IP Offset' textDo: [ :aColumn | 
+			aColumn
+				format: [ :aDoubleFrame |
+					aDoubleFrame ipOffsetDescription ];
+				width: 75;
+				background: aBackgroundBlock ];
+		column: 'New Stack'  textDo: [ :aColumn | 
+			aColumn
+				format: [ :aDoubleFrame |
+					aDoubleFrame newCallFrame 
+						ifNil: [ '-' ] ifNotNil: [ :aCallFrame | 
+							aCallFrame methodDescription ] ];
+				background: aBackgroundBlock ];
+		column: 'Previous Stack'  textDo: [ :aColumn | 
+			aColumn
+				format: [ :aDoubleFrame |
+					(aDoubleFrame isForSameMethodOrBlock not and: [
+						aDoubleFrame newCallFrame notNil ])
+							ifFalse: [ ''] 
+							ifTrue: [ 
+								aDoubleFrame newCallFrame methodDescription ] ];
+				background: [ :aDescription :aDoubleFrame |
+					aDoubleFrame isForSameMethodOrBlock 
+						ifTrue: ["GtPhlowColor transparent" nil]
+						ifFalse: [ 
+							aBackgroundBlock cull: aDescription cull: aDoubleFrame ] ] ]
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDoubleLocalCallStack
+gtViewDoubleStackFramesListFor: aView
+	"<gtView>"
+	"Create a view where the background color is determined by doing looking
+	at the full stack."
+	
+	^ (self 
+		gtViewDoubleStackFramesFor: aView 
+		withBackground:  [ :aDescription :aDoubleFrame |
+			aDoubleFrame phlowBackgroundColor ])
+				title: 'Call Frames';
+				priority: 10
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDoubleLocalCallStack
+gtViewNewStackFramesFor: aView
+	<gtView>
+	
+	^ aView forward 
+		title: 'New Call Frames';
+		priority: 41;
+		object: [ newCallStack ];
+		view: #gtViewStackFramesFor: 
+%
+
+category: 'gt - extensions'
+method: GtGemStoneDoubleLocalCallStack
+gtViewPreviousStackFramesFor: aView
+	<gtView>
+	
+	^ aView forward 
+		title: 'Previous Call Frames';
+		priority: 40;
+		object: [ previousCallStack ];
+		view: #gtViewStackFramesFor: 
+%
+
+category: 'initialization'
+method: GtGemStoneDoubleLocalCallStack
+initializeCallStackFrames
+	| previousIndex newIndex reversedCallFrames |
+	
+	previousIndex := previousCallStack numberOfCallFrames.
+	newIndex := newCallStack numberOfCallFrames.
+	reversedCallFrames := OrderedCollection new.
+
+	[ 
+		(1 <= previousIndex) and: [ (1 <= newIndex) ]
+	] whileTrue: [ 
+		reversedCallFrames add: (GtGemStoneDoubleLocalCallFrame
+			forPreviousCallFrame: (previousCallStack callFramesAt: previousIndex)
+			newCallFrame: (newCallStack callFramesAt: newIndex)).
+		previousIndex := previousIndex - 1.
+		newIndex := newIndex - 1 ].
+		
+	[ 1 <= previousIndex ] whileTrue: [
+		reversedCallFrames add: (GtGemStoneDoubleLocalCallFrame
+			forPreviousCallFrame: (previousCallStack callFramesAt: previousIndex)
+			newCallFrame: nil).
+		previousIndex := previousIndex - 1 ].
+	
+	[ 1 <= newIndex ] whileTrue: [
+		reversedCallFrames add: (GtGemStoneDoubleLocalCallFrame
+			forPreviousCallFrame: nil
+			newCallFrame: (newCallStack callFramesAt: newIndex)).
+		newIndex := newIndex - 1 ].
+		
+	callFrames := reversedCallFrames reversed.
+%
+
+category: 'initialization'
+method: GtGemStoneDoubleLocalCallStack
+initializeForPreviousCallStack: aPreviousCallStack newCallStack: aNewCallStack
+	previousCallStack := aPreviousCallStack.
+	newCallStack := aNewCallStack. 
+	
+	self initializeCallStackFrames.
+	self initializeStackFrameSenders
+%
+
+category: 'initialization'
+method: GtGemStoneDoubleLocalCallStack
+initializeStackFrameSenders
+	1 to: callFrames size -1 do: [ :anIndex |
+		(callFrames at: anIndex) sender: (callFrames at: anIndex + 1)  ]
+%
+
 ! Class implementation for 'GtGemStoneEvaluationContext'
 
 !		Instance methods for 'GtGemStoneEvaluationContext'
@@ -830,13 +1375,28 @@ buildMessageText
 	^ exception buildMessageText
 %
 
+category: 'private'
+method: GtGemStoneEvaluationContext
+callStack
+	^ callStack ifNil: [
+			callStack := self createNewCallStack ]
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+createNewCallStack
+	^ GtGemStoneLocalCallStack forProcess: process
+%
+
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 debuggerState
-
+	callStack := self createNewCallStack.
+	
 	^ GtGemStoneDebuggerState
 		process: process
 		exception: exception
+		callStack: callStack
 %
 
 category: 'actions - debug'
@@ -925,6 +1485,34 @@ frameContentsAtLevel: anInteger
 
 category: 'private'
 method: GtGemStoneEvaluationContext
+frameForIdentifier: aFrameIdentifier
+	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
+
+	^ callStack frameForIdentifier: aFrameIdentifier
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+frameForIdentifierIndex: aFrameIdentifierIndex
+	^ self frameForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+frameLevelForIdentifier: aFrameIdentifier
+	callStack ifNil: [ Error signal: 'Call stack not initialized!' ].
+
+	^ callStack frameLevelForIdentifier: aFrameIdentifier
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
+frameLevelForIdentifierIndex: aFrameIdentifierIndex
+	^ self frameLevelForIdentifier: (GtGemStoneCallFrameIdentifier forIndex: aFrameIdentifierIndex)
+%
+
+category: 'private'
+method: GtGemStoneEvaluationContext
 handlerBlock: anObject
 	"Answer the block that will be evaluated if an exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
@@ -968,11 +1556,29 @@ isTerminated
 	^ process _isTerminated
 %
 
-category: 'actions - debug'
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 methodAtFrameLevel: anInteger
 
 	^ (process _frameContentsAt: anInteger) first
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+newDebuggerState
+	callStack := self createNewCallStack.
+	
+	^ GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: callStack
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+newDebuggerStateJsonForExport
+
+	^ self newDebuggerState asJsonForExport
 %
 
 category: 'accessing'
@@ -989,7 +1595,19 @@ process: aGsProcess
 	process := aGsProcess
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex
+	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
+%
+
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+restartFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self restartFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 restartFrameLevel: anInteger
 
@@ -1007,14 +1625,20 @@ resume
 	^ result
 %
 
-category: 'actions - debug'
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 sourceCodeAtFrameLevel: anInteger
 
 	^ (self stackFrames at: anInteger) first sourceString
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+sourceInfoAtFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 sourceInfoAtFrameLevel: anInteger
 	| frameContents source ipOffset markers startIndex endIndex i |
@@ -1050,7 +1674,13 @@ stdout
 	^ System gemLogFileName asFileReference contents
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+stepIntoFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self stepIntoFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 stepIntoFrameLevel: anInteger
 
@@ -1059,15 +1689,28 @@ stepIntoFrameLevel: anInteger
 	^ #stepInto
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+stepOverFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self stepOverFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 stepOverFrameLevel: anInteger
+
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
 	^ #stepOver
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+stepThroughFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self stepThroughFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 stepThroughFrameLevel: anInteger
 
@@ -1078,12 +1721,27 @@ stepThroughFrameLevel: anInteger
 
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
+synchronizeCallStack
+	| currentCallStack stackUpdater |
+	currentCallStack := self callStack.
+	stackUpdater := GtGemStoneLocalCallStackUpdater forCallStack: currentCallStack.
+
+	stackUpdater updateBasedOn: self createNewCallStack.
+
+	^ (GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: currentCallStack) asJsonForExport
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
 terminateProcess
 
 	process terminate
 %
 
-category: 'actions - debug'
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 variable: aSymbol atFrameLevel: anInteger
 	"Answer the variables from the specified frame.
@@ -1097,7 +1755,7 @@ variable: aSymbol atFrameLevel: anInteger
 	^ frameContents at: index + 10.
 %
 
-category: 'actions - debug'
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 variableArrayAtFrameLevel: anInteger
 	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
@@ -1124,7 +1782,13 @@ variableArrayAtFrameLevel: anInteger
 	^ associations asArray.
 %
 
-category: 'actions - debug'
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+variableIndex: index atFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self variableIndex: index atFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 variableIndex: index atFrameLevel: anInteger
 	"Answer the variable from the specified frame"
@@ -1132,7 +1796,7 @@ variableIndex: index atFrameLevel: anInteger
 	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
 %
 
-category: 'actions - debug'
+category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 variableInfoAtFrameLevel: anInteger
 	"Answer the variables from the specified frame, including self's instance variables"
@@ -1156,11 +1820,56 @@ waitMS: milliseconds
 category: 'accessing'
 classmethod: GtGemStoneLocalCallFrame
 forFrameArray: aFrameArray 
+	^ self 
+		forFrameArray: aFrameArray 
+		withIdentifier: nil
+%
+
+category: 'accessing'
+classmethod: GtGemStoneLocalCallFrame
+forFrameArray: aFrameArray withIdentifier: aFrameIdentifier
 	^ self new 
 		initializeForFrameArray: aFrameArray 
+		withIdentifier: aFrameIdentifier
 %
 
 !		Instance methods for 'GtGemStoneLocalCallFrame'
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+description
+	^ String streamContents: [ :aStream |
+		self printDescriptionOn: aStream]
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+frameIdentifier
+	^ frameIdentifier
+%
+
+category: 'gt - extensions'
+method: GtGemStoneLocalCallFrame
+gtFrameArrayItemsFor: aView
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Frame Arraw';
+		priority: 25;
+		items: [ frameArray ];
+		column: 'Index' 
+			text: [ :eachItem :eachIndex | eachIndex  ]
+			width: 45;
+		column: 'Item' 
+			text: [ :eachItem | eachItem gtDisplayString ].
+%
+
+category: 'testing'
+method: GtGemStoneLocalCallFrame
+hasSamePropertiesAs: anotherContext
+	^ (self isForSameMethodOrBlockAs: anotherContext) and: [
+		self ipOffset = anotherContext ipOffset ] 
+%
 
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
@@ -1168,17 +1877,39 @@ homeMethod
 	^ homeMethod
 %
 
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+homeMethodOop
+	^ self homeMethod asOop
+%
+
 category: 'initialization'
 method: GtGemStoneLocalCallFrame
-initializeForFrameArray: aFrameArray 
+initializeForFrameArray: aFrameArray withIdentifier: aFrameIdentifier 
 	frameArray := aFrameArray.
 	homeMethod := frameArray first homeMethod.
+	frameIdentifier := aFrameIdentifier
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+ipOffset
+	^ frameArray at: 2
 %
 
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 isForBlock
 	^ frameArray first isMethodForBlock
+%
+
+category: 'testing'
+method: GtGemStoneLocalCallFrame
+isForSameMethodOrBlockAs: anotherContext
+	"This amims to detect of two contexts are different"
+	^ self methodClassName = anotherContext methodClassName and: [
+		self selector = anotherContext selector and: [
+			self homeMethodOop = anotherContext homeMethodOop  ] ]
 %
 
 category: 'accessing'
@@ -1192,6 +1923,76 @@ method: GtGemStoneLocalCallFrame
 methodClassName
 	^ self methodClass ifNotNil: [ :aClass | 
 		aClass name ]
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+methodDescription
+	^ String streamContents: [ :aStream |
+	 	self printMethodDescriptionOn: aStream ]
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+printClassLabelOn: aStream
+	self selfObjectClass ~= self methodClass
+		ifTrue: [
+			aStream 
+				nextPutAll: self selfObjectClassName;
+				nextPutAll: '('; 
+				nextPutAll: (self methodClassName ifNil: [ '<unknown>']);
+				nextPutAll: ')' ]
+		ifFalse: [
+			aStream nextPutAll: (self methodClassName ifNil: [ '<unknown>']) ]
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+printDescriptionOn: aStream
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+printExtraDetailsOn: aStream
+	aStream 
+		nextPutAll: '[';
+		nextPutAll: self ipOffset asString;
+		nextPutAll: ']; id=';
+		nextPutAll: self frameIdentifier description 
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+printMethodDescriptionOn: aStream
+	self isForBlock ifTrue: [
+		aStream nextPutAll: '[] in ' ].
+	self printClassLabelOn: aStream.
+	aStream 
+		nextPutAll: '>>#'.
+	self selector 
+		ifNil: [ aStream nextPutAll: '<none>']
+		ifNotNil: [ :aSelector | 
+			aStream nextPutAll: aSelector ]
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallFrame
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize:  [
+		self printDescriptionOn: aStream ]
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+programCounterMarkers
+	| currentSourceInfo |
+	currentSourceInfo := self sourceInfo.
+	^ { currentSourceInfo first . currentSourceInfo second }
 %
 
 category: 'accessing'
@@ -1218,6 +2019,57 @@ selector
 	^ homeMethod selector.
 %
 
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+selfObject
+	^ frameArray at: 8
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+selfObjectClass
+	^ self selfObject class
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+selfObjectClassName
+	^ self selfObjectClass name
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallFrame
+sourceInfo
+	| source ipOffset markers startIndex endIndex i |
+
+	source := frameArray first sourceString.
+	ipOffset := frameArray second.
+	markers := frameArray first _buildIpMarkerArray.
+	startIndex := markers indexOf: ipOffset.
+	startIndex = 0 ifTrue:
+		[ ^ { 1. source size. source } ].
+	i := startIndex + 1.
+
+	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
+		[ (markers at: i) notNil ifTrue:
+			[ endIndex := i ].
+		i := i + 1 ].
+	endIndex ifNil: [ endIndex := source size ].
+	^ { startIndex. endIndex. source. }
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallFrame
+updateIdentifierBasedOn: aCallFrame
+	self updateIdentifierTo:  aCallFrame frameIdentifier
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallFrame
+updateIdentifierTo: anIdentifier
+	frameIdentifier := anIdentifier
+%
+
 ! Class implementation for 'GtGemStoneLocalCallStack'
 
 !		Class methods for 'GtGemStoneLocalCallStack'
@@ -1231,10 +2083,31 @@ forProcess: aGsProcess
 
 !		Instance methods for 'GtGemStoneLocalCallStack'
 
+category: 'updating'
+method: GtGemStoneLocalCallStack
+appendCallFramesFromIndex: anIndex from: aNewCallStack 
+	(aNewCallStack callFrames copyFrom: 1 to: anIndex) 
+		reverseDo: [ :aNewCallFrame |
+			self appendFirstNewCallFrame: aNewCallFrame ]
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStack
+appendFirstNewCallFrame: aNewCallFrame 
+	aNewCallFrame updateIdentifierTo: self generateIdentifier.
+	callFrames addFirst: aNewCallFrame
+%
+
 category: 'accessing'
 method: GtGemStoneLocalCallStack
 callFrames
 	^ callFrames
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+callFramesAt: anIndex
+	^ self callFrames at: anIndex
 %
 
 category: 'accessing'
@@ -1245,10 +2118,213 @@ createSpecification
 
 category: 'accessing'
 method: GtGemStoneLocalCallStack
+frameForIdentifier: aFrameIdentifier 
+	| frameLevel |
+	frameLevel := self frameLevelForIdentifier: aFrameIdentifier.
+	^ self callFrames at: frameLevel
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+frameLevelForIdentifier: aFrameIdentifier
+	aFrameIdentifier ifNil: [
+		Error signal: 'aFrameIdentifier cannot be nil' ].
+
+	1 to: self callFrames size do: [ :anIndex |
+		(self callFrames at: anIndex) frameIdentifier = aFrameIdentifier
+			ifTrue: [ ^ anIndex ] ].
+
+	Error signal: 'Could not find frame with identifier: ', aFrameIdentifier printString
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+generateIdentifier
+	| currentIdentifier |
+	currentIdentifier := nextFrameIdentifier.
+	nextFrameIdentifier := currentIdentifier nextIdentifier.
+	^ currentIdentifier
+%
+
+category: 'gt - extensions'
+method: GtGemStoneLocalCallStack
+gtViewStackFramesFor: aView 
+	<gtView>
+	
+	^ aView columnedList 
+		title: 'Call frames';
+		items: [ self callFrames ];
+		column: 'Index' 
+			text: [ :aStackFrame :anIndex |
+				anIndex ]
+			width: 75;
+		column: 'Identifier' 
+			text: [ :aStackFrame |
+				aStackFrame frameIdentifier identityIndex ]
+			width: 75;
+		column: 'IP Offset' 
+			text: [ :aStackFrame |
+				aStackFrame ipOffset ]
+			width: 75;
+		column: 'Method' text: [ :aStackFrame |
+			aStackFrame methodDescription ]
+%
+
+category: 'initialization'
+method: GtGemStoneLocalCallStack
 initializeForProcess: aGsProcess 
+	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
+
 	gsProcess := aGsProcess.
-	callFrames := aGsProcess gtAllFrames collect: [ :frameArray |
-		GtGemStoneLocalCallFrame forFrameArray:frameArray ].
+	callFrames := OrderedCollection withAll: (aGsProcess gtAllFrames 
+		collect: [ :aFrameArray |
+			GtGemStoneLocalCallFrame 
+				forFrameArray:aFrameArray 
+				withIdentifier: self generateIdentifier ]).
+%
+
+category: 'testing'
+method: GtGemStoneLocalCallStack
+isEmpty
+	^ self numberOfCallFrames = 0
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+numberOfCallFrames
+	^ self callFrames size
+%
+
+category: 'printing'
+method: GtGemStoneLocalCallStack
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream print: self numberOfCallFrames.
+		aStream nextPutAll: ' frames' ]
+%
+
+category: 'accessing'
+method: GtGemStoneLocalCallStack
+removeAllCallFrames
+	callFrames := OrderedCollection new
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStack
+removeCallFramesUpwardsFromIndex: anIndex 
+	"Remove all call frames upwards starting from the given 1-based index"
+	
+	anIndex = 0 ifTrue: [ ^ self ].
+	callFrames := callFrames 
+		copyFrom: anIndex + 1 
+		to: callFrames size
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStack
+replaceFrameAt: anIndex with: aNewContext
+	self callFrames at: anIndex put: aNewContext
+%
+
+! Class implementation for 'GtGemStoneLocalCallStackUpdater'
+
+!		Class methods for 'GtGemStoneLocalCallStackUpdater'
+
+category: 'instance creation'
+classmethod: GtGemStoneLocalCallStackUpdater
+forCallStack: aCallStack
+	^ self new 
+		initializeForCallStack: aCallStack
+%
+
+!		Instance methods for 'GtGemStoneLocalCallStackUpdater'
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+appendCallFramesFromIndexPair: anIndexPair from: aNewCallStack 
+	targetCallStack 
+		appendCallFramesFromIndex: anIndexPair second
+		from: aNewCallStack 
+%
+
+category: 'testing'
+method: GtGemStoneLocalCallStackUpdater
+hasCommonMethodContextAtIndex: anIndexPair with: aNewCallStack 
+	^ (anIndexPair first >= 1) and: [
+			(anIndexPair second >= 1) and: [
+				(targetCallStack callFramesAt: anIndexPair first)
+					isForSameMethodOrBlockAs:(aNewCallStack 
+						callFramesAt: anIndexPair second) ] ]
+%
+
+category: 'initialization'
+method: GtGemStoneLocalCallStackUpdater
+initializeForCallStack: aCallStack 
+	targetCallStack := aCallStack
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+removeCallFramesFromIndexPair: anIndexPair 
+	targetCallStack removeCallFramesUpwardsFromIndex: anIndexPair first
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+updateBasedOn: aNewCallStack
+	| firstDifferentIndexes doubleCallStack |
+	
+	aNewCallStack isEmpty ifTrue: [
+		^ self updateBasedOnEmptyStack ].
+		
+	doubleCallStack := GtGemStoneDoubleLocalCallStack 
+		forPreviousCallStack: targetCallStack 
+		newCallStack: aNewCallStack.
+	
+	firstDifferentIndexes := doubleCallStack firstDivergentContentsIndex.
+	^ self 
+		updateStackFromIndex: firstDifferentIndexes
+		basedOn: aNewCallStack
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+updateBasedOnEmptyStack
+	targetCallStack removeAllCallFrames.
+	^ targetCallStack
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+updateStackFromIndex: anIndexPair basedOn: aNewCallStack 
+	| currentIndexPair |
+	currentIndexPair := anIndexPair.
+	(self hasCommonMethodContextAtIndex: currentIndexPair with: aNewCallStack)
+		ifTrue: [
+			self 
+				updateTopCommonContextAtIndexPair: currentIndexPair 
+				basedOn: aNewCallStack.
+			currentIndexPair := {
+				currentIndexPair first - 1.
+				currentIndexPair second - 1 } ].
+	
+	self removeCallFramesFromIndexPair: currentIndexPair.
+	self appendCallFramesFromIndexPair: currentIndexPair from: aNewCallStack.
+	
+	^ targetCallStack
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStackUpdater
+updateTopCommonContextAtIndexPair: anIndexPair basedOn: aNewCallStack 
+	| existingContext newContext |
+	existingContext := targetCallStack callFramesAt: anIndexPair first.
+	newContext := aNewCallStack callFramesAt: anIndexPair second.
+	
+	newContext updateIdentifierBasedOn: existingContext.
+	targetCallStack replaceFrameAt: anIndexPair first with: newContext.
 %
 
 ! Class implementation for 'GtGemStoneSemanticVersionNumber'
@@ -1504,6 +2580,91 @@ remoteMetadata
 	^ remoteMetadata
 %
 
+! Class implementation for 'GtGemStoneCallFrameIdentifier'
+
+!		Class methods for 'GtGemStoneCallFrameIdentifier'
+
+category: 'instance creation'
+classmethod: GtGemStoneCallFrameIdentifier
+forIndex: anIndex
+	^ self new 
+		initializeForIndex: anIndex
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneCallFrameIdentifier
+initialIdentifier
+	^ self forIndex: 1
+%
+
+!		Instance methods for 'GtGemStoneCallFrameIdentifier'
+
+category: 'comparing'
+method: GtGemStoneCallFrameIdentifier
+= anObject
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	
+	^ self identityIndex = anObject identityIndex
+%
+
+category: 'converting'
+method: GtGemStoneCallFrameIdentifier
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: 'identityIndex' put: identityIndex;
+		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneCallFrameIdentifier
+description
+	^ self identityIndex asString
+%
+
+category: 'comparing'
+method: GtGemStoneCallFrameIdentifier
+hash
+	^ self identityIndex hash
+%
+
+category: 'accessing'
+method: GtGemStoneCallFrameIdentifier
+identityIndex
+	^ identityIndex
+%
+
+category: 'initialization'
+method: GtGemStoneCallFrameIdentifier
+initializeForIndex: anIndex
+	identityIndex := anIndex
+%
+
+category: 'initialization'
+method: GtGemStoneCallFrameIdentifier
+initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
+	identityIndex := aDictionary at: 'identityIndex'.
+%
+
+category: 'accessing'
+method: GtGemStoneCallFrameIdentifier
+nextIdentifier
+	^ self class forIndex: self identityIndex + 1
+%
+
+category: 'printing'
+method: GtGemStoneCallFrameIdentifier
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream
+			nextPutAll: self description ]
+%
+
 ! Class implementation for 'GtGemStoneClassBasicDetails'
 
 !		Class methods for 'GtGemStoneClassBasicDetails'
@@ -1522,8 +2683,8 @@ method: GtGemStoneClassBasicDetails
 asDictionaryForExport
 
 	^ super asDictionaryForExport
-		at: #targetClassName put: targetClassName;
-		at: #targetClassIconName put: targetClassIconName;
+		at: 'targetClassName' put: targetClassName;
+		at: 'targetClassIconName' put: targetClassIconName;
 		yourself
 %
 
@@ -1532,8 +2693,8 @@ method: GtGemStoneClassBasicDetails
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 	
-	targetClassName := aDictionary at: #targetClassName.
-	targetClassIconName := aDictionary at: #targetClassIconName.
+	targetClassName := aDictionary at: 'targetClassName'.
+	targetClassIconName := aDictionary at: 'targetClassIconName'.
 %
 
 category: 'initialization'
@@ -1789,7 +2950,16 @@ asDictionaryForExport
 
 	^ super asDictionaryForExport
 		at: #isForBlock put: isForBlock;
+		at: #ipOffset put: ipOffset;
+		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
+		at: #programCounterMarkers put: programCounterMarkers;
 		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneContextSpecification
+frameIdentifier
+	^ frameIdentifier
 %
 
 category: 'initialization'
@@ -1798,7 +2968,10 @@ initializeForGsCallFrame: aGsCallFrame
 	self initializeForGsMethod: aGsCallFrame homeMethod.
 	self initializeProviderBehaviorFromFrame: aGsCallFrame.
 	
-	isForBlock := aGsCallFrame isForBlock
+	isForBlock := aGsCallFrame isForBlock.
+	ipOffset := aGsCallFrame ipOffset.
+	frameIdentifier := aGsCallFrame frameIdentifier. 
+	programCounterMarkers := aGsCallFrame programCounterMarkers. 
 %
 
 category: 'initialization'
@@ -1806,23 +2979,41 @@ method: GtGemStoneContextSpecification
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 	
-	isForBlock := aDictionary at: 'isForBlock'.
+	isForBlock := aDictionary at: #isForBlock.
+	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
+	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
+	
+	(aDictionary includesKey: #frameIdentifier) ifTrue: [
+		frameIdentifier := GtGemStoneCallFrameIdentifier 
+			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]
 %
 
 category: 'initialization'
 method: GtGemStoneContextSpecification
 initializeProviderBehaviorFromFrame: aGsCallFrame 
-	| receiverClass |
-	receiverClass := aGsCallFrame receiverClass.
-	aGsCallFrame methodClass ~= receiverClass ifTrue: [
+	| selfObjectClass |
+	selfObjectClass := aGsCallFrame selfObjectClass.
+	aGsCallFrame methodClass ~= selfObjectClass ifTrue: [
 		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
-			forClass: receiverClass ]
+			forClass: selfObjectClass ]
+%
+
+category: 'accessing'
+method: GtGemStoneContextSpecification
+ipOffset
+	^ ipOffset
 %
 
 category: 'accessing'
 method: GtGemStoneContextSpecification
 isForBlock
 	^ isForBlock ifNil: [ false ]
+%
+
+category: 'accessing'
+method: GtGemStoneContextSpecification
+programCounterMarkers
+	^ programCounterMarkers
 %
 
 ! Class implementation for 'GtGemStoneMethodsSpecification'
@@ -1926,9 +3117,9 @@ gtViewCallFrameSpecificationsFor: aView
 category: 'accessing'
 method: GtGemStoneProcessSpecification
 initializeForGsCallStack: aCallStack
-	methodCoderSpecifications := aCallStack callFrames 
+	methodCoderSpecifications := (aCallStack callFrames 
 		collect: [ :aGsCallFrame |
-			GtGemStoneContextSpecification forGsCallFrame: aGsCallFrame ]
+			GtGemStoneContextSpecification forGsCallFrame: aGsCallFrame ]) asArray
 %
 
 category: 'accessing'
@@ -2086,21 +3277,6 @@ deserialize: anObject
 	"Deserialize the supplied object"
 	
 	^ anObject
-%
-
-category: 'converting'
-method: GtRsrLiteralAndProxySerializationStrategy
-serialize: anObject
-	"Serialize the object to something that RSR can return.
-	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
-	
-	(anObject isNil or: 
-		[ anObject isNumber or: 
-		[ anObject isKindOf: Boolean ] ]) 
-			ifTrue: [ ^ anObject ].
-	^ self
-		gtDo: [ anObject ]
-		gemstoneDo: [ GtRsrProxyServiceServer object: anObject ]
 %
 
 ! Class implementation for 'GtRsrPrimitiveOnlySerializationStrategy'
@@ -2480,8 +3656,8 @@ testInitialState
 		exception: exception.
 
 	self assert: state summary = 'a Halt occurred (error 2709)'.
-	self assert: state callStack size = 15.
-	contextSpecification := state callStack at: 10.
+	self assert: state callStackSpecification size = 15.
+	contextSpecification := state callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = #GtRsrEvaluatorServiceTest.
 	self assert: contextSpecification selector = #testInitialState.
 	self assert: contextSpecification isForBlock.
@@ -2494,8 +3670,8 @@ testInitialState
 	self assert: encodedState isString.
 	deserializedState := GtGemStoneDebuggerState fromJsonString: encodedState.
 	self assert: deserializedState summary = 'a Halt occurred (error 2709)'.
-	self assert: deserializedState callStack size = 15.
-	contextSpecification := deserializedState callStack at: 10.
+	self assert: deserializedState callStackSpecification size = 15.
+	contextSpecification := deserializedState callStackSpecification at: 10.
 	self assert: contextSpecification coderClassName = 'GtRsrEvaluatorServiceTest'.
 	self assert: contextSpecification selector = 'testInitialState'.
 	self assert: contextSpecification isForBlock.
@@ -2620,7 +3796,7 @@ readFrom: aStream
 
 !		Instance methods for 'Dictionary'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: Dictionary
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported (non-immediate) objects converted to GtRsrProxyServiceServers.
@@ -2681,11 +3857,30 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self
 %
 
+! Class extensions for 'GtRsrLiteralAndProxySerializationStrategy'
+
+!		Instance methods for 'GtRsrLiteralAndProxySerializationStrategy'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtRsrLiteralAndProxySerializationStrategy
+serialize: anObject
+	"Serialize the object to something that RSR can return.
+	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
+	
+	(anObject isNil or: 
+		[ anObject isNumber or: 
+		[ anObject isKindOf: Boolean ] ]) 
+			ifTrue: [ ^ anObject ].
+	^ self
+		gtDo: [ anObject ]
+		gemstoneDo: [ GtRsrProxyServiceServer object: anObject ]
+%
+
 ! Class extensions for 'Object'
 
 !		Instance methods for 'Object'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: Object
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
@@ -2708,7 +3903,7 @@ gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 
 !		Instance methods for 'OrderedCollection'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: OrderedCollection
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
@@ -2734,7 +3929,7 @@ allButFirstDo: block
 
 !		Instance methods for 'Set'
 
-category: '*GToolkit-GemStone'
+category: '*GToolkit-GemStone-GemStone'
 method: Set
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver as a proxy object.

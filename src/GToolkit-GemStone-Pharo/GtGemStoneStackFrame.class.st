@@ -12,14 +12,34 @@ Class {
 		'sourceText',
 		'variableAssociations',
 		'frameSpecification',
-		'method'
+		'method',
+		'ipOffset',
+		'sender',
+		'frameIdentifier',
+		'programCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
+{ #category : #'instance creation' }
+GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification atIndex: anIndex forException: anException [
+	^ self new 
+		initializeFromSpecification: aFrameSpecification 
+		atIndex: anIndex 
+		forException: anException
+]
+
+{ #category : #comparing }
+GtGemStoneStackFrame >> = anObject [
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	
+	^ self frameIdentifier = anObject frameIdentifier
+]
+
 { #category : #accessing }
-GtGemStoneStackFrame >> className: anObject [
-	className := anObject
+GtGemStoneStackFrame >> className: aClassName [
+	className := aClassName
 ]
 
 { #category : #private }
@@ -47,20 +67,10 @@ GtGemStoneStackFrame >> debuggerProxy [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> descriptionOn: aStream [
-
-	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
-	aStream
-		<< (className ifNil: [ '<none> ' ]);
-		<< '>>';
-		<< (selector ifNil: [ ' <none>' ])
-]
-
-{ #category : #accessing }
 GtGemStoneStackFrame >> displayString [
 
 	^ String streamContents: [ :aStream |
-		self descriptionOn: aStream ]
+		self printMethodDescriptionOn: aStream ]
 ]
 
 { #category : #accessing }
@@ -70,9 +80,9 @@ GtGemStoneStackFrame >> exception [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> exception: anObject [
+GtGemStoneStackFrame >> exception: anException [
 
-	exception := anObject
+	exception := anException
 ]
 
 { #category : #'private - accessing' }
@@ -86,13 +96,23 @@ GtGemStoneStackFrame >> frameArray [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> frameIdentifier [
+	^ frameIdentifier
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> frameIdentifier: anIdentifier [
+	frameIdentifier := anIdentifier
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> frameSpecification [
 	^ frameSpecification
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> frameSpecification: anObject [
-	frameSpecification := anObject
+GtGemStoneStackFrame >> frameSpecification: aFrameSpecification [
+	frameSpecification := aFrameSpecification
 ]
 
 { #category : #accessing }
@@ -101,7 +121,7 @@ GtGemStoneStackFrame >> gsSession [
 	^ exception gtSession
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
 	<gtView>
 	
@@ -112,7 +132,7 @@ GtGemStoneStackFrame >> gtViewCoderFor: aView [
 			GtGemStoneContextCoderModel fromStackFrame: self ]
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
 	<gtView>
 	
@@ -122,14 +142,50 @@ GtGemStoneStackFrame >> gtViewSourceTextFor: aView [
 		styler: BrRBTextStyler new
 ]
 
+{ #category : #comparing }
+GtGemStoneStackFrame >> hash [
+	^ self frameIdentifier hash
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> inBlock [
 	^ inBlock
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> inBlock: anObject [
-	inBlock := anObject
+GtGemStoneStackFrame >> inBlock: aBoolean [
+	inBlock := aBoolean
+]
+
+{ #category : #initization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [ 
+	self 
+		className: aFrameSpecification coderClassName;
+		selector: aFrameSpecification selector;
+		inBlock: aFrameSpecification isForBlock;
+		ipOffset: aFrameSpecification ipOffset;
+		frameSpecification: aFrameSpecification;
+		frameIdentifier:aFrameSpecification frameIdentifier.
+	
+	programCounterMarkers := aFrameSpecification programCounterMarkers 
+]
+
+{ #category : #initization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification atIndex: anIndex forException: anException [ 
+	self initializeFromSpecification: aFrameSpecification.
+	
+	self ordinal: anIndex.
+	self exception: anException.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> ipOffset [
+	^ ipOffset
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> ipOffset: aNumber [
+	ipOffset := aNumber
 ]
 
 { #category : #accessing }
@@ -140,34 +196,93 @@ GtGemStoneStackFrame >> method [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> methodSelector [
+	^ self frameSpecification selector
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> ordinal [
 
 	^ ordinal
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> ordinal: anObject [
+GtGemStoneStackFrame >> ordinal: aNumber [
 
-	ordinal := anObject
+	ordinal := aNumber
+]
+
+{ #category : #printing }
+GtGemStoneStackFrame >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> printOn: aStream [
+GtGemStoneStackFrame >> printExtraDetailsOn: aStream [
+	
+	aStream 
+		nextPutAll: '[';
+		nextPutAll: self ipOffset asString;
+		nextPutAll: ']'.
+	self frameIdentifier ifNotNil: [ :anIdentifier |
+		aStream 
+			nextPutAll: '; id=';
+			nextPutAll: anIdentifier description ]
+]
 
-	self descriptionOn: aStream
+{ #category : #printing }
+GtGemStoneStackFrame >> printMethodDescriptionOn: aStream [
+
+	(inBlock ifNil: [ false ]) ifTrue: [ aStream << '[] in ' ].
+	aStream
+		<< (className ifNil: [ '<none> ' ]);
+		<< '>>';
+		<< (selector ifNil: [ ' <none>' ])
+]
+
+{ #category : #printing }
+GtGemStoneStackFrame >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize:  [
+		self printDescriptionOn:  aStream ]
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> programCounterMarkers [
+	^ programCounterMarkers ifNil: [
+		programCounterMarkers := self retrieveProgramCounterMarkers ]
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> programCounterRange [
-	| sourceInfo sourceString |
-	sourceInfo := self debuggerProxy 
-		proxyPerform: #sourceInfoAtFrameLevel: 
-		withArguments: { ordinal }
-		autoCommit: false.
-	sourceString := sourceInfo third.
-	^ self currentMessageRangeAt: sourceInfo first 
+	| currentSourceInfo sourceString |
+	
+	currentSourceInfo := self programCounterMarkers.
+	"programCounterMarkers 
+		ifNil: [ 
+			currentSourceInfo := self retrieveProgramCounterMarkers.]
+		ifNotNil: [
+			currentSourceInfo := programCounterMarkers.
+			programCounterMarkers := nil ]."
+	
+	sourceString := self frameSpecification sourceString.
+	
+	^ self 
+		currentMessageRangeAt: currentSourceInfo first 
 		in: sourceString 
-		fallBack: sourceInfo second.
+		fallBack: currentSourceInfo second.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
+	^ self debuggerProxy 
+		proxyPerform: #programCounterMarkersAtFrameIdentifierIndex:
+		withArguments: { 
+			self frameIdentifier identityIndex }
+		autoCommit: false.
 ]
 
 { #category : #accessing }
@@ -177,8 +292,20 @@ GtGemStoneStackFrame >> selector [
 ]
 
 { #category : #accessing }
-GtGemStoneStackFrame >> selector: anObject [
-	selector := anObject
+GtGemStoneStackFrame >> selector: aMethodSelector [
+	selector := aMethodSelector
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> sender [
+	^ sender
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> sender: aStackFrame [
+	self assert: [ sender isNil and: [ aStackFrame notNil ] ].
+	
+	sender := aStackFrame
 ]
 
 { #category : #accessing }
@@ -209,6 +336,16 @@ GtGemStoneStackFrame >> sourceText [
 			attribute: (BlTextHighlightAttribute paint: BrGlamorousColors debuggerTextHighlightColor)
 				beNotOverwritableByStyler.
 	^ sourceText
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> targetClassName [
+	^ className
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
+	programCounterMarkers := newMarkers
 ]
 
 { #category : #accessing }

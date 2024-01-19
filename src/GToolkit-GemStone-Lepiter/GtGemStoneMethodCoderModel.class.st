@@ -375,14 +375,24 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 ]
 
 { #category : #printing }
-GtGemStoneMethodCoderModel >> printOn: aStream [
-	super printOn: aStream.
+GtGemStoneMethodCoderModel >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn: aStream
+]
+
+{ #category : #printing }
+GtGemStoneMethodCoderModel >> printMethodDescriptionOn: aStream [
 	aStream
-		nextPut: $(;
 		nextPutAll: self methodBehavior printBehaviorName;
 		nextPutAll: '>>#';
-		nextPutAll: self selector asString;
-		nextPut: $)
+		nextPutAll: self selector asString
+]
+
+{ #category : #printing }
+GtGemStoneMethodCoderModel >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		self printDescriptionOn: aStream ]
 ]
 
 { #category : #accessing }

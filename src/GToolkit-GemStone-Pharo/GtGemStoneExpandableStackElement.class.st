@@ -2,21 +2,21 @@ Class {
 	#name : #GtGemStoneExpandableStackElement,
 	#superclass : #GtAbstractExpandableStackElement,
 	#instVars : [
-		'stackIndexList',
-		'stackFrames'
+		'stackIndexList'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
-{ #category : #accessing }
+{ #category : #callbacks }
 GtGemStoneExpandableStackElement >> actOnCoderInFocusFor: aContextCoderUIModel [
 	| context |
 	super actOnCoderInFocusFor: aContextCoderUIModel.
+	
 	context := aContextCoderUIModel context.
 	self updateStackIndexListTo: context.
 ]
 
-{ #category : #accessing }
+{ #category : #'building - widgets' }
 GtGemStoneExpandableStackElement >> buildStackIndex [
 	| indexList labelBlock |
 	indexList := BrColumnedList new
@@ -76,20 +76,26 @@ GtGemStoneExpandableStackElement >> contextMethodText: aContext [
 	^ aContext displayString
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
+GtGemStoneExpandableStackElement >> createStackModelOnSession: aDebuggingSession [
+	^ GtGemStoneDebuggerStackModel onSession: aDebuggingSession
+]
+
+{ #category : #initialization }
 GtGemStoneExpandableStackElement >> initialize [
 	super initialize.
+	
 	self layout: BlLinearLayout horizontal.
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneExpandableStackElement >> initializeStackList [
 	| stackFramesList stackPane sidebarElement tabGroup stackTab |
 	sidebarElement := GtPhlowHorizontalSidebarElement new beLeft.
 	self
 		addAptitude: (GtPhlowToolDetailAptitude new
-				normal: [ :aStyle | aStyle do: [ sidebarElement hide ] ];
-				detailed: [ :aStyle | aStyle do: [ sidebarElement show ] ]).
+				normal: [ :theInstance | sidebarElement hide ];
+				detailed: [ :theInstance | sidebarElement show ]).
 	stackIndexList := self buildStackIndex.
 	
 	tabGroup := BrTabGroup new aptitude: BrGlamorousTabGroupAptitude new.
@@ -113,11 +119,29 @@ GtGemStoneExpandableStackElement >> initializeStackList [
 	self addChild: stackPane
 ]
 
-{ #category : #accessing }
+{ #category : #callbacks }
+GtGemStoneExpandableStackElement >> onStackChanged [
+	super onStackChanged.
+	
+	self updateStackIndex
+]
+
+{ #category : #callbacks }
 GtGemStoneExpandableStackElement >> onStackIndexSelectionChanged [
 	self
-		inUIProcessDo: [ self stackIndexList
-				selectedItemDo: [ :context :index | self selectContext: context ] ]
+		inUIProcessDo: [ 
+			self stackIndexList
+				selectedItemDo: [ :context :index | 
+					self selectContext: context ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneExpandableStackElement >> openFirstNonFilteredContextFrom: stream [
+	(stream next then: [ :item | 
+		item isSome ifTrue: [  
+			self enqueueTask: [ 
+				self selectCoderUIModel: item value ] asBlTask ] ])
+		await
 ]
 
 { #category : #accessing }
@@ -135,7 +159,14 @@ GtGemStoneExpandableStackElement >> stackIndexList [
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 
-	stackFrames := aDebuggingSession debuggerClient stackFrames.
+	stackModel
+		ifNil: [ self initializeStackModelFor: aDebuggingSession ]
+		ifNotNil: [ 
+			stackModel updateContent ].
+		
+	self openFirstNonFilteredContextFrom: stackModel coderViewModelStream
+
+	"stackFrames := aDebuggingSession debuggerClient stackFrames.
 
 	self inUIProcessDo: [ | currentCallFrame |
 
@@ -149,15 +180,15 @@ GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 
 		self selectContext:  currentCallFrame ].
 
-	self updateStackIndex.
+	self updateStackIndex."
 ]
 
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateStackIndex [
 	self
 		inUIProcessDo: [ 
-			self stackIndexList items: stackFrames.
-			self stackIndexList scrollToIndex: self selectedContext ordinal ]
+			self stackIndexList stream: stackModel contextStream.
+			self stackIndexList scrollToIndex: 1 "self selectedContext ordinal" ]
 ]
 
 { #category : #accessing }
@@ -165,11 +196,14 @@ GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
 	| selected |
 	
 	self stackIndexList selectedItemDo: [ :context | selected := context ].
-	selected ~~ aContext
-		ifTrue: [ (self stackIndexList scrollToItemSuchThat: [ :each | each == aContext ])
+	selected ~= aContext
+		ifTrue: [ 
+			(self stackIndexList 
+				scrollToItemSuchThat: [ :each | each = aContext ])
 				then: [ :v | 
 					self stackIndexList
 						inUIProcessDo: [ | index |
 							index := self stackIndexList items indexOf: aContext.
-							index > 0 ifTrue: [ self stackIndexList selectOne: index ] ] ] ]
+							index > 0 ifTrue: [ 
+								self stackIndexList selectOne: index ] ] ] ]
 ]

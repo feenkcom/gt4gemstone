@@ -35,11 +35,29 @@ GtGemStoneContextCoderModel >> debuggingSession: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderModel >> gsMethod [
+	^ targetGsMethod ifNil: [
+		targetGsMethod := self stackFrame method ]
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderModel >> initializeFromStackFrame: aStackFrame [
 	stackFrame := aStackFrame.
 	session := aStackFrame gsSession.
-	targetGsMethod := aStackFrame method.
+	
 	self initializeFromCoderSpecification: aStackFrame frameSpecification
+]
+
+{ #category : #printing }
+GtGemStoneContextCoderModel >> printDescriptionOn: aStream [
+	self printMethodDescriptionOn:  aStream.
+	aStream nextPutAll: ' '.
+	self printExtraDetailsOn: aStream. 
+]
+
+{ #category : #printing }
+GtGemStoneContextCoderModel >> printExtraDetailsOn: aStream [ 
+	self stackFrame printExtraDetailsOn: aStream 
 ]
 
 { #category : #accessing }

@@ -41,7 +41,8 @@ GtRsrEvaluationException >> debuggerProxy: anObject [
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerState [
 
-	^ debuggerState ifNil: [ debuggerState := self getDebuggerState ]
+	^ debuggerState ifNil: [ 
+		debuggerState := self getDebuggerState ]
 ]
 
 { #category : #accessing }
@@ -52,7 +53,6 @@ GtRsrEvaluationException >> evaluator [
 
 { #category : #private }
 GtRsrEvaluationException >> getDebuggerState [
-
 	^ GtGemStoneDebuggerState fromJsonString:
 		(self debuggerProxy 
 			proxyPerform: #debuggerStateJsonForExport
@@ -126,4 +126,12 @@ GtRsrEvaluationException >> messageText [
 GtRsrEvaluationException >> resetState [
 
 	debuggerState := nil.
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> synchronizeCallStack [
+	debuggerState := GtGemStoneDebuggerState fromJsonString:
+		(self debuggerProxy 
+			proxyPerform: #synchronizeCallStack
+			autoCommit: false).
 ]

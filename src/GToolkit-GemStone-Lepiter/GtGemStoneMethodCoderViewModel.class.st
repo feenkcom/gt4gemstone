@@ -50,6 +50,14 @@ GtGemStoneMethodCoderViewModel >> isSaveEnabled [
 	^ true
 ]
 
+{ #category : #printing }
+GtGemStoneMethodCoderViewModel >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		self coder printDescriptionOn: aStream ]
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderViewModel >> save [
 	| aSaveResult |
