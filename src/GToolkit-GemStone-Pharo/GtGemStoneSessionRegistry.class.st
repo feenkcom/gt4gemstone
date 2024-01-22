@@ -129,7 +129,7 @@ GtGemStoneSessionRegistry >> addNewConnector [
 	^ newConnector
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 GtGemStoneSessionRegistry >> addSession: aSession named: aString [
 
 	self sessions at: aString put: aSession
