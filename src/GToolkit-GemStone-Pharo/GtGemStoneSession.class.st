@@ -159,6 +159,8 @@ GtGemStoneSession >> connect [
 		yourself.
 	connectionTime := DateAndTime now.
 	self runPostConnectActions.
+	registry ifNotNil:
+		[ registry addSession: self named: self name ].
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 
