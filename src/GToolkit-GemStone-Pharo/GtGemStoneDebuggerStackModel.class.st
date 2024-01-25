@@ -5,16 +5,6 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneDebuggerStackModel >> context: aContext [
-	(context isNil or: [ 
-		context ~= aContext ]) ifTrue: [ 
-			"(context notNil and: [ context isDead ])
-				ifTrue: [ self resetCoderViewModelCache ]."
-			context := aContext.
-			self updateContextStreams ]
-]
-
-{ #category : #accessing }
 GtGemStoneDebuggerStackModel >> createCoderFor: aContext in: aSession [
 	| coder |
 	
@@ -30,34 +20,32 @@ GtGemStoneDebuggerStackModel >> createCoderFor: aContext in: aSession [
 ]
 
 { #category : #accessing }
-GtGemStoneDebuggerStackModel >> getCoderViewModelForContext: aContext [
-	^ lock
-		critical: [ | entry |
-			"method := aContext isBlockContext ifFalse: [ aContext compiledCode ]."
-			entry := coderViewModelCache
-					at: aContext 
-					ifAbsentPut: [ {
-						(self createCoderFor: aContext in: session) asCoderViewModel.
-						"method" } ].
-			"(entry at: 2) ~~ method
-				ifTrue: [ 
-					entry first coder forMethod: method.
-					entry at: 2 put: method ]."
-			entry at: 1 ]
-		ifError: [ nil ]
-]
+GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
+	"Changes the Context to a given one trying to preserve
+	cached coders for each stack frame.
+	Return true if the context changed"
+	<return: #Boolean>
+	currentContext == aContext
+		ifTrue: [ ^ false ].
 
-{ #category : #initialization }
-GtGemStoneDebuggerStackModel >> initialize [
-	super initialize.
-	
-	coderViewModelCache := Dictionary new.
+	(currentContext notNil and: [ currentContext isDead ])
+		ifTrue: [ "self resetCoderViewModelCache" ].
+
+	currentContext := aContext.
+	^ true
 ]
 
 { #category : #accessing }
-GtGemStoneDebuggerStackModel >> updateContent [
-	self context: session remoteContext.
-	self updateTopProgramCounterMarkersInCurrentCache.
+GtGemStoneDebuggerStackModel >> updateBasedOnCurentContext: aContext [
+	"Changes the Context to a given one trying to preserve
+	cached coders for each stack frame"
+	(self setCurrentContext: aContext)
+		ifTrue: [ self updateTopProgramCounterMarkersInCurrentCache ]
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerStackModel >> updateBasedOnCurentSession [
+	self updateBasedOnCurentContext: session remoteContext
 ]
 
 { #category : #accessing }
@@ -72,7 +60,8 @@ GtGemStoneDebuggerStackModel >> updateFrameContextsInCoderModels [
 	
 	coderViewModelCache associations do: [ :assoc |
 		| frameIndex |
-		coderViewModelCache removeKey: assoc key.
+		coderViewModelCache removeKey: assoc key ifAbsent: [ ].
+		
 		(frameIndex := currentStackFrames indexOf: assoc key) > 0
 			ifTrue: [
 				assoc value first coderModel

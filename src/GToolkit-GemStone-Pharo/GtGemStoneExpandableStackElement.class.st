@@ -113,7 +113,6 @@ GtGemStoneExpandableStackElement >> initializeStackList [
 	stackPane padding: (BlInsets all: 10).
 	
 	stackFramesList := self buildStackFramesList.
-	stackFramesList items: OrderedCollection new.
 	stackPane addChild: stackFramesList as: #expandableFrames.
 	
 	self addChild: stackPane
@@ -128,27 +127,11 @@ GtGemStoneExpandableStackElement >> onStackChanged [
 
 { #category : #callbacks }
 GtGemStoneExpandableStackElement >> onStackIndexSelectionChanged [
-	self
-		inUIProcessDo: [ 
-			self stackIndexList
-				selectedItemDo: [ :context :index | 
-					self selectContext: context ] ]
-]
-
-{ #category : #accessing }
-GtGemStoneExpandableStackElement >> openFirstNonFilteredContextFrom: stream [
-	(stream next then: [ :item | 
-		item isSome ifTrue: [  
-			self enqueueTask: [ 
-				self selectCoderUIModel: item value ] asBlTask ] ])
-		await
-]
-
-{ #category : #accessing }
-GtGemStoneExpandableStackElement >> selectContext: aContext [
-	super selectContext: aContext.
+	"Is executed in a UI process when selection in the index list changes.
+	When that happens we should update the selected context in the coders list"
 	
-	self updateStackIndexListTo: aContext.
+	self stackIndexList
+		selectedItemDo: [ :context :index | self selectCoderForContext: context ]
 ]
 
 { #category : #accessing }
@@ -158,29 +141,9 @@ GtGemStoneExpandableStackElement >> stackIndexList [
 
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
-
-	stackModel
-		ifNil: [ self initializeStackModelFor: aDebuggingSession ]
-		ifNotNil: [ 
-			stackModel updateContent ].
-		
-	self openFirstNonFilteredContextFrom: stackModel coderViewModelStream
-
-	"stackFrames := aDebuggingSession debuggerClient stackFrames.
-
-	self inUIProcessDo: [ | currentCallFrame |
-
-		currentCallFrame ifNil: 
-			[ currentCallFrame := stackFrames first ].
-		
-		self stackFramesList items: (stackFrames collect: [ :aGsFrame |
-			(GtGemStoneContextCoderModel fromStackFrame: aGsFrame) 
-		 		debuggingSession: aDebuggingSession;
-		 		asCoderViewModel ]).
-
-		self selectContext:  currentCallFrame ].
-
-	self updateStackIndex."
+	super updateForSession: aDebuggingSession.
+	
+	self updateStackIndex
 ]
 
 { #category : #accessing }
@@ -193,17 +156,17 @@ GtGemStoneExpandableStackElement >> updateStackIndex [
 
 { #category : #accessing }
 GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
-	| selected |
-	
-	self stackIndexList selectedItemDo: [ :context | selected := context ].
-	selected ~= aContext
-		ifTrue: [ 
-			(self stackIndexList 
-				scrollToItemSuchThat: [ :each | each = aContext ])
-				then: [ :v | 
-					self stackIndexList
-						inUIProcessDo: [ | index |
-							index := self stackIndexList items indexOf: aContext.
-							index > 0 ifTrue: [ 
-								self stackIndexList selectOne: index ] ] ] ]
+	"Must be sent from a UI process"
+	| alreadySelectedContext |
+
+	self stackIndexList selectedItemDo: [ :context | alreadySelectedContext := context ].
+	alreadySelectedContext == aContext
+		ifTrue: [ ^ self ].
+
+	self stackIndexList
+		itemSuchThat: [ :each | each == aContext ]
+		do:  [ :anIndex |
+			self stackIndexList
+				scrollToIndex: anIndex;
+				selectOne: anIndex ]
 ]
