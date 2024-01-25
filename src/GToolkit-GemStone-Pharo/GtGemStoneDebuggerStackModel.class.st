@@ -25,11 +25,11 @@ GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
 	cached coders for each stack frame.
 	Return true if the context changed"
 	<return: #Boolean>
-	currentContext == aContext
+	currentContext = aContext
 		ifTrue: [ ^ false ].
 
-	(currentContext notNil and: [ currentContext isDead ])
-		ifTrue: [ "self resetCoderViewModelCache" ].
+	"(currentContext notNil and: [ currentContext isDead ])
+		ifTrue: [ self resetCoderViewModelCache ]."
 
 	currentContext := aContext.
 	^ true
@@ -39,8 +39,10 @@ GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
 GtGemStoneDebuggerStackModel >> updateBasedOnCurentContext: aContext [
 	"Changes the Context to a given one trying to preserve
 	cached coders for each stack frame"
-	(self setCurrentContext: aContext)
-		ifTrue: [ self updateTopProgramCounterMarkersInCurrentCache ]
+	self setCurrentContext: aContext.
+	
+	"Here we need to update the PC markers after every action manually"
+	self updateTopProgramCounterMarkersInCurrentCache 
 ]
 
 { #category : #accessing }
@@ -93,7 +95,7 @@ GtGemStoneDebuggerStackModel >> updateTopProgramCounterMarkersInCurrentCache [
 	coderViewModelCache 
 		at: session remoteContext
 		ifPresent: [ :aCachedViewModel |
-			aCachedViewModel first coderModel stackFrame
+			aCachedViewModel coderModel stackFrame
 				updateProgramCounterMarkers: session remoteContext
 					programCounterMarkers  ]
 ]
