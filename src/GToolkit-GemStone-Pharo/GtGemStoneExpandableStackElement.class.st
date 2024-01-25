@@ -140,6 +140,12 @@ GtGemStoneExpandableStackElement >> stackIndexList [
 ]
 
 { #category : #accessing }
+GtGemStoneExpandableStackElement >> updateExistingStackModelFor: aDebuggingSession [ 
+	stackModel setCurrentContext: aDebuggingSession remoteContext.
+	stackModel updateTopProgramCounterMarkersInCurrentCache
+]
+
+{ #category : #accessing }
 GtGemStoneExpandableStackElement >> updateForSession: aDebuggingSession [
 	super updateForSession: aDebuggingSession.
 	
@@ -160,11 +166,11 @@ GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
 	| alreadySelectedContext |
 
 	self stackIndexList selectedItemDo: [ :context | alreadySelectedContext := context ].
-	alreadySelectedContext == aContext
+	alreadySelectedContext = aContext
 		ifTrue: [ ^ self ].
 
 	self stackIndexList
-		itemSuchThat: [ :each | each == aContext ]
+		itemSuchThat: [ :each | each = aContext ]
 		do:  [ :anIndex |
 			self stackIndexList
 				scrollToIndex: anIndex;
