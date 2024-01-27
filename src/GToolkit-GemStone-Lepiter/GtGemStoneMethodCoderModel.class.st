@@ -208,37 +208,30 @@ GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
 
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel [
-
-	super
-		initializeAddOns: addOns
-		viewModel: aGtPharoMethodCoderViewModel.
+	super initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel.
 
 	addOns
 		addMainAction: 'Save' translated
 		icon: BrGlamorousVectorIcons accept
-		action: [ :aCoderUIModel :anElement | 
-			aCoderUIModel save ]
+		action: [ :aCoderUIModel :anElement | aCoderUIModel save ]
 		id: GtMethodCoderSaveActionId.	
-
+		
 	"addOns addMainAction: (GtCoderCustomAction new stencil: [ 
 			 GtPharoMethodCoderSaveButton new pharoMethodCoderViewModel:
-				 aGtPharoMethodCoderViewModel ])."
-	"addOns
+				 aGtPharoMethodCoderViewModel ])."	"addOns
 		addDropDownWithPreviewAction: 'Remove' translated
 		icon: BrGlamorousVectorIcons remove
 		action: [ :aButtonElement :aButtonModel :anEvent | self remove ]
 		stencil: [ :element | self buildRemoveMethodLabel: element ]."
-		
+
 	addOns
 		addMainAction: 'Inspect Method' translated
 		icon: BrGlamorousVectorIcons inspect
-		action: [ :aCoderUIModel :anElement | 
-			self notifyObjectSpawn: aCoderUIModel gsMethod ].
+		action: [ :aCoderUIModel :anElement | self notifyObjectSpawn: aCoderUIModel gsMethod requesterObject: aCoderUIModel ].
 	addOns
 		addMainAction: 'Copy Method Name' translated
 		icon: BrGlamorousVectorIcons clipboard
-		action: [ :aCoderUIModel :anElement | 
-			self copyMethodNameToClipboard ]
+		action: [ :aCoderUIModel :anElement | self copyMethodNameToClipboard ]
 ]
 
 { #category : #initialization }
