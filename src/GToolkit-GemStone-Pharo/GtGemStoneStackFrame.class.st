@@ -277,6 +277,12 @@ GtGemStoneStackFrame >> programCounterRange [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> resetState [
+
+	variableAssociations := nil.
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
 	^ self debuggerProxy 
 		proxyPerform: #programCounterMarkersAtFrameIdentifierIndex:
