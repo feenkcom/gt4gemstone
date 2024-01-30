@@ -72,6 +72,7 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
 
 	self debugSession synchronizeCallStack.
+	self currentCallFrame resetState.
 	self scheduleUpdateUI.
 ]
 
