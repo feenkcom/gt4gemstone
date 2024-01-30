@@ -153,12 +153,13 @@ GtGemStoneMethodCoderModel >> gtInspectorTitleStringOn: aStream [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
-	^ self 
-		handleCompilerErrorsDuring: aBlock 
-		errorDo: [ :errorDetails |
+	^ self
+		handleCompilerErrorsDuring: aBlock
+		errorDo: [ :errorDetails | 
 			self
 				notifyParseError: errorDetails first last
-				at: errorDetails first second ]
+				at: errorDetails first second
+				requesterObject: nil ]
 ]
 
 { #category : #accessing }
@@ -184,18 +185,18 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationErrorDo: anErrorBlock [
 	^ [ aBlock value ]
 		on: GtRsrEvaluationException", RsrBrokenPromise"
-		do: [ :ex |
+		do: [ :ex | 
 			| remoteException |
 			remoteException := (ex isKindOf: RsrBrokenPromise)
-				ifTrue: [ ex reason ]
-				ifFalse: [ ex debuggerProxy proxyPerform: #exception ].
-			(remoteException remoteClass = #CompileError)
-				ifTrue: [
-					| errorDetails |
+					ifTrue: [ ex reason ]
+					ifFalse: [ ex debuggerProxy proxyPerform: #exception ].
+			remoteException remoteClass = #CompileError
+				ifTrue: [ | errorDetails |
 					errorDetails := remoteException proxyPerform: #errorDetails.
 					self
 						notifyParseError: errorDetails first last
-						at: errorDetails first second.
+						at: errorDetails first second
+						requesterObject: nil.
 					anErrorBlock value.
 					ex return: nil ]
 				ifFalse: [ ex resume ] ]
@@ -343,27 +344,27 @@ GtGemStoneMethodCoderModel >> notifyMethodRecompiledFrom: aPreviousCompiledMetho
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
+
 	| result gemstoneSession |
-	
 	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	gemstoneSession ifNil: [ 
-		self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession
+		ifNil: [ self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 
-	self 
-		handleCompilerErrorsDuring: [ 
-			result := gemstoneSession 
-				evaluateAndWaitReturnProxy: aSourceString 
-				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
-				bindings: Dictionary empty ]
-		errorDo: [ :errorDetails |
+	self
+		handleCompilerErrorsDuring: [ result := gemstoneSession
+					evaluateAndWaitReturnProxy: aSourceString
+					for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
+					bindings: Dictionary empty ]
+		errorDo: [ :errorDetails | 
 			self
 				notifyParseError: errorDetails first last
-				at: aGtSourceCoderEvaluationContext sourceInterval  startPosition
-					+ errorDetails first second.
-			^ anEvaluationFailBlock value].
-	
+				at: aGtSourceCoderEvaluationContext sourceInterval startPosition
+						+ errorDetails first second
+				requesterObject: nil.
+			^ anEvaluationFailBlock value ].
+
 	^ result asGtBareProxyObject
 ]
 
