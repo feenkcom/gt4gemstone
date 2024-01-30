@@ -173,27 +173,6 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 ]
 
 { #category : #accessing }
-GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationErrorDo: anErrorBlock [
-	^ [ aBlock value ]
-		on: GtRsrEvaluationException", RsrBrokenPromise"
-		do: [ :ex | 
-			| remoteException |
-			remoteException := (ex isKindOf: RsrBrokenPromise)
-					ifTrue: [ ex reason ]
-					ifFalse: [ ex debuggerProxy proxyPerform: #exception ].
-			remoteException remoteClass = #CompileError
-				ifTrue: [ | errorDetails |
-					errorDetails := remoteException proxyPerform: #errorDetails.
-					self
-						notifyParseError: errorDetails first last
-						at: errorDetails first second
-						requesterObject: nil.
-					anErrorBlock value.
-					ex return: nil ]
-				ifFalse: [ ex resume ] ]
-]
-
-{ #category : #accessing }
 GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock inContext: aGtPharoSourceCoderEvaluationContext [
 	^ self
 		handleCompilerErrorsDuring: aBlock
@@ -201,7 +180,7 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock inContext: aGtP
 			self
 				notifyParseError: errorDetails first last
 				at: errorDetails first second
-				requesterObject: nil ]
+				requesterObject: aGtPharoSourceCoderEvaluationContext requesterObject ]
 ]
 
 { #category : #accessing }
@@ -364,7 +343,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 				notifyParseError: errorDetails first last
 				at: aGtSourceCoderEvaluationContext sourceInterval startPosition
 						+ errorDetails first second
-				requesterObject: nil.
+				requesterObject: aGtSourceCoderEvaluationContext requesterObject.
 			^ anEvaluationFailBlock value ].
 
 	^ result asGtBareProxyObject
