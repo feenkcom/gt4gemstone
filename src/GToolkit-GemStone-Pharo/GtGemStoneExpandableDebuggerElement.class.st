@@ -385,7 +385,7 @@ GtGemStoneExpandableDebuggerElement >> newStdoutView [
 { #category : #'private - element creation' }
 GtGemStoneExpandableDebuggerElement >> newToolbar [ 
 
-	^ GtGemStoneDebuggerToolbar new 
+	^ GtGemStoneExpandableDebuggerToolbar new 
 		dapDebugElement: self;
 		hMatchParent;
 		vFitContent;
