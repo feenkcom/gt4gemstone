@@ -45,36 +45,38 @@ GtGemStoneMethodCoderModel >> collapsedTextPromise [
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> compileInContext: aGtPharoSourceCoderEvaluationContext [
 	"Try to compile the current source code and return true if it was successful, false otherwise"
+
 	<return: #Boolean>
 	| previousGsMethod newCompiledMethod currentSourceString script |
-	
-	previousGsMethod := self gsMethod.
-
-	"We should use #currentSelector instead of #selector because we care
+	previousGsMethod := self gsMethod.	"We should use #currentSelector instead of #selector because we care
 	about the `current` state of the coder (#selector may be nil for new methods)"
 	self currentSelector ifNil: [ ^ false ].
-		
+
 	currentSourceString := self currentSourceString.
-	script := String streamContents: [ :stream |
-		stream 
-			<< 'self inClass compileMethod: ';
-			print: currentSourceString; cr;
-			<< 'dictionaries: GsCurrentSession currentSession symbolList'; cr;
-			<< 'category: #'''; << self protocol; << ''''; cr;
-			<< 'environmentId: 0' ].
-			
-	newCompiledMethod := self handleCompilerErrorsDuring: [
-		(previousGsMethod asGtProxyObject 
-			evaluateAndWait: script) asGtBareProxyObject ]. 
-	newCompiledMethod ifNil: [ ^ false ].
-	
-	"aGtPharoSourceCoderEvaluationContext hasTargetBehavior
+	script := String
+			streamContents: [ :stream | 
+				stream
+					<< 'self inClass compileMethod: ';
+					print: currentSourceString;
+					cr;
+					<< 'dictionaries: GsCurrentSession currentSession symbolList';
+					cr;
+					<< 'category: #''';
+					<< self protocol;
+					<< '''';
+					cr;
+					<< 'environmentId: 0' ].
+
+	newCompiledMethod := self
+			handleCompilerErrorsDuring: [ (previousGsMethod asGtProxyObject evaluateAndWait: script) asGtBareProxyObject ]
+			inContext: aGtPharoSourceCoderEvaluationContext.
+	newCompiledMethod ifNil: [ ^ false ].	"aGtPharoSourceCoderEvaluationContext hasTargetBehavior
 		ifFalse: [ ^ GtPharoMethodCoderTargetBehaviorNotDefined signal ]."
-	
+
 	self initializeFromGsMethod: newCompiledMethod.
-	
+
 	self notifyMethodRecompiledFrom: previousGsMethod to: newCompiledMethod.
-	
+
 	^ true
 ]
 
@@ -152,17 +154,6 @@ GtGemStoneMethodCoderModel >> gtInspectorTitleStringOn: aStream [
 ]
 
 { #category : #accessing }
-GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock [
-	^ self
-		handleCompilerErrorsDuring: aBlock
-		errorDo: [ :errorDetails | 
-			self
-				notifyParseError: errorDetails first last
-				at: errorDetails first second
-				requesterObject: nil ]
-]
-
-{ #category : #accessing }
 GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErrorBlock [
 	^ [ aBlock value ]
 		on: GtRsrEvaluationException
@@ -182,24 +173,14 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 ]
 
 { #category : #accessing }
-GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock ifCompilationErrorDo: anErrorBlock [
-	^ [ aBlock value ]
-		on: GtRsrEvaluationException", RsrBrokenPromise"
-		do: [ :ex | 
-			| remoteException |
-			remoteException := (ex isKindOf: RsrBrokenPromise)
-					ifTrue: [ ex reason ]
-					ifFalse: [ ex debuggerProxy proxyPerform: #exception ].
-			remoteException remoteClass = #CompileError
-				ifTrue: [ | errorDetails |
-					errorDetails := remoteException proxyPerform: #errorDetails.
-					self
-						notifyParseError: errorDetails first last
-						at: errorDetails first second
-						requesterObject: nil.
-					anErrorBlock value.
-					ex return: nil ]
-				ifFalse: [ ex resume ] ]
+GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock inContext: aGtPharoSourceCoderEvaluationContext [
+	^ self
+		handleCompilerErrorsDuring: aBlock
+		errorDo: [ :errorDetails | 
+			self
+				notifyParseError: errorDetails first last
+				at: errorDetails first second
+				requesterObject: aGtPharoSourceCoderEvaluationContext requesterObject ]
 ]
 
 { #category : #accessing }
@@ -362,7 +343,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 				notifyParseError: errorDetails first last
 				at: aGtSourceCoderEvaluationContext sourceInterval startPosition
 						+ errorDetails first second
-				requesterObject: nil.
+				requesterObject: aGtSourceCoderEvaluationContext requesterObject.
 			^ anEvaluationFailBlock value ].
 
 	^ result asGtBareProxyObject
