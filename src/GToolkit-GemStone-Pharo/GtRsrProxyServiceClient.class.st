@@ -295,7 +295,7 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 	^ anAction button
 		priority: 1;
 		icon: BrGlamorousVectorIcons down;
-		tooltip: 'Download local instance';
+		tooltip: 'Download a copy of the remote instance locally using STON';
 		action: [ :button |
 			button phlow spawnObject: 
 				(self proxyPerform: #yourself
