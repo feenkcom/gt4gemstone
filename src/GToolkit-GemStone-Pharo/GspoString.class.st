@@ -17,7 +17,7 @@ GspoString >> gtLiveFor: aView [
 	<gtView>
 
 	^ aView forward
-		title: 'String';
+		title: 'Live';
 		priority: 10;
 		object: [ self limitedDisplayString ];
 		view: #gtLiveFor:
