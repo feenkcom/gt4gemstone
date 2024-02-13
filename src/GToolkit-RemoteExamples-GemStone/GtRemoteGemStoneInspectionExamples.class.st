@@ -9,22 +9,17 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
-{ #category : #converting }
-GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
-	"Allow subclasses to transform the type of proxy instead of assuming that the server computes the right type."
-	^ anObject
-]
-
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'Dictionary new
-			at: Object new put: 1;
-			at: Object new put: 2;
-			yourself'
+		assertObjectInspectionFor: [
+			Dictionary new
+				at: Object new put: 1;
+				at: Object new put: 2;
+				yourself]
 		withTypeName: #Dictionary
 ]
 
@@ -34,7 +29,7 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'OrderedCollection new'
+		assertObjectInspectionFor: [ OrderedCollection new ]
 		withTypeName: #OrderedCollection
 ]
 
@@ -44,8 +39,8 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'Set new'
-		 withTypeName: #Set
+		assertObjectInspectionFor: [ Set new ]
+		withTypeName: #Set
 ]
 
 { #category : #accessing }
