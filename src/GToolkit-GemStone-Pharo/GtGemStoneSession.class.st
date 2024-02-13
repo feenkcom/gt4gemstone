@@ -738,14 +738,15 @@ GtGemStoneSession >> gt4gemstoneVersion [
 { #category : #ui }
 GtGemStoneSession >> gtAbortActionFor: anAction [
 	<gtAction>
-
-	self isRunning ifFalse: [ ^ anAction noAction ].
-	^ anAction button 
+	self isRunning ifFalse: [^anAction noAction].
+	^(anAction button)
+		priority: 7;
 		tooltip: 'GemStone Abort Transaction';
 		icon: BrGlamorousVectorIcons cancel;
-		action: [ :button | 
-			self abortTransaction.
-			button phlow spawnObject: 'Aborted transaction' ]
+		action: 
+				[:button |
+				self abortTransaction.
+				button phlow spawnObject: 'Aborted transaction']
 ]
 
 { #category : #ui }
@@ -783,26 +784,28 @@ GtGemStoneSession >> gtCodeSyncFor: aView [
 { #category : #ui }
 GtGemStoneSession >> gtCommitActionFor: anAction [
 	<gtAction>
-
-	self isRunning ifFalse: [ ^ anAction noAction ].
-	^ anAction button 
+	self isRunning ifFalse: [^anAction noAction].
+	^(anAction button)
+		priority: 6;
 		tooltip: 'GemStone Commit Transaction';
 		icon: BrGlamorousVectorIcons accept;
-		action: [ :button | 
-			self evaluateAndWait: 'System commitTransaction'.
-			button phlow spawnObject: 'Successfully committed transaction' ]
+		action: 
+				[:button |
+				self evaluateAndWait: 'System commitTransaction'.
+				button phlow spawnObject: 'Successfully committed transaction']
 ]
 
 { #category : #ui }
 GtGemStoneSession >> gtConnectActionFor: anAction [
 	<gtAction>
-
-	^ anAction button 
+	^(anAction button)
+		priority: 4;
 		tooltip: 'GemStone Connect Session';
 		icon: BrGlamorousVectorIcons up;
-		action: [ :button | 
-			self connect.
-			button phlow spawnObject: self ]
+		action: 
+				[:button |
+				self connect.
+				button phlow spawnObject: self]
 ]
 
 { #category : #ui }
@@ -821,14 +824,15 @@ GtGemStoneSession >> gtConnectorFor: aView [
 { #category : #ui }
 GtGemStoneSession >> gtDisconnectActionFor: anAction [
 	<gtAction>
-
-	self isRunning ifFalse: [ ^ anAction noAction ].
-	^ anAction button 
+	self isRunning ifFalse: [^anAction noAction].
+	^(anAction button)
+		priority: 3;
 		tooltip: 'GemStone Disconnect Session';
 		icon: BrGlamorousVectorIcons down;
-		action: [ :button | 
-			self close.
-			button phlow spawnObject: self ]
+		action: 
+				[:button |
+				self close.
+				button phlow spawnObject: self]
 ]
 
 { #category : #ui }
@@ -913,14 +917,15 @@ GtGemStoneSession >> gtPlaygroundFor: aView [
 { #category : #ui }
 GtGemStoneSession >> gtRemoveActionFor: anAction [
 	<gtAction>
-
-	registry ifNil: [ ^ anAction noAction ].
-	^ anAction button 
+	registry ifNil: [^anAction noAction].
+	^(anAction button)
+		priority: 5;
 		tooltip: 'Remove Session from registry';
 		icon: BrGlamorousIcons trash;
-		action: [ :button | 
-			self removeSelf.
-			button phlow spawnObject: 'Deleted Session Definition' ]
+		action: 
+				[:button |
+				self removeSelf.
+				button phlow spawnObject: 'Deleted Session Definition']
 ]
 
 { #category : #testing }

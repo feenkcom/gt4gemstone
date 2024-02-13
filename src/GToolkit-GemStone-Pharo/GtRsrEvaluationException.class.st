@@ -13,16 +13,6 @@ Class {
 }
 
 { #category : #accessing }
-GtRsrEvaluationException >> debugResult [
-	^ debugResult
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> debugResult: anObject [
-	debugResult := anObject
-]
-
-{ #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
 
 	^ debuggerClient ifNil: [ debuggerClient := GtGemStoneDebugger new exception: self ].
@@ -43,6 +33,16 @@ GtRsrEvaluationException >> debuggerState [
 
 	^ debuggerState ifNil: [ 
 		debuggerState := self getDebuggerState ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debugResult [
+	^ debugResult
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debugResult: anObject [
+	debugResult := anObject
 ]
 
 { #category : #accessing }
