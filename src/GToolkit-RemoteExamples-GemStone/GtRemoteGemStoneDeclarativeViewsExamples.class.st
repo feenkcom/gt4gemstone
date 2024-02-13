@@ -22,6 +22,41 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedColumnedListTypedColumnsTwoI
 ]
 
 { #category : #'accessing - expected' }
+GtRemoteGemStoneDeclarativeViewsExamples >> expectedNodesForRawView [
+	^ {
+		GtRemotePhlowColumnedTreeNode new
+			nodeId: 1;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'classIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'self'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'aGtRemotePhlowDeclarativeTestInspectable'}).
+		GtRemotePhlowColumnedTreeNode new
+			nodeId: 2;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'stringIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'string'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'hello world'}).
+	GtRemotePhlowColumnedTreeNode new
+			nodeId: 3;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'collectionIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'collectionOfObjects'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'anArray( 42, ''Hello World'', 2021-04-06T14:43:50.123456+02:00)'}) }
+]
+
+{ #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledText [
 	^ GtRemotePhlowDeclarativeTestInspectable new  
 			styledPhlowTextForRemoteComparison
@@ -49,6 +84,38 @@ GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparis
 { #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 	^ 'aGtRemotePhlowDeclarativeTestInspectable'
+]
+
+{ #category : #'examples - views' }
+GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
+	<gtExample>
+	<after: #stopServer>
+	| viewedObjectProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
+
+	viewedObjectProxy := self viewedObjectProxy.
+	viewDictionary :=  viewedObjectProxy getViewDeclaration: #gtRawFor:.
+	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
+	
+	self assert: viewSpecification title equals: #Raw.
+	self 
+		assert: viewSpecification columnTitles 
+		equals: {'Icon' . 'Variable' . 'Value'}.
+	self assert: viewSpecification columnWidths equals: #(36 nil nil).
+	self 
+		assert: (viewSpecification columnTypes collect: #typeLabel) 
+		equals: #(#icon #text #text).
+	self 
+		assert: viewSpecification dataTransport 
+		equals: GtPhlowViewSpecification dataLazy.
+	
+	viewDatasource := viewedObjectProxy getDeclarativeViewFor: #gtRawFor:.
+	
+	obtainedNodes := self 
+		assertNodesInViewDatasource: viewDatasource 
+		ofType: GtRemotePhlowColumnedTreeNode
+		equalNodes: self expectedNodesForRawView.
+	
+	^ viewSpecification
 ]
 
 { #category : #'private - commands' }
