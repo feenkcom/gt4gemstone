@@ -28,13 +28,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> getViewedObjectProxy [
 ]
 
 { #category : #'private - commands' }
-GtRemoteGemStoneDeclarativeViewsExamples >> listViewDisplayArray [
-	"Answer the command Array returned by the remote's list view"
-
-	^ #('42' 'Hello World' '2021-04-06T14:43:49.623384+02:00')
-]
-
-{ #category : #'private - commands' }
 GtRemoteGemStoneDeclarativeViewsExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
