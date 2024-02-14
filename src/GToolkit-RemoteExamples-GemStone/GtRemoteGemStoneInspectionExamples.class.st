@@ -9,22 +9,17 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
-{ #category : #converting }
-GtRemoteGemStoneInspectionExamples >> convertToTargetProxy: anObject [ 
-	"Allow subclasses to transform the type of proxy instead of assuming that the server computes the right type."
-	^ anObject
-]
-
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'Dictionary new
-			at: Object new put: 1;
-			at: Object new put: 2;
-			yourself'
+		assertObjectInspectionFor: [
+			Dictionary new
+				at: Object new put: 1;
+				at: Object new put: 2;
+				yourself]
 		withTypeName: #Dictionary
 ]
 
@@ -34,7 +29,7 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'OrderedCollection new'
+		assertObjectInspectionFor: [ OrderedCollection new ]
 		withTypeName: #OrderedCollection
 ]
 
@@ -44,8 +39,29 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	<after: #stopServer>
 	
 	^ self 
-		assertObjectInspectionFor: 'Set new'
-		 withTypeName: #Set
+		assertObjectInspectionFor: [ Set new ]
+		withTypeName: #Set
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> phlowTextInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			| text |
+			text := GtPhlowText  forString: 'Now is the time'.
+			text glamorousCodeFont.
+			(text from: 12 to: 15) fontSize: 20.
+			(text from: 5 to: 6) highlight: (GtPhlowColor named: #yellow) asColor. 
+			(text from: 1 to: 4) bold.
+			(text from: 8 to: 10) foreground: (GtPhlowColor named: #red) asColor.
+			(text from: 12 to: 12) glamorousRegularFont.
+			(text from: 1 to: 6) italic.
+			(text from: 8 to: 15) thin.
+			text ]
+		withTypeName: #GtPhlowRunBasedText
 ]
 
 { #category : #accessing }

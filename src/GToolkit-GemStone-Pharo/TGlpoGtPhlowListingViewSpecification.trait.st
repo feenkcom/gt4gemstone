@@ -10,6 +10,16 @@ TGlpoGtPhlowListingViewSpecification >> flushItemsIterator [
 ]
 
 { #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> retrieveFormattedItems [
+	"This method does not use pagination. Should only be used in examples"
+	
+	^ (self performEvaluation
+		selector: #retrieveFormattedItems;
+		returnLegacy;
+		evaluate) wait
+]
+
+{ #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: anIndex [
 
 	^ (self performEvaluation
