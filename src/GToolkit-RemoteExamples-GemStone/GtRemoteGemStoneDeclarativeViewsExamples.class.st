@@ -1,6 +1,6 @@
 Class {
 	#name : #GtRemoteGemStoneDeclarativeViewsExamples,
-	#superclass : #GtRemoteDeclarativeViewsExamples,
+	#superclass : #GtRemotePhlowDeclarativeViewsExamples,
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
