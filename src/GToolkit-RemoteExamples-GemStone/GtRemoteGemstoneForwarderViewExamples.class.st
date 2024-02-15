@@ -1,6 +1,6 @@
 Class {
 	#name : #GtRemoteGemstoneForwarderViewExamples,
-	#superclass : #GtRemoteForwarderViewInspectionExamples,
+	#superclass : #GtRemotePhlowForwarderViewInspectionExamples,
 	#instVars : [
 		'server'
 	],
