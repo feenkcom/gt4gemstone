@@ -18,8 +18,7 @@ GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [
 		receiver: self;
 		selector: #getDeclarativeViewFor:;
 		arguments: { aViewSelector asSymbol };
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
@@ -40,6 +39,5 @@ GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
 	^ (self gtSession performEvaluation
 		receiver: self;
 		selector: #getViewsDeclarations;
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]

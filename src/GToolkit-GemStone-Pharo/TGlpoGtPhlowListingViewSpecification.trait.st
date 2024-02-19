@@ -15,8 +15,7 @@ TGlpoGtPhlowListingViewSpecification >> retrieveFormattedItems [
 	
 	^ (self performEvaluation
 		selector: #retrieveFormattedItems;
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
@@ -25,8 +24,7 @@ TGlpoGtPhlowListingViewSpecification >> retrieveItems: anItemsCount fromIndex: a
 	^ (self performEvaluation
 		selector: #retrieveItems:fromIndex:;
 		arguments: { anItemsCount . anIndex  };
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
@@ -48,6 +46,5 @@ TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [
 	^ (self performEvaluation
 		selector: #retriveSentItemAt:;
 		arguments: { aSelectionIndex };
-		returnProxy;
-		evaluate) wait
+		returnProxy) evaluateAndWait
 ]

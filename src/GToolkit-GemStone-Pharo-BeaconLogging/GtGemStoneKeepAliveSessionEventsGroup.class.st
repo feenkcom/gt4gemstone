@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneKeepAliveSessionEventsGroup,
 	#superclass : #GtGemStoneKeepAliveEventsGroup,
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Events'
 }

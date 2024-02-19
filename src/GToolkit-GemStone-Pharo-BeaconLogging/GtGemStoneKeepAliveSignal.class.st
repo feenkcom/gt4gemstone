@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'keepAlive'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Signals'
 }
 
 { #category : #accessing }

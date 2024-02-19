@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #evaluating }
-GtRsrScriptEvaluation >> evaluate [
+GtRsrScriptEvaluation >> basicEvaluateWithSerialisation [
 	"Evaluate the receiver on the supplied evaluator"
 
 	"The first two checks are a hack until the server is updated to match"
@@ -17,7 +17,19 @@ GtRsrScriptEvaluation >> evaluate [
 	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
 		[ ^ self evaluateProxyOnly ].
 
-	^ gtSession evaluator evaluateScript: self
+	^ gtSession evaluator evaluateScript: self 
+]
+
+{ #category : #logging }
+GtRsrScriptEvaluation >> emitEvaluationExecutionEndSignal [
+	self gtSession logEmitter 
+		emitScriptEvaluationExecutionEndFor:  self
+]
+
+{ #category : #logging }
+GtRsrScriptEvaluation >> emitEvaluationExecutionStartSignal [
+	self gtSession logEmitter 
+		emitScriptEvaluationExecutionStartFor:  self
 ]
 
 { #category : #'private - evaluating' }
@@ -30,6 +42,31 @@ GtRsrScriptEvaluation >> evaluateLegacy [
 GtRsrScriptEvaluation >> evaluateProxyOnly [
 
 	^ gtSession evaluator evaluateProxyOnlyScript: self
+]
+
+{ #category : #evaluating }
+GtRsrScriptEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
+	| result |
+	gtSession logEmitter
+		emitEvaluationDeliveryStartFor: self.
+		
+	result := aBlockClosure value.
+	
+	gtSession logEmitter
+		emitEvaluationDeliveryEndFor: self.
+			
+	^ result
+]
+
+{ #category : #evaluating }
+GtRsrScriptEvaluation >> performEvaluateWithLogging: aBlockClosure [
+	| evaluationResult |
+	
+	self emitEvaluationExecutionStartSignal.
+	evaluationResult := aBlockClosure value.
+	self emitEvaluationExecutionEndSignal.
+	
+	^ evaluationResult 
 ]
 
 { #category : #accessing }

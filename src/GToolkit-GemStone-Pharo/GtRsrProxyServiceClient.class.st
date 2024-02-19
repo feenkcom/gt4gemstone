@@ -257,8 +257,7 @@ GtRsrProxyServiceClient >> getViewProxy [
 	^ (self gtSession scriptEvaluation
 			script: 'GtRemotePhlowViewedObject object: self';
 			receiver: self;
-			returnLegacy;
-			evaluate) wait
+			returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
@@ -313,8 +312,7 @@ GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 	gtDisplayString := [
 		(self performEvaluation
 			selector: #gtDisplayString;
-			returnPrimitiveOnly;
-			evaluate) wait ]
+			returnPrimitiveOnly) evaluateAndWait ]
 				on: Error
 				do: [ :ex | 'Error printing bare proxy' ].
 	aStream << gtDisplayString.
@@ -480,7 +478,8 @@ GtRsrProxyServiceClient >> printOn: aStream [
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol [
 
-	^ self proxyPerform: aSymbol 
+	^ self 
+		proxyPerform: aSymbol 
 		autoCommit: self gtSession autoCommitEnabled
 ]
 
@@ -490,14 +489,14 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol autoCommit: autoCommit [
 	^ (self performEvaluation
 		selector: aSymbol;
 		returnLegacy;
-		autoCommit: autoCommit;
-		evaluate) wait
+		autoCommit: autoCommit) evaluateAndWait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
 
-	^ self proxyPerform: aSymbol
+	^ self 
+		proxyPerform: aSymbol
 		serializationStrategy: serializationSymbol
 		autoCommit: self gtSession autoCommitEnabled
 ]
@@ -508,8 +507,7 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol serializationStrategy: serializ
 	^ (self performEvaluation
 		selector: aSymbol;
 		serialisationStrategy: serializationSymbol;
-		autoCommit: aBoolean;
-		evaluate) wait
+		autoCommit: aBoolean) evaluateAndWait
 ]
 
 { #category : #performing }
@@ -527,8 +525,7 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray autoComm
 		selector: aSymbol;
 		arguments: anArray;
 		returnLegacy;
-		autoCommit: autoCommit;
-		evaluate) wait
+		autoCommit: autoCommit) evaluateAndWait
 ]
 
 { #category : #performing }
@@ -538,8 +535,7 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializ
 		selector: aSymbol;
 		arguments: anArray;
 		serialisationStrategy: serializationSymbol;
-		autoCommit: self gtSession autoCommitEnabled;
-		evaluate) wait
+		autoCommit: self gtSession autoCommitEnabled) evaluateAndWait
 ]
 
 { #category : #performing }
@@ -549,14 +545,14 @@ GtRsrProxyServiceClient >> proxyPerform: aSymbol withArguments: anArray serializ
 		selector: aSymbol;
 		arguments: anArray;
 		serialisationStrategy: serializationSymbol;
-		autoCommit: aBoolean;
-		evaluate) wait
+		autoCommit: aBoolean) evaluateAndWait
 ]
 
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
 
-	^ self proxyPerformReturnProxy: aSymbol
+	^ self 
+		proxyPerformReturnProxy: aSymbol
 		withArguments: #()
 		autoCommit: self gtSession autoCommitEnabled
 ]
@@ -564,7 +560,8 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol [
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol autoCommit: aBoolean [
 
-	^ self proxyPerformReturnProxy: aSymbol
+	^ self 
+		proxyPerformReturnProxy: aSymbol
 		withArguments: #()
 		autoCommit: aBoolean
 ]
@@ -572,7 +569,8 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol autoCommit: aBoolean
 { #category : #performing }
 GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
 
-	^ self proxyPerformReturnProxy: aSymbol
+	^ self 
+		proxyPerformReturnProxy: aSymbol
 		withArguments: anArray
 		autoCommit: self gtSession autoCommitEnabled
 ]
@@ -584,8 +582,7 @@ GtRsrProxyServiceClient >> proxyPerformReturnProxy: aSymbol withArguments: anArr
 		selector: aSymbol;
 		arguments: anArray;
 		returnProxy;
-		autoCommit: aBoolean;
-		evaluate) wait
+		autoCommit: aBoolean) evaluateAndWait
 ]
 
 { #category : #performing }

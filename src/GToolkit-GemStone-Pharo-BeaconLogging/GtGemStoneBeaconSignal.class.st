@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneBeaconSignal,
 	#superclass : #BeaconSignal,
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Signals'
 }

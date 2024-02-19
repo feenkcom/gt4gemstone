@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneKeepAlivePollCompletedSignal,
 	#superclass : #GtGemStoneKeepAlivePollSignal,
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Signals'
 }
 
 { #category : #testing }

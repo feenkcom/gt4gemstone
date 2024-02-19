@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneKeepAliveEvent,
 	#superclass : #GtBeaconLogEvent,
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Events'
 }
 
 { #category : #accessing }
