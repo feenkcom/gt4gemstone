@@ -348,6 +348,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript autoComm
 	^ self scriptEvaluation
 		script: remoteScript;
 		autoCommit: aBoolean;
+		returnProxy;
 		yourself
 ]
 
