@@ -23,10 +23,11 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			baseline: 'LepiterEngineCore'
 			with: [ spec repository: 'github://feenkcom/lepiter:main/src' ].
 		spec 
+			package: 'GToolkit-GemStone-Pharo-BeaconLogging';
 			package: 'GToolkit-GemStone' with:
 				[ spec requires: #( 'SparkleFFIForGlamorousToolkit' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
-				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' ) ];
+				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging') ];
 			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
 			package: 'GToolkit-GemStone-Lepiter' with:

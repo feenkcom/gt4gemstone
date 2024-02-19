@@ -8,14 +8,12 @@ Class {
 GtpoGtPhlowTextualViewSpecification >> getText [
 	^ (self performEvaluation
 		selector: #getText;
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
 GtpoGtPhlowTextualViewSpecification >> retrieveStylableText [
 	^ (self performEvaluation
 		selector: #retrieveStylableText;
-		returnLegacy;
-		evaluate) wait
+		returnLegacy) evaluateAndWait
 ]

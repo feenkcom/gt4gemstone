@@ -39,6 +39,9 @@ GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
 		each isGtBareProxyObject or: [ each isBlock ] ] ])
 			ifTrue: [ ^ aDictionary ].
 
+	gtSession logEmitter
+		emitEvaluationResolveBindingsStartFor: self.
+			
 	bindings := aDictionary copy.
 	bindings associationsDo: [ :assoc |
 		assoc value isGtBareProxyObject ifTrue:
@@ -47,98 +50,130 @@ GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
 			[ assoc value isClean
 				ifTrue: [ assoc value: (gtSession
 					evaluateAndWait: assoc value printString) ] ] ] ].
+					
+	gtSession logEmitter
+		emitEvaluationResolveBindingsEndFor: self.
+		
 	^ bindings
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateLegacyPerform: aGtRsrPerformEvaluation [
-	| rsrPromise |
+	| resolvedArguments rsrPromise |
+	
+	resolvedArguments := self argumentsFrom: aGtRsrPerformEvaluation arguments.
+	
+	^ aGtRsrPerformEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := aGtRsrPerformEvaluation remoteSelf
+			proxyPerform: aGtRsrPerformEvaluation selector
+			withArguments: resolvedArguments.
 
-	rsrPromise := aGtRsrPerformEvaluation remoteSelf
-		proxyPerform: aGtRsrPerformEvaluation selector
-		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments).
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: nil
-		gtSession: gtSession
-		autoCommit: aGtRsrPerformEvaluation autoCommit
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: nil
+			gtSession: gtSession
+			autoCommit: aGtRsrPerformEvaluation autoCommit
+			sourceEvaluation: aGtRsrPerformEvaluation ]
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateLegacyScript: aGtRsrScriptEvaluation [
-	| rsrPromise |
+	| resolvedBindings rsrPromise |
+	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
 
-	rsrPromise := remoteSelf
-		evaluate: aGtRsrScriptEvaluation script
-		for: aGtRsrScriptEvaluation receiver
-		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings).
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: nil
-		gtSession: gtSession
-		autoCommit: aGtRsrScriptEvaluation autoCommit
+	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := remoteSelf
+			evaluate: aGtRsrScriptEvaluation script
+			for: aGtRsrScriptEvaluation receiver
+			bindings: resolvedBindings.
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: nil
+			gtSession: gtSession
+			autoCommit: aGtRsrScriptEvaluation autoCommit
+			sourceEvaluation: aGtRsrScriptEvaluation ]
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluatePerform: aGtRsrPerformEvaluation [
-	| rsrPromise |
+	| resolvedArguments rsrPromise |
+	
+	resolvedArguments := self argumentsFrom: aGtRsrPerformEvaluation arguments.
+	
+	^ aGtRsrPerformEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := aGtRsrPerformEvaluation remoteSelf
+			proxyPerform: aGtRsrPerformEvaluation selector
+			withArguments: resolvedArguments
+			serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy.
 
-	rsrPromise := aGtRsrPerformEvaluation remoteSelf
-		proxyPerform: aGtRsrPerformEvaluation selector
-		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments)
-		serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy.
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy
-		gtSession: gtSession
-		autoCommit: aGtRsrPerformEvaluation autoCommit
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: aGtRsrPerformEvaluation serialisationStrategy
+			gtSession: gtSession
+			autoCommit: aGtRsrPerformEvaluation autoCommit
+			sourceEvaluation: aGtRsrPerformEvaluation ]
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateProxyOnlyPerform: aGtRsrPerformEvaluation [
-	| rsrPromise |
+	| resolvedArguments rsrPromise |
+	
+	resolvedArguments := self argumentsFrom: aGtRsrPerformEvaluation arguments.
+	
+	^ aGtRsrPerformEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := aGtRsrPerformEvaluation remoteSelf
+			proxyPerformReturnProxy: aGtRsrPerformEvaluation selector
+			withArguments: resolvedArguments.
 
-	rsrPromise := aGtRsrPerformEvaluation remoteSelf
-		proxyPerformReturnProxy: aGtRsrPerformEvaluation selector
-		withArguments: (self argumentsFrom: aGtRsrPerformEvaluation arguments).
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: nil
-		gtSession: gtSession
-		autoCommit: aGtRsrPerformEvaluation autoCommit
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: nil
+			gtSession: gtSession
+			autoCommit: aGtRsrPerformEvaluation autoCommit
+			sourceEvaluation: aGtRsrPerformEvaluation ]
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateProxyOnlyScript: aGtRsrScriptEvaluation [
-	| rsrPromise |
+	| resolvedBindings rsrPromise |
+	
+	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	
+	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := remoteSelf
+			evaluateReturnProxy: aGtRsrScriptEvaluation script
+			for: aGtRsrScriptEvaluation receiver
+			bindings: resolvedBindings.
 
-	rsrPromise := remoteSelf
-		evaluateReturnProxy: aGtRsrScriptEvaluation script
-		for: aGtRsrScriptEvaluation receiver
-		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings).
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: nil
-		gtSession: gtSession
-		autoCommit: aGtRsrScriptEvaluation autoCommit
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: nil
+			gtSession: gtSession
+			autoCommit: aGtRsrScriptEvaluation autoCommit
+			sourceEvaluation: aGtRsrScriptEvaluation ]
 ]
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateScript: aGtRsrScriptEvaluation [
-	| rsrPromise |
+	| resolvedBindings rsrPromise |
+	aGtRsrScriptEvaluation serialisationStrategy
+		ifNil: [ self error: 'Serialization strategy not yet set' ].
 
-	aGtRsrScriptEvaluation serialisationStrategy ifNil:
-		[ self error: 'Serialization strategy not yet set' ].
-	rsrPromise := remoteSelf
-		evaluate: aGtRsrScriptEvaluation script
-		for: aGtRsrScriptEvaluation receiver
-		bindings: (self bindingsFrom: aGtRsrScriptEvaluation bindings)
-		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
-	^ GtRsrEvaluatorPromise
-		rsrPromise: rsrPromise
-		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
-		gtSession: gtSession
-		autoCommit: aGtRsrScriptEvaluation autoCommit
+	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	
+	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := remoteSelf
+			evaluate: aGtRsrScriptEvaluation script
+			for: aGtRsrScriptEvaluation receiver
+			bindings: resolvedBindings
+			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
+
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
+			gtSession: gtSession
+			autoCommit: aGtRsrScriptEvaluation autoCommit
+			sourceEvaluation: aGtRsrScriptEvaluation ]
 ]
 
 { #category : #accessing }

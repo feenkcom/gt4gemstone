@@ -21,6 +21,11 @@ GtRsrEvaluation >> autoCommit: anObject [
 	autoCommit := anObject
 ]
 
+{ #category : #evaluating }
+GtRsrEvaluation >> basicEvaluateWithSerialisation [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 GtRsrEvaluation >> bindings [
 	^ bindings
@@ -35,14 +40,21 @@ GtRsrEvaluation >> bindings: anObject [
 GtRsrEvaluation >> evaluate [
 	"Evaluate the receiver on the supplied evaluator"
 
-	^ self subclassResponsibility
+	^ self performEvaluateWithLogging: [
+		self basicEvaluateWithSerialisation ]
 ]
 
 { #category : #evaluating }
 GtRsrEvaluation >> evaluateAndWait [
 	"Evaluate the receiver on the supplied evaluator"
 
-	^ self evaluate wait
+	^ self performEvaluateWithLogging: [ 
+		self basicEvaluateWithSerialisation wait ]
+]
+
+{ #category : #evaluating }
+GtRsrEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
+	^ aBlockClosure value
 ]
 
 { #category : #accessing }
@@ -61,6 +73,11 @@ GtRsrEvaluation >> initialize [
 	super initialize.
 	autoCommit := false.
 	bindings := Dictionary new.
+]
+
+{ #category : #accessing }
+GtRsrEvaluation >> performEvaluateWithLogging: aBlockClosure [
+	^ aBlockClosure value
 ]
 
 { #category : #accessing }

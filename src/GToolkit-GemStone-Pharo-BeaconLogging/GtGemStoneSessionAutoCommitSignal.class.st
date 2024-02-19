@@ -5,7 +5,7 @@ Class {
 		'session',
 		'promise'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Beacon'
+	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Signals'
 }
 
 { #category : #'instance creation' }

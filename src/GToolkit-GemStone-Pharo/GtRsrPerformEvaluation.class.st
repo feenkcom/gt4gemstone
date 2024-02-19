@@ -19,16 +19,27 @@ GtRsrPerformEvaluation >> arguments: anObject [
 ]
 
 { #category : #evaluating }
-GtRsrPerformEvaluation >> evaluate [
-	"Evaluate the receiver on the supplied evaluator"
-
+GtRsrPerformEvaluation >> basicEvaluateWithSerialisation [
+	
 	"The first two checks are a hack until the server is updated to match"
 	serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
 		[ ^ self evaluateLegacy ].
 	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
 		[ ^ self evaluateProxyOnly ].
 
-	^ gtSession evaluator evaluatePerform: self
+	^ gtSession evaluator evaluatePerform: self 
+]
+
+{ #category : #logging }
+GtRsrPerformEvaluation >> emitEvaluationExecutionEndSignal [
+	self gtSession logEmitter 
+		emitPerformEvaluationExecutionEndFor:  self
+]
+
+{ #category : #logging }
+GtRsrPerformEvaluation >> emitEvaluationExecutionStartSignal [
+	self gtSession logEmitter 
+		emitPerformEvaluationExecutionStartFor:  self
 ]
 
 { #category : #evaluating }
@@ -43,11 +54,36 @@ GtRsrPerformEvaluation >> evaluateProxyOnly [
 	^ gtSession evaluator evaluateProxyOnlyPerform: self
 ]
 
+{ #category : #evaluating }
+GtRsrPerformEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
+	| result |
+	gtSession logEmitter
+		emitEvaluationDeliveryStartFor: self.
+		
+	result := aBlockClosure value.
+	
+	gtSession logEmitter
+		emitEvaluationDeliveryEndFor: self.
+			
+	^ result
+]
+
 { #category : #initialize }
 GtRsrPerformEvaluation >> initialize [
 
 	super initialize.
 	arguments := #().
+]
+
+{ #category : #evaluating }
+GtRsrPerformEvaluation >> performEvaluateWithLogging: aBlockClosure [
+	| evaluationResult |
+	
+	self emitEvaluationExecutionStartSignal.
+	evaluationResult := aBlockClosure value.
+	self emitEvaluationExecutionEndSignal.
+	
+	^ evaluationResult 
 ]
 
 { #category : #accessing }
