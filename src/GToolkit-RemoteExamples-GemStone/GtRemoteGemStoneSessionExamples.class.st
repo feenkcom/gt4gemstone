@@ -9,6 +9,17 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #uril }
+GtRemoteGemStoneSessionExamples >> buildDebuggingSessionWithBrokenPromiseFor: aPromise [
+
+	[ aPromise wait  ] 
+		on: RsrBrokenPromise
+		do: [ :anException | 
+			^ DebugSession forExceptionFromExampleFor: anException ].
+	
+	self assert: false.
+]
+
 { #category : #private }
 GtRemoteGemStoneSessionExamples >> runningServer [
 	"Answer a running server.
@@ -29,6 +40,29 @@ GtRemoteGemStoneSessionExamples >> stopServer [
 	server ifNotNil: 
 		[ server stop.
 		server := nil ].
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testDisconnectWhileExecutingCode [
+	<gtExample>
+	| session promise debuggingSession matchingDebuggerClasses |
+
+	session := self runningServer.
+	
+	promise := session evaluateBlock: [ (Delay forSeconds: 10) wait ].
+	session close.
+	debuggingSession := self buildDebuggingSessionWithBrokenPromiseFor: promise.
+	
+	[
+		self assert: debuggingSession interruptedContext receiver isBroken.
+		matchingDebuggerClasses := Smalltalk tools 
+			debuggersForDebugSession: debuggingSession.
+
+		"No specific debugger should handle this particular exception"
+		self assert: matchingDebuggerClasses size equals: 1.
+		self assert: matchingDebuggerClasses first equals: GtPharoDebuggerElement] 
+	ensure: [
+		debuggingSession terminate ]
 ]
 
 { #category : #tests }
