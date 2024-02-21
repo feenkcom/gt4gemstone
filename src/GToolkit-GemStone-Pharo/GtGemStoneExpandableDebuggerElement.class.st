@@ -31,7 +31,7 @@ GtGemStoneExpandableDebuggerElement class >> handlesContext: aContext [
 	"This is currently determined by checking the class of the receiver and its value, which will be different for each snippet type.  This should be changed to the signalling method having the appropriate pragma (<dapOpenDebugger>)"
 	
 	^ (aContext method hasPragmaNamed: #gemstoneDebuggerSignal) and: [
-		aContext receiver isBroken not ].
+		aContext receiver canHandleSpecificDebugger ].
 ]
 
 { #category : #'instance creation' }
