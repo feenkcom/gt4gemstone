@@ -20,6 +20,12 @@ GtRsrEvaluatorPromise class >> rsrPromise: aPromise serializationStrategy: aSymb
 		sourceEvaluation: aGtRsrEvaluation
 ]
 
+{ #category : #testing }
+GtRsrEvaluatorPromise >> canHandleSpecificDebugger [
+
+	^ rsrPromise canHandleSpecificDebugger
+]
+
 { #category : #accessing }
 GtRsrEvaluatorPromise >> deserializeResult: aResult [
 	| deserializedResult | 

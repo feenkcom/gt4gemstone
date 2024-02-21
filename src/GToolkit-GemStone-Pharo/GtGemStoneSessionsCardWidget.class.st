@@ -259,6 +259,7 @@ GtGemStoneSessionsCardWidget >> inspectSession: aSession from: anElement [
 { #category : #'private - hooks' }
 GtGemStoneSessionsCardWidget >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
+	
 	self updateContent
 ]
 

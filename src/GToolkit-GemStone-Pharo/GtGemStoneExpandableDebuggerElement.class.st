@@ -29,10 +29,9 @@ GtGemStoneExpandableDebuggerElement class >> defaultTitle [
 { #category : #testing }
 GtGemStoneExpandableDebuggerElement class >> handlesContext: aContext [ 
 	"This is currently determined by checking the class of the receiver and its value, which will be different for each snippet type.  This should be changed to the signalling method having the appropriate pragma (<dapOpenDebugger>)"
-	| result |
 	
-	result := aContext method hasPragmaNamed: #gemstoneDebuggerSignal.
-	^ result.
+	^ (aContext method hasPragmaNamed: #gemstoneDebuggerSignal) and: [
+		aContext receiver canHandleSpecificDebugger ].
 ]
 
 { #category : #'instance creation' }
