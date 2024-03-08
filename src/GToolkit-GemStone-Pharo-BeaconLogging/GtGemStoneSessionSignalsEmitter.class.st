@@ -75,7 +75,6 @@ GtGemStoneSessionSignalsEmitter >> emitPerformEvaluationExecutionEndFor: aGtRsrS
 { #category : #logging }
 GtGemStoneSessionSignalsEmitter >> emitPerformEvaluationExecutionStartFor: aGtRsrScriptEvaluation [
 	self whenEnabled: [
-		GtJustContextStackSignal emit.
 		GtGemStoneSessionEvaluationPerformExecutionStartSignal 
 			emitForGtPerformEvaluation: aGtRsrScriptEvaluation  ]
 ]
