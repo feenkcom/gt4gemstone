@@ -1,6 +1,8 @@
 Class {
 	#name : #GtGemStoneSourceCoderModel,
 	#superclass : #GtSourceCoder,
+	#traits : 'TGtPharoSourceCoderAstNodesDetection',
+	#classTraits : 'TGtPharoSourceCoderAstNodesDetection classTrait',
 	#classVars : [
 		'NodeHighlight'
 	],
@@ -50,6 +52,31 @@ GtGemStoneSourceCoderModel >> addLinkMenuAddOnsTo: coderAddOns node: node select
 ]
 
 { #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 11>
+	
+	(self extractableNodesFrom: aCoderViewModel)
+		ifNotEmpty: [ :nodes | 
+			| node foundClass |
+			node := nodes first.
+			node isVariable ifFalse: [ ^ self ].
+			self
+				variableNodeToBehavior: node
+				ifFound: [ :aClass | foundClass := aClass ]
+				ifNone: [ ^ self ].
+			coderAddOns
+				addContextMenuItem: (self
+						createLabel: 'Browse local class'
+						description: foundClass name)
+				hover: (self highlightNodeBlock: node)
+				leave: self removeHighlightBlock
+				action: [ :aTextualViewModel | 
+					self 
+						browseLocalBehaviorAt: node startPosition 
+						requesterObject: nil ] ]
+]
+
+{ #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 10>
 	(self nodeFrom: aCoderViewModel)
@@ -58,8 +85,49 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 				addLinkMenuAddOnsTo: coderAddOns
 				node: node
 				selector: #browseLocalImplementorsAt:requesterObject:
-				shortcut: GtGemStoneBrowseLocalImplementorsShortcut new
+				shortcut: GtGemStoneCoderBrowseLocalImplementorsShortcut new
 				requesterObject: aCoderViewModel ]
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 15>
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node | 
+			self
+				addLinkMenuAddOnsTo: coderAddOns
+				node: node
+				selector: #browseLocalReferencesAt:requesterObject:
+				shortcut: GtGemStoneCoderBrowseLocalReferencesShortcut new
+				requesterObject: aCoderViewModel ]
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> browseLocalBehaviorAt: aTextPosition requesterObject: aRequester [
+	"Try to find a behavior reference at a given source text position and request to browse it"
+
+	self
+		detectBehaviorAt: aTextPosition
+		ifFound: [ :aBehavior | 
+			self
+				notifyToolSpawn: (GtClassCoderTool observedClass: aBehavior)
+				withDestination: self spawnDestination
+				requesterObject: aRequester ]
+		ifNone: [  ]
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> browseLocalBehaviorIn: aSourceString requesterObject: aRequestor [
+	"Try to find a behavior reference within a given source code and request to browse it"
+
+	self
+		detectBehaviorIn: aSourceString
+		ifFound: [ :aBehavior | 
+			self
+				notifyToolSpawn: (GtClassCoderTool observedClass: aBehavior)
+				withDestination: self spawnDestination
+				requesterObject: aRequestor ]
+		ifNone: [  ]
 ]
 
 { #category : #'add-ons' }
@@ -88,44 +156,37 @@ GtGemStoneSourceCoderModel >> browseLocalImplementorsIn: aSourceString requester
 		ifNone: [  ]
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> browseLocalReferencesAt: aTextPosition requesterObject: aRequester [
+	"Try to create a references filter for an entity at the given text position and request to browse it"
+
+	self
+		notifyObjectSpawn: (self
+				detectReferencesFilterAt: aTextPosition
+				withBehavior: self localBehavior
+				ifFound: [ :aReferencesFilter | aReferencesFilter ]
+				ifNone: [ GtSearchNullFilter new ])
+		requesterObject: aRequester
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> browseLocalReferencesIn: aSourceString requesterObject: aRequester [
+	"Try to create a references filter for an entity within a given source string and request to browse it"
+
+	self
+		notifyObjectSpawn: (self
+				detectReferencesFilterIn: aSourceString
+				withBehavior: self localBehavior 
+				ifFound: [ :aReferencesFilter | aReferencesFilter ]
+				ifNone: [ GtSearchNullFilter new ])
+		requesterObject: aRequester
+]
+
 { #category : #'api - ast' }
 GtGemStoneSourceCoderModel >> computeAst: theSourceString [
 	^ GtGemStoneParser
 		parseWithErrors: theSourceString
 		startingAt: self startingStateForAstComputation
-]
-
-{ #category : #'private - ast' }
-GtGemStoneSourceCoderModel >> detectSelectorAt: aTextPosition ifFound: aFoundBlock ifNone: aNoneBlock [
-	"Try to find a message selector at the given source text position and evaluate a found block
-	with the found selector as an argument if such selector was found or none block otherwise. Return the result"
-	<return: #Object>
-
-	^ self
-		nodeAt: aTextPosition
-		ifFound: [ :aNode |
-			self
-				nodeToSelector: aNode
-				ifFound: aFoundBlock
-				ifNone: aNoneBlock ]
-		ifNone: aNoneBlock
-]
-
-{ #category : #'private - ast' }
-GtGemStoneSourceCoderModel >> detectSelectorIn: aSourceString ifFound: aFoundBlock ifNone: aNoneBlock [
-	"Try to find a message selector in the given source string and evaluate a found block
-	with the found selector as an argument if such selector was found or none block otherwise. Return the result"
-	<return: #Object>
-	| aNode |
-
-	aNode := GtGemStoneParser 
-		parseWithErrors: aSourceString
-		startingAt: GtGemStoneParser startingStateForStatement.
-
-	^ self
-		nodeToSelector: aNode
-		ifFound: aFoundBlock
-		ifNone: aNoneBlock
 ]
 
 { #category : #'add-ons - utils' }
@@ -149,9 +210,9 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 	| shortcuts |
 	super initializeShortcuts: addOns.
 
-	shortcuts := {GtGemStoneBrowseLocalImplementorsShortcut.
-			"GtSourceCoderBrowseReferencesShortcut.
-			GtSourceCoderBrowseBehaviorShortcut."
+	shortcuts := {GtGemStoneCoderBrowseLocalImplementorsShortcut.
+			GtGemStoneCoderBrowseLocalReferencesShortcut.
+			GtGemStoneCoderBrowseLocalBehaviorShortcut.
 			GtSourceCoderDiscardChangesShortcut.
 			GtSourceCoderFormatShortcut.
 			"GtSourceCoderDebugShortcut.
@@ -166,20 +227,14 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 	addOns addShortcuts: shortcuts
 ]
 
+{ #category : #accessing }
+GtGemStoneSourceCoderModel >> localBehavior [
+	^ nil
+]
+
 { #category : #'instance creation' }
 GtGemStoneSourceCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
-]
-
-{ #category : #'private - ast' }
-GtGemStoneSourceCoderModel >> nodeToSelector: aNode ifFound: aFoundBlock ifNone: aNoneBlock [
-	"Try to extract a message selector from a given AST node. If aNode is not suitable
-	for extracting a selector, also check all parents of that node. Evaluate aFoundBlock if a selector
-	is found and aNoneBlock otherwise, return the result of the block evaluation"
-	<return: #Object>
-	
-	"We reuse the logic for Pharo code"
-	^ GtPharoSourceCoder nodeToSelector: aNode ifFound: aFoundBlock ifNone: aNoneBlock
 ]
 
 { #category : #'add-ons - utils' }
@@ -191,4 +246,9 @@ GtGemStoneSourceCoderModel >> removeHighlightBlock [
 { #category : #accessing }
 GtGemStoneSourceCoderModel >> startingStateForAstComputation [
 	self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderModel >> targetAstParserClass [
+	^ GtGemStoneParser
 ]
