@@ -234,18 +234,19 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 	| shortcuts |
 	super initializeShortcuts: addOns.
 
-	shortcuts := {GtGemStoneCoderBrowseLocalImplementorsShortcut.
+	shortcuts := {
+			GtGemStoneCoderBrowseLocalImplementorsShortcut.
 			GtGemStoneCoderBrowseLocalReferencesShortcut.
 			GtGemStoneCoderBrowseLocalBehaviorShortcut.
 			GtSourceCoderDiscardChangesShortcut.
 			GtSourceCoderFormatShortcut.
 			"GtSourceCoderDebugShortcut.
-			GtSourceCoderInlineRenameShortcut.
+			GtSourceCoderInlineRenameShortcut."
 			GtSourceCoderMoveStatementUpShortcut.
 			GtSourceCoderMoveStatementDownShortcut.
 			GtSourceCoderSelectStatementUpShortcut.
 			GtSourceCoderSelectStatementDownShortcut.
-			GtSourceCoderFixItShortcut."
+			"GtSourceCoderFixItShortcut."
 			GtSourceCoderPrintItShortcut} collect: #new.
 
 	addOns addShortcuts: shortcuts
