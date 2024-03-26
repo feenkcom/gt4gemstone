@@ -253,7 +253,7 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 
 { #category : #accessing }
 GtGemStoneSourceCoderModel >> localBehavior [
-	^ nil
+	^ UndefinedObject
 ]
 
 { #category : #'instance creation' }
