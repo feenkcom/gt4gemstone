@@ -1,18 +1,8 @@
 Class {
 	#name : #GtGemStoneSourceCoderModel,
 	#superclass : #GtSmalltalkSourceCoder,
-	#classVars : [
-		'NodeHighlight'
-	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
-
-{ #category : #'add-ons - utils' }
-GtGemStoneSourceCoderModel class >> nodeHighlight [
-	^ NodeHighlight
-		ifNil: [ NodeHighlight := BlTextHighlightAttribute new
-				paint: BrGlamorousColors textHighlightColor ]
-]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns [
@@ -212,15 +202,6 @@ GtGemStoneSourceCoderModel >> formatWithRequesterObject: aRequester [
 	self currentSourceString: ast formattedCode
 ]
 
-{ #category : #'add-ons - utils' }
-GtGemStoneSourceCoderModel >> highlightNodeBlock: aNode [
-	^ [ :textualCoderViewModel | 
-	  textualCoderViewModel
-		  addTextAttribute: self class nodeHighlight
-		  from: aNode startPosition
-		  to: aNode stopPosition ]
-]
-
 { #category : #initialization }
 GtGemStoneSourceCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
@@ -259,12 +240,6 @@ GtGemStoneSourceCoderModel >> localBehavior [
 { #category : #'instance creation' }
 GtGemStoneSourceCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
-]
-
-{ #category : #'add-ons - utils' }
-GtGemStoneSourceCoderModel >> removeHighlightBlock [
-	^ [ :textualCoderViewModel | 
-	  textualCoderViewModel removeAttribute: self class nodeHighlight ]
 ]
 
 { #category : #accessing }
