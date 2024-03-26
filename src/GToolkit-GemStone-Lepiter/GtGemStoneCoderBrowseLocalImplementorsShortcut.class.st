@@ -1,28 +1,28 @@
 Class {
-	#name : #GtGemStoneBrowseLocalImplementorsShortcut,
+	#name : #GtGemStoneCoderBrowseLocalImplementorsShortcut,
 	#superclass : #GtSourceCoderShortcut,
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
-GtGemStoneBrowseLocalImplementorsShortcut >> description [
+GtGemStoneCoderBrowseLocalImplementorsShortcut >> description [
 	^ 'Browses local implementors of the method near the cursor or selection.'
 ]
 
 { #category : #initialization }
-GtGemStoneBrowseLocalImplementorsShortcut >> initialize [
+GtGemStoneCoderBrowseLocalImplementorsShortcut >> initialize [
 	super initialize.
 	
 	combination := BlKeyCombination primaryM
 ]
 
 { #category : #accessing }
-GtGemStoneBrowseLocalImplementorsShortcut >> name [
+GtGemStoneCoderBrowseLocalImplementorsShortcut >> name [
 	^ 'Browse local implementors'
 ]
 
 { #category : #evaluation }
-GtGemStoneBrowseLocalImplementorsShortcut >> performOnEditor: aBrTextEditor element: aBrEditorElement coder: aGtSourceCoder dueTo: aShortcutEvent requesterObject: aRequester [
+GtGemStoneCoderBrowseLocalImplementorsShortcut >> performOnEditor: aBrTextEditor element: aBrEditorElement coder: aGtSourceCoder dueTo: aShortcutEvent requesterObject: aRequester [
 	self
 		forEditor: aBrTextEditor
 		selectedStringDo: [ :aSelectedString | 
