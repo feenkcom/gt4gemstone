@@ -290,6 +290,14 @@ GtGemStoneMethodCoderModel >> isMeta [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderModel >> localBehavior [
+	self methodBehavior localBehaviorDo: [ :aLocalbehavior |
+		^ aLocalbehavior ].
+		
+	^ super localBehavior
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderModel >> methodBehavior [
 	^ methodBehavior
 ]

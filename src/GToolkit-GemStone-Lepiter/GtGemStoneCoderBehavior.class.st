@@ -36,6 +36,11 @@ GtGemStoneCoderBehavior >> isMeta [
 	self subclassResponsibility
 ]
 
+{ #category : #accessing }
+GtGemStoneCoderBehavior >> localBehaviorDo: aBlock [
+	^ self subclassResponsibility
+]
+
 { #category : #printing }
 GtGemStoneCoderBehavior >> printBehaviorName [
 	self subclassResponsibility

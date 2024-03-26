@@ -88,6 +88,27 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 ]
 
 { #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 12>
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node | 
+			(node isVariable and: [ self isLocalInstanceVariable: node ]) ifFalse: [ ^ self ].
+			coderAddOns
+				addContextMenuItem: (self
+						createLabel: 'Browse local references'
+						description: node name value)
+				hover: (self highlightNodeBlock: node)
+				leave: self removeHighlightBlock
+				action: [ :aTextualViewModel | 
+					self 
+						browseLocalReferencesAt: node startPosition 
+						requesterObject: aTextualViewModel ]
+				id: nil
+				shortcutKey: GtGemStoneCoderBrowseLocalReferencesShortcut new
+						combinationForPlatform gtDisplayString ]
+]
+
+{ #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 15>
 	(self nodeFrom: aCoderViewModel)
@@ -230,6 +251,11 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 			GtSourceCoderPrintItShortcut} collect: #new.
 
 	addOns addShortcuts: shortcuts
+]
+
+{ #category : #testing }
+GtGemStoneSourceCoderModel >> isLocalInstanceVariable: aNode [
+	^ self localBehavior allInstVarNames includes: aNode name value
 ]
 
 { #category : #accessing }
