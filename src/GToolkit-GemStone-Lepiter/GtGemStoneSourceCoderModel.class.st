@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneSourceCoderModel,
-	#superclass : #GtSourceCoder,
+	#superclass : #GtSmalltalkSourceCoder,
 	#traits : 'TGtPharoSourceCoderAstNodesDetection',
 	#classTraits : 'TGtPharoSourceCoderAstNodesDetection classTrait',
 	#classVars : [
