@@ -30,9 +30,83 @@ GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 		initializeFromGsMethod: aGsMethod
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 11>
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node | 
+			| highlightNode |
+			(node isMessage or: [ node isMessageSend or: [ node isMethodPattern ] ])
+				ifTrue: [ 
+					highlightNode := node isMessageSend 
+						ifTrue: [ node message ] 
+						ifFalse: [ node ].
+			coderAddOns
+				addContextMenuItem: (self
+						createLabel: 'Browse local hierarchy implementors'
+						description: node selector)
+				hover: (self highlightNodeBlock: highlightNode)
+				leave: self removeHighlightBlock
+				action: [ :aTextualViewModel | 
+					self
+						browseLocalHierarchyImplementorsAt: highlightNode startPosition
+						requesterObject: aTextualViewModel ] ] ]
+]
+
+{ #category : #'add-ons' }
+GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 16>
+	
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node | 
+			| highlightNode |
+			(node isMessage or: [ node isMessageSend or: [ node isMethodPattern ] ])
+				ifTrue: [ 
+					highlightNode := node isMessageSend 
+						ifTrue: [ node message ] 
+						ifFalse: [ node ].
+			
+			coderAddOns
+				addContextMenuItem: (self
+						createLabel: 'Browse local hierarchy references'
+						description: node selector)
+				hover: (self highlightNodeBlock: highlightNode)
+				leave: self removeHighlightBlock
+				action: [ :aTextualViewModel | 
+					self
+						browseLocalHierarchyReferencesAt: highlightNode startPosition
+						requesterObject: aCoderViewModel ] ] ]
+]
+
 { #category : #converting }
 GtGemStoneMethodCoderModel >> asCoderViewModel [
 	^ GtGemStoneMethodCoderViewModel new coder: self
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> browseLocalHierarchyImplementorsAt: aTextPosition requesterObject: aRequester [
+	self
+		detectSelectorAt: aTextPosition
+		ifFound: [ :aSelector | 
+			self
+				notifyObjectSpawn: ((GtSearchMethodsInClassFilter 
+					forClass: self localBehavior) 
+						withSuperclasses
+						withSubclasses) & aSelector gtImplementors
+				requesterObject: aRequester ]
+		ifNone: [  ]
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> browseLocalHierarchyReferencesAt: aTextPosition requesterObject: aRequester [
+	self
+		detectSelectorAt: aTextPosition
+		ifFound: [ :aSelector | 
+			self
+				notifyObjectSpawn: (GtSearchMethodsInClassFilter forClass: self localBehavior) withSuperclasses
+						withSubclasses & aSelector gtSenders
+				requesterObject: aRequester ]
+		ifNone: [  ]
 ]
 
 { #category : #accessing }
