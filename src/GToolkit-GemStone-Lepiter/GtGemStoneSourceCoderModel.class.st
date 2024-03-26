@@ -34,6 +34,15 @@ GtGemStoneSourceCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns [
 			to: coderAddOns"
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
+	<gtCoderContextMenuAddOns: 250>
+	self
+		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
+		withId: nil
+		to: coderAddOns
+]
+
 { #category : #'add-ons - utils' }
 GtGemStoneSourceCoderModel >> addLinkMenuAddOnsTo: coderAddOns node: node selector: sel shortcut: aShortcut requesterObject: aRequester [
 	| highlightNode |
@@ -187,6 +196,21 @@ GtGemStoneSourceCoderModel >> computeAst: theSourceString [
 	^ GtGemStoneParser
 		parseWithErrors: theSourceString
 		startingAt: self startingStateForAstComputation
+]
+
+{ #category : #'api - actions' }
+GtGemStoneSourceCoderModel >> formatWithRequesterObject: aRequester [
+	"We use the same formatter for Pharo code"
+	| ast |
+	ast := [ RBParser parseExpression: self currentSourceString ]
+			on: SyntaxErrorNotification
+			do: [ :ex |
+				^ self
+					notifyParseError: ex errorMessage
+					at: ex location
+					requesterObject: aRequester ].
+
+	self currentSourceString: ast formattedCode
 ]
 
 { #category : #'add-ons - utils' }

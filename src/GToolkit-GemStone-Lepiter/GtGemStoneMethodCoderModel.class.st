@@ -120,6 +120,20 @@ GtGemStoneMethodCoderModel >> evaluationContext [
 		receiverObject: self gsBehavior theNonMetaClass
 ]
 
+{ #category : #'api - actions' }
+GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
+	| ast |
+	ast := [ RBParser parseMethod: self currentSourceString ]
+			on: SyntaxErrorNotification
+			do: [ :ex | 
+				^ self
+					notifyParseError: ex errorMessage
+					at: ex location
+					requesterObject: aRequester ].
+
+	self currentSourceString: ast formattedCode
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> gsBehavior [
 	
