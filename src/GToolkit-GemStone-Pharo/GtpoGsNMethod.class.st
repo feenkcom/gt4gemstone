@@ -50,7 +50,9 @@ GtpoGsNMethod >> gtAbortActionFor: anAction [
 	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
 	^ anAction button 
 		tooltip: 'GemStone Abort Transaction';
+		label: 'Abort';
 		icon: BrGlamorousVectorIcons cancel;
+		priority: 25;
 		action: [ :button | 
 			gtSession abortTransaction.
 			button phlow spawnObject: 'Aborted transaction' ]
@@ -81,7 +83,9 @@ GtpoGsNMethod >> gtCommitActionFor: anAction [
 	(gtSession isNil or: [ gtSession isRunning not ]) ifTrue: [ ^ anAction noAction ].
 	^ anAction button 
 		tooltip: 'GemStone Commit Transaction';
+		label: 'Commit';
 		icon: BrGlamorousVectorIcons accept;
+		priority: 20;
 		action: [ :button | 
 			gtSession commitTransaction.
 			button phlow spawnObject: 'Successfully committed transaction' ]

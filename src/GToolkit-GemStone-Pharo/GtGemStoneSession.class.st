@@ -846,6 +846,7 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 	^(anAction button)
 		priority: 7;
 		tooltip: 'GemStone Abort Transaction';
+		label: 'Abort';
 		icon: BrGlamorousVectorIcons cancel;
 		action: 
 				[:button |
@@ -892,6 +893,7 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 	^(anAction button)
 		priority: 6;
 		tooltip: 'GemStone Commit Transaction';
+		label: 'Commit';
 		icon: BrGlamorousVectorIcons accept;
 		action: 
 				[:button |
