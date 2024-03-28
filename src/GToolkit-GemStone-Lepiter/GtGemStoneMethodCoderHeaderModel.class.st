@@ -9,14 +9,14 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 	| coderSpecification |
 	coderSpecification := aCoderViewModel coderModel initialMethodCoderSpecification.
 	
-	targetBehaviourName := aCoderViewModel coderModel methodBehavior
+	providerBehaviourName := aCoderViewModel coderModel methodBehavior
 		behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
-	targetBehaviourIconName := coderSpecification coderClassIconName.
+	providerBehaviourIconName := coderSpecification coderClassIconName.
 	
 	coderSpecification explicitProviderBehaviourDetails 
 		ifNotNil: [ :aProviderDetails |
-			providerBehaviourName := aProviderDetails targetClassName.
-			providerBehaviourIconName := aProviderDetails targetClassIconName ].
+			methodBehaviourName := aProviderDetails targetClassName.
+			methodBehaviourIconName := aProviderDetails targetClassIconName ].
 
 	packageName := coderSpecification categoryName.
 ]
