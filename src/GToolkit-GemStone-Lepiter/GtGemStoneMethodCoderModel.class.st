@@ -194,6 +194,23 @@ GtGemStoneMethodCoderModel >> evaluationContext [
 		receiverObject: self gsBehavior theNonMetaClass
 ]
 
+{ #category : #testing }
+GtGemStoneMethodCoderModel >> existsInTheLocalSystem [
+	"Return true if a method with the given #selector exists in the local  behavior"
+	<return: #Boolean>
+
+	self localBehavior
+		ifNil: [ ^ false ].
+
+	self localBehavior isObsolete
+		ifTrue: [ ^ false ].
+
+	self selector
+		ifNil: [ ^ false ].
+
+	^ self localBehavior includesSelector: self selector
+]
+
 { #category : #'api - actions' }
 GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
 	| ast |
@@ -369,6 +386,15 @@ GtGemStoneMethodCoderModel >> localBehavior [
 		^ aLocalbehavior ].
 		
 	^ super localBehavior
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> localCompiledMethod [
+	<return: #CompiledMethod or: nil>
+	
+	^ self existsInTheLocalSystem
+		ifTrue: [ self localBehavior >> self selector ]
+		ifFalse: [ nil ]
 ]
 
 { #category : #accessing }
