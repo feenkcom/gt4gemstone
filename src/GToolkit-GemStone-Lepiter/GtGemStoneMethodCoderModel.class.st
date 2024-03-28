@@ -194,6 +194,23 @@ GtGemStoneMethodCoderModel >> evaluationContext [
 		receiverObject: self gsBehavior theNonMetaClass
 ]
 
+{ #category : #testing }
+GtGemStoneMethodCoderModel >> existsInTheLocalSystem [
+	"Return true if a method with the given #selector exists in the local  behavior"
+	<return: #Boolean>
+
+	self localBehavior
+		ifNil: [ ^ false ].
+
+	self localBehavior isObsolete
+		ifTrue: [ ^ false ].
+
+	self selector
+		ifNil: [ ^ false ].
+
+	^ self localBehavior includesSelector: self selector
+]
+
 { #category : #'api - actions' }
 GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
 	| ast |
@@ -225,9 +242,9 @@ GtGemStoneMethodCoderModel >> gsMethod [
 GtGemStoneMethodCoderModel >> gtInspectorTitleString [.
 	
 	^ super gtInspectorTitleString, (self session 
-		ifNil: [ '' asRopedText ]
+		ifNil: [ '' ]
 		ifNotNil:
-			[ :aGtSession | (' [', aGtSession name, ']') asRopedText ])
+			[ :aGtSession | (' [', aGtSession name, ']') ])
 ]
 
 { #category : #printing }
@@ -372,6 +389,15 @@ GtGemStoneMethodCoderModel >> localBehavior [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderModel >> localCompiledMethod [
+	<return: #CompiledMethod or: nil>
+	
+	^ self existsInTheLocalSystem
+		ifTrue: [ self localBehavior >> self selector ]
+		ifFalse: [ nil ]
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderModel >> methodBehavior [
 	^ methodBehavior
 ]
@@ -507,7 +533,8 @@ GtGemStoneMethodCoderModel >> selector [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> selector: aSelector [
-	selector := aSelector
+	selector := aSelector ifNotNil: [ :aNewSelector |
+		aNewSelector asSymbol ]
 ]
 
 { #category : #accessing }
