@@ -225,9 +225,9 @@ GtGemStoneMethodCoderModel >> gsMethod [
 GtGemStoneMethodCoderModel >> gtInspectorTitleString [.
 	
 	^ super gtInspectorTitleString, (self session 
-		ifNil: [ '' asRopedText ]
+		ifNil: [ '' ]
 		ifNotNil:
-			[ :aGtSession | (' [', aGtSession name, ']') asRopedText ])
+			[ :aGtSession | (' [', aGtSession name, ']') ])
 ]
 
 { #category : #printing }
