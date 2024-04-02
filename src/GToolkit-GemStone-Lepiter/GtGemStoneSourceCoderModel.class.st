@@ -16,10 +16,10 @@ GtGemStoneSourceCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns [
 			to: coderAddOns;
 		addContextMenuItemFrom: GtSourceCoderPrintItShortcut new
 			withId: nil
-			to: coderAddOns";
+			to: coderAddOns;
 		addContextMenuItemFrom: GtSourceCoderDebugShortcut new
 			withId: nil
-			to: coderAddOns"
+			to: coderAddOns
 ]
 
 { #category : #'add-ons' }
@@ -208,6 +208,27 @@ GtGemStoneSourceCoderModel >> computeAst: theSourceString [
 		startingAt: self startingStateForAstComputation
 ]
 
+{ #category : #'private - actions' }
+GtGemStoneSourceCoderModel >> copyWithInsertedHaltStatementIntoSource: aSourceString [ 
+	| method |
+	
+	method := RBParser parseMethod: 'm', ' ', aSourceString.
+	method body 
+		addNodeFirst: (RBParser parseExpression: 'self halt').
+	^ String streamContents: [ :aStream |
+		method formatterStatementComments
+			ifNotEmpty: [ :currentComments |
+				currentComments 
+					do: [ :aNode |
+						aStream nextPutAll: ' "'.
+						aStream nextPutAll: aNode contents.
+						aStream nextPutAll: '" '.
+					] separatedBy: [
+						aStream lf ].
+				aStream lf ].
+		aStream nextPutAll: method body formattedCode ]
+]
+
 { #category : #'api - actions' }
 GtGemStoneSourceCoderModel >> formatWithRequesterObject: aRequester [
 	"We use the same formatter for Pharo code"
@@ -241,8 +262,8 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 			GtGemStoneCoderBrowseLocalBehaviorShortcut.
 			GtSourceCoderDiscardChangesShortcut.
 			GtSourceCoderFormatShortcut.
-			"GtSourceCoderDebugShortcut.
-			GtSourceCoderInlineRenameShortcut."
+			GtSourceCoderDebugShortcut.
+			"GtSourceCoderInlineRenameShortcut."
 			GtSourceCoderMoveStatementUpShortcut.
 			GtSourceCoderMoveStatementDownShortcut.
 			GtSourceCoderSelectStatementUpShortcut.
@@ -266,6 +287,21 @@ GtGemStoneSourceCoderModel >> localBehavior [
 { #category : #'instance creation' }
 GtGemStoneSourceCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
+]
+
+{ #category : #'private - actions' }
+GtGemStoneSourceCoderModel >> primitiveDebug: aSourceString inContext: aGtGemStoneCoderEvaluationContext onFailDo: anEvaluationFailBlock [
+	| sourceStringWithHalt guineaPig |
+	sourceStringWithHalt := self copyWithInsertedHaltStatementIntoSource: aSourceString.
+	
+	"In case of gemstone we create a new process and run the computation that should. If we get errors here, another option would be to spawn in a new process just the opening of the GemStone debugger, or schedule a UI task to execute the evaluation."
+	guineaPig := [
+		self 
+			primitiveEvaluate: sourceStringWithHalt 
+			inContext: aGtGemStoneCoderEvaluationContext 
+			onFailDo: anEvaluationFailBlock ] newProcess.
+	guineaPig name: 'GemStone Coder Debug Process'.
+	guineaPig resume
 ]
 
 { #category : #accessing }
