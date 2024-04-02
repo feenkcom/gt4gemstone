@@ -53,7 +53,6 @@ GtRemoteGemStoneSessionExamples >> testDisconnectWhileExecutingCode [
 	session close.
 	debuggingSession := self buildDebuggingSessionWithBrokenPromiseFor: promise.
 	
-	
 	self assert: debuggingSession interruptedContext receiver isBroken.
 	matchingDebuggerClasses := Smalltalk tools 
 		debuggersForDebugSession: debuggingSession.
@@ -61,6 +60,193 @@ GtRemoteGemStoneSessionExamples >> testDisconnectWhileExecutingCode [
 	"No specific debugger should handle this particular exception"
 	self assert: matchingDebuggerClasses size equals: 1.
 	self assert: matchingDebuggerClasses first equals: GtPharoDebuggerElement.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlock [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ Object new ].
+	self assert: returnValue remoteClass equals: #Object.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ Object new ]
+		autoCommit: false.
+	self assert: returnValue remoteClass equals: #Object.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ Object new ].
+	self assert: returnValue wait remoteClass equals: #Object.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ Object new ]
+		autoCommit: false.
+	self assert: returnValue wait remoteClass equals: #Object.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockReturnProxy [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ 1 + 1].
+	self assert: returnValue remoteClass equals: #SmallInteger.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ :a :b | a + b ]
+		withArguments: #(0 2).
+	self assert: returnValue remoteClass equals: #SmallInteger.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_primitiveOnlySerialize [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ 1 + 1]
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	self assert: returnValue equals: 2.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ 1 + 1]
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue equals: 2.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ 1 + 1]
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	self assert: returnValue wait equals: 2.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ 1 + 1]
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue wait equals: 2.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_proxyOnly [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ 1 + 1]
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy.
+	self assert: returnValue remoteClass equals: #SmallInteger.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ 1 + 1]
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue remoteClass equals: #SmallInteger.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ 1 + 1]
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy.
+	self assert: returnValue wait remoteClass equals: #SmallInteger.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ 1 + 1]
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue wait remoteClass equals: #SmallInteger.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArguments [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :anInteger | OrderedCollection with: anInteger ]
+		withArguments: #(1).
+	self assert: returnValue remoteClass equals: #OrderedCollection.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :anInteger | OrderedCollection with: anInteger ]
+		withArguments: #(1)
+		autoCommit: false.
+	self assert: returnValue remoteClass equals: #OrderedCollection.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ :anInteger | OrderedCollection with: anInteger ]
+		withArguments: #(1).
+	self assert: returnValue wait remoteClass equals: #OrderedCollection.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ :anInteger | OrderedCollection with: anInteger ]
+		withArguments: #(1)
+		autoCommit: false.
+	self assert: returnValue wait remoteClass equals: #OrderedCollection.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArgumentsSerializationStrategy_primitiveOnlySerialize [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	self assert: returnValue equals: 2.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue equals: 2.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	self assert: returnValue wait equals: 2.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue wait equals: 2.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArgumentsSerializationStrategy_proxyOnly [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy.
+	self assert: returnValue remoteClass equals: #SmallInteger.
+
+	returnValue := self runningServer 
+		evaluateBlockAndWait: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue remoteClass equals: #SmallInteger.
+	
+	returnValue := self runningServer 
+		evaluateBlock: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy.
+	self assert: returnValue wait remoteClass equals: #SmallInteger.
+
+	returnValue := self runningServer 
+		evaluateBlock: [ :a :b | a + b]
+		withArguments: #(0 2)
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
+		autoCommit: false.
+	self assert: returnValue wait remoteClass equals: #SmallInteger.
 ]
 
 { #category : #tests }

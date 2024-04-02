@@ -247,7 +247,7 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArra
 	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
 	^ self scriptEvaluation
 		script: evalFields first;
-		serializationStrategy: aSymbol;
+		serialisationStrategy: aSymbol;
 		autoCommit: aBoolean;
 		bindings: evalFields second;
 		yourself
@@ -622,7 +622,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
 		autoCommit: autoCommit)
-			serializationStrategy: aSymbol;
+			serialisationStrategy: aSymbol;
 			evaluate
 ]
 
@@ -631,7 +631,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol a
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
 		autoCommit: aBoolean)
-			serializationStrategy: aSymbol;
+			serialisationStrategy: aSymbol;
 			evaluate
 ]
 
@@ -696,7 +696,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aS
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
 		autoCommit: autoCommit)
-			serializationStrategy: aSymbol;
+			serialisationStrategy: aSymbol;
 			evaluateAndWait
 ]
 
@@ -706,7 +706,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aS
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
 		autoCommit: aBoolean)
-			serializationStrategy: aSymbol;
+			serialisationStrategy: aSymbol;
 			evaluateAndWait
 ]
 
