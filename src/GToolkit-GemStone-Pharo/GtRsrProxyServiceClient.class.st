@@ -80,19 +80,7 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject r
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
-	| instVarDict localObject |
-
-	instVarDict := self evaluateAndWait: '| names dict |
-names := self class allInstVarNames.
-dict := Dictionary new.
-1 to: names size do: [ :i |
-	dict at: (names at: i) put: (self instVarAt: i) ].
-dict.'.
-	localObject := (self class environment at: remoteClass) basicNew.
-	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: assoc value ].
-	self class proxyObjectMap at: localObject put: self asGtBareProxyObject.
-	^ localObject.
+	^ self createGtpoLocalObjectLinkedToBareProxy:  self asGtBareProxyObject.
 ]
 
 { #category : #private }
@@ -110,6 +98,24 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 		remoteClass: remoteClass.
 	self becomeForward: newProxy.
 	^ newProxy
+]
+
+{ #category : #converting }
+GtRsrProxyServiceClient >> createGtpoLocalObjectLinkedToBareProxy: aBareProxy [
+	"Answer a local copy of the receiver and add a mapping between the local copy and the given bare proxy"
+	| instVarDict localObject |
+
+	instVarDict := self evaluateAndWait: '| names dict |
+names := self class allInstVarNames.
+dict := Dictionary new.
+1 to: names size do: [ :i |
+	dict at: (names at: i) put: (self instVarAt: i) ].
+dict.'.
+	localObject := (self class environment at: remoteClass) basicNew.
+	instVarDict associationsDo: [ :assoc |
+		localObject instVarNamed: assoc key put: assoc value ].
+	self class proxyObjectMap at: localObject put: aBareProxy.
+	^ localObject.
 ]
 
 { #category : #performing }

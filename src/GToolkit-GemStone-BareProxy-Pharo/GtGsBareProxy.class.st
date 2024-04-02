@@ -46,6 +46,12 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #converting }
+GtGsBareProxy >> asGtpoLocalObject [
+	"Answer a local copy of the receiver"
+	^ proxyObject createGtpoLocalObjectLinkedToBareProxy:  self.
+]
+
 { #category : #printing }
 GtGsBareProxy >> gtBasicDisplayOn: aStream [
 	proxyObject ifNil: [ 

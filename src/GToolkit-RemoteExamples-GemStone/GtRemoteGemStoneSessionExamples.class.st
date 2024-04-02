@@ -53,7 +53,6 @@ GtRemoteGemStoneSessionExamples >> testDisconnectWhileExecutingCode [
 	session close.
 	debuggingSession := self buildDebuggingSessionWithBrokenPromiseFor: promise.
 	
-	
 	self assert: debuggingSession interruptedContext receiver isBroken.
 	matchingDebuggerClasses := Smalltalk tools 
 		debuggersForDebugSession: debuggingSession.
