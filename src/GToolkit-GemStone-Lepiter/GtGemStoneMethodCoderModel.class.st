@@ -264,6 +264,7 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 		on: GtRsrEvaluationException
 		do: [ :ex |
 			| remoteException |
+			
 			remoteException := ex debuggerProxy proxyPerform: #exception.
 			(remoteException remoteClass = #CompileError)
 				ifTrue:
@@ -271,10 +272,12 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 					errorDetails := remoteException proxyPerform: #errorDetails.
 					anErrorBlock value: errorDetails.
 					ex return: nil ]
-				ifFalse: 
-					[ ex isResumable
+				ifFalse: [ 
+					"We pass here errors so that the debugger can open"
+					ex pass 
+					"ex isResumable
 						ifTrue: [ ex resume ]
-						ifFalse: [ ex pass ] ] ]
+						ifFalse: [ ex pass ]" ] ]
 ]
 
 { #category : #accessing }

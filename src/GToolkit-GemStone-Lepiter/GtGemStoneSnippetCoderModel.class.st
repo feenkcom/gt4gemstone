@@ -52,7 +52,13 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoSerializedActionId
+		id: GtSourceCoderDoItAndGoSerializedActionId.
+	addOns
+		addMainAction: 'Debug' translated
+		icon: BrGlamorousVectorIcons debug
+		action: [ :aCoderUIModel :anElement |
+			aCoderUIModel debug ]
+		id: GtSourceCoderDebugActionId.
 ]
 
 { #category : #initialize }
@@ -122,11 +128,6 @@ GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
 			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
 				[ bindings at: #snippetResult put: value ] ].
 	^ bindings
-]
-
-{ #category : #'private - actions' }
-GtGemStoneSnippetCoderModel >> primitiveDebug: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
-	self flag: #TODO.
 ]
 
 { #category : #'private - actions' }
