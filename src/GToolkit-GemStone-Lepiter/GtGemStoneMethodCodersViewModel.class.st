@@ -1,6 +1,9 @@
 Class {
 	#name : #GtGemStoneMethodCodersViewModel,
 	#superclass : #GtPharoMethodsCoderViewModel,
+	#instVars : [
+		'selfObject'
+	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
@@ -8,6 +11,26 @@ Class {
 GtGemStoneMethodCodersViewModel >> coderUIModelFor: aCoder [
 	^ aCoder asCoderViewModel
 		expanded: false;
-		withoutHeader";
-		selfObject: self coder object"
+		withoutHeader;
+		selfObject: self selfObject
+]
+
+{ #category : #'initialization ' }
+GtGemStoneMethodCodersViewModel >> initialize [
+	super initialize.
+	
+	selfObject := nil.
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCodersViewModel >> selfObject [
+
+	^ selfObject
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCodersViewModel >> selfObject: anObject [
+	selfObject := anObject.
+	coderUIModels do: [ :eachCoderViewModel |
+		eachCoderViewModel selfObject: anObject ]
 ]

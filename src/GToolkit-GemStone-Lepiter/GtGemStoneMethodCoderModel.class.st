@@ -241,7 +241,7 @@ GtGemStoneMethodCoderModel >> gsMethod [
 { #category : #printing }
 GtGemStoneMethodCoderModel >> gtInspectorTitleString [.
 	
-	^ super gtInspectorTitleString, (self session 
+	^ super gtInspectorTitleString asString, (self session 
 		ifNil: [ '' ]
 		ifNotNil:
 			[ :aGtSession | (' [', aGtSession name, ']') ])
@@ -457,7 +457,6 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 	gemstoneSession
 		ifNil: [ self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
-
 	self
 		handleCompilerErrorsDuring: [ result := gemstoneSession
 					evaluateAndWaitReturnProxy: aSourceString

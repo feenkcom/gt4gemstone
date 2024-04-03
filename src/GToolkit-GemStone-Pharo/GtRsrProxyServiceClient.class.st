@@ -410,11 +410,14 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 	forGsMethods: ((self class theNonMetaClass methodDictForEnv: 0) values 
 		asSortedCollection: [ :a :b | a selector < b selector ]).'.
 		
-		GtGemStoneMethodCodersModel 
+		(GtGemStoneMethodCodersModel 
 			forMethodSpecifications: (GtGemStoneMethodsSpecification 
 				fromJsonString: (methodSpecifications
 					proxyPerform: #asJsonForExport) )
-			inSession: methodSpecifications gtSession ];
+			inSession: methodSpecifications gtSession)
+				asCoderViewModel
+					selfObject: self;
+					yourself ];
 		actionUpdateButton
 ]
 
