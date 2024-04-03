@@ -11,6 +11,14 @@ GtGemStoneMethodCoderViewModel >> computeHeaderBreadcrumbModel [
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderViewModel >> computeReceiverObject [
+	^ super computeReceiverObject ifNil: [
+		self coderModel gsBehavior asGtProxyObject gtSession == self session
+			ifTrue: [ self coderModel gsBehavior ]
+			ifFalse: [ nil ] ]
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderViewModel >> elementClass [
 	^ GtExpandableMethodCoderElement
 ]
@@ -70,4 +78,10 @@ GtGemStoneMethodCoderViewModel >> save [
 	"aSaveResult ifTrue: [ self notifySaved: self compiledMethod ]."
 
 	^ aSaveResult
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderViewModel >> session [
+
+	^ self coderModel session
 ]

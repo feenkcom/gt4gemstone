@@ -41,11 +41,6 @@ GtGemStoneMethodCodersModel >> newCoderFor: aGsMethodSpecification [
 ]
 
 { #category : #accessing }
-GtGemStoneMethodCodersModel >> object [
-	^ nil
-]
-
-{ #category : #accessing }
 GtGemStoneMethodCodersModel >> session [
 	^ session
 ]
