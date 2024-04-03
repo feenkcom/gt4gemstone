@@ -19,10 +19,22 @@ GtGemStoneProcessSpecification >> frameSpecifications [
 GtGemStoneProcessSpecification >> gtViewCallFrameSpecificationsFor: aView [ 
 	<gtView>
 	
-	^ aView forward 
+	^ aView columnedList 
 		title: 'Frame specifications';
-		object: [ self frameSpecifications];
-		view: #gtItemsFor:
+		priority: 50;
+		items: [ self frameSpecifications ];
+		actionUpdateButtonTooltip: 'Update item list';
+		column: 'Index' 
+			text: [ :eachItem :eachIndex | eachIndex  ]
+			width: 45;
+		column: 'ID' 
+			text: [ :eachItem | eachItem frameIdentifier description  ]
+			width: 45;
+		column: 'Ip Offset' 
+			text: [ :eachItem | eachItem ipOffset ]
+			width: 45;
+		column: 'Item' 
+			text: [ :eachItem | eachItem gtDisplayText ]
 ]
 
 { #category : #accessing }
