@@ -402,6 +402,11 @@ GtGemStoneEvaluationContext >> variableIndex: index atFrameLevel: anInteger [
 	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
 ]
 
+{ #category : 'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> variableInfoAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	^ self variableInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+]
+
 { #category : 'actions - debug (level)' }
 GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 	"Answer the variables from the specified frame, including self's instance variables"
