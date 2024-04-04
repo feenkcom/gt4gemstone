@@ -30,3 +30,8 @@ GtGemStoneSessionEvaluationDeliverySignal class >> forGtEvaluation: aGtRsrScript
 	^ self new 
 		initializeForGtEvaluation: aGtRsrScriptEvaluation
 ]
+
+{ #category : #printing }
+GtGemStoneSessionEvaluationDeliverySignal >> printOneLineContentsOn: aStream [
+	aStream print: eventType
+]

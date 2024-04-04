@@ -30,3 +30,8 @@ GtGemStoneSessionEvaluationPromiseWaitSignal class >> forGtEvaluation: aGtRsrScr
 	^ self new 
 		initializeForGtEvaluation: aGtRsrScriptEvaluation
 ]
+
+{ #category : #printing }
+GtGemStoneSessionEvaluationPromiseWaitSignal >> printOneLineContentsOn: aStream [
+	aStream print: eventType
+]

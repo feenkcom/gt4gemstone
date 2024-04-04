@@ -49,6 +49,11 @@ GtGemStoneSessionEvaluationScriptExecutionStartSignal >> initializeForGtScriptEv
 ]
 
 { #category : #accessing }
+GtGemStoneSessionEvaluationScriptExecutionStartSignal >> printOneLineContentsOn: aStream [
+	aStream << self script
+]
+
+{ #category : #accessing }
 GtGemStoneSessionEvaluationScriptExecutionStartSignal >> script [
 	^ script
 ]

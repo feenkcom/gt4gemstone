@@ -10,6 +10,11 @@ GtGemStoneSessionEvaluationPerformExecutionEvent class >> eventLabel [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneSessionEvaluationPerformExecutionEvent >> callArguments [
+	^ self eventStartedSignal arguments
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneSessionEvaluationPerformExecutionEvent >> gtViewPerformFor: aView [
 	<gtView>
 	
@@ -22,7 +27,17 @@ GtGemStoneSessionEvaluationPerformExecutionEvent >> gtViewPerformFor: aView [
 
 { #category : #printing }
 GtGemStoneSessionEvaluationPerformExecutionEvent >> printExecutionOn: aStream [ 
-	aStream << self targetSelector printString
+	self targetSelector isUnary 
+		ifTrue: [
+			aStream << self targetSelector printString.
+			^ self ].
+	self targetSelector keywords 
+		with: self callArguments
+		do: [ :selector :argument | 
+			aStream nextPutAll: selector.
+			aStream space.
+			aStream << argument printString.
+			aStream space. ] 
 ]
 
 { #category : #'gt - extensions' }
