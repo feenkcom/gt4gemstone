@@ -97,6 +97,24 @@ removeallclassmethods GtGemStoneEvaluationContext
 
 doit
 (Object
+	subclass: 'GtGemStoneExampleObjectForLocalDelegate'
+	instVarNames: #( targetValueOne targetValueTwo anotherDelegate )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneExampleObjectForLocalDelegate
+removeallclassmethods GtGemStoneExampleObjectForLocalDelegate
+
+doit
+(Object
 	subclass: 'GtGemStoneLocalCallFrame'
 	instVarNames: #( frameArray homeMethod frameIdentifier )
 	classVars: #(  )
@@ -1796,6 +1814,12 @@ variableIndex: index atFrameLevel: anInteger
 	^ ((self variableArrayAtFrameLevel: anInteger) at: index) second
 %
 
+category: 'actions - debug (identifier)'
+method: GtGemStoneEvaluationContext
+variableInfoAtFrameIdentifierIndex: aFrameIdentifierIndex
+	^ self variableInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+%
+
 category: 'actions - debug (level)'
 method: GtGemStoneEvaluationContext
 variableInfoAtFrameLevel: anInteger
@@ -1811,6 +1835,46 @@ category: 'private'
 method: GtGemStoneEvaluationContext
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneExampleObjectForLocalDelegate'
+
+!		Instance methods for 'GtGemStoneExampleObjectForLocalDelegate'
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+anotherDelegate
+	^ anotherDelegate
+%
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+anotherDelegate: anObject
+	anotherDelegate := anObject
+%
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+targetValueOne
+	^ targetValueOne
+%
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+targetValueOne: anObject
+	targetValueOne := anObject
+%
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+targetValueTwo
+	^ targetValueTwo
+%
+
+category: 'accessing'
+method: GtGemStoneExampleObjectForLocalDelegate
+targetValueTwo: anObject
+	targetValueTwo := anObject
 %
 
 ! Class implementation for 'GtGemStoneLocalCallFrame'
@@ -3108,10 +3172,22 @@ method: GtGemStoneProcessSpecification
 gtViewCallFrameSpecificationsFor: aView 
 	<gtView>
 	
-	^ aView forward 
+	^ aView columnedList 
 		title: 'Frame specifications';
-		object: [ self frameSpecifications];
-		view: #gtItemsFor:
+		priority: 50;
+		items: [ self frameSpecifications ];
+		actionUpdateButtonTooltip: 'Update item list';
+		column: 'Index' 
+			text: [ :eachItem :eachIndex | eachIndex  ]
+			width: 45;
+		column: 'ID' 
+			text: [ :eachItem | eachItem frameIdentifier description  ]
+			width: 45;
+		column: 'Ip Offset' 
+			text: [ :eachItem | eachItem ipOffset ]
+			width: 45;
+		column: 'Item' 
+			text: [ :eachItem | eachItem gtDisplayText ]
 %
 
 category: 'accessing'
