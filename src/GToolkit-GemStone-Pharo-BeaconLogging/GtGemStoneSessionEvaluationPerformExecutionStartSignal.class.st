@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneSessionEvaluationPerformExecutionStartSignal,
 	#superclass : #GtGemStoneSessionEvaluationExecutionStartSignal,
 	#instVars : [
-		'selector'
+		'selector',
+		'arguments'
 	],
 	#category : #'GToolkit-GemStone-Pharo-BeaconLogging-Signals'
 }
@@ -22,6 +23,11 @@ GtGemStoneSessionEvaluationPerformExecutionStartSignal class >> eventType [
 GtGemStoneSessionEvaluationPerformExecutionStartSignal class >> forGtPerformEvaluation: aGtRsrPerformEvaluation [
 	^ self new 
 		initializeForGtPerformEvaluation: aGtRsrPerformEvaluation
+]
+
+{ #category : #accessing }
+GtGemStoneSessionEvaluationPerformExecutionStartSignal >> arguments [
+	^ arguments
 ]
 
 { #category : #accessing }
@@ -46,6 +52,16 @@ GtGemStoneSessionEvaluationPerformExecutionStartSignal >> initializeForGtPerform
 	self initializeForGtEvaluation: aGtRsrPerformEvaluation.
 	
 	selector := aGtRsrPerformEvaluation selector.
+	arguments := aGtRsrPerformEvaluation arguments.
+]
+
+{ #category : #printing }
+GtGemStoneSessionEvaluationPerformExecutionStartSignal >> printOneLineContentsOn: aStream [
+	aStream print: self targetSelector.
+	(arguments notNil and: [arguments notEmpty]) ifTrue: [
+		aStream
+			<< ' - arguments: ';
+			<< arguments asCommaString ]
 ]
 
 { #category : #accessing }

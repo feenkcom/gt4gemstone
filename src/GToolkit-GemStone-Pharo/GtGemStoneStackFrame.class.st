@@ -357,8 +357,18 @@ GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
 { #category : #accessing }
 GtGemStoneStackFrame >> variablesAssociations [
 
+	^ variableAssociations ifNil: [ 
+		variableAssociations := self debuggerProxy
+			proxyPerform: #variableInfoAtFrameLevel:
+			withArguments: { ordinal }
+			autoCommit: false ].
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> variablesAssociationsBasedOnIndex [
+
 	^ variableAssociations ifNil: [ variableAssociations := self debuggerProxy
-		proxyPerform: #variableInfoAtFrameLevel:
-		withArguments: { ordinal }
+		proxyPerform: #variableInfoAtFrameIdentifierIndex:
+		withArguments: { self frameIdentifier identityIndex }
 		autoCommit: false ].
 ]

@@ -13,6 +13,11 @@ Class {
 }
 
 { #category : #accessing }
+GtRsrEvaluationException >> currentDebuggerState [
+	^ debuggerState
+]
+
+{ #category : #accessing }
 GtRsrEvaluationException >> debugResult [
 	^ debugResult
 ]
@@ -119,7 +124,8 @@ GtRsrEvaluationException >> isTerminated [
 { #category : #accessing }
 GtRsrEvaluationException >> messageText [
 
-	^ self debuggerState messageText
+	^ self currentDebuggerState 
+		ifNotNil: [ :aDebuggerState |  aDebuggerState messageText]
 ]
 
 { #category : #private }

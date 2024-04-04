@@ -85,6 +85,7 @@ GtRemoteGemStoneDebuggerExamples >> testPerformBlock: aBlock [
 	[ aBlock value: session ]
 		on: GtRsrEvaluationException
 		do: [ :ex |
+			ex debuggerState. " This ensures that the state is downloaded"
 			self assert: (ex messageText indexOfSubCollection: 'iDontUnderstandThis') > 0.
 			signalled := true ].
 	self assert: signalled.
