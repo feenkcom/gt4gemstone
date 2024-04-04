@@ -80,6 +80,11 @@ GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedFor: aContext 
 	self updateVariables.
 ]
 
+{ #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedWithoutFocusChangeFor: aContext [
+	"self updateVariables."
+]
+
 { #category : #initialization }
 GtGemStoneExpandableDebuggerElement >> buildLeftPane [
 	| leftPane |
@@ -446,10 +451,9 @@ GtGemStoneExpandableDebuggerElement >> updateCallFrame [
 
 { #category : #'private - update ui' }
 GtGemStoneExpandableDebuggerElement >> updateDisplay [ 
-
 	self updateMainTabLabel.
 	self updateCallFrame.
-	self updateVariables.
+	self updateVariables "To remove".
 	self updateStdout.
 ]
 
@@ -479,7 +483,7 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 	variableList 
 		items: (self currentCallFrame
 			ifNil: [ #() ]
-			ifNotNil: [ self currentCallFrame variablesAssociations ])
+			ifNotNil: [ self currentCallFrame variablesAssociations"BasedOnIndex" ])
 		immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]
