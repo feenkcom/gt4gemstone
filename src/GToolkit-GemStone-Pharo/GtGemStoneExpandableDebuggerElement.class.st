@@ -483,7 +483,7 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 	variableList 
 		items: (self currentCallFrame
 			ifNil: [ #() ]
-			ifNotNil: [ self currentCallFrame variablesAssociations"BasedOnIndex" ])
+			ifNotNil: [ self currentCallFrame variablesAssociationsBasedOnIndex ])
 		immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]
