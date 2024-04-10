@@ -82,7 +82,7 @@ GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedFor: aContext 
 
 { #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnSelectedContextChangedWithoutFocusChangeFor: aContext [
-	"self updateVariables."
+	self updateVariables.
 ]
 
 { #category : #initialization }
@@ -453,7 +453,7 @@ GtGemStoneExpandableDebuggerElement >> updateCallFrame [
 GtGemStoneExpandableDebuggerElement >> updateDisplay [ 
 	self updateMainTabLabel.
 	self updateCallFrame.
-	self updateVariables "To remove".
+	"self updateVariables" "Should not be done here as the selected context is not yet changed".
 	self updateStdout.
 ]
 
@@ -483,7 +483,7 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 	variableList 
 		items: (self currentCallFrame
 			ifNil: [ #() ]
-			ifNotNil: [ self currentCallFrame variablesAssociations"BasedOnIndex" ])
+			ifNotNil: [ self currentCallFrame variablesAssociationsBasedOnIndex ])
 		immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]
