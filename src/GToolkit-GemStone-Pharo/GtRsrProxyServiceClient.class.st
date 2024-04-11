@@ -275,7 +275,7 @@ GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
 	^ anAction button
 		priority: 1;
 		icon: BrGlamorousVectorIcons browse;
-		tooltip: 'Inspect GemStone Class';
+		tooltip: 'Browse Remote GemStone Class';
 		action: [ :button |
 			button phlow spawnObject: (self proxyPerform: #class autoCommit: false) ].
 ]
@@ -300,7 +300,7 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 	<gtAction>
 
 	^ anAction button
-		priority: 1;
+		priority: 100;
 		icon: BrGlamorousVectorIcons down;
 		tooltip: 'Download a copy of the remote instance locally using STON';
 		action: [ :button |
