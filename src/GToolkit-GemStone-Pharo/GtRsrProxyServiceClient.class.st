@@ -113,7 +113,9 @@ dict := Dictionary new.
 dict.'.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
-		localObject instVarNamed: assoc key put: assoc value ].
+		localObject 
+			instVarNamed: assoc key 
+			put: assoc value asGtBareProxyObject ].
 	self class proxyObjectMap at: localObject put: aBareProxy.
 	^ localObject.
 ]
