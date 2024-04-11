@@ -35,6 +35,22 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForBasicOb
 ]
 
 { #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithObjectVariables [
+	<gtExample>
+	| session result |
+
+	session := self runningServer.
+	result := session evaluateBlockAndWaitReturnProxy: [ 
+		GtGemStoneExampleObjectForLocalDelegate new 
+			targetValueOne: Object new;
+			targetValueTwo: 'a string'].
+	self assert: result remoteClass equals: #GtGemStoneExampleObjectForLocalDelegate.
+	self assert: result class name equals: #GtRsrProxyServiceClient.
+	
+	^ result
+]
+
+{ #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithPrimitiveVariables [
 	<gtExample>
 	| session result |
@@ -93,7 +109,33 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testBasicObjectWithProxyDele
 ]
 
 { #category : #tests }
-GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithProxyDelegate_onBareProxy [
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithObjectVariablesWithProxyDelegate_onBareProxy [
+	<gtExample>
+	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
+
+	serviceClientProxy := self serviceClientProxyForObjectWithObjectVariables.
+	bareProxy := serviceClientProxy asGtBareProxyObject.
+	
+	localObjectWithDelegate := bareProxy asGtpoLocalObject.
+	self assert: localObjectWithDelegate class name equals: #GtGemStoneExampleObjectForLocalDelegate.
+	
+	self 
+		assert: localObjectWithDelegate targetValueTwo 
+		equals: 'a string'.
+	self 
+		assert: localObjectWithDelegate targetValueOne class 
+		equals: GtGsBareProxy.
+
+	
+	localDelegate := GtRsrProxyServiceClient 
+		bareProxyObjectAt: localObjectWithDelegate 
+		ifAbsent: [nil].
+		
+	self assert: localDelegate == bareProxy.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithPrimitiveVariablesWithProxyDelegate_onBareProxy [
 	<gtExample>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
 
