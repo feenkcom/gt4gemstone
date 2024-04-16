@@ -56,6 +56,14 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
+	self debugSession synchronizeCallStack.
+	self currentCallFrame resetState.
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
@@ -64,14 +72,6 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		send: #actOnDebuggerStateChanged
 		to: self.
 	
-	self scheduleUpdateUI.
-]
-
-{ #category : #callbacks }
-GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
-
-	self debugSession synchronizeCallStack.
-	self currentCallFrame resetState.
 	self scheduleUpdateUI.
 ]
 
@@ -259,6 +259,37 @@ GtGemStoneExpandableDebuggerElement >> defaultMargin [
 	^ 5
 ]
 
+{ #category : #initialization }
+GtGemStoneExpandableDebuggerElement >> defineShortcuts [
+	<sys_ext>
+	self
+		addShortcut: ((BlShortcutWithAction new)
+					combination: ((BlKeyCombination builder)
+								key: BlKeyboardKey F7;
+								build);
+					action: [:anEvent :aShortcut | self gsStepOver]);
+		addShortcut: ((BlShortcutWithAction new)
+					combination: ((BlKeyCombination builder)
+								key: BlKeyboardKey F5;
+								build);
+					action: [:anEvent :aShortcut | self gsStepInto]);
+		addShortcut: ((BlShortcutWithAction new)
+					combination: ((BlKeyCombination builder)
+								key: BlKeyboardKey F6;
+								build);
+					action: [:anEvent :aShortcut | self gsStepThrough]);
+		addShortcut: ((BlShortcutWithAction new)
+					combination: ((BlKeyCombination builder)
+								key: BlKeyboardKey F9;
+								build);
+					action: [:anEvent :aShortcut | self gsResume]);
+		addShortcut: ((BlShortcutWithAction new)
+					combination: ((BlKeyCombination builder)
+								key: BlKeyboardKey F8;
+								build);
+					action: [:anEvent :aShortcut | self gsRestartFrame])
+]
+
 { #category : #'private - accessing' }
 GtGemStoneExpandableDebuggerElement >> exception [
 
@@ -307,14 +338,13 @@ GtGemStoneExpandableDebuggerElement >> gsStepThrough [
 { #category : #initialization }
 GtGemStoneExpandableDebuggerElement >> initialize [
 	super initialize.
-	
-	self
-		constraintsDo: [ :c | 
+	self constraintsDo: 
+			[:c |
 			c vertical matchParent.
-			c horizontal matchParent ].
+			c horizontal matchParent].
 	self userData at: #debuggerContainer put: #debuggerElement.
-	
 	self addChild: self buildMainContent.
+	self defineShortcuts
 ]
 
 { #category : #testing }
