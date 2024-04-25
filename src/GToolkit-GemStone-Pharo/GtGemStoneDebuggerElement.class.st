@@ -29,7 +29,7 @@ GtGemStoneDebuggerElement class >> availableAutomatically [
 { #category : #accessing }
 GtGemStoneDebuggerElement class >> defaultTitle [ 
 
-	^ 'GemStone Debugger'
+	^ 'GemStone Basic'
 ]
 
 { #category : #testing }

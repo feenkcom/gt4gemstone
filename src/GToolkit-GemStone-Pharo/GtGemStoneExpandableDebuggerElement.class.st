@@ -23,7 +23,7 @@ GtGemStoneExpandableDebuggerElement class >> availableAutomatically [
 { #category : #accessing }
 GtGemStoneExpandableDebuggerElement class >> defaultTitle [ 
 
-	^ 'GemStone Expandale Debugger'
+	^ 'GemStone'
 ]
 
 { #category : #testing }
@@ -56,14 +56,6 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
-GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
-
-	self debugSession synchronizeCallStack.
-	self currentCallFrame resetState.
-	self scheduleUpdateUI.
-]
-
-{ #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
@@ -72,6 +64,14 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		send: #actOnDebuggerStateChanged
 		to: self.
 	
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
+	self debugSession synchronizeCallStack.
+	self currentCallFrame resetState.
 	self scheduleUpdateUI.
 ]
 
