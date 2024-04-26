@@ -40,6 +40,6 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 BaselineOfGtGemstoneClient >> postLoadSetup: spec [
 	"Register the GemStone debugger"
 
-	GtGemStoneDebuggerElement register.
+	"GtGemStoneDebuggerElement register."
 	GtGemStoneExpandableDebuggerElement register.
 ]

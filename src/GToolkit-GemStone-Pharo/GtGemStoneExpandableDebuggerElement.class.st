@@ -23,7 +23,7 @@ GtGemStoneExpandableDebuggerElement class >> availableAutomatically [
 { #category : #accessing }
 GtGemStoneExpandableDebuggerElement class >> defaultTitle [ 
 
-	^ 'GemStone Expandale Debugger'
+	^ 'GemStone'
 ]
 
 { #category : #testing }
