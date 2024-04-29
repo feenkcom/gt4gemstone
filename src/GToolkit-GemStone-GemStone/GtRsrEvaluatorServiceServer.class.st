@@ -1,10 +1,10 @@
 Class {
-	#name : #GtRsrEvaluatorServiceServer,
-	#superclass : #GtRsrEvaluatorService,
+	#name : 'GtRsrEvaluatorServiceServer',
+	#superclass : 'GtRsrEvaluatorService',
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
@@ -15,7 +15,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 			asGtRsrProxyObjectForConnection: _connection
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -27,7 +27,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	^ (Globals at: aSymbol) new serialize: result.
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -40,20 +40,15 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 	^ GtRsrProxyServiceServer object: result.
 ]
 
-{ #category : #'private - GemStone' }
+{ #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
-	| receiver symbolDictionary bindings object |
+	| receiver symbolDictionary bindings |
 
-	receiver := anObject class == GtRsrProxyServiceServer
-		ifTrue: [ anObject object ]
-		ifFalse: [ anObject ].
+	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
 	aDictionary keysAndValuesDo: [ :key :value |
-		object := (value isKindOf: GtRsrProxyService)
-			ifTrue: [ value object ]
-			ifFalse: [ value ].
-		symbolDictionary at: key put: object ].
+		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
 	^ GtGemStoneEvaluationContext new
