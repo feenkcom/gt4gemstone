@@ -258,6 +258,14 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> getSerialized [
+
+	^ self evaluateAndWait: 'self'
+		serializationStrategy: #GtRsrStonSerializationStrategy
+		autoCommit: false
+]
+
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> getViewProxy [
 	"Answer a GtViewedProxy on the receiver"

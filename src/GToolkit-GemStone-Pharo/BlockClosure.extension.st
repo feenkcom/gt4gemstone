@@ -1,6 +1,16 @@
 Extension { #name : #BlockClosure }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
+BlockClosure >> asGtGsArgumentIn: aGtGemStoneSession [
+	"Answer the receiver ready to pass as an argument to a GtGemStone evaluation"
+
+	self assert: [ self isClean ]
+		description: 'Only clean BlockClosures can be passed as arguments'.
+
+	^ aGtGemStoneSession evaluateAndWaitReturnProxy: self printString
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
 BlockClosure >> storeOn: aStream [
 
 	GtGsStoreStringFlag value == true

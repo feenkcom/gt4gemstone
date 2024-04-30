@@ -34,26 +34,13 @@ GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
 	"Answer a copy of the bindings dictionary, replacing any bare proxies with the service client"
 	| bindings |
 
-	(aDictionary isEmpty or:
-	[ aDictionary noneSatisfy: [ :each | 
-		each isGtBareProxyObject or: [ each isBlock ] ] ])
-			ifTrue: [ ^ aDictionary ].
+	aDictionary isEmpty ifTrue: [ ^ aDictionary ].
 
 	gtSession logEmitter
 		emitEvaluationResolveBindingsStartFor: self.
-			
-	bindings := aDictionary copy.
-	bindings associationsDo: [ :assoc |
-		assoc value isGtBareProxyObject ifTrue:
-			[ assoc value: assoc value proxyObject ]
-		ifFalse: [ assoc value isBlock ifTrue:
-			[ assoc value isClean
-				ifTrue: [ assoc value: (gtSession
-					evaluateAndWait: assoc value printString) ] ] ] ].
-					
+	bindings := aDictionary asGtGsArgumentIn: gtSession.
 	gtSession logEmitter
 		emitEvaluationResolveBindingsEndFor: self.
-		
 	^ bindings
 ]
 

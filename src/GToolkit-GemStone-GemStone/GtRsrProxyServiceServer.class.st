@@ -13,18 +13,19 @@ GtRsrProxyServiceServer class >> object: anObject [
 	^ self new object: anObject
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceServer >> asGtGsArgument [
+	"Answer the the local object of the receiver"
+
+	^ object
+]
+
 { #category : #private }
 GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	"Perform the requested operation, catching errors and returning exception information"
-	| convertedArguments  |
-
-	convertedArguments := anArray collect: [ :anObject |
-		(anObject isKindOf: self class) 
-			ifTrue: [ anObject object ]
-			ifFalse: [ anObject ] ].
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ object perform: aSymbol withArguments: convertedArguments ]
+		evaluateBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
 		from: self.
 ]
 

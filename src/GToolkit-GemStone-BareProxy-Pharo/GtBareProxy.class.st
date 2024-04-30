@@ -47,6 +47,13 @@ GtBareProxy >> asGtBareProxyObject [
 	^ self
 ]
 
+{ #category : #accessing }
+GtBareProxy >> asGtGsArgumentIn: aGtGemStoneSession [
+	"Answer the receiver ready to pass as an argument to a GtGemStone evaluation"
+	
+	^ proxyObject
+]
+
 { #category : #transformation }
 GtBareProxy >> asGtProxyObject [
 	^ proxyObject

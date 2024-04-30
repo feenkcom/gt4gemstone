@@ -3481,17 +3481,12 @@ category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result"
-	| receiver symbolDictionary bindings object |
+	| receiver symbolDictionary bindings |
 
-	receiver := anObject class == GtRsrProxyServiceServer
-		ifTrue: [ anObject object ]
-		ifFalse: [ anObject ].
+	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
 	aDictionary keysAndValuesDo: [ :key :value |
-		object := (value isKindOf: GtRsrProxyService)
-			ifTrue: [ value object ]
-			ifFalse: [ value ].
-		symbolDictionary at: key put: object ].
+		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
 	^ GtGemStoneEvaluationContext new
@@ -3555,19 +3550,21 @@ object: anObject
 
 !		Instance methods for 'GtRsrProxyServiceServer'
 
+category: 'accessing'
+method: GtRsrProxyServiceServer
+asGtGsArgument
+	"Answer the the local object of the receiver"
+
+	^ object
+%
+
 category: 'private'
 method: GtRsrProxyServiceServer
 basicPerform: aSymbol withArguments: anArray
 	"Perform the requested operation, catching errors and returning exception information"
-	| convertedArguments  |
-
-	convertedArguments := anArray collect: [ :anObject |
-		(anObject isKindOf: self class) 
-			ifTrue: [ anObject object ]
-			ifFalse: [ anObject ] ].
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ object perform: aSymbol withArguments: convertedArguments ]
+		evaluateBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
 		from: self.
 %
 
@@ -3855,6 +3852,18 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self collect: [ :each | each asGtRsrProxyObjectForConnection: aRsrConnection ]
 %
 
+! Class extensions for 'CharacterCollection'
+
+!		Instance methods for 'CharacterCollection'
+
+category: '*GToolkit-GemStone-GemStone'
+method: CharacterCollection
+asGtGsArgument
+	"Answer the the local object of the receiver"
+
+	^ self
+%
+
 ! Class extensions for 'DateAndTimeANSI'
 
 !		Class methods for 'DateAndTimeANSI'
@@ -3871,6 +3880,18 @@ readFrom: aStream
 ! Class extensions for 'Dictionary'
 
 !		Instance methods for 'Dictionary'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Dictionary
+asGtGsArgument
+	"Answer the the local object of the receiver"
+	| local |
+
+	local := self copy.
+	local associationsDo: [ :assoc |
+		assoc value: assoc value asGtGsArgument ].
+	^ local
+%
 
 category: '*GToolkit-GemStone-GemStone'
 method: Dictionary
@@ -3958,6 +3979,14 @@ serialize: anObject
 
 category: '*GToolkit-GemStone-GemStone'
 method: Object
+asGtGsArgument
+	"Answer the the local object of the receiver"
+
+	^ self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Object
 asGtRsrProxyObjectForConnection: aRsrConnection
 	"Answer the receiver with unsupported objects converted to GtRsrProxyServiceServers.
 	Ideally we would look up objects in the connection and use the same proxy, but that isn't happening yet."
@@ -3999,6 +4028,14 @@ allButFirstDo: block
 
 	2 to: self size do:
 		[ :index | block value: (self at: index) ]
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: SequenceableCollection
+asGtGsArgument
+	"Answer the the local object of the receiver"
+
+	^ self collect: [ :each | each asGtGsArgument ]
 %
 
 ! Class extensions for 'Set'

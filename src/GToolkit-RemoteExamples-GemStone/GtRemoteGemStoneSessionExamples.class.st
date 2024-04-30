@@ -250,6 +250,23 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArgumentsSerializationSt
 ]
 
 { #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithProxyArguments [
+	<gtExample>
+	| returnValue  proxy blockClosure dict |
+
+	proxy := self runningServer evaluateAndWaitReturnProxy: '''hello'''.
+	blockClosure := [ :d | (d at: 'hello') first ].
+	dict := { 
+		'bc' -> blockClosure.
+		'hello' -> { proxy }. } asDictionary.
+	returnValue := self runningServer 
+		evaluateAndWait: '''appended: '', ((dict at: ''bc'') value: dict)'
+		for: nil
+		bindings: { #dict -> dict. } asDictionary.
+	self assert: returnValue equals: 'appended: hello'.
+]
+
+{ #category : #tests }
 GtRemoteGemStoneSessionExamples >> testEvaluateReturnProxy [
 	<gtExample>
 	| session result |
