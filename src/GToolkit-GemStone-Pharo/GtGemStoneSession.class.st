@@ -228,6 +228,18 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean 
 ]
 
 { #category : #actions }
+GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray [
+	| evalFields |
+
+	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
+	^ self scriptEvaluation
+		script: evalFields first;
+		bindings: evalFields second;
+		returnLegacy;
+		yourself
+]
+
+{ #category : #actions }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean [
 	| evalFields |
 
