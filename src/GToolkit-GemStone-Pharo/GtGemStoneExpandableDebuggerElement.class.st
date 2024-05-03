@@ -261,7 +261,6 @@ GtGemStoneExpandableDebuggerElement >> defaultMargin [
 
 { #category : #initialization }
 GtGemStoneExpandableDebuggerElement >> defineShortcuts [
-	<sys_ext>
 	self
 		addShortcut: ((BlShortcutWithAction new)
 					combination: ((BlKeyCombination builder)
