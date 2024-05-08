@@ -62,6 +62,11 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledText [
 			styledPhlowTextForRemoteComparison
 ]
 
+{ #category : #utils }
+GtRemoteGemStoneDeclarativeViewsExamples >> formatExpectedIconName: anIconName [
+	^ anIconName, #Icon 
+]
+
 { #category : #private }
 GtRemoteGemStoneDeclarativeViewsExamples >> getRemoteObject [
 
