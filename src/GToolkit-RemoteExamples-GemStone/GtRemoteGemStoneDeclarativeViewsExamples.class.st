@@ -64,7 +64,9 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledText [
 
 { #category : #utils }
 GtRemoteGemStoneDeclarativeViewsExamples >> formatExpectedIconName: anIconName [
-	^ anIconName, #Icon 
+	^ self 
+		forPharo11AndPharo12: [ anIconName, #Icon ]
+		forPharo10: [ anIconName ]
 ]
 
 { #category : #private }
