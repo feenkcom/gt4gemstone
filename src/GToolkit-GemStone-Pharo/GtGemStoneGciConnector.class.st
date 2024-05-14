@@ -74,7 +74,7 @@ GtGemStoneGciConnector >> initialize [
 	username := 'DataCurator'.
 	password := 'swordfish'.
 	libraryPath := '/path/to/GemStone/client/libraries' asFileReference.
-	gemstoneVersion := '3.7.0'.
+	gemstoneVersion := '3.7.1'.
 ]
 
 { #category : #accessing }
