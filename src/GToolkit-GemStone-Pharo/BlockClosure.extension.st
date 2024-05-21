@@ -12,7 +12,8 @@ BlockClosure >> asGtGsArgumentIn: aGtGemStoneSession [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 BlockClosure >> storeOn: aStream [
-
+	<gtPharoPatch: #Pharo>
+	
 	GtGsStoreStringFlag value == true
 		ifTrue: [ self printOn: aStream ]
 		ifFalse: [ super storeOn: aStream ]
