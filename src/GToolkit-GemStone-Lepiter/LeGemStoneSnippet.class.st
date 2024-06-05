@@ -70,6 +70,7 @@ LeGemStoneSnippet >> sessionName [
 { #category : #accessing }
 LeGemStoneSnippet >> sessionName: aString [
 
+	sessionName = aString ifTrue: [ ^ self ].
 	sessionName := aString.
 	self updateEditTimeAndEmail.
 	self announceContentChanged.

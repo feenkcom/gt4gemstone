@@ -1224,6 +1224,8 @@ GtGemStoneSession >> sessionId: aString [
 
 { #category : #accessing }
 GtGemStoneSession >> sessionParameters [
+
+	self connect.
 	^ session sessionParameters
 ]
 
@@ -1247,12 +1249,13 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Connected' -> isRunning;
 		add: 'Changed' -> self needsCommit;
 		add: 'Default' -> self isDefaultSession.
-	(keepAlive isNotNil and: [ keepAlive isDirty ]) ifTrue:
-		[ attributes add: 'Keep Alive' -> 'dirty' ].
+	(keepAlive isNotNil and: [ keepAlive isDirty ])
+		ifTrue: [ attributes add: 'Keep Alive' -> 'dirty' ].
 
-	attributes add: (connector isCodeSyncAllowed
-		ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
-		ifFalse: [ 'Code Sync Allowed' -> false ]).
+	attributes
+		add: (connector isCodeSyncAllowed
+				ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
+				ifFalse: [ 'Code Sync Allowed' -> false ]).
 	attributes add: 'Auto-commit' -> self autoCommitEnabled.
 
 	isRunning ifFalse: [ ^ attributes ].
@@ -1269,7 +1272,7 @@ GtGemStoneSession >> statusAttributes [
 			returnPrimitiveOnly) evaluateAndWait.
 
 	attributes
-		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSIByteSize;
+		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
 		add: 'Cache name' -> (gsAttributes at: 'CacheName');
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
