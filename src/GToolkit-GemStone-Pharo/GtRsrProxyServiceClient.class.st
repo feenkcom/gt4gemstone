@@ -458,6 +458,14 @@ GtRsrProxyServiceClient >> instVarAt: anInteger put: anObject [
 	^ result
 ]
 
+{ #category : #testing }
+GtRsrProxyServiceClient >> isProxyObjectActive [
+	"The receiver is only valid if it is connected and the underlying connection hasn't changed"
+
+	^ super isProxyObjectActive and:
+		[ (gtSession isNil or: [ gtSession connection ~~ _connection]) not ]
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> object [
 	"Answer the receiver's object as an immediate"
