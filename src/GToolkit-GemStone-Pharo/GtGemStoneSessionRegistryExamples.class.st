@@ -213,6 +213,26 @@ GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
 ]
 
 { #category : #examples }
+GtGemStoneSessionRegistryExamples >> sessionIdManagement [
+	<gtExample>
+	"Confirm that the lowest possible session id is always supplied."
+	| registry connector session1 session2 newSession |
+
+	registry := self sessionRegistry.
+	connector := registry propertiesFile addNewConnector.
+	session1 := registry newSessionWithConnector: connector
+			id: (registry nextSessionIdForConnector: connector).
+	self assert: session1 sessionId equals: '1'.
+	session2 := registry newSessionWithConnector: connector
+			id: (registry nextSessionIdForConnector: connector).
+	self assert: session2 sessionId equals: '2'.
+	registry removeSession: session1.
+	newSession := registry newSessionWithConnector: connector
+			id: (registry nextSessionIdForConnector: connector).
+	self assert: newSession sessionId equals: '1'.
+]
+
+{ #category : #examples }
 GtGemStoneSessionRegistryExamples >> sessionRegistry [
 	"Answer an empty session registry"
 	<gtExample>

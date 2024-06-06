@@ -62,6 +62,12 @@ LeGemStoneSnippet >> newCoder [
 ]
 
 { #category : #accessing }
+LeGemStoneSnippet >> sessionDisplayName [
+
+	^ GtGemStoneSession displayNameFor: sessionName
+]
+
+{ #category : #accessing }
 LeGemStoneSnippet >> sessionName [
 
 	^ sessionName

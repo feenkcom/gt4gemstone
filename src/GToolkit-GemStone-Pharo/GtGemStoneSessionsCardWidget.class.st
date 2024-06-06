@@ -112,7 +112,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 				aWidgetElement := anEvent currentTarget.
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
-				self registry newSessionWithConnector: selectedConnector.
+				self registry newSessionOrDefaultWithConnector: selectedConnector.
 				self updateContent.
 				anEvent target fireEvent: BrDropdownHideWish new] ].
 
@@ -152,7 +152,7 @@ GtGemStoneSessionsCardWidget >> createList [
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
 						[ self sessionActionsFor: aSession ]).
-			aLabel text: (aSession formatBasedOnStatusText: aSession name)].
+			aLabel text: (aSession formatBasedOnStatusText: aSession displayName)].
 	newList column
 		title: 'Status';
 		width: 125;
