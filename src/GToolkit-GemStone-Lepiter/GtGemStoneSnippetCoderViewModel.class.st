@@ -24,6 +24,16 @@ GtGemStoneSnippetCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 ]
 
 { #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> newCompletionStrategy [
+	| strategy |
+	strategy := super newCompletionStrategy
+		isMethod: false;
+		hasImplicitVariables: true;
+		yourself.
+	^ strategy
+]
+
+{ #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> session [
 	^ session
 ]
