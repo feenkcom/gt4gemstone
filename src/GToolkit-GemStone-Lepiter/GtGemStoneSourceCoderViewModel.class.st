@@ -29,6 +29,20 @@ GtGemStoneSourceCoderViewModel >> evaluationContext [
 ]
 
 { #category : #accessing }
+GtGemStoneSourceCoderViewModel >> localBehavior [
+	^ self coderModel localBehavior
+]
+
+{ #category : #accessing }
+GtGemStoneSourceCoderViewModel >> newCompletionStrategy [
+	^ GtPharoCompletionStrategy new
+		classOrMetaClass: self localBehavior;
+		"We do not set selfObject for now as it would be the proxy"
+		"selfObject: self selfObject;" 
+		yourself
+]
+
+{ #category : #accessing }
 GtGemStoneSourceCoderViewModel >> selfObject [
 	^ selfObject
 ]

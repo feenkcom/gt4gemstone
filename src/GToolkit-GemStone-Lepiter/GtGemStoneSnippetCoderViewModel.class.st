@@ -24,6 +24,27 @@ GtGemStoneSnippetCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 ]
 
 { #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> localBehavior [
+	^ self selfObject 
+		ifNil: [ super localBehavior ] 
+		ifNotNil: [ :anObject |
+			anObject asGtProxyObject remoteClass 
+				ifNil: [ super localBehavior]
+				ifNotNil: [ :aClassName |
+					aClassName asClassIfAbsent: [ super localBehavior ] ]  ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> newCompletionStrategy [
+	| strategy |
+	strategy := super newCompletionStrategy
+		isMethod: false;
+		hasImplicitVariables: true;
+		yourself.
+	^ strategy
+]
+
+{ #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> session [
 	^ session
 ]
