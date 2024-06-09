@@ -83,7 +83,7 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 				aWidgetElement := anEvent currentTarget.
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
-				selectAction cull: (registry newSessionWithConnector: selectedConnector) ] ].
+				selectAction cull: (registry newSessionOrDefaultWithConnector: selectedConnector) ] ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
 
@@ -133,7 +133,7 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: [ 
 					self sessionActionsFor: aSession ]).
-			sessionName := aSession name.
+			sessionName := aSession displayName.
 			sessionLabel := aSession formatBasedOnStatusText: sessionName.
 			sessionName = currentSessionNameComputation value ifTrue:
 				[ sessionLabel bold ].

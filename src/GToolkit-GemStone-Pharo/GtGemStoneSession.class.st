@@ -32,6 +32,14 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
+{ #category : #accessing }
+GtGemStoneSession class >> displayNameFor: aString [
+
+	^ (aString endsWith: ':default')
+		ifTrue: [ aString copyFrom: 1 to: aString size - 8 ]
+		ifFalse: [ aString ]
+]
+
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
 	"Abort the current transaction.
@@ -389,6 +397,16 @@ GtGemStoneSession >> dbSize [
 GtGemStoneSession >> dbSizeHumanReadable [
 
 	^ self dbSize humanReadableSIByteSize
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> displayName [
+	"Answer the receiver's name.
+	The default session doesn't display the session id"
+
+	^ sessionId = 'default'
+		ifTrue: [ connector name ]
+		ifFalse: [ connector name, ':', sessionId asString ]
 ]
 
 { #category : #actions }
@@ -1105,6 +1123,7 @@ GtGemStoneSession >> logEmitter [
 
 { #category : #accessing }
 GtGemStoneSession >> name [
+	"Answer the receiver's name"
 
 	^ connector name, ':', sessionId asString
 ]

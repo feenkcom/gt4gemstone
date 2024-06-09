@@ -81,6 +81,12 @@ LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 ]
 
 { #category : #accessing }
+LeGemStoneSnippetViewModel >> sessionDisplayName [
+
+	^ GtGemStoneSession displayNameFor: self sessionName.
+]
+
+{ #category : #accessing }
 LeGemStoneSnippetViewModel >> sessionName [
 
 	^ self getSessionName
