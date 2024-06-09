@@ -22,11 +22,11 @@ Class {
 		'sessions',
 		'announcer',
 		'connectors',
-		'lastSessionId',
 		'defaultName',
 		'defaultSession',
 		'keepAlive',
-		'codeSync'
+		'codeSync',
+		'sharedAccess'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -91,6 +91,14 @@ GtGemStoneSessionRegistry class >> sessionIdFromSessionName: aString [
 	^ (aString splitOn: $:) second
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry class >> sessionNameForConnectorName: connectorNameString id: idString [
+
+	self assert: idString isString.
+	self assert: (idString indexOf: $:) = 0.
+	^ connectorNameString, ':', idString.
+]
+
 { #category : #'system startup' }
 GtGemStoneSessionRegistry class >> startUp: resuming [
 
@@ -125,7 +133,8 @@ GtGemStoneSessionRegistry >> addNewConnector [
 	newConnector := propertiesFile addNewConnector.
 	self assert: (self connectors includesKey: newConnector name) not.
 	newConnector registry: self.
-	connectors at: newConnector name put: newConnector.
+	sharedAccess critical:
+		[ connectors at: newConnector name put: newConnector ].
 	^ newConnector
 ]
 
@@ -329,7 +338,7 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		column: 'Username' text: [ :item | item username ];
 		column: 'Stone' text: [ :item | item stone ];
 		contextItemLabel: 'New Session' action: 
-			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionWithConnector: aGtGemStoneConnnector ];
+			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButton
 ]
 
@@ -461,7 +470,7 @@ GtGemStoneSessionRegistry >> hasSessions [
 GtGemStoneSessionRegistry >> initialize [
 
 	super initialize.
-	lastSessionId := 0.
+	sharedAccess := Mutex new.
 	self reload "resetSessions".
 ]
 
@@ -482,25 +491,45 @@ GtGemStoneSessionRegistry >> newSessionNamed: aString [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
-	"Answer a new session using the supplied connector"
+GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnector: aGtGemStoneConnector [
+	"Answer a new session using the supplied connector.
+	Answer the connector's default session if it doesn't exist."
 
-	^ (self newSessionWithConnector: aGtGemStoneConnector
-		id: (lastSessionId := lastSessionId + 1) asString)
-			connect.
+	^ sharedAccess critical:
+		[ (self newSessionWithConnector: aGtGemStoneConnector id: 
+			((sessions includesKey: aGtGemStoneConnector name, ':default') 
+				ifTrue: [ self nextSessionIdForConnector: aGtGemStoneConnector ]
+				ifFalse: [ 'default' ]))
+					connect ].
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
+	"Answer a new session using the supplied connector.
+	The default session for the connector is never answered."
+
+	^ sharedAccess critical:
+		[ (self newSessionWithConnector: aGtGemStoneConnector
+			id: (self nextSessionIdForConnector: aGtGemStoneConnector))
+				connect ].
 ]
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: sessionId [
 	"Answer a new session using the supplied connector"
-	| newSession |
+	| sessionName newSession |
 
-	self assert: (sessionId indexOf: $:) = 0.
+	sessionName := self class sessionNameForConnectorName: aGtGemStoneConnector name id: sessionId.
+	(sessions includesKey: sessionName) ifTrue:
+		[ self error: 'session ''', sessionName, ''' already exists' ].
 	newSession := GtGemStoneSession new
 		connector: aGtGemStoneConnector;
-		sessionId: sessionId asString;
+		sessionId: sessionId;
 		registry: self.
-	sessions at: newSession name put: newSession.
+	sharedAccess critical:
+		[ defaultSession ifNotNil:
+			[ self assert: defaultSession name ~= newSession name ].
+		sessions at: sessionName put: newSession ].
 	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
 	sessions size = 1 ifTrue: [ self defaultSession: newSession ].
 	^ newSession.
@@ -514,22 +543,37 @@ GtGemStoneSessionRegistry >> newSessionWithConnectorNamed: aString [
 ]
 
 { #category : #private }
+GtGemStoneSessionRegistry >> nextSessionIdForConnector: aGtGemStoneConnector [
+	"Answer the next available session id for the supplied connector.
+	Session IDs are reused, i.e. always supply the lowest possible number"
+
+	^ sharedAccess critical:
+		[ | connectorName index |
+		connectorName := aGtGemStoneConnector name.
+		index := 1.
+		[ sessions includesKey: (connectorName, ':', index asString) ] whileTrue:
+			[ index := index + 1 ].
+		index asString ].
+]
+
+{ #category : #private }
 GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnouncement [
 	"Propogate any announcements from the properties file.
 	If the connector has been renamed, rebuild the session dictionary."
 	| newSessions newConnectors |
 
 	aGtGemStoneConnectorAnnouncement isNameChange ifTrue:
-		[ newSessions := Dictionary new.
-		sessions ifNotNil:
-			[ sessions valuesDo: [ :session |
-				newSessions at: session name put: session ] ].
-		sessions := newSessions.
-		connectors ifNotNil:
-			[ newConnectors := Dictionary new.
-			connectors valuesDo: [ :connector |
-				newConnectors at: connector name put: connector ].
-			connectors := newConnectors ] ].
+		[ sharedAccess critical:
+			[ newSessions := Dictionary new.
+			sessions ifNotNil:
+				[ sessions valuesDo: [ :session |
+					newSessions at: session name put: session ] ].
+			sessions := newSessions.
+			connectors ifNotNil:
+				[ newConnectors := Dictionary new.
+				connectors valuesDo: [ :connector |
+					newConnectors at: connector name put: connector ].
+				connectors := newConnectors ] ] ].
 
 	self announce: aGtGemStoneConnectorAnnouncement
 ]
@@ -615,9 +659,10 @@ GtGemStoneSessionRegistry >> removeConnector: aGtGemStoneConnector [
 GtGemStoneSessionRegistry >> removeConnectorNamed: aString [
 	"Remove the supplied connector from the receiver and its properties file."
 	| removedConnector |
-	
-	removedConnector := connectors removeKey: aString.
-	propertiesFile removeConnectorNamed: aString.
+
+	sharedAccess critical:
+		[ removedConnector := connectors removeKey: aString.
+		propertiesFile removeConnectorNamed: aString ].
 	removedConnector notifyRemoved.
 ]
 
@@ -627,10 +672,14 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 
 	aGtGemStoneSession isRunning ifTrue:
 		[ aGtGemStoneSession close ].
-	aGtGemStoneSession = defaultSession ifTrue: [ defaultSession := nil ].
-	sessions
-		removeKey: aGtGemStoneSession name
-		ifAbsent: [ ^ self ].
+	sharedAccess critical:
+		[ defaultSession ifNotNil:
+			[ aGtGemStoneSession name = defaultSession name ifTrue: 
+				[ self assert: aGtGemStoneSession = defaultSession.
+				defaultSession := nil ] ].
+		sessions
+			removeKey: aGtGemStoneSession name
+			ifAbsent: [ ^ self ] ].
 	self announce: (GtGemStoneSessionRemovedAnnouncement session: aGtGemStoneSession).
 ]
 
@@ -643,9 +692,10 @@ GtGemStoneSessionRegistry >> resetConnectors [
 { #category : #private }
 GtGemStoneSessionRegistry >> resetSessions [ 
 
-	sessions ifNotNil: [ sessions values do: #close ].
-	sessions := Dictionary new.
-	defaultSession := nil.
+	sharedAccess critical:
+		[ sessions ifNotNil: [ sessions values do: #close ].
+		sessions := Dictionary new.
+		defaultSession := nil ].
 ]
 
 { #category : #accessing }
