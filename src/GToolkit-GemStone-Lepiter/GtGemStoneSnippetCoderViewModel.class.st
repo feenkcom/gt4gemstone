@@ -28,10 +28,13 @@ GtGemStoneSnippetCoderViewModel >> localBehavior [
 	^ self selfObject 
 		ifNil: [ super localBehavior ] 
 		ifNotNil: [ :anObject |
-			anObject asGtProxyObject remoteClass 
-				ifNil: [ super localBehavior]
-				ifNotNil: [ :aClassName |
-					aClassName asClassIfAbsent: [ super localBehavior ] ]  ]
+			"It is possible to add GemStone snippets when inspecting local objects."
+			(anObject asGtProxyObject isKindOf: GtRsrProxyServiceClient)
+			 	ifTrue: [ anObject asGtProxyObject remoteClass 
+					ifNil: [ super localBehavior]
+					ifNotNil: [ :aClassName |
+					aClassName asClassIfAbsent: [ super localBehavior ] ] ]
+				ifFalse: [ anObject class ] ]
 ]
 
 { #category : #accessing }
