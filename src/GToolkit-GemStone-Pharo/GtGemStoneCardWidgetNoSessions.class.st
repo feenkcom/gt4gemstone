@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneCardWidgetNoSessions >> displayName [
+
+	^ 'No Sessions'
+]
+
+{ #category : #accessing }
 GtGemStoneCardWidgetNoSessions >> formatBasedOnStatusText: aText [
 	^ aText
 ]
