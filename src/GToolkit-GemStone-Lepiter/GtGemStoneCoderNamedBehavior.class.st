@@ -41,10 +41,14 @@ GtGemStoneCoderNamedBehavior >> isMeta: aBoolean [
 
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> localBehaviorDo: aBlock [
-	self behaviorName asClassIfPresent: [ :aClass |
-		aBlock value: (self isMeta
-			ifTrue: [ aClass classSide ]
-			ifFalse: [ aClass instanceSide ]) ]
+	self behaviorName
+		ifNotNil: 
+			[:aName |
+			aName asClassIfPresent: 
+					[:aClass |
+					aBlock value: (self isMeta
+								ifTrue: [aClass classSide]
+								ifFalse: [aClass instanceSide])]]
 ]
 
 { #category : #accessing }
