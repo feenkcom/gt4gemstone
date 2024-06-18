@@ -42,7 +42,7 @@ GtGemStoneSessionsCardWidget >> activeMark [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> buildUI [
+GtGemStoneSessionsCardWidget >> buildContent [
 
 	self
 		addChild: (sessionList := self createList);
@@ -50,13 +50,13 @@ GtGemStoneSessionsCardWidget >> buildUI [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> createAddNewSessionButton [
+GtGemStoneSessionsCardWidget >> createAddNewDefaultSessionButton [
 	| selectionButton |
 	
 	selectionButton := BrButton new.
 	selectionButton 
 		icon: BrGlamorousVectorIcons add;
-		label: 'Add a new session';
+		label: 'Add a new default session';
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		addAptitude: ((BrGlamorousWithDropdownAptitude 
 			handle:[ 
@@ -85,7 +85,9 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 	newList column
 		title: 'Name' translated;
 		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem | 
 			| sessionName sessionLabel |
 			sessionName := eachItem name.
@@ -94,13 +96,17 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 	newList column 
 		title: 'Username' translated;
 		width: 125;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem username ].
 	newList column 
 		title: 'Stone' translated;
 		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem stoneName ].
 
@@ -108,12 +114,17 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 		when: BrSelectionDoubleClicked
 		do: [ :anEvent | 
 			anEvent selection ifNotEmpty: [ :theIndices | 
-				| aWidgetElement selectedConnector |
+				| aWidgetElement selectedConnector newSession newSessionIndex |
 				aWidgetElement := anEvent currentTarget.
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
-				self registry newSessionOrDefaultWithConnector: selectedConnector.
+				newSession := self registry 
+					newSessionOrDefaultWithConnector: selectedConnector.
+				newSession beDefaultSession.
 				self updateContent.
+				
+				self selectSession: newSession.
+				
 				anEvent target fireEvent: BrDropdownHideWish new] ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
@@ -136,28 +147,23 @@ GtGemStoneSessionsCardWidget >> createList [
 	| newList |
 
 	newList := BrColumnedList new.
-	newList
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
-		padding: (BlInsets top: 5);
-		matchParent.
+	
 	newList column
 		title: 'Name';
 		width: 100;
-		cellStencil:
-			[ BrLabel new
+		cellStencil:[ 
+			BrLabel new
 				aptitude: BrGlamorousLabelAptitude new;
 				hMatchParent;
 				vFitContent ];
 		dataBinder: [ :aLabel :aSession |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: 
-						[ self sessionActionsFor: aSession ]).
 			aLabel text: (aSession formatBasedOnStatusText: aSession displayName)].
+			
 	newList column
 		title: 'Status';
 		width: 125;
-		cellStencil:
-			[ BrLabel new
+		cellStencil:[ 
+			BrLabel new
 				aptitude: BrGlamorousLabelAptitude new;
 				hMatchParent;
 				vFitContent ];
@@ -171,13 +177,24 @@ GtGemStoneSessionsCardWidget >> createList [
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
 				ifFalse: [ BlElement new size: 0@0 ] ].
+				
 	newList
 		when: BrSelectionDoubleClicked
 		do: [ :anEvent | self doDoubleClicked: anEvent ].
 	newList
 		when: BrSelectionChanged 
 		do: [ :anEvent | self doSelectionChanged: anEvent ].
+	
+	newList
+		rowStencil: (BrColumnedListItemElementWithContextMenuDecorator new
+			stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
+			contextMenuStencil: [ :anElement :aSession | 
+				self sessionActionsFor: aSession ] );
+		padding: (BlInsets top: 5);
+		matchParent.
+	
 	newList addAptitude: BrColumnedListHeaderAptitude.
+	
 	^ newList.
 ]
 
@@ -209,8 +226,10 @@ GtGemStoneSessionsCardWidget >> createToolbar [
 		vFitContent;
 		layout: BlLinearLayout horizontal alignTopRight;
 		addChild: self createTitleLabel;
-		addChild: (self createAddNewSessionButton margin: (BlInsets right: 5));
-		addChild: (self createRefreshButton margin: (BlInsets right: 5));
+		addChild: (self createAddNewDefaultSessionButton 
+			margin: (BlInsets right: 5));
+		addChild: (self createRefreshButton 
+			margin: (BlInsets right: 5));
 		addChild: self createInspectButton;
 		yourself.
 ]
@@ -230,11 +249,11 @@ GtGemStoneSessionsCardWidget >> doDoubleClicked: anEvent [
 GtGemStoneSessionsCardWidget >> doSelectionChanged: anEvent [ 
 ]
 
-{ #category : #accessing }
+{ #category : #'initialization ' }
 GtGemStoneSessionsCardWidget >> initialize [
 	super initialize.
 	
-	self buildUI.
+	self buildContent.
 	self updateContent.
 ]
 
@@ -294,39 +313,66 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 		to: self.
 ]
 
+{ #category : #'actions - ui' }
+GtGemStoneSessionsCardWidget >> selectSession: aSession [ 
+	| sessionIndex |
+	sessionIndex := sessionList items indexOf:  aSession.
+	sessionIndex > 0 ifTrue: [
+		sessionList selectOne: sessionIndex ].
+]
+
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> sessionActionsFor: aSession [
-	aSession class = GtGemStoneCardWidgetNoSessions
-		ifTrue: [^BrGlamorousSimpleContextMenuContent new].
-	^BrGlamorousSimpleContextMenuContent new items: 
-			{'Playground'
-				-> [:aStatusLineElement | self openPlaygroundOn: aSession from: aStatusLineElement].
-			'Commit' -> 
-					[:aStatusLineElement |
-					aSession commitTransaction.
+GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
+	| actions |
+	
+	aGtGemStoneSession class = GtGemStoneCardWidgetNoSessions
+		ifTrue: [ ^ BrGlamorousSimpleContextMenuContent new].
+	
+	actions := OrderedCollection new.
+	
+	actions addAll: {
+		'Playground' -> [ :aStatusLineElement | 
+				self openPlaygroundOn: aGtGemStoneSession from: aStatusLineElement]}.
+	
+	aGtGemStoneSession isRunning 
+		ifTrue: [
+			actions addAll: {
+				'Commit' -> [ :aStatusLineElement |
+					aGtGemStoneSession commitTransaction.
 					self updateContent].
-			'Abort' -> 
-					[:aStatusLineElement |
-					aSession abortTransaction.
+				'Abort' -> [ :aStatusLineElement |
+					aGtGemStoneSession abortTransaction.
 					self updateContent].
-			'Connect' -> 
-					[:aStatusLineElement |
-					aSession connect.
-					self updateContent].
-			'Disconnect' -> 
-					[:aStatusLineElement |
-					aSession close.
-					self updateContent].
-			'Be Default' -> 
-					[:aStatusLineElement |
-					aSession beDefaultSession.
-					self updateContent].
-			'Toggle CodeSync' -> 
-					[:aStatusLineElement |
-					aSession toggleCodeSync.
-					self updateContent].
-			'Inspect'
-				-> [:aStatusLineElement | self inspectSession: aSession from: aStatusLineElement]}
+				'Disconnect' -> [ :aStatusLineElement |
+					| newDefaultSession |
+					aGtGemStoneSession close.
+					
+					newDefaultSession := self registry ensureDefaultSession.
+					
+					self updateContent.
+					newDefaultSession ifNotNil: [
+						self selectSession: newDefaultSession ] ]} ]
+		ifFalse: [
+			actions addAll: {
+				'Connect' -> [ :aStatusLineElement |
+					aGtGemStoneSession connect.
+					self updateContent] } ].
+					
+	aGtGemStoneSession isDefaultSession ifFalse: [
+		actions addAll: {
+			'Be Default' -> [ :aStatusLineElement |
+				aGtGemStoneSession beDefaultSession.
+				self updateContent]} ].
+					
+	actions addAll: {
+		'Toggle CodeSync' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleCodeSync.
+			self updateContent].
+		'Inspect' -> [:aStatusLineElement | 
+			self inspectSession: aGtGemStoneSession from: aStatusLineElement]}.
+				
+	^ BrGlamorousSimpleContextMenuContent new 
+		items: actions
 ]
 
 { #category : #'private - ui' }
