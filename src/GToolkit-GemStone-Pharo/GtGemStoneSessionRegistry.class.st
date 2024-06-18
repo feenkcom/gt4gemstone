@@ -267,6 +267,17 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
 ]
 
+{ #category : #actions }
+GtGemStoneSessionRegistry >> ensureDefaultSession [
+	self hasDefaultSession ifTrue: [ ^ self defaultSession ].
+	
+	^ self activeSessions 
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ :aSessionCollection |
+			self defaultSession: aSessionCollection last.
+			self defaultSession ]
+]
+
 { #category : #'keep alive' }
 GtGemStoneSessionRegistry >> ensureKeepAlive [
 
@@ -694,7 +705,7 @@ GtGemStoneSessionRegistry >> resetSessions [
 
 	sharedAccess critical:
 		[ sessions ifNotNil: [ sessions values do: #close ].
-		sessions := Dictionary new.
+		sessions := OrderedDictionary new.
 		defaultSession := nil ].
 ]
 

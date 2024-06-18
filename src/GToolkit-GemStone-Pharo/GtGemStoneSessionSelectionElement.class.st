@@ -115,8 +115,12 @@ GtGemStoneSessionSelectionElement >> createNewSessionButton [
 GtGemStoneSessionSelectionElement >> createSessionList [
 	| newList |
 	newList := BrColumnedList new.
+	
 	newList 
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
+		rowStencil: (BrColumnedListItemElementWithContextMenuDecorator new
+			stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
+			contextMenuStencil: [ :anElement :aSession | 
+				self sessionActionsFor: aSession ] );
 		margin: (BlInsets top: 5 left: 10);
 		matchParent.
 
@@ -130,24 +134,12 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 				vFitContent ];
 		dataBinder: [ :aLabel :aSession |
 			| sessionName sessionLabel |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: [ 
-					self sessionActionsFor: aSession ]).
 			sessionName := aSession displayName.
 			sessionLabel := aSession formatBasedOnStatusText: sessionName.
 			sessionName = currentSessionNameComputation value ifTrue:
 				[ sessionLabel bold ].
 			aLabel text: sessionLabel ].
-		"cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem | | sessionName sessionLabel |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: 
-						[ self sessionActionsFor: eachItem ]).
-			sessionName := eachItem name.
-			sessionLabel := sessionName asRopedText.
-			sessionName = currentSessionNameComputation value ifTrue:
-				[ sessionLabel bold ].
-			aLabel text: sessionLabel ]."
+			
 	newList column
 		title: 'Status';
 		width: 150;
@@ -158,13 +150,11 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 				vFitContent ];
 		dataBinder: [ :aLabel :aSession |
 			| statusLabel |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: [ 
-					self sessionActionsFor: aSession ]).
 			statusLabel := aSession formatBasedOnStatusText: aSession statusDescription.
 			aSession name = currentSessionNameComputation value ifTrue:
 				[ statusLabel bold ].
 			aLabel text: statusLabel ].
+			
 	newList column
 		title: 'Default';
 		width: 60;
@@ -253,21 +243,43 @@ GtGemStoneSessionSelectionElement >> selectAction: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionSelectionElement >> sessionActionsFor: aSession [
+GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
+	| actions |
+	aGtGemStoneSession class = GtGemStoneCardWidgetNoSessions ifTrue: [ 
+		^ BrGlamorousSimpleContextMenuContent new ].
+		
+	actions := OrderedCollection new.
+	
+	actions addAll: {
+		'Select' -> [ :aStatusLineElement | 
+			selectAction cull: aGtGemStoneSession ]}.
+			
+	aGtGemStoneSession isRunning 
+		ifTrue: [
+			actions addAll: {
+				'Commit' -> [ :aStatusLineElement | 
+					aGtGemStoneSession commitTransaction ].
+				'Abort' -> [ :aStatusLineElement | 
+					aGtGemStoneSession abortTransaction ].
+				'Disconnect' -> [ :aStatusLineElement | 
+					aGtGemStoneSession close ]} ]
+		ifFalse: [
+			actions addAll: {
+				'Connect' -> [ :aStatusLineElement | 
+					aGtGemStoneSession connect ]} ].
+		
+	aGtGemStoneSession isDefaultSession ifFalse: [
+		actions addAll: {
+			'Be Default' -> [ :aStatusLineElement | 
+				aGtGemStoneSession beDefaultSession.
+				selectAction cull: aGtGemStoneSession ] } ].
+	
+	actions addAll: {
+		'Inspect' -> [ :aStatusLineElement | 
+			aStatusLineElement phlow spawnObject: aGtGemStoneSession ] }.
 
-	aSession class = GtGemStoneCardWidgetNoSessions ifTrue: [ ^ BrGlamorousSimpleContextMenuContent new ].
-
-	^ BrGlamorousSimpleContextMenuContent new items: {
-		'Select' -> [ :aStatusLineElement | selectAction cull: aSession ].
-		'Commit' -> [ :aStatusLineElement | aSession commitTransaction ].
-		'Abort' -> [ :aStatusLineElement | aSession abortTransaction ].
-		'Connect' -> [ :aStatusLineElement | aSession connect ].
-		'Disconnect' -> [ :aStatusLineElement | aSession close ].
-		'Be Default' -> [ :aStatusLineElement | 
-			aSession beDefaultSession.
-			selectAction cull: aSession ].
-		'Inspect' -> [ :aStatusLineElement | aStatusLineElement phlow spawnObject: aSession ].
-	}
+	^ BrGlamorousSimpleContextMenuContent new 
+		items: actions
 ]
 
 { #category : #accessing }
