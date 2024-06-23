@@ -4,9 +4,9 @@
 doit
 (Object
 	subclass: 'AkgDebuggerPlay'
-	instVarNames: #( process trace allFrames allFramesString count block )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(process trace allFrames allFramesString count block)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -22,9 +22,9 @@ removeallclassmethods AkgDebuggerPlay
 doit
 (Object
 	subclass: 'GtGemStoneDebuggerState'
-	instVarNames: #( summary isResumable isSuspended isTerminated messageText remoteMetadata callStackSpecification )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(summary isResumable isSuspended isTerminated messageText remoteMetadata callStackSpecification)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -44,9 +44,9 @@ removeallclassmethods GtGemStoneDebuggerState
 doit
 (Object
 	subclass: 'GtGemStoneDoubleLocalCallFrame'
-	instVarNames: #( previousCallFrame newCallFrame sender )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(previousCallFrame newCallFrame sender)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -62,9 +62,9 @@ removeallclassmethods GtGemStoneDoubleLocalCallFrame
 doit
 (Object
 	subclass: 'GtGemStoneDoubleLocalCallStack'
-	instVarNames: #( previousCallStack newCallStack callFrames )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(previousCallStack newCallStack callFrames)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -80,9 +80,9 @@ removeallclassmethods GtGemStoneDoubleLocalCallStack
 doit
 (Object
 	subclass: 'GtGemStoneEvaluationContext'
-	instVarNames: #( exception process semaphore result completed devMessage evalServer block callStack )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(exception process semaphore result completed devMessage evalServer block callStack)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -98,9 +98,9 @@ removeallclassmethods GtGemStoneEvaluationContext
 doit
 (Object
 	subclass: 'GtGemStoneExampleObjectForLocalDelegate'
-	instVarNames: #( targetValueOne targetValueTwo anotherDelegate )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(targetValueOne targetValueTwo anotherDelegate)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -116,9 +116,9 @@ removeallclassmethods GtGemStoneExampleObjectForLocalDelegate
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallFrame'
-	instVarNames: #( frameArray homeMethod frameIdentifier )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(frameArray homeMethod frameIdentifier)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -134,9 +134,9 @@ removeallclassmethods GtGemStoneLocalCallFrame
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallStack'
-	instVarNames: #( callFrames gsProcess nextFrameIdentifier )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(callFrames gsProcess nextFrameIdentifier)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -152,9 +152,9 @@ removeallclassmethods GtGemStoneLocalCallStack
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallStackUpdater'
-	instVarNames: #( targetCallStack )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(targetCallStack)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -170,9 +170,9 @@ removeallclassmethods GtGemStoneLocalCallStackUpdater
 doit
 (Object
 	subclass: 'GtGemStoneSemanticVersionNumber'
-	instVarNames: #( major minor patch iceTag )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(major minor patch iceTag)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -188,9 +188,9 @@ removeallclassmethods GtGemStoneSemanticVersionNumber
 doit
 (Object
 	subclass: 'GtGemStoneSpecification'
-	instVarNames: #( remoteMetadata )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(remoteMetadata)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -206,9 +206,9 @@ removeallclassmethods GtGemStoneSpecification
 doit
 (GtGemStoneSpecification
 	subclass: 'GtGemStoneCallFrameIdentifier'
-	instVarNames: #( identityIndex )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(identityIndex)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -224,9 +224,9 @@ removeallclassmethods GtGemStoneCallFrameIdentifier
 doit
 (GtGemStoneSpecification
 	subclass: 'GtGemStoneClassBasicDetails'
-	instVarNames: #( targetClassName targetClassIconName )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(targetClassName targetClassIconName)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -242,9 +242,9 @@ removeallclassmethods GtGemStoneClassBasicDetails
 doit
 (GtGemStoneSpecification
 	subclass: 'GtGemStoneMethodSpecification'
-	instVarNames: #( coderClassName selector isMeta sourceString protocolName categoryName coderClassIconName explicitProviderBehaviourDetails )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(coderClassName selector isMeta sourceString protocolName categoryName coderClassIconName explicitProviderBehaviourDetails)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -260,9 +260,9 @@ removeallclassmethods GtGemStoneMethodSpecification
 doit
 (GtGemStoneMethodSpecification
 	subclass: 'GtGemStoneContextSpecification'
-	instVarNames: #( isForBlock ipOffset frameIdentifier programCounterMarkers )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(isForBlock ipOffset frameIdentifier programCounterMarkers)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -278,9 +278,9 @@ removeallclassmethods GtGemStoneContextSpecification
 doit
 (GtGemStoneSpecification
 	subclass: 'GtGemStoneMethodsSpecification'
-	instVarNames: #( methodCoderSpecifications )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(methodCoderSpecifications)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -296,9 +296,9 @@ removeallclassmethods GtGemStoneMethodsSpecification
 doit
 (GtGemStoneMethodsSpecification
 	subclass: 'GtGemStoneProcessSpecification'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -314,9 +314,9 @@ removeallclassmethods GtGemStoneProcessSpecification
 doit
 (Object
 	subclass: 'GtGemStoneSpecificationMedatada'
-	instVarNames: #( apiVersion schemaVersion )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(apiVersion schemaVersion)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -332,9 +332,9 @@ removeallclassmethods GtGemStoneSpecificationMedatada
 doit
 (Object
 	subclass: 'GtGsRelease'
-	instVarNames: #( versionString )
-	classVars: #(  )
-	classInstVars: #( default )
+	instVarNames: #(versionString)
+	classVars: #()
+	classInstVars: #(default)
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -350,9 +350,9 @@ removeallclassmethods GtGsRelease
 doit
 (Object
 	subclass: 'GtRsrSerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -368,9 +368,9 @@ removeallclassmethods GtRsrSerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrLegacySerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -386,9 +386,9 @@ removeallclassmethods GtRsrLegacySerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrLiteralAndProxySerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -405,9 +405,9 @@ removeallclassmethods GtRsrLiteralAndProxySerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrPrimitiveOnlySerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -424,9 +424,9 @@ removeallclassmethods GtRsrPrimitiveOnlySerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrProxyOnlySerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -442,9 +442,9 @@ removeallclassmethods GtRsrProxyOnlySerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrStonSerializationStrategy'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -461,9 +461,9 @@ removeallclassmethods GtRsrStonSerializationStrategy
 doit
 (RsrService
 	subclass: 'GtRsrEvaluatorService'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -480,9 +480,9 @@ removeallclassmethods GtRsrEvaluatorService
 doit
 (GtRsrEvaluatorService
 	subclass: 'GtRsrEvaluatorServiceServer'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -498,9 +498,9 @@ removeallclassmethods GtRsrEvaluatorServiceServer
 doit
 (RsrService
 	subclass: 'GtRsrProxyService'
-	instVarNames: #( remoteClass )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(remoteClass)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -516,9 +516,9 @@ removeallclassmethods GtRsrProxyService
 doit
 (GtRsrProxyService
 	subclass: 'GtRsrProxyServiceServer'
-	instVarNames: #( object )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(object)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -534,9 +534,9 @@ removeallclassmethods GtRsrProxyServiceServer
 doit
 (TestCase
 	subclass: 'GtGemStoneEvaluationContextTest'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )
@@ -552,9 +552,9 @@ removeallclassmethods GtGemStoneEvaluationContextTest
 doit
 (TestCase
 	subclass: 'GtRsrEvaluatorServiceTest'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #( #logCreation )

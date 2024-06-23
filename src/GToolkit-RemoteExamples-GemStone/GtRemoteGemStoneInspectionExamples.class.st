@@ -64,6 +64,18 @@ GtRemoteGemStoneInspectionExamples >> phlowTextInspection [
 		withTypeName: #GtPhlowRunBasedText
 ]
 
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> phlowTextWithDecorationsInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			GtRemotePhlowDeclarativeTextTestInspectable new  
+				styledPhlowTextWithDecorations ]
+		withTypeName: #GtPhlowRunBasedText
+]
+
 { #category : #accessing }
 GtRemoteGemStoneInspectionExamples >> remoteCodeSnippetType [
 	^ LeGemStoneSnippet

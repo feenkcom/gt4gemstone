@@ -57,6 +57,12 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedNodesForRawView [
 ]
 
 { #category : #'accessing - expected' }
+GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledPhlowTextWithDecorations [
+	^ GtRemotePhlowDeclarativeTextTestInspectable new  
+		styledPhlowTextWithDecorationsForRemoteComparison
+]
+
+{ #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledText [
 	^ GtRemotePhlowDeclarativeTestInspectable new  
 			styledPhlowTextForRemoteComparison
