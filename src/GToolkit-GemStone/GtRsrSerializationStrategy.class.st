@@ -4,6 +4,14 @@ Class {
 	#category : #'GToolkit-GemStone'
 }
 
+{ #category : #accessing }
+GtRsrSerializationStrategy class >> strategyLabel [
+	^ ((self className
+		withoutPrefix: 'GtRsr')
+		withoutSuffix: 'SerializationStrategy class')
+			ifEmpty: [ 'SerializationStrategy' ]
+]
+
 { #category : #converting }
 GtRsrSerializationStrategy >> deserialize: anObject [
 	"Deserialize the supplied object"

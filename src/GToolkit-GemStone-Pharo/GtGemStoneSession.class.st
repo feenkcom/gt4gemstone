@@ -803,7 +803,19 @@ GtGemStoneSession >> evaluateForInspection: remoteScript [
 
 	^ (self scriptEvaluation
 		script: remoteScript;
-		returnInspectorProxy;
+		returnInspectorProxyData;
+		autoCommit: autoCommit;
+		yourself) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateForInspection: remoteScript for: anObject bindings: remoteBindings [
+
+	^ (self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: remoteBindings;
+		returnInspectorProxyData;
 		autoCommit: autoCommit;
 		yourself) evaluateAndWait
 ]

@@ -18,3 +18,12 @@ GtGemStoneSessionEvaluationExecutionEvent >> executionDescription [
 { #category : #printing }
 GtGemStoneSessionEvaluationExecutionEvent >> printExecutionOn: aStream [ 
 ]
+
+{ #category : #accessing }
+GtGemStoneSessionEvaluationExecutionEvent >> serialisationStrategyLabel [
+	| strategyName |
+	strategyName := self signals first serialisationStrategyName.
+	self signals first serialisationStrategyName
+		asClassIfPresent: [ :aClass | ^ aClass strategyLabel ].
+	^ strategyName
+]

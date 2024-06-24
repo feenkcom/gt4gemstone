@@ -227,6 +227,16 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateForInspection: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateForInspection: aString
+		for: self
+		bindings: Dictionary new.
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -258,22 +268,29 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getInspectorProxyRawData [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ self evaluateForInspection: 'self'
+]
+
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getInspectorProxyWithData [
+	| viewProxyData |
+	viewProxyData := self evaluateForInspection: 'self'.
+	
+	^ (viewProxyData at: 'proxyObject')
+		initializeFromProxyData: (viewProxyData at: 'proxyData');
+		yourself
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> getSerialized [
 
 	^ self evaluateAndWait: 'self'
 		serializationStrategy: #GtRsrStonSerializationStrategy
 		autoCommit: false
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getViewProxy [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ (self gtSession scriptEvaluation
-			script: 'GtRemotePhlowViewedObject object: self';
-			receiver: self;
-			returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
