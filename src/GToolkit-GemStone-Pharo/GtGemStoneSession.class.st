@@ -799,6 +799,16 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments:
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateForInspection: remoteScript [
+
+	^ (self scriptEvaluation
+		script: remoteScript;
+		returnInspectorProxy;
+		autoCommit: autoCommit;
+		yourself) evaluateAndWait
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript [
 
 	^ (self 
