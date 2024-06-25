@@ -47,6 +47,21 @@ GtRemoteGemStoneProxyServiceExamples >> stopServer [
 ]
 
 { #category : #tests }
+GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnInspectorProxy [
+	<gtExample>
+	| session proxy result |
+
+	session := self runningServer.
+	proxy := session evaluateAndWaitReturnProxy:  'Object new'.
+	
+	result := proxy evaluateInspectorProxy: 'self'.
+	
+	self assert: result remoteClass equals: #GtRemotePhlowViewedObject.
+	self assert: result hasCachedViewSpecifications.
+	self assert: result declarativeViews size equals: 2.
+]
+
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxy [
 	<gtExample>
 	| proxy result |
