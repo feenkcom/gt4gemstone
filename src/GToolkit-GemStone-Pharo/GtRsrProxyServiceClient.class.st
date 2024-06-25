@@ -338,16 +338,14 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 	| gtDisplayString |
 
-	self isProxyObjectActive ifFalse:
-		[ aStream << '<not connected>'.
+	self isProxyObjectActive ifFalse:[ 
+		aStream << '<not connected>'.
 		^ self ].
 
 	gtDisplayString := [
-		(self performEvaluation
-			selector: #gtDisplayString;
-			returnPrimitiveOnly) evaluateAndWait ]
-				on: Error
-				do: [ :ex | 'Error printing bare proxy' ].
+		self remoteGtDisplayString ]
+			on: Error
+			do: [ :ex | 'Error printing bare proxy' ].
 	aStream << gtDisplayString.
 ]
 
@@ -636,6 +634,13 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		proxyPerform: aSymbol 
 		withArguments: anArray 
 		serializationStrategy: #GtRsrStonSerializationStrategy.
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> remoteGtDisplayString [
+	^ (self performEvaluation
+			selector: #gtDisplayString;
+			returnPrimitiveOnly) evaluateAndWait
 ]
 
 { #category : #private }
