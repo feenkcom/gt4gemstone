@@ -3325,6 +3325,17 @@ versionString: aString
 
 ! Class implementation for 'GtRsrSerializationStrategy'
 
+!		Class methods for 'GtRsrSerializationStrategy'
+
+category: 'accessing'
+classmethod: GtRsrSerializationStrategy
+strategyLabel
+	^ ((self className
+		withoutPrefix: 'GtRsr')
+		withoutSuffix: 'SerializationStrategy class')
+			ifEmpty: [ 'SerializationStrategy' ]
+%
+
 !		Instance methods for 'GtRsrSerializationStrategy'
 
 category: 'converting'
