@@ -2,7 +2,7 @@ Class {
 	#name : #GtpoGtRemotePhlowViewedObject,
 	#superclass : #GtRsrProxyServiceClient,
 	#instVars : [
-		'declarativeViewsBySelector'
+		'viewSpecificationsBySelector'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
@@ -15,7 +15,7 @@ GtpoGtRemotePhlowViewedObject class >> remoteClassName [
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> declarativeViews [
-	^ declarativeViewsBySelector 
+	^ viewSpecificationsBySelector 
 		ifNil: [ super declarativeViews ] 
 		ifNotNil: [ :aDictionary |
 			aDictionary values ]
@@ -24,10 +24,10 @@ GtpoGtRemotePhlowViewedObject >> declarativeViews [
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [
 
-	(declarativeViewsBySelector notNil and: [
-		declarativeViewsBySelector includesKey: aViewSelector ])
+	(viewSpecificationsBySelector notNil and: [
+		viewSpecificationsBySelector includesKey: aViewSelector ])
 			ifTrue: [ 
-				^ (declarativeViewsBySelector at: aViewSelector) phlowDataSource ].
+				^ (viewSpecificationsBySelector at: aViewSelector) phlowDataSource ].
 	
 	^ (self gtSession performEvaluation
 		receiver: self;
@@ -57,12 +57,17 @@ GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
 		returnLegacy) evaluateAndWait
 ]
 
+{ #category : #testing }
+GtpoGtRemotePhlowViewedObject >> hasCachedViewSpecifications [
+	^ viewSpecificationsBySelector notNil
+]
+
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> initializeFromProxyData: aDictionary [
 	| declarativeViewDeclarations |
 	declarativeViewDeclarations := aDictionary at: 'views' ifAbsent: [ #() ].
 	
-	declarativeViewsBySelector := (declarativeViewDeclarations 
+	viewSpecificationsBySelector := (declarativeViewDeclarations 
 		collect: [ :declarativeViewData |
 			| viewSpecification |
 			viewSpecification := GtPhlowViewSpecification 
