@@ -227,11 +227,21 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
 ]
 
 { #category : #performing }
-GtRsrProxyServiceClient >> evaluateForInspection: aString [
+GtRsrProxyServiceClient >> evaluateInspectorProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
 	^ self gtSession
-		evaluateForInspection: aString
+		evaluateInspectorProxy: aString
+		for: self
+		bindings: Dictionary new.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateInspectorProxyRawData:aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateInspectorProxyRawData: aString
 		for: self
 		bindings: Dictionary new.
 ]
@@ -272,17 +282,12 @@ GtRsrProxyServiceClient >> getGtSession [
 GtRsrProxyServiceClient >> getInspectorProxyRawData [
 	"Answer a GtViewedProxy on the receiver"
 
-	^ self evaluateForInspection: 'self'
+	^ self evaluateInspectorProxyRawData: 'self'
 ]
 
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> getInspectorProxyWithData [
-	| viewProxyData |
-	viewProxyData := self getInspectorProxyRawData.
-	
-	^ (viewProxyData at: 'proxyObject')
-		initializeFromProxyData: (viewProxyData at: 'proxyData');
-		yourself
+	^ self evaluateInspectorProxy: 'self'
 ]
 
 { #category : #accessing }

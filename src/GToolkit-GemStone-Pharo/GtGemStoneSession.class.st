@@ -799,23 +799,45 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments:
 ]
 
 { #category : #actions }
-GtGemStoneSession >> evaluateForInspection: remoteScript [
+GtGemStoneSession >> evaluateInspectorProxy: remoteScript [
 
 	^ (self scriptEvaluation
 		script: remoteScript;
-		returnInspectorProxyData;
+		returnInspectorProxy;
 		autoCommit: autoCommit;
 		yourself) evaluateAndWait
 ]
 
 { #category : #actions }
-GtGemStoneSession >> evaluateForInspection: remoteScript for: anObject bindings: remoteBindings [
+GtGemStoneSession >> evaluateInspectorProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
 		bindings: remoteBindings;
-		returnInspectorProxyData;
+		returnInspectorProxy;
+		autoCommit: autoCommit;
+		yourself) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateInspectorProxyRawData: remoteScript [
+
+	^ (self scriptEvaluation
+		script: remoteScript;
+		returnInspectorProxyRawData;
+		autoCommit: autoCommit;
+		yourself) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateInspectorProxyRawData: remoteScript for: anObject bindings: remoteBindings [
+
+	^ (self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: remoteBindings;
+		returnInspectorProxyRawData;
 		autoCommit: autoCommit;
 		yourself) evaluateAndWait
 ]
