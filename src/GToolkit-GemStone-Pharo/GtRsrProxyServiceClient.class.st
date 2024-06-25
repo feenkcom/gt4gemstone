@@ -278,7 +278,7 @@ GtRsrProxyServiceClient >> getInspectorProxyRawData [
 { #category : #'gt inspector' }
 GtRsrProxyServiceClient >> getInspectorProxyWithData [
 	| viewProxyData |
-	viewProxyData := self evaluateForInspection: 'self'.
+	viewProxyData := self getInspectorProxyRawData.
 	
 	^ (viewProxyData at: 'proxyObject')
 		initializeFromProxyData: (viewProxyData at: 'proxyData');
