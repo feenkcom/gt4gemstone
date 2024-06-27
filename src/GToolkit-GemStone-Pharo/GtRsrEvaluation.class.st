@@ -91,6 +91,18 @@ GtRsrEvaluation >> receiver: anObject [
 ]
 
 { #category : #'answer serialization' }
+GtRsrEvaluation >> returnInspectorProxy [
+
+	serialisationStrategy := #GtRsrInspectorProxySerializationStrategy
+]
+
+{ #category : #'answer serialization' }
+GtRsrEvaluation >> returnInspectorProxyRawData [
+
+	serialisationStrategy := #GtRsrInspectorProxyDataSerializationStrategy
+]
+
+{ #category : #'answer serialization' }
 GtRsrEvaluation >> returnLegacy [
 
 	serialisationStrategy := #GtRsrLegacySerializationStrategy

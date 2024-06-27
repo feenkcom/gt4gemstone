@@ -20,3 +20,8 @@ GtGemStoneSessionEvaluationExecutionStartSignal >> initializeForGtEvaluation: aG
 GtGemStoneSessionEvaluationExecutionStartSignal >> isStartSignalType [
 	^ true
 ]
+
+{ #category : #accessing }
+GtGemStoneSessionEvaluationExecutionStartSignal >> serialisationStrategyName [
+	^ serialisationStrategyName
+]

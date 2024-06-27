@@ -16,6 +16,7 @@ GtGemStoneSessionEvaluationExecutionEventsGroup >> gtExecutionsFor: aView [
 			text: [ :anEvent | 
 				anEvent eventLabel removeSuffix: ' Execution' ]
 			width: 75;
+		column: 'Serialisation' text: #serialisationStrategyLabel;
 		column: 'Exection' text: #executionDescription;
 		column: 'Timestamp' 
 			text: #timestamp

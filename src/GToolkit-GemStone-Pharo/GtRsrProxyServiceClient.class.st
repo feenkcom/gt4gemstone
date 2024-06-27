@@ -227,6 +227,26 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
 ]
 
 { #category : #performing }
+GtRsrProxyServiceClient >> evaluateInspectorProxy: aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateInspectorProxy: aString
+		for: self
+		bindings: Dictionary new.
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateInspectorProxyRawData:aString [
+	"Evaluate the supplied string with `self` bound to the receiver"
+
+	^ self gtSession
+		evaluateInspectorProxyRawData: aString
+		for: self
+		bindings: Dictionary new.
+]
+
+{ #category : #performing }
 GtRsrProxyServiceClient >> evaluateReturnProxy: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
@@ -258,22 +278,24 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getInspectorProxyRawData [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ self evaluateInspectorProxyRawData: 'self'
+]
+
+{ #category : #'gt inspector' }
+GtRsrProxyServiceClient >> getInspectorProxyWithData [
+	^ self evaluateInspectorProxy: 'self'
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> getSerialized [
 
 	^ self evaluateAndWait: 'self'
 		serializationStrategy: #GtRsrStonSerializationStrategy
 		autoCommit: false
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getViewProxy [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ (self gtSession scriptEvaluation
-			script: 'GtRemotePhlowViewedObject object: self';
-			receiver: self;
-			returnLegacy) evaluateAndWait
 ]
 
 { #category : #accessing }
@@ -321,16 +343,14 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 	| gtDisplayString |
 
-	self isProxyObjectActive ifFalse:
-		[ aStream << '<not connected>'.
+	self isProxyObjectActive ifFalse:[ 
+		aStream << '<not connected>'.
 		^ self ].
 
 	gtDisplayString := [
-		(self performEvaluation
-			selector: #gtDisplayString;
-			returnPrimitiveOnly) evaluateAndWait ]
-				on: Error
-				do: [ :ex | 'Error printing bare proxy' ].
+		self remoteGtDisplayString ]
+			on: Error
+			do: [ :ex | 'Error printing bare proxy' ].
 	aStream << gtDisplayString.
 ]
 
@@ -619,6 +639,13 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		proxyPerform: aSymbol 
 		withArguments: anArray 
 		serializationStrategy: #GtRsrStonSerializationStrategy.
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceClient >> remoteGtDisplayString [
+	^ (self performEvaluation
+			selector: #gtDisplayString;
+			returnPrimitiveOnly) evaluateAndWait
 ]
 
 { #category : #private }
