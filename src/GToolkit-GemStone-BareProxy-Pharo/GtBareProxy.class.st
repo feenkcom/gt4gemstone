@@ -96,17 +96,17 @@ GtBareProxy >> gtActionBrowseFor: anAction [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtActions [
+GtBareProxy >> gtActionsInContext: aPhlowContext [
 	| proxyActions |
 
 	proxyActions := (proxyObject 
 			ifNil: [ #() ]
-			ifNotNil: [ proxyObject gtActions ]).
+			ifNotNil: [ proxyObject gtActionsInContext: aPhlowContext ]).
 	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
 	proxyActions := proxyActions reject: [ :action | 
 		action definingMethod selector == #gtActionInspectFor: ].
 		
-	^ super gtActions, proxyActions.
+	^ (super gtActionsInContext: aPhlowContext), proxyActions.
 		
 ]
 
