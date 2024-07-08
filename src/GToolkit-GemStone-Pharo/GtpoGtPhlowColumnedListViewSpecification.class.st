@@ -1,6 +1,6 @@
 Class {
 	#name : #GtpoGtPhlowColumnedListViewSpecification,
-	#superclass : #GtRsrProxyServiceClient,
+	#superclass : #GtpoGtPhlowViewSpecification,
 	#traits : 'TGlpoGtPhlowListingViewSpecification',
 	#classTraits : 'TGlpoGtPhlowListingViewSpecification classTrait',
 	#category : #'GToolkit-GemStone-Pharo-Proxies'

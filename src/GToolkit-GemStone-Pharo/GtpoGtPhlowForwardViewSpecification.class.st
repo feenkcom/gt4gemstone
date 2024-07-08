@@ -1,6 +1,6 @@
 Class {
 	#name : #GtpoGtPhlowForwardViewSpecification,
-	#superclass : #GtRsrProxyServiceClient,
+	#superclass : #GtpoGtPhlowViewSpecification,
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
