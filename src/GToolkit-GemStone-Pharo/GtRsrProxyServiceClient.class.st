@@ -662,6 +662,7 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
 			| phlowView |
 			phlowView := declarativeView viewFor: aView.
+			phlowView definingMethod: nil.
 			phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
 				declarativeView: declarativeView).
 			phlowView ] ]
