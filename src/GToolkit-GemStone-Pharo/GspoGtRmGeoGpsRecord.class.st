@@ -9,6 +9,12 @@ GspoGtRmGeoGpsRecord class >> remoteClassName [
 	^ #GtRmGeoGpsRecord
 ]
 
+{ #category : #accessing }
+GspoGtRmGeoGpsRecord >> googleMapsUrl [
+
+	^ self proxyPerform: #googleMapsUrl
+]
+
 { #category : #'gt - extensions' }
 GspoGtRmGeoGpsRecord >> gtActionDownloadFor: anAction [ 
 	<gtAction>
@@ -22,6 +28,19 @@ GspoGtRmGeoGpsRecord >> gtActionDownloadFor: anAction [
 				fromJsonDictionary: (self 
 					proxyPerform: #asJsonDictionary
 					autoCommit: false))  ]
+]
+
+{ #category : #'gt - extensions' }
+GspoGtRmGeoGpsRecord >> gtViewOnGoogleMapFor: aView [ 
+	<gtView>
+	
+	^ aView forward
+		title: 'On Google Map';
+		priority: 56;
+		object: [ 
+			GtWebViewElement new 
+				url: self googleMapsUrl ];
+		view: #gtLiveFor:
 ]
 
 { #category : #'gt - extensions' }

@@ -25,7 +25,8 @@ GspoGtRmGeoGpsTrajectory >> gtActionDownloadFor: anAction [
 
 { #category : #accessing }
 GspoGtRmGeoGpsTrajectory >> gtViewMapFor: aView [
-
+	<gtView>
+	
 	^ aView explicit
 		title: 'OSM';
 		priority: 20;

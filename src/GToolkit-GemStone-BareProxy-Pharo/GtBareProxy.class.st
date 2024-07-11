@@ -233,6 +233,19 @@ GtBareProxy >> gtRawFor: aView [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtRemoteInspectorSpecificationsFor: aView [
+	<gtProxy>
+	
+	proxyObject ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Remote specification';
+		priority: 10002;
+		object: [ proxyObject ];
+		view: #gtRemoteInspectorSpecificationsFor: 
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtRemoteSideInspectorTool [
 	^ GtInspectorTool 
 		forObject: self 
