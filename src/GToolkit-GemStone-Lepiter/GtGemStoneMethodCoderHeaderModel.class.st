@@ -22,12 +22,12 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnBehaviorFor: aCoderViewModel  from: anElement [
-	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
-		anElement phlow spawnObject:  aGsBehavior ]
+GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anElement [
+	"No package spawning supported at the moment"
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anElement [
-	"No package spawning supported at the moment"
+GtGemStoneMethodCoderHeaderModel >> spawnProviderBehaviorFor: aCoderViewModel  from: anElement [
+	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
+		anElement phlow spawnObject:  aGsBehavior ]
 ]
