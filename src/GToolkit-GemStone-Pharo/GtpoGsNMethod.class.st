@@ -54,8 +54,7 @@ GtpoGsNMethod >> gtAbortActionFor: anAction [
 		icon: BrGlamorousVectorIcons cancel;
 		priority: 25;
 		action: [ :button | 
-			gtSession abortTransaction.
-			button phlow spawnObject: 'Aborted transaction' ]
+			gtSession abortTransaction ]
 ]
 
 { #category : #ui }
@@ -87,8 +86,7 @@ GtpoGsNMethod >> gtCommitActionFor: anAction [
 		icon: BrGlamorousVectorIcons accept;
 		priority: 20;
 		action: [ :button | 
-			gtSession commitTransaction.
-			button phlow spawnObject: 'Successfully committed transaction' ]
+			gtSession commitTransaction ]
 ]
 
 { #category : #accessing }

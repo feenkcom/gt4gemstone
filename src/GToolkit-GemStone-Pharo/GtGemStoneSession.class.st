@@ -924,8 +924,7 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 		icon: BrGlamorousVectorIcons cancel;
 		action: 
 				[:button |
-				self abortTransaction.
-				button phlow spawnObject: 'Aborted transaction']
+				self abortTransaction ]
 ]
 
 { #category : #ui }
@@ -971,8 +970,7 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 		icon: BrGlamorousVectorIcons accept;
 		action: 
 				[:button |
-				self evaluateAndWait: 'System commitTransaction'.
-				button phlow spawnObject: 'Successfully committed transaction']
+				self evaluateAndWait: 'System commitTransaction' ]
 ]
 
 { #category : #ui }
