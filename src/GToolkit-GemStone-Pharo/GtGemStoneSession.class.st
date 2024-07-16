@@ -924,8 +924,7 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 		icon: BrGlamorousVectorIcons cancel;
 		action: 
 				[:button |
-				self abortTransaction.
-				button phlow spawnObject: 'Aborted transaction']
+				self abortTransaction ]
 ]
 
 { #category : #ui }
@@ -971,8 +970,7 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 		icon: BrGlamorousVectorIcons accept;
 		action: 
 				[:button |
-				self evaluateAndWait: 'System commitTransaction'.
-				button phlow spawnObject: 'Successfully committed transaction']
+				self evaluateAndWait: 'System commitTransaction' ]
 ]
 
 { #category : #ui }
@@ -1400,9 +1398,24 @@ GtGemStoneSession >> timeDelta [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> toggleAutoCommit [
+
+	autoCommit := autoCommit not
+]
+
+{ #category : #actions }
 GtGemStoneSession >> toggleCodeSync [
 
 	codeSync enabled: codeSync enabled not
+]
+
+{ #category : #actions }
+GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
+	| toggledState |
+
+	toggledState := codeSync enabled not.
+	codeSync enabled: toggledState.
+	autoCommit := toggledState.
 ]
 
 { #category : #accessing }

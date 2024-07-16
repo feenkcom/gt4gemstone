@@ -275,6 +275,12 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 				selectAction cull: aGtGemStoneSession ] } ].
 	
 	actions addAll: {
+		'Toggle AutoCommit' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleAutoCommit ].
+		'Toggle CodeSync' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleCodeSync ].
+		'Toggle CodeSync & AutoCommit' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleCodeSyncAndAutoCommit ].
 		'Inspect' -> [ :aStatusLineElement | 
 			aStatusLineElement phlow spawnObject: aGtGemStoneSession ] }.
 

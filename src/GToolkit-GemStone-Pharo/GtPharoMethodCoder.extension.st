@@ -54,7 +54,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
-			| clsName source session category cmd gsMethod |
+			| clsName source session category cmd |
 			clsName := self compiledMethod methodClass name.
 			source := anAST source.
 			session := GtGemStoneSessionRegistry default defaultSession.
@@ -75,8 +75,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 							<< '''';
 							cr;
 							<< 'environmentId: 0' ].
-			gsMethod := session evaluateAndWait: cmd.
-			self notifyObjectSpawn: gsMethod asGtBareProxyObject requesterObject: aCoderUIModel ]
+			session evaluateAndWait: cmd ]
 		id: nil
 ]
 
