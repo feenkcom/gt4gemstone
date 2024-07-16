@@ -1398,9 +1398,24 @@ GtGemStoneSession >> timeDelta [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> toggleAutoCommit [
+
+	autoCommit := autoCommit not
+]
+
+{ #category : #actions }
 GtGemStoneSession >> toggleCodeSync [
 
 	codeSync enabled: codeSync enabled not
+]
+
+{ #category : #actions }
+GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
+	| toggledState |
+
+	toggledState := codeSync enabled not.
+	codeSync enabled: toggledState.
+	autoCommit := toggledState.
 ]
 
 { #category : #accessing }

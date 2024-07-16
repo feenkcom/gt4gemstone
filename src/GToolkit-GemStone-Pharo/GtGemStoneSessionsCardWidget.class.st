@@ -365,9 +365,15 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 				self updateContent]} ].
 					
 	actions addAll: {
+		'Toggle AutoCommit' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleAutoCommit.
+			self updateContent].
 		'Toggle CodeSync' -> [:aStatusLineElement |
 			aGtGemStoneSession toggleCodeSync.
 			self updateContent].
+		'Toggle CodeSync & AutoCommit' -> [:aStatusLineElement |
+			aGtGemStoneSession toggleCodeSyncAndAutoCommit.
+			self updateContent ].
 		'Inspect' -> [:aStatusLineElement | 
 			self inspectSession: aGtGemStoneSession from: aStatusLineElement]}.
 				
