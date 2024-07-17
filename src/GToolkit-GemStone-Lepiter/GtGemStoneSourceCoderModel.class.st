@@ -31,23 +31,6 @@ GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 		to: coderAddOns
 ]
 
-{ #category : #'add-ons - utils' }
-GtGemStoneSourceCoderModel >> addLinkMenuAddOnsTo: coderAddOns node: node selector: sel shortcut: aShortcut requesterObject: aRequester [
-	| highlightNode |
-	(node isMessage or: [ node isMessageSend or: [ node isMethodPattern ] ])
-		ifFalse: [ ^ self ].
-	highlightNode := node isMessageSend ifTrue: [ node message ] ifFalse: [ node ].
-	coderAddOns
-		addContextMenuItem: (self
-				createLabel: aShortcut name
-				description: node selector)
-		hover: (self highlightNodeBlock: highlightNode)
-		leave: self removeHighlightBlock
-		action: [ :aTextualViewModel | 
-			self perform: sel with: highlightNode startPosition with: aRequester ]
-		shortcutKey: aShortcut combinationForPlatform gtDisplayString
-]
-
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
