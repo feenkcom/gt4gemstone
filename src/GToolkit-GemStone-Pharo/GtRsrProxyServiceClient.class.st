@@ -664,6 +664,7 @@ GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 			phlowView := declarativeView viewFor: aView.
 			phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
 				declarativeView: declarativeView).
+			phlowView autoUpdates removeUpdateOnMethodChanged.
 			phlowView ] ]
 		ifFalse: [ #() ].
 ]
