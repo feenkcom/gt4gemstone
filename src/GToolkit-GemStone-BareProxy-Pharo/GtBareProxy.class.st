@@ -83,6 +83,14 @@ GtBareProxy >> doesNotUnderstand: aMessage [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> filterLocalProxyActions: localActions [ 
+	"When showing local actions for the object, we remove all actions where the method is annotated with #gtProxyAction. Those actions will only be shown for the proxy object."
+	^ localActions reject: [ :each |
+		each definingMethod compiledMethod 
+			hasPragmaNamed: #gtProxyAction ].
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> filterLocalProxyViews: localViews [ 
 	"When showing local views for the object, we remove all views where the method is annotated with gtProxy. Those views will only be shown for the proxy object."
 	^ localViews reject: [ :each |
@@ -91,8 +99,37 @@ GtBareProxy >> filterLocalProxyViews: localViews [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtActionBrowseFor: anAction [
-	<gtAction>
-	^ anAction noAction
+	<gtProxyAction>
+	
+	^ super gtActionBrowseFor: anAction
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtActionInspectFor: anAction [
+	<gtProxyAction>
+	
+	^ super gtActionInspectFor: anAction
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtActionsForRemoteSideInContext: aContext [
+	"This collects all actions for the current object. This excludes the proxy-specific actions (annotated with #gtProxyAction), and includes all remote actions for the object, as well as all custom actions defined locally"
+ 
+	| localActions collectedActions |
+	
+	"Get the actions using the super call. 
+	This will use #gtAction to compute the list of actions for the local object."
+	localActions := super gtActionsInContext: aContext.
+	
+	collectedActions := OrderedCollection new
+		addAll: (self filterLocalProxyActions: localActions);
+		addAll: (proxyObject 
+			gtActionsForRemoteSideInContext: aContext);
+		yourself.
+		
+	GtPhlowUtility sortByPriority: collectedActions.
+	
+	^ collectedActions
 ]
 
 { #category : #'gt inspector' }
@@ -102,12 +139,13 @@ GtBareProxy >> gtActionsInContext: aPhlowContext [
 	proxyActions := (proxyObject 
 			ifNil: [ #() ]
 			ifNotNil: [ proxyObject gtActionsInContext: aPhlowContext ]).
-	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
+	
+	"The inspect and browse actions from the proxy object does make sense in this context as we want to inspect the bare proxy"
 	proxyActions := proxyActions reject: [ :action | 
-		action definingMethod selector == #gtActionInspectFor: ].
+		#(#gtActionInspectFor: #gtActionBrowseFor:) 
+			includes: action definingMethod selector   ].
 		
-	^ (super gtActionsInContext: aPhlowContext), proxyActions.
-		
+	^ (super gtLocalProxyActionsInContext: aPhlowContext), proxyActions
 ]
 
 { #category : #'gt inspector' }
@@ -275,6 +313,7 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 		view: aView;
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
+		actionsSelector: #gtActionsForRemoteSideInContext:;
 		titleComputation: [
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];

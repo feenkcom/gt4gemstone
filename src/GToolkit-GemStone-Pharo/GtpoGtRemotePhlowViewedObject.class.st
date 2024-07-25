@@ -2,7 +2,8 @@ Class {
 	#name : #GtpoGtRemotePhlowViewedObject,
 	#superclass : #GtRsrProxyServiceClient,
 	#instVars : [
-		'viewSpecificationsBySelector'
+		'viewSpecificationsBySelector',
+		'actionSpecificationsBySelector'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
@@ -14,11 +15,65 @@ GtpoGtRemotePhlowViewedObject class >> remoteClassName [
 ]
 
 { #category : #accessing }
-GtpoGtRemotePhlowViewedObject >> declarativeViews [
-	^ viewSpecificationsBySelector 
-		ifNil: [ super declarativeViews ] 
+GtpoGtRemotePhlowViewedObject >> computeDeclarativeActionSpecificationsForCurrentObject [
+	| specificationData specificationActionsData |
+	specificationData := self getActionSpecifications.
+	specificationActionsData := specificationData at: 'actions' ifAbsent: [ #() ].
+	^ specificationActionsData 
+		collect: [ :anActionSpecificationData |
+			| actionSpecification |
+			actionSpecification := GtPhlowActionSpecification 
+				phlowActionFromDictionary: anActionSpecificationData.
+			actionSpecification
+				initializeFromInspector: self.
+			actionSpecification ]
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> computeDeclarativeViewSpecificationsForCurrentObject [
+	| specificationData specificationViewsData |
+		
+	specificationData := self getViewsDeclarations.
+	specificationViewsData := specificationData at: 'views' ifAbsent: [ #() ].
+	^ specificationViewsData collect: [ :aViewSpecificationData |
+		| viewSpecification |
+		viewSpecification := GtPhlowViewSpecification 
+			fromDictionary: aViewSpecificationData.
+		viewSpecification
+			initializeFromInspector: self.
+		viewSpecification ] 
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> declarativeActionsSpecificationsForCurrentObject [
+	^ actionSpecificationsBySelector 
+		ifNil: [ self computeDeclarativeActionSpecificationsForCurrentObject ] 
 		ifNotNil: [ :aDictionary |
 			aDictionary values ]
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> declarativeViewSpecificationsForCurrentObject [
+	^ viewSpecificationsBySelector 
+		ifNil: [ self computeDeclarativeViewSpecificationsForCurrentObject ] 
+		ifNotNil: [ :aDictionary |
+			aDictionary values ]
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getActionSpecifications [
+
+	^ (self gtSession performEvaluation
+		receiver: self;
+		selector: #getActionSpecifications;
+		returnLegacy) evaluateAndWait
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getDeclarativeActionDataSourceFor: anActionSelector [
+	^ self
+		proxyPerform: #getDeclarativeActionDataSourceFor: 
+		withArguments: { anActionSelector asSymbol }
 ]
 
 { #category : #accessing }
@@ -50,7 +105,6 @@ GtpoGtRemotePhlowViewedObject >> getViewDeclaration: aViewSelector [
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
-
 	^ (self gtSession performEvaluation
 		receiver: self;
 		selector: #getViewsDeclarations;
@@ -64,13 +118,23 @@ GtpoGtRemotePhlowViewedObject >> hasCachedViewSpecifications [
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> initializeFromProxyData: aDictionary [
-	| declarativeViewDeclarations |
-	declarativeViewDeclarations := aDictionary at: 'views' ifAbsent: [ #() ].
+	| declarativeViewSpecifications declarativeActionsSpecifications |
+	declarativeViewSpecifications := aDictionary at: 'views' ifAbsent: [ nil ].
+	declarativeActionsSpecifications := aDictionary at: 'actions' ifAbsent: [ nil ].
 	
-	viewSpecificationsBySelector := (declarativeViewDeclarations 
-		collect: [ :declarativeViewData |
-			| viewSpecification |
-			viewSpecification := GtPhlowViewSpecification 
-				fromDictionary: declarativeViewData.
-			viewSpecification methodSelector -> viewSpecification ]) asDictionary
+	declarativeViewSpecifications ifNotNil: [
+		viewSpecificationsBySelector := (declarativeViewSpecifications 
+			collect: [ :viewSpecificationData |
+				| viewSpecification |
+				viewSpecification := GtPhlowViewSpecification 
+					fromDictionary: viewSpecificationData.
+				viewSpecification methodSelector -> viewSpecification ]) asDictionary ].
+				
+	declarativeActionsSpecifications ifNotNil: [
+		actionSpecificationsBySelector := (declarativeActionsSpecifications 
+			collect: [ :actionSpecificationData |
+				| actionSpecification |
+				actionSpecification := GtPhlowActionSpecification 
+					phlowActionFromDictionary: actionSpecificationData.
+				actionSpecification methodSelector -> actionSpecification ]) asDictionary ]
 ]
