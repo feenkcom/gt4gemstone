@@ -286,8 +286,15 @@ GtRsrProxyServiceClient >> getInspectorProxyRawData [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getProxyInspector [
+GtRsrProxyServiceClient >> getLocalProxyInspector [
 	^ self evaluateInspectorProxy: 'self'
+]
+
+{ #category : #'as yet unclassified' }
+GtRsrProxyServiceClient >> getRemoteInspectorProxy [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ self evaluateAndWait: 'GtRemotePhlowViewedObject object: self'
 ]
 
 { #category : #accessing }
@@ -296,13 +303,6 @@ GtRsrProxyServiceClient >> getSerialized [
 	^ self evaluateAndWait: 'self'
 		serializationStrategy: #GtRsrStonSerializationStrategy
 		autoCommit: false
-]
-
-{ #category : #'as yet unclassified' }
-GtRsrProxyServiceClient >> getViewProxy [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ self evaluateAndWait: 'GtRemotePhlowViewedObject object: self'
 ]
 
 { #category : #accessing }

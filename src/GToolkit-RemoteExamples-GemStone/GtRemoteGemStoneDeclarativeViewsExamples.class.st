@@ -81,13 +81,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> getRemoteObject [
 	^ self runningServer evaluateAndWait: self remoteObjectCommand
 ]
 
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> getViewedObjectProxy [
-	"Answer the GtViewedObject proxy for the remote object"
-	
-	self remoteObject viewProxyDo: [ :aProxy | ^ aProxy ].
-]
-
 { #category : #accessing }
 GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparison [
 	^ GtRemotePhlowDeclarativeTestInspectable new 
@@ -103,10 +96,10 @@ GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	<gtExample>
 	<after: #stopServer>
-	| viewedObjectProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
+	| inspectorProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
 
-	viewedObjectProxy := self viewedObjectProxy.
-	viewDictionary :=  viewedObjectProxy getViewDeclaration: #gtRawFor:.
+	inspectorProxy := self remoteInspectorProxy.
+	viewDictionary :=  inspectorProxy getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
 	
 	self assert: viewSpecification title equals: #Raw.
@@ -121,7 +114,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 		assert: viewSpecification dataTransport 
 		equals: GtPhlowViewSpecification dataLazy.
 	
-	viewDatasource := viewedObjectProxy getDeclarativeViewFor: #gtRawFor:.
+	viewDatasource := inspectorProxy getDeclarativeViewFor: #gtRawFor:.
 	
 	obtainedNodes := self 
 		assertNodesInViewDatasource: viewDatasource 
@@ -136,6 +129,13 @@ GtRemoteGemStoneDeclarativeViewsExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
 	^ self testInspectableName, ' new'
+]
+
+{ #category : #private }
+GtRemoteGemStoneDeclarativeViewsExamples >> rertieveRemoteInspectorProxy [
+	"Answer the GtViewedObject proxy for the remote object"
+	
+	self remoteObject remoteInspectorProxyDo: [ :aProxy | ^ aProxy ].
 ]
 
 { #category : #private }
