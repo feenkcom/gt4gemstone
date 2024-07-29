@@ -286,7 +286,7 @@ GtRsrProxyServiceClient >> getInspectorProxyRawData [
 ]
 
 { #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getInspectorProxyWithData [
+GtRsrProxyServiceClient >> getProxyInspector [
 	^ self evaluateInspectorProxy: 'self'
 ]
 
@@ -296,6 +296,13 @@ GtRsrProxyServiceClient >> getSerialized [
 	^ self evaluateAndWait: 'self'
 		serializationStrategy: #GtRsrStonSerializationStrategy
 		autoCommit: false
+]
+
+{ #category : #'as yet unclassified' }
+GtRsrProxyServiceClient >> getViewProxy [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ self evaluateAndWait: 'GtRemotePhlowViewedObject object: self'
 ]
 
 { #category : #accessing }
@@ -689,16 +696,4 @@ GtRsrProxyServiceClient >> scriptEvaluation [
 	^ GtRsrScriptEvaluation new
 		receiver: self;
 		gtSession: self gtSession
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> viewProxyDo: aBlock [
-	"Evaluate the supplied block ensuring that the receiver is a GtRemotePhlowViewedObject"
-
-	| viewProxy |
-
-	viewProxy := (#(GtRemotePhlowViewedObject) includes: self remoteClass)
-		ifTrue: [ self getInspectorProxyWithData ]
-		ifFalse: [ self getInspectorProxyWithData ].
-	^ aBlock value: viewProxy.
 ]
