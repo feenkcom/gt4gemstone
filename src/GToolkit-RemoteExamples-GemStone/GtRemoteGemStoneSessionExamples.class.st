@@ -267,21 +267,6 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithProxyArguments [
 ]
 
 { #category : #tests }
-GtRemoteGemStoneSessionExamples >> testEvaluateReturnInspectorProxy [
-	<gtExample>
-	| session result |
-
-	session := self runningServer.
-	result := session evaluateInspectorProxy: 'Object new'.
-	
-	self assert: result remoteClass equals: #GtRemotePhlowViewedObject.
-	self assert: result hasCachedViewSpecifications.
-	self assert: result declarativeViews size equals: 2.
-	
-	^ result
-]
-
-{ #category : #tests }
 GtRemoteGemStoneSessionExamples >> testEvaluateReturnProxy [
 	<gtExample>
 	| session result |
@@ -302,6 +287,21 @@ GtRemoteGemStoneSessionExamples >> testEvaluateReturnProxy [
 	"Ensure that a non-primitive return value is returned as a proxy"
 	result := session evaluateReturnProxy: 'Object new'.
 	self assert: result wait remoteClass equals: #Object.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateReturnProxyInspector [
+	<gtExample>
+	| session result |
+
+	session := self runningServer.
+	result := session evaluateProxyInspector: 'Object new'.
+	
+	self assert: result remoteClass equals: #GtRemotePhlowViewedObject.
+	self assert: result hasCachedViewSpecifications.
+	self assert: result declarativeViews size equals: 2.
+	
+	^ result
 ]
 
 { #category : #tests }
