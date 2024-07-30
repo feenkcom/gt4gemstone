@@ -240,6 +240,17 @@ GtBareProxy >> gtLocalProxyActionsForRemoteSideInContext: aContext [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyViewsForLocalSideInContext: aContext [
+	"Change the views of the proxy object to only those annotated with gtProxy."
+ 
+	^ GtPhlowViewsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtProxy;
+		collect.
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtLocalProxyViewsForRemoteSideInContext: aContext [
 	"Change the views of the proxy object to only those annotated with gtProxy."
  
@@ -391,11 +402,7 @@ GtBareProxy >> gtViewsForRemoteSideInContext: aContext [
 GtBareProxy >> gtViewsInContext: aContext [
 	"Change the views of the proxy object to only those annotated with gtProxy."
  
-	^ GtPhlowViewsCollector new
-		fromObject: self;
-		context: aContext;
-		pragmaName: #gtProxy;
-		collect.
+	^ self gtLocalProxyViewsForLocalSideInContext: aContext
 ]
 
 { #category : #comparing }
@@ -419,6 +426,12 @@ GtBareProxy >> isProxyObjectActive [
 		ifNil: [ false ] 
 		ifNotNil: [ :aProxyService | 
 			aProxyService connection isOpen ] 
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> localProxyInspectorDo: aBlock [
+	proxyObject ifNotNil: [ :aProxyObject |
+		aProxyObject localProxyInspectorDo: aBlock ]
 ]
 
 { #category : #'actions - proxy' }
@@ -464,12 +477,28 @@ GtBareProxy >> rawPerformRemotely: aSelector withArguments: anArgumentsArrayOfSe
 		withArguments: anArgumentsArrayOfServices
 ]
 
+{ #category : #'gt inspector' }
+GtBareProxy >> remoteActionsFor: aView inContext: aContext from: anInspectorProxy [
+	^ proxyObject
+		ifNil: [ #() ]
+		ifNotNil: [ proxyObject 
+			remoteActionsFor: aView inContext: aContext from: anInspectorProxy ]
+]
+
 { #category : #accessing }
 GtBareProxy >> remoteClass [
 	"Answer the name of the class of the remote object"
 
 	^ proxyObject ifNotNil: [ :aProxy | 
 		aProxy  remoteClass ]
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> remoteViewsFor: aView inContext: aContext from: anInspectorProxy [
+	^ proxyObject
+		ifNil: [ #() ]
+		ifNotNil: [ proxyObject 
+			remoteViewsFor: aView inContext: aContext from: anInspectorProxy ]
 ]
 
 { #category : #'memory usage' }
