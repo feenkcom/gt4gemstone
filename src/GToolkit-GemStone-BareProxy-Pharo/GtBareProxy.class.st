@@ -119,13 +119,14 @@ GtBareProxy >> gtActionsForRemoteSideInContext: aContext [
 	
 	"Get the actions using the super call. 
 	This will use #gtAction to compute the list of actions for the local object."
-	localActions := super gtActionsInContext: aContext.
+	localActions := self gtLocalProxyActionsForRemoteSideInContext: aContext.
 	
 	collectedActions := OrderedCollection new
 		addAll: (self filterLocalProxyActions: localActions);
-		addAll: (proxyObject 
-			gtActionsForRemoteSideInContext: aContext);
 		yourself.
+	proxyObject ifNotNil: [
+		collectedActions addAll: (proxyObject 
+			gtActionsForRemoteSideInContext: aContext) ].
 		
 	GtPhlowUtility sortByPriority: collectedActions.
 	
@@ -144,8 +145,8 @@ GtBareProxy >> gtActionsInContext: aPhlowContext [
 	proxyActions := proxyActions reject: [ :action | 
 		#(#gtActionInspectFor: #gtActionBrowseFor:) 
 			includes: action definingMethod selector   ].
-		
-	^ (super gtLocalProxyActionsInContext: aPhlowContext), proxyActions
+	
+	^ (self gtLocalProxyActionsForLocalSideInContext: aPhlowContext), proxyActions
 ]
 
 { #category : #'gt inspector' }
@@ -216,6 +217,37 @@ GtBareProxy >> gtInspectorTitleString [
 { #category : #printing }
 GtBareProxy >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyActionsForLocalSideInContext: aPhlowContext [ 
+	^ GtPhlowActionsCollector new
+		fromObject: self;
+		context: aPhlowContext;
+		pragmaName: #gtProxyAction;
+		collect.
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyActionsForRemoteSideInContext: aContext [
+	"Get from the proxy object only those actions annotated with gtAction."
+	
+	^ GtPhlowActionsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtAction;
+		collect.
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyViewsForRemoteSideInContext: aContext [
+	"Change the views of the proxy object to only those annotated with gtProxy."
+ 
+	^ GtPhlowViewsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtView;
+		collect.
 ]
 
 { #category : #'gt inspector' }
@@ -322,7 +354,8 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 	<return: #GtPhlowLabelledView>
 	
 	^ GtPhlowLabelledViewBuilder new
-		object: self;
+		object: (GtRemotePhlowViewedObjectInspectorAdaptor
+			forTargetObject: self);
 		view: aView;
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
@@ -335,11 +368,23 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtViewsForRemoteSideInContext: aContext [
-	^ proxyObject 
-			ifNil: [ #() ]
-			ifNotNil: [ :aProxyObject | 
-				proxyObject 
-					gtViewsForRemoteSideInContext: aContext ]
+
+	| localViews collectedViews |
+	
+	"Get the actions using the super call. 
+	This will use #gtAction to compute the list of actions for the local object."
+	localViews := self gtLocalProxyViewsForRemoteSideInContext: aContext.
+	
+	collectedViews := OrderedCollection new
+		addAll: (self filterLocalProxyViews: localViews);
+		yourself.
+	proxyObject ifNotNil: [
+		collectedViews addAll: (proxyObject 
+			gtViewsForRemoteSideInContext: aContext) ].
+	
+	GtPhlowUtility sortByPriority: collectedViews.
+	
+	^ collectedViews
 ]
 
 { #category : #'gt inspector' }

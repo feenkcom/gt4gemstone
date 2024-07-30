@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
-	#traits : 'TGtRemoteLanguageProxyViewsAttachment + TGtRemoteLanguageProxySpecificViews + TGtRemoteLanguageProxyActionsAttachment + TGtRemoteLanguageProxySpecificActions',
-	#classTraits : 'TGtRemoteLanguageProxyViewsAttachment classTrait + TGtRemoteLanguageProxySpecificViews classTrait + TGtRemoteLanguageProxyActionsAttachment classTrait + TGtRemoteLanguageProxySpecificActions classTrait',
+	#traits : 'TGtRemoteProxySpecificViews + TGtRemoteProxySpecificActions + TGtRemoteProxyInspectorWrappedObjectAttachment + TGtRemoteProxyViewsAttachment + TGtRemoteProxyActionsAttachment',
+	#classTraits : 'TGtRemoteProxySpecificViews classTrait + TGtRemoteProxySpecificActions classTrait + TGtRemoteProxyInspectorWrappedObjectAttachment classTrait + TGtRemoteProxyViewsAttachment classTrait + TGtRemoteProxyActionsAttachment classTrait',
 	#instVars : [
 		'gtSession'
 	],
@@ -451,23 +451,6 @@ GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> gtRemoteViewsFor: aView [
-	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
-	<return: #GtPhlowLabelledView>
-	
-	^ GtPhlowLabelledViewBuilder new
-		object: self;
-		view: aView;
-		context: GtPhlowContext new;
-		viewsSelector: #gtViewsForRemoteSideInContext:;
-		actionsSelector: #gtActionsForRemoteSideInContext:;
-		titleComputation: [
-			String streamContents: [ :aStream |
-				self gtInspectorRemoteSideTitleStringOn: aStream ] ];
-		build 
-]
-
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtSession [
 	^ gtSession ifNil: [ gtSession := self getGtSession ]
@@ -654,12 +637,20 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> remoteActionFromSpecification: anActionSpecification for: anAction inContext: aContext [ 
+	^ anActionSpecification actionFor: anAction 
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> remoteActionsFor: aView inContext: aContext [
 	
 	^ self isProxyObjectActive
 		ifTrue: [ self declarativeActionSpecifications 
 			collect: [ :anActionSpecification | 
-				anActionSpecification actionFor: aView ]  ]
+				self 
+					remoteActionFromSpecification: anActionSpecification 
+					for: aView 
+					inContext: aContext ]  ]
 		ifFalse: [ #() ].
 ]
 
@@ -677,16 +668,27 @@ GtRsrProxyServiceClient >> remoteSelf [
 ]
 
 { #category : #'gt inspector' }
+GtRsrProxyServiceClient >> remoteViewFromSpecification: aViewSpecification for: aView inContext: aContext [ 
+
+	| phlowView |
+	phlowView := aViewSpecification viewFor: aView.
+	phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
+		declarativeView: aViewSpecification).
+	phlowView autoUpdates removeUpdateOnMethodChanged.
+	
+	^ phlowView 
+]
+
+{ #category : #'gt inspector' }
 GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
 
 	^ self isProxyObjectActive
-		ifTrue: [ self declarativeViews collect: [ :aViewSpecification | 
-			| phlowView |
-			phlowView := aViewSpecification viewFor: aView.
-			phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
-				declarativeView: aViewSpecification).
-			phlowView autoUpdates removeUpdateOnMethodChanged.
-			phlowView ] ]
+		ifTrue: [ 
+			self declarativeViews collect: [ :aViewSpecification | 
+				self 
+					remoteViewFromSpecification: aViewSpecification 
+					for: aView 
+					inContext: aContext ] ]
 		ifFalse: [ #() ].
 ]
 
