@@ -449,6 +449,11 @@ GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
 ]
 
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> gtRemoteSideInspectorToolLabel [
+	^ 'GemStone'
+]
+
 { #category : #accessing }
 GtRsrProxyServiceClient >> gtSession [
 	^ gtSession ifNil: [ gtSession := self getGtSession ]

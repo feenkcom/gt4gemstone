@@ -116,7 +116,7 @@ GtBareProxy >> gtActionsInContext: aPhlowContext [
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
-			name: 'Remote';
+			name: self gtRemoteSideInspectorToolLabel;
 			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
 				forRemoteProxySide);
 			withLabelAndIconAptitude);
@@ -285,6 +285,11 @@ GtBareProxy >> gtRemoteSideInspectorTool [
 	^ GtInspectorTool 
 		forObject: self 
 		viewSelector: #gtRemoteViewsFor: 
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtRemoteSideInspectorToolLabel [
+	^ 'GemStone'
 ]
 
 { #category : #'gt inspector' }
