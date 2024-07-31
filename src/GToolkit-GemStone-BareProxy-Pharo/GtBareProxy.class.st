@@ -345,7 +345,7 @@ GtBareProxy >> isProxyObjectActive [
 
 { #category : #'gt inspector' }
 GtBareProxy >> localProxyInspectorDo: aBlock [
-	proxyObject ifNotNil: [ :aProxyObject |
+	^ proxyObject ifNotNil: [ :aProxyObject |
 		aProxyObject localProxyInspectorDo: aBlock ]
 ]
 
