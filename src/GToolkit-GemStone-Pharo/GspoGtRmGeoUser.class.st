@@ -1,7 +1,7 @@
 Class {
 	#name : #GspoGtRmGeoUser,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : #'GToolkit-GemStone-Pharo'
+	#category : #'GToolkit-GemStone-Pharo-GeolifeDemo'
 }
 
 { #category : #accessing }
