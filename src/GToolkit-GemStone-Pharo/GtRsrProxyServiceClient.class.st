@@ -421,7 +421,7 @@ GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
 
 { #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtPrintFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView textEditor
 		title: 'Print';

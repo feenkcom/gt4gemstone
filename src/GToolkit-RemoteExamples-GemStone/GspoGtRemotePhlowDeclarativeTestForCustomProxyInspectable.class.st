@@ -26,7 +26,7 @@ GspoGtRemotePhlowDeclarativeTestForCustomProxyInspectable >> gtLocalSideButtonAc
 
 { #category : #accessing }
 GspoGtRemotePhlowDeclarativeTestForCustomProxyInspectable >> gtLocalSideTextViewFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView text
 		title: 'Local side';

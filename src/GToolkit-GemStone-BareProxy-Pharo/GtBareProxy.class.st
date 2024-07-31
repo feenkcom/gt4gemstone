@@ -223,7 +223,7 @@ GtBareProxy >> gtLocalProxyViewsForLocalSideInContext: aContext [
 	^ GtPhlowViewsCollector new
 		fromObject: self;
 		context: aContext;
-		pragmaName: #gtProxy;
+		pragmaName: #gtProxyView;
 		collect.
 ]
 
@@ -248,14 +248,14 @@ GtBareProxy >> gtLocalProxyViewsForRemoteSideInContext: aContext [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtMetaFor: aView [
-	<gtProxy>
+	<gtProxyView>
 
 	^ super gtMetaFor: aView
 ]
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtPrintFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView textEditor
 		title: 'Print';
@@ -271,7 +271,7 @@ GtBareProxy >> gtPrintFor: aView [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtRawFor: aView [
-	<gtProxy>
+	<gtProxyView>
 
 	^ super gtRawFor: aView.
 ]

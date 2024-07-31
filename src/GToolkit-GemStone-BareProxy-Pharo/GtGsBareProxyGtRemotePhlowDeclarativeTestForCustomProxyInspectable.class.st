@@ -26,7 +26,7 @@ GtGsBareProxyGtRemotePhlowDeclarativeTestForCustomProxyInspectable >> gtLocalSid
 
 { #category : #accessing }
 GtGsBareProxyGtRemotePhlowDeclarativeTestForCustomProxyInspectable >> gtLocalSideTextViewFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView text
 		title: 'Bare local side';
