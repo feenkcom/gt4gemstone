@@ -1,6 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneDeclarativeViewsExamples,
 	#superclass : #GtRemotePhlowDeclarativeViewsExamples,
+	#traits : 'TGtRemoteGemStoneDeclarativePhlowExamples',
+	#classTraits : 'TGtRemoteGemStoneDeclarativePhlowExamples classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -75,12 +77,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> formatExpectedIconName: anIconName [
 		forPharo10: [ anIconName ]
 ]
 
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> getRemoteObject [
-
-	^ self runningServer evaluateAndWait: self remoteObjectCommand
-]
-
 { #category : #accessing }
 GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparison [
 	^ GtRemotePhlowDeclarativeTestInspectable new 
@@ -124,28 +120,11 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	^ viewSpecification
 ]
 
-{ #category : #'private - commands' }
-GtRemoteGemStoneDeclarativeViewsExamples >> remoteObjectCommand [
-	"Answer the command to retrieve the test inspectable from the remote"
-
-	^ self testInspectableName, ' new'
-]
-
 { #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> rertieveRemoteInspectorProxy [
+GtRemoteGemStoneDeclarativeViewsExamples >> retrieveRemoteInspectorProxy [
 	"Answer the GtViewedObject proxy for the remote object"
 	
 	self remoteObject remoteInspectorProxyDo: [ :aProxy | ^ aProxy ].
-]
-
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> runningServer [
-	"Answer a running server."
-	<gtExample>
-	<after: #stopServer>
-
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
 { #category : #private }
@@ -156,7 +135,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> shouldConvertUsingDisplayTextObject:
 	^ (anObject isString or: [anObject class = GtPhlowRunBasedText]) not
 ]
 
-{ #category : #tests }
+{ #category : #private }
 GtRemoteGemStoneDeclarativeViewsExamples >> testInspectableName [
 	"Answer the name of the test inspectable class on the remote"
 
