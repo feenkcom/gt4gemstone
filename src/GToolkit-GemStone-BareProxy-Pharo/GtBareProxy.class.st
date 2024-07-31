@@ -83,21 +83,6 @@ GtBareProxy >> doesNotUnderstand: aMessage [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> filterLocalProxyActions: localActions [ 
-	"When showing local actions for the object, we remove all actions where the method is annotated with #gtProxyAction. Those actions will only be shown for the proxy object."
-	^ localActions reject: [ :each |
-		each definingMethod compiledMethod 
-			hasPragmaNamed: #gtProxyAction ].
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> filterLocalProxyViews: localViews [ 
-	"When showing local views for the object, we remove all views where the method is annotated with gtProxy. Those views will only be shown for the proxy object."
-	^ localViews reject: [ :each |
-		each definingMethod compiledMethod hasPragmaNamed: #gtProxy ].
-]
-
-{ #category : #'gt inspector' }
 GtBareProxy >> gtActionBrowseFor: anAction [
 	<gtProxyAction>
 	
@@ -109,28 +94,6 @@ GtBareProxy >> gtActionInspectFor: anAction [
 	<gtProxyAction>
 	
 	^ super gtActionInspectFor: anAction
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtActionsForRemoteSideInContext: aContext [
-	"This collects all actions for the current object. This excludes the proxy-specific actions (annotated with #gtProxyAction), and includes all remote actions for the object, as well as all custom actions defined locally"
- 
-	| localActions collectedActions |
-	
-	"Get the actions using the super call. 
-	This will use #gtAction to compute the list of actions for the local object."
-	localActions := self gtLocalProxyActionsForRemoteSideInContext: aContext.
-	
-	collectedActions := OrderedCollection new
-		addAll: (self filterLocalProxyActions: localActions);
-		yourself.
-	proxyObject ifNotNil: [
-		collectedActions addAll: (proxyObject 
-			gtActionsForRemoteSideInContext: aContext) ].
-		
-	GtPhlowUtility sortByPriority: collectedActions.
-	
-	^ collectedActions
 ]
 
 { #category : #'gt inspector' }
@@ -286,31 +249,9 @@ GtBareProxy >> gtPrintFor: aView [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtRawFor: aView [
-	"Provide a basic view of the proxy object.
-	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
 	<gtProxy>
 
 	^ super gtRawFor: aView.
-	
-	"^ aView columnedList
-		title: 'Raw';
-		priority: 100;
-		items: [ {
-			{ #self. self. }.
-			{ #proxyObject. proxyObject. } } ];
-		column: #Icon
-			icon: [ :item | item second class systemIcon ]
-			width: 36;
-		column: #Variable text: [ :item | item first ];
-		column: #Value text: [ :item | 
-			item first = #self ifTrue:
-				[ self class name ]
-			ifFalse:
-				[ [ item second printString ]
-					on: Error, Halt
-					do: [ :ex | ex printString asRopedText foreground: Color red ] ] ];
-		send: [ :item | item second ];
-		actionUpdateButton"
 ]
 
 { #category : #'gt inspector' }
@@ -375,27 +316,6 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];
 		build
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtViewsForRemoteSideInContext: aContext [
-
-	| localViews collectedViews |
-	
-	"Get the actions using the super call. 
-	This will use #gtAction to compute the list of actions for the local object."
-	localViews := self gtLocalProxyViewsForRemoteSideInContext: aContext.
-	
-	collectedViews := OrderedCollection new
-		addAll: (self filterLocalProxyViews: localViews);
-		yourself.
-	proxyObject ifNotNil: [
-		collectedViews addAll: (proxyObject 
-			gtViewsForRemoteSideInContext: aContext) ].
-	
-	GtPhlowUtility sortByPriority: collectedViews.
-	
-	^ collectedViews
 ]
 
 { #category : #'gt inspector' }
@@ -499,6 +419,15 @@ GtBareProxy >> remoteViewsFor: aView inContext: aContext from: anInspectorProxy 
 		ifNil: [ #() ]
 		ifNotNil: [ proxyObject 
 			remoteViewsFor: aView inContext: aContext from: anInspectorProxy ]
+]
+
+{ #category : #utils }
+GtBareProxy >> runComputation: aBlock ifFailure: aFailureBlock [
+
+	^ self isProxyObjectActive
+		ifTrue: [ 
+			aBlock value  ]
+		ifFalse: [ aFailureBlock value ].
 ]
 
 { #category : #'memory usage' }

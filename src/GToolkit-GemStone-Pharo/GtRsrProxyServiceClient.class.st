@@ -278,19 +278,17 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getInspectorProxyRawData [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ self evaluateProxyInspectorRawData: 'self'
-]
-
-{ #category : #'gt inspector' }
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> getLocalProxyInspector [
 	^ self evaluateProxyInspector: 'self'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> getLocalProxyInspectorRawData [
+	^ self evaluateProxyInspectorRawData: 'self'
+]
+
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> getRemoteInspectorProxy [
 	"Answer a GtViewedProxy on the receiver"
 
@@ -305,7 +303,7 @@ GtRsrProxyServiceClient >> getSerialized [
 		autoCommit: false
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 	<gtAction>
 
@@ -320,7 +318,7 @@ GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 			button phlow spawnTool: (GtClassCoderTool forClass: (self class environment classOrTraitNamed: remoteClass asSymbol)) ].
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 	<gtAction>
 
@@ -356,7 +354,7 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 	self gtBasicDisplayOn: aStream.
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
 	<gtProxyAction>
 
@@ -446,7 +444,7 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #'gt inspector' }
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
 ]
@@ -636,22 +634,9 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
-{ #category : #'gt inspector' }
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> remoteActionFromSpecification: anActionSpecification for: anAction inContext: aContext [ 
 	^ anActionSpecification actionFor: anAction 
-]
-
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> remoteActionsFor: aView inContext: aContext [
-	
-	^ self isProxyObjectActive
-		ifTrue: [ self declarativeActionSpecifications 
-			collect: [ :anActionSpecification | 
-				self 
-					remoteActionFromSpecification: anActionSpecification 
-					for: aView 
-					inContext: aContext ]  ]
-		ifFalse: [ #() ].
 ]
 
 { #category : #accessing }
@@ -667,7 +652,7 @@ GtRsrProxyServiceClient >> remoteSelf [
 	^ remoteSelf
 ]
 
-{ #category : #'gt inspector' }
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> remoteViewFromSpecification: aViewSpecification for: aView inContext: aContext [ 
 
 	| phlowView |
@@ -679,17 +664,13 @@ GtRsrProxyServiceClient >> remoteViewFromSpecification: aViewSpecification for: 
 	^ phlowView 
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
+{ #category : #utils }
+GtRsrProxyServiceClient >> runComputation: aBlock ifFailure: aFailureBlock [
 
 	^ self isProxyObjectActive
 		ifTrue: [ 
-			self declarativeViews collect: [ :aViewSpecification | 
-				self 
-					remoteViewFromSpecification: aViewSpecification 
-					for: aView 
-					inContext: aContext ] ]
-		ifFalse: [ #() ].
+			aBlock value  ]
+		ifFalse: [ aFailureBlock value ].
 ]
 
 { #category : #accessing }
