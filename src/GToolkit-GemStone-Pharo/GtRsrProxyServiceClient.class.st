@@ -100,6 +100,17 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 	^ newProxy
 ]
 
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> configurePhlowAction: aPhlowAction withSpecification: anActionSpecification [
+]
+
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> configurePhlowView: aPhlowView withSpecification: aViewSpecification [
+	aPhlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
+		declarativeView: aViewSpecification).
+	aPhlowView autoUpdates removeUpdateOnMethodChanged.
+]
+
 { #category : #converting }
 GtRsrProxyServiceClient >> createGtpoLocalObjectLinkedToBareProxy: aBareProxy [
 	"Answer a local copy of the receiver and add a mapping between the local copy and the given bare proxy"
@@ -639,11 +650,6 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
-{ #category : #'gt - inspector' }
-GtRsrProxyServiceClient >> remoteActionFromSpecification: anActionSpecification for: anAction inContext: aContext [ 
-	^ anActionSpecification actionFor: anAction 
-]
-
 { #category : #accessing }
 GtRsrProxyServiceClient >> remoteGtDisplayString [
 	^ (self performEvaluation
@@ -655,18 +661,6 @@ GtRsrProxyServiceClient >> remoteGtDisplayString [
 GtRsrProxyServiceClient >> remoteSelf [
 
 	^ remoteSelf
-]
-
-{ #category : #'gt - inspector' }
-GtRsrProxyServiceClient >> remoteViewFromSpecification: aViewSpecification for: aView inContext: aContext [ 
-
-	| phlowView |
-	phlowView := aViewSpecification viewFor: aView.
-	phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
-		declarativeView: aViewSpecification).
-	phlowView autoUpdates removeUpdateOnMethodChanged.
-	
-	^ phlowView 
 ]
 
 { #category : #utils }
