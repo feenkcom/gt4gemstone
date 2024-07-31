@@ -82,6 +82,11 @@ GtRemoteGemStoneInspectionExamples >> remoteCodeSnippetType [
 ]
 
 { #category : #accessing }
+GtRemoteGemStoneInspectionExamples >> remoteInspectorToolLabel [
+	^ 'GemStone'
+]
+
+{ #category : #accessing }
 GtRemoteGemStoneInspectionExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
