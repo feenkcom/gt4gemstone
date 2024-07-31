@@ -11,6 +11,13 @@ GtpoGtRemotePhlowViewedObject class >> remoteClassName [
 ]
 
 { #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getActionSpecificationDataFor: anActionSelector [ 
+	^ self
+		proxyPerform: #getActionSpecificationDataFor:
+		withArguments: { anActionSelector asSymbol }
+]
+
+{ #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getActionSpecifications [
 
 	^ (self gtSession performEvaluation

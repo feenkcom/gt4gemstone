@@ -121,13 +121,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 ]
 
 { #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> retrieveRemoteInspectorProxy [
-	"Answer the GtViewedObject proxy for the remote object"
-	
-	self remoteObject remoteInspectorProxyDo: [ :aProxy | ^ aProxy ].
-]
-
-{ #category : #private }
 GtRemoteGemStoneDeclarativeViewsExamples >> shouldConvertUsingDisplayTextObject: anObject [ 
 	"When dealing with a remote GemStone installation phlow text is the
 	normal text. So when preparing values for comparing them with remote

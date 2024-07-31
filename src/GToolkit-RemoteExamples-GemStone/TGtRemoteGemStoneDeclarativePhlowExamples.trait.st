@@ -17,6 +17,13 @@ TGtRemoteGemStoneDeclarativePhlowExamples >> remoteObjectCommand [
 ]
 
 { #category : #private }
+TGtRemoteGemStoneDeclarativePhlowExamples >> retrieveRemoteInspectorProxy [
+	"Answer the GtViewedObject proxy for the remote object"
+	
+	self remoteObject remoteInspectorProxyDo: [ :aProxy | ^ aProxy ].
+]
+
+{ #category : #private }
 TGtRemoteGemStoneDeclarativePhlowExamples >> runningServer [
 	"Answer a running server."
 	<gtExample>
