@@ -98,18 +98,24 @@ GtBareProxy >> gtActionInspectFor: anAction [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtActionsInContext: aPhlowContext [
-	| proxyActions |
+	| proxyActions localActions collectedActions |
 
 	proxyActions := (proxyObject 
-			ifNil: [ #() ]
-			ifNotNil: [ proxyObject gtActionsInContext: aPhlowContext ]).
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtActionsInContext: aPhlowContext ]).
 	
 	"The inspect and browse actions from the proxy object does make sense in this context as we want to inspect the bare proxy"
 	proxyActions := proxyActions reject: [ :action | 
 		#(#gtActionInspectFor: #gtActionBrowseFor:) 
 			includes: action definingMethod selector   ].
 	
-	^ (self gtLocalProxyActionsForLocalSideInContext: aPhlowContext), proxyActions
+	localActions := self gtLocalProxyActionsForLocalSideInContext: aPhlowContext.
+	collectedActions := localActions, proxyActions.
+	
+	GtPhlowUtility sortByPriority: collectedActions.
+	
+	^ collectedActions
 ]
 
 { #category : #'gt inspector' }
@@ -226,7 +232,7 @@ GtBareProxy >> gtLocalProxyViewsForRemoteSideInContext: aContext [
 	"Change the views of the proxy object to only those annotated with gtProxy."
 	| localViews proxyViews |
 	
-	localViews :=  GtPhlowViewsCollector new
+	localViews := GtPhlowViewsCollector new
 		fromObject: self;
 		context: aContext;
 		pragmaName: #gtView;
@@ -303,21 +309,24 @@ GtBareProxy >> gtRemoteSideInspectorToolLabel [
 { #category : #'gt inspector' }
 GtBareProxy >> gtViewsInContext: aPhlowContext [
 	"Change the views of the proxy object to only those annotated with gtProxy."
-	| proxyViews |
+	| proxyViews localViews collectedViews |
 	
 	proxyViews := (proxyObject 
-			ifNil: [ #() ]
-			ifNotNil: [ proxyObject gtViewsInContext: aPhlowContext ]).
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtViewsInContext: aPhlowContext ]).
 	
 	"The inspect and browse actions from the proxy object does make sense in this context as we want to inspect the bare proxy"
 	proxyViews := proxyViews reject: [ :aPhlowView | 
 		#(#gtRawFor: #gtPrintFor: #gtMetaFor:) 
 			includes: aPhlowView definingMethod selector   ].
 	
-	^ (self gtLocalProxyViewsForLocalSideInContext: aPhlowContext), proxyViews
- 
- 
-	" self gtLocalProxyViewsForLocalSideInContext: aPhlowContext"
+	localViews := self gtLocalProxyViewsForLocalSideInContext: aPhlowContext.
+	
+	collectedViews := localViews, proxyViews.
+	GtPhlowUtility sortByPriority: collectedViews.
+	
+	^ collectedViews
 ]
 
 { #category : #comparing }
