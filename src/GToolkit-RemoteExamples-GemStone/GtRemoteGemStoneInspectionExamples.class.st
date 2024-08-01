@@ -108,5 +108,5 @@ GtRemoteGemStoneInspectionExamples >> targetProxyObjectForInspection [
 	<gtExample>
 	
 	^ self convertToTargetProxy: (self runningServer 
-		evaluateAndWait: self remoteObjectCommand)
+		evaluateAndWaitReturnProxy: self remoteObjectCommand)
 ]
