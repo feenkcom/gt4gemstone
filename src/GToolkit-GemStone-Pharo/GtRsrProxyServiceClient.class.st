@@ -343,6 +343,32 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 					serializationStrategy: #GtRsrStonSerializationStrategy) ].
 ]
 
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtActionLocalSideInspectSessionFor: anAction [
+	<gtProxyAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 105;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
+]
+
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtActionRemoteSideInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 105;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
+]
+
 { #category : #printing }
 GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 	| gtDisplayString |
@@ -363,19 +389,6 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 
 	aStream << 'Service Client Proxy: '.
 	self gtBasicDisplayOn: aStream.
-]
-
-{ #category : #'gt - extensions' }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtProxyAction>
-
-	^ anAction button
-		label: 'GS';
-		priority: 65;
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #printing }
