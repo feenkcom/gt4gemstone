@@ -6,7 +6,8 @@ Trait {
 { #category : #private }
 TGtRemoteGemStoneDeclarativePhlowExamples >> getRemoteObject [
 
-	^ self runningServer evaluateAndWait: self remoteObjectCommand
+	^ self runningServer 
+		evaluateAndWaitReturnProxy: self remoteObjectCommand
 ]
 
 { #category : #'private - commands' }
