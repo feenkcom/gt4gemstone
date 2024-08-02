@@ -83,38 +83,46 @@ GtBareProxy >> doesNotUnderstand: aMessage [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> filterLocalProxyViews: localViews [ 
-	"When showing local views for the object, we remove all views where the method is annotated with gtProxy. Those views will only be shown for the proxy object."
-	^ localViews reject: [ :each |
-		each definingMethod compiledMethod hasPragmaNamed: #gtProxy ].
+GtBareProxy >> gtActionBrowseFor: anAction [
+	<gtProxyAction>
+	
+	^ super gtActionBrowseFor: anAction
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtActionBrowseFor: anAction [
-	<gtAction>
-	^ anAction noAction
+GtBareProxy >> gtActionInspectFor: anAction [
+	<gtProxyAction>
+	
+	^ super gtActionInspectFor: anAction
 ]
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtActionsInContext: aPhlowContext [
-	| proxyActions |
+	| proxyActions localActions collectedActions |
 
 	proxyActions := (proxyObject 
-			ifNil: [ #() ]
-			ifNotNil: [ proxyObject gtActionsInContext: aPhlowContext ]).
-	"The inspect button from the proxy object doesn't make sense in this context as we want to inspect the bare proxy"
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtActionsInContext: aPhlowContext ]).
+	
+	"The inspect and browse actions from the proxy object does make sense in this context as we want to inspect the bare proxy"
 	proxyActions := proxyActions reject: [ :action | 
-		action definingMethod selector == #gtActionInspectFor: ].
-		
-	^ (super gtActionsInContext: aPhlowContext), proxyActions.
-		
+		#(#gtActionInspectFor: #gtActionBrowseFor:) 
+			includes: action definingMethod selector   ].
+	
+	localActions := self gtLocalProxyActionsForLocalSideInContext: aPhlowContext.
+	collectedActions := localActions, proxyActions.
+	
+	GtPhlowUtility sortByPriority: collectedActions.
+	
+	^ collectedActions
 ]
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
-			name: 'Remote';
+			name: self gtRemoteSideInspectorToolLabel;
 			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
 				forRemoteProxySide);
 			withLabelAndIconAptitude);
@@ -181,15 +189,73 @@ GtBareProxy >> gtInspectorTitleStringOn: aStream [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyActionsForLocalSideInContext: aPhlowContext [ 
+	^ GtPhlowActionsCollector new
+		fromObject: self;
+		context: aPhlowContext;
+		pragmaName: #gtProxyAction;
+		collect.
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyActionsForRemoteSideInContext: aContext [
+	"Get from the proxy object only those actions annotated with gtAction."
+	| localActions proxyActions |
+	
+	localActions :=  GtPhlowActionsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtAction;
+		collect.
+		
+	proxyActions := proxyObject 
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtLocalProxyActionsForRemoteSideInContext: aContext ].
+			
+	^ localActions, proxyActions
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyViewsForLocalSideInContext: aContext [
+	"Change the views of the proxy object to only those annotated with gtProxy."
+ 
+	^ GtPhlowViewsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtProxyView;
+		collect.
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtLocalProxyViewsForRemoteSideInContext: aContext [
+	"Change the views of the proxy object to only those annotated with gtProxy."
+	| localViews proxyViews |
+	
+	localViews := GtPhlowViewsCollector new
+		fromObject: self;
+		context: aContext;
+		pragmaName: #gtView;
+		collect.
+		
+	proxyViews := proxyObject 
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtLocalProxyViewsForRemoteSideInContext: aContext ].
+	
+	^ localViews, proxyViews
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtMetaFor: aView [
-	<gtProxy>
+	<gtProxyView>
 
 	^ super gtMetaFor: aView
 ]
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtPrintFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView textEditor
 		title: 'Print';
@@ -205,76 +271,23 @@ GtBareProxy >> gtPrintFor: aView [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtRawFor: aView [
-	"Provide a basic view of the proxy object.
-	This is simpler than the standard Raw view, but avoids many methods that are implemented in Object"
-	<gtProxy>
+	<gtProxyView>
 
 	^ super gtRawFor: aView.
-	
-	"^ aView columnedList
-		title: 'Raw';
-		priority: 100;
-		items: [ {
-			{ #self. self. }.
-			{ #proxyObject. proxyObject. } } ];
-		column: #Icon
-			icon: [ :item | item second class systemIcon ]
-			width: 36;
-		column: #Variable text: [ :item | item first ];
-		column: #Value text: [ :item | 
-			item first = #self ifTrue:
-				[ self class name ]
-			ifFalse:
-				[ [ item second printString ]
-					on: Error, Halt
-					do: [ :ex | ex printString asRopedText foreground: Color red ] ] ];
-		send: [ :item | item second ];
-		actionUpdateButton"
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtRemoteInspectorSpecificationsFor: aView [
-	<gtProxy>
-	
-	proxyObject ifNil: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Remote specification';
-		priority: 10002;
-		object: [ proxyObject ];
-		view: #gtRemoteInspectorSpecificationsFor: 
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtRemoteSideInspectorTool [
-	^ GtInspectorTool 
-		forObject: self 
-		viewSelector: #gtRemoteViewsFor: 
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtRemoteViewSpecificationsFor: aView [
-	<gtProxy>
-	
-	proxyObject ifNil: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Remote view specifications';
-		priority: 10001;
-		object: [ proxyObject ];
-		view: #gtRemoteViewSpecificationsFor:
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtRemoteViewsFor: aView [
+GtBareProxy >> gtRemoteInspectorContentFor: aView [
 	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
 	<return: #GtPhlowLabelledView>
 	
 	^ GtPhlowLabelledViewBuilder new
-		object: self;
+		object: (GtRemotePhlowViewedObjectInspectorAdaptor
+			forTargetObject: self);
 		view: aView;
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
+		actionsSelector: #gtActionsForRemoteSideInContext:;
 		titleComputation: [
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];
@@ -282,23 +295,38 @@ GtBareProxy >> gtRemoteViewsFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtViewsForRemoteSideInContext: aContext [
-	^ proxyObject 
-			ifNil: [ #() ]
-			ifNotNil: [ :aProxyObject | 
-				proxyObject 
-					gtViewsForRemoteSideInContext: aContext ]
+GtBareProxy >> gtRemoteSideInspectorTool [
+	^ GtInspectorTool 
+		forObject: self 
+		viewSelector: #gtRemoteInspectorContentFor: 
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtViewsInContext: aContext [
+GtBareProxy >> gtRemoteSideInspectorToolLabel [
+	^ 'GemStone'
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtViewsInContext: aPhlowContext [
 	"Change the views of the proxy object to only those annotated with gtProxy."
- 
-	^ GtPhlowViewsCollector new
-		fromObject: self;
-		context: aContext;
-		pragmaName: #gtProxy;
-		collect.
+	| proxyViews localViews collectedViews |
+	
+	proxyViews := (proxyObject 
+		ifNil: [ #() ]
+		ifNotNil: [ 
+			proxyObject gtViewsInContext: aPhlowContext ]).
+	
+	"The inspect and browse actions from the proxy object does make sense in this context as we want to inspect the bare proxy"
+	proxyViews := proxyViews reject: [ :aPhlowView | 
+		#(#gtRawFor: #gtPrintFor: #gtMetaFor:) 
+			includes: aPhlowView definingMethod selector   ].
+	
+	localViews := self gtLocalProxyViewsForLocalSideInContext: aPhlowContext.
+	
+	collectedViews := localViews, proxyViews.
+	GtPhlowUtility sortByPriority: collectedViews.
+	
+	^ collectedViews
 ]
 
 { #category : #comparing }
@@ -322,6 +350,12 @@ GtBareProxy >> isProxyObjectActive [
 		ifNil: [ false ] 
 		ifNotNil: [ :aProxyService | 
 			aProxyService connection isOpen ] 
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> localProxyInspectorDo: aBlock [
+	^ proxyObject ifNotNil: [ :aProxyObject |
+		aProxyObject localProxyInspectorDo: aBlock ]
 ]
 
 { #category : #'actions - proxy' }
@@ -367,12 +401,37 @@ GtBareProxy >> rawPerformRemotely: aSelector withArguments: anArgumentsArrayOfSe
 		withArguments: anArgumentsArrayOfServices
 ]
 
+{ #category : #'gt inspector' }
+GtBareProxy >> remoteActionsFor: aView inContext: aContext from: anInspectorProxy [
+	^ proxyObject
+		ifNil: [ #() ]
+		ifNotNil: [ proxyObject 
+			remoteActionsFor: aView inContext: aContext from: anInspectorProxy ]
+]
+
 { #category : #accessing }
 GtBareProxy >> remoteClass [
 	"Answer the name of the class of the remote object"
 
 	^ proxyObject ifNotNil: [ :aProxy | 
 		aProxy  remoteClass ]
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> remoteViewsFor: aView inContext: aContext from: anInspectorProxy [
+	^ proxyObject
+		ifNil: [ #() ]
+		ifNotNil: [ proxyObject 
+			remoteViewsFor: aView inContext: aContext from: anInspectorProxy ]
+]
+
+{ #category : #utils }
+GtBareProxy >> runComputation: aBlock ifFailure: aFailureBlock [
+
+	^ self isProxyObjectActive
+		ifTrue: [ 
+			aBlock value  ]
+		ifFalse: [ aFailureBlock value ].
 ]
 
 { #category : #'memory usage' }

@@ -1,6 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneDeclarativeViewsExamples,
 	#superclass : #GtRemotePhlowDeclarativeViewsExamples,
+	#traits : 'TGtRemoteGemStoneDeclarativePhlowExamples',
+	#classTraits : 'TGtRemoteGemStoneDeclarativePhlowExamples classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -75,19 +77,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> formatExpectedIconName: anIconName [
 		forPharo10: [ anIconName ]
 ]
 
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> getRemoteObject [
-
-	^ self runningServer evaluateAndWait: self remoteObjectCommand
-]
-
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> getViewedObjectProxy [
-	"Answer the GtViewedObject proxy for the remote object"
-	
-	self remoteObject viewProxyDo: [ :aProxy | ^ aProxy ].
-]
-
 { #category : #accessing }
 GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparison [
 	^ GtRemotePhlowDeclarativeTestInspectable new 
@@ -103,10 +92,10 @@ GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	<gtExample>
 	<after: #stopServer>
-	| viewedObjectProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
+	| inspectorProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
 
-	viewedObjectProxy := self viewedObjectProxy.
-	viewDictionary :=  viewedObjectProxy getViewDeclaration: #gtRawFor:.
+	inspectorProxy := self remoteInspectorProxy.
+	viewDictionary :=  inspectorProxy getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
 	
 	self assert: viewSpecification title equals: #Raw.
@@ -121,7 +110,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 		assert: viewSpecification dataTransport 
 		equals: GtPhlowViewSpecification dataLazy.
 	
-	viewDatasource := viewedObjectProxy getDeclarativeViewFor: #gtRawFor:.
+	viewDatasource := inspectorProxy getDeclarativeViewFor: #gtRawFor:.
 	
 	obtainedNodes := self 
 		assertNodesInViewDatasource: viewDatasource 
@@ -129,23 +118,6 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 		equalNodes: self expectedNodesForRawView.
 	
 	^ viewSpecification
-]
-
-{ #category : #'private - commands' }
-GtRemoteGemStoneDeclarativeViewsExamples >> remoteObjectCommand [
-	"Answer the command to retrieve the test inspectable from the remote"
-
-	^ self testInspectableName, ' new'
-]
-
-{ #category : #private }
-GtRemoteGemStoneDeclarativeViewsExamples >> runningServer [
-	"Answer a running server."
-	<gtExample>
-	<after: #stopServer>
-
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
 { #category : #private }
@@ -156,7 +128,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> shouldConvertUsingDisplayTextObject:
 	^ (anObject isString or: [anObject class = GtPhlowRunBasedText]) not
 ]
 
-{ #category : #tests }
+{ #category : #private }
 GtRemoteGemStoneDeclarativeViewsExamples >> testInspectableName [
 	"Answer the name of the test inspectable class on the remote"
 

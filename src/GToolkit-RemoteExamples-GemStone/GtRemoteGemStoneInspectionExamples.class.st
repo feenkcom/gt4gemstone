@@ -10,6 +10,58 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> associationInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ Object new -> Object new ]
+		withTypeName: #Association
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> booleanInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ true ]
+		withTypeName: #Boolean
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> characterInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ $a ]
+		withTypeName: #Character
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> dateAndTimeInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			DateAndTime readFrom: '2021-04-06T14:43:50.123456+02:00' readStream ]
+		withTypeName: #SmallDateAndTime
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> dateInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			Date fromString: '01/01/2000' ]
+		withTypeName: #SmallDate
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
@@ -41,6 +93,17 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	^ self 
 		assertObjectInspectionFor: [ Set new ]
 		withTypeName: #Set
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> metaclassInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			Object class  ]
+		withTypeName: #Metaclass3
 ]
 
 { #category : #'examples - objects' }
@@ -82,10 +145,26 @@ GtRemoteGemStoneInspectionExamples >> remoteCodeSnippetType [
 ]
 
 { #category : #accessing }
+GtRemoteGemStoneInspectionExamples >> remoteInspectorToolLabel [
+	^ 'GemStone'
+]
+
+{ #category : #accessing }
 GtRemoteGemStoneInspectionExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
 	^ self remoteObjectTypeName, ' new'
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> remoteViewedObjectInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			GtRemotePhlowViewedObject object: Object new  ]
+		withTypeName: #GtRemotePhlowViewedObject
 ]
 
 { #category : #'examples - server' }
@@ -98,10 +177,61 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> smallDoubleInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 4.2 ]
+		withTypeName: #SmallDouble
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> smallIntegerInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 42 ]
+		withTypeName: #SmallInteger
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> stringInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 'some string' ]
+		withTypeName: #String
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> symbolInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ #someSymbol ]
+		withTypeName: #Symbol
+]
+
 { #category : #examples }
 GtRemoteGemStoneInspectionExamples >> targetProxyObjectForInspection [
 	<gtExample>
 	
 	^ self convertToTargetProxy: (self runningServer 
-		evaluateAndWait: self remoteObjectCommand)
+		evaluateAndWaitReturnProxy: self remoteObjectCommand)
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> timeInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ 
+			Time fromString: '15:30:00' ]
+		withTypeName: #SmallTime
 ]

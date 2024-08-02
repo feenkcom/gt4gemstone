@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRsrProxyServiceClient,
 	#superclass : #GtRsrProxyService,
-	#traits : 'TGtRemoteLanguageProxyViewsAttachment + TGtRemoteLanguageProxySpecificViews',
-	#classTraits : 'TGtRemoteLanguageProxyViewsAttachment classTrait + TGtRemoteLanguageProxySpecificViews classTrait',
+	#traits : 'TGtRemoteProxySpecificViews + TGtRemoteProxySpecificActions + TGtRemoteProxyInspectorWrappedObjectAttachment + TGtRemoteProxyViewsAttachment + TGtRemoteProxyActionsAttachment',
+	#classTraits : 'TGtRemoteProxySpecificViews classTrait + TGtRemoteProxySpecificActions classTrait + TGtRemoteProxyInspectorWrappedObjectAttachment classTrait + TGtRemoteProxyViewsAttachment classTrait + TGtRemoteProxyActionsAttachment classTrait',
 	#instVars : [
 		'gtSession'
 	],
@@ -98,6 +98,17 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 		remoteClass: remoteClass.
 	self becomeForward: newProxy.
 	^ newProxy
+]
+
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> configurePhlowAction: aPhlowAction withSpecification: anActionSpecification [
+]
+
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> configurePhlowView: aPhlowView withSpecification: aViewSpecification [
+	aPhlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
+		declarativeView: aViewSpecification).
+	aPhlowView autoUpdates removeUpdateOnMethodChanged.
 ]
 
 { #category : #converting }
@@ -227,21 +238,21 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
 ]
 
 { #category : #performing }
-GtRsrProxyServiceClient >> evaluateInspectorProxy: aString [
+GtRsrProxyServiceClient >> evaluateProxyInspector: aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
 	^ self gtSession
-		evaluateInspectorProxy: aString
+		evaluateProxyInspector: aString
 		for: self
 		bindings: Dictionary new.
 ]
 
 { #category : #performing }
-GtRsrProxyServiceClient >> evaluateInspectorProxyRawData:aString [
+GtRsrProxyServiceClient >> evaluateProxyInspectorRawData:aString [
 	"Evaluate the supplied string with `self` bound to the receiver"
 
 	^ self gtSession
-		evaluateInspectorProxyRawData: aString
+		evaluateProxyInspectorRawData: aString
 		for: self
 		bindings: Dictionary new.
 ]
@@ -278,16 +289,21 @@ GtRsrProxyServiceClient >> getGtSession [
 		ifAbsent: [ nil ].
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getInspectorProxyRawData [
-	"Answer a GtViewedProxy on the receiver"
-
-	^ self evaluateInspectorProxyRawData: 'self'
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> getLocalProxyInspector [
+	^ self evaluateProxyInspector: 'self'
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> getInspectorProxyWithData [
-	^ self evaluateInspectorProxy: 'self'
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> getLocalProxyInspectorRawData [
+	^ self evaluateProxyInspectorRawData: 'self'
+]
+
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> getRemoteInspectorProxy [
+	"Answer a GtViewedProxy on the receiver"
+
+	^ self evaluateAndWait: 'GtRemotePhlowViewedObject object: self'
 ]
 
 { #category : #accessing }
@@ -298,26 +314,14 @@ GtRsrProxyServiceClient >> getSerialized [
 		autoCommit: false
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtActionBrowseFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		priority: 1;
-		icon: BrGlamorousVectorIcons browse;
-		tooltip: 'Browse Remote GemStone Class';
-		action: [ :button |
-			button phlow spawnObject: (self proxyPerform: #class autoCommit: false) ].
-]
-
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 	<gtAction>
 
 	(self class environment classOrTraitNamed: remoteClass asSymbol) ifNil:
 		[ ^ anAction noAction ].
 	^ anAction button
-		priority: 1.1;
+		priority: 65;
 		label: 'Local';
 		icon: BrGlamorousVectorIcons browse;
 		tooltip: 'Inspect Local Class';
@@ -325,7 +329,7 @@ GtRsrProxyServiceClient >> gtActionBrowseLocalClassFor: anAction [
 			button phlow spawnTool: (GtClassCoderTool forClass: (self class environment classOrTraitNamed: remoteClass asSymbol)) ].
 ]
 
-{ #category : #accessing }
+{ #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 	<gtAction>
 
@@ -337,6 +341,32 @@ GtRsrProxyServiceClient >> gtActionDownloadFor: anAction [
 			button phlow spawnObject: 
 				(self proxyPerform: #yourself
 					serializationStrategy: #GtRsrStonSerializationStrategy) ].
+]
+
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtActionLocalSideInspectSessionFor: anAction [
+	<gtProxyAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 105;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
+]
+
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtActionRemoteSideInspectSessionFor: anAction [
+	<gtAction>
+
+	^ anAction button
+		label: 'GS';
+		priority: 105;
+		icon: BrGlamorousVectorIcons inspect;
+		tooltip: 'Inspect GemStone Session';
+		action: [ :button |
+			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #printing }
@@ -359,19 +389,6 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 
 	aStream << 'Service Client Proxy: '.
 	self gtBasicDisplayOn: aStream.
-]
-
-{ #category : #accessing }
-GtRsrProxyServiceClient >> gtInspectSessionFor: anAction [
-	<gtAction>
-
-	^ anAction button
-		label: 'GS';
-		priority: 10;
-		icon: BrGlamorousVectorIcons inspect;
-		tooltip: 'Inspect GemStone Session';
-		action: [ :button |
-			button phlow spawnObject: gtSession ].
 ]
 
 { #category : #printing }
@@ -417,7 +434,7 @@ GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
 
 { #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtPrintFor: aView [
-	<gtProxy>
+	<gtProxyView>
 	
 	^ aView textEditor
 		title: 'Print';
@@ -451,9 +468,14 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #'gt inspector' }
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
+]
+
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> gtRemoteSideInspectorToolLabel [
+	^ 'GemStone'
 ]
 
 { #category : #accessing }
@@ -654,19 +676,13 @@ GtRsrProxyServiceClient >> remoteSelf [
 	^ remoteSelf
 ]
 
-{ #category : #'gt inspector' }
-GtRsrProxyServiceClient >> remoteViewsFor: aView inContext: aContext [
-	"Should be all views, but just get Raw and Print views for now"
+{ #category : #utils }
+GtRsrProxyServiceClient >> runComputation: aBlock ifFailure: aFailureBlock [
 
 	^ self isProxyObjectActive
-		ifTrue: [ self declarativeViews collect: [ :declarativeView | 
-			| phlowView |
-			phlowView := declarativeView viewFor: aView.
-			phlowView definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
-				declarativeView: declarativeView).
-			phlowView autoUpdates removeUpdateOnMethodChanged.
-			phlowView ] ]
-		ifFalse: [ #() ].
+		ifTrue: [ 
+			aBlock value  ]
+		ifFalse: [ aFailureBlock value ].
 ]
 
 { #category : #accessing }
