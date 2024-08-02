@@ -47,7 +47,7 @@ GtRemoteGemStoneInspectionExamples >> dateAndTimeInspection [
 	^ self 
 		assertObjectInspectionFor: [ 
 			DateAndTime readFrom: '2021-04-06T14:43:50.123456+02:00' readStream ]
-		withTypeName: #DateAndTime
+		withTypeName: #SmallDateAndTime
 ]
 
 { #category : #'examples - objects' }
@@ -58,7 +58,7 @@ GtRemoteGemStoneInspectionExamples >> dateInspection [
 	^ self 
 		assertObjectInspectionFor: [ 
 			Date fromString: '01/01/2000' ]
-		withTypeName: #Date
+		withTypeName: #SmallDate
 ]
 
 { #category : #'examples - objects' }
@@ -233,5 +233,5 @@ GtRemoteGemStoneInspectionExamples >> timeInspection [
 	^ self 
 		assertObjectInspectionFor: [ 
 			Time fromString: '15:30:00' ]
-		withTypeName: #Time
+		withTypeName: #SmallTime
 ]
