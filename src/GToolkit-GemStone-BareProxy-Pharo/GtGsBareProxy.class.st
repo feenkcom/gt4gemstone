@@ -53,48 +53,6 @@ GtGsBareProxy >> asGtpoLocalObject [
 ]
 
 { #category : #printing }
-GtGsBareProxy >> gtBasicDisplayOn: aStream [
-	proxyObject ifNil: [ 
-		aStream << '<not configured>'.
-		^ self ].
-	
-	proxyObject gtBasicDisplayOn: aStream
-]
-
-{ #category : #printing }
-GtGsBareProxy >> gtDisplayOn: aStream [
-
-	aStream << 'Bare Proxy on: '.
-	self gtBasicDisplayOn: aStream
-]
-
-{ #category : #printing }
-GtGsBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
-	proxyObject ifNil: [ 
-		aStream << 'a GtGsBareProxy'.
-		^ self ].
-
-	proxyObject gtBasicDisplayOn: aStream.
-
-	proxyObject gtSession ifNotNil:
-		[ :gtSession | aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
-]
-
-{ #category : #printing }
-GtGsBareProxy >> gtInspectorTitleStringOn: aStream [
-	super gtInspectorTitleStringOn: aStream.
-	
-	proxyObject gtSession ifNotNil:
-		[ :gtSession | aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
-]
-
-{ #category : #printing }
 GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
 ]

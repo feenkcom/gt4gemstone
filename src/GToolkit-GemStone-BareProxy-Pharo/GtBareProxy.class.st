@@ -118,6 +118,15 @@ GtBareProxy >> gtActionsInContext: aPhlowContext [
 	^ collectedActions
 ]
 
+{ #category : #printing }
+GtBareProxy >> gtBasicDisplayOn: aStream [
+	proxyObject ifNil: [ 
+		aStream << '<not configured>'.
+		^ self ].
+	
+	proxyObject gtBasicDisplayOn: aStream
+]
+
 { #category : #'gt inspector' }
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
@@ -135,19 +144,9 @@ GtBareProxy >> gtDefaultInspectorTool [
 
 { #category : #printing }
 GtBareProxy >> gtDisplayOn: aStream [
-	proxyObject ifNil: [ 
-		aStream << 'Bare Proxy on: <not configured>'.
-		^ self ].
-	
-	proxyObject isProxyObjectActive ifFalse: [ 
-		aStream << 'Bare Proxy on: <not connected>'.
-		^ self ].
-	
-	aStream 
-		<< 'Bare Proxy on: ';
-		<< ([ proxyObject proxyPerform: #gtDisplayString autoCommit: false]
-				on: Error 
-				do: [ :e | 'Error printing'  ]) 
+
+	aStream << 'Bare Proxy on: '.
+	self gtBasicDisplayOn: aStream
 ]
 
 { #category : #printing }
@@ -159,17 +158,16 @@ GtBareProxy >> gtDisplayText [
 { #category : #printing }
 GtBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
 	proxyObject ifNil: [ 
-		aStream << 'a GtBareProxy'.
+		aStream << 'a GtGsBareProxy'.
 		^ self ].
-	
-	proxyObject isProxyObjectActive ifFalse: [ 
-		aStream << 'Bare Proxy on: <not connected>'.
-		^ self ].
-	
-	aStream 
-		<< ([ proxyObject proxyPerform: #gtDisplayString autoCommit: false]
-				on: Error 
-				do: [ :e | 'Error printing'  ]) 
+
+	proxyObject gtBasicDisplayOn: aStream.
+
+	proxyObject gtSession ifNotNil:
+		[ :gtSession | aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #printing }
@@ -185,7 +183,13 @@ GtBareProxy >> gtInspectorTitleString [
 
 { #category : #printing }
 GtBareProxy >> gtInspectorTitleStringOn: aStream [
-	self gtDisplayOn: aStream
+	self gtDisplayOn: aStream.
+	
+	proxyObject gtSession ifNotNil:
+		[ :gtSession | aStream
+			<< ' [';
+			<< gtSession name;
+			<< ']' ]
 ]
 
 { #category : #'gt inspector' }
@@ -288,7 +292,7 @@ GtBareProxy >> gtRemoteInspectorContentFor: aView [
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
 		actionsSelector: #gtActionsForRemoteSideInContext:;
-		titleComputation: [
+		titleComputation: [ 
 			String streamContents: [ :aStream |
 				self gtInspectorRemoteSideTitleStringOn: aStream] ];
 		build
