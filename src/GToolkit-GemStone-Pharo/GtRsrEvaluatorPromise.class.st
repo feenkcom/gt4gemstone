@@ -5,7 +5,9 @@ Class {
 		'rsrPromise',
 		'serializationStrategy',
 		'gtSession',
-		'sourceEvaluation'
+		'sourceEvaluation',
+		'value',
+		'autoCommit'
 	],
 	#category : #'GToolkit-GemStone-Pharo'
 }
@@ -60,19 +62,25 @@ GtRsrEvaluatorPromise >> executeWithPromiseWaitLoggingBlock: aBlockClosure [
 	^ newResult
 ]
 
-{ #category : #testing }
-GtRsrEvaluatorPromise >> isBroken [
+{ #category : #accessing }
+GtRsrEvaluatorPromise >> initialize [
 
-	^ rsrPromise isBroken
+	super initialize.
+	value := self.
 ]
 
-{ #category : #private }
-GtRsrEvaluatorPromise >> registerAutoCommit [
-	"Register a notification action with the {{gtClass:RsrPromise}} to autoCommit on success"
+{ #category : #testing }
+GtRsrEvaluatorPromise >> isGtEvaluationException [
+	"Answer a boolean indicating if the result is an evaluation exception.
+	This is true from the time an exception has been raised until the debugger has been closed."
 
-	rsrPromise
-		when: [ :value | gtSession autoCommitPromise: self ]
-		catch: [ :value | ].
+	^ value == self and: [ rsrPromise isGtEvaluationException ]
+]
+
+{ #category : #testing }
+GtRsrEvaluatorPromise >> isResolved [
+
+	^ value ~~ self
 ]
 
 { #category : #accessing }
@@ -82,46 +90,70 @@ GtRsrEvaluatorPromise >> rsrPromise [
 ]
 
 { #category : #initialization }
-GtRsrEvaluatorPromise >> setPromise: aPromise strategy: aSymbol session: aSession autoCommit: autoCommit sourceEvaluation: aGtRsrEvaluation [
+GtRsrEvaluatorPromise >> setPromise: aPromise strategy: aSymbol session: aSession autoCommit: autoCommitBoolean sourceEvaluation: aGtRsrEvaluation [
 
 	rsrPromise := aPromise.
 	serializationStrategy := aSymbol.
 	gtSession := aSession.
 	sourceEvaluation := aGtRsrEvaluation.
-	autoCommit ifTrue: [ self registerAutoCommit ].
+	autoCommit := autoCommitBoolean.
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorPromise >> signalGemStoneDebugger [
+	<gemstoneDebuggerSignal>
+	| exception result |
+
+	self isGtEvaluationException ifFalse:
+		[ self error: 'not a gs exception' ].
+	result := rsrPromise value.
+	result gtPharoProxyInitializeWithSession: gtSession.
+	exception := GtRsrEvaluationException new debuggerProxy: result.
+	exception signal.
+	^ exception hasDebugResult
+		ifTrue: [ exception debugResult ]
+		ifFalse: [ result ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorPromise >> stopEvaluation [
+
+	^ rsrPromise value terminateProcess
 ]
 
 { #category : #accessing }
 GtRsrEvaluatorPromise >> value [
 
-	^ self wait
+	value == self ifTrue: [ value := self wait ].
+	^ value
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 GtRsrEvaluatorPromise >> wait [
 	<gemstoneDebuggerSignal>
 	| result |
 	self executeWithPromiseWaitLoggingBlock: [ result := rsrPromise wait ].
 
-	gtSession ifNotNil: [ result gtPharoProxyInitializeWithSession: gtSession ].	"Temporarily handle the old post-mortem debugger notification"
+	gtSession ifNotNil: [ result gtPharoProxyInitializeWithSession: gtSession ].
+	"Temporarily handle the old post-mortem debugger notification"
 	result class = GtpoGtRsrEvaluationExceptionInformation
 		ifTrue: [ self error: 'Evaluation error, see result' ].
 
-	result class = GtpoGtGemStoneEvaluationContext
-		ifTrue: [ | exception |
-			exception := GtRsrEvaluationException new debuggerProxy: result.
-			exception signal.
-			exception hasDebugResult ifTrue: [ result := exception debugResult ] ].
+	self isGtEvaluationException ifTrue: [ result := self signalGemStoneDebugger ].
 
 	serializationStrategy
 		ifNotNil: [ 
 			result := self deserializeResult: result.
 			gtSession ifNotNil: [ result gtPharoProxyInitializeWithSession: gtSession ] ].
+	autoCommit ifTrue:
+		[ gtSession autoCommitPromise: self ].
 	^ result
 ]
 
 { #category : #testing }
 GtRsrEvaluatorPromise >> waitForResolution [
+	"Wait for the underlying RSR promise to be resolved.
+	This doesn't imply that the value of the receiver is available, as the RSR promise may be a debugger context."
 
 	rsrPromise waitForResolution
 ]
