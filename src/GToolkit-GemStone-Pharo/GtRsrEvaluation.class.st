@@ -6,7 +6,8 @@ Class {
 		'bindings',
 		'serialisationStrategy',
 		'autoCommit',
-		'gtSession'
+		'gtSession',
+		'isAsyncExecution'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
@@ -22,8 +23,18 @@ GtRsrEvaluation >> autoCommit: anObject [
 ]
 
 { #category : #evaluating }
-GtRsrEvaluation >> basicEvaluateWithSerialisation [
+GtRsrEvaluation >> basicAsyncEvaluateWithSerialisation [
 	self subclassResponsibility
+]
+
+{ #category : #evaluating }
+GtRsrEvaluation >> basicSyncEvaluateWithSerialisation [
+	self subclassResponsibility
+]
+
+{ #category : #accessing }
+GtRsrEvaluation >> beAsyncExecution [
+	isAsyncExecution := true
 ]
 
 { #category : #accessing }
@@ -41,7 +52,11 @@ GtRsrEvaluation >> evaluate [
 	"Evaluate the receiver on the supplied evaluator"
 
 	^ self performEvaluateWithLogging: [
-		self basicEvaluateWithSerialisation ]
+		self isAsyncExecution 
+			ifTrue: [
+				self basicAsyncEvaluateWithSerialisation ]
+			ifFalse: [
+				self basicSyncEvaluateWithSerialisation ] ]
 ]
 
 { #category : #evaluating }
@@ -49,7 +64,7 @@ GtRsrEvaluation >> evaluateAndWait [
 	"Evaluate the receiver on the supplied evaluator"
 
 	^ self performEvaluateWithLogging: [ 
-		self basicEvaluateWithSerialisation wait ]
+		self basicSyncEvaluateWithSerialisation wait ]
 ]
 
 { #category : #evaluating }
@@ -73,6 +88,11 @@ GtRsrEvaluation >> initialize [
 	super initialize.
 	autoCommit := false.
 	bindings := Dictionary new.
+]
+
+{ #category : #testing }
+GtRsrEvaluation >> isAsyncExecution [
+	^ isAsyncExecution ifNil: [ false ]
 ]
 
 { #category : #accessing }

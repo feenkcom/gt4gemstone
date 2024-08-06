@@ -6,15 +6,15 @@ Class {
 
 { #category : #execution }
 GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSession: gemstoneSession context: aGtSourceCoderEvaluationContext remoteBindings: remoteBindings pharoBindings: pharoBindings onFailDo: anEvaluationFailBlock coderModel: aCoderModel [
-	| gtRsrEvaluatorPromise |
+	| gtRsrEvaluatorPromiseWithContext |
 
-	gtRsrEvaluatorPromise := gemstoneSession 
-		evaluate: remoteScript 
+	gtRsrEvaluatorPromiseWithContext := gemstoneSession 
+		evaluateAsync: remoteScript 
 		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
 
 	^ GtGemStoneSnippetPromise new 
 		snippetCoderModel: aCoderModel;
 		coderEvaluationContext: aGtSourceCoderEvaluationContext;
-		gtRsrEvaluatorPromise: gtRsrEvaluatorPromise.
+		gtRsrEvaluatorPromise: gtRsrEvaluatorPromiseWithContext.
 ]

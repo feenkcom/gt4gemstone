@@ -19,6 +19,11 @@ GtpoGtGemStoneEvaluationContext >> printOn: aStream [
 		<< self class name
 ]
 
+{ #category : #accessing }
+GtpoGtGemStoneEvaluationContext >> terminate [
+	^ self proxyPerform: #terminate
+]
+
 { #category : #'actions - debug' }
 GtpoGtGemStoneEvaluationContext >> terminateProcess [
 

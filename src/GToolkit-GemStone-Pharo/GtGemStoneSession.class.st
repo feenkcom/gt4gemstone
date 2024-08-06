@@ -629,6 +629,18 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAsync: remoteScript for: anObject bindings: remoteBindings [
+
+	^ (self 
+		createScriptEvaluationFor: remoteScript
+		receiver: anObject
+		bindings: remoteBindings
+		autoCommit: autoCommit)
+			beAsyncExecution;
+			evaluate
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateBlock: aCleanBlock [
 
 	^ (self 

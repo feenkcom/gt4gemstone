@@ -5,7 +5,8 @@ Class {
 		'gtRsrEvaluatorPromise',
 		'snippetCoderModel',
 		'coderEvaluationContext',
-		'value'
+		'value',
+		'executionContext'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -37,8 +38,9 @@ GtGemStoneSnippetPromise >> gtViewResultFor: aView [
 	^ aView explicit
 		title: 'Result';
 		priority: 10;
-		stencil: [ GtGemStoneEvaluationMonitorElement new
-	snippetPromise: self ].
+		stencil: [ 
+			GtGemStoneEvaluationMonitorElement new
+				snippetPromise: self ].
 ]
 
 { #category : #accessing }
@@ -73,7 +75,7 @@ GtGemStoneSnippetPromise >> snippetCoderModel: anObject [
 { #category : #accessing }
 GtGemStoneSnippetPromise >> stopEvaluation [
 
-	^ gtRsrEvaluatorPromise stopEvaluation
+	^ executionContext terminate
 ]
 
 { #category : #accessing }
@@ -86,8 +88,9 @@ GtGemStoneSnippetPromise >> value [
 { #category : #private }
 GtGemStoneSnippetPromise >> wait [
 	| result |
-
-	result := gtRsrEvaluatorPromise value.
+	
+	executionContext := gtRsrEvaluatorPromise value.
+	result := executionContext wait.
 	result associationsDo: [ :binding |
 		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
