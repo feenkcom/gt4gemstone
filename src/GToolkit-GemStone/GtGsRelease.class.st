@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGsRelease,
-	#superclass : #Object,
+	#name : 'GtGsRelease',
+	#superclass : 'Object',
 	#instVars : [
 		'versionString'
 	],
@@ -10,29 +10,32 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGsRelease class >> default [
 	^ default ifNil: [ 
 		default := self new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGsRelease class >> versionString [
-	^ self default versionString
+	^ default
+		ifNil: [ '<none>' ]
+		ifNotNil: [
+			self default versionString ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGsRelease class >> versionString: aString [
 	self default versionString: aString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGsRelease >> versionString [
 
 	^ versionString
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGsRelease >> versionString: aString [
 
 	versionString := aString
