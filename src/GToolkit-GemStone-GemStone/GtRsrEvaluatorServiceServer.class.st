@@ -9,9 +9,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
-	^ (self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
+	^ (self gsEvaluate: aString for: anObject bindings: aDictionary)
 			asGtRsrProxyObjectForConnection: _connection
 ]
 
@@ -21,9 +19,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	On the server this is a synchronous operation."
 	| result |
 
-	result := self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	result := self gsEvaluate: aString for: anObject bindings: aDictionary.
 	^ (Globals at: aSymbol) new serialize: result.
 ]
 
@@ -33,15 +29,32 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 	On the server this is a synchronous operation."
 	| result |
 
-	result := self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	result :=self gsEvaluate: aString for: anObject bindings: aDictionary.
 	result class == GtRsrProxyServiceServer ifTrue: [ ^ result ].
 	^ GtRsrProxyServiceServer object: result.
 ]
 
 { #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
+	"Evaluate the receiver's script, answering the result"
+	| receiver symbolDictionary bindings |
+
+	receiver := anObject asGtGsArgument.
+	symbolDictionary := SymbolDictionary new.
+	aDictionary keysAndValuesDo: [ :key :value |
+		symbolDictionary at: key put: value asGtGsArgument ].
+	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
+
+	^ GtGemStoneEvaluationContext new
+		evaluateAndWaitBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: bindings.
+			method _executeInContext: receiver ]
+		from: self.
+]
+
+{ #category : 'private - GemStone' }
+GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 

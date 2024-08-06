@@ -25,7 +25,7 @@ GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
 	"Perform the requested operation, catching errors and returning exception information"
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
+		evaluateAndWaitBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
 		from: self.
 ]
 

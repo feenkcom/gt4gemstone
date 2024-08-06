@@ -76,10 +76,20 @@ GtGemStoneEvaluationContext >> evalServer: object [
 ]
 
 { #category : 'actions - api' }
-GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
+GtGemStoneEvaluationContext >> evaluateAndWaitBlock: aBlock from: anEvaluationServer [
 	"Evaluate the supplied block.
 	If it completes successfully, answer the result.
 	If an exception is raised, suspend the evaluation process and answer the receiver."
+
+	self evaluateBlock: aBlock from: anEvaluationServer.
+	^ self wait.
+]
+
+{ #category : 'actions - api' }
+GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
+	"Start evaluation of the supplied block.
+	If it completes successfully, result is the return value of aBlock.
+	If an exception is raised, suspend the evaluation process and set result to the receiver."
 
 	block := aBlock.
 	semaphore := Semaphore new.
@@ -101,9 +111,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 		priority: Processor activeProcess priority + 1;
 		breakpointLevel: 1;
 		resume.
-	semaphore wait.
-
-	^ result
+	^ self
 ]
 
 { #category : 'accessing' }
@@ -415,6 +423,13 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 		displayData := each copy.
 		displayData at: 2 put: each second gtDisplayString.
 		displayData ]
+]
+
+{ #category : 'actions - api' }
+GtGemStoneEvaluationContext >> wait [
+
+	semaphore wait.
+	^ result
 ]
 
 { #category : 'private' }

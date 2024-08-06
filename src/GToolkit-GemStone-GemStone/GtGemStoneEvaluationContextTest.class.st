@@ -1,15 +1,15 @@
 Class {
-	#name : #GtGemStoneEvaluationContextTest,
-	#superclass : #TestCase,
+	#name : 'GtGemStoneEvaluationContextTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtGemStoneEvaluationContextTest >> testSourceInfoAtFrameLevel [
 	| context allFrames info |
 
 	context := (GtGemStoneEvaluationContext new
-		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		evaluateAndWaitBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
 		from: GtRsrEvaluatorServiceServer new) object.
 	allFrames := context process gtAllFrames.
 	
@@ -22,12 +22,12 @@ GtGemStoneEvaluationContextTest >> testSourceInfoAtFrameLevel [
 	context process terminate.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtGemStoneEvaluationContextTest >> testVariableInfoAtFrameLevel [
 	| context variables |
 
 	context := (GtGemStoneEvaluationContext new
-		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		evaluateAndWaitBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
 		from: GtRsrEvaluatorServiceServer new) object.
 	variables := context variableInfoAtFrameLevel: 10.
 
