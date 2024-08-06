@@ -1324,7 +1324,7 @@ GtGemStoneSession >> statusAttributes [
 	gsAttributes := (self scriptEvaluation
 			script: 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
-	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
+	at: ''gt4gemstoneVersion'' put: GtGsRelease versionString;
 	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
 	at: ''fpExceptions'' put: (
 (System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
