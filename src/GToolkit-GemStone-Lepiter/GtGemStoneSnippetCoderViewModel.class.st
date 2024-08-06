@@ -10,6 +10,7 @@ Class {
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	^ super evaluationContext
+		executionStrategy: executionStrategy;
 		session: session.
 ]
 
