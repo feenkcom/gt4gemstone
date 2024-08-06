@@ -16,6 +16,17 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
+{ #category : 'instance creation' }
+GtGemStoneEvaluationContext class >> fromContext: aGtGemStoneEvaluationContext [
+	^ self new 
+		initializeFromContext: aGtGemStoneEvaluationContext
+]
+
+{ #category : 'copying' }
+GtGemStoneEvaluationContext >> asGtEvaluationExceptionContext [
+	^ GtGemStoneEvaluationExceptionContext fromContext: self
+]
+
 { #category : 'private' }
 GtGemStoneEvaluationContext >> assertNotSignalled [
 
@@ -117,6 +128,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 		priority: Processor activeProcess priority + 1;
 		breakpointLevel: 1;
 		resume.
+
 	^ self
 ]
 
@@ -169,12 +181,28 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
 	^ [ :ex |
-		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+		result := self asGtEvaluationExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
 		exception := ex.
 		devMessage := anObject.
 		semaphore signal.
 		process suspend.
 		ex resume ]
+]
+
+{ #category : 'initialization' }
+GtGemStoneEvaluationContext >> initializeFromContext: aGtGemStoneEvaluationContext [
+	exception := aGtGemStoneEvaluationContext exception.
+	process := aGtGemStoneEvaluationContext process.
+	serializationStrategy :=aGtGemStoneEvaluationContext serializationStrategy.
+	result := aGtGemStoneEvaluationContext result.
+	completed := aGtGemStoneEvaluationContext completed.
+	devMessage :=aGtGemStoneEvaluationContext devMessage.
+	evalServer := aGtGemStoneEvaluationContext evalServer.
+	block :=aGtGemStoneEvaluationContext block.
+	callStack := aGtGemStoneEvaluationContext callStack.
+
+	"We just signal it in the initial context. Normally should not be needed anymore"
+	"semaphore :=aGtGemStoneEvaluationContext semaphore."
 ]
 
 { #category : 'testing' }
