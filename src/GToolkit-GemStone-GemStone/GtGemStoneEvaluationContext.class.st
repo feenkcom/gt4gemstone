@@ -35,6 +35,11 @@ GtGemStoneEvaluationContext >> assertNotSignalled [
 ]
 
 { #category : 'accessing' }
+GtGemStoneEvaluationContext >> block [
+	^ block
+]
+
+{ #category : 'accessing' }
 GtGemStoneEvaluationContext >> buildMessageText [
 
 	^ exception buildMessageText
@@ -181,9 +186,15 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
 	^ [ :ex |
-		result := self asGtEvaluationExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
+		| newExceptionContext |
+	
 		exception := ex.
 		devMessage := anObject.
+	
+		newExceptionContext := self asGtEvaluationExceptionContext.
+		result := newExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
+		newExceptionContext result: result.
+	
 		semaphore signal.
 		process suspend.
 		ex resume ]
@@ -195,14 +206,13 @@ GtGemStoneEvaluationContext >> initializeFromContext: aGtGemStoneEvaluationConte
 	process := aGtGemStoneEvaluationContext process.
 	serializationStrategy :=aGtGemStoneEvaluationContext serializationStrategy.
 	result := aGtGemStoneEvaluationContext result.
-	completed := aGtGemStoneEvaluationContext completed.
+	completed := aGtGemStoneEvaluationContext isCompleted.
 	devMessage :=aGtGemStoneEvaluationContext devMessage.
 	evalServer := aGtGemStoneEvaluationContext evalServer.
 	block :=aGtGemStoneEvaluationContext block.
-	callStack := aGtGemStoneEvaluationContext callStack.
+	semaphore :=aGtGemStoneEvaluationContext semaphore.
 
-	"We just signal it in the initial context. Normally should not be needed anymore"
-	"semaphore :=aGtGemStoneEvaluationContext semaphore."
+	"callStack := aGtGemStoneEvaluationContext callStack."
 ]
 
 { #category : 'testing' }
@@ -281,6 +291,16 @@ GtGemStoneEvaluationContext >> restartFrameLevel: anInteger [
 	^ #restart
 ]
 
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> result [
+	^ result
+]
+
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> result: aResult [
+	result := aResult
+]
+
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> resume [
 
@@ -288,6 +308,11 @@ GtGemStoneEvaluationContext >> resume [
 	process resume.
 	semaphore wait.
 	^ result
+]
+
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> semaphore [
+	^ semaphore
 ]
 
 { #category : 'accessing' }

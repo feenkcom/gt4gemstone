@@ -34,7 +34,7 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 
 { #category : 'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
-	^ self evaluate: aString for: anObject bindings: aDictionary serializationStrategy: nil
+	^ self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: nil
 ]
 
 { #category : 'private - GemStone' }

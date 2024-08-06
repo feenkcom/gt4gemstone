@@ -1,16 +1,16 @@
 Class {
-	#name : #GtRsrEvaluatorServiceTest,
-	#superclass : #TestCase,
+	#name : 'GtRsrEvaluatorServiceTest',
+	#superclass : 'TestCase',
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> gsErrorClass [
 
 	^ CompileError
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withExceptionDo: exceptionBlock [
 
 	testBlock
@@ -21,7 +21,7 @@ GtRsrEvaluatorServiceTest >> should: testBlock raise: anErrorClass withException
 	self error: anErrorClass printString, ' not raised'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testCompilationError [
 	"Confirm that a compilation error is caught and returned in"
 	| script evaluator context |
@@ -35,7 +35,7 @@ GtRsrEvaluatorServiceTest >> testCompilationError [
 	self assert: context exception messageText = 'a CompileError occurred (error 1001), expected a primary expression '.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testInitialState [
 	"Check that the initial state answers the expected information"
 	| process exception state encodedState deserializedState contextSpecification |
@@ -78,7 +78,7 @@ GtRsrEvaluatorServiceTest >> testInitialState [
 	self deny: deserializedState isTerminated.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testProxiedObjectScript [
 	"Test answering a complex object.
 	Assumes that Associations are not immediate"
@@ -109,7 +109,7 @@ anArray.'.
 	^ result.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	| script evaluator result object |
 
@@ -119,12 +119,12 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
 	self assert: result class = GtRsrProxyServiceServer.
 	object := result object.
-	self assert: object class = GtGemStoneEvaluationContext.
+	self assert: object class = GtGemStoneEvaluationExceptionContext.
 	"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
 	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSelfScript [
 	| script evaluator result |
 
@@ -134,7 +134,7 @@ GtRsrEvaluatorServiceTest >> testSelfScript [
 	self assert: result equals: 7.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 GtRsrEvaluatorServiceTest >> testSimpleScript [
 	| script evaluator result |
 
