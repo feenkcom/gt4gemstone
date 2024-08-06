@@ -156,18 +156,20 @@ GtBareProxy >> gtDisplayText [
 ]
 
 { #category : #printing }
+GtBareProxy >> gtInspectorConnectionDetailsOn: aStream [
+	proxyObject gtSession 
+		ifNotNil: [ :gtSession | 
+			aStream
+				<< ' [';
+				<< gtSession name;
+				<< ']' ]
+]
+
+{ #category : #printing }
 GtBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
-	proxyObject ifNil: [ 
-		aStream << 'a GtGsBareProxy'.
-		^ self ].
+	self gtBasicDisplayOn: aStream.
 
-	proxyObject gtBasicDisplayOn: aStream.
-
-	proxyObject gtSession ifNotNil:
-		[ :gtSession | aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream
 ]
 
 { #category : #printing }
@@ -185,11 +187,7 @@ GtBareProxy >> gtInspectorTitleString [
 GtBareProxy >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream.
 	
-	proxyObject gtSession ifNotNil:
-		[ :gtSession | aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream
 ]
 
 { #category : #'gt inspector' }

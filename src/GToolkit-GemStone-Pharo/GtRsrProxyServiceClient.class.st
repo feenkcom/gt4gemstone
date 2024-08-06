@@ -392,15 +392,21 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
+GtRsrProxyServiceClient >> gtInspectorConnectionDetailsOn: aStream [
+	
+	self gtSession 
+		ifNotNil:[ :aGtSession |
+			aStream
+				<< ' [';
+				<< aGtSession name;
+				<< ']' ]
+]
 
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 	self gtBasicDisplayOn: aStream.
 	
-	gtSession ifNotNil:[ 
-		aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream.
 ]
 
 { #category : #printing }
@@ -418,11 +424,7 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream.
 	
-	self gtSession ifNotNil:
-		[ :aGtSession | aStream
-			<< ' [';
-			<< aGtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream
 ]
 
 { #category : #initialization }
