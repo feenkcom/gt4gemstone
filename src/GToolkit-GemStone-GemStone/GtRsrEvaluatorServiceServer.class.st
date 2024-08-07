@@ -48,7 +48,7 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
-	^ GtGemStoneEvaluationExecutionContext new
+	^ GtGemStoneEvaluationContext new
 		serializationStrategy: aSymbol;
 		evaluateAndWaitBlock: 
 			[ | method |
@@ -68,7 +68,7 @@ GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: 
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
-	^ GtGemStoneEvaluationExecutionContext new
+	^ GtGemStoneEvaluationContext new
 		serializationStrategy: aSymbol;
 		evaluateBlock: 
 			[ | method |

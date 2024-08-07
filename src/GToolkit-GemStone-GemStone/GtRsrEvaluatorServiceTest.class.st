@@ -119,7 +119,7 @@ GtRsrEvaluatorServiceTest >> testRuntimeErrorScript [
 	result := evaluator evaluate: script for: 4 bindings: Dictionary new.
 	self assert: result class = GtRsrProxyServiceServer.
 	object := result object.
-	self assert: object class = GtGemStoneEvaluationExceptionContext.
+	self assert: object class = GtGemStoneEvaluationContext.
 	"Pharo raises #adaptToNumber:andSend:, GemStone raises #_generality"
 	self assert: (#(#adaptToNumber:andSend: #'_generality') includes: object exception message selector).
 ]

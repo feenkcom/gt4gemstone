@@ -189,11 +189,15 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		| newExceptionContext |
 	
 		exception := ex.
+
+		"devMessage ifNil: [ devMessage := 0].
+		devMessage := devMessage + 1."
 		devMessage := anObject.
 	
-		newExceptionContext := self asGtEvaluationExceptionContext.
+		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+		"newExceptionContext := self asGtEvaluationExceptionContext.
 		result := newExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
-		newExceptionContext result: result.
+		newExceptionContext result: result."
 	
 		semaphore signal.
 		process suspend.
