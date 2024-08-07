@@ -89,8 +89,10 @@ GtGemStoneSnippetPromise >> value [
 GtGemStoneSnippetPromise >> wait [
 	| result |
 	
-	executionContext := gtRsrEvaluatorPromise value.
-	result := executionContext wait.
+	"executionContext := gtRsrEvaluatorPromise value.
+	result := executionContext wait."
+	
+	result := gtRsrEvaluatorPromise value.
 	result associationsDo: [ :binding |
 		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].

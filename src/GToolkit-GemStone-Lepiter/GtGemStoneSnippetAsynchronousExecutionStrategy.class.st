@@ -9,7 +9,7 @@ GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSessi
 	| gtRsrEvaluatorPromiseWithContext |
 
 	gtRsrEvaluatorPromiseWithContext := gemstoneSession 
-		evaluateAsync: remoteScript 
+		evaluate: remoteScript 
 		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
 
