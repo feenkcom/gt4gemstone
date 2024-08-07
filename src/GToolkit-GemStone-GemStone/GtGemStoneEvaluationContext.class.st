@@ -186,7 +186,6 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
 	^ [ :ex |
-		| newExceptionContext |
 	
 		exception := ex.
 
