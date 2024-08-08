@@ -290,9 +290,9 @@ GtBareProxy >> gtRemoteInspectorContentFor: aView [
 		context: GtPhlowContext new;
 		viewsSelector: #gtViewsForRemoteSideInContext:;
 		actionsSelector: #gtActionsForRemoteSideInContext:;
-		titleComputation: [ 
+		titleComputation: [ :anObject |
 			String streamContents: [ :aStream |
-				self gtInspectorRemoteSideTitleStringOn: aStream] ];
+				anObject gtInspectorRemoteSideTitleStringOn: aStream] ];
 		build
 ]
 
