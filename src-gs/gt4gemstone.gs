@@ -80,7 +80,7 @@ removeallclassmethods GtGemStoneDoubleLocalCallStack
 doit
 (Object
 	subclass: 'GtGemStoneEvaluationContext'
-	instVarNames: #(exception process semaphore result completed devMessage evalServer block callStack)
+	instVarNames: #(exception process semaphore serializationStrategy result completed devMessage evalServer block callStack)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -94,6 +94,42 @@ true.
 
 removeallmethods GtGemStoneEvaluationContext
 removeallclassmethods GtGemStoneEvaluationContext
+
+doit
+(GtGemStoneEvaluationContext
+	subclass: 'GtGemStoneEvaluationExceptionContext'
+	instVarNames: #(previousEvaluationContext)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneEvaluationExceptionContext
+removeallclassmethods GtGemStoneEvaluationExceptionContext
+
+doit
+(GtGemStoneEvaluationContext
+	subclass: 'GtGemStoneEvaluationExecutionContext'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneEvaluationExecutionContext
+removeallclassmethods GtGemStoneEvaluationExecutionContext
 
 doit
 (Object
@@ -1376,7 +1412,22 @@ initializeStackFrameSenders
 
 ! Class implementation for 'GtGemStoneEvaluationContext'
 
+!		Class methods for 'GtGemStoneEvaluationContext'
+
+category: 'instance creation'
+classmethod: GtGemStoneEvaluationContext
+fromContext: aGtGemStoneEvaluationContext
+	^ self new 
+		initializeFromContext: aGtGemStoneEvaluationContext
+%
+
 !		Instance methods for 'GtGemStoneEvaluationContext'
+
+category: 'copying'
+method: GtGemStoneEvaluationContext
+asGtEvaluationExceptionContext
+	^ GtGemStoneEvaluationExceptionContext fromContext: self
+%
 
 category: 'private'
 method: GtGemStoneEvaluationContext
@@ -1384,6 +1435,12 @@ assertNotSignalled
 
 	semaphore isLocked ifFalse:
 		[ self error: 'Process semaphore already signalled' ]
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+block
+	^ block
 %
 
 category: 'accessing'
@@ -1450,10 +1507,21 @@ evalServer: object
 
 category: 'actions - api'
 method: GtGemStoneEvaluationContext
-evaluateBlock: aBlock from: anEvaluationServer
+evaluateAndWaitBlock: aBlock from: anEvaluationServer
 	"Evaluate the supplied block.
 	If it completes successfully, answer the result.
 	If an exception is raised, suspend the evaluation process and answer the receiver."
+
+	self evaluateBlock: aBlock from: anEvaluationServer.
+	^ self wait.
+%
+
+category: 'actions - api'
+method: GtGemStoneEvaluationContext
+evaluateBlock: aBlock from: anEvaluationServer
+	"Start evaluation of the supplied block.
+	If it completes successfully, result is the return value of aBlock.
+	If an exception is raised, suspend the evaluation process and set result to the receiver."
 
 	block := aBlock.
 	semaphore := Semaphore new.
@@ -1461,7 +1529,12 @@ evaluateBlock: aBlock from: anEvaluationServer
 	evalServer := anEvaluationServer.
 
 	process := [
-		[ result := block value.
+		[ | computationResult |
+		computationResult := block value.
+		result := self serializationStrategy
+			ifNil: [ computationResult  ]
+			ifNotNil: [ :aSerializationStrategy |
+				(Globals at: aSerializationStrategy) new serialize: computationResult ].
 		completed := true.
 		semaphore signal ]
 			on: Exception
@@ -1475,9 +1548,8 @@ evaluateBlock: aBlock from: anEvaluationServer
 		priority: Processor activeProcess priority + 1;
 		breakpointLevel: 1;
 		resume.
-	semaphore wait.
 
-	^ result
+	^ self
 %
 
 category: 'accessing'
@@ -1537,12 +1609,37 @@ handlerBlock: anObject
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
 	^ [ :ex |
-		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+	
 		exception := ex.
+
+		"devMessage ifNil: [ devMessage := 0].
+		devMessage := devMessage + 1."
 		devMessage := anObject.
+	
+		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+		"newExceptionContext := self asGtEvaluationExceptionContext.
+		result := newExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
+		newExceptionContext result: result."
+	
 		semaphore signal.
 		process suspend.
 		ex resume ]
+%
+
+category: 'initialization'
+method: GtGemStoneEvaluationContext
+initializeFromContext: aGtGemStoneEvaluationContext
+	exception := aGtGemStoneEvaluationContext exception.
+	process := aGtGemStoneEvaluationContext process.
+	serializationStrategy :=aGtGemStoneEvaluationContext serializationStrategy.
+	result := aGtGemStoneEvaluationContext result.
+	completed := aGtGemStoneEvaluationContext isCompleted.
+	devMessage :=aGtGemStoneEvaluationContext devMessage.
+	evalServer := aGtGemStoneEvaluationContext evalServer.
+	block :=aGtGemStoneEvaluationContext block.
+	semaphore :=aGtGemStoneEvaluationContext semaphore.
+
+	"callStack := aGtGemStoneEvaluationContext callStack."
 %
 
 category: 'testing'
@@ -1633,6 +1730,18 @@ restartFrameLevel: anInteger
 	^ #restart
 %
 
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+result
+	^ result
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+result: aResult
+	result := aResult
+%
+
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
 resume
@@ -1641,6 +1750,24 @@ resume
 	process resume.
 	semaphore wait.
 	^ result
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+semaphore
+	^ semaphore
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+serializationStrategy
+	^serializationStrategy
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+serializationStrategy: object
+	serializationStrategy := object
 %
 
 category: 'actions - debug (level)'
@@ -1831,10 +1958,54 @@ variableInfoAtFrameLevel: anInteger
 		displayData ]
 %
 
+category: 'actions - api'
+method: GtGemStoneEvaluationContext
+wait
+
+	semaphore wait.
+	^ result
+%
+
 category: 'private'
 method: GtGemStoneEvaluationContext
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneEvaluationExceptionContext'
+
+!		Instance methods for 'GtGemStoneEvaluationExceptionContext'
+
+category: 'initialization'
+method: GtGemStoneEvaluationExceptionContext
+initializeFromContext: aGtGemStoneEvaluationContext
+	super initializeFromContext: aGtGemStoneEvaluationContext.
+
+	previousEvaluationContext := aGtGemStoneEvaluationContext.
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationExceptionContext
+previousEvaluationContext
+	^previousEvaluationContext
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationExceptionContext
+previousEvaluationContext: object
+	previousEvaluationContext := object
+%
+
+category: 'api - debug'
+method: GtGemStoneEvaluationExceptionContext
+resume
+
+	self assertNotSignalled.
+
+	process resume.
+	semaphore wait.
+	result := previousEvaluationContext result.
+	^ result
 %
 
 ! Class implementation for 'GtGemStoneExampleObjectForLocalDelegate'
@@ -3298,7 +3469,10 @@ default
 category: 'accessing'
 classmethod: GtGsRelease
 versionString
-	^ self default versionString
+	^ default
+		ifNil: [ '<none>' ]
+		ifNotNil: [
+			self default versionString ]
 %
 
 category: 'accessing'
@@ -3354,6 +3528,24 @@ serialize: anObject
 	^ self subclassResponsibility
 %
 
+! Class implementation for 'GtRsrLegacySerializationStrategy'
+
+!		Instance methods for 'GtRsrLegacySerializationStrategy'
+
+category: 'converting'
+method: GtRsrLegacySerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+	
+	^ anObject
+%
+
+category: 'converting'
+method: GtRsrLegacySerializationStrategy
+serialize: anObject 
+	^ anObject asGtRsrProxyObjectForConnection: nil
+%
+
 ! Class implementation for 'GtRsrLiteralAndProxySerializationStrategy'
 
 !		Instance methods for 'GtRsrLiteralAndProxySerializationStrategy'
@@ -3383,6 +3575,18 @@ method: GtRsrPrimitiveOnlySerializationStrategy
 serialize: anObject
 	"Serialize the object to something that RSR can return.
 	In this case we're requiring that the object can be returned as an RSR primitive.  If it can't RSR will raise an exception."
+	
+	^ anObject
+%
+
+! Class implementation for 'GtRsrProxyOnlySerializationStrategy'
+
+!		Instance methods for 'GtRsrProxyOnlySerializationStrategy'
+
+category: 'converting'
+method: GtRsrProxyOnlySerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
 	
 	^ anObject
 %
@@ -3455,9 +3659,7 @@ evaluate: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
-	^ (self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ])
+	^ (self gsEvaluate: aString for: anObject bindings: aDictionary)
 			asGtRsrProxyObjectForConnection: _connection
 %
 
@@ -3466,12 +3668,8 @@ method: GtRsrEvaluatorServiceServer
 evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
-	| result |
-
-	result := self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
-	^ (Globals at: aSymbol) new serialize: result.
+	
+	^ self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
 %
 
 category: 'actions'
@@ -3481,9 +3679,7 @@ evaluateReturnProxy: aString for: anObject bindings: aDictionary
 	On the server this is a synchronous operation."
 	| result |
 
-	result := self
-		gtDo: [ self gtEvaluate: aString for: anObject bindings: aDictionary ]
-		gemstoneDo: [ self gsEvaluate: aString for: anObject bindings: aDictionary ].
+	result :=self gsEvaluate: aString for: anObject bindings: aDictionary.
 	result class == GtRsrProxyServiceServer ifTrue: [ ^ result ].
 	^ GtRsrProxyServiceServer object: result.
 %
@@ -3491,6 +3687,12 @@ evaluateReturnProxy: aString for: anObject bindings: aDictionary
 category: 'private - GemStone'
 method: GtRsrEvaluatorServiceServer
 gsEvaluate: aString for: anObject bindings: aDictionary
+	^ self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: nil
+%
+
+category: 'private - GemStone'
+method: GtRsrEvaluatorServiceServer
+gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 
@@ -3501,11 +3703,43 @@ gsEvaluate: aString for: anObject bindings: aDictionary
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
 	^ GtGemStoneEvaluationContext new
+		serializationStrategy: aSymbol;
+		evaluateAndWaitBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: bindings.
+			method _executeInContext: receiver ]
+		from: self.
+%
+
+category: 'private - GemStone'
+method: GtRsrEvaluatorServiceServer
+gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
+	"Evaluate the receiver's script, answering the result"
+	| receiver symbolDictionary bindings |
+
+	receiver := anObject asGtGsArgument.
+	symbolDictionary := SymbolDictionary new.
+	aDictionary keysAndValuesDo: [ :key :value |
+		symbolDictionary at: key put: value asGtGsArgument ].
+	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
+
+	^ GtGemStoneEvaluationContext new
+		serializationStrategy: aSymbol;
 		evaluateBlock: 
 			[ | method |
 			method := aString _compileInContext: receiver symbolList: bindings.
 			method _executeInContext: receiver ]
 		from: self.
+%
+
+category: 'actions'
+method: GtRsrEvaluatorServiceServer
+startEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol
+	"Start the receiver's script, answering the evaluation context as a proxy."
+	| evaluationContext |
+
+	evaluationContext := self gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
+	^ GtRsrProxyServiceServer object: evaluationContext
 %
 
 ! Class implementation for 'GtRsrProxyService'
@@ -3575,7 +3809,7 @@ basicPerform: aSymbol withArguments: anArray
 	"Perform the requested operation, catching errors and returning exception information"
 
 	^ GtGemStoneEvaluationContext new
-		evaluateBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
+		evaluateAndWaitBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
 		from: self.
 %
 
@@ -3655,7 +3889,7 @@ testSourceInfoAtFrameLevel
 	| context allFrames info |
 
 	context := (GtGemStoneEvaluationContext new
-		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		evaluateAndWaitBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
 		from: GtRsrEvaluatorServiceServer new) object.
 	allFrames := context process gtAllFrames.
 	
@@ -3674,7 +3908,7 @@ testVariableInfoAtFrameLevel
 	| context variables |
 
 	context := (GtGemStoneEvaluationContext new
-		evaluateBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
+		evaluateAndWaitBlock: [ AkgDebuggerPlay new initialize evalBlock value ]
 		from: GtRsrEvaluatorServiceServer new) object.
 	variables := context variableInfoAtFrameLevel: 10.
 
@@ -3982,6 +4216,16 @@ serialize: anObject
 	^ self
 		gtDo: [ anObject ]
 		gemstoneDo: [ GtRsrProxyServiceServer object: anObject ]
+%
+
+! Class extensions for 'GtRsrProxyOnlySerializationStrategy'
+
+!		Instance methods for 'GtRsrProxyOnlySerializationStrategy'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtRsrProxyOnlySerializationStrategy
+serialize: anObject
+	 ^ GtRsrProxyServiceServer object: anObject
 %
 
 ! Class extensions for 'Object'

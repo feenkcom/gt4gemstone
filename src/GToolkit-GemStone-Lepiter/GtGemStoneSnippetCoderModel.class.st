@@ -6,8 +6,21 @@ Class {
 		'remoteScript',
 		'remoteBindings'
 	],
+	#classVars : [
+		'EnableAsyncPlay'
+	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderModel class >> enableAsyncPlay [
+	^ EnableAsyncPlay ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
+	EnableAsyncPlay := anObject
+]
 
 { #category : #converting }
 GtGemStoneSnippetCoderModel >> asCoderViewModel [
@@ -53,6 +66,17 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItAndGoSerializedActionId.
+	self class enableAsyncPlay ifTrue:
+		[ addOns
+			addMainAction: 'Inspect asynchronous' translated
+			icon: BrGlamorousVectorIcons playAsynchronous
+			action: [ :aCoderUIModel :anElement | 
+				GtCoderCodeExecutor doItAndGo
+					coderViewModel: aCoderUIModel;
+					element: anElement;
+					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
+					execute ]
+			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
 	addOns
 		addMainAction: 'Debug' translated
 		icon: BrGlamorousVectorIcons debug
@@ -133,41 +157,33 @@ GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
 { #category : #'private - actions' }
 GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| result gemstoneSession boundObject |
+	| gemstoneSession boundObject |
 
-	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
+	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession ifNil:
-		[ self error: 'GemStone session not set.  Does the connector exist?' ].
+		 [ self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
-
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"
-	pharoBindings bindingNames do: [ :name |
-		boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
-		(boundObject isKindOf: RsrService) ifTrue:
-			[ (boundObject isProxyObjectActive not or: 
-				[ gemstoneSession connection ~= boundObject _connection ]) ifTrue:
-					[ pharoBindings removeBindingOf: name ] ] ].
+	pharoBindings bindingNames
+		do: [ :name | 
+			boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
+			(boundObject isKindOf: RsrService)
+				ifTrue: [ (boundObject isProxyObjectActive not
+						or: [ gemstoneSession connection ~= boundObject _connection ])
+						ifTrue: [ pharoBindings removeBindingOf: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
 
-	result := gemstoneSession 
-		evaluateAndWait: remoteScript 
-		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
-		bindings: remoteBindings.
-	result associationsDo: [ :binding |
-		(pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
-
-	^ (result
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			aGtSourceCoderEvaluationContext serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
+	^ aGtSourceCoderEvaluationContext executionStrategy
+		evaluate: remoteScript
+		inSession: gemstoneSession
+		context: aGtSourceCoderEvaluationContext
+		remoteBindings: remoteBindings
+		pharoBindings: pharoBindings
+		onFailDo: anEvaluationFailBlock
+		coderModel: self
 ]
 
 { #category : #accessing }

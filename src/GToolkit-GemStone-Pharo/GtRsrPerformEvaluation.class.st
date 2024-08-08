@@ -19,7 +19,13 @@ GtRsrPerformEvaluation >> arguments: anObject [
 ]
 
 { #category : #evaluating }
-GtRsrPerformEvaluation >> basicEvaluateWithSerialisation [
+GtRsrPerformEvaluation >> basicAsyncEvaluateWithSerialisation [
+	
+	self shouldBeImplemented
+]
+
+{ #category : #evaluating }
+GtRsrPerformEvaluation >> basicSyncEvaluateWithSerialisation [
 	
 	"The first two checks are a hack until the server is updated to match"
 	serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:

@@ -629,6 +629,18 @@ GtGemStoneSession >> evaluateAsRemoteStream: aString [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> evaluateAsync: remoteScript for: anObject bindings: remoteBindings [
+
+	^ (self 
+		createScriptEvaluationFor: remoteScript
+		receiver: anObject
+		bindings: remoteBindings
+		autoCommit: autoCommit)
+			beAsyncExecution;
+			evaluate
+]
+
+{ #category : #actions }
 GtGemStoneSession >> evaluateBlock: aCleanBlock [
 
 	^ (self 
@@ -1324,7 +1336,7 @@ GtGemStoneSession >> statusAttributes [
 	gsAttributes := (self scriptEvaluation
 			script: 'Dictionary new
 	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
-	at: ''gt4gemstoneVersion'' put: GtGsRelease default versionString;
+	at: ''gt4gemstoneVersion'' put: GtGsRelease versionString;
 	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
 	at: ''fpExceptions'' put: (
 (System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);

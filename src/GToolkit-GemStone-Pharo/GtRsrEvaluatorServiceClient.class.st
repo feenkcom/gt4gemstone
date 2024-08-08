@@ -45,6 +45,29 @@ GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
 ]
 
 { #category : #actions }
+GtRsrEvaluatorServiceClient >> evaluateAsyncScript: aGtRsrScriptEvaluation [
+	| resolvedBindings rsrPromise |
+	aGtRsrScriptEvaluation serialisationStrategy
+		ifNil: [ self error: 'Serialization strategy not yet set' ].
+
+	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	
+	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := remoteSelf
+			startEvaluate: aGtRsrScriptEvaluation script
+			for: aGtRsrScriptEvaluation receiver
+			bindings: resolvedBindings
+			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
+
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
+			gtSession: gtSession
+			autoCommit: aGtRsrScriptEvaluation autoCommit
+			sourceEvaluation: aGtRsrScriptEvaluation ]
+]
+
+{ #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateLegacyPerform: aGtRsrPerformEvaluation [
 	| resolvedArguments rsrPromise |
 	

@@ -5,6 +5,7 @@ Class {
 		'exception',
 		'process',
 		'semaphore',
+		'serializationStrategy',
 		'result',
 		'completed',
 		'devMessage',
@@ -15,11 +16,27 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
+{ #category : #'instance creation' }
+GtGemStoneEvaluationContext class >> fromContext: aGtGemStoneEvaluationContext [
+	^ self new 
+		initializeFromContext: aGtGemStoneEvaluationContext
+]
+
+{ #category : #copying }
+GtGemStoneEvaluationContext >> asGtEvaluationExceptionContext [
+	^ GtGemStoneEvaluationExceptionContext fromContext: self
+]
+
 { #category : #private }
 GtGemStoneEvaluationContext >> assertNotSignalled [
 
 	semaphore isLocked ifFalse:
 		[ self error: 'Process semaphore already signalled' ]
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> block [
+	^ block
 ]
 
 { #category : #accessing }
@@ -76,10 +93,20 @@ GtGemStoneEvaluationContext >> evalServer: object [
 ]
 
 { #category : #'actions - api' }
-GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
+GtGemStoneEvaluationContext >> evaluateAndWaitBlock: aBlock from: anEvaluationServer [
 	"Evaluate the supplied block.
 	If it completes successfully, answer the result.
 	If an exception is raised, suspend the evaluation process and answer the receiver."
+
+	self evaluateBlock: aBlock from: anEvaluationServer.
+	^ self wait.
+]
+
+{ #category : #'actions - api' }
+GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
+	"Start evaluation of the supplied block.
+	If it completes successfully, result is the return value of aBlock.
+	If an exception is raised, suspend the evaluation process and set result to the receiver."
 
 	block := aBlock.
 	semaphore := Semaphore new.
@@ -87,7 +114,12 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 	evalServer := anEvaluationServer.
 
 	process := [
-		[ result := block value.
+		[ | computationResult |
+		computationResult := block value.
+		result := self serializationStrategy
+			ifNil: [ computationResult  ]
+			ifNotNil: [ :aSerializationStrategy |
+				(Globals at: aSerializationStrategy) new serialize: computationResult ].
 		completed := true.
 		semaphore signal ]
 			on: Exception
@@ -101,9 +133,8 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 		priority: Processor activeProcess priority + 1;
 		breakpointLevel: 1;
 		resume.
-	semaphore wait.
 
-	^ result
+	^ self
 ]
 
 { #category : #accessing }
@@ -155,12 +186,36 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
 	^ [ :ex |
-		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+	
 		exception := ex.
+
+		"devMessage ifNil: [ devMessage := 0].
+		devMessage := devMessage + 1."
 		devMessage := anObject.
+	
+		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
+		"newExceptionContext := self asGtEvaluationExceptionContext.
+		result := newExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
+		newExceptionContext result: result."
+	
 		semaphore signal.
 		process suspend.
 		ex resume ]
+]
+
+{ #category : #initialization }
+GtGemStoneEvaluationContext >> initializeFromContext: aGtGemStoneEvaluationContext [
+	exception := aGtGemStoneEvaluationContext exception.
+	process := aGtGemStoneEvaluationContext process.
+	serializationStrategy :=aGtGemStoneEvaluationContext serializationStrategy.
+	result := aGtGemStoneEvaluationContext result.
+	completed := aGtGemStoneEvaluationContext isCompleted.
+	devMessage :=aGtGemStoneEvaluationContext devMessage.
+	evalServer := aGtGemStoneEvaluationContext evalServer.
+	block :=aGtGemStoneEvaluationContext block.
+	semaphore :=aGtGemStoneEvaluationContext semaphore.
+
+	"callStack := aGtGemStoneEvaluationContext callStack."
 ]
 
 { #category : #testing }
@@ -239,6 +294,16 @@ GtGemStoneEvaluationContext >> restartFrameLevel: anInteger [
 	^ #restart
 ]
 
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> result [
+	^ result
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> result: aResult [
+	result := aResult
+]
+
 { #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> resume [
 
@@ -246,6 +311,21 @@ GtGemStoneEvaluationContext >> resume [
 	process resume.
 	semaphore wait.
 	^ result
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> semaphore [
+	^ semaphore
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> serializationStrategy [
+	^serializationStrategy
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> serializationStrategy: object [
+	serializationStrategy := object
 ]
 
 { #category : #'actions - debug (level)' }
@@ -415,6 +495,13 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 		displayData := each copy.
 		displayData at: 2 put: each second gtDisplayString.
 		displayData ]
+]
+
+{ #category : #'actions - api' }
+GtGemStoneEvaluationContext >> wait [
+
+	semaphore wait.
+	^ result
 ]
 
 { #category : #private }

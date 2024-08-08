@@ -18,7 +18,10 @@ GtGsRelease class >> default [
 
 { #category : #accessing }
 GtGsRelease class >> versionString [
-	^ self default versionString
+	^ default
+		ifNil: [ '<none>' ]
+		ifNotNil: [
+			self default versionString ]
 ]
 
 { #category : #accessing }

@@ -10,6 +10,11 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> executionStrategy [
+	^ executionStrategy ifNil: [ GtGemStoneSnippetSynchronousExecutionStrategy new ]
+]
+
+{ #category : #accessing }
 GtGemStoneSnippetCoderEvaluationContext >> receiverObject [
 	"Return an object that should be bound to `self`"
 	^ receiverObject

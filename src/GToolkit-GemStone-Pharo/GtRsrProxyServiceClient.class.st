@@ -378,7 +378,7 @@ GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 		^ self ].
 
 	gtDisplayString := [
-		self remoteGtDisplayString ]
+		self remoteSideGtDisplayString ]
 			on: Error
 			do: [ :ex | 'Error printing bare proxy' ].
 	aStream << gtDisplayString.
@@ -392,15 +392,21 @@ GtRsrProxyServiceClient >> gtDisplayOn: aStream [
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
+GtRsrProxyServiceClient >> gtInspectorConnectionDetailsOn: aStream [
+	
+	self gtSession 
+		ifNotNil:[ :aGtSession |
+			aStream
+				<< ' [';
+				<< aGtSession name;
+				<< ']' ]
+]
 
+{ #category : #printing }
+GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
 	self gtBasicDisplayOn: aStream.
 	
-	gtSession ifNotNil:[ 
-		aStream
-			<< ' [';
-			<< gtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream.
 ]
 
 { #category : #printing }
@@ -418,11 +424,7 @@ GtRsrProxyServiceClient >> gtInspectorTitleString [
 GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 	self gtDisplayOn: aStream.
 	
-	self gtSession ifNotNil:
-		[ :aGtSession | aStream
-			<< ' [';
-			<< aGtSession name;
-			<< ']' ]
+	self gtInspectorConnectionDetailsOn: aStream
 ]
 
 { #category : #initialization }
@@ -663,25 +665,24 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> remoteGtDisplayString [
-	^ (self performEvaluation
-			selector: #gtDisplayString;
-			returnPrimitiveOnly) evaluateAndWait
-]
-
 { #category : #private }
 GtRsrProxyServiceClient >> remoteSelf [
 
 	^ remoteSelf
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> remoteSideGtDisplayString [
+	^ (self performEvaluation
+			selector: #gtDisplayString;
+			returnPrimitiveOnly) evaluateAndWait
+]
+
 { #category : #utils }
 GtRsrProxyServiceClient >> runComputation: aBlock ifFailure: aFailureBlock [
 
 	^ self isProxyObjectActive
-		ifTrue: [ 
-			aBlock value  ]
+		ifTrue: [ aBlock value  ]
 		ifFalse: [ aFailureBlock value ].
 ]
 

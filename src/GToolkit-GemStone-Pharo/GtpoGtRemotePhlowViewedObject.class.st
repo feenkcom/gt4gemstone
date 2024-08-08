@@ -48,6 +48,11 @@ GtpoGtRemotePhlowViewedObject >> getDeclarativeViewMethodNames [
 ]
 
 { #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getRemoteObjectGtDisplayString [
+	^ self proxyPerform: #getRemoteObjectGtDisplayString
+]
+
+{ #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getViewDeclaration: aViewSelector [ 
 	^ self
 		proxyPerform: #getViewDeclaration:
