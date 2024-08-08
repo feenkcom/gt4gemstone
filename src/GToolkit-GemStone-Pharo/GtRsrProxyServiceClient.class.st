@@ -378,7 +378,7 @@ GtRsrProxyServiceClient >> gtBasicDisplayOn: aStream [
 		^ self ].
 
 	gtDisplayString := [
-		self remoteGtDisplayString ]
+		self remoteSideGtDisplayString ]
 			on: Error
 			do: [ :ex | 'Error printing bare proxy' ].
 	aStream << gtDisplayString.
@@ -665,25 +665,24 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
-{ #category : #accessing }
-GtRsrProxyServiceClient >> remoteGtDisplayString [
-	^ (self performEvaluation
-			selector: #gtDisplayString;
-			returnPrimitiveOnly) evaluateAndWait
-]
-
 { #category : #private }
 GtRsrProxyServiceClient >> remoteSelf [
 
 	^ remoteSelf
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> remoteSideGtDisplayString [
+	^ (self performEvaluation
+			selector: #gtDisplayString;
+			returnPrimitiveOnly) evaluateAndWait
+]
+
 { #category : #utils }
 GtRsrProxyServiceClient >> runComputation: aBlock ifFailure: aFailureBlock [
 
 	^ self isProxyObjectActive
-		ifTrue: [ 
-			aBlock value  ]
+		ifTrue: [ aBlock value  ]
 		ifFalse: [ aFailureBlock value ].
 ]
 
