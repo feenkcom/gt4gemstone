@@ -13,7 +13,12 @@ LeGemStoneSnippet class >> contextMenuItemSpecification [
 	<leSnippetSpecification>
 	^ LeContextMenuItemSpecification new
 		snippetClass: self;
-		title: 'GemStone'
+		title: self description
+]
+
+{ #category : #'api - accessing menu' }
+LeGemStoneSnippet class >> description [
+	^ 'GemStone'
 ]
 
 { #category : #'lepiter-store' }
