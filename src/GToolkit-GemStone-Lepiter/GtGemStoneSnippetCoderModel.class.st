@@ -175,7 +175,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 						ifTrue: [ pharoBindings removeBindingOf: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
-
+	
 	^ aGtSourceCoderEvaluationContext executionStrategy
 		evaluate: remoteScript
 		inSession: gemstoneSession

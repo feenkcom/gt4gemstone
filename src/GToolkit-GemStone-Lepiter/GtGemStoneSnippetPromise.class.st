@@ -6,7 +6,8 @@ Class {
 		'snippetCoderModel',
 		'coderEvaluationContext',
 		'value',
-		'executionContext'
+		'executionContext',
+		'mutex'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -22,6 +23,11 @@ GtGemStoneSnippetPromise >> coderEvaluationContext: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneSnippetPromise >> gemStoneSession [
+	^ gtRsrEvaluatorPromise gtSession
+]
+
+{ #category : #accessing }
 GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise [
 	^ gtRsrEvaluatorPromise
 ]
@@ -31,16 +37,9 @@ GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
 	gtRsrEvaluatorPromise := anObject
 ]
 
-{ #category : #ui }
-GtGemStoneSnippetPromise >> gtViewResultFor: aView [
-	<gtView>
-
-	^ aView explicit
-		title: 'Result';
-		priority: 10;
-		stencil: [ 
-			GtGemStoneEvaluationMonitorElement new
-				snippetPromise: self ].
+{ #category : #testing }
+GtGemStoneSnippetPromise >> hasResult [
+	^ value ~~ self
 ]
 
 { #category : #accessing }
@@ -48,9 +47,10 @@ GtGemStoneSnippetPromise >> initialize [
 
 	super initialize.
 	value := self.
+	mutex := Mutex new.
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 GtGemStoneSnippetPromise >> isGtEvaluationException [
 
 	^ gtRsrEvaluatorPromise isGtEvaluationException
@@ -60,6 +60,18 @@ GtGemStoneSnippetPromise >> isGtEvaluationException [
 GtGemStoneSnippetPromise >> isResolved [
 
 	^ gtRsrEvaluatorPromise isResolved
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> resolvedValue [
+	self assert: [ value ~~ self ].
+	
+	^ value
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> sessionDescription [
+	^ gtRsrEvaluatorPromise sessionDescription
 ]
 
 { #category : #accessing }
@@ -81,7 +93,8 @@ GtGemStoneSnippetPromise >> stopEvaluation [
 { #category : #accessing }
 GtGemStoneSnippetPromise >> value [
 
-	value == self ifTrue: [ self wait ].
+	value == self ifTrue: [ 
+		mutex critical: [ self wait ] ].
 	^ value
 ]
 
@@ -104,5 +117,5 @@ GtGemStoneSnippetPromise >> wait [
 				ifNil: [ obj ]
 				ifNotNil: [ :strategy | obj
 					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject
+		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
 ]

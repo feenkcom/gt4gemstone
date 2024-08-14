@@ -13,8 +13,9 @@ GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSessi
 		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
 
-	^ GtGemStoneSnippetPromise new 
-		snippetCoderModel: aCoderModel;
-		coderEvaluationContext: aGtSourceCoderEvaluationContext;
-		gtRsrEvaluatorPromise: gtRsrEvaluatorPromiseWithContext.
+	^ GtGemStoneSnippetPromiseResolution new 
+		snippetPromise: (GtGemStoneSnippetPromise new 
+			snippetCoderModel: aCoderModel;
+			coderEvaluationContext: aGtSourceCoderEvaluationContext;
+			gtRsrEvaluatorPromise: gtRsrEvaluatorPromiseWithContext)
 ]
