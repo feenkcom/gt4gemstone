@@ -4,8 +4,21 @@ Class {
 	#instVars : [
 		'promiseResolution'
 	],
+	#classVars : [
+		'ReplacePaneContentAutomatically'
+	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
+
+{ #category : #settings }
+GtGemStoneAsyncEvaluationPhlowTool class >> replacePaneContentAutomatically [
+	^ ReplacePaneContentAutomatically ifNil: [ true ]
+]
+
+{ #category : #settings }
+GtGemStoneAsyncEvaluationPhlowTool class >> replacePaneContentAutomatically: aBoolean [
+	ReplacePaneContentAutomatically := aBoolean
+]
 
 { #category : #accessing }
 GtGemStoneAsyncEvaluationPhlowTool >> asElementDo: aOneArgBlock [
@@ -13,6 +26,8 @@ GtGemStoneAsyncEvaluationPhlowTool >> asElementDo: aOneArgBlock [
 
 	evaluationElement := GtGemStoneAsyncEvaluationElement new
 		promiseResolution:promiseResolution;
+		replacePaneContentAutomatically: self  class 
+			replacePaneContentAutomatically;
 		matchParent.
 
 	^ aOneArgBlock cull: evaluationElement

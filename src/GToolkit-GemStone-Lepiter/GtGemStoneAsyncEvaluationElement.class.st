@@ -17,7 +17,8 @@ Class {
 		'executionToolbarElement',
 		'headerToolbarUpdater',
 		'executionContentUpdater',
-		'promiseResolution'
+		'promiseResolution',
+		'replacePaneContentAutomatically'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -291,6 +292,7 @@ GtGemStoneAsyncEvaluationElement >> isValueResolved [
 
 { #category : #callbacks }
 GtGemStoneAsyncEvaluationElement >> onSnippetPromiseResolutionChanged [
+	self updateMainContainerAndToolbar.
 	self requestUpdateOrReplaceContent
 ]
 
@@ -316,11 +318,24 @@ GtGemStoneAsyncEvaluationElement >> promiseResolution: aGtGemStonePromiseExecuti
 	self subscribeToPromiseResolution.
 ]
 
+{ #category : #accessing }
+GtGemStoneAsyncEvaluationElement >> replacePaneContentAutomatically [
+	^ replacePaneContentAutomatically ifNil: [ true ]
+]
+
+{ #category : #accessing }
+GtGemStoneAsyncEvaluationElement >> replacePaneContentAutomatically: aBoolean [
+	replacePaneContentAutomatically := aBoolean
+]
+
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
-
+	self replacePaneContentAutomatically ifFalse: [
+		aBlock value.
+		^ self ].
 	self isValueResolved ifFalse: [
-		^ aBlock value ].
+		aBlock value.
+		^ self ].
 
 	self previousPagerPageElementDo: [ :aPageElement |
 		(aPageElement 
