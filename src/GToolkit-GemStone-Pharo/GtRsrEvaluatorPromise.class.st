@@ -63,6 +63,11 @@ GtRsrEvaluatorPromise >> executeWithPromiseWaitLoggingBlock: aBlockClosure [
 ]
 
 { #category : #accessing }
+GtRsrEvaluatorPromise >> gtSession [
+	^ gtSession
+]
+
+{ #category : #accessing }
 GtRsrEvaluatorPromise >> initialize [
 
 	super initialize.
@@ -93,6 +98,14 @@ GtRsrEvaluatorPromise >> isResolved [
 GtRsrEvaluatorPromise >> rsrPromise [
 
 	^ rsrPromise
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorPromise >> sessionDescription [
+	^ gtSession 
+		ifNil: [  '<missing session>']
+		ifNotNil: [ :aSession |
+			 aSession name, '  ', aSession statusDescription ]
 ]
 
 { #category : #initialization }
