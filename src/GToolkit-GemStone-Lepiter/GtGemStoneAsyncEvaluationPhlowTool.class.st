@@ -26,8 +26,6 @@ GtGemStoneAsyncEvaluationPhlowTool >> asElementDo: aOneArgBlock [
 
 	evaluationElement := GtGemStoneAsyncEvaluationElement new
 		promiseResolution:promiseResolution;
-		replacePaneContentAutomatically: self  class 
-			replacePaneContentAutomatically;
 		matchParent.
 
 	^ aOneArgBlock cull: evaluationElement

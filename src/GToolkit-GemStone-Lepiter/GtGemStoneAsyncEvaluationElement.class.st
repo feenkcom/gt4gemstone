@@ -214,6 +214,24 @@ GtGemStoneAsyncEvaluationElement >> gtActionInspectSessionFor: anAction [
 ]
 
 { #category : #'gt - actions' }
+GtGemStoneAsyncEvaluationElement >> gtActionToggleAutomaticReplaceFor: anAction [
+	<gtToolbarAction>
+	
+	^ anAction button
+		label: (self replacePaneContentAutomatically
+			ifTrue: [ 'Disable' ]
+			ifFalse: [ 'Enable' ]);
+		priority: 150;
+		icon: BrGlamorousIcons spawn;
+		tooltip: (self replacePaneContentAutomatically
+			ifTrue: [ 'Disable automatic replacement of content when execution terminates ' ]
+			ifFalse: [ 'Enable automatic replacement of content when execution terminates '  ]);
+		action: [ :button |
+			self toggleReplacePaneContentAutomatically.
+			self updateHeaderToolbarActions.  ].
+]
+
+{ #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionUpdateDetailsFor: anAction [
 	<gtToolbarAction>
 	
@@ -320,12 +338,12 @@ GtGemStoneAsyncEvaluationElement >> promiseResolution: aGtGemStonePromiseExecuti
 
 { #category : #accessing }
 GtGemStoneAsyncEvaluationElement >> replacePaneContentAutomatically [
-	^ replacePaneContentAutomatically ifNil: [ true ]
+	^ GtGemStoneAsyncEvaluationPhlowTool replacePaneContentAutomatically
 ]
 
 { #category : #accessing }
 GtGemStoneAsyncEvaluationElement >> replacePaneContentAutomatically: aBoolean [
-	replacePaneContentAutomatically := aBoolean
+	GtGemStoneAsyncEvaluationPhlowTool replacePaneContentAutomatically: aBoolean
 ]
 
 { #category : #updating }
@@ -398,6 +416,11 @@ GtGemStoneAsyncEvaluationElement >> subscribeToPromiseResolution [
 		when: GtGemStoneSnippetPromiseResolutionCompletedAnnouncement
 		send: #actOnPromiseExecutionCompleted
 		to: self.
+]
+
+{ #category : #settings }
+GtGemStoneAsyncEvaluationElement >> toggleReplacePaneContentAutomatically [
+	self replacePaneContentAutomatically: self replacePaneContentAutomatically not 
 ]
 
 { #category : #accessing }
