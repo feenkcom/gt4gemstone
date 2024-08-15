@@ -71,6 +71,11 @@ LeGemStoneSnippetViewModel >> onSnippetContentChanged [
 	sessionName := snippetModel sessionName.
 ]
 
+{ #category : #'filter view' }
+LeGemStoneSnippetViewModel >> parserClass [
+	^ GtPharoParser
+]
+
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 	"This is called when the session is explicitly set.
