@@ -29,7 +29,7 @@ TGtRemoteGemStoneDeclarativePhlowExamples >> retrieveRemoteInspectorProxy [
 TGtRemoteGemStoneDeclarativePhlowExamples >> retrieveRemotePhlowSpecificationsProvider [
 	"Answer the inspector proxy for the remote object"
 	
-	self retrieveRemoteInspectorProxy
+	^ self retrieveRemoteInspectorProxy
 ]
 
 { #category : #private }
