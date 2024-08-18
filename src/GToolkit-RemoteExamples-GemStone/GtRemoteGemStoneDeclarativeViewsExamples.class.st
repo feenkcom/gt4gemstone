@@ -92,10 +92,10 @@ GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	<gtExample>
 	<after: #stopServer>
-	| inspectorProxy viewDictionary viewSpecification viewDatasource obtainedNodes |
+	| phlowSpecificationsProvider viewDictionary viewSpecification viewDatasource obtainedNodes |
 
-	inspectorProxy := self remoteInspectorProxy.
-	viewDictionary :=  inspectorProxy getViewDeclaration: #gtRawFor:.
+	phlowSpecificationsProvider := self remotePhlowSpecificationsProvider.
+	viewDictionary :=  phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
 	
 	self assert: viewSpecification title equals: #Raw.
@@ -110,7 +110,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 		assert: viewSpecification dataTransport 
 		equals: GtPhlowViewSpecification dataLazy.
 	
-	viewDatasource := inspectorProxy getDeclarativeViewFor: #gtRawFor:.
+	viewDatasource := phlowSpecificationsProvider getDeclarativeViewFor: #gtRawFor:.
 	
 	obtainedNodes := self 
 		assertNodesInViewDatasource: viewDatasource 
