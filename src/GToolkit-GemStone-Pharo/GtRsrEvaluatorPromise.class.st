@@ -36,7 +36,9 @@ GtRsrEvaluatorPromise >> deserializeResult: aResult [
 		aGtSession logEmitter
 			emitEvaluationDeserializeResultStartFor: sourceEvaluation ].
 			
-	deserializedResult := (self class environment at: serializationStrategy) new deserialize: aResult.
+	deserializedResult := (self class environment 
+		at: serializationStrategy) new 
+			deserialize: aResult.
 	
 	gtSession ifNotNil: [ :aGtSession |
 		aGtSession logEmitter

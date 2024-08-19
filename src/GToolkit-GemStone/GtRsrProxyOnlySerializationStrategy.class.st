@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrProxyOnlySerializationStrategy',
-	#superclass : 'GtRsrSerializationStrategy',
+	#name : #GtRsrProxyOnlySerializationStrategy,
+	#superclass : #GtRsrSerializationStrategy,
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtRsrProxyOnlySerializationStrategy >> deserialize: anObject [
 	"Deserialize the supplied object"
 	
