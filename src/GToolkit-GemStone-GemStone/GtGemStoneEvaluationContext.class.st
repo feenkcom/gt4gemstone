@@ -375,6 +375,15 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 ]
 
 { #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> terminateAsyncComputation [
+
+	process terminate.
+	semaphore signal.
+
+	^ #terminatedAsync
+]
+
+{ #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> terminateProcess [
 
 	process terminate
