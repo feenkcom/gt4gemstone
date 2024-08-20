@@ -184,10 +184,27 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 ]
 
 { #category : #'gt - actions' }
+GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
+	<gtExecutionAction>
+
+	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	
+	^ anAction button
+		label: 'Cancel';
+		priority: 105;
+		icon: BrGlamorousVectorIcons cancel;
+		tooltip: 'Terminate the execution';
+		action: [ :button |
+			promiseResolution stopEvaluation  ].
+]
+
+{ #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionInspectResolvedValueFor: anAction [
 	<gtExecutionAction>
 
-	self isValueResolved ifFalse: [ ^ anAction empty ].
+	(self isValueResolved not or:[ 
+		self isEvaluationCancelled  ]) 
+			ifTrue: [ ^ anAction empty ].
 	
 	^ anAction button
 		label: 'Result';
@@ -303,6 +320,12 @@ GtGemStoneAsyncEvaluationElement >> initializeUpdaters [
 ]
 
 { #category : #testing }
+GtGemStoneAsyncEvaluationElement >> isEvaluationCancelled [
+	^ promiseResolution isNotNil and: [
+		promiseResolution isEvaluationCancelled  ]
+]
+
+{ #category : #testing }
 GtGemStoneAsyncEvaluationElement >> isValueResolved [
 	^ promiseResolution isNotNil and: [
 		promiseResolution isValueResolved  ]
@@ -351,9 +374,10 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 	self replacePaneContentAutomatically ifFalse: [
 		aBlock value.
 		^ self ].
-	self isValueResolved ifFalse: [
-		aBlock value.
-		^ self ].
+	(self isValueResolved not or: [ self isEvaluationCancelled]) 
+		ifTrue: [
+			aBlock value.
+			^ self ].
 
 	self previousPagerPageElementDo: [ :aPageElement |
 		(aPageElement 

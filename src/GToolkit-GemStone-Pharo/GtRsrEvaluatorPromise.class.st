@@ -161,12 +161,6 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 ]
 
 { #category : #accessing }
-GtRsrEvaluatorPromise >> stopEvaluation [
-
-	^ rsrPromise value terminateProcess
-]
-
-{ #category : #accessing }
 GtRsrEvaluatorPromise >> value [
 
 	value == self ifTrue: [ value := self wait ].

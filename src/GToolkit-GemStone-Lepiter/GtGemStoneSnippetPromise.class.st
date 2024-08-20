@@ -12,6 +12,12 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
+{ #category : #testing }
+GtGemStoneSnippetPromise >> canStopExecution [
+	^ executionContext notNil and: [
+		self isResolved not ]
+]
+
 { #category : #accessing }
 GtGemStoneSnippetPromise >> coderEvaluationContext [
 	^ coderEvaluationContext
@@ -42,7 +48,7 @@ GtGemStoneSnippetPromise >> hasResult [
 	^ value ~~ self
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneSnippetPromise >> initialize [
 
 	super initialize.
@@ -85,10 +91,11 @@ GtGemStoneSnippetPromise >> snippetCoderModel: anObject [
 	snippetCoderModel := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #actions }
 GtGemStoneSnippetPromise >> stopEvaluation [
-
-	^ executionContext terminate
+	self assert: [ executionContext notNil ].
+	
+	^ executionContext terminateAsyncComputation
 ]
 
 { #category : #accessing }
@@ -106,7 +113,7 @@ GtGemStoneSnippetPromise >> wait [
 	executionContext := gtRsrEvaluatorPromise value.
 	result := executionContext wait.
 
-	"We get here in case we terminate the remote process running the async computation and signal the semaphore on which the computation runs. A different way to implement this would be to do a low-level call and get back a result object indicating that the process was terminated. "
+	"We get here in case we terminate the remote process running the async computation and signal the semaphore on which the computation runs. A different way to implement this would be to do a low-level call and get back a result object indicating that the process was terminated. It also works here to check against nil, as we expect to get back a dictionary. If the computation could return nil, this would not work."
 	result ifNil: [ 
 		value := nil.
 		^ self ].
