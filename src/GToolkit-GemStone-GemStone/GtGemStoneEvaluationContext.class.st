@@ -17,22 +17,11 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'instance creation' }
-GtGemStoneEvaluationContext class >> fromContext: aGtGemStoneEvaluationContext [
-	^ self new 
-		initializeFromContext: aGtGemStoneEvaluationContext
-]
-
 { #category : 'private' }
 GtGemStoneEvaluationContext >> assertNotSignalled [
 
 	semaphore isLocked ifFalse:
 		[ self error: 'Process semaphore already signalled' ]
-]
-
-{ #category : 'accessing' }
-GtGemStoneEvaluationContext >> block [
-	^ block
 ]
 
 { #category : 'accessing' }
@@ -199,21 +188,6 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		ex resume ]
 ]
 
-{ #category : 'initialization' }
-GtGemStoneEvaluationContext >> initializeFromContext: aGtGemStoneEvaluationContext [
-	exception := aGtGemStoneEvaluationContext exception.
-	process := aGtGemStoneEvaluationContext process.
-	serializationStrategy :=aGtGemStoneEvaluationContext serializationStrategy.
-	result := aGtGemStoneEvaluationContext result.
-	completed := aGtGemStoneEvaluationContext isCompleted.
-	devMessage :=aGtGemStoneEvaluationContext devMessage.
-	evalServer := aGtGemStoneEvaluationContext evalServer.
-	block :=aGtGemStoneEvaluationContext block.
-	semaphore :=aGtGemStoneEvaluationContext semaphore.
-
-	"callStack := aGtGemStoneEvaluationContext callStack."
-]
-
 { #category : 'testing' }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
@@ -267,12 +241,6 @@ GtGemStoneEvaluationContext >> process [
 	^ process
 ]
 
-{ #category : 'accessing' }
-GtGemStoneEvaluationContext >> process: aGsProcess [
-
-	process := aGsProcess
-]
-
 { #category : 'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
@@ -290,16 +258,6 @@ GtGemStoneEvaluationContext >> restartFrameLevel: anInteger [
 	^ #restart
 ]
 
-{ #category : 'accessing' }
-GtGemStoneEvaluationContext >> result [
-	^ result
-]
-
-{ #category : 'accessing' }
-GtGemStoneEvaluationContext >> result: aResult [
-	result := aResult
-]
-
 { #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> resume [
 
@@ -307,11 +265,6 @@ GtGemStoneEvaluationContext >> resume [
 	process resume.
 	semaphore wait.
 	^ result
-]
-
-{ #category : 'accessing' }
-GtGemStoneEvaluationContext >> semaphore [
-	^ semaphore
 ]
 
 { #category : 'accessing' }
