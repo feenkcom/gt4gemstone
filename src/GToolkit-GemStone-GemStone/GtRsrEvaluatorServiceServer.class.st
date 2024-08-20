@@ -23,8 +23,14 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	
 	| evaluationResult |
 
-	evaluationResult := self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
-	^ evaluationResult asDictionaryForExport
+	evaluationResult := self 
+		gsEvaluate: aString 
+		for: anObject 
+		bindings: aDictionary 
+		serializationStrategy: aSymbol.
+
+	^ evaluationResult ifNotNil: [ :anEvaluationResult |  
+		anEvaluationResult asDictionaryForExport ]
 ]
 
 { #category : 'actions' }

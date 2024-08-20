@@ -76,7 +76,8 @@ GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray serializ
 		withArguments: anArray 
 		serializationStrategy: aSerializationStrategySymbol.
 
-	^ evaluationResult asDictionaryForExport
+	^ evaluationResult ifNotNil: [ :anEvaluationResult |  
+		anEvaluationResult asDictionaryForExport ]
 ]
 
 { #category : 'performing' }
