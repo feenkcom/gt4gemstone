@@ -7,6 +7,11 @@ Class {
 	#category : #'GToolkit-GemStone'
 }
 
+{ #category : #'as yet unclassified' }
+GtGemstoneEvaluationWithInProgressResult >> computedResult [
+	^ self evaluationContext
+]
+
 { #category : #accessing }
 GtGemstoneEvaluationWithInProgressResult >> evaluationContext [
 	^ evaluationContext

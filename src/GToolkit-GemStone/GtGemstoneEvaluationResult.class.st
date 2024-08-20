@@ -26,6 +26,12 @@ GtGemstoneEvaluationResult class >> isSerializedDataForCurrentClass: aValue [
 			ifAbsent: [ false ] ])
 ]
 
+{ #category : #accessing }
+GtGemstoneEvaluationResult >> computedResult [
+	"The value that will be returned to the called as the result of the evaluation"
+	^ self subclassResponsibility
+]
+
 { #category : #'initialization ' }
 GtGemstoneEvaluationResult >> initializeFromJSONDictionary: aDictionary [
 ]

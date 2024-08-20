@@ -7,6 +7,11 @@ Class {
 	#category : #'GToolkit-GemStone'
 }
 
+{ #category : #'as yet unclassified' }
+GtGemstoneEvaluationWithExceptionResult >> computedResult [
+	^ self evaluationContext
+]
+
 { #category : #accessing }
 GtGemstoneEvaluationWithExceptionResult >> evaluationContext [
 	^ evaluationContext
