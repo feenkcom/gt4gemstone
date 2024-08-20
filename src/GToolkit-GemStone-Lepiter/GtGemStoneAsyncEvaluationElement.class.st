@@ -240,7 +240,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionUpdateDetailsFor: anAction [
 		priority: 10;
 		icon: BrGlamorousIcons refresh;
 		action: [ 
-			self requestUpdate ]
+			self requestMainContainerAndToolbarUpdate ]
 ]
 
 { #category : #'initialization ' }
