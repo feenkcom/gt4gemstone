@@ -7,6 +7,7 @@ Class {
 		'semaphore',
 		'serializationStrategy',
 		'result',
+		'evaluationResult',
 		'completed',
 		'devMessage',
 		'evalServer',
@@ -20,11 +21,6 @@ Class {
 GtGemStoneEvaluationContext class >> fromContext: aGtGemStoneEvaluationContext [
 	^ self new 
 		initializeFromContext: aGtGemStoneEvaluationContext
-]
-
-{ #category : 'copying' }
-GtGemStoneEvaluationContext >> asGtEvaluationExceptionContext [
-	^ GtGemStoneEvaluationExceptionContext fromContext: self
 ]
 
 { #category : 'private' }
@@ -120,6 +116,8 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 			ifNil: [ computationResult  ]
 			ifNotNil: [ :aSerializationStrategy |
 				(Globals at: aSerializationStrategy) new serialize: computationResult ].
+		evaluationResult := GtGemstoneEvaluationWithComputedResult new 
+			computedResult: result.
 		completed := true.
 		semaphore signal ]
 			on: Exception
@@ -134,7 +132,8 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 		breakpointLevel: 1;
 		resume.
 
-	^ self
+	^ GtGemstoneEvaluationWithInProgressResult new
+		 evaluationContext: self
 ]
 
 { #category : 'accessing' }
@@ -188,15 +187,12 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	^ [ :ex |
 	
 		exception := ex.
-
-		"devMessage ifNil: [ devMessage := 0].
-		devMessage := devMessage + 1."
 		devMessage := anObject.
 	
-		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
-		"newExceptionContext := self asGtEvaluationExceptionContext.
-		result := newExceptionContext asGtRsrProxyObjectForConnection: evalServer _connection.
-		newExceptionContext result: result."
+		"result := self asGtRsrProxyObjectForConnection: evalServer _connection."
+		result := nil.
+		evaluationResult := GtGemstoneEvaluationWithExceptionResult new
+			evaluationContext: self.
 	
 		semaphore signal.
 		process suspend.
@@ -501,7 +497,7 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 GtGemStoneEvaluationContext >> wait [
 
 	semaphore wait.
-	^ result
+	^ evaluationResult
 ]
 
 { #category : 'private' }

@@ -9,27 +9,34 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
 
-	^ (self gsEvaluate: aString for: anObject bindings: aDictionary)
-			asGtRsrProxyObjectForConnection: _connection
+	^ self 
+			evaluate: aString 
+			for: anObject 
+			bindings: aDictionary 
+			serializationStrategy: #GtRsrLegacySerializationStrategy
 ]
 
 { #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
-	"Evaluate the receiver's script, answering the result as a proxy.
+	"Evaluate the receiver's script, answering the serialized result.
 	On the server this is a synchronous operation."
 	
-	^ self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
+	| evaluationResult |
+
+	evaluationResult := self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
+	^ evaluationResult asDictionaryForExport
 ]
 
 { #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
-	| result |
 
-	result :=self gsEvaluate: aString for: anObject bindings: aDictionary.
-	result class == GtRsrProxyServiceServer ifTrue: [ ^ result ].
-	^ GtRsrProxyServiceServer object: result.
+	^ self 
+			evaluate: aString 
+			for: anObject 
+			bindings: aDictionary 
+			serializationStrategy: #GtRsrProxyOnlySerializationStrategy
 ]
 
 { #category : 'private - GemStone' }
@@ -79,9 +86,9 @@ GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: 
 
 { #category : 'actions' }
 GtRsrEvaluatorServiceServer >> startEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
-	"Start the receiver's script, answering the evaluation context as a proxy."
-	| evaluationContext |
+	"Start the receiver's script, answering the result."
+	| evaluationResult |
 
-	evaluationContext := self gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
-	^ GtRsrProxyServiceServer object: evaluationContext
+	evaluationResult := self gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
+	^ evaluationResult asDictionaryForExport
 ]
