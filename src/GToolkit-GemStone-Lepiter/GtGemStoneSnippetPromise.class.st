@@ -59,7 +59,8 @@ GtGemStoneSnippetPromise >> isGtEvaluationException [
 { #category : #testing }
 GtGemStoneSnippetPromise >> isResolved [
 
-	^ gtRsrEvaluatorPromise isResolved
+	^ gtRsrEvaluatorPromise isResolved and: [
+		value ~~ self ]
 ]
 
 { #category : #accessing }
@@ -102,10 +103,9 @@ GtGemStoneSnippetPromise >> value [
 GtGemStoneSnippetPromise >> wait [
 	| result |
 	
-	"executionContext := gtRsrEvaluatorPromise value.
-	result := executionContext wait."
-	
-	result := gtRsrEvaluatorPromise value.
+	executionContext := gtRsrEvaluatorPromise value.
+	result := executionContext wait.
+
 	result associationsDo: [ :binding |
 		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
