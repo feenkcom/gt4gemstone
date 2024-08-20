@@ -25,6 +25,12 @@ GtpoGtGemStoneEvaluationContext >> terminate [
 ]
 
 { #category : #'actions - debug' }
+GtpoGtGemStoneEvaluationContext >> terminateAsyncComputation [
+
+	^ self proxyPerform: #terminateAsyncComputation
+]
+
+{ #category : #'actions - debug' }
 GtpoGtGemStoneEvaluationContext >> terminateProcess [
 
 	^ self proxyPerform: #terminateProcess

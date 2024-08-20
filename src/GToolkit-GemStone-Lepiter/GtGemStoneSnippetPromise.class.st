@@ -106,6 +106,11 @@ GtGemStoneSnippetPromise >> wait [
 	executionContext := gtRsrEvaluatorPromise value.
 	result := executionContext wait.
 
+	"We get here in case we terminate the remote process running the async computation and signal the semaphore on which the computation runs. A different way to implement this would be to do a low-level call and get back a result object indicating that the process was terminated. "
+	result ifNil: [ 
+		value := nil.
+		^ self ].
+	
 	result associationsDo: [ :binding |
 		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
