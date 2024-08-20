@@ -29,3 +29,8 @@ GtpoGtGemStoneEvaluationContext >> terminateProcess [
 
 	^ self proxyPerform: #terminateProcess
 ]
+
+{ #category : #accessing }
+GtpoGtGemStoneEvaluationContext >> wait [
+	^ self proxyPerform: #wait
+]
