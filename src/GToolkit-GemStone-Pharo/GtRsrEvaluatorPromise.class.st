@@ -35,7 +35,7 @@ GtRsrEvaluatorPromise >> createEvaluationResultFromData: aDictionaryOrObject [
 	
 	^ (GtGemstoneEvaluationResult isSerializedData: aDictionaryOrObject)
 		ifTrue: [ 
-			GtGemstoneEvaluationResult fromDictionary:aDictionaryOrObject ] 
+			GtGemstoneEvaluationResult fromDictionary: aDictionaryOrObject ] 
 		ifFalse: [
 			rsrPromise value class = GtpoGtGemStoneEvaluationContext
 				ifTrue: [

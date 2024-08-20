@@ -5,15 +5,6 @@ Class {
 }
 
 { #category : #'instance creation' }
-GtGemstoneEvaluationResult class >> fromDictionary: aDictionary [
-	"Answer the view specified by viewDictionary"
-	| viewName |
-
-	viewName := aDictionary at: '__typeName'.
-	^(Smalltalk globals at: viewName asSymbol) fromJSONDictionary: aDictionary.
-]
-
-{ #category : #'instance creation' }
 GtGemstoneEvaluationResult class >> fromJSONDictionary: aDictionary [
 	^ self new  
 		initializeFromJSONDictionary: aDictionary
