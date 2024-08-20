@@ -141,21 +141,22 @@ GtRsrEvaluatorPromise >> setPromise: aPromise strategy: aSymbol session: aSessio
 { #category : #accessing }
 GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 	<gemstoneDebuggerSignal>
-	| exception result |
+	| exception rawEvaluationResultData evaluationResult |
 
-	self isGtEvaluationException ifFalse:
-		[ self error: 'not a gs exception' ].
+	self isGtEvaluationException ifFalse: [ 
+		self error: 'not a gs exception' ].
 		
-	result := rsrPromise value.
-	result gtPharoProxyInitializeWithSession: gtSession.
+	rawEvaluationResultData := rsrPromise value.
+	evaluationResult := self createEvaluationResultFromData: rawEvaluationResultData.
+	evaluationResult gtPharoProxyInitializeWithSession: gtSession.
 	
 	exception := GtRsrEvaluationException new 
-		debuggerProxy: result.
+		debuggerProxy: evaluationResult evaluationContext.
 	exception signal.
 	
 	^ exception hasDebugResult
 		ifTrue: [ exception debugResult ]
-		ifFalse: [ result ]
+		ifFalse: [ rawEvaluationResultData ]
 ]
 
 { #category : #accessing }
