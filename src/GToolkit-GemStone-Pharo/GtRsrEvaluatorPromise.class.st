@@ -156,7 +156,7 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 	
 	^ exception hasDebugResult
 		ifTrue: [ exception debugResult ]
-		ifFalse: [ rawEvaluationResultData ]
+		ifFalse: [ evaluationResult ]
 ]
 
 { #category : #accessing }
