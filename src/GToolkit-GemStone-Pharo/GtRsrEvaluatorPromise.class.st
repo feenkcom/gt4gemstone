@@ -155,7 +155,8 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ exception debugResult ]
+		ifTrue: [ GtGemstoneEvaluationWithComputedResult new
+			computedResult: exception debugResult ]
 		ifFalse: [ evaluationResult ]
 ]
 
@@ -191,12 +192,12 @@ GtRsrEvaluatorPromise >> wait [
 	self isGtEvaluationException ifTrue: [ 
 		evaluationResult := self signalGemStoneDebugger ].
 
+	gtSession ifNotNil: [ 
+		evaluationResult gtPharoProxyInitializeWithSession: gtSession ].
 	computedResult :=  serializationStrategy
 		ifNil: [ evaluationResult computedResult ]
 		ifNotNil: [ 
 			self deserializeResult: evaluationResult computedResult ].
-	gtSession ifNotNil: [ 
-		computedResult gtPharoProxyInitializeWithSession: gtSession ].
 	
 	autoCommit ifTrue: [ 
 		gtSession autoCommitPromise: self ].
