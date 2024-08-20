@@ -16,3 +16,18 @@ GtGemstoneEvaluationWithComputedResult >> computedResult [
 GtGemstoneEvaluationWithComputedResult >> computedResult: anObject [
 	computedResult := anObject
 ]
+
+{ #category : #'initialization ' }
+GtGemstoneEvaluationWithComputedResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
+	computedResult gtPharoProxyInitializeWithSession: aGemStoneSession
+]
+
+{ #category : #'initialization ' }
+GtGemstoneEvaluationWithComputedResult >> initializeFromJSONDictionary: aDictionary [
+	super initializeFromJSONDictionary: aDictionary.
+	
+	aDictionary 
+		at: 'computedResult' 
+		ifPresent: [ :anObject |
+			computedResult := anObject ]
+]

@@ -16,3 +16,18 @@ GtGemstoneEvaluationWithExceptionResult >> evaluationContext [
 GtGemstoneEvaluationWithExceptionResult >> evaluationContext: aGemStoneEvaluationContext [
 	evaluationContext := aGemStoneEvaluationContext
 ]
+
+{ #category : #'initialization ' }
+GtGemstoneEvaluationWithExceptionResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
+	evaluationContext gtPharoProxyInitializeWithSession: aGemStoneSession
+]
+
+{ #category : #'initialization ' }
+GtGemstoneEvaluationWithExceptionResult >> initializeFromJSONDictionary: aDictionary [
+	super initializeFromJSONDictionary: aDictionary.
+	
+	aDictionary 
+		at: 'evaluationContextProxy' 
+		ifPresent: [ :anObject |
+			evaluationContext := anObject ]
+]

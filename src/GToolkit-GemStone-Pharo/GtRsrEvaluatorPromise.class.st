@@ -28,6 +28,24 @@ GtRsrEvaluatorPromise >> canHandleSpecificDebugger [
 	^ rsrPromise canHandleSpecificDebugger
 ]
 
+{ #category : #private }
+GtRsrEvaluatorPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
+	"Instantiate an evaluation result object from the given object.
+	We need to handle the case of the previous way of returning data."
+	
+	^ (GtGemstoneEvaluationResult isSerializedData: aDictionaryOrObject)
+		ifTrue: [ 
+			GtGemstoneEvaluationResult fromDictionary:aDictionaryOrObject ] 
+		ifFalse: [
+			rsrPromise value class = GtpoGtGemStoneEvaluationContext
+				ifTrue: [
+					GtGemstoneEvaluationWithExceptionResult new 
+						evaluationContext: aDictionaryOrObject ]
+				ifFalse: [
+					GtGemstoneEvaluationWithComputedResult new
+						computedResult:aDictionaryOrObject ] ]
+]
+
 { #category : #accessing }
 GtRsrEvaluatorPromise >> deserializeResult: aResult [
 	| deserializedResult | 
@@ -127,10 +145,14 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 
 	self isGtEvaluationException ifFalse:
 		[ self error: 'not a gs exception' ].
+		
 	result := rsrPromise value.
 	result gtPharoProxyInitializeWithSession: gtSession.
-	exception := GtRsrEvaluationException new debuggerProxy: result.
+	
+	exception := GtRsrEvaluationException new 
+		debuggerProxy: result.
 	exception signal.
+	
 	^ exception hasDebugResult
 		ifTrue: [ exception debugResult ]
 		ifFalse: [ result ]
@@ -152,23 +174,33 @@ GtRsrEvaluatorPromise >> value [
 { #category : #private }
 GtRsrEvaluatorPromise >> wait [
 	<gemstoneDebuggerSignal>
-	| result |
-	self executeWithPromiseWaitLoggingBlock: [ result := rsrPromise wait ].
-
-	gtSession ifNotNil: [ result gtPharoProxyInitializeWithSession: gtSession ].
+	| rawEvaluationResultData evaluationResult computedResult |
+	
+	self executeWithPromiseWaitLoggingBlock: [ 
+		rawEvaluationResultData := rsrPromise wait ].
+	
+	evaluationResult := self createEvaluationResultFromData: rawEvaluationResultData.
+	gtSession ifNotNil: [ 
+		evaluationResult gtPharoProxyInitializeWithSession: gtSession ].
+	
 	"Temporarily handle the old post-mortem debugger notification"
-	result class = GtpoGtRsrEvaluationExceptionInformation
+	rawEvaluationResultData class = GtpoGtRsrEvaluationExceptionInformation
 		ifTrue: [ self error: 'Evaluation error, see result' ].
 
-	self isGtEvaluationException ifTrue: [ result := self signalGemStoneDebugger ].
+	self isGtEvaluationException ifTrue: [ 
+		evaluationResult := self signalGemStoneDebugger ].
 
-	serializationStrategy
+	computedResult :=  serializationStrategy
+		ifNil: [ evaluationResult computedResult ]
 		ifNotNil: [ 
-			result := self deserializeResult: result.
-			gtSession ifNotNil: [ result gtPharoProxyInitializeWithSession: gtSession ] ].
-	autoCommit ifTrue:
-		[ gtSession autoCommitPromise: self ].
-	^ result
+			self deserializeResult: evaluationResult computedResult ].
+	gtSession ifNotNil: [ 
+		computedResult gtPharoProxyInitializeWithSession: gtSession ].
+	
+	autoCommit ifTrue: [ 
+		gtSession autoCommitPromise: self ].
+		
+	^ computedResult
 ]
 
 { #category : #testing }
