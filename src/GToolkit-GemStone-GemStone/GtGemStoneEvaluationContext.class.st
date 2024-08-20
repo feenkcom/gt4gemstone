@@ -84,7 +84,7 @@ GtGemStoneEvaluationContext >> evaluateAndWaitBlock: aBlock from: anEvaluationSe
 	If an exception is raised, suspend the evaluation process and answer the receiver."
 
 	self evaluateBlock: aBlock from: anEvaluationServer.
-	^ self wait.
+	^ self waitForEvaluationResult.
 ]
 
 { #category : 'actions - api' }
@@ -448,6 +448,19 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 
 { #category : 'actions - api' }
 GtGemStoneEvaluationContext >> wait [
+
+	^ self waitForComputationResult
+]
+
+{ #category : 'actions - api' }
+GtGemStoneEvaluationContext >> waitForComputationResult [
+
+	semaphore wait.
+	^ result
+]
+
+{ #category : 'actions - api' }
+GtGemStoneEvaluationContext >> waitForEvaluationResult [
 
 	semaphore wait.
 	^ evaluationResult
