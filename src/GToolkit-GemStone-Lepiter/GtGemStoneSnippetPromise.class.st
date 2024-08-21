@@ -28,6 +28,14 @@ GtGemStoneSnippetPromise >> coderEvaluationContext: anObject [
 	coderEvaluationContext := anObject
 ]
 
+{ #category : #utils }
+GtGemStoneSnippetPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
+	"Instantiate an evaluation result object from the given object."
+
+	^ GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: aDictionaryOrObject 
+]
+
 { #category : #accessing }
 GtGemStoneSnippetPromise >> gemStoneSession [
 	^ gtRsrEvaluatorPromise gtSession
@@ -50,8 +58,8 @@ GtGemStoneSnippetPromise >> hasResult [
 
 { #category : #initialization }
 GtGemStoneSnippetPromise >> initialize [
-
 	super initialize.
+	
 	value := self.
 	mutex := Mutex new.
 ]
@@ -67,6 +75,22 @@ GtGemStoneSnippetPromise >> isResolved [
 
 	^ gtRsrEvaluatorPromise isResolved and: [
 		value ~~ self ]
+]
+
+{ #category : #private }
+GtGemStoneSnippetPromise >> resolveWithComputedResult: computedResult [ 
+	computedResult associationsDo: [ :binding |
+		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
+			value: (binding value asGtBareProxyObject) ].
+
+	value := (computedResult
+		at: 'snippetResult'
+		ifPresent: [ :obj | 
+			coderEvaluationContext serializationStrategy
+				ifNil: [ obj ]
+				ifNotNil: [ :strategy | obj
+					proxyPerform: #yourself serializationStrategy: strategy ] ]
+		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
 ]
 
 { #category : #accessing }
@@ -108,26 +132,23 @@ GtGemStoneSnippetPromise >> value [
 
 { #category : #private }
 GtGemStoneSnippetPromise >> wait [
-	| result |
+	| rawEvaluationResultData evaluationResult computedResult |
 	
 	executionContext := gtRsrEvaluatorPromise value.
-	result := executionContext wait.
-
-	"We get here in case we terminate the remote process running the async computation and signal the semaphore on which the computation runs. A different way to implement this would be to do a low-level call and get back a result object indicating that the process was terminated. It also works here to check against nil, as we expect to get back a dictionary. If the computation could return nil, this would not work."
-	result ifNil: [ 
-		value := nil.
-		^ self ].
+	rawEvaluationResultData := executionContext wait.
 	
-	result associationsDo: [ :binding |
-		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
-
-	value := (result
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			coderEvaluationContext serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
+	evaluationResult := self createEvaluationResultFromData: rawEvaluationResultData.
+	self gemStoneSession ifNotNil: [ :aGemStoneSession |
+		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
+	 
+	evaluationResult hasEvaluationException ifTrue: [ 
+		evaluationResult := evaluationResult signalGemStoneDebugger.
+		self gemStoneSession ifNotNil: [ :aGemStoneSession |
+			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ]. ].
+	
+	computedResult := evaluationResult computedResult.
+	computedResult := gtRsrEvaluatorPromise 
+		basicDeserializeResult: evaluationResult computedResult.
+	
+	self resolveWithComputedResult: computedResult
 ]

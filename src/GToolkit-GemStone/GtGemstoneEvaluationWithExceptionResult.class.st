@@ -7,7 +7,12 @@ Class {
 	#category : #'GToolkit-GemStone'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
+GtGemstoneEvaluationWithExceptionResult >> canHandleSpecificDebugger [
+	^ true
+]
+
+{ #category : #accessing }
 GtGemstoneEvaluationWithExceptionResult >> computedResult [
 	^ self evaluationContext
 ]
@@ -25,6 +30,11 @@ GtGemstoneEvaluationWithExceptionResult >> evaluationContext: aGemStoneEvaluatio
 { #category : #'initialization ' }
 GtGemstoneEvaluationWithExceptionResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
 	evaluationContext gtPharoProxyInitializeWithSession: aGemStoneSession
+]
+
+{ #category : #testing }
+GtGemstoneEvaluationWithExceptionResult >> hasEvaluationException [
+	^ true
 ]
 
 { #category : #'initialization ' }

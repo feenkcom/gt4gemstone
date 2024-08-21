@@ -59,9 +59,13 @@ GtRsrEvaluatorServiceClient >> evaluateAsyncScript: aGtRsrScriptEvaluation [
 			bindings: resolvedBindings
 			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
 
+		"When making an async call we need to use the legacy serialisation strategy, 
+		as that one is used to get back the data about the remote execution. We could
+		later on explicitly pass a serialisation strategy to be used for the initial
+		call that starts the async execution."
 		GtRsrEvaluatorPromise
 			rsrPromise: rsrPromise
-			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
+			serializationStrategy: #GtRsrLegacySerializationStrategy
 			gtSession: gtSession
 			autoCommit: aGtRsrScriptEvaluation autoCommit
 			sourceEvaluation: aGtRsrScriptEvaluation ]
