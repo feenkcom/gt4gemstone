@@ -105,7 +105,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 			ifNil: [ computationResult  ]
 			ifNotNil: [ :aSerializationStrategy |
 				(Globals at: aSerializationStrategy) new serialize: computationResult ].
-		evaluationResult := GtGemstoneEvaluationWithComputedResult new 
+		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.
 		semaphore signal ]
@@ -121,7 +121,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 		breakpointLevel: 1;
 		resume.
 
-	^ GtGemstoneEvaluationWithInProgressResult new
+	^ GtGemstoneEvaluationInProgressResult new
 		 evaluationContext: self
 ]
 
@@ -180,7 +180,7 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 	
 		"result := self asGtRsrProxyObjectForConnection: evalServer _connection."
 		result := nil.
-		evaluationResult := GtGemstoneEvaluationWithExceptionResult new
+		evaluationResult := GtGemstoneEvaluationExceptionResult new
 			evaluationContext: self.
 	
 		semaphore signal.
@@ -378,8 +378,8 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 GtGemStoneEvaluationContext >> terminateAsyncComputation [
 
 	process terminate.
-
-	evaluationResult := GtGemstoneEvaluationTerminatedResult new.
+ 
+	evaluationResult := GtGemstoneEvaluationCancelledResult new.
 	semaphore signal.
 
 	^ #terminatedAsync
