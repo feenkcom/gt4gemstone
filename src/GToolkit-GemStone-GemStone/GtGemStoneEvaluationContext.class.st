@@ -378,6 +378,8 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 GtGemStoneEvaluationContext >> terminateAsyncComputation [
 
 	process terminate.
+
+	evaluationResult := GtGemstoneEvaluationTerminatedResult new.
 	semaphore signal.
 
 	^ #terminatedAsync
