@@ -97,4 +97,5 @@ GtRsrEvaluatorServiceServer >> startEvaluate: aString for: anObject bindings: aD
 
 	evaluationResult := self gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol.
 	^ evaluationResult asDictionaryForExport
+			asGtRsrProxyObjectForConnection: nil
 ]

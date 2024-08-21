@@ -458,7 +458,7 @@ GtGemStoneEvaluationContext >> variableInfoAtFrameLevel: anInteger [
 { #category : 'actions - api' }
 GtGemStoneEvaluationContext >> wait [
 
-	^ self waitForComputationResult
+	^ self waitForComputationResult asDictionaryForExport
 ]
 
 { #category : 'actions - api' }
