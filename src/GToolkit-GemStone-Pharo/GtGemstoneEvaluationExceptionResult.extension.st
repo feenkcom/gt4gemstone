@@ -1,7 +1,7 @@
-Extension { #name : #GtGemstoneEvaluationWithExceptionResult }
+Extension { #name : #GtGemstoneEvaluationExceptionResult }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
-GtGemstoneEvaluationWithExceptionResult >> signalGemStoneDebugger [
+GtGemstoneEvaluationExceptionResult >> signalGemStoneDebugger [
 	<gemstoneDebuggerSignal>
 	| exception |
 	
@@ -10,7 +10,7 @@ GtGemstoneEvaluationWithExceptionResult >> signalGemStoneDebugger [
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ GtGemstoneEvaluationWithComputedResult new
+		ifTrue: [ GtGemstoneEvaluationComputedResult new
 			computedResult: exception debugResult ]
 		ifFalse: [ self ]
 ]

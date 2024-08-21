@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemstoneEvaluationWithExceptionResult,
+	#name : #GtGemstoneEvaluationExceptionResult,
 	#superclass : #GtGemstoneEvaluationResult,
 	#instVars : [
 		'evaluationContext'
@@ -8,37 +8,37 @@ Class {
 }
 
 { #category : #testing }
-GtGemstoneEvaluationWithExceptionResult >> canHandleSpecificDebugger [
+GtGemstoneEvaluationExceptionResult >> canHandleSpecificDebugger [
 	^ true
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithExceptionResult >> computedResult [
+GtGemstoneEvaluationExceptionResult >> computedResult [
 	^ self evaluationContext
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithExceptionResult >> evaluationContext [
+GtGemstoneEvaluationExceptionResult >> evaluationContext [
 	^ evaluationContext
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithExceptionResult >> evaluationContext: aGemStoneEvaluationContext [
+GtGemstoneEvaluationExceptionResult >> evaluationContext: aGemStoneEvaluationContext [
 	evaluationContext := aGemStoneEvaluationContext
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithExceptionResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
+GtGemstoneEvaluationExceptionResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
 	evaluationContext gtPharoProxyInitializeWithSession: aGemStoneSession
 ]
 
 { #category : #testing }
-GtGemstoneEvaluationWithExceptionResult >> hasEvaluationException [
+GtGemstoneEvaluationExceptionResult >> hasEvaluationException [
 	^ true
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithExceptionResult >> initializeFromJSONDictionary: aDictionary [
+GtGemstoneEvaluationExceptionResult >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
 	aDictionary 

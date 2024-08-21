@@ -13,5 +13,5 @@ RsrPromise >> isGtEvaluationException [
 
 	^ self isFulfilled and: [ 
 		(value class = GtpoGtGemStoneEvaluationContext) or: [ 
-			GtGemstoneEvaluationWithExceptionResult isSerializedDataForCurrentClass: value ] ]
+			GtGemstoneEvaluationExceptionResult isSerializedDataForCurrentClass: value ] ]
 ]

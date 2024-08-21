@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemstoneEvaluationWithInProgressResult,
+	#name : #GtGemstoneEvaluationInProgressResult,
 	#superclass : #GtGemstoneEvaluationResult,
 	#instVars : [
 		'evaluationContext'
@@ -8,27 +8,27 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-GtGemstoneEvaluationWithInProgressResult >> computedResult [
+GtGemstoneEvaluationInProgressResult >> computedResult [
 	^ self evaluationContext
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithInProgressResult >> evaluationContext [
+GtGemstoneEvaluationInProgressResult >> evaluationContext [
 	^ evaluationContext
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithInProgressResult >> evaluationContext: aGemStoneEvaluationContext [
+GtGemstoneEvaluationInProgressResult >> evaluationContext: aGemStoneEvaluationContext [
 	evaluationContext := aGemStoneEvaluationContext
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithInProgressResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
+GtGemstoneEvaluationInProgressResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
 	evaluationContext gtPharoProxyInitializeWithSession: aGemStoneSession
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithInProgressResult >> initializeFromJSONDictionary: aDictionary [
+GtGemstoneEvaluationInProgressResult >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
 	aDictionary 

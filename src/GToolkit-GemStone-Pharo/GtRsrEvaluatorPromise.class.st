@@ -150,7 +150,7 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ GtGemstoneEvaluationWithComputedResult new
+		ifTrue: [ GtGemstoneEvaluationComputedResult new
 			computedResult: exception debugResult ]
 		ifFalse: [ evaluationResult ]
 ]

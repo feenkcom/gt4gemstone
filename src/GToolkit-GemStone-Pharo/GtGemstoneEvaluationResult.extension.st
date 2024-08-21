@@ -10,10 +10,10 @@ GtGemstoneEvaluationResult class >> createEvaluationResultFromData: aDictionaryO
 		ifFalse: [
 			aDictionaryOrObject class = GtpoGtGemStoneEvaluationContext
 				ifTrue: [
-					GtGemstoneEvaluationWithExceptionResult new 
+					GtGemstoneEvaluationExceptionResult new 
 						evaluationContext: aDictionaryOrObject ]
 				ifFalse: [
-					GtGemstoneEvaluationWithComputedResult new
+					GtGemstoneEvaluationComputedResult new
 						computedResult:aDictionaryOrObject ] ]
 ]
 

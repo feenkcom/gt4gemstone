@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemstoneEvaluationWithComputedResult,
+	#name : #GtGemstoneEvaluationComputedResult,
 	#superclass : #GtGemstoneEvaluationResult,
 	#instVars : [
 		'computedResult'
@@ -8,22 +8,22 @@ Class {
 }
 
 { #category : #accessing }
-GtGemstoneEvaluationWithComputedResult >> computedResult [
+GtGemstoneEvaluationComputedResult >> computedResult [
 	^ computedResult
 ]
 
 { #category : #accessing }
-GtGemstoneEvaluationWithComputedResult >> computedResult: anObject [
+GtGemstoneEvaluationComputedResult >> computedResult: anObject [
 	computedResult := anObject
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithComputedResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
+GtGemstoneEvaluationComputedResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
 	computedResult gtPharoProxyInitializeWithSession: aGemStoneSession
 ]
 
 { #category : #'initialization ' }
-GtGemstoneEvaluationWithComputedResult >> initializeFromJSONDictionary: aDictionary [
+GtGemstoneEvaluationComputedResult >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
 	aDictionary 
