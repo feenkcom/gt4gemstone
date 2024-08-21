@@ -44,17 +44,13 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 		state := #Running.
 		startTimestamp := DateAndTime now.
 		[
-			| computedValue |
 			self notifyResolutionStarted.
-		
-			computedValue := snippetPromise value.
-			state := computedValue 
-				ifNil: [ #Cancelled ] 
-				ifNotNil: [ #Completed ] .
+			snippetPromise value.
 		] ensure: [
 			endTimestamp := DateAndTime now.
-			(state = #Running) 
-				ifTrue: [ state := #'Terminated' ].
+			(state = #Running) ifTrue: [ 
+				state := #'Terminated'.
+				snippetPromise break: nil ].
 			
 			self notifyResolutionCompleted ].
 	] forkNamed: 'GtGemStoneSnippetPromiseExecution resolution process'.

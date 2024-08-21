@@ -1,33 +1,33 @@
 Class {
-	#name : 'GtGemstoneEvaluationInProgressResult',
-	#superclass : 'GtGemstoneEvaluationResult',
+	#name : #GtGemstoneEvaluationInProgressResult,
+	#superclass : #GtGemstoneEvaluationResult,
 	#instVars : [
 		'evaluationContext'
 	],
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemstoneEvaluationInProgressResult >> computedResult [
 	^ self evaluationContext
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemstoneEvaluationInProgressResult >> evaluationContext [
 	^ evaluationContext
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemstoneEvaluationInProgressResult >> evaluationContext: aGemStoneEvaluationContext [
 	evaluationContext := aGemStoneEvaluationContext
 ]
 
-{ #category : 'initialization ' }
+{ #category : #'initialization ' }
 GtGemstoneEvaluationInProgressResult >> gtPharoProxyInitializeWithSession: aGemStoneSession [
 	evaluationContext gtPharoProxyInitializeWithSession: aGemStoneSession
 ]
 
-{ #category : 'initialization ' }
+{ #category : #'initialization ' }
 GtGemstoneEvaluationInProgressResult >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	

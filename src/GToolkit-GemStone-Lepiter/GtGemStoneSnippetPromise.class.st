@@ -13,6 +13,17 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> break: aReason [ 
+	value := aReason.
+	state := #Broken.
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> breakWithEvaluationResult: evaluationResult [ 
+	self break: evaluationResult.
+]
+
 { #category : #testing }
 GtGemStoneSnippetPromise >> canStopExecution [
 	^ executionContext notNil and: [
@@ -45,7 +56,17 @@ GtGemStoneSnippetPromise >> fulfill: anObject [
 	state := #Fulfilled
 ]
 
-{ #category : #private }
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> fulfillWithEvaluationResult: evaluationResult [ 
+	| computedResult |
+	computedResult := evaluationResult computedResult.
+	computedResult := gtRsrEvaluatorPromise 
+		basicDeserializeResult: evaluationResult computedResult.
+		
+	self fullfilWithComputedResult: computedResult
+]
+
+{ #category : #resolving }
 GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
 	computedResult associationsDo: [ :binding |
 		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
@@ -76,11 +97,6 @@ GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
 	gtRsrEvaluatorPromise := anObject
 ]
 
-{ #category : #testing }
-GtGemStoneSnippetPromise >> hasResult [
-	^ value ~~ self
-]
-
 { #category : #initialization }
 GtGemStoneSnippetPromise >> initialize [
 	super initialize.
@@ -91,6 +107,20 @@ GtGemStoneSnippetPromise >> initialize [
 ]
 
 { #category : #testing }
+GtGemStoneSnippetPromise >> isBroken [
+	"Report if the receiver is currently broken"
+
+	^state == #Broken
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> isFulfilled [
+	"Report is the receiver is currently fulfilled"
+
+	^state == #Fulfilled
+]
+
+{ #category : #testing }
 GtGemStoneSnippetPromise >> isGtEvaluationException [
 
 	^ gtRsrEvaluatorPromise isGtEvaluationException
@@ -98,9 +128,16 @@ GtGemStoneSnippetPromise >> isGtEvaluationException [
 
 { #category : #testing }
 GtGemStoneSnippetPromise >> isResolved [
+	"Report if the receiver is currently resolved."
 
-	^ gtRsrEvaluatorPromise isResolved and: [
-		value ~~ self ]
+	^self isFulfilled or: [self isBroken]
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> resolveWithEvaluationResult: evaluationResult [ 
+	evaluationResult isEvaluationCancelledResult 
+		ifTrue: [ self breakWithEvaluationResult: evaluationResult ]
+		ifFalse: [ self fulfillWithEvaluationResult: evaluationResult ]
 ]
 
 { #category : #accessing }
@@ -142,7 +179,7 @@ GtGemStoneSnippetPromise >> value [
 
 { #category : #private }
 GtGemStoneSnippetPromise >> wait [
-	| rawEvaluationResultData evaluationResult computedResult |
+	| rawEvaluationResultData evaluationResult |
 	
 	executionContext := gtRsrEvaluatorPromise value.
 	rawEvaluationResultData := executionContext wait.
@@ -154,11 +191,7 @@ GtGemStoneSnippetPromise >> wait [
 	evaluationResult hasEvaluationException ifTrue: [ 
 		evaluationResult := evaluationResult signalGemStoneDebugger.
 		self gemStoneSession ifNotNil: [ :aGemStoneSession |
-			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ]. ].
+			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
 	
-	computedResult := evaluationResult computedResult.
-	computedResult := gtRsrEvaluatorPromise 
-		basicDeserializeResult: evaluationResult computedResult.
-	
-	self fullfilWithComputedResult: computedResult
+	self resolveWithEvaluationResult: evaluationResult
 ]

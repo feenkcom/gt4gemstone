@@ -40,3 +40,8 @@ GtGemstoneEvaluationResult >> hasEvaluationException [
 { #category : #'initialization ' }
 GtGemstoneEvaluationResult >> initializeFromJSONDictionary: aDictionary [
 ]
+
+{ #category : #testing }
+GtGemstoneEvaluationResult >> isEvaluationCancelledResult [
+	^ false
+]
