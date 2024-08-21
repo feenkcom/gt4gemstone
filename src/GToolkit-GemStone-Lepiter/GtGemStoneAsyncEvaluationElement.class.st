@@ -459,6 +459,7 @@ GtGemStoneAsyncEvaluationElement >> unsubscribeFromPromiseResolution [
 
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForCompletedPromise [
+	
 	gemStoneSessionLabel text: promiseResolution sessionDescription.
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ''.

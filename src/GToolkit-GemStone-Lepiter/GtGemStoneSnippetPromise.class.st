@@ -7,7 +7,8 @@ Class {
 		'coderEvaluationContext',
 		'value',
 		'executionContext',
-		'mutex'
+		'mutex',
+		'state'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -36,6 +37,30 @@ GtGemStoneSnippetPromise >> createEvaluationResultFromData: aDictionaryOrObject 
 		createEvaluationResultFromData: aDictionaryOrObject 
 ]
 
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> fulfill: anObject [
+	"Fulfill the receiver"
+
+	value := anObject.
+	state := #Fulfilled
+]
+
+{ #category : #private }
+GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
+	computedResult associationsDo: [ :binding |
+		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
+			value: (binding value asGtBareProxyObject) ].
+
+	self fulfill: (computedResult
+		at: 'snippetResult'
+		ifPresent: [ :obj | 
+			coderEvaluationContext serializationStrategy
+				ifNil: [ obj ]
+				ifNotNil: [ :strategy | obj
+					proxyPerform: #yourself serializationStrategy: strategy ] ]
+		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
+]
+
 { #category : #accessing }
 GtGemStoneSnippetPromise >> gemStoneSession [
 	^ gtRsrEvaluatorPromise gtSession
@@ -62,6 +87,7 @@ GtGemStoneSnippetPromise >> initialize [
 	
 	value := self.
 	mutex := Mutex new.
+	state := #PendingResolution.
 ]
 
 { #category : #testing }
@@ -75,22 +101,6 @@ GtGemStoneSnippetPromise >> isResolved [
 
 	^ gtRsrEvaluatorPromise isResolved and: [
 		value ~~ self ]
-]
-
-{ #category : #private }
-GtGemStoneSnippetPromise >> resolveWithComputedResult: computedResult [ 
-	computedResult associationsDo: [ :binding |
-		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
-
-	value := (computedResult
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			coderEvaluationContext serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
 ]
 
 { #category : #accessing }
@@ -150,5 +160,5 @@ GtGemStoneSnippetPromise >> wait [
 	computedResult := gtRsrEvaluatorPromise 
 		basicDeserializeResult: evaluationResult computedResult.
 	
-	self resolveWithComputedResult: computedResult
+	self fullfilWithComputedResult: computedResult
 ]

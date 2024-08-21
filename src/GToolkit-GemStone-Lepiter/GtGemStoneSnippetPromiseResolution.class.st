@@ -54,7 +54,7 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 		] ensure: [
 			endTimestamp := DateAndTime now.
 			(state = #Running) 
-				ifTrue: [ state := #'Resolution stopped' ].
+				ifTrue: [ state := #'Terminated' ].
 			
 			self notifyResolutionCompleted ].
 	] forkNamed: 'GtGemStoneSnippetPromiseExecution resolution process'.
