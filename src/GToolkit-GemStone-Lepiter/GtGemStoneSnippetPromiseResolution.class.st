@@ -46,10 +46,13 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 		[
 			self notifyResolutionStarted.
 			snippetPromise value.
+			state := snippetPromise isBroken 
+				ifTrue: [ #Cancelled ] 
+				ifFalse: [ #Completed ].
 		] ensure: [
 			endTimestamp := DateAndTime now.
 			(state = #Running) ifTrue: [ 
-				state := #'Terminated'.
+				state := #Terminated.
 				snippetPromise break: nil ].
 			
 			self notifyResolutionCompleted ].
@@ -74,17 +77,18 @@ GtGemStoneSnippetPromiseResolution >> hasProcess [
 	^ resolutionProcess notNil
 ]
 
+{ #category : #testing }
+GtGemStoneSnippetPromiseResolution >> hasValidResult [
+	^ snippetPromise notNil and: [
+		snippetPromise hasValidResult ]
+]
+
 { #category : #initialization }
 GtGemStoneSnippetPromiseResolution >> initialize [
 	super initialize.
 	
 	announcer := Announcer new.
 	state := #'Not Started'
-]
-
-{ #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isEvaluationCancelled [
-	^ state = #Cancelled
 ]
 
 { #category : #testing }
@@ -108,12 +112,6 @@ GtGemStoneSnippetPromiseResolution >> isResolvingPending [
 GtGemStoneSnippetPromiseResolution >> isResolvingRunning [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone not ]
-]
-
-{ #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isValueResolved [
-	^ snippetPromise notNil and: [
-		snippetPromise isResolved ]
 ]
 
 { #category : #notifications }

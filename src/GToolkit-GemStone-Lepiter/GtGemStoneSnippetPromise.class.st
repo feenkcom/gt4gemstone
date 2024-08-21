@@ -97,6 +97,11 @@ GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
 	gtRsrEvaluatorPromise := anObject
 ]
 
+{ #category : #testing }
+GtGemStoneSnippetPromise >> hasValidResult [
+	^ self isFulfilled
+]
+
 { #category : #initialization }
 GtGemStoneSnippetPromise >> initialize [
 	super initialize.
