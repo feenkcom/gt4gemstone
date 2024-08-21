@@ -202,9 +202,8 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 GtGemStoneAsyncEvaluationElement >> gtActionInspectResolvedValueFor: anAction [
 	<gtExecutionAction>
 
-	(self isValueResolved not or:[ 
-		self isEvaluationCancelled  ]) 
-			ifTrue: [ ^ anAction empty ].
+	self hasValidResult ifFalse: [ 
+		^ anAction empty ].
 	
 	^ anAction button
 		label: 'Result';
@@ -258,6 +257,12 @@ GtGemStoneAsyncEvaluationElement >> gtActionUpdateDetailsFor: anAction [
 		icon: BrGlamorousIcons refresh;
 		action: [ 
 			self requestMainContainerAndToolbarUpdate ]
+]
+
+{ #category : #testing }
+GtGemStoneAsyncEvaluationElement >> hasValidResult [
+	^ promiseResolution isNotNil and: [
+		promiseResolution hasValidResult  ]
 ]
 
 { #category : #'initialization ' }
@@ -319,18 +324,6 @@ GtGemStoneAsyncEvaluationElement >> initializeUpdaters [
 		selector: #updateExecutionContent.
 ]
 
-{ #category : #testing }
-GtGemStoneAsyncEvaluationElement >> isEvaluationCancelled [
-	^ promiseResolution isNotNil and: [
-		promiseResolution isEvaluationCancelled  ]
-]
-
-{ #category : #testing }
-GtGemStoneAsyncEvaluationElement >> isValueResolved [
-	^ promiseResolution isNotNil and: [
-		promiseResolution isValueResolved  ]
-]
-
 { #category : #callbacks }
 GtGemStoneAsyncEvaluationElement >> onSnippetPromiseResolutionChanged [
 	self updateMainContainerAndToolbar.
@@ -374,10 +367,10 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 	self replacePaneContentAutomatically ifFalse: [
 		aBlock value.
 		^ self ].
-	(self isValueResolved not or: [ self isEvaluationCancelled]) 
-		ifTrue: [
-			aBlock value.
-			^ self ].
+	
+	self hasValidResult ifFalse: [
+		aBlock value.
+		^ self ].
 
 	self previousPagerPageElementDo: [ :aPageElement |
 		(aPageElement 
