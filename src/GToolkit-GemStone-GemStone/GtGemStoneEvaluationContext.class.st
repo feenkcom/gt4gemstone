@@ -282,6 +282,15 @@ GtGemStoneEvaluationContext >> resume [
 	^ result
 ]
 
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> resumeAsyncComputation [
+
+	self assertNotSignalled.
+	process resume.
+
+	^ GtGemstoneEvaluationResumedResult new asDictionaryForExport
+]
+
 { #category : 'accessing' }
 GtGemStoneEvaluationContext >> serializationStrategy [
 	^serializationStrategy
