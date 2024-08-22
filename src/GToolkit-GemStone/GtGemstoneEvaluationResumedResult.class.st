@@ -11,5 +11,5 @@ GtGemstoneEvaluationResumedResult >> computedResult [
 
 { #category : #testing }
 GtGemstoneEvaluationResumedResult >> isResumedExecutionResult [
-	^ false
+	^ true
 ]
