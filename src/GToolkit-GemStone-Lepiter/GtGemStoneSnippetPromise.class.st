@@ -111,6 +111,13 @@ GtGemStoneSnippetPromise >> initialize [
 	state := #PendingResolution.
 ]
 
+{ #category : #actions }
+GtGemStoneSnippetPromise >> interruptEvaluation [
+	self assert: [ executionContext notNil ].
+	
+	^ executionContext interruptAsyncComputation
+]
+
 { #category : #testing }
 GtGemStoneSnippetPromise >> isBroken [
 	"Report if the receiver is currently broken"

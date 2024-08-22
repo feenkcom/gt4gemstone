@@ -10,6 +10,12 @@ GtpoGtGemStoneEvaluationContext class >> remoteClassName [
 	^ #GtGemStoneEvaluationContext
 ]
 
+{ #category : #'actions - debug' }
+GtpoGtGemStoneEvaluationContext >> interruptAsyncComputation [
+
+	^ self proxyPerform: #interruptAsyncComputation
+]
+
 { #category : #accessing }
 GtpoGtGemStoneEvaluationContext >> printOn: aStream [
 	"Avoid a GS call that is typically only written to PharoDebug.log"

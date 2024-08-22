@@ -199,6 +199,21 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 ]
 
 { #category : #'gt - actions' }
+GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
+	<gtExecutionAction>
+
+	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	
+	^ anAction button
+		label: 'Debug';
+		priority: 110;
+		icon: BrGlamorousVectorIcons debug;
+		tooltip: 'Debug the execution';
+		action: [ :button |
+			promiseResolution interruptEvaluation  ].
+]
+
+{ #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionInspectResolvedValueFor: anAction [
 	<gtExecutionAction>
 

@@ -91,6 +91,11 @@ GtGemStoneSnippetPromiseResolution >> initialize [
 	state := #'Not Started'
 ]
 
+{ #category : #actions }
+GtGemStoneSnippetPromiseResolution >> interruptEvaluation [
+	snippetPromise interruptEvaluation
+]
+
 { #category : #testing }
 GtGemStoneSnippetPromiseResolution >> isResolutionProcessDone [
 	^ resolutionProcess isTerminated or: [ 
