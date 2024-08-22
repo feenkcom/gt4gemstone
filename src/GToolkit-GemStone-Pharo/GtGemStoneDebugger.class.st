@@ -57,11 +57,20 @@ GtGemStoneDebugger >> gsRestartFrameLevel: anInteger [
 
 { #category : #actions }
 GtGemStoneDebugger >> gsResume [
-	| result |
-
-	result := self debuggerProxy
-		proxyPerform: #resumeAsyncComputation
-		autoCommit: false.
+	| computedResult result |
+	
+	computedResult := exception isForAsyncPromise 
+		ifTrue: [ 
+			self debuggerProxy
+				proxyPerform: #resumeAsyncComputation
+				autoCommit: false ]
+		ifFalse: [ 
+			self debuggerProxy
+				proxyPerform: #resume
+				autoCommit: false ].
+				
+	result := GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: computedResult.
 	
 	exception debugResult: result.
 	exception hasDebugResult: true.

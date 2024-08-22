@@ -96,6 +96,11 @@ GtRsrEvaluatorPromise >> isBroken [
 ]
 
 { #category : #testing }
+GtRsrEvaluatorPromise >> isForAsyncExecution [
+	^ false
+]
+
+{ #category : #testing }
 GtRsrEvaluatorPromise >> isGtEvaluationException [
 	"Answer a boolean indicating if the result is an evaluation exception.
 	This is true from the time an exception has been raised until the debugger has been closed."
@@ -150,9 +155,8 @@ GtRsrEvaluatorPromise >> signalGemStoneDebugger [
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ GtGemstoneEvaluationComputedResult new
-			computedResult: exception debugResult ]
-		ifFalse: [ evaluationResult ]
+		ifTrue: [ exception debugResult ]
+		ifFalse: [ nil ]
 ]
 
 { #category : #accessing }
@@ -173,15 +177,11 @@ GtRsrEvaluatorPromise >> wait [
 	evaluationResult := self createEvaluationResultFromData: rawEvaluationResultData.
 	gtSession ifNotNil: [ :aGemStoneSession |
 		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
-	
-	"Temporarily handle the old post-mortem debugger notification"
-	rawEvaluationResultData class = GtpoGtRsrEvaluationExceptionInformation
-		ifTrue: [ self error: 'Evaluation error, see result' ].
 
-	self isGtEvaluationException ifTrue: [ 
-		evaluationResult := self signalGemStoneDebugger.
+	[ evaluationResult hasEvaluationException ] whileTrue: [
+		evaluationResult := evaluationResult signalGemStoneDebuggerFromPromise: self.
 		gtSession ifNotNil: [ :aGemStoneSession |
-			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ]. ].
+			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
 
 	computedResult :=  serializationStrategy
 		ifNil: [ evaluationResult computedResult ]

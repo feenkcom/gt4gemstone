@@ -1,16 +1,17 @@
 Extension { #name : #GtGemstoneEvaluationExceptionResult }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
-GtGemstoneEvaluationExceptionResult >> signalGemStoneDebugger [
+GtGemstoneEvaluationExceptionResult >> signalGemStoneDebuggerFromPromise: aPromise [
 	<gemstoneDebuggerSignal>
 	| exception |
 	
 	exception := GtRsrEvaluationException new 
-		debuggerProxy: self evaluationContext.
+		debuggerProxy: self evaluationContext;
+		gemStonePromise: aPromise.
+		
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ GtGemstoneEvaluationResult 
-			createEvaluationResultFromData: exception debugResult ]
+		ifTrue: [ exception debugResult ]
 		ifFalse: [ nil ]
 ]

@@ -126,6 +126,11 @@ GtGemStoneSnippetPromise >> isBroken [
 ]
 
 { #category : #testing }
+GtGemStoneSnippetPromise >> isForAsyncExecution [
+	^ true 
+]
+
+{ #category : #testing }
 GtGemStoneSnippetPromise >> isFulfilled [
 	"Report is the receiver is currently fulfilled"
 
@@ -170,7 +175,7 @@ GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationCon
 		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
 	 
 	evaluationResult hasEvaluationException ifTrue: [ 
-		evaluationResult := evaluationResult signalGemStoneDebugger.
+		evaluationResult := evaluationResult signalGemStoneDebuggerFromPromise: self.
 		self gemStoneSession ifNotNil: [ :aGemStoneSession |
 			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
 			
@@ -217,7 +222,7 @@ GtGemStoneSnippetPromise >> wait [
 		evaluationResult := self 
 			retrieveEvaluationResultFromContext: executionContext.
 	] doWhileTrue: [ 
-		evaluationResult isResumedExecutionResult  ] .
+		evaluationResult isResumedExecutionResult  ].
 	
 	self resolveWithEvaluationResult: evaluationResult
 ]
