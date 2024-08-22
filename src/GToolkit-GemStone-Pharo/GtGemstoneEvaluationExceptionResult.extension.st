@@ -10,7 +10,7 @@ GtGemstoneEvaluationExceptionResult >> signalGemStoneDebugger [
 	exception signal.
 	
 	^ exception hasDebugResult
-		ifTrue: [ GtGemstoneEvaluationComputedResult new
-			computedResult: exception debugResult ]
-		ifFalse: [ self ]
+		ifTrue: [ GtGemstoneEvaluationResult 
+			createEvaluationResultFromData: exception debugResult ]
+		ifFalse: [ nil ]
 ]

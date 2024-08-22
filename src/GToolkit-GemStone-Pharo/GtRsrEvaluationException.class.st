@@ -30,7 +30,9 @@ GtRsrEvaluationException >> debugResult: anObject [
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
 
-	^ debuggerClient ifNil: [ debuggerClient := GtGemStoneDebugger new exception: self ].
+	^ debuggerClient ifNil: [ 
+		debuggerClient := GtGemStoneDebugger new 
+			exception: self ].
 ]
 
 { #category : #accessing }

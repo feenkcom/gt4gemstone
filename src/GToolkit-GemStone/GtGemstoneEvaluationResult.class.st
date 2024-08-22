@@ -45,3 +45,8 @@ GtGemstoneEvaluationResult >> initializeFromJSONDictionary: aDictionary [
 GtGemstoneEvaluationResult >> isEvaluationCancelledResult [
 	^ false
 ]
+
+{ #category : #testing }
+GtGemstoneEvaluationResult >> isResumedExecutionResult [
+	^ false
+]

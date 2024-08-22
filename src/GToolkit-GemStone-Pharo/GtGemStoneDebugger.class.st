@@ -60,8 +60,9 @@ GtGemStoneDebugger >> gsResume [
 	| result |
 
 	result := self debuggerProxy
-		proxyPerform: #resume
+		proxyPerform: #resumeAsyncComputation
 		autoCommit: false.
+	
 	exception debugResult: result.
 	exception hasDebugResult: true.
 	

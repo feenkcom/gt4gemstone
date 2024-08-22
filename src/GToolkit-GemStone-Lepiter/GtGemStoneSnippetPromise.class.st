@@ -159,6 +159,24 @@ GtGemStoneSnippetPromise >> resolvedValue [
 	^ value
 ]
 
+{ #category : #private }
+GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationContext [
+	| rawEvaluationResultData evaluationResult |
+	rawEvaluationResultData := anEvaluationContext wait.
+	
+	evaluationResult := self 
+		createEvaluationResultFromData: rawEvaluationResultData.
+	self gemStoneSession ifNotNil: [ :aGemStoneSession |
+		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
+	 
+	evaluationResult hasEvaluationException ifTrue: [ 
+		evaluationResult := evaluationResult signalGemStoneDebugger.
+		self gemStoneSession ifNotNil: [ :aGemStoneSession |
+			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
+			
+	^ evaluationResult
+]
+
 { #category : #accessing }
 GtGemStoneSnippetPromise >> sessionDescription [
 	^ gtRsrEvaluatorPromise sessionDescription
@@ -191,19 +209,15 @@ GtGemStoneSnippetPromise >> value [
 
 { #category : #private }
 GtGemStoneSnippetPromise >> wait [
-	| rawEvaluationResultData evaluationResult |
+	| evaluationResult |
 	
 	executionContext := gtRsrEvaluatorPromise value.
-	rawEvaluationResultData := executionContext wait.
 	
-	evaluationResult := self createEvaluationResultFromData: rawEvaluationResultData.
-	self gemStoneSession ifNotNil: [ :aGemStoneSession |
-		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
-	 
-	evaluationResult hasEvaluationException ifTrue: [ 
-		evaluationResult := evaluationResult signalGemStoneDebugger.
-		self gemStoneSession ifNotNil: [ :aGemStoneSession |
-			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
+	[
+		evaluationResult := self 
+			retrieveEvaluationResultFromContext: executionContext.
+	] doWhileTrue: [ 
+		evaluationResult isResumedExecutionResult  ] .
 	
 	self resolveWithEvaluationResult: evaluationResult
 ]
