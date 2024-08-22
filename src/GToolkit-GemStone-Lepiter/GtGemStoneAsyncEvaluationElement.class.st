@@ -191,7 +191,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 	
 	^ anAction button
 		label: 'Cancel';
-		priority: 105;
+		priority: 115;
 		icon: BrGlamorousVectorIcons cancel;
 		tooltip: 'Terminate the execution';
 		action: [ :button |
