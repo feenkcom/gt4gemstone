@@ -178,8 +178,7 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		exception := ex.
 		devMessage := anObject.
 	
-		"result := self asGtRsrProxyObjectForConnection: evalServer _connection."
-		result := nil.
+		result := self asGtRsrProxyObjectForConnection: evalServer _connection.
 		evaluationResult := GtGemstoneEvaluationExceptionResult new
 			evaluationContext: self.
 	
@@ -279,7 +278,8 @@ GtGemStoneEvaluationContext >> resume [
 	self assertNotSignalled.
 	process resume.
 	semaphore wait.
-	^ result
+
+	^ evaluationResult asDictionaryForExport
 ]
 
 { #category : 'actions - debug' }
