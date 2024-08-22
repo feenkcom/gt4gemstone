@@ -188,6 +188,21 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 		ex resume ]
 ]
 
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> interruptAsyncComputation [
+
+	process suspend.
+
+	self createNewCallStack firstNonCriticalFrameIndex
+		ifNil: [ "Possibly handle the case of processes that we cannot interrupt" ]
+		ifNotNil: [ :anIndex | 
+			process setStepIntoBreaksAtLevel: 	anIndex ].
+	
+	process resume.
+
+	^ #interruptedAsync
+]
+
 { #category : 'testing' }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"

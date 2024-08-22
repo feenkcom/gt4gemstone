@@ -1,6 +1,6 @@
 Class {
-	#name : #GtGemStoneLocalCallFrame,
-	#superclass : #Object,
+	#name : 'GtGemStoneLocalCallFrame',
+	#superclass : 'Object',
 	#instVars : [
 		'frameArray',
 		'homeMethod',
@@ -9,32 +9,32 @@ Class {
 	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame class >> forFrameArray: aFrameArray [ 
 	^ self 
 		forFrameArray: aFrameArray 
 		withIdentifier: nil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame class >> forFrameArray: aFrameArray withIdentifier: aFrameIdentifier [
 	^ self new 
 		initializeForFrameArray: aFrameArray 
 		withIdentifier: aFrameIdentifier
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> description [
 	^ String streamContents: [ :aStream |
 		self printDescriptionOn: aStream]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> frameIdentifier [
 	^ frameIdentifier
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : 'gt - extensions' }
 GtGemStoneLocalCallFrame >> gtFrameArrayItemsFor: aView [
 	<gtView>
 	
@@ -49,40 +49,46 @@ GtGemStoneLocalCallFrame >> gtFrameArrayItemsFor: aView [
 			text: [ :eachItem | eachItem gtDisplayString ].
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtGemStoneLocalCallFrame >> hasSamePropertiesAs: anotherContext [
 	^ (self isForSameMethodOrBlockAs: anotherContext) and: [
 		self ipOffset = anotherContext ipOffset ] 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> homeMethod [
 	^ homeMethod
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> homeMethodOop [
 	^ self homeMethod asOop
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneLocalCallFrame >> initializeForFrameArray: aFrameArray withIdentifier: aFrameIdentifier [ 
 	frameArray := aFrameArray.
 	homeMethod := frameArray first homeMethod.
 	frameIdentifier := aFrameIdentifier
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> ipOffset [
 	^ frameArray at: 2
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> isForBlock [
 	^ frameArray first isMethodForBlock
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
+GtGemStoneLocalCallFrame >> isForCriticalMethod [
+	^ ProcessorScheduler scheduler _criticalMethods 
+		includes: self homeMethod
+]
+
+{ #category : 'testing' }
 GtGemStoneLocalCallFrame >> isForSameMethodOrBlockAs: anotherContext [
 	"This amims to detect of two contexts are different"
 	^ self methodClassName = anotherContext methodClassName and: [
@@ -90,24 +96,24 @@ GtGemStoneLocalCallFrame >> isForSameMethodOrBlockAs: anotherContext [
 			self homeMethodOop = anotherContext homeMethodOop  ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> methodClass [
 	^ homeMethod inClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> methodClassName [
 	^ self methodClass ifNotNil: [ :aClass | 
 		aClass name ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> methodDescription [
 	^ String streamContents: [ :aStream |
 	 	self printMethodDescriptionOn: aStream ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> printClassLabelOn: aStream [
 	self selfObjectClass ~= self methodClass
 		ifTrue: [
@@ -120,14 +126,14 @@ GtGemStoneLocalCallFrame >> printClassLabelOn: aStream [
 			aStream nextPutAll: (self methodClassName ifNil: [ '<unknown>']) ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> printDescriptionOn: aStream [
 	self printMethodDescriptionOn:  aStream.
 	aStream nextPutAll: ' '.
 	self printExtraDetailsOn: aStream. 
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> printExtraDetailsOn: aStream [
 	aStream 
 		nextPutAll: '[';
@@ -136,7 +142,7 @@ GtGemStoneLocalCallFrame >> printExtraDetailsOn: aStream [
 		nextPutAll: self frameIdentifier description 
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> printMethodDescriptionOn: aStream [
 	self isForBlock ifTrue: [
 		aStream nextPutAll: '[] in ' ].
@@ -149,7 +155,7 @@ GtGemStoneLocalCallFrame >> printMethodDescriptionOn: aStream [
 			aStream nextPutAll: aSelector ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 GtGemStoneLocalCallFrame >> printOn: aStream [
 	super printOn: aStream.
 	
@@ -157,49 +163,49 @@ GtGemStoneLocalCallFrame >> printOn: aStream [
 		self printDescriptionOn: aStream ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> programCounterMarkers [
 	| currentSourceInfo |
 	currentSourceInfo := self sourceInfo.
 	^ { currentSourceInfo first . currentSourceInfo second }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> receiver [
 	^ frameArray at: 10
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> receiverClass [
 	^ self receiver class
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> receiverClassName [
 	^ self receiverClass name
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> selector [
 	^ homeMethod selector.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> selfObject [
 	^ frameArray at: 8
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> selfObjectClass [
 	^ self selfObject class
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> selfObjectClassName [
 	^ self selfObjectClass name
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneLocalCallFrame >> sourceInfo [
 	| source ipOffset markers startIndex endIndex i |
 
@@ -219,12 +225,12 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 	^ { startIndex. endIndex. source. }
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallFrame >> updateIdentifierBasedOn: aCallFrame [
 	self updateIdentifierTo:  aCallFrame frameIdentifier
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 GtGemStoneLocalCallFrame >> updateIdentifierTo: anIdentifier [
 	frameIdentifier := anIdentifier
 ]
