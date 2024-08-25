@@ -277,9 +277,8 @@ GtGemStoneEvaluationContext >> resume [
 
 	self assertNotSignalled.
 	process resume.
-	semaphore wait.
-
-	^ evaluationResult asDictionaryForExport
+	
+	^ self waitForEvaluationResult asDictionaryForExport
 ]
 
 { #category : 'actions - debug' }
