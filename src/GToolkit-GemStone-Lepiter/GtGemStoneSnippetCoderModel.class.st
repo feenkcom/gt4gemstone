@@ -39,6 +39,18 @@ GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock 
 GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns.
 
+	self class enableAsyncPlay ifTrue:
+		[ addOns
+			addMainAction: 'Inspect asynchronous' translated
+			icon: BrGlamorousIcons playAsynchronous
+			action: [ :aCoderUIModel :anElement | 
+				GtCoderCodeExecutor doItAndGo
+					coderViewModel: aCoderUIModel;
+					element: anElement;
+					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
+					execute ]
+			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
+			
 	addOns
 		addMainAction: 'Evaluate' translated
 		icon: BrGlamorousVectorIcons play
@@ -66,17 +78,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItAndGoSerializedActionId.
-	self class enableAsyncPlay ifTrue:
-		[ addOns
-			addMainAction: 'Inspect asynchronous' translated
-			icon: BrGlamorousVectorIcons playAsynchronous
-			action: [ :aCoderUIModel :anElement | 
-				GtCoderCodeExecutor doItAndGo
-					coderViewModel: aCoderUIModel;
-					element: anElement;
-					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
-					execute ]
-			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
+	
 	addOns
 		addMainAction: 'Debug' translated
 		icon: BrGlamorousVectorIcons debug
