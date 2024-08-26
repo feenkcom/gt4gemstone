@@ -2,7 +2,8 @@ Class {
 	#name : #GtRemoteGemStonePlaygroundExamples,
 	#superclass : #Object,
 	#instVars : [
-		'theExternalSnippetContext'
+		'theExternalSnippetContext',
+		'server'
 	],
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
@@ -96,6 +97,27 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 ]
 
 { #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndBasicCode [
+	<gtExample>
+	| page pageTool snippet |
+	
+	page := LePage new
+		addSnippet: (snippet := LeGemStoneSnippet new
+			code: '1+1';
+			sessionName: 'test:default');
+		yourself.
+	
+	self assert: snippet sessionName equals: 'test:default'.
+	self assert: snippet code equals: '1+1'.
+	
+	pageTool := LePagePhlowTool new
+		page: page.
+	pageTool externalSnippetContext: self externalSnippetContext.
+				
+	^ pageTool
+]
+
+{ #category : #examples }
 GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	<gtExample>
 	| page snippet |
@@ -107,6 +129,56 @@ GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	self assert: snippet sessionName equals: nil.
 	
 	^ page
+]
+
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+		
+	self assert: self gemstoneSessionRegistry hasConnectors.
+	self assert: self gemstoneSessionRegistry hasSessions.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndBasicCode.
+	
+	scripter := self scripterForPageTool: pageTool.
+		
+	self 
+		assertGemStoneSessionLabel: 'test' 
+		for: scripter.
+		
+	self assert: self gemstoneSessionRegistry sessions size equals: 1.
+	self assert: self gemstoneSessionRegistry sessions values first isRunning.
+	self 
+		assert: self gemstoneSessionRegistry sessions values first name
+		equals: 'test:default'.
+	
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| scripter |
+	
+	scripter := self playgroundPageWithConnectedGemStone.
+	
+	self withEnabledAutomaticReplaceDo: [
+		scripter click
+			label: 'Click on play and inspect button';
+			// GtSourceCoderDoItAndGoActionId;
+			play ].
+		
+	scripter pager
+		assertPageCountIs: 2.
+	 
+	^ scripter
 ]
 
 { #category : #examples }
@@ -200,6 +272,29 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithSessionNameOnRegi
 	^ scripter
 ]
 
+{ #category : #'examples - setup/tear down' }
+GtRemoteGemStonePlaygroundExamples >> runningServer [
+	"Answer a running server.
+	This assumes:
+	- The GemStone server is running with Gt loaded
+	- Default usernames and passwords
+	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
+	<gtExample>
+	<after: #stopServer>
+	| connector |
+	
+	server ifNotNil: [ ^ server ].
+	
+	connector := GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: 'test'.
+	self gemstoneSessionRegistry  
+		connectorNamed: 'test'
+		ifPresent: [ :aConnector | Error signal: 'Connector already present'] 
+		ifAbsent: [ self gemstoneSessionRegistry connectors
+			at: 'test' put: connector ].
+	^ server := self gemstoneSessionRegistry
+		newSessionOrDefaultWithConnector: connector
+]
+
 { #category : #accessing }
 GtRemoteGemStonePlaygroundExamples >> scripter [
 	^ BlScripter new
@@ -210,7 +305,36 @@ GtRemoteGemStonePlaygroundExamples >> scripterForPageTool: aPageTool [
 	| scripter |
 	scripter := self scripter.
 	scripter
-		model: aPageTool page;
-		element: aPageTool asElement.
+		model: aPageTool;
+		element: (GtPager createWrappedOn: aPageTool asElement).
 	^ scripter
+]
+
+{ #category : #'examples - setup/tear down' }
+GtRemoteGemStonePlaygroundExamples >> stopServer [ 
+
+	server ifNotNil: 
+		[ server stop.
+		server := nil ].
+]
+
+{ #category : #utils }
+GtRemoteGemStonePlaygroundExamples >> withAutomaticReplaceSetTo: aBoolean do: aBlock [
+	| currentValue |
+	currentValue := GtGemStoneAsyncEvaluationPhlowTool replacePaneContentAutomatically.
+	
+	GtGemStoneAsyncEvaluationPhlowTool replacePaneContentAutomatically: aBoolean.
+	aBlock ensure: [
+		GtGemStoneAsyncEvaluationPhlowTool replacePaneContentAutomatically: currentValue ]. 
+	
+]
+
+{ #category : #utils }
+GtRemoteGemStonePlaygroundExamples >> withDisabledAutomaticReplaceDo: aBlock [
+	self withAutomaticReplaceSetTo: false do: aBlock
+]
+
+{ #category : #utils }
+GtRemoteGemStonePlaygroundExamples >> withEnabledAutomaticReplaceDo: aBlock [
+	self withAutomaticReplaceSetTo: true do: aBlock
 ]

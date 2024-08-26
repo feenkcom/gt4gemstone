@@ -29,7 +29,7 @@ GtRemoteGemStoneSessionAsyncExamples >> stopServer [
 		server := nil ].
 ]
 
-{ #category : #examples }
+{ #category : #'examples - basic' }
 GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptAndCancelComputation [
 	<gtExample>
 	| evaluatorPromise executionContext interruptResultData rawEvaluationResultData errorEvaluationResultData  errorEvaluationResult evaluationResult  terminateEvaluationResultData |
@@ -68,7 +68,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptA
 	^ evaluationResult
 ]
 
-{ #category : #examples }
+{ #category : #'examples - basic' }
 GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptAndResumeComputation [
 	<gtExample>
 	| evaluatorPromise executionContext interruptResultData rawEvaluationResultData resumeEvaluationResult errorEvaluationResultData  errorEvaluationResult evaluationResult  resumedEvaluationResultData |
@@ -112,7 +112,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptA
 	^ evaluationResult
 ]
 
-{ #category : #examples }
+{ #category : #'examples - basic' }
 GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnLegacy [
 	<gtExample>
 	| evaluatorPromise executionContext rawEvaluationResultData  evaluationResult |
@@ -143,7 +143,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnLega
 	^ evaluationResult
 ]
 
-{ #category : #examples }
+{ #category : #'examples - basic' }
 GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnProxy [
 	<gtExample>
 	| evaluatorPromise executionContext rawEvaluationResultData  evaluationResult |
@@ -181,7 +181,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnProx
 	^ evaluationResult
 ]
 
-{ #category : #examples }
+{ #category : #'examples - basic' }
 GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_terminateComputation [
 	<gtExample>
 	| evaluatorPromise executionContext terminatedResultData rawEvaluationResultData  evaluationResult |
