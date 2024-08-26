@@ -30,9 +30,9 @@ GtRemoteGemStoneSessionAsyncExamples >> stopServer [
 ]
 
 { #category : #examples }
-GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptAndResumeComputation [
+GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptAndCancelComputation [
 	<gtExample>
-	| evaluatorPromise executionContext interruptResultData rawEvaluationResultData errorEvaluationResultData  evaluationResult  resumedEvaluationResultData |
+	| evaluatorPromise executionContext interruptResultData rawEvaluationResultData errorEvaluationResultData  errorEvaluationResult evaluationResult  terminateEvaluationResultData |
 	
 	evaluatorPromise := (self runningServer 
 		createScriptEvaluationFor: 'Delay waitForSeconds: 10. 1')
@@ -48,20 +48,66 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptA
 	self assert: interruptResultData equals: #interruptedAsync.
 	
 	errorEvaluationResultData := executionContext waitAsyncComputation.
+	self assert: (GtGemstoneEvaluationExceptionResult 
+		isSerializedDataForCurrentClass: errorEvaluationResultData).
+	errorEvaluationResult := GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: errorEvaluationResultData.
+	self assert: errorEvaluationResult hasEvaluationException.
 	
+	terminateEvaluationResultData := executionContext terminateAsyncComputation.
+	self assert: terminateEvaluationResultData equals: #terminatedAsync.
+	
+	rawEvaluationResultData := executionContext waitAsyncComputation.
+	self assert: (GtGemstoneEvaluationCancelledResult 
+		isSerializedDataForCurrentClass: rawEvaluationResultData).
+	evaluationResult := GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: rawEvaluationResultData.
+		
+	self assert: evaluationResult isEvaluationCancelledResult.
+	
+	^ evaluationResult
+]
+
+{ #category : #examples }
+GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_interruptAndResumeComputation [
+	<gtExample>
+	| evaluatorPromise executionContext interruptResultData rawEvaluationResultData resumeEvaluationResult errorEvaluationResultData  errorEvaluationResult evaluationResult  resumedEvaluationResultData |
+	
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: 'Delay waitForSeconds: 10. 1')
+			beAsyncExecution;
+			evaluate.
+		
+	executionContext := evaluatorPromise wait.
+	self 
+		assert: executionContext remoteClass 
+		equals: #GtGemStoneEvaluationContext.
+	
+	interruptResultData := executionContext interruptAsyncComputation.
+	self assert: interruptResultData equals: #interruptedAsync.
+	
+	errorEvaluationResultData := executionContext waitAsyncComputation.
+	self assert: (GtGemstoneEvaluationExceptionResult 
+		isSerializedDataForCurrentClass: errorEvaluationResultData).
+	errorEvaluationResult := GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: errorEvaluationResultData.
+	self assert: errorEvaluationResult hasEvaluationException.
 	
 	resumedEvaluationResultData := executionContext resumeAsyncComputation.
+	self assert: (GtGemstoneEvaluationResumedResult 
+		isSerializedDataForCurrentClass: resumedEvaluationResultData).
+	resumeEvaluationResult := GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: resumedEvaluationResultData.
+	self assert: resumeEvaluationResult isResumedExecutionResult.
 	
-	.
 	rawEvaluationResultData := executionContext waitAsyncComputation.
-	
-	
-	self assert: (GtGemstoneEvaluationCancelledResult 
-		isSerializedDataForCurrentClass: errorEvaluationResultData).
-	
+	self assert: (GtGemstoneEvaluationComputedResult 
+		isSerializedDataForCurrentClass: rawEvaluationResultData).
 	evaluationResult := GtGemstoneEvaluationResult 
-		createEvaluationResultFromData: errorEvaluationResultData.
-	self assert: evaluationResult isEvaluationCancelledResult.
+		createEvaluationResultFromData: rawEvaluationResultData.
+		
+	self assert: evaluationResult isEvaluationComputedResult.
+	self assert: evaluationResult computedResult equals: 1.
 	
 	^ evaluationResult
 ]
