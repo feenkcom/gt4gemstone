@@ -4,11 +4,11 @@ Class {
 	#instVars : [
 		'gtRsrEvaluatorPromise',
 		'snippetCoderModel',
-		'coderEvaluationContext',
 		'value',
 		'executionContext',
 		'mutex',
-		'state'
+		'state',
+		'serializationStrategy'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -28,16 +28,6 @@ GtGemStoneSnippetPromise >> breakWithEvaluationResult: evaluationResult [
 GtGemStoneSnippetPromise >> canStopExecution [
 	^ executionContext notNil and: [
 		self isResolved not ]
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> coderEvaluationContext [
-	^ coderEvaluationContext
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> coderEvaluationContext: anObject [
-	coderEvaluationContext := anObject
 ]
 
 { #category : #utils }
@@ -68,14 +58,15 @@ GtGemStoneSnippetPromise >> fulfillWithEvaluationResult: evaluationResult [
 
 { #category : #resolving }
 GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
-	computedResult associationsDo: [ :binding |
-		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
+	snippetCoderModel ifNotNil: [
+		computedResult associationsDo: [ :binding |
+			(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
+				value: (binding value asGtBareProxyObject) ] ].
 
 	self fulfill: (computedResult
 		at: 'snippetResult'
 		ifPresent: [ :obj | 
-			coderEvaluationContext serializationStrategy
+			serializationStrategy
 				ifNil: [ obj ]
 				ifNotNil: [ :strategy | obj
 					proxyPerform: #yourself serializationStrategy: strategy ] ]
@@ -180,6 +171,16 @@ GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationCon
 			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
 			
 	^ evaluationResult
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> serializationStrategy [
+	^ serializationStrategy
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> serializationStrategy: anObject [
+	serializationStrategy := anObject
 ]
 
 { #category : #accessing }

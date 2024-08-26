@@ -31,3 +31,8 @@ GtGemstoneEvaluationComputedResult >> initializeFromJSONDictionary: aDictionary 
 		ifPresent: [ :anObject |
 			computedResult := anObject ]
 ]
+
+{ #category : #testing }
+GtGemstoneEvaluationComputedResult >> isEvaluationComputedResult [
+	^ true
+]

@@ -26,6 +26,12 @@ GtpoGtGemStoneEvaluationContext >> printOn: aStream [
 ]
 
 { #category : #'actions - debug' }
+GtpoGtGemStoneEvaluationContext >> resumeAsyncComputation [
+
+	^ self proxyPerform: #resumeAsyncComputation
+]
+
+{ #category : #'actions - debug' }
 GtpoGtGemStoneEvaluationContext >> terminateAsyncComputation [
 
 	^ self proxyPerform: #terminateAsyncComputation
@@ -40,4 +46,9 @@ GtpoGtGemStoneEvaluationContext >> terminateProcess [
 { #category : #accessing }
 GtpoGtGemStoneEvaluationContext >> wait [
 	^ self proxyPerform: #wait
+]
+
+{ #category : #accessing }
+GtpoGtGemStoneEvaluationContext >> waitAsyncComputation [
+	^ self wait
 ]

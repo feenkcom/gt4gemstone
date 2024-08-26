@@ -47,6 +47,11 @@ GtGemstoneEvaluationResult >> isEvaluationCancelledResult [
 ]
 
 { #category : #testing }
+GtGemstoneEvaluationResult >> isEvaluationComputedResult [
+	^ false
+]
+
+{ #category : #testing }
 GtGemstoneEvaluationResult >> isResumedExecutionResult [
 	^ false
 ]

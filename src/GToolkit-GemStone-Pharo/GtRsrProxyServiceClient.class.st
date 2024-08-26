@@ -665,6 +665,11 @@ GtRsrProxyServiceClient >> proxyPerformStonSerialized: aSymbol withArguments: an
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 ]
 
+{ #category : #accessing }
+GtRsrProxyServiceClient >> rawGtSession [
+	^ gtSession
+]
+
 { #category : #private }
 GtRsrProxyServiceClient >> remoteSelf [
 
