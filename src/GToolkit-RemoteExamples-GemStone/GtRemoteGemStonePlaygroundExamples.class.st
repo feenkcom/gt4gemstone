@@ -162,9 +162,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
 
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withReplace [
-	"Example with a GemStone snippet with a session name,
-	and a registry with no session and a configured connector."
-	<gtExample>
+	"<gtExample>"
 	| scripter mainToolElement gemStoneInspectorTool |
 	
 	scripter := self playgroundPageWithConnectedGemStone.
@@ -194,7 +192,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withoutReplace [
-	<gtExample>
+	"<gtExample>"
 	| scripter mainToolElement gemStoneInspectorTool promiseResolution |
 	
 	scripter := self playgroundPageWithConnectedGemStone.
@@ -229,8 +227,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runSyncComputation [
-	"Example with a GemStone snippet with a session name,
-	and a registry with no session and a configured connector."
 	<gtExample>
 	| scripter mainToolElement gemStoneInspectorTool |
 	
