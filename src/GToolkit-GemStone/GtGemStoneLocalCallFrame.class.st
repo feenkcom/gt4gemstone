@@ -83,6 +83,12 @@ GtGemStoneLocalCallFrame >> isForBlock [
 ]
 
 { #category : #testing }
+GtGemStoneLocalCallFrame >> isForCriticalMethod [
+	^ ProcessorScheduler scheduler _criticalMethods 
+		includes: self homeMethod
+]
+
+{ #category : #testing }
 GtGemStoneLocalCallFrame >> isForSameMethodOrBlockAs: anotherContext [
 	"This amims to detect of two contexts are different"
 	^ self methodClassName = anotherContext methodClassName and: [

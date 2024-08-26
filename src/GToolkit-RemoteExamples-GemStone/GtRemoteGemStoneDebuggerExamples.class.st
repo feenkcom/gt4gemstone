@@ -9,6 +9,24 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #asserting }
+GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
+	| evaluationResult evaluationContext |
+	
+	self assert: (GtGemstoneEvaluationExceptionResult
+		isSerializedDataForCurrentClass:  aValue).
+		
+	evaluationResult := GtGemstoneEvaluationResult fromDictionary: aValue.
+	self assert: evaluationResult hasEvaluationException.
+		
+	evaluationContext := evaluationResult evaluationContext.
+	self assert: evaluationContext notNil.
+	self 
+	 	assert: evaluationContext remoteClass 
+	 	equals: #GtGemStoneEvaluationContext.
+	self assert: evaluationContext rawGtSession isNil.
+]
+
 { #category : #private }
 GtRemoteGemStoneDebuggerExamples >> runningServer [
 	"Answer a running server.
@@ -40,7 +58,8 @@ GtRemoteGemStoneDebuggerExamples >> testEvaluateExceptionInformation [
 	result := session evaluate: 'self error: ''oops'''.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	self assert: value remoteClass equals: #GtGemStoneEvaluationContext.
+	
+	self assertDataForExceptionResult: value
 ]
 
 { #category : #tests }
@@ -52,7 +71,8 @@ GtRemoteGemStoneDebuggerExamples >> testEvaluateReturnProxyExceptionInformation 
 	result := session evaluateReturnProxy: 'self error: ''oops'''.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	self assert: value remoteClass equals: #GtGemStoneEvaluationContext.
+	
+	self assertDataForExceptionResult: value
 ]
 
 { #category : #tests }
@@ -66,14 +86,14 @@ GtRemoteGemStoneDebuggerExamples >> testEvaluateSerializationStrategyExceptionIn
 		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	self assert: value remoteClass equals: #GtGemStoneEvaluationContext.
+	self assertDataForExceptionResult: value.
 
 	result := session 
 		evaluate: 'self error: ''oops'''
 		serializationStrategy: #GtRsrStonSerializationStrategy.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	self assert: value remoteClass equals: #GtGemStoneEvaluationContext.
+	self assertDataForExceptionResult: value.
 ]
 
 { #category : #private }

@@ -10,6 +10,12 @@ GtRemoteGemstoneExamplesSessionBuilder class >> createAndStartSession [
 ]
 
 { #category : #accessing }
+GtRemoteGemstoneExamplesSessionBuilder class >> createAndStartSessionForConnector: aConnector [
+	^ self new 
+		createAndStartSessionForConnector: aConnector
+]
+
+{ #category : #accessing }
 GtRemoteGemstoneExamplesSessionBuilder class >> createConnectorNamed: aConnectorName [
 	^ self new 
 		createConnectorNamed: aConnectorName
@@ -20,6 +26,14 @@ GtRemoteGemstoneExamplesSessionBuilder >> createAndStartSession [
 	^ self createSession 
 		connect;
 		yourself
+]
+
+{ #category : #accessing }
+GtRemoteGemstoneExamplesSessionBuilder >> createAndStartSessionForConnector: aConnector [
+	^ (GtGemStoneSession new 
+		connector: aConnector) 
+			connect;
+			yourself
 ]
 
 { #category : #accessing }

@@ -4,22 +4,73 @@ Class {
 	#instVars : [
 		'gtRsrEvaluatorPromise',
 		'snippetCoderModel',
-		'coderEvaluationContext',
 		'value',
 		'executionContext',
-		'mutex'
+		'mutex',
+		'state',
+		'serializationStrategy'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> coderEvaluationContext [
-	^ coderEvaluationContext
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> break: aReason [ 
+	value := aReason.
+	state := #Broken.
 ]
 
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> coderEvaluationContext: anObject [
-	coderEvaluationContext := anObject
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> breakWithEvaluationResult: evaluationResult [ 
+	self break: evaluationResult.
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> canStopExecution [
+	^ executionContext notNil and: [
+		self isResolved not ]
+]
+
+{ #category : #utils }
+GtGemStoneSnippetPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
+	"Instantiate an evaluation result object from the given object."
+
+	^ GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: aDictionaryOrObject 
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> fulfill: anObject [
+	"Fulfill the receiver"
+
+	value := anObject.
+	state := #Fulfilled
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> fulfillWithEvaluationResult: evaluationResult [ 
+	| computedResult |
+	computedResult := evaluationResult computedResult.
+	computedResult := gtRsrEvaluatorPromise 
+		basicDeserializeResult: evaluationResult computedResult.
+		
+	self fullfilWithComputedResult: computedResult
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
+	snippetCoderModel ifNotNil: [
+		computedResult associationsDo: [ :binding |
+			(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
+				value: (binding value asGtBareProxyObject) ] ].
+
+	self fulfill: (computedResult
+		at: 'snippetResult'
+		ifPresent: [ :obj | 
+			serializationStrategy
+				ifNil: [ obj ]
+				ifNotNil: [ :strategy | obj
+					proxyPerform: #yourself serializationStrategy: strategy ] ]
+		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
 ]
 
 { #category : #accessing }
@@ -38,16 +89,43 @@ GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> hasResult [
-	^ value ~~ self
+GtGemStoneSnippetPromise >> hasValidResult [
+	^ self isFulfilled
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneSnippetPromise >> initialize [
-
 	super initialize.
+	
 	value := self.
 	mutex := Mutex new.
+	state := #PendingResolution.
+]
+
+{ #category : #actions }
+GtGemStoneSnippetPromise >> interruptEvaluation [
+	self assert: [ executionContext notNil ].
+	
+	^ executionContext interruptAsyncComputation
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> isBroken [
+	"Report if the receiver is currently broken"
+
+	^state == #Broken
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> isForAsyncExecution [
+	^ true 
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> isFulfilled [
+	"Report is the receiver is currently fulfilled"
+
+	^state == #Fulfilled
 ]
 
 { #category : #testing }
@@ -58,8 +136,16 @@ GtGemStoneSnippetPromise >> isGtEvaluationException [
 
 { #category : #testing }
 GtGemStoneSnippetPromise >> isResolved [
+	"Report if the receiver is currently resolved."
 
-	^ gtRsrEvaluatorPromise isResolved
+	^self isFulfilled or: [self isBroken]
+]
+
+{ #category : #resolving }
+GtGemStoneSnippetPromise >> resolveWithEvaluationResult: evaluationResult [ 
+	evaluationResult isEvaluationCancelledResult 
+		ifTrue: [ self breakWithEvaluationResult: evaluationResult ]
+		ifFalse: [ self fulfillWithEvaluationResult: evaluationResult ]
 ]
 
 { #category : #accessing }
@@ -67,6 +153,34 @@ GtGemStoneSnippetPromise >> resolvedValue [
 	self assert: [ value ~~ self ].
 	
 	^ value
+]
+
+{ #category : #private }
+GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationContext [
+	| rawEvaluationResultData evaluationResult |
+	rawEvaluationResultData := anEvaluationContext wait.
+	
+	evaluationResult := self 
+		createEvaluationResultFromData: rawEvaluationResultData.
+	self gemStoneSession ifNotNil: [ :aGemStoneSession |
+		evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ].
+	 
+	evaluationResult hasEvaluationException ifTrue: [ 
+		evaluationResult := evaluationResult signalGemStoneDebuggerFromPromise: self.
+		self gemStoneSession ifNotNil: [ :aGemStoneSession |
+			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
+			
+	^ evaluationResult
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> serializationStrategy [
+	^ serializationStrategy
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> serializationStrategy: anObject [
+	serializationStrategy := anObject
 ]
 
 { #category : #accessing }
@@ -84,10 +198,11 @@ GtGemStoneSnippetPromise >> snippetCoderModel: anObject [
 	snippetCoderModel := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #actions }
 GtGemStoneSnippetPromise >> stopEvaluation [
-
-	^ executionContext terminate
+	self assert: [ executionContext notNil ].
+	
+	^ executionContext terminateAsyncComputation
 ]
 
 { #category : #accessing }
@@ -100,22 +215,15 @@ GtGemStoneSnippetPromise >> value [
 
 { #category : #private }
 GtGemStoneSnippetPromise >> wait [
-	| result |
+	| evaluationResult |
 	
-	"executionContext := gtRsrEvaluatorPromise value.
-	result := executionContext wait."
+	executionContext := gtRsrEvaluatorPromise value.
 	
-	result := gtRsrEvaluatorPromise value.
-	result associationsDo: [ :binding |
-		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
-
-	value := (result
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			coderEvaluationContext serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
+	[
+		evaluationResult := self 
+			retrieveEvaluationResultFromContext: executionContext.
+	] doWhileTrue: [ 
+		evaluationResult isResumedExecutionResult  ].
+	
+	self resolveWithEvaluationResult: evaluationResult
 ]

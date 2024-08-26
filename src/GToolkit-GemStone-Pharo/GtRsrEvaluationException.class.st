@@ -7,7 +7,8 @@ Class {
 		'hasDebugResult',
 		'debugResult',
 		'debuggerState',
-		'debuggerClient'
+		'debuggerClient',
+		'gemStonePromise'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -30,7 +31,9 @@ GtRsrEvaluationException >> debugResult: anObject [
 { #category : #accessing }
 GtRsrEvaluationException >> debuggerClient [
 
-	^ debuggerClient ifNil: [ debuggerClient := GtGemStoneDebugger new exception: self ].
+	^ debuggerClient ifNil: [ 
+		debuggerClient := GtGemStoneDebugger new 
+			exception: self ].
 ]
 
 { #category : #accessing }
@@ -54,6 +57,16 @@ GtRsrEvaluationException >> debuggerState [
 GtRsrEvaluationException >> evaluator [
 
 	^ self gtSession evaluator
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> gemStonePromise [
+	^ gemStonePromise
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> gemStonePromise: aGemStonePromise [
+	gemStonePromise := aGemStonePromise
 ]
 
 { #category : #private }
@@ -101,6 +114,12 @@ GtRsrEvaluationException >> initialize [
 
 	super initialize.
 	hasDebugResult := false.
+]
+
+{ #category : #testing }
+GtRsrEvaluationException >> isForAsyncPromise [
+	^ gemStonePromise notNil and: [
+		gemStonePromise isForAsyncExecution ]
 ]
 
 { #category : #testing }

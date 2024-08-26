@@ -184,10 +184,41 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 ]
 
 { #category : #'gt - actions' }
+GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
+	<gtExecutionAction>
+
+	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	
+	^ anAction button
+		label: 'Cancel';
+		priority: 115;
+		icon: BrGlamorousVectorIcons cancel;
+		tooltip: 'Terminate the execution';
+		action: [ :button |
+			promiseResolution stopEvaluation  ].
+]
+
+{ #category : #'gt - actions' }
+GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
+	<gtExecutionAction>
+
+	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	
+	^ anAction button
+		label: 'Debug';
+		priority: 110;
+		icon: BrGlamorousVectorIcons debug;
+		tooltip: 'Debug the execution';
+		action: [ :button |
+			promiseResolution interruptEvaluation  ].
+]
+
+{ #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionInspectResolvedValueFor: anAction [
 	<gtExecutionAction>
 
-	self isValueResolved ifFalse: [ ^ anAction empty ].
+	self hasValidResult ifFalse: [ 
+		^ anAction empty ].
 	
 	^ anAction button
 		label: 'Result';
@@ -240,7 +271,13 @@ GtGemStoneAsyncEvaluationElement >> gtActionUpdateDetailsFor: anAction [
 		priority: 10;
 		icon: BrGlamorousIcons refresh;
 		action: [ 
-			self requestUpdate ]
+			self requestMainContainerAndToolbarUpdate ]
+]
+
+{ #category : #testing }
+GtGemStoneAsyncEvaluationElement >> hasValidResult [
+	^ promiseResolution isNotNil and: [
+		promiseResolution hasValidResult  ]
 ]
 
 { #category : #'initialization ' }
@@ -302,12 +339,6 @@ GtGemStoneAsyncEvaluationElement >> initializeUpdaters [
 		selector: #updateExecutionContent.
 ]
 
-{ #category : #testing }
-GtGemStoneAsyncEvaluationElement >> isValueResolved [
-	^ promiseResolution isNotNil and: [
-		promiseResolution isValueResolved  ]
-]
-
 { #category : #callbacks }
 GtGemStoneAsyncEvaluationElement >> onSnippetPromiseResolutionChanged [
 	self updateMainContainerAndToolbar.
@@ -351,7 +382,8 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 	self replacePaneContentAutomatically ifFalse: [
 		aBlock value.
 		^ self ].
-	self isValueResolved ifFalse: [
+	
+	self hasValidResult ifFalse: [
 		aBlock value.
 		^ self ].
 
@@ -435,6 +467,7 @@ GtGemStoneAsyncEvaluationElement >> unsubscribeFromPromiseResolution [
 
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForCompletedPromise [
+	
 	gemStoneSessionLabel text: promiseResolution sessionDescription.
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ''.

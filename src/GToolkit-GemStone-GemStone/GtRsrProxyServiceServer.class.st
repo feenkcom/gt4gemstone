@@ -21,12 +21,14 @@ GtRsrProxyServiceServer >> asGtGsArgument [
 ]
 
 { #category : #private }
-GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray [
+GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray  serializationStrategy: aSerialisationStrategySymbol [
 	"Perform the requested operation, catching errors and returning exception information"
 
-	^ GtGemStoneEvaluationContext new
-		evaluateAndWaitBlock: [ object perform: aSymbol withArguments: anArray asGtGsArgument ]
-		from: self.
+	^ (GtGemStoneEvaluationContext new
+		serializationStrategy: aSerialisationStrategySymbol)
+			evaluateAndWaitBlock: [ 
+				object perform: aSymbol withArguments: anArray asGtGsArgument ]
+			from: self.
 ]
 
 { #category : #accessing }
@@ -46,43 +48,47 @@ GtRsrProxyServiceServer >> object: anObject [
 
 { #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol [
-
-	^ (self basicPerform: aSymbol withArguments: #()) asGtRsrProxyObjectForConnection: _connection
+	^ self proxyPerform: aSymbol withArguments: #()
 ]
 
 { #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol serializationStrategy: serializationSymbol [
-
-	^ (Globals at: serializationSymbol) new serialize: (self basicPerform: aSymbol withArguments: #())
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: #() 
+		serializationStrategy: serializationSymbol
 ]
 
 { #category : #performing }
 GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray [
-
-	^ (self basicPerform: aSymbol withArguments: anArray) asGtRsrProxyObjectForConnection: _connection
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: anArray
+		serializationStrategy: #GtRsrLegacySerializationStrategy
 ]
 
 { #category : #performing }
-GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: serializationSymbol [
+GtRsrProxyServiceServer >> proxyPerform: aSymbol withArguments: anArray serializationStrategy: aSerializationStrategySymbol [
+	| evaluationResult |
 
-	^ (Globals at: serializationSymbol) new serialize:
-		(self basicPerform: aSymbol withArguments: anArray)
+	evaluationResult := self 
+		basicPerform: aSymbol 
+		withArguments: anArray 
+		serializationStrategy: aSerializationStrategySymbol.
+
+	^ evaluationResult ifNotNil: [ :anEvaluationResult |  
+		anEvaluationResult asDictionaryForExport ]
 ]
 
 { #category : #performing }
 GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol [
-	| result |
-
-	result := self basicPerform: aSymbol withArguments: #().
-	result class == self class ifTrue: [ ^ result ].
-	^ self class object: result.
+	^ self proxyPerformReturnProxy: aSymbol withArguments: #()
 ]
 
 { #category : #performing }
 GtRsrProxyServiceServer >> proxyPerformReturnProxy: aSymbol withArguments: anArray [
-	| result |
-
-	result := self basicPerform: aSymbol withArguments: anArray.
-	result class = self class ifTrue: [ ^ result ].
-	^ self class object: result.
+	^ self 
+		proxyPerform: aSymbol 
+		withArguments: anArray
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
 ]

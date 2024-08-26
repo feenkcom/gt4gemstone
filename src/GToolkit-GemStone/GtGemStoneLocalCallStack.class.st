@@ -6,7 +6,7 @@ Class {
 		'gsProcess',
 		'nextFrameIdentifier'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : 'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }
@@ -41,6 +41,15 @@ GtGemStoneLocalCallStack >> callFramesAt: anIndex [
 { #category : #accessing }
 GtGemStoneLocalCallStack >> createSpecification [
 	^ GtGemStoneProcessSpecification forGsCallStack: self
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallStack >> firstNonCriticalFrameIndex [
+	1 to: self numberOfCallFrames do: [ :anIndex |
+		(self callFrames at: anIndex) isForCriticalMethod 
+			ifFalse: [ ^ anIndex ] ].
+		
+	^ nil
 ]
 
 { #category : #accessing }

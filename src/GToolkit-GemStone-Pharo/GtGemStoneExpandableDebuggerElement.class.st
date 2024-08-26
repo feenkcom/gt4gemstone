@@ -500,7 +500,8 @@ GtGemStoneExpandableDebuggerElement >> updateStdout [
 
 { #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> updateUI [
-
+	debuggingSession ifNil: [ ^ self ].
+	
 	self updateDisplay.
 	toolbarElement updateUI.
 ]

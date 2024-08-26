@@ -17,6 +17,12 @@ GtGemStoneSnippetPromiseResolution >> announcer [
 	^ announcer
 ]
 
+{ #category : #testing }
+GtGemStoneSnippetPromiseResolution >> canStopExecution [
+	^ self isResolvingRunning and: [
+		snippetPromise canStopExecution ]
+]
+
 { #category : #accessing }
 GtGemStoneSnippetPromiseResolution >> duration [ 
 	^ (startTimestamp notNil and: [
@@ -39,13 +45,15 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 		startTimestamp := DateAndTime now.
 		[
 			self notifyResolutionStarted.
-		
 			snippetPromise value.
-			state := #Completed.
+			state := snippetPromise isBroken 
+				ifTrue: [ #Cancelled ] 
+				ifFalse: [ #Completed ].
 		] ensure: [
 			endTimestamp := DateAndTime now.
-			(state = #Running) 
-				ifTrue: [ state := #Cancelled ].
+			(state = #Running) ifTrue: [ 
+				state := #Terminated.
+				snippetPromise break: nil ].
 			
 			self notifyResolutionCompleted ].
 	] forkNamed: 'GtGemStoneSnippetPromiseExecution resolution process'.
@@ -69,6 +77,12 @@ GtGemStoneSnippetPromiseResolution >> hasProcess [
 	^ resolutionProcess notNil
 ]
 
+{ #category : #testing }
+GtGemStoneSnippetPromiseResolution >> hasValidResult [
+	^ snippetPromise notNil and: [
+		snippetPromise hasValidResult ]
+]
+
 { #category : #initialization }
 GtGemStoneSnippetPromiseResolution >> initialize [
 	super initialize.
@@ -77,7 +91,12 @@ GtGemStoneSnippetPromiseResolution >> initialize [
 	state := #'Not Started'
 ]
 
-{ #category : #accessing }
+{ #category : #actions }
+GtGemStoneSnippetPromiseResolution >> interruptEvaluation [
+	snippetPromise interruptEvaluation
+]
+
+{ #category : #testing }
 GtGemStoneSnippetPromiseResolution >> isResolutionProcessDone [
 	^ resolutionProcess isTerminated or: [ 
 		resolutionProcess isTerminating ] 
@@ -98,12 +117,6 @@ GtGemStoneSnippetPromiseResolution >> isResolvingPending [
 GtGemStoneSnippetPromiseResolution >> isResolvingRunning [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone not ]
-]
-
-{ #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isValueResolved [
-	^ snippetPromise notNil and: [
-		snippetPromise isResolved ]
 ]
 
 { #category : #notifications }
@@ -145,4 +158,9 @@ GtGemStoneSnippetPromiseResolution >> startTimestamp [
 { #category : #accessing }
 GtGemStoneSnippetPromiseResolution >> state [
 	^ state
+]
+
+{ #category : #actions }
+GtGemStoneSnippetPromiseResolution >> stopEvaluation [
+	snippetPromise stopEvaluation
 ]
