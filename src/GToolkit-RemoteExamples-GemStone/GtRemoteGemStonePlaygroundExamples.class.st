@@ -160,23 +160,99 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
 	^ scripter
 ]
 
-{ #category : #examples }
-GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation [
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withReplace [
 	"Example with a GemStone snippet with a session name,
 	and a registry with no session and a configured connector."
 	<gtExample>
-	| scripter |
+	| scripter mainToolElement gemStoneInspectorTool |
 	
 	scripter := self playgroundPageWithConnectedGemStone.
 	
 	self withEnabledAutomaticReplaceDo: [
 		scripter click
 			label: 'Click on play and inspect button';
-			// GtSourceCoderDoItAndGoActionId;
+			// GtSourceCoderDoItAndGoAsynchronousActionId;
 			play ].
+	
+	"Current solution to wait until the computation is done"
+	2 seconds wait.
+	
+	mainToolElement := scripter element pages second contentElement tool.
+	"compositeTool := mainToolElement phlow entity."
+	gemStoneInspectorTool := mainToolElement content children first phlow entity.
+	
+	self assert: gemStoneInspectorTool name equals: 'GemStone'.
+	self assert: gemStoneInspectorTool class equals: GtInspectorTool.
+	self assert: gemStoneInspectorTool object remoteClass equals: #SmallInteger.
+	self 
+		assert: gemStoneInspectorTool object gtDisplayString 
+		equals: '2'.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withoutReplace [
+	<gtExample>
+	| scripter mainToolElement gemStoneInspectorTool promiseResolution |
+	
+	scripter := self playgroundPageWithConnectedGemStone.
+	self withDisabledAutomaticReplaceDo: [
+		scripter click
+			label: 'Click on play and inspect button';
+			// GtSourceCoderDoItAndGoAsynchronousActionId;
+			play ].
+	
+	"Current solution to wait until the computation is done"
+	2 seconds wait.
+	
+	mainToolElement := scripter element pages second contentElement tool.
+	gemStoneInspectorTool := mainToolElement content children first phlow entity.
+	
+	self assert: gemStoneInspectorTool name equals: 'GemStone'.
+	self assert: gemStoneInspectorTool class equals: GtGemStoneAsyncEvaluationPhlowTool.
+	
+	promiseResolution := gemStoneInspectorTool promiseResolution.
+	self assert: promiseResolution isResolutionProcessDone.
+	self assert: promiseResolution state equals: #Completed.
+	
+	self 
+		assert: promiseResolution resolvedValue remoteClass 
+		equals: #SmallInteger.
+	self 
+		assert: promiseResolution resolvedValue gtDisplayString
+		equals: '2'.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runSyncComputation [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| scripter mainToolElement gemStoneInspectorTool |
+	
+	scripter := self playgroundPageWithConnectedGemStone.
+	
+	scripter click
+		label: 'Click on play and inspect button';
+		// GtSourceCoderDoItAndGoActionId;
+		play.
 		
 	scripter pager
 		assertPageCountIs: 2.
+	
+	mainToolElement := scripter element pages second contentElement tool.
+	"compositeTool := mainToolElement phlow entity."
+	gemStoneInspectorTool := mainToolElement content children first phlow entity.
+	
+	self assert: gemStoneInspectorTool name equals: 'GemStone'.
+	self assert: gemStoneInspectorTool object remoteClass equals: #SmallInteger.
+	self 
+		assert: gemStoneInspectorTool object gtDisplayString 
+		equals: '2'.
 	 
 	^ scripter
 ]

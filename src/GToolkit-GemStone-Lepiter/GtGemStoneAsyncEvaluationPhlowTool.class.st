@@ -42,6 +42,11 @@ GtGemStoneAsyncEvaluationPhlowTool >> name [
 ]
 
 { #category : #accessing }
+GtGemStoneAsyncEvaluationPhlowTool >> promiseResolution [
+	^ promiseResolution
+]
+
+{ #category : #accessing }
 GtGemStoneAsyncEvaluationPhlowTool >> promiseResolution: aGsPromiseExecution [
 	promiseResolution := aGsPromiseExecution.
 	
