@@ -28,7 +28,7 @@ GtRsrEvaluatorAsyncPromise >> break: aReason [
 
 { #category : #resolving }
 GtRsrEvaluatorAsyncPromise >> breakWithEvaluationResult: evaluationResult [ 
-	self break: evaluationResult.
+	self break: evaluationResult computedResult.
 ]
 
 { #category : #testing }

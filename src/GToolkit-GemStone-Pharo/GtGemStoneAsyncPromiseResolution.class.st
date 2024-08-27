@@ -7,8 +7,7 @@ Class {
 		'snippetPromise',
 		'startTimestamp',
 		'endTimestamp',
-		'state',
-		'fulfilledAction'
+		'state'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
@@ -172,4 +171,9 @@ GtGemStoneAsyncPromiseResolution >> state [
 { #category : #actions }
 GtGemStoneAsyncPromiseResolution >> stopEvaluation [
 	snippetPromise stopEvaluation
+]
+
+{ #category : #actions }
+GtGemStoneAsyncPromiseResolution >> terminateResolutionProcess [
+	resolutionProcess terminate
 ]

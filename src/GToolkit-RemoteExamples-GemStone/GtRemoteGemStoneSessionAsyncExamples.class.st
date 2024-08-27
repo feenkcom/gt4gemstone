@@ -60,7 +60,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndCancelCompu
 		hasResult := true.
 		semaphore signal ] fork.
 		
-	self waitForStartFor: evaluatorPromise.
+	self waitForEvaluationContextFor: evaluatorPromise.
 	
 	"We interrupt the promise execution. This will raise an error 
 	in the process executing the promise. "
@@ -108,7 +108,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndResumeCompu
 		hasResult := true.
 		semaphore signal ] fork.
 		
-	self waitForStartFor: evaluatorPromise.
+	self waitForEvaluationContextFor: evaluatorPromise.
 	
 	"We interrupt the promise execution. This will raise an error 
 	in the process executing the promise. "
@@ -211,7 +211,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_terminateComputation [
 		evaluationResult := evaluatorPromise wait.
 		semaphore signal ] fork.
 		
-	self waitForStartFor: evaluatorPromise.
+	self waitForEvaluationContextFor: evaluatorPromise.
 	
 	stopResult := evaluatorPromise stopEvaluation.
 	self 
@@ -221,7 +221,8 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_terminateComputation [
 	semaphore wait.
 	
 	self assert: evaluatorPromise isBroken.
-	self assert: evaluationResult isEvaluationCancelledResult.
+	self assert: evaluatorPromise hasValidResult not.
+	self assert: evaluationResult isNil.
 	
 	^ evaluatorPromise
 ]
@@ -409,8 +410,165 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_terminateC
 	^ evaluationResult
 ]
 
+{ #category : #'examples - resolution' }
+GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_returnLegacy [
+	<gtExample>
+	| evaluatorPromise computedResult promiseResolution |
+
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: '1')
+			returnLegacy;
+			beAsyncExecution;
+			evaluate.
+	promiseResolution := GtGemStoneAsyncPromiseResolution new 
+		snippetPromise: evaluatorPromise.
+		
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending.
+	self assert: promiseResolution state equals: #'Not Started'.
+	
+	promiseResolution ensureExecuting.
+	
+	self waitForResolutionCompletedFor: promiseResolution.
+	
+	self assert: promiseResolution hasValidResult.
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution state equals: #Completed.
+		
+	computedResult := promiseResolution resolvedValue.
+	self 
+		assert: computedResult  
+		equals: 1.
+	
+	^ computedResult
+]
+
+{ #category : #'examples - resolution' }
+GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_returnProxy [
+	<gtExample>
+	| evaluatorPromise computedResult promiseResolution |
+
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: '1')
+			returnProxy;
+			beAsyncExecution;
+			evaluate.
+	promiseResolution := GtGemStoneAsyncPromiseResolution new 
+		snippetPromise: evaluatorPromise.
+		
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending.
+	self assert: promiseResolution state equals: #'Not Started'.
+		
+	promiseResolution ensureExecuting.
+	
+	self waitForResolutionCompletedFor: promiseResolution.
+	
+	self assert: promiseResolution hasValidResult.
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution state equals: #Completed.
+		
+	computedResult := promiseResolution resolvedValue.
+	self 
+		assert: computedResult remoteClass 
+		equals: #SmallInteger.
+	self 
+		assert: computedResult remoteSideGtDisplayString 
+		equals: '1'.
+	
+	^ computedResult
+]
+
+{ #category : #'examples - resolution' }
+GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateComputation [
+	<gtExample>
+	| evaluatorPromise promiseResolution |
+
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: 'Delay  waitForSeconds: 20.')
+			returnProxy;
+			beAsyncExecution;
+			evaluate.
+	promiseResolution := GtGemStoneAsyncPromiseResolution new 
+		snippetPromise: evaluatorPromise.
+		
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending.
+	self assert: promiseResolution state equals: #'Not Started'.
+		
+	promiseResolution ensureExecuting.
+	
+	self waitForResolutionStartedFor: promiseResolution.
+	
+	self assert: promiseResolution hasValidResult not.
+	self assert: promiseResolution canStopExecution.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution isResolvingRunning.
+	self assert: promiseResolution state equals: #Running.
+		
+	promiseResolution stopEvaluation.
+	
+	self waitForResolutionCompletedFor: promiseResolution.
+	
+	self assert: promiseResolution hasValidResult not.
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution isResolvingRunning not.
+	self assert: promiseResolution state equals: #Cancelled.
+	
+	self 
+		assert: promiseResolution resolvedValue
+		equals: nil.
+	
+	^ promiseResolution
+]
+
+{ #category : #'examples - resolution' }
+GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateProcess [
+	<gtExample>
+	| evaluatorPromise promiseResolution |
+
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: 'Delay  waitForSeconds: 20.')
+			returnProxy;
+			beAsyncExecution;
+			evaluate.
+	promiseResolution := GtGemStoneAsyncPromiseResolution new 
+		snippetPromise: evaluatorPromise.
+		
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending.
+	self assert: promiseResolution state equals: #'Not Started'.
+	
+	promiseResolution ensureExecuting.
+	
+	self waitForResolutionStartedFor: promiseResolution.
+	
+	self assert: promiseResolution hasValidResult not.
+	self assert: promiseResolution canStopExecution.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution isResolvingRunning.
+	self assert: promiseResolution state equals: #Running.
+		
+	promiseResolution terminateResolutionProcess.
+	
+	self assert: promiseResolution hasValidResult not.
+	self assert: promiseResolution canStopExecution not.
+	self assert: promiseResolution isResolvingPending not.
+	self assert: promiseResolution isResolvingRunning not.
+	self assert: promiseResolution state equals: #Terminated.
+	
+	self 
+		assert: promiseResolution resolvedValue
+		equals: nil.
+	
+	^ promiseResolution
+]
+
 { #category : #utils }
-GtRemoteGemStoneSessionAsyncExamples >> waitForStartFor: anAsyncPromise [ 
+GtRemoteGemStoneSessionAsyncExamples >> waitForEvaluationContextFor: anAsyncPromise [ 
 	| retries |
 	retries := 5.
 	
@@ -420,5 +578,33 @@ GtRemoteGemStoneSessionAsyncExamples >> waitForStartFor: anAsyncPromise [
 	].
 	
 	anAsyncPromise hasEvaluationContext ifFalse: [
+		Error signal: 'Promise failed to start' ]
+]
+
+{ #category : #utils }
+GtRemoteGemStoneSessionAsyncExamples >> waitForResolutionCompletedFor: aPromiseResolution [ 
+	| retries |
+	retries := 5.
+	
+	[ retries > 0 and: [ aPromiseResolution isResolvingCompleted not ] ] whileTrue: [
+		1 seconds wait.
+		retries := retries - 1.
+	].
+	
+	aPromiseResolution isResolvingCompleted ifFalse: [
+		Error signal: 'Promise failed to resolve' ]
+]
+
+{ #category : #utils }
+GtRemoteGemStoneSessionAsyncExamples >> waitForResolutionStartedFor: aPromiseResolution [ 
+	| retries |
+	retries := 5.
+	
+	[ retries > 0 and: [ aPromiseResolution canStopExecution not ] ] whileTrue: [
+		1 seconds wait.
+		retries := retries - 1.
+	].
+	
+	aPromiseResolution canStopExecution ifFalse: [
 		Error signal: 'Promise failed to start' ]
 ]
