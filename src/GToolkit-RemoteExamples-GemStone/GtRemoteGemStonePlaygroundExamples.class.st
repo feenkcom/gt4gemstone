@@ -65,6 +65,27 @@ GtRemoteGemStonePlaygroundExamples >> gemstoneSessionRegistry [
 ]
 
 { #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefaultSessionAndBasicCode [
+	<gtExample>
+	| page pageTool snippet |
+	
+	page := LePage new
+		addSnippet: (snippet := LeGemStoneSnippet new
+			code: 'Delay waitForSeconds: 20. 42';
+			sessionName: 'test:default');
+		yourself.
+	
+	self assert: snippet sessionName equals: 'test:default'.
+	self assert: snippet code equals: 'Delay waitForSeconds: 20. 42'.
+	
+	pageTool := LePagePhlowTool new
+		page: page.
+	pageTool externalSnippetContext: self externalSnippetContext.
+				
+	^ pageTool
+]
+
+{ #category : #examples }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithNoSession [
 	<gtExample>
 	| page pageTool |
@@ -162,7 +183,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
 
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withReplace [
-	"<gtExample>"
+	<gtExample>
 	| scripter mainToolElement gemStoneInspectorTool |
 	
 	scripter := self playgroundPageWithConnectedGemStone.
@@ -172,9 +193,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 			label: 'Click on play and inspect button';
 			// GtSourceCoderDoItAndGoAsynchronousActionId;
 			play ].
-	
-	"Current solution to wait until the computation is done"
-	2 seconds wait.
 	
 	mainToolElement := scripter element pages second contentElement tool.
 	"compositeTool := mainToolElement phlow entity."
@@ -192,7 +210,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsyncComputation_withoutReplace [
-	"<gtExample>"
+	<gtExample>
 	| scripter mainToolElement gemStoneInspectorTool promiseResolution |
 	
 	scripter := self playgroundPageWithConnectedGemStone.
@@ -201,9 +219,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 			label: 'Click on play and inspect button';
 			// GtSourceCoderDoItAndGoAsynchronousActionId;
 			play ].
-	
-	"Current solution to wait until the computation is done"
-	2 seconds wait.
 	
 	mainToolElement := scripter element pages second contentElement tool.
 	gemStoneInspectorTool := mainToolElement content children first phlow entity.
@@ -250,6 +265,36 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runSyn
 		assert: gemStoneInspectorTool object gtDisplayString 
 		equals: '2'.
 	 
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithConnectedGemStone [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+		
+	self assert: self gemstoneSessionRegistry hasConnectors.
+	self assert: self gemstoneSessionRegistry hasSessions.
+	
+	pageTool := self 
+		pageToolWithLongRunningSnippetWithTestDefaultSessionAndBasicCode.
+	
+	scripter := self scripterForPageTool: pageTool.
+		
+	self 
+		assertGemStoneSessionLabel: 'test' 
+		for: scripter.
+		
+	self assert: self gemstoneSessionRegistry sessions size equals: 1.
+	self assert: self gemstoneSessionRegistry sessions values first isRunning.
+	self 
+		assert: self gemstoneSessionRegistry sessions values first name
+		equals: 'test:default'.
+	
 	^ scripter
 ]
 

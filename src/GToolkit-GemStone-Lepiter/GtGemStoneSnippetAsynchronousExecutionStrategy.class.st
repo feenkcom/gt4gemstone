@@ -6,18 +6,19 @@ Class {
 
 { #category : #execution }
 GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSession: gemstoneSession context: aGtSourceCoderEvaluationContext remoteBindings: remoteBindings pharoBindings: pharoBindings onFailDo: anEvaluationFailBlock coderModel: aCoderModel [
-	| gtRsrEvaluatorPromiseWithContext snippetPromise |
+	| asyncPromise snippetPromiseWrapper |
 
-	gtRsrEvaluatorPromiseWithContext := gemstoneSession 
+	asyncPromise := gemstoneSession 
 		evaluateAsync: remoteScript 
 		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
-
-	snippetPromise := GtGemStoneSnippetPromise new 
-		snippetCoderModel: aCoderModel;
+		
+	snippetPromiseWrapper := GtGemStoneSnippetAsyncPromiseWrapper new
+		gtRsrAsycPromise: asyncPromise;
 		serializationStrategy: aGtSourceCoderEvaluationContext serializationStrategy;
-		gtRsrEvaluatorPromise: gtRsrEvaluatorPromiseWithContext.
+		snippetCoderModel: aCoderModel;
+		evaluationFailBlock:  anEvaluationFailBlock.
 		
 	^ GtGemStoneSnippetPromiseResolution new 
-		snippetPromise: snippetPromise
+		snippetPromise: snippetPromiseWrapper
 ]

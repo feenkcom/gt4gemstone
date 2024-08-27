@@ -3,15 +3,22 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'gtRsrEvaluatorPromise',
-		'snippetCoderModel',
 		'value',
 		'executionContext',
 		'mutex',
 		'state',
+		'gemStoneSession',
 		'serializationStrategy'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> basicDeserializeResult: aResult [
+	^ (self class environment 
+		at: serializationStrategy) new 
+			deserialize: aResult.
+]
 
 { #category : #resolving }
 GtGemStoneSnippetPromise >> break: aReason [ 
@@ -50,32 +57,27 @@ GtGemStoneSnippetPromise >> fulfill: anObject [
 GtGemStoneSnippetPromise >> fulfillWithEvaluationResult: evaluationResult [ 
 	| computedResult |
 	computedResult := evaluationResult computedResult.
-	computedResult := gtRsrEvaluatorPromise 
-		basicDeserializeResult: evaluationResult computedResult.
-		
+	
 	self fullfilWithComputedResult: computedResult
 ]
 
 { #category : #resolving }
 GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
-	snippetCoderModel ifNotNil: [
-		computedResult associationsDo: [ :binding |
-			(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-				value: (binding value asGtBareProxyObject) ] ].
-
-	self fulfill: (computedResult
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
+	| deserializedResult |
+	deserializedResult := self 
+		basicDeserializeResult: computedResult.
+		
+	self fulfill: deserializedResult
 ]
 
 { #category : #accessing }
 GtGemStoneSnippetPromise >> gemStoneSession [
-	^ gtRsrEvaluatorPromise gtSession
+	^ gemStoneSession
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetPromise >> gemStoneSession: aGemStoneSession [
+	gemStoneSession := aGemStoneSession
 ]
 
 { #category : #accessing }
@@ -84,8 +86,13 @@ GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise [
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
-	gtRsrEvaluatorPromise := anObject
+GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anEvaluatorPromise [
+	gtRsrEvaluatorPromise := anEvaluatorPromise
+]
+
+{ #category : #testing }
+GtGemStoneSnippetPromise >> hasEvaluationContext [
+	^ executionContext notNil
 ]
 
 { #category : #testing }
@@ -129,12 +136,6 @@ GtGemStoneSnippetPromise >> isFulfilled [
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> isGtEvaluationException [
-
-	^ gtRsrEvaluatorPromise isGtEvaluationException
-]
-
-{ #category : #testing }
 GtGemStoneSnippetPromise >> isResolved [
 	"Report if the receiver is currently resolved."
 
@@ -155,6 +156,19 @@ GtGemStoneSnippetPromise >> resolvedValue [
 	^ value
 ]
 
+{ #category : #actions }
+GtGemStoneSnippetPromise >> resumeEvaluation [
+	| resumedEvaluationResultData |
+	self assert: [ executionContext notNil ].
+	
+	resumedEvaluationResultData := executionContext resumeAsyncComputation.
+	
+	self assert: (GtGemstoneEvaluationResumedResult 
+		isSerializedDataForCurrentClass: resumedEvaluationResultData).
+	^ GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: resumedEvaluationResultData.
+]
+
 { #category : #private }
 GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationContext [
 	| rawEvaluationResultData evaluationResult |
@@ -173,29 +187,17 @@ GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationCon
 	^ evaluationResult
 ]
 
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> serializationStrategy [
-	^ serializationStrategy
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> serializationStrategy: anObject [
-	serializationStrategy := anObject
+{ #category : #actions }
+GtGemStoneSnippetPromise >> serializationStrategy: aSerializationStrategy [ 
+	serializationStrategy := aSerializationStrategy 
 ]
 
 { #category : #accessing }
 GtGemStoneSnippetPromise >> sessionDescription [
-	^ gtRsrEvaluatorPromise sessionDescription
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> snippetCoderModel [
-	^ snippetCoderModel
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> snippetCoderModel: anObject [
-	snippetCoderModel := anObject
+	^ gemStoneSession 
+		ifNil: [  '<missing session>']
+		ifNotNil: [ :aSession |
+			 aSession name, '  ', aSession statusDescription ]
 ]
 
 { #category : #actions }
@@ -225,5 +227,7 @@ GtGemStoneSnippetPromise >> wait [
 	] doWhileTrue: [ 
 		evaluationResult isResumedExecutionResult  ].
 	
-	self resolveWithEvaluationResult: evaluationResult
+	self resolveWithEvaluationResult: evaluationResult.
+	
+	^ value
 ]

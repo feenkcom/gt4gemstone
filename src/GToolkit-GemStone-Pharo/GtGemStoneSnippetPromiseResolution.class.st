@@ -7,9 +7,10 @@ Class {
 		'snippetPromise',
 		'startTimestamp',
 		'endTimestamp',
-		'state'
+		'state',
+		'fulfilledAction'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #accessing }
@@ -44,8 +45,11 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 		state := #Running.
 		startTimestamp := DateAndTime now.
 		[
+			| computedResult |
+			
 			self notifyResolutionStarted.
-			snippetPromise value.
+			computedResult := snippetPromise value.
+			
 			state := snippetPromise isBroken 
 				ifTrue: [ #Cancelled ] 
 				ifFalse: [ #Completed ].
@@ -132,6 +136,11 @@ GtGemStoneSnippetPromiseResolution >> notifyResolutionStarted [
 { #category : #accessing }
 GtGemStoneSnippetPromiseResolution >> resolvedValue [
 	^ snippetPromise resolvedValue
+]
+
+{ #category : #actions }
+GtGemStoneSnippetPromiseResolution >> resumeEvaluation [
+	snippetPromise resumeEvaluation
 ]
 
 { #category : #accessing }
