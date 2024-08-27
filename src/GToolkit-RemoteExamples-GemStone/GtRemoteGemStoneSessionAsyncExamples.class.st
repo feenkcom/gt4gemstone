@@ -7,10 +7,6 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - promise' }
-GtRemoteGemStoneSessionAsyncExamples >> assertDebuggerClient: anObject [ 
-]
-
 { #category : #'examples - setup/tear down' }
 GtRemoteGemStoneSessionAsyncExamples >> runningServer [
 	"Answer a running server.
@@ -565,6 +561,39 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateProcess [
 		equals: nil.
 	
 	^ promiseResolution
+]
+
+{ #category : #'examples - promise' }
+GtRemoteGemStoneSessionAsyncExamples >> testSnippetPromiseWrapper_returnProxy [
+	<gtExample>
+	| coderModel evaluatorPromise computedResult hasError promiseWrapper |
+
+	coderModel := GtGemStoneContextCoderModel new.
+	
+	evaluatorPromise := (self runningServer 
+		createScriptEvaluationFor: '
+			| snippetResult |
+			snippetResult := 1.
+			{ #snippetResult -> (GtRsrProxyServiceServer object: snippetResult). } asDictionary')
+			returnLegacy;
+			beAsyncExecution;
+			evaluate.
+	
+	promiseWrapper := GtGemStoneSnippetAsyncPromiseWrapper new
+		gtRsrAsycPromise: evaluatorPromise;
+		serializationStrategy: #GtRsrProxyOnlySerializationStrategy;
+		snippetCoderModel: coderModel;
+		evaluationFailBlock:  [ hasError := true ].
+		
+	computedResult := promiseWrapper wait.
+	self 
+		assert: computedResult remoteClass 
+		equals: #SmallInteger.
+	self 
+		assert: computedResult remoteSideGtDisplayString 
+		equals: '1'.
+	
+	^ computedResult
 ]
 
 { #category : #utils }
