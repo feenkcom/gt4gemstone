@@ -46,29 +46,13 @@ GtRsrEvaluatorServiceClient >> bindingsFrom: aDictionary [
 
 { #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluateAsyncScript: aGtRsrScriptEvaluation [
-	| resolvedBindings rsrPromise |
-	aGtRsrScriptEvaluation serialisationStrategy
-		ifNil: [ self error: 'Serialization strategy not yet set' ].
-
-	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	| executionContextPromise |
 	
-	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := remoteSelf
-			startEvaluate: aGtRsrScriptEvaluation script
-			for: aGtRsrScriptEvaluation receiver
-			bindings: resolvedBindings
-			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
-
-		"When making an async call we need to use the legacy serialisation strategy, 
-		as that one is used to get back the data about the remote execution. We could
-		later on explicitly pass a serialisation strategy to be used for the initial
-		call that starts the async execution."
-		GtRsrEvaluatorPromise
-			rsrPromise: rsrPromise
-			serializationStrategy: #GtRsrLegacySerializationStrategy
-			gtSession: gtSession
-			autoCommit: aGtRsrScriptEvaluation autoCommit
-			sourceEvaluation: aGtRsrScriptEvaluation ]
+	executionContextPromise := self startEvaluateAsyncScript: aGtRsrScriptEvaluation.
+	^ GtRsrEvaluatorAsyncPromise new 
+		gemStoneSession: gtSession;
+		gtRsrEvaluatorPromise: executionContextPromise;
+		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
 ]
 
 { #category : #actions }
@@ -204,4 +188,31 @@ GtRsrEvaluatorServiceClient >> gtSession: anObject [
 GtRsrEvaluatorServiceClient >> isBusy [
 
 	^ _connection isBusy
+]
+
+{ #category : #actions }
+GtRsrEvaluatorServiceClient >> startEvaluateAsyncScript: aGtRsrScriptEvaluation [
+	| resolvedBindings rsrPromise |
+	aGtRsrScriptEvaluation serialisationStrategy
+		ifNil: [ self error: 'Serialization strategy not yet set' ].
+
+	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	
+	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
+		rsrPromise := remoteSelf
+			startEvaluate: aGtRsrScriptEvaluation script
+			for: aGtRsrScriptEvaluation receiver
+			bindings: resolvedBindings
+			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
+
+		"When making an async call we need to use the legacy serialisation strategy, 
+		as that one is used to get back the data about the remote execution. We could
+		later on explicitly pass a serialisation strategy to be used for the initial
+		call that starts the async execution."
+		GtRsrEvaluatorPromise
+			rsrPromise: rsrPromise
+			serializationStrategy: #GtRsrLegacySerializationStrategy
+			gtSession: gtSession
+			autoCommit: aGtRsrScriptEvaluation autoCommit
+			sourceEvaluation: aGtRsrScriptEvaluation ]
 ]

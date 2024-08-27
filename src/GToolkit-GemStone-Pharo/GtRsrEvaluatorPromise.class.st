@@ -9,7 +9,7 @@ Class {
 		'value',
 		'autoCommit'
 	],
-	#category : #'GToolkit-GemStone-Pharo'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #'instance creation' }
@@ -101,14 +101,6 @@ GtRsrEvaluatorPromise >> isForAsyncExecution [
 ]
 
 { #category : #testing }
-GtRsrEvaluatorPromise >> isGtEvaluationException [
-	"Answer a boolean indicating if the result is an evaluation exception.
-	This is true from the time an exception has been raised until the debugger has been closed."
-
-	^ value == self and: [ rsrPromise isGtEvaluationException ]
-]
-
-{ #category : #testing }
 GtRsrEvaluatorPromise >> isResolved [
 
 	^ value ~~ self
@@ -162,7 +154,7 @@ GtRsrEvaluatorPromise >> wait [
 		gtSession ifNotNil: [ :aGemStoneSession |
 			evaluationResult gtPharoProxyInitializeWithSession: aGemStoneSession ] ].
 
-	computedResult :=  serializationStrategy
+	computedResult := serializationStrategy
 		ifNil: [ evaluationResult computedResult ]
 		ifNotNil: [ 
 			self deserializeResult: evaluationResult computedResult ].

@@ -12,16 +12,10 @@ GtGemStoneSnippetSynchronousExecutionStrategy >> evaluate: remoteScript inSessio
 		evaluateAndWait: remoteScript 
 		for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
 		bindings: remoteBindings.
-	result associationsDo: [ :binding |
-		(pharoBindings bindingOf: binding key asSymbol) 
-			value: (binding value asGtBareProxyObject) ].
-
-	^ (result
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			aGtSourceCoderEvaluationContext serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: anEvaluationFailBlock) asGtBareProxyObject
+		
+	^ self 
+		updateWithRemoteComputationResult: result 
+		pharoBindings: pharoBindings  
+		serializationStrategy: aGtSourceCoderEvaluationContext serializationStrategy 
+		onFailDo: anEvaluationFailBlock.
 ]

@@ -7,7 +7,7 @@ Class {
 	#classVars : [
 		'ReplacePaneContentAutomatically'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #settings }

@@ -14,7 +14,7 @@ Class {
 
 { #category : #accessing }
 GtGemStoneSnippetCoderModel class >> enableAsyncPlay [
-	^ EnableAsyncPlay ifNil: [ false ]
+	^ EnableAsyncPlay ifNil: [ true ]
 ]
 
 { #category : #accessing }

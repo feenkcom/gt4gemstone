@@ -1,37 +1,44 @@
 Class {
-	#name : #GtGemStoneSnippetPromise,
+	#name : #GtRsrEvaluatorAsyncPromise,
 	#superclass : #Object,
 	#instVars : [
 		'gtRsrEvaluatorPromise',
-		'snippetCoderModel',
 		'value',
 		'executionContext',
 		'mutex',
 		'state',
+		'gemStoneSession',
 		'serializationStrategy'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> basicDeserializeResult: aResult [
+	^ (self class environment 
+		at: serializationStrategy) new 
+			deserialize: aResult.
+]
+
 { #category : #resolving }
-GtGemStoneSnippetPromise >> break: aReason [ 
+GtRsrEvaluatorAsyncPromise >> break: aReason [ 
 	value := aReason.
 	state := #Broken.
 ]
 
 { #category : #resolving }
-GtGemStoneSnippetPromise >> breakWithEvaluationResult: evaluationResult [ 
-	self break: evaluationResult.
+GtRsrEvaluatorAsyncPromise >> breakWithEvaluationResult: evaluationResult [ 
+	self break: evaluationResult computedResult.
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> canStopExecution [
+GtRsrEvaluatorAsyncPromise >> canStopExecution [
 	^ executionContext notNil and: [
 		self isResolved not ]
 ]
 
 { #category : #utils }
-GtGemStoneSnippetPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
+GtRsrEvaluatorAsyncPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
 	"Instantiate an evaluation result object from the given object."
 
 	^ GtGemstoneEvaluationResult 
@@ -39,7 +46,7 @@ GtGemStoneSnippetPromise >> createEvaluationResultFromData: aDictionaryOrObject 
 ]
 
 { #category : #resolving }
-GtGemStoneSnippetPromise >> fulfill: anObject [
+GtRsrEvaluatorAsyncPromise >> fulfill: anObject [
 	"Fulfill the receiver"
 
 	value := anObject.
@@ -47,54 +54,54 @@ GtGemStoneSnippetPromise >> fulfill: anObject [
 ]
 
 { #category : #resolving }
-GtGemStoneSnippetPromise >> fulfillWithEvaluationResult: evaluationResult [ 
+GtRsrEvaluatorAsyncPromise >> fulfillWithEvaluationResult: evaluationResult [ 
 	| computedResult |
 	computedResult := evaluationResult computedResult.
-	computedResult := gtRsrEvaluatorPromise 
-		basicDeserializeResult: evaluationResult computedResult.
-		
+	
 	self fullfilWithComputedResult: computedResult
 ]
 
 { #category : #resolving }
-GtGemStoneSnippetPromise >> fullfilWithComputedResult: computedResult [ 
-	snippetCoderModel ifNotNil: [
-		computedResult associationsDo: [ :binding |
-			(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
-				value: (binding value asGtBareProxyObject) ] ].
-
-	self fulfill: (computedResult
-		at: 'snippetResult'
-		ifPresent: [ :obj | 
-			serializationStrategy
-				ifNil: [ obj ]
-				ifNotNil: [ :strategy | obj
-					proxyPerform: #yourself serializationStrategy: strategy ] ]
-		ifAbsent: [ self error: 'no result' ]) asGtBareProxyObject.
+GtRsrEvaluatorAsyncPromise >> fullfilWithComputedResult: computedResult [ 
+	| deserializedResult |
+	deserializedResult := self 
+		basicDeserializeResult: computedResult.
+		
+	self fulfill: deserializedResult
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> gemStoneSession [
-	^ gtRsrEvaluatorPromise gtSession
+GtRsrEvaluatorAsyncPromise >> gemStoneSession [
+	^ gemStoneSession
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise [
+GtRsrEvaluatorAsyncPromise >> gemStoneSession: aGemStoneSession [
+	gemStoneSession := aGemStoneSession
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> gtRsrEvaluatorPromise [
 	^ gtRsrEvaluatorPromise
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> gtRsrEvaluatorPromise: anObject [
-	gtRsrEvaluatorPromise := anObject
+GtRsrEvaluatorAsyncPromise >> gtRsrEvaluatorPromise: anEvaluatorPromise [
+	gtRsrEvaluatorPromise := anEvaluatorPromise
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> hasValidResult [
+GtRsrEvaluatorAsyncPromise >> hasEvaluationContext [
+	^ executionContext notNil
+]
+
+{ #category : #testing }
+GtRsrEvaluatorAsyncPromise >> hasValidResult [
 	^ self isFulfilled
 ]
 
 { #category : #initialization }
-GtGemStoneSnippetPromise >> initialize [
+GtRsrEvaluatorAsyncPromise >> initialize [
 	super initialize.
 	
 	value := self.
@@ -103,60 +110,67 @@ GtGemStoneSnippetPromise >> initialize [
 ]
 
 { #category : #actions }
-GtGemStoneSnippetPromise >> interruptEvaluation [
+GtRsrEvaluatorAsyncPromise >> interruptEvaluation [
 	self assert: [ executionContext notNil ].
 	
 	^ executionContext interruptAsyncComputation
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> isBroken [
+GtRsrEvaluatorAsyncPromise >> isBroken [
 	"Report if the receiver is currently broken"
 
 	^state == #Broken
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> isForAsyncExecution [
+GtRsrEvaluatorAsyncPromise >> isForAsyncExecution [
 	^ true 
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> isFulfilled [
+GtRsrEvaluatorAsyncPromise >> isFulfilled [
 	"Report is the receiver is currently fulfilled"
 
 	^state == #Fulfilled
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromise >> isGtEvaluationException [
-
-	^ gtRsrEvaluatorPromise isGtEvaluationException
-]
-
-{ #category : #testing }
-GtGemStoneSnippetPromise >> isResolved [
+GtRsrEvaluatorAsyncPromise >> isResolved [
 	"Report if the receiver is currently resolved."
 
 	^self isFulfilled or: [self isBroken]
 ]
 
 { #category : #resolving }
-GtGemStoneSnippetPromise >> resolveWithEvaluationResult: evaluationResult [ 
+GtRsrEvaluatorAsyncPromise >> resolveWithEvaluationResult: evaluationResult [ 
 	evaluationResult isEvaluationCancelledResult 
 		ifTrue: [ self breakWithEvaluationResult: evaluationResult ]
 		ifFalse: [ self fulfillWithEvaluationResult: evaluationResult ]
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> resolvedValue [
+GtRsrEvaluatorAsyncPromise >> resolvedValue [
 	self assert: [ value ~~ self ].
 	
 	^ value
 ]
 
+{ #category : #actions }
+GtRsrEvaluatorAsyncPromise >> resumeEvaluation [
+	| resumedEvaluationResultData |
+	self assert: [ executionContext notNil ].
+	
+	resumedEvaluationResultData := executionContext resumeAsyncComputation.
+	
+	self assert: (GtGemstoneEvaluationResumedResult 
+		isSerializedDataForCurrentClass: resumedEvaluationResultData).
+	^ GtGemstoneEvaluationResult 
+		createEvaluationResultFromData: resumedEvaluationResultData.
+]
+
 { #category : #private }
-GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationContext [
+GtRsrEvaluatorAsyncPromise >> retrieveEvaluationResultFromContext: anEvaluationContext [
 	| rawEvaluationResultData evaluationResult |
 	rawEvaluationResultData := anEvaluationContext wait.
 	
@@ -173,40 +187,28 @@ GtGemStoneSnippetPromise >> retrieveEvaluationResultFromContext: anEvaluationCon
 	^ evaluationResult
 ]
 
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> serializationStrategy [
-	^ serializationStrategy
+{ #category : #actions }
+GtRsrEvaluatorAsyncPromise >> serializationStrategy: aSerializationStrategy [ 
+	serializationStrategy := aSerializationStrategy 
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> serializationStrategy: anObject [
-	serializationStrategy := anObject
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> sessionDescription [
-	^ gtRsrEvaluatorPromise sessionDescription
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> snippetCoderModel [
-	^ snippetCoderModel
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetPromise >> snippetCoderModel: anObject [
-	snippetCoderModel := anObject
+GtRsrEvaluatorAsyncPromise >> sessionDescription [
+	^ gemStoneSession 
+		ifNil: [  '<missing session>']
+		ifNotNil: [ :aSession |
+			 aSession name, '  ', aSession statusDescription ]
 ]
 
 { #category : #actions }
-GtGemStoneSnippetPromise >> stopEvaluation [
+GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 	self assert: [ executionContext notNil ].
 	
 	^ executionContext terminateAsyncComputation
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromise >> value [
+GtRsrEvaluatorAsyncPromise >> value [
 
 	value == self ifTrue: [ 
 		mutex critical: [ self wait ] ].
@@ -214,7 +216,7 @@ GtGemStoneSnippetPromise >> value [
 ]
 
 { #category : #private }
-GtGemStoneSnippetPromise >> wait [
+GtRsrEvaluatorAsyncPromise >> wait [
 	| evaluationResult |
 	
 	executionContext := gtRsrEvaluatorPromise value.
@@ -225,5 +227,7 @@ GtGemStoneSnippetPromise >> wait [
 	] doWhileTrue: [ 
 		evaluationResult isResumedExecutionResult  ].
 	
-	self resolveWithEvaluationResult: evaluationResult
+	self resolveWithEvaluationResult: evaluationResult.
+	
+	^ value
 ]

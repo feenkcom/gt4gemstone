@@ -20,7 +20,7 @@ Class {
 		'promiseResolution',
 		'replacePaneContentAutomatically'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #callbacks }
@@ -429,23 +429,14 @@ GtGemStoneAsyncEvaluationElement >> snippetPromise [
 			aPromiseExecution snippetPromise ]
 ]
 
-{ #category : #accessing }
-GtGemStoneAsyncEvaluationElement >> snippetPromise: aGtGemStoneSnippetPromise [
-	self snippetPromise == aGtGemStoneSnippetPromise 
-		ifTrue: [ ^ self ].
-
-	self promiseResolution: (GtGemStoneSnippetPromiseResolution new 
-		 snippetPromise: aGtGemStoneSnippetPromise).
-]
-
 { #category : #subscriptions }
 GtGemStoneAsyncEvaluationElement >> subscribeToPromiseResolution [
 	promiseResolution announcer weak
-		when: GtGemStoneSnippetPromiseResolutionStartedAnnouncement
+		when: GtGemStoneAsyncPromiseResolutionStartedAnnouncement
 		send: #actOnPromiseExecutionStarted
 		to: self.
 	promiseResolution announcer weak
-		when: GtGemStoneSnippetPromiseResolutionCompletedAnnouncement
+		when: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement
 		send: #actOnPromiseExecutionCompleted
 		to: self.
 ]

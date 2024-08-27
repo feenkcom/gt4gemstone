@@ -9,7 +9,7 @@ Class {
 		'gtDefinitionString',
 		'retrievedGsProxy'
 	],
-	#category : #'GToolkit-GemStone-Pharo'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #accessing }

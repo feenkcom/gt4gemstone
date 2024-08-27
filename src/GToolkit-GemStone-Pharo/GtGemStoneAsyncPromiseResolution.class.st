@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneSnippetPromiseResolution,
+	#name : #GtGemStoneAsyncPromiseResolution,
 	#superclass : #Object,
 	#instVars : [
 		'announcer',
@@ -9,22 +9,22 @@ Class {
 		'endTimestamp',
 		'state'
 	],
-	#category : #'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> announcer [
+GtGemStoneAsyncPromiseResolution >> announcer [
 	^ announcer
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> canStopExecution [
+GtGemStoneAsyncPromiseResolution >> canStopExecution [
 	^ self isResolvingRunning and: [
 		snippetPromise canStopExecution ]
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> duration [ 
+GtGemStoneAsyncPromiseResolution >> duration [ 
 	^ (startTimestamp notNil and: [
 		endTimestamp notNil ]) 
 			ifTrue: [ endTimestamp - startTimestamp] 
@@ -32,20 +32,23 @@ GtGemStoneSnippetPromiseResolution >> duration [
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> endTimestamp [
+GtGemStoneAsyncPromiseResolution >> endTimestamp [
 	^ endTimestamp
 ]
 
 { #category : #executing }
-GtGemStoneSnippetPromiseResolution >> ensureExecuting [
+GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 	self hasProcess ifTrue: [ ^ self ].
 	
 	resolutionProcess := [
 		state := #Running.
 		startTimestamp := DateAndTime now.
 		[
+			| computedResult |
+			
 			self notifyResolutionStarted.
-			snippetPromise value.
+			computedResult := snippetPromise value.
+			
 			state := snippetPromise isBroken 
 				ifTrue: [ #Cancelled ] 
 				ifFalse: [ #Completed ].
@@ -60,12 +63,12 @@ GtGemStoneSnippetPromiseResolution >> ensureExecuting [
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> gemStoneSession [
+GtGemStoneAsyncPromiseResolution >> gemStoneSession [
 	^ snippetPromise gemStoneSession
 ]
 
 { #category : #'gt - inspector' }
-GtGemStoneSnippetPromiseResolution >> gtDefaultInspectorTool [
+GtGemStoneAsyncPromiseResolution >> gtDefaultInspectorTool [
 	^(GtPhlowCompositeTool new)
 		addTool: (GtGemStoneAsyncEvaluationPhlowTool new 
 			promiseResolution: self);
@@ -73,18 +76,18 @@ GtGemStoneSnippetPromiseResolution >> gtDefaultInspectorTool [
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> hasProcess [
+GtGemStoneAsyncPromiseResolution >> hasProcess [
 	^ resolutionProcess notNil
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> hasValidResult [
+GtGemStoneAsyncPromiseResolution >> hasValidResult [
 	^ snippetPromise notNil and: [
 		snippetPromise hasValidResult ]
 ]
 
 { #category : #initialization }
-GtGemStoneSnippetPromiseResolution >> initialize [
+GtGemStoneAsyncPromiseResolution >> initialize [
 	super initialize.
 	
 	announcer := Announcer new.
@@ -92,75 +95,85 @@ GtGemStoneSnippetPromiseResolution >> initialize [
 ]
 
 { #category : #actions }
-GtGemStoneSnippetPromiseResolution >> interruptEvaluation [
+GtGemStoneAsyncPromiseResolution >> interruptEvaluation [
 	snippetPromise interruptEvaluation
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isResolutionProcessDone [
+GtGemStoneAsyncPromiseResolution >> isResolutionProcessDone [
 	^ resolutionProcess isTerminated or: [ 
 		resolutionProcess isTerminating ] 
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isResolvingCompleted [
+GtGemStoneAsyncPromiseResolution >> isResolvingCompleted [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone ]
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isResolvingPending [
+GtGemStoneAsyncPromiseResolution >> isResolvingPending [
 	^ self hasProcess not
 ]
 
 { #category : #testing }
-GtGemStoneSnippetPromiseResolution >> isResolvingRunning [
+GtGemStoneAsyncPromiseResolution >> isResolvingRunning [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone not ]
 ]
 
 { #category : #notifications }
-GtGemStoneSnippetPromiseResolution >> notifyResolutionCompleted [
-	announcer announce: GtGemStoneSnippetPromiseResolutionCompletedAnnouncement new
+GtGemStoneAsyncPromiseResolution >> notifyResolutionCompleted [
+	announcer announce: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement new
 ]
 
 { #category : #notifications }
-GtGemStoneSnippetPromiseResolution >> notifyResolutionStarted [
-	announcer announce: GtGemStoneSnippetPromiseResolutionStartedAnnouncement new
+GtGemStoneAsyncPromiseResolution >> notifyResolutionStarted [
+	announcer announce: GtGemStoneAsyncPromiseResolutionStartedAnnouncement new
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> resolvedValue [
+GtGemStoneAsyncPromiseResolution >> resolvedValue [
 	^ snippetPromise resolvedValue
 ]
 
+{ #category : #actions }
+GtGemStoneAsyncPromiseResolution >> resumeEvaluation [
+	snippetPromise resumeEvaluation
+]
+
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> sessionDescription [
+GtGemStoneAsyncPromiseResolution >> sessionDescription [
 	^ snippetPromise sessionDescription
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> snippetPromise [
+GtGemStoneAsyncPromiseResolution >> snippetPromise [
 	^ snippetPromise
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> snippetPromise: aGtGemStoneSnippetPromise [
+GtGemStoneAsyncPromiseResolution >> snippetPromise: aGtGemStoneSnippetPromise [
 
 	snippetPromise := aGtGemStoneSnippetPromise.
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> startTimestamp [
+GtGemStoneAsyncPromiseResolution >> startTimestamp [
 	^ startTimestamp
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetPromiseResolution >> state [
+GtGemStoneAsyncPromiseResolution >> state [
 	^ state
 ]
 
 { #category : #actions }
-GtGemStoneSnippetPromiseResolution >> stopEvaluation [
+GtGemStoneAsyncPromiseResolution >> stopEvaluation [
 	snippetPromise stopEvaluation
+]
+
+{ #category : #actions }
+GtGemStoneAsyncPromiseResolution >> terminateResolutionProcess [
+	resolutionProcess terminate
 ]
