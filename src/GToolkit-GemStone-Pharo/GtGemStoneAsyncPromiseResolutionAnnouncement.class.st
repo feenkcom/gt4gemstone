@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneSnippetPromiseResolutionAnnouncement,
+	#name : #GtGemStoneAsyncPromiseResolutionAnnouncement,
 	#superclass : #Announcement,
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }

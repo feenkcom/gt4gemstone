@@ -49,7 +49,7 @@ GtRsrEvaluatorServiceClient >> evaluateAsyncScript: aGtRsrScriptEvaluation [
 	| executionContextPromise |
 	
 	executionContextPromise := self startEvaluateAsyncScript: aGtRsrScriptEvaluation.
-	^ GtGemStoneSnippetPromise new 
+	^ GtRsrEvaluatorAsyncPromise new 
 		gemStoneSession: gtSession;
 		gtRsrEvaluatorPromise: executionContextPromise;
 		serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy

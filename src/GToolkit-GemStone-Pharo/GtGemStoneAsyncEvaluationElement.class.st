@@ -432,11 +432,11 @@ GtGemStoneAsyncEvaluationElement >> snippetPromise [
 { #category : #subscriptions }
 GtGemStoneAsyncEvaluationElement >> subscribeToPromiseResolution [
 	promiseResolution announcer weak
-		when: GtGemStoneSnippetPromiseResolutionStartedAnnouncement
+		when: GtGemStoneAsyncPromiseResolutionStartedAnnouncement
 		send: #actOnPromiseExecutionStarted
 		to: self.
 	promiseResolution announcer weak
-		when: GtGemStoneSnippetPromiseResolutionCompletedAnnouncement
+		when: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement
 		send: #actOnPromiseExecutionCompleted
 		to: self.
 ]
