@@ -45,7 +45,7 @@ GtGemStoneAsyncEvaluationElement >> buildDetailsContainerElement [
 		addChild: self buildStartTimeRow;
 		addChild: self buildEndTimeRow;
 		addChild: self buildDurationRow;
-		addChild: self buildGemStoneSessionRow;
+		"addChild: self buildGemStoneSessionRow;"
 		addChild:(executionToolbarElement := self buildToolbar
 				margin: (BlInsets top: 10)) 
 			as: #executionToolbar
@@ -185,7 +185,7 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 
 { #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
-	<gtExecutionAction>
+	"<gtExecutionAction>"
 
 	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
 	
@@ -200,7 +200,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 
 { #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
-	<gtExecutionAction>
+	"<gtExecutionAction>"
 
 	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
 	
@@ -459,7 +459,7 @@ GtGemStoneAsyncEvaluationElement >> unsubscribeFromPromiseResolution [
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForCompletedPromise [
 	
-	gemStoneSessionLabel text: promiseResolution sessionDescription.
+	"gemStoneSessionLabel text: promiseResolution sessionDescription."
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ''.
 	
@@ -476,7 +476,7 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForExecutingPromise [
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ' - '.
 	
-	gemStoneSessionLabel text: promiseResolution sessionDescription.
+	"gemStoneSessionLabel text: promiseResolution sessionDescription."
 	
 	startTimeLabel text: promiseResolution startTimestamp asTime print24.
 	elapsedTimeLabel updatingDateAndTime: promiseResolution startTimestamp.
@@ -485,7 +485,7 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForExecutingPromise [
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForPendingResolution [
 	executionStatusLabel text: promiseResolution state.
-	gemStoneSessionLabel text: promiseResolution sessionDescription.
+	"gemStoneSessionLabel text: promiseResolution sessionDescription."
 	
 	promiseResolution startTimestamp ifNotNil: [ :aTimestamp | 
 		startTimeLabel text: aTimestamp asTime print24.
