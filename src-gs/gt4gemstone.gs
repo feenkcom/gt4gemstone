@@ -1563,13 +1563,13 @@ evaluateAndWaitBlock: aBlock from: anEvaluationServer
 	If it completes successfully, answer the result.
 	If an exception is raised, suspend the evaluation process and answer the receiver."
 
-	self evaluateBlock: aBlock from: anEvaluationServer.
+	self evaluateBlock: aBlock from: anEvaluationServer priority: Processor userBackgroundPriority.
 	^ self waitForEvaluationResult.
 %
 
 category: 'actions - api'
 method: GtGemStoneEvaluationContext
-evaluateBlock: aBlock from: anEvaluationServer
+evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 	"Start evaluation of the supplied block.
 	If it completes successfully, result is the return value of aBlock.
 	If an exception is raised, suspend the evaluation process and set result to the receiver."
@@ -1598,7 +1598,7 @@ evaluateBlock: aBlock from: anEvaluationServer
 
 	process
 		name: 'GT evaluation';
-		priority: Processor activeProcess priority + 1;
+		priority: anInteger;
 		breakpointLevel: 1;
 		resume.
 
@@ -4013,7 +4013,8 @@ gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrate
 			[ | method |
 			method := aString _compileInContext: receiver symbolList: bindings.
 			method _executeInContext: receiver ]
-		from: self.
+		from: self
+		priority: Processor userBackgroundPriority - 2
 %
 
 category: 'actions'
@@ -4613,6 +4614,29 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 	"^ self collect: [ :each | each asGtRsrProxyObjectForConnection: aRsrConnection ]"
     ^ GtRsrProxyServiceServer object: self
+%
+
+! Class extensions for 'RsrConcurrentTestClient'
+
+!		Instance methods for 'RsrConcurrentTestClient'
+
+category: '*GToolkit-GemStone'
+method: RsrConcurrentTestClient
+startBackgroundFactorialComputation
+
+	^ remoteSelf startBackgroundFactorialComputation
+%
+
+! Class extensions for 'RsrConcurrentTestServer'
+
+!		Instance methods for 'RsrConcurrentTestServer'
+
+category: '*GToolkit-GemStone'
+method: RsrConcurrentTestServer
+startBackgroundFactorialComputation
+	stashedProcess := [
+		5000 timesRepeat: [ 5000 factorial ]  
+	] forkAt: Processor userBackgroundPriority
 %
 
 ! Class extensions for 'SequenceableCollection'
