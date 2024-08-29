@@ -1,6 +1,6 @@
 Extension { #name : #RsrConcurrentTestServer }
 
-{ #category : #'*GToolkit-GemStone' }
+{ #category : #'*GToolkit-GemStone-Pharo' }
 RsrConcurrentTestServer >> startBackgroundFactorialComputation [
 	stashedProcess := [
 		5000 timesRepeat: [ 5000 factorial ]  
