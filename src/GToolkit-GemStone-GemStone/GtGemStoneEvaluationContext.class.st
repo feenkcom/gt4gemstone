@@ -83,12 +83,12 @@ GtGemStoneEvaluationContext >> evaluateAndWaitBlock: aBlock from: anEvaluationSe
 	If it completes successfully, answer the result.
 	If an exception is raised, suspend the evaluation process and answer the receiver."
 
-	self evaluateBlock: aBlock from: anEvaluationServer.
+	self evaluateBlock: aBlock from: anEvaluationServer priority: Processor userBackgroundPriority.
 	^ self waitForEvaluationResult.
 ]
 
 { #category : #'actions - api' }
-GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
+GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer priority: anInteger [
 	"Start evaluation of the supplied block.
 	If it completes successfully, result is the return value of aBlock.
 	If an exception is raised, suspend the evaluation process and set result to the receiver."
@@ -117,7 +117,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer [
 
 	process
 		name: 'GT evaluation';
-		priority: Processor activeProcess priority + 1;
+		priority: anInteger;
 		breakpointLevel: 1;
 		resume.
 

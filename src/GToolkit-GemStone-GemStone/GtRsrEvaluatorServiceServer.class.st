@@ -87,7 +87,8 @@ GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: 
 			[ | method |
 			method := aString _compileInContext: receiver symbolList: bindings.
 			method _executeInContext: receiver ]
-		from: self.
+		from: self
+		priority: Processor userBackgroundPriority - 2
 ]
 
 { #category : #actions }

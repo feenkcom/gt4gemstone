@@ -185,7 +185,7 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 
 { #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
-	"<gtExecutionAction>"
+	<gtExecutionAction>
 
 	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
 	
@@ -200,7 +200,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 
 { #category : #'gt - actions' }
 GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
-	"<gtExecutionAction>"
+	<gtExecutionAction>
 
 	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
 	

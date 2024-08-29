@@ -40,9 +40,9 @@ GtGemStoneAsyncPromiseResolution >> endTimestamp [
 GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 	self hasProcess ifTrue: [ ^ self ].
 	
+	state := #Running.
+	startTimestamp := DateAndTime now.
 	resolutionProcess := [
-		state := #Running.
-		startTimestamp := DateAndTime now.
 		[
 			| computedResult |
 			
