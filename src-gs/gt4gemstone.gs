@@ -4616,29 +4616,6 @@ asGtRsrProxyObjectForConnection: aRsrConnection
     ^ GtRsrProxyServiceServer object: self
 %
 
-! Class extensions for 'RsrConcurrentTestClient'
-
-!		Instance methods for 'RsrConcurrentTestClient'
-
-category: '*GToolkit-GemStone'
-method: RsrConcurrentTestClient
-startBackgroundFactorialComputation
-
-	^ remoteSelf startBackgroundFactorialComputation
-%
-
-! Class extensions for 'RsrConcurrentTestServer'
-
-!		Instance methods for 'RsrConcurrentTestServer'
-
-category: '*GToolkit-GemStone'
-method: RsrConcurrentTestServer
-startBackgroundFactorialComputation
-	stashedProcess := [
-		5000 timesRepeat: [ 5000 factorial ]  
-	] forkAt: Processor userBackgroundPriority
-%
-
 ! Class extensions for 'SequenceableCollection'
 
 !		Instance methods for 'SequenceableCollection'
