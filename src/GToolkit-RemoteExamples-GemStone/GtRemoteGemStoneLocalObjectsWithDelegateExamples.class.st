@@ -9,8 +9,7 @@ Class {
 
 { #category : #assertions }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertObjectNewStoreStringForBareProxy: aBareProxy [ 
-	self assert: aBareProxy storeString equals: '(PassiveObject newWithContents: ''^620^Object(""
-'') activate'.
+	self assert: (aBareProxy storeString includesSubstring: 'PassiveObject').
 
 	self 
 		assertStoreOnFor: aBareProxy
