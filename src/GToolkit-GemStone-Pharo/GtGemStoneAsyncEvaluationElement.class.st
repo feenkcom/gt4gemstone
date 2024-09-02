@@ -187,7 +187,7 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 	<gtExecutionAction>
 
-	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	promiseResolution isResolvingRunning ifFalse: [ ^ anAction empty ].
 	
 	^ anAction button
 		label: 'Cancel';
@@ -202,7 +202,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
 	<gtExecutionAction>
 
-	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	promiseResolution isResolvingRunning ifFalse: [ ^ anAction empty ].
 	
 	^ anAction button
 		label: 'Debug';

@@ -5,10 +5,10 @@ Class {
 		'gtRsrEvaluatorPromise',
 		'value',
 		'executionContext',
-		'mutex',
 		'state',
 		'gemStoneSession',
-		'serializationStrategy'
+		'serializationStrategy',
+		'evaluationMutex'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
@@ -105,7 +105,7 @@ GtRsrEvaluatorAsyncPromise >> initialize [
 	super initialize.
 	
 	value := self.
-	mutex := Mutex new.
+	evaluationMutex := Mutex new.
 	state := #PendingResolution.
 ]
 
@@ -202,7 +202,18 @@ GtRsrEvaluatorAsyncPromise >> sessionDescription [
 
 { #category : #actions }
 GtRsrEvaluatorAsyncPromise >> stopEvaluation [
-	self assert: [ executionContext notNil ].
+	| retryCount |
+	
+	"If the user attempts to stop execution while we are waiting for the execution context, wait a bit ang give the remote execution a chance to start. We cannot stop the remote execution unless we have a proxy to the execution context."
+	retryCount := 5.
+	[ executionContext isNil and: [ retryCount > 0 ] ] whileTrue: [
+		100 milliseconds wait.
+		retryCount := retryCount -1.
+	].
+	
+	executionContext 
+		ifNil: [
+			^ Error signal: 'Failed to stop the remote execution. Could not get a proxy to the evaluation context for the remote execution. Try and stop the execution again' ].
 	
 	^ executionContext terminateAsyncComputation
 ]
@@ -211,7 +222,7 @@ GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 GtRsrEvaluatorAsyncPromise >> value [
 
 	value == self ifTrue: [ 
-		mutex critical: [ self wait ] ].
+		evaluationMutex critical: [ self wait ] ].
 	^ value
 ]
 
