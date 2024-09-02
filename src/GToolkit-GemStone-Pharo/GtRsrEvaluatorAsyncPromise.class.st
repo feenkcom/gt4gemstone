@@ -211,8 +211,9 @@ GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 		retryCount := retryCount -1.
 	].
 	
-	executionContext ifNil: [
-		Error signal: 'Failed to stop the remote execution. Could not get a proxy to the evaluation context for the remote execution. Try and stop the execution again' ].
+	executionContext 
+		ifNil: [
+			^ Error signal: 'Failed to stop the remote execution. Could not get a proxy to the evaluation context for the remote execution. Try and stop the execution again' ].
 	
 	^ executionContext terminateAsyncComputation
 ]
