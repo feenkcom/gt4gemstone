@@ -19,8 +19,9 @@ GtGemStoneAsyncPromiseResolution >> announcer [
 
 { #category : #testing }
 GtGemStoneAsyncPromiseResolution >> canStopExecution [
-	^ self isResolvingRunning and: [
-		snippetPromise canStopExecution ]
+	"For now allow the execution to be stopped even if we do not have an evaluation context"
+	^ self isResolvingRunning "and: [
+		snippetPromise canStopExecution ]"
 ]
 
 { #category : #accessing }
