@@ -47,7 +47,8 @@ GtGsBareProxy class >> subclassForRemoteClass: aSymbol [
 ]
 
 { #category : #converting }
-GtGsBareProxy >> asGtpoLocalObject [
+GtGsBareProxy >> asGtpoLocalObject [ 
+
 	"Answer a local copy of the receiver"
 	^ proxyObject createGtpoLocalObjectLinkedToBareProxy:  self.
 ]
@@ -55,4 +56,15 @@ GtGsBareProxy >> asGtpoLocalObject [
 { #category : #printing }
 GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
+]
+
+{ #category : #'literal testing' }
+GtGsBareProxy >> shouldBePrintedAsLiteral: alreadyVisited [
+	"This is currently needed when printing arrays that contain proxies"
+	^ false
+]
+
+{ #category : #printing }
+GtGsBareProxy >> storeOn: aStream [
+	self asGtpoLocalObject storeOn: aStream
 ]
