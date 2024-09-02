@@ -124,14 +124,6 @@ GtGemStoneAsyncEvaluationElement >> buildStartTimeRow [
 ]
 
 { #category : #'building widgets' }
-GtGemStoneAsyncEvaluationElement >> buildToolbar [
-	^ BrToolbar new
-		aptitude: BrGlamorousToolbarAptitude new;
-		alignCenterLeft;
-		fitContent.
-]
-
-{ #category : #'building widgets' }
 GtGemStoneAsyncEvaluationElement >> buildToolLabel [
 	^(BrLabel new)
 		aptitude: ((BrGlamorousLabelAptitude new)
@@ -152,6 +144,14 @@ GtGemStoneAsyncEvaluationElement >> buildToolLabel [
 		hMatchParent;
 		vFitContent;
 		background: Color white
+]
+
+{ #category : #'building widgets' }
+GtGemStoneAsyncEvaluationElement >> buildToolbar [
+	^ BrToolbar new
+		aptitude: BrGlamorousToolbarAptitude new;
+		alignCenterLeft;
+		fitContent.
 ]
 
 { #category : #'building widgets' }
@@ -187,7 +187,7 @@ GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 	<gtExecutionAction>
 
-	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	promiseResolution isResolvingRunning ifFalse: [ ^ anAction empty ].
 	
 	^ anAction button
 		label: 'Cancel';
@@ -202,7 +202,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionCancelExecutionFor: anAction [
 GtGemStoneAsyncEvaluationElement >> gtActionDebugExecutionFor: anAction [
 	<gtExecutionAction>
 
-	promiseResolution canStopExecution ifFalse: [ ^ anAction empty ].
+	promiseResolution isResolvingRunning ifFalse: [ ^ anAction empty ].
 	
 	^ anAction button
 		label: 'Debug';
