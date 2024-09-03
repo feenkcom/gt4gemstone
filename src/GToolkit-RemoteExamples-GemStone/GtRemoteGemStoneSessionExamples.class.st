@@ -163,26 +163,28 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArguments [
 	| returnValue  |
 
 	returnValue := self runningServer 
-		evaluateBlockAndWait: [ :anInteger | OrderedCollection with: anInteger ]
+		evaluateBlockAndWaitReturnProxy: [ :anInteger | 
+			OrderedCollection with: anInteger ]
 		withArguments: #(1).
 	self assert: returnValue remoteClass equals: #OrderedCollection.
 
 	returnValue := self runningServer 
-		evaluateBlockAndWait: [ :anInteger | OrderedCollection with: anInteger ]
+		evaluateBlockAndWait: [ :anInteger | Set with: anInteger ]
 		withArguments: #(1)
 		autoCommit: false.
-	self assert: returnValue remoteClass equals: #OrderedCollection.
+	self assert: returnValue remoteClass equals: #Set.
 	
 	returnValue := self runningServer 
-		evaluateBlock: [ :anInteger | OrderedCollection with: anInteger ]
-		withArguments: #(1).
-	self assert: returnValue wait remoteClass equals: #OrderedCollection.
+		evaluateBlock: [ :anInteger | Set with: anInteger ]
+		withArguments: #(1)
+		serializationStrategy: #GtRsrLegacySerializationStrategy.
+	self assert: returnValue wait remoteClass equals: #Set.
 
 	returnValue := self runningServer 
-		evaluateBlock: [ :anInteger | OrderedCollection with: anInteger ]
+		evaluateBlock: [ :anInteger | Set with: anInteger ]
 		withArguments: #(1)
 		autoCommit: false.
-	self assert: returnValue wait remoteClass equals: #OrderedCollection.
+	self assert: returnValue wait remoteClass equals: #Set.
 ]
 
 { #category : #tests }
