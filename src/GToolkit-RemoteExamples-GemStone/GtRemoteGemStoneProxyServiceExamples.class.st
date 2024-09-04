@@ -174,7 +174,7 @@ GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	| collectionProxy size |
 	
 	collectionProxy := self runningServer 
-		evaluateAndWait: 'OrderedCollection withAll: #(1 6 3 4)'.
+		evaluateAndWaitReturnProxy: 'OrderedCollection withAll: #(1 6 3 4)'.
 	
 	size := collectionProxy proxyPerform: #size.
 	self assert: size equals: 4.

@@ -37,23 +37,28 @@ GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock 
 
 { #category : #initialize }
 GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
-	super initializeAddOns: addOns.
+	super initializeAddOns: addOns .
 
 	self class enableAsyncPlay ifTrue:
 		[ addOns
-			addMainAction: 'Inspect asynchronous' translated
-			icon: BrGlamorousIcons playAsynchronous
-			action: [ :aCoderUIModel :anElement | 
-				GtCoderCodeExecutor doItAndGo
+			addGemStoneExecutionAction: 'Inspect asynchronously' translated
+			icon: BrGlamorousVectorIcons playAsynchronous 
+			action: [ :aCoderUIModel :aButtonElement | 
+				| executionResult |
+				 
+				executionResult := GtCoderCodeExecutor doItAndGo
 					coderViewModel: aCoderUIModel;
-					element: anElement;
+					element: aButtonElement;
 					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
-					execute ]
+					execute.
+		
+				aCoderUIModel updatWithAsyncExecution: executionResult value.
+			]
 			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
 			
 	addOns
-		addMainAction: 'Evaluate' translated
-		icon: BrGlamorousVectorIcons play
+		addGemStoneExecutionAction: 'Evaluate' translated
+		icon: BrGlamorousVectorIcons play 
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doIt
 				coderViewModel: aCoderUIModel;
@@ -61,7 +66,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				execute ]
 		id: GtSourceCoderDoItActionId.
 	addOns
-		addMainAction: 'Inspect' translated
+		addGemStoneExecutionAction: 'Inspect' translated
 		icon: BrGlamorousVectorIcons playinspect
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doItAndGo
@@ -70,8 +75,8 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				execute ]
 		id: GtSourceCoderDoItAndGoActionId.
 	addOns
-		addMainAction: 'Inspect serialized' translated
-		icon: BrGlamorousIcons tohere
+		addGemStoneExecutionAction: 'Inspect serialized' translated
+		icon: BrGlamorousVectorIcons tohere
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doItAndGoSerialized
 				coderViewModel: aCoderUIModel;
@@ -80,7 +85,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 		id: GtSourceCoderDoItAndGoSerializedActionId.
 	
 	addOns
-		addMainAction: 'Debug' translated
+		addGemStoneExecutionAction: 'Debug' translated
 		icon: BrGlamorousVectorIcons debug
 		action: [ :aCoderUIModel :anElement |
 			aCoderUIModel debug ]
