@@ -125,7 +125,7 @@ GtGemStoneSession >> close [
 	connection ifNil: [ ^ self ].
 
 	connection close.
-	session ifNotNil: [ session logout ].
+	session ifNotNil: [ self safeLogout ].
 	session := connection := evaluator := keepAlive := nil.
 	registry ifNotNil:[ 
 		registry removeSession: self ].
@@ -1260,6 +1260,20 @@ GtGemStoneSession >> runPostConnectActions [
 		thenCollect: [ :method |
 			self perform: method selector.
 			method selector ].
+]
+
+{ #category : #actions }
+GtGemStoneSession >> safeLogout [
+	[ session logout ] 
+		on: GciError   
+		do: [ :anError |
+			"Ignore the specific SSL error when disconnecting,
+			only logging that error and showing a notification."
+			anError isUnexpectedEofOverSsl 
+				ifFalse: [ anError pass ]
+				ifTrue: [
+					self inform: 'Error: ', anError message asString.
+					UIManager default logError: anError ] ]
 ]
 
 { #category : #accessing }
