@@ -515,6 +515,15 @@ GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnector: aGtGemStoneConnec
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnectorNamed: aConnectorName [
+	"Answer a new session using the supplied connector.
+	Answer the connector's default session if it doesn't exist."
+
+	^ self newSessionOrDefaultWithConnector: (self 
+		connectorNamed: aConnectorName)
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector.
 	The default session for the connector is never answered."
@@ -530,7 +539,8 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: s
 	"Answer a new session using the supplied connector"
 	| sessionName newSession |
 
-	sessionName := self class sessionNameForConnectorName: aGtGemStoneConnector name id: sessionId.
+	sessionName := self class 
+		sessionNameForConnectorName: aGtGemStoneConnector name id: sessionId.
 	(sessions includesKey: sessionName) ifTrue:
 		[ self error: 'session ''', sessionName, ''' already exists' ].
 	newSession := GtGemStoneSession new
