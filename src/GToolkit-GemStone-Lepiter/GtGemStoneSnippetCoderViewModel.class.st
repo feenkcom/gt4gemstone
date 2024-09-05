@@ -16,26 +16,25 @@ GtGemStoneSnippetCoderViewModel >> actOnAsyncExecutionCompleted [
 	self enableExecutionAction
 ]
 
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> asynchronusExecutionStrategy [
+	^ GtGemStoneSnippetAsynchronousExecutionStrategy new
+]
+
 { #category : #actions }
 GtGemStoneSnippetCoderViewModel >> disableExecutionAction [
-	| executionActions |
-	
-	executionActions := self mainActions
-		select: [ :each | each isGemStoneExecutionAction ].
-	executionActions do: [ :each |
-		each disableAction ].
+	self mainActions
+		select: [ :each | each isGemStoneExecutionAction ]
+		thenDo: [ :each |each disableAction ].
 	
 	self announce: GtTextualCoderViewModelMainActionsChanged new.
 ]
 
 { #category : #actions }
 GtGemStoneSnippetCoderViewModel >> enableExecutionAction [
-	| executionActions |
-	
-	executionActions := self mainActions
-		select: [ :each | each isGemStoneExecutionAction ].
-	executionActions do: [ :each |
-		each enableAction ].
+	self mainActions
+		select: [ :each | each isGemStoneExecutionAction ]
+		thenDo: [ :each | each enableAction ].
 	
 	self announce: GtTextualCoderViewModelMainActionsChanged new.
 ]
@@ -43,7 +42,6 @@ GtGemStoneSnippetCoderViewModel >> enableExecutionAction [
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	^ super evaluationContext
-		executionStrategy: executionStrategy;
 		session: session.
 ]
 

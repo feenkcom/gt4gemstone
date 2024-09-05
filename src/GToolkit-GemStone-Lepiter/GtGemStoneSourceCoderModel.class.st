@@ -5,30 +5,25 @@ Class {
 }
 
 { #category : #'add-ons' }
-GtGemStoneSourceCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns [
-	<gtCoderContextMenuAddOns: 800>
-	self
-		addContextMenuItemFrom: GtSourceCoderDoItShortcut new
-			withId: nil
-			to: coderAddOns;
-		addContextMenuItemFrom: GtSourceCoderDoItAndInspectShortcut new
-			withId: nil
-			to: coderAddOns;
-		addContextMenuItemFrom: GtSourceCoderPrintItShortcut new
-			withId: nil
-			to: coderAddOns;
-		addContextMenuItemFrom: GtSourceCoderDebugShortcut new
-			withId: nil
-			to: coderAddOns
-]
-
-{ #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 	<gtCoderContextMenuAddOns: 250>
 	self
 		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
 		withId: nil
 		to: coderAddOns
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject withId: anUndefinedObject to: coderAddOns from: aCoderViewModel [ 
+
+	^ (self addContextMenuItemFrom: anObject 
+		withId: anUndefinedObject 
+		to: coderAddOns )
+			markAsGemStoneExecutionAction;
+			in: [ :anAction |
+				aCoderViewModel hasAsyncExecution ifTrue: [
+					anAction disableAction ].
+				anAction ]
 ]
 
 { #category : #'add-ons' }

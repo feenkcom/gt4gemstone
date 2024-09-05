@@ -22,6 +22,29 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 	EnableAsyncPlay := anObject
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns: 800>
+	self
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItShortcut new
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel;
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut
+					new
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel;
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderPrintItShortcut new
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel;
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDebugShortcut new
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel
+]
+
 { #category : #converting }
 GtGemStoneSnippetCoderModel >> asCoderViewModel [
 
@@ -44,16 +67,10 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 			addGemStoneExecutionAction: 'Inspect asynchronously' translated
 			icon: BrGlamorousVectorIcons playAsynchronous 
 			action: [ :aCoderUIModel :aButtonElement | 
-				| executionResult |
-				 
-				executionResult := GtCoderCodeExecutor doItAndGo
+				GtCoderCodeExecutor doItAndGoAsynchronous
 					coderViewModel: aCoderUIModel;
 					element: aButtonElement;
-					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
-					execute.
-		
-				aCoderUIModel updatWithAsyncExecution: executionResult value.
-			]
+					execute ]
 			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
 			
 	addOns
@@ -98,7 +115,7 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 
 	addOns
 		addShortcut: GtSourceCoderDoItShortcut new;
-		addShortcut: GtSourceCoderDoItAndInspectShortcut new;
+		addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new;
 		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new
 ]
 
