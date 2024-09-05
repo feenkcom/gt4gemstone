@@ -45,7 +45,7 @@ GtGemStoneAsyncEvaluationElement >> buildDetailsContainerElement [
 		addChild: self buildStartTimeRow;
 		addChild: self buildEndTimeRow;
 		addChild: self buildDurationRow;
-		"addChild: self buildGemStoneSessionRow;"
+		addChild: self buildGemStoneSessionRow;
 		addChild:(executionToolbarElement := self buildToolbar
 				margin: (BlInsets top: 10)) 
 			as: #executionToolbar
@@ -181,6 +181,11 @@ GtGemStoneAsyncEvaluationElement >> collectHeaderToolbarActions [
 GtGemStoneAsyncEvaluationElement >> createTitleNotifier [
 	^ GtPhlowTitleIconAndLabelNotifier new 
 		longLabel: [self toolName]
+]
+
+{ #category : #accessing }
+GtGemStoneAsyncEvaluationElement >> formattedSessionName [
+	^ promiseResolution sessionName removeSuffix: ':default'
 ]
 
 { #category : #'gt - actions' }
@@ -459,12 +464,12 @@ GtGemStoneAsyncEvaluationElement >> unsubscribeFromPromiseResolution [
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForCompletedPromise [
 	
-	"gemStoneSessionLabel text: promiseResolution sessionDescription."
+	gemStoneSessionLabel text: self formattedSessionName.
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ''.
 	
-	startTimeLabel text: promiseResolution startTimestamp  asTime print24.
-	endTimeLabel text: promiseResolution endTimestamp  asTime print24.
+	startTimeLabel text: promiseResolution startTimestamp asTime print24.
+	endTimeLabel text: promiseResolution endTimestamp asTime print24.
 	durationLabel text: promiseResolution duration gtHumanReadableString.
 		
 	elapsedTimeLabel updatingDateAndTimeModel stopUpdateTask.
@@ -476,7 +481,7 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForExecutingPromise [
 	executionStatusLabel text: promiseResolution state.
 	startTimeSeparatorLabel text: ' - '.
 	
-	"gemStoneSessionLabel text: promiseResolution sessionDescription."
+	gemStoneSessionLabel text: self formattedSessionName.
 	
 	startTimeLabel text: promiseResolution startTimestamp asTime print24.
 	elapsedTimeLabel updatingDateAndTime: promiseResolution startTimestamp.
@@ -485,7 +490,7 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForExecutingPromise [
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> updateDetailsForPendingResolution [
 	executionStatusLabel text: promiseResolution state.
-	"gemStoneSessionLabel text: promiseResolution sessionDescription."
+	gemStoneSessionLabel text: self formattedSessionName.
 	
 	promiseResolution startTimestamp ifNotNil: [ :aTimestamp | 
 		startTimeLabel text: aTimestamp asTime print24.

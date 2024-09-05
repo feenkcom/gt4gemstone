@@ -149,6 +149,11 @@ GtGemStoneAsyncPromiseResolution >> sessionDescription [
 ]
 
 { #category : #accessing }
+GtGemStoneAsyncPromiseResolution >> sessionName [
+	^ snippetPromise sessionName
+]
+
+{ #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> snippetPromise [
 	^ snippetPromise
 ]

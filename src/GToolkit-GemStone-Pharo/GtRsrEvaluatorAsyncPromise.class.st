@@ -200,6 +200,14 @@ GtRsrEvaluatorAsyncPromise >> sessionDescription [
 			 aSession name, '  ', aSession statusDescription ]
 ]
 
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> sessionName [
+	^ gemStoneSession 
+		ifNil: [  '<missing session>']
+		ifNotNil: [ :aSession |
+			 aSession name ]
+]
+
 { #category : #actions }
 GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 	| retryCount |
