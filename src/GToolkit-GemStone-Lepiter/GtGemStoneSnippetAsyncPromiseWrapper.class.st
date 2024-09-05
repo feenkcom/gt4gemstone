@@ -94,6 +94,11 @@ GtGemStoneSnippetAsyncPromiseWrapper >> sessionDescription [
 	^ gtRsrAsycPromise sessionDescription
 ]
 
+{ #category : #accessing }
+GtGemStoneSnippetAsyncPromiseWrapper >> sessionName [
+	^ gtRsrAsycPromise sessionName
+]
+
 { #category : #'as yet unclassified' }
 GtGemStoneSnippetAsyncPromiseWrapper >> snippetCoderModel: anObject [
 	snippetCoderModel := anObject
