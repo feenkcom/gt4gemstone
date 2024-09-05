@@ -16,6 +16,11 @@ GtGemStoneSnippetCoderViewModel >> actOnAsyncExecutionCompleted [
 	self enableExecutionAction
 ]
 
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> asynchronusExecutionStrategy [
+	^ GtGemStoneSnippetAsynchronousExecutionStrategy new
+]
+
 { #category : #actions }
 GtGemStoneSnippetCoderViewModel >> disableExecutionAction [
 	| executionActions |
@@ -43,7 +48,6 @@ GtGemStoneSnippetCoderViewModel >> enableExecutionAction [
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	^ super evaluationContext
-		executionStrategy: executionStrategy;
 		session: session.
 ]
 

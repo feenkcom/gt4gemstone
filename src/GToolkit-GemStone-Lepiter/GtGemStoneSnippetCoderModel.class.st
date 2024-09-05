@@ -44,16 +44,10 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 			addGemStoneExecutionAction: 'Inspect asynchronously' translated
 			icon: BrGlamorousVectorIcons playAsynchronous 
 			action: [ :aCoderUIModel :aButtonElement | 
-				| executionResult |
-				 
-				executionResult := GtCoderCodeExecutor doItAndGo
+				GtCoderCodeExecutor doItAndGoAsynchronous
 					coderViewModel: aCoderUIModel;
 					element: aButtonElement;
-					executionStrategy: GtGemStoneSnippetAsynchronousExecutionStrategy new;
-					execute.
-		
-				aCoderUIModel updatWithAsyncExecution: executionResult value.
-			]
+					execute ]
 			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
 			
 	addOns
