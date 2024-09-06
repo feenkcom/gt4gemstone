@@ -142,18 +142,18 @@ GtRsrEvaluatorAsyncPromise >> isResolved [
 	^self isFulfilled or: [self isBroken]
 ]
 
-{ #category : #accessing }
-GtRsrEvaluatorAsyncPromise >> resolvedValue [
-	self assert: [ value ~~ self ].
-	
-	^ value
-]
-
 { #category : #resolving }
 GtRsrEvaluatorAsyncPromise >> resolveWithEvaluationResult: evaluationResult [ 
 	evaluationResult isEvaluationCancelledResult 
 		ifTrue: [ self breakWithEvaluationResult: evaluationResult ]
 		ifFalse: [ self fulfillWithEvaluationResult: evaluationResult ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> resolvedValue [
+	self assert: [ value ~~ self ].
+	
+	^ value
 ]
 
 { #category : #actions }

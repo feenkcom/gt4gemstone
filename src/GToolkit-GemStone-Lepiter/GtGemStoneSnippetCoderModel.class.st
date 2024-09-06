@@ -65,7 +65,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 	self class enableAsyncPlay ifTrue:
 		[ addOns
 			addGemStoneExecutionAction: 'Inspect asynchronously' translated
-			icon: BrGlamorousVectorIcons playAsynchronous 
+			icon: BrGlamorousVectorIcons playInspectAsynchronous 
 			action: [ :aCoderUIModel :aButtonElement | 
 				GtCoderCodeExecutor doItAndGoAsynchronous
 					coderViewModel: aCoderUIModel;

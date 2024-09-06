@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneAsyncEvaluationPhlowTool,
 	#superclass : #GtPhlowTool,
 	#instVars : [
-		'promiseResolution'
+		'promiseResolution',
+		'shouldReplaceContent'
 	],
 	#classVars : [
 		'ReplacePaneContentAutomatically'
@@ -25,20 +26,26 @@ GtGemStoneAsyncEvaluationPhlowTool >> asElementDo: aOneArgBlock [
 	| evaluationElement |
 
 	evaluationElement := GtGemStoneAsyncEvaluationElement new
+		shouldReplaceContent: shouldReplaceContent;
 		promiseResolution:promiseResolution;
 		matchParent.
 
 	^ aOneArgBlock cull: evaluationElement
 ]
 
+{ #category : #configuration }
+GtGemStoneAsyncEvaluationPhlowTool >> disableContentReplace [
+	shouldReplaceContent := false
+]
+
 { #category : #accessing }
 GtGemStoneAsyncEvaluationPhlowTool >> icon [
-	^ BrGlamorousVectorIcons playAsynchronous
+	^ BrGlamorousVectorIcons asynchronous
 ]
 
 { #category : #accessing }
 GtGemStoneAsyncEvaluationPhlowTool >> name [
-	^ 'GemStone'
+	^ 'Execution'
 ]
 
 { #category : #accessing }
@@ -51,6 +58,11 @@ GtGemStoneAsyncEvaluationPhlowTool >> promiseResolution: aGsPromiseExecution [
 	promiseResolution := aGsPromiseExecution.
 	
 	promiseResolution ensureExecuting.
+]
+
+{ #category : #testing }
+GtGemStoneAsyncEvaluationPhlowTool >> shouldReplaceContent [
+	^ shouldReplaceContent ifNil: [ true ]
 ]
 
 { #category : #accessing }
