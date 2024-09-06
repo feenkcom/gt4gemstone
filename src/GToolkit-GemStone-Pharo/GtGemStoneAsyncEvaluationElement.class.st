@@ -18,7 +18,8 @@ Class {
 		'headerToolbarUpdater',
 		'executionContentUpdater',
 		'promiseResolution',
-		'replacePaneContentAutomatically'
+		'replacePaneContentAutomatically',
+		'shouldReplaceContent'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
@@ -384,7 +385,7 @@ GtGemStoneAsyncEvaluationElement >> replacePaneContentAutomatically: aBoolean [
 
 { #category : #updating }
 GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
-	self replacePaneContentAutomatically ifFalse: [
+	self shouldReplaceContent ifFalse: [
 		aBlock value.
 		^ self ].
 	
@@ -393,11 +394,18 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 		^ self ].
 
 	self previousPagerPageElementDo: [ :aPageElement |
+		"aPageElement 
+			allParentsDetect: [ :anElement | anElement class = GtPager] 
+			ifFound: [ :aPager | 
+				aPager context toolSelectionStatesHandler
+					resetStoredSelectionState ] 
+			ifNone: []."
+			
 		(aPageElement 
 			childWithId: #toolArea 
 			ifFound: [ :anElement |
 				anElement phlow 
-					spawnObject: promiseResolution resolvedValue.
+					spawnObject: promiseResolution "resolvedValue".
 				^ self]) ].
 	
 	"We get here if we did not find a page element"
@@ -424,6 +432,17 @@ GtGemStoneAsyncEvaluationElement >> requestMainContainerAndToolbarUpdate [
 GtGemStoneAsyncEvaluationElement >> requestUpdateOrReplaceContent [
 	self enqueueTask: (BlTaskAction new 
 		action: [ self updateOrReplaceContent  ]) 
+]
+
+{ #category : #testing }
+GtGemStoneAsyncEvaluationElement >> shouldReplaceContent [
+	^ shouldReplaceContent ifNil: [
+		self replacePaneContentAutomatically]
+]
+
+{ #category : #accessing }
+GtGemStoneAsyncEvaluationElement >> shouldReplaceContent: aBoolean [ 
+	shouldReplaceContent := aBoolean 
 ]
 
 { #category : #accessing }

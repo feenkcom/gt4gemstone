@@ -121,7 +121,6 @@ GtGemStoneSnippetCoderViewModel >> updatWithAsyncExecution: aPromiseResolution [
 	self notifyAsyncExecutionStarted.
 	
 	self disableExecutionAction.
-	
 	aPromiseResolution announcer weak
 		when: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement
 		send: #actOnAsyncExecutionCompleted
