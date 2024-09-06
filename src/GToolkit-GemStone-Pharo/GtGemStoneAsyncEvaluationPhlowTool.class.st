@@ -56,8 +56,6 @@ GtGemStoneAsyncEvaluationPhlowTool >> promiseResolution [
 { #category : #accessing }
 GtGemStoneAsyncEvaluationPhlowTool >> promiseResolution: aGsPromiseExecution [
 	promiseResolution := aGsPromiseExecution.
-	
-	promiseResolution ensureExecuting.
 ]
 
 { #category : #testing }

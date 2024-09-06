@@ -27,6 +27,19 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject 
 ]
 
 { #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutFrom: anObject withId: anUndefinedObject to: coderAddOns from: aCoderViewModel [ 
+
+	^ (self addContextMenuItemWithNoShortcutFrom: anObject 
+		withId: anUndefinedObject 
+		to: coderAddOns )
+			markAsGemStoneExecutionAction;
+			in: [ :anAction |
+				aCoderViewModel hasAsyncExecution ifTrue: [
+					anAction disableAction ].
+				anAction ]
+]
+
+{ #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
 	

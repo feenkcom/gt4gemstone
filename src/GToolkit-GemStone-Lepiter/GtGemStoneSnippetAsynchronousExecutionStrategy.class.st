@@ -20,5 +20,7 @@ GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSessi
 		evaluationFailBlock:  anEvaluationFailBlock.
 		
 	^ GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: snippetPromiseWrapper
+		snippetPromise: snippetPromiseWrapper;
+		ensureExecuting;
+		yourself
 ]

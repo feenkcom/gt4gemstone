@@ -26,16 +26,26 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 800>
 	self
-		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItShortcut new
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut new
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel;
-		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut
-					new
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut new
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel;
-		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderPrintItShortcut new
+		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut new
+				name: 'Do it (blocking)')
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel;
+		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut new
+				name: 'Do it and inspect (blocking)')
+			withId: nil
+			to: coderAddOns
+			from: aCoderViewModel;
+		addGemStoneExecutionContextMenuItemFrom: (GtSourceCoderPrintItShortcut new
+				name: 'Print (blocking)')
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel;
@@ -62,9 +72,18 @@ GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock 
 GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 	super initializeAddOns: addOns .
 
-	self class enableAsyncPlay ifTrue:
-		[ addOns
-			addGemStoneExecutionAction: 'Inspect asynchronously' translated
+	self class enableAsyncPlay ifTrue: [ 
+		addOns
+			addGemStoneExecutionAction: 'Evaluate (asynchronous)' translated
+			icon: BrGlamorousVectorIcons playAsynchronous 
+			action: [ :aCoderUIModel :aButtonElement | 
+				GtCoderCodeExecutor doItAsynchronous
+					coderViewModel: aCoderUIModel;
+					element: aButtonElement;
+					execute ]
+			id: GtSourceCoderDoItAsynchronousActionId.
+		addOns
+			addGemStoneExecutionAction: 'Inspect (asynchronous)' translated
 			icon: BrGlamorousVectorIcons playInspectAsynchronous 
 			action: [ :aCoderUIModel :aButtonElement | 
 				GtCoderCodeExecutor doItAndGoAsynchronous
@@ -74,7 +93,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
 			
 	addOns
-		addGemStoneExecutionAction: 'Evaluate' translated
+		addGemStoneExecutionAction: 'Evaluate (blocking)' translated
 		icon: BrGlamorousVectorIcons play 
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doIt
@@ -83,7 +102,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				execute ]
 		id: GtSourceCoderDoItActionId.
 	addOns
-		addGemStoneExecutionAction: 'Inspect' translated
+		addGemStoneExecutionAction: 'Inspect (blocking)' translated
 		icon: BrGlamorousVectorIcons playinspect
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doItAndGo
@@ -92,7 +111,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				execute ]
 		id: GtSourceCoderDoItAndGoActionId.
 	addOns
-		addGemStoneExecutionAction: 'Inspect serialized' translated
+		addGemStoneExecutionAction: 'Inspect serialized (blocking)' translated
 		icon: BrGlamorousVectorIcons tohere
 		action: [ :aCoderUIModel :anElement | 
 			GtCoderCodeExecutor doItAndGoSerialized
@@ -107,6 +126,22 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 		action: [ :aCoderUIModel :anElement |
 			aCoderUIModel debug ]
 		id: GtSourceCoderDebugActionId.
+	
+	addOns
+		addGemStoneExecutionAction: 'Profile (blocking)'
+		icon: BrGlamorousVectorIcons performance
+		action: 
+			[:aCoderUIModel :anEvent |
+			aCoderUIModel coderModel
+				evaluate: [:thisCoder | thisCoder currentSourceString]
+				decorated: [:aSourceString | 'ProfMonitorTree monitorBlock: [ ' , aSourceString , ']']
+				inContext: aCoderUIModel evaluationContext
+				thenDo: 
+					[:anEvaluationResult |
+					aCoderUIModel coderModel
+						notifyObjectSpawnFromEvaluationResult: anEvaluationResult
+						requesterObject: aCoderUIModel evaluationContext requesterObject]]
+		id: GtSourceCoderProfileActionId.
 ]
 
 { #category : #initialize }
@@ -114,7 +149,7 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 	super initializeShortcuts: addOns.
 
 	addOns
-		addShortcut: GtSourceCoderDoItShortcut new;
+		addShortcut: GtSourceCoderDoItAsynchronousShortcut new;
 		addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new;
 		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new
 ]
