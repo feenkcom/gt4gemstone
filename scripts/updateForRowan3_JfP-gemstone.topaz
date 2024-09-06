@@ -1,0 +1,50 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	expectvalue true
+	run
+| warnings rowanProjectsHome |
+warnings := String new.
+rowanProjectsHome := '$ROWAN_PROJECTS_HOME'.
+[
+	"update RowanClientServices:mainV3.0 [3d1ae497b] (as of 9/5/24) -- REQUIRED for JfP"
+true ifTrue: [ 
+	"temporary patch to ensure 'mainV3.0' branch is used"
+	| spec |
+	spec := RwSpecification fromUrl: 'https://raw.githubusercontent.com/GemTalk/RowanClientServices/masterV3.0/rowan/specs/RowanClientServices.ston'.
+	spec 
+		revision: 'mainV3.0';
+		projectsHome: rowanProjectsHome;
+		load
+] ifFalse: [
+	(Rowan projectFromUrl: 'https://raw.githubusercontent.com/GemTalk/RowanClientServices/masterV3.0/rowan/specs/RowanClientServices.ston')
+		projectsHome: rowanProjectsHome;
+		load ].
+
+	"update RemoteServiceReplication:main [04f33cab2] (as of 9/5/24) -- REQUIRED for JfP"
+true ifTrue: [ 
+	"temporary patch to ensure 'main' branch is used"
+	| spec |
+	spec := RwSpecification fromUrl: 'https://raw.githubusercontent.com/GemTalk/RemoteServiceReplication/main/rowan/specs/RemoteServiceReplication.ston'.
+	spec 
+		revision: 'main';
+		projectsHome: rowanProjectsHome;
+		load
+] ifFalse: [
+	(Rowan projectFromUrl: 'https://raw.githubusercontent.com/GemTalk/RemoteServiceReplication/main/rowan/specs/RemoteServiceReplication.ston')
+		projectsHome: rowanProjectsHome;
+		load.
+] ] on: CompileWarning do: [:ex |
+	(ex description includesString: 'not optimized')
+			ifFalse: [ warnings 
+                           addAll: ex asString;
+                           lf ].
+	ex resume ].
+warnings isEmpty
+	ifTrue: [ true ]
+	ifFalse: [ warnings ]
+%
+	commit
+
+	errorCount
