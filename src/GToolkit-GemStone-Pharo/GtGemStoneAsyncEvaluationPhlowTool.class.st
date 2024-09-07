@@ -6,10 +6,21 @@ Class {
 		'shouldReplaceContent'
 	],
 	#classVars : [
+		'EnableElapsedTimeUpdate',
 		'ReplacePaneContentAutomatically'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
+
+{ #category : #settings }
+GtGemStoneAsyncEvaluationPhlowTool class >> enableElapsedTimeUpdate [
+	^ EnableElapsedTimeUpdate ifNil: [ true ]
+]
+
+{ #category : #settings }
+GtGemStoneAsyncEvaluationPhlowTool class >> enableElapsedTimeUpdate: aBoolean [
+	EnableElapsedTimeUpdate := aBoolean
+]
 
 { #category : #settings }
 GtGemStoneAsyncEvaluationPhlowTool class >> replacePaneContentAutomatically [
