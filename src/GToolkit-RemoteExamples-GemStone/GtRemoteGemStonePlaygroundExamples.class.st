@@ -189,10 +189,12 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 	scripter := self playgroundPageWithConnectedGemStone.
 	
 	self withEnabledAutomaticReplaceDo: [
-		scripter click
-			label: 'Click on play and inspect button';
-			// GtSourceCoderDoItAndGoAsynchronousActionId;
+		scripter gemStoneSnippet
+			clickOnPlayAndInspectAsynchronousButton;
 			play ].
+			
+	scripter pager
+		assertPageCountIs: 2.
 	
 	mainToolElement := scripter element pages second contentElement tool.
 	self assert: mainToolElement tabs size equals: 3.
@@ -221,10 +223,12 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runAsy
 	
 	scripter := self playgroundPageWithConnectedGemStone.
 	self withDisabledAutomaticReplaceDo: [
-		scripter click
-			label: 'Click on play and inspect async button';
-			// GtSourceCoderDoItAndGoAsynchronousActionId;
+		scripter gemStoneSnippet
+			clickOnPlayAndInspectAsynchronousButton;
 			play ].
+			
+	scripter pager
+		assertPageCountIs: 2.
 	
 	mainToolElement := scripter element pages second contentElement tool.
 	
@@ -260,9 +264,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone_runSyn
 	
 	scripter := self playgroundPageWithConnectedGemStone.
 	
-	scripter click
-		label: 'Click on play and inspect button';
-		// GtSourceCoderDoItAndGoActionId;
+	scripter gemStoneSnippet
+		clickOnPlayAndInspectButton;
 		play.
 		
 	scripter pager
