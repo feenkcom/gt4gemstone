@@ -60,7 +60,9 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 				snippetPromise break: nil ].
 			
 			self notifyResolutionCompleted ].
-	] forkNamed: 'GtGemStoneSnippetPromiseExecution resolution process'.
+	] 
+		forkAt: Processor userBackgroundPriority 
+		named: 'GtGemStoneSnippetPromiseExecution resolution process'.
 ]
 
 { #category : #accessing }
