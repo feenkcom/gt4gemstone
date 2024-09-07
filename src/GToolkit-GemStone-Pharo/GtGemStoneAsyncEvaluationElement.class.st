@@ -324,8 +324,6 @@ GtGemStoneAsyncEvaluationElement >> initializeMainContainerElement [
 		margin: (BlInsets top: 25).
 	
 	mainContainer addChild: self buildDetailsContainerElement.
-	"mainContainer addChild: (contentContainer := self buildContentContainerElement)."
-	"contentContainer margin: (BlInsets top: 15)."
 ]
 
 { #category : #'initialization ' }

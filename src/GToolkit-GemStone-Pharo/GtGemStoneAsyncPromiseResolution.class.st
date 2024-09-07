@@ -225,7 +225,12 @@ GtGemStoneAsyncPromiseResolution >> summaryAttributes [
 				ifNil: ['-'] 
 				ifNotNil: [ :aTimestamp | aTimestamp asTime ]. . 
 			self endTimestamp} .
-		{'Duration' . self duration humanReadablePrintString. self duration}.
+		{'Duration' . 
+			(self duration 
+				ifNil: [ '-' ]
+				ifNotNil: [ :aDuration | 
+					aDuration humanReadablePrintString]). 
+			self duration}.
 		{'Session' . self sessionDescription. self gemStoneSession} }
 ]
 
