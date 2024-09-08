@@ -321,8 +321,6 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnLega
 		assert: executionContext remoteClass 
 		equals: #GtGemStoneEvaluationContext.
 	
-	"We wait a few seconds to give the GemStone computation a chance to terminate"
-	2 seconds wait.
 	rawEvaluationResultData := executionContext waitAsyncComputation.
 	
 	self assert: (GtGemstoneEvaluationComputedResult 
@@ -353,8 +351,6 @@ GtRemoteGemStoneSessionAsyncExamples >> testManualResolutionAsyncCall_returnProx
 		assert: executionContext remoteClass 
 		equals: #GtGemStoneEvaluationContext.
 	
-	"We wait a few seconds to give the GemStone computation a chance to terminate"
-	2 seconds wait.
 	rawEvaluationResultData := executionContext waitAsyncComputation.
 	
 	self assert: (GtGemstoneEvaluationComputedResult 
