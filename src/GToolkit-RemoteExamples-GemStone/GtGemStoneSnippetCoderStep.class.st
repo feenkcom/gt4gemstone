@@ -4,6 +4,19 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #'as yet unclassified' }
+GtGemStoneSnippetCoderStep >> assertEvaluationResultIndicatorExists [
+	| anAssertStep |
+	anAssertStep := self assert
+			label: 'Assert evaluation result indicator button exists';
+			exists;
+			referenceSender;
+			onParentStepTarget: self;
+			// GtCoderEvaluationResultAttributeElementId.
+
+	^ anAssertStep
+]
+
 { #category : #'steps - interactions' }
 GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectAsynchronousButton [
 	| aClickStep |
