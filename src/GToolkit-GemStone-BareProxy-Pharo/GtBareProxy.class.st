@@ -346,6 +346,13 @@ GtBareProxy >> isGtBareProxyObject [
 	^ true
 ]
 
+{ #category : #pinning }
+GtBareProxy >> isPinnedInMemory [
+	"Copied from Object>>isPinnedInMemory"
+	<primitive: 183 error: ec>
+	^self primitiveFailed
+]
+
 { #category : #testing }
 GtBareProxy >> isProxyObjectActive [
 	^ self proxyObject 
