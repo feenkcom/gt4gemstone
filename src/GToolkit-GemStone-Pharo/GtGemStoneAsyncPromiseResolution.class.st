@@ -60,7 +60,9 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 				snippetPromise break: nil ].
 			
 			self notifyResolutionCompleted ].
-	] forkNamed: 'GtGemStoneSnippetPromiseExecution resolution process'.
+	] 
+		forkAt: Processor userBackgroundPriority 
+		named: 'GtGemStoneSnippetPromiseExecution resolution process'.
 ]
 
 { #category : #accessing }
@@ -225,7 +227,12 @@ GtGemStoneAsyncPromiseResolution >> summaryAttributes [
 				ifNil: ['-'] 
 				ifNotNil: [ :aTimestamp | aTimestamp asTime ]. . 
 			self endTimestamp} .
-		{'Duration' . self duration humanReadablePrintString. self duration}.
+		{'Duration' . 
+			(self duration 
+				ifNil: [ '-' ]
+				ifNotNil: [ :aDuration | 
+					aDuration humanReadablePrintString]). 
+			self duration}.
 		{'Session' . self sessionDescription. self gemStoneSession} }
 ]
 

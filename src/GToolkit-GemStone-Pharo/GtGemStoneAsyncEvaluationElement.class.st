@@ -324,8 +324,6 @@ GtGemStoneAsyncEvaluationElement >> initializeMainContainerElement [
 		margin: (BlInsets top: 25).
 	
 	mainContainer addChild: self buildDetailsContainerElement.
-	"mainContainer addChild: (contentContainer := self buildContentContainerElement)."
-	"contentContainer margin: (BlInsets top: 15)."
 ]
 
 { #category : #'initialization ' }
@@ -503,7 +501,7 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForExecutingPromise [
 	gemStoneSessionLabel text: self formattedSessionName.
 	
 	startTimeLabel text: promiseResolution startTimestamp asTime print24.
-	elapsedTimeLabel updatingDateAndTime: promiseResolution startTimestamp.
+	self updateElapsedTimeWith: promiseResolution startTimestamp.
 ]
 
 { #category : #updating }
@@ -513,7 +511,13 @@ GtGemStoneAsyncEvaluationElement >> updateDetailsForPendingResolution [
 	
 	promiseResolution startTimestamp ifNotNil: [ :aTimestamp | 
 		startTimeLabel text: aTimestamp asTime print24.
-		elapsedTimeLabel updatingDateAndTime: aTimestamp ].
+		self updateElapsedTimeWith: aTimestamp ].
+]
+
+{ #category : #updating }
+GtGemStoneAsyncEvaluationElement >> updateElapsedTimeWith: aDateAndTime [ 
+	GtGemStoneAsyncEvaluationPhlowTool enableElapsedTimeUpdate 
+		ifTrue: [ elapsedTimeLabel updatingDateAndTime: aDateAndTime ]
 ]
 
 { #category : #updating }

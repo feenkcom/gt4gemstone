@@ -25,6 +25,16 @@ GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectButton [
 ]
 
 { #category : #'steps - interactions' }
+GtGemStoneSnippetCoderStep >> clickOnDoItButton [
+	| aClickStep |
+	aClickStep := self click
+			referenceSender;
+			label: 'Click on do it button';
+			// GtSourceCoderDoItActionId.
+	^ aClickStep
+]
+
+{ #category : #'steps - interactions' }
 GtGemStoneSnippetCoderStep >> useDoItAndInspectAsynchronousShortcut [
 	^ self shortcut
 		label: 'Do it and inspect (asynchronous)';
