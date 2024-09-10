@@ -240,6 +240,11 @@ GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 ]
 
 { #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> targetPromise [
+	^ self
+]
+
+{ #category : #accessing }
 GtRsrEvaluatorAsyncPromise >> value [
 
 	value == self ifTrue: [ 
