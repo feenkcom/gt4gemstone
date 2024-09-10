@@ -99,7 +99,7 @@ GtGemStoneSnippetAsyncPromiseWrapper >> sessionName [
 	^ gtRsrAsycPromise sessionName
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtGemStoneSnippetAsyncPromiseWrapper >> snippetCoderModel: anObject [
 	snippetCoderModel := anObject
 ]
@@ -107,6 +107,11 @@ GtGemStoneSnippetAsyncPromiseWrapper >> snippetCoderModel: anObject [
 { #category : #actions }
 GtGemStoneSnippetAsyncPromiseWrapper >> stopEvaluation [
 	^ gtRsrAsycPromise stopEvaluation
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetAsyncPromiseWrapper >> targetPromise [
+	^ self gtRsrAsycPromise
 ]
 
 { #category : #accessing }

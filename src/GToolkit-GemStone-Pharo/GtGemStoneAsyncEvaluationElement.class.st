@@ -443,14 +443,6 @@ GtGemStoneAsyncEvaluationElement >> shouldReplaceContent: aBoolean [
 	shouldReplaceContent := aBoolean 
 ]
 
-{ #category : #accessing }
-GtGemStoneAsyncEvaluationElement >> snippetPromise [
-	^ promiseResolution 
-		ifNil: [nil]
-		ifNotNil: [ :aPromiseExecution |
-			aPromiseExecution snippetPromise ]
-]
-
 { #category : #subscriptions }
 GtGemStoneAsyncEvaluationElement >> subscribeToPromiseResolution [
 	promiseResolution announcer weak
@@ -458,7 +450,7 @@ GtGemStoneAsyncEvaluationElement >> subscribeToPromiseResolution [
 		send: #actOnPromiseExecutionStarted
 		to: self.
 	promiseResolution announcer weak
-		when: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement
+		when: GtGemStoneAsyncPromiseResolutionFinishedAnnouncement
 		send: #actOnPromiseExecutionCompleted
 		to: self.
 ]

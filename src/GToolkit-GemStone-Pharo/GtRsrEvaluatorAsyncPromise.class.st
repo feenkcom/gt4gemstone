@@ -14,6 +14,11 @@ Class {
 }
 
 { #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> asyncPromise [
+	^ self
+]
+
+{ #category : #accessing }
 GtRsrEvaluatorAsyncPromise >> basicDeserializeResult: aResult [
 	^ (self class environment 
 		at: serializationStrategy) new 
@@ -142,6 +147,14 @@ GtRsrEvaluatorAsyncPromise >> isResolved [
 	^self isFulfilled or: [self isBroken]
 ]
 
+{ #category : #printing }
+GtRsrEvaluatorAsyncPromise >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream << state ]
+]
+
 { #category : #resolving }
 GtRsrEvaluatorAsyncPromise >> resolveWithEvaluationResult: evaluationResult [ 
 	evaluationResult isEvaluationCancelledResult 
@@ -224,6 +237,11 @@ GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 			^ Error signal: 'Failed to stop the remote execution. Could not get a proxy to the evaluation context for the remote execution. Try and stop the execution again' ].
 	
 	^ executionContext terminateAsyncComputation
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> targetPromise [
+	^ self
 ]
 
 { #category : #accessing }

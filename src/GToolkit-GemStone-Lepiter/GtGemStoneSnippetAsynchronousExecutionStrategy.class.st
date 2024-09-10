@@ -6,7 +6,7 @@ Class {
 
 { #category : #execution }
 GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSession: gemstoneSession context: aGtSourceCoderEvaluationContext remoteBindings: remoteBindings pharoBindings: pharoBindings onFailDo: anEvaluationFailBlock coderModel: aCoderModel [
-	| asyncPromise snippetPromiseWrapper |
+	| asyncPromise snippetPromiseWrapper promiseResolution |
 
 	asyncPromise := gemstoneSession 
 		evaluateAsync: remoteScript 
@@ -19,8 +19,14 @@ GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSessi
 		snippetCoderModel: aCoderModel;
 		evaluationFailBlock:  anEvaluationFailBlock.
 		
-	^ GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: snippetPromiseWrapper;
+	promiseResolution := GtGemStoneAsyncPromiseResolution new 
+		asyncPromise: snippetPromiseWrapper;
 		ensureExecuting;
-		yourself
+		yourself.
+	"Not the ideal place to do this, but should work for now"
+	gemstoneSession addAsyncExecution: (GtGemStoneAsyncExecution new
+		asyncPromise: asyncPromise;
+		promiseResolution: promiseResolution).
+		
+	^ promiseResolution
 ]
