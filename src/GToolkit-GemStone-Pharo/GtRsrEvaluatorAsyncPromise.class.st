@@ -14,6 +14,11 @@ Class {
 }
 
 { #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> asyncPromise [
+	^ self
+]
+
+{ #category : #accessing }
 GtRsrEvaluatorAsyncPromise >> basicDeserializeResult: aResult [
 	^ (self class environment 
 		at: serializationStrategy) new 
@@ -140,6 +145,14 @@ GtRsrEvaluatorAsyncPromise >> isResolved [
 	"Report if the receiver is currently resolved."
 
 	^self isFulfilled or: [self isBroken]
+]
+
+{ #category : #printing }
+GtRsrEvaluatorAsyncPromise >> printOn: aStream [
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream << state ]
 ]
 
 { #category : #resolving }

@@ -14,10 +14,10 @@ GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 ]
 
 { #category : #'add-ons' }
-GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject withId: anUndefinedObject to: coderAddOns from: aCoderViewModel [ 
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject withId: aMenuId to: coderAddOns from: aCoderViewModel [ 
 
 	^ (self addContextMenuItemFrom: anObject 
-		withId: anUndefinedObject 
+		withId: aMenuId 
 		to: coderAddOns )
 			markAsGemStoneExecutionAction;
 			in: [ :anAction |
@@ -27,10 +27,10 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject 
 ]
 
 { #category : #'add-ons' }
-GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutFrom: anObject withId: anUndefinedObject to: coderAddOns from: aCoderViewModel [ 
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutFrom: anObject withId: aMenuId to: coderAddOns from: aCoderViewModel [ 
 
 	^ (self addContextMenuItemWithNoShortcutFrom: anObject 
-		withId: anUndefinedObject 
+		withId: aMenuId 
 		to: coderAddOns )
 			markAsGemStoneExecutionAction;
 			in: [ :anAction |

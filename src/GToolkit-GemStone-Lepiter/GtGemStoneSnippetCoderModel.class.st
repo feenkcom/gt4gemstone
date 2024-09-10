@@ -61,6 +61,17 @@ GtGemStoneSnippetCoderModel >> asCoderViewModel [
 	^ GtGemStoneSnippetCoderViewModel new coder: self
 ]
 
+{ #category : #utils }
+GtGemStoneSnippetCoderModel >> checkNoComputationRunningInSession: aGemStoneSession [
+	aGemStoneSession hasActiveAsyncExecution ifTrue: [ 
+		GtGemStoneCoderExecutionAlreadyRunningException new 
+			sessionName: aGemStoneSession name;
+			signal.
+		^ false ].
+		
+	^ true
+]
+
 { #category : #'api - ast' }
 GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
 	self astAwait
@@ -220,9 +231,13 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
 	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession ifNil:
-		 [ self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession ifNil: [ 
+		self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
+	
+	(self checkNoComputationRunningInSession: gemstoneSession)
+		ifFalse: [ "In case we get a proceed" ^ self ].
+	
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"
 	pharoBindings bindingNames

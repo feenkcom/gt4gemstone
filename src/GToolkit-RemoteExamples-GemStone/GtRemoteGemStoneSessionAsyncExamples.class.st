@@ -413,7 +413,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_returnLegacy [
 			beAsyncExecution;
 			evaluate.
 	promiseResolution := GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: evaluatorPromise.
+		asyncPromise: evaluatorPromise.
 		
 	self assert: promiseResolution canStopExecution not.
 	self assert: promiseResolution isResolvingPending.
@@ -447,7 +447,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_returnProxy [
 			beAsyncExecution;
 			evaluate.
 	promiseResolution := GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: evaluatorPromise.
+		asyncPromise: evaluatorPromise.
 		
 	self assert: promiseResolution canStopExecution not.
 	self assert: promiseResolution isResolvingPending.
@@ -484,7 +484,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateComputati
 			beAsyncExecution;
 			evaluate.
 	promiseResolution := GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: evaluatorPromise.
+		asyncPromise: evaluatorPromise.
 		
 	self assert: promiseResolution canStopExecution not.
 	self assert: promiseResolution isResolvingPending.
@@ -528,7 +528,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateProcess [
 			beAsyncExecution;
 			evaluate.
 	promiseResolution := GtGemStoneAsyncPromiseResolution new 
-		snippetPromise: evaluatorPromise.
+		asyncPromise: evaluatorPromise.
 		
 	self assert: promiseResolution canStopExecution not.
 	self assert: promiseResolution isResolvingPending.

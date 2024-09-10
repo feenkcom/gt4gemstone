@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #callbacks }
-GtGemStoneSnippetCoderViewModel >> actOnAsyncExecutionCompleted [
+GtGemStoneSnippetCoderViewModel >> actOnAsyncExecutionFinished [
 	self markAsyncExecutionStartedCompleted.
 	self notifyAsyncExecutionCompleted.
 	
@@ -119,11 +119,11 @@ GtGemStoneSnippetCoderViewModel >> session: aGtSession [
 GtGemStoneSnippetCoderViewModel >> updatWithAsyncExecution: aPromiseResolution [
 	self markAsyncExecutionStarted.
 	self notifyAsyncExecutionStarted.
-	
 	self disableExecutionAction.
+	
 	aPromiseResolution announcer weak
-		when: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement
-		send: #actOnAsyncExecutionCompleted
+		when: GtGemStoneAsyncPromiseResolutionFinishedAnnouncement
+		send: #actOnAsyncExecutionFinished
 		to: self. 
 		
 	aPromiseResolution isResolvingCompleted ifTrue: [
@@ -131,5 +131,5 @@ GtGemStoneSnippetCoderViewModel >> updatWithAsyncExecution: aPromiseResolution [
 		computation finished. We might hand the termination of the async 
 		computation twice if we both register the announcement and the
 		computation finished immediately after."
-		self actOnAsyncExecutionCompleted ]
+		self actOnAsyncExecutionFinished ]
 ]

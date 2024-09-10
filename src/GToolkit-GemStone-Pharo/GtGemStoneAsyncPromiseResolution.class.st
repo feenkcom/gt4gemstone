@@ -4,24 +4,47 @@ Class {
 	#instVars : [
 		'announcer',
 		'resolutionProcess',
-		'snippetPromise',
 		'startTimestamp',
 		'endTimestamp',
-		'state'
+		'state',
+		'asyncPromise'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
+
+{ #category : #callbacks }
+GtGemStoneAsyncPromiseResolution >> actOnResolutionFinished [
+	self notifyResolutionCompleted .
+	self gemStoneSession 
+		removeAsyncExecutionForPromise: asyncPromise targetPromise
+]
+
+{ #category : #callbacks }
+GtGemStoneAsyncPromiseResolution >> actOnResolutionStarted [
+	self notifyResolutionStarted 
+]
 
 { #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> announcer [
 	^ announcer
 ]
 
+{ #category : #accessing }
+GtGemStoneAsyncPromiseResolution >> asyncPromise [
+	^ asyncPromise
+]
+
+{ #category : #accessing }
+GtGemStoneAsyncPromiseResolution >> asyncPromise: anAsyncPromise [
+
+	asyncPromise := anAsyncPromise.
+]
+
 { #category : #testing }
 GtGemStoneAsyncPromiseResolution >> canStopExecution [
 	"For now allow the execution to be stopped even if we do not have an evaluation context"
 	^ self isResolvingRunning and: [
-		snippetPromise canStopExecution ]
+		asyncPromise canStopExecution ]
 ]
 
 { #category : #accessing }
@@ -47,19 +70,19 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 		[
 			| computedResult |
 			
-			self notifyResolutionStarted.
-			computedResult := snippetPromise value.
+			self actOnResolutionStarted.
+			computedResult := asyncPromise value.
 			
-			state := snippetPromise isBroken 
+			state := asyncPromise isBroken 
 				ifTrue: [ #Cancelled ] 
 				ifFalse: [ #Completed ].
 		] ensure: [
 			endTimestamp := DateAndTime now.
 			(state = #Running) ifTrue: [ 
 				state := #Terminated.
-				snippetPromise break: nil ].
+				asyncPromise break: nil ].
 			
-			self notifyResolutionCompleted ].
+			self actOnResolutionFinished ].
 	] 
 		forkAt: Processor userBackgroundPriority 
 		named: 'GtGemStoneSnippetPromiseExecution resolution process'.
@@ -67,7 +90,7 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 
 { #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> gemStoneSession [
-	^ snippetPromise gemStoneSession
+	^ asyncPromise gemStoneSession
 ]
 
 { #category : #'gt - inspector' }
@@ -117,8 +140,8 @@ GtGemStoneAsyncPromiseResolution >> hasProcess [
 
 { #category : #testing }
 GtGemStoneAsyncPromiseResolution >> hasValidResult [
-	^ snippetPromise notNil and: [
-		snippetPromise hasValidResult ]
+	^ asyncPromise notNil and: [
+		asyncPromise hasValidResult ]
 ]
 
 { #category : #initialization }
@@ -131,7 +154,7 @@ GtGemStoneAsyncPromiseResolution >> initialize [
 
 { #category : #actions }
 GtGemStoneAsyncPromiseResolution >> interruptEvaluation [
-	snippetPromise interruptEvaluation
+	asyncPromise interruptEvaluation
 ]
 
 { #category : #testing }
@@ -159,7 +182,7 @@ GtGemStoneAsyncPromiseResolution >> isResolvingRunning [
 
 { #category : #notifications }
 GtGemStoneAsyncPromiseResolution >> notifyResolutionCompleted [
-	announcer announce: GtGemStoneAsyncPromiseResolutionCompletedAnnouncement new
+	announcer announce: GtGemStoneAsyncPromiseResolutionFinishedAnnouncement new
 ]
 
 { #category : #notifications }
@@ -167,35 +190,35 @@ GtGemStoneAsyncPromiseResolution >> notifyResolutionStarted [
 	announcer announce: GtGemStoneAsyncPromiseResolutionStartedAnnouncement new
 ]
 
+{ #category : #printing }
+GtGemStoneAsyncPromiseResolution >> printOn: aStream [ 
+	super printOn: aStream .
+	
+	aStream parenthesize: [
+		aStream 
+			<< self state;
+			<< '; ';
+			<< self sessionName ]
+]
+
 { #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> resolvedValue [
-	^ snippetPromise resolvedValue
+	^ asyncPromise resolvedValue
 ]
 
 { #category : #actions }
 GtGemStoneAsyncPromiseResolution >> resumeEvaluation [
-	snippetPromise resumeEvaluation
+	asyncPromise resumeEvaluation
 ]
 
 { #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> sessionDescription [
-	^ snippetPromise sessionDescription
+	^ asyncPromise sessionDescription
 ]
 
 { #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> sessionName [
-	^ snippetPromise sessionName
-]
-
-{ #category : #accessing }
-GtGemStoneAsyncPromiseResolution >> snippetPromise [
-	^ snippetPromise
-]
-
-{ #category : #accessing }
-GtGemStoneAsyncPromiseResolution >> snippetPromise: aGtGemStoneSnippetPromise [
-
-	snippetPromise := aGtGemStoneSnippetPromise.
+	^ asyncPromise sessionName
 ]
 
 { #category : #accessing }
@@ -210,7 +233,7 @@ GtGemStoneAsyncPromiseResolution >> state [
 
 { #category : #actions }
 GtGemStoneAsyncPromiseResolution >> stopEvaluation [
-	snippetPromise stopEvaluation
+	asyncPromise stopEvaluation
 ]
 
 { #category : #'gt - extensions' }

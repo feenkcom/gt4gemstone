@@ -27,7 +27,8 @@ Class {
 		'autoCommit',
 		'codeSync',
 		'keepAlive',
-		'logEmitter'
+		'logEmitter',
+		'activeAsyncExecutions'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -51,6 +52,16 @@ GtGemStoneSession >> abortTransaction [
 			returnPrimitiveOnly) evaluateAndWait ].
 	
 	self announce: (GtGemStoneSessionAbortedAnnouncement session: self).
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> activeAsyncExecutions [
+	^ activeAsyncExecutions
+]
+
+{ #category : #'adding/removing' }
+GtGemStoneSession >> addAsyncExecution: anAsyncExecution [
+	activeAsyncExecutions add: anAsyncExecution
 ]
 
 { #category : #private }
@@ -1120,18 +1131,24 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> hasActiveAsyncExecution [
+	^ activeAsyncExecutions notEmpty
+]
+
+{ #category : #testing }
 GtGemStoneSession >> hasKeepAlive [
 
 	^ keepAlive isNotNil
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 GtGemStoneSession >> initialize [ 
 
 	super initialize.
 	
 	mutex := Mutex new.
 	autoCommit := false.
+	activeAsyncExecutions := OrderedCollection new.
 	logEmitter := GtGemStoneSessionSignalsEmitter new
 		disableEmitting;
 		yourself.
@@ -1240,6 +1257,17 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :registryCodeSyn |
 		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].
+]
+
+{ #category : #'adding/removing' }
+GtGemStoneSession >> removeAsyncExecutionForPromise: anAsyncPromise [
+	activeAsyncExecutions 
+		detect: [ :anAsyncExecution |
+			anAsyncExecution asyncPromise = anAsyncPromise ] 
+		ifFound: [ :anAsyncExecution |
+			activeAsyncExecutions 
+				remove: anAsyncExecution 
+				ifAbsent: [ ]]
 ]
 
 { #category : #removing }
