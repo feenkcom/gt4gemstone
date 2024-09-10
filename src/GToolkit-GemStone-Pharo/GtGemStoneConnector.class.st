@@ -195,7 +195,7 @@ GtGemStoneConnector >> registry: aGtGemStoneSessionRegistry [
 
 { #category : #accessing }
 GtGemStoneConnector >> serviceName [
-	^ serviceName ifNil: [ 'gemnetobject' ].
+	^ serviceName ifNil: [ GsNetworkResource defaultGemResourceName ].
 ]
 
 { #category : #accessing }

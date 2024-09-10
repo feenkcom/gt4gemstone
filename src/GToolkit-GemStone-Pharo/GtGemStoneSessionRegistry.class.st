@@ -350,7 +350,7 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		column: 'Stone' text: [ :item | item stone ];
 		contextItemLabel: 'New Session' action: 
 			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
-		actionUpdateButton
+		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
 { #category : #ui }
@@ -736,6 +736,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -773,12 +779,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
 ]
 
 { #category : #initialization }

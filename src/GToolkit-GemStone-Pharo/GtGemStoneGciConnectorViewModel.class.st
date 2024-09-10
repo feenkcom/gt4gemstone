@@ -7,7 +7,7 @@ Class {
 		'connector',
 		'propertiesFile'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #accessing }
@@ -57,4 +57,9 @@ GtGemStoneGciConnectorViewModel >> propertyMappings [
 		(hostUsername 'Host Username')
 		(hostPassword 'Host Password')
 	 )
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneGciConnectorViewModel >> serviceName [
+	^ self connector serviceName
 ]

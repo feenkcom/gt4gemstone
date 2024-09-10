@@ -96,12 +96,20 @@ GtGemStoneGciConnector >> loggedInSession [
 	| session |
 
 	session := GsSession
-		           newForGsVersion: gemstoneVersion
-		           threadSafe: true
-		           stone: stone
-		           host: host
-		           netldi: netldi.
-	session loginWithGsUser: username password: password hostUserId: hostUsername hostPassword: hostPassword.
+		newForGsVersion: self gemstoneVersion
+		threadSafe: true
+		stone: self stone
+		host: self host
+		netldi: self netldi.
+	session sessionParameters gemResource 
+		name: self serviceName.
+		
+	session 
+		loginWithGsUser: username 
+		password: password 
+		hostUserId: hostUsername 
+		hostPassword: hostPassword.
+	
 	^ session
 ]
 

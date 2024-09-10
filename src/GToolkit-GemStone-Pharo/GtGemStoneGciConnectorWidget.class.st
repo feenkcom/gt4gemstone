@@ -18,6 +18,59 @@ GtGemStoneGciConnectorWidget class >> onConnector: aGtGemStoneGciConnector prope
 ]
 
 { #category : #'private - list' }
+GtGemStoneGciConnectorWidget >> addDropDownListName: nameSymbol options: aList title: titleString [
+	"Add a string input field and set it read only if specified"
+	| dropDown |
+
+	dropDown := BrButton new
+		aptitude: BrGlamorousButtonWithLabelAptitude new +
+			(BrGlamorousWithDropdownAptitude
+				handle: [ BrButton new
+					hExact: 120;
+					label: (self childNamed: nameSymbol) label;
+					aptitude: BrGlamorousButtonWithLabelAptitude new
+						- BrGlamorousButtonExteriorAptitude ]
+				content: [
+					BrSimpleList new
+						vFitContent;
+						hFitContent;
+						stencil: [ :eachValue | 
+							BrHorizontalPane new
+								hMatchParent;
+								vFitContent;
+								padding: (BlInsets all: 5);
+								aptitude: (BrStyleCommonAptitude new
+									default: [ :s | s background: Color transparent ];
+									hovered: [ :s | s background: self theme button defaultBorderColor ];
+									yourself);
+								when: BlClickEvent
+									do: [ :anEvent |
+										(self childNamed: nameSymbol) label: eachValue.
+										anEvent consumed: true.
+										anEvent currentTarget fireEvent: BrDropdownHideWish new.
+										 ];
+								addChild: (BrLabel new
+								aptitude: BrGlamorousLabelAptitude new glamorousRegularFont ;
+								text: eachValue;
+								yourself);
+							yourself ];
+						items: aList]) ;
+		label: titleString;
+		hExact: 120;
+		vFitContent.
+	
+	self addChild: (BrHorizontalPane new
+		hMatchParent;
+		vFitContent;
+		padding: (BlInsets all: 2);
+		addChild: (BrLabel new 
+			hExact: self propertyWidth;
+			aptitude: BrGlamorousLabelAptitude new;
+			text: titleString);
+		addChild: dropDown as: nameSymbol)
+]
+
+{ #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addListHeader [
 
 	self addChild: (BrHorizontalPane new
@@ -96,7 +149,13 @@ GtGemStoneGciConnectorWidget >> addListStringName: nameSymbol title: titleString
 			aptitude: BrGlamorousEditorAptitude + BrGlamorousInputFieldSpacingAptitude;
 			vFitContent;
 			hMatchParent.
-	typeSymbol ifNotNil: [ typeSymbol value: editor ].
+			
+	typeSymbol isSymbol ifTrue: [ 
+		typeSymbol value: editor.
+		editor background: self theme button disabledBackgroundColor ].
+	typeSymbol isBoolean ifTrue: [
+		self makeEditorReadOnly: editor ].
+	
 	self addChild: (BrHorizontalPane new
 		hMatchParent;
 		vFitContent;
@@ -183,6 +242,12 @@ GtGemStoneGciConnectorWidget >> initialize [
 	self buildUI.
 ]
 
+{ #category : #configuring }
+GtGemStoneGciConnectorWidget >> makeEditorReadOnly: anEditor [ 
+	anEditor beReadOnlyWithSelection.
+	anEditor background: self theme button disabledBackgroundColor
+]
+
 { #category : #private }
 GtGemStoneGciConnectorWidget >> onConnectorViewModelChanged [
 	| libraryPath |
@@ -195,6 +260,11 @@ GtGemStoneGciConnectorWidget >> onConnectorViewModelChanged [
 		(libraryPath
 			ifNil: [ '' ]
 			ifNotNil: [ libraryPath fullName ]).
+			
+	self 
+		childNamed: #serviceName
+		ifFound: [ :anElement | 
+			anElement label: connectorViewModel serviceName ]
 
 ]
 
@@ -224,11 +294,18 @@ GtGemStoneGciConnectorWidget >> saveProperties [
 				perform: name asMutator 
 				withArguments: { (self childNamed: name) text asString } ].
 	connector 
-		libraryPath: (self childNamed: #libraryPath) text asString asFileReference.
+		libraryPath: (self childNamed: #libraryPath) text asString asFileReference;
+		serviceName: (self childNamed: #serviceName) label asString.
+	
 	propertiesFile := connectorViewModel propertiesFile.
 	nameChanged 
 		ifTrue: [ connector notifyNameChanged ]
 		ifFalse: [ connector notifyUpdated ].
 	propertiesFile ifNotNil: [ propertiesFile saveProperties ].
 
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnectorWidget >> serviceNameOptions [
+	^ #(#gemnetobject #gemnetweb #gemnetmaxlarge #gemnethuge)
 ]
