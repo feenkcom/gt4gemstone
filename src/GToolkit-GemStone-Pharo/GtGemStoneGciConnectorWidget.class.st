@@ -19,7 +19,6 @@ GtGemStoneGciConnectorWidget class >> onConnector: aGtGemStoneGciConnector prope
 
 { #category : #'private - list' }
 GtGemStoneGciConnectorWidget >> addDropDownListName: nameSymbol options: aList title: titleString [
-	"Add a string input field and set it read only if specified"
 	| dropDown |
 
 	dropDown := BrButton new
