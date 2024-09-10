@@ -557,7 +557,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_syncComputation_doIt_button
 	
 	scripter gemStoneSnippet
 		clickOnDoItButton;
-		assertEvaluationResultIndicatorExists;
+		"assertEvaluationResultIndicatorExists;"
 		play.
 	 
 	^ scripter
