@@ -198,6 +198,10 @@ GtGemStoneGciConnectorWidget >> createPropertiesList [
 	self addListStringName: #stone title: 'Stone'.
 	self addListStringName: #username title: 'Username'.
 	self addListPasswordName: #password title: 'Password'.
+	self 
+		addDropDownListName: #serviceName 
+		options: self serviceNameOptions 
+		title: 'Service name'.
 	self addListStringName: #host title: 'Host'.
 	self addListStringName: #gemstoneVersion title: 'GemStone Version'.
 	self addListStringName: #libraryPath title: 'Library Path'.
