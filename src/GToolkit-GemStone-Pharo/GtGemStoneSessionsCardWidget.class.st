@@ -69,7 +69,7 @@ GtGemStoneSessionsCardWidget >> createAddNewDefaultSessionButton [
 				connectorsList padding: (BlInsets left: 10 right: 10).
 				connectorsList items: (self registry connectors
 					sorted: #name ascending) ] )
-			preferredExtent: 350 @250).
+			preferredExtent: 380 @250).
 	
 	^ selectionButton
 ]
@@ -83,38 +83,45 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 		matchParent.
 
 	newList column
-		title: 'Name' translated;
-		width: 100;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem | 
-			| sessionName sessionLabel |
-			sessionName := eachItem name.
-			sessionLabel := sessionName asRopedText.
-			aLabel text: sessionLabel ].
+		title: 'Name';
+		width: 130;
+		cellStencil: [ 
+			GtPhlowLabelWithIcon new ];
+		dataBinder: [ :anElement :eachItem | 
+			anElement 
+				initializeWithIcon: (self 
+					iconForConnector: eachItem)
+				label: eachItem name ].
 	newList column 
-		title: 'Username' translated;
-		width: 125;
+		title: 'Username';
+		width: 120;
 		cellStencil: [ :each | 
 			BrLabel new 
 				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem username ].
 	newList column 
-		title: 'Stone' translated;
-		width: 100;
+		title: 'Stone';
+		width: 120;
 		cellStencil: [ :each | 
 			BrLabel new 
 				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem stoneName ].
+	newList column 
+		title: 'Version';
+		width: 60;
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem |
+			aLabel text: eachItem versionString ].
 
 	newList
 		when: BrSelectionDoubleClicked
 		do: [ :anEvent | 
 			anEvent selection ifNotEmpty: [ :theIndices | 
-				| aWidgetElement selectedConnector newSession newSessionIndex |
+				| aWidgetElement selectedConnector newSession |
 				aWidgetElement := anEvent currentTarget.
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
@@ -247,6 +254,18 @@ GtGemStoneSessionsCardWidget >> doDoubleClicked: anEvent [
 
 { #category : #'private - children' }
 GtGemStoneSessionsCardWidget >> doSelectionChanged: anEvent [ 
+]
+
+{ #category : #utils }
+GtGemStoneSessionsCardWidget >> iconForConnector: aConnector [ 
+	aConnector iconName ifNil: [
+		^ BrGlamorousVectorIcons gemStone ].
+		
+	^ (BrGlamorousVectorIcons classSide 
+		includesSelector: aConnector iconName asSymbol)
+			ifTrue: [ BrGlamorousVectorIcons perform: aConnector iconName asSymbol ]
+			ifFalse:  [ 
+				self gtSafeIconNamed: aConnector iconName ]
 ]
 
 { #category : #'initialization ' }

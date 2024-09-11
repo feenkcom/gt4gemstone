@@ -68,8 +68,8 @@ GtGemStoneMethodCoderViewModel >> printOn: aStream [
 
 { #category : #accessing }
 GtGemStoneMethodCoderViewModel >> save [
-	| aSaveResult |
 	<return: #Boolean>
+	| aSaveResult |
 	
 	self isSaveEnabled
 		ifFalse: [ ^ false ].

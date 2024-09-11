@@ -309,11 +309,6 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock inContext: aGtP
 				requesterObject: aGtPharoSourceCoderEvaluationContext requesterObject ]
 ]
 
-{ #category : #accessing }
-GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
-	^ initialMethodCoderSpecification
-]
-
 { #category : #initialization }
 GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel [
 	super initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel.
@@ -385,6 +380,11 @@ GtGemStoneMethodCoderModel >> initializeShortcuts: addOns [
 GtGemStoneMethodCoderModel >> initializeWithSession: aGtSession fromCoderSpecification: aMethodCoderSpecification [ 
 	self session: aGtSession.
 	self initializeFromCoderSpecification: aMethodCoderSpecification 
+]
+
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
+	^ initialMethodCoderSpecification
 ]
 
 { #category : #testing }

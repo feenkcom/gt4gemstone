@@ -345,9 +345,20 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		title: 'Connectors';
 		priority: 20;
 		items: [ self allConnectors sorted: #name ascending ];
-		column: 'Name' text: [ :item | item name ];
+		column: 'Name' do: [ :aColumn | 
+			aColumn
+				cellStencil: [ 
+					GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :item | 
+					anElement 
+						initializeWithIcon: (self 
+							gtSafeIconNamed: item iconName)
+						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
+		column: 'Host' text: [ :item | item host ];
 		column: 'Stone' text: [ :item | item stone ];
+		column: 'Version' text: [ :item | 
+			item versionString ifNil: [ '-' ] ];
 		contextItemLabel: 'New Session' action: 
 			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
