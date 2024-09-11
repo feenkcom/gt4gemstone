@@ -51,8 +51,9 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 
 	newList column
 		title: 'Name' translated;
-		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		width: 110;
+		cellStencil: [ :each | BrLabel new 
+			aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem | | sessionName sessionLabel |
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
@@ -65,15 +66,27 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 	newList column 
 		title: 'Username' translated;
 		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem username ].
 	newList column 
 		title: 'Stone' translated;
-		width: 100;
-		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		width: 110;
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
 			aLabel text: eachItem stoneName ].
+	newList column 
+		title: 'Version';
+		width: 60;
+		cellStencil: [ :each | 
+			BrLabel new 
+				aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem |
+			aLabel text: (eachItem versionString ifNil: [ '-' ]) ].
 
 	newList
 		when: BrSelectionDoubleClicked
@@ -83,7 +96,8 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 				aWidgetElement := anEvent currentTarget.
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
-				selectAction cull: (registry newSessionOrDefaultWithConnector: selectedConnector) ] ].
+				selectAction cull: (registry 
+					newSessionOrDefaultWithConnector: selectedConnector) ] ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
 

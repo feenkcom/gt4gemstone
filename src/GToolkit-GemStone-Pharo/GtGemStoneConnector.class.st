@@ -12,7 +12,9 @@ Class {
 		'host',
 		'announcer',
 		'serviceName',
-		'registry'
+		'registry',
+		'versionString',
+		'iconName'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -79,10 +81,22 @@ GtGemStoneConnector >> host: anObject [
 	host := anObject
 ]
 
+{ #category : #accessing }
+GtGemStoneConnector >> iconName [
+	^ iconName
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> iconName: anIconName [
+	iconName := anIconName
+]
+
 { #category : #initialization }
 GtGemStoneConnector >> initialize [ 
 	super initialize.
+	
 	host := 'localhost'.
+	iconName :=  #gemStone.
 ]
 
 { #category : #testing }
@@ -195,7 +209,7 @@ GtGemStoneConnector >> registry: aGtGemStoneSessionRegistry [
 
 { #category : #accessing }
 GtGemStoneConnector >> serviceName [
-	^ serviceName ifNil: [ 'gemnetobject' ].
+	^ serviceName ifNil: [ GsNetworkResource defaultGemResourceName ].
 ]
 
 { #category : #accessing }
@@ -233,6 +247,16 @@ GtGemStoneConnector >> unsubscribe: anObject [
 
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#unsubscribeTemplate'>
 	^ announcer ifNotNil: [ :anAnnouncer | anAnnouncer unsubscribe: anObject ]
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> versionString [
+	^ versionString
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> versionString: aString [
+	versionString := aString
 ]
 
 { #category : #'api - announcer' }
