@@ -86,7 +86,7 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 			BrLabel new 
 				aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem versionString ].
+			aLabel text: (eachItem versionString ifNil: [ '-' ]) ].
 
 	newList
 		when: BrSelectionDoubleClicked
