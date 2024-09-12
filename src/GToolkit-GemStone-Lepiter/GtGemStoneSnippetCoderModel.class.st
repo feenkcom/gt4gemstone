@@ -67,7 +67,8 @@ GtGemStoneSnippetCoderModel >> checkNoComputationRunningInSession: aGemStoneSess
 		GtGemStoneCoderExecutionAlreadyRunningException new 
 			sessionName: aGemStoneSession name;
 			signal.
-		^ false ].
+		"Allow for now proceeding to still schedule the execution"
+		^ true ].
 		
 	^ true
 ]
