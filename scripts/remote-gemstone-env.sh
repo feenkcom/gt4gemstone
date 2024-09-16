@@ -20,7 +20,7 @@ export GTIMAGE_DIRECTORY=`pwd`
 export GEMSTONE_WORKSPACE=${GTIMAGE_DIRECTORY}/remote-gemstone
 
 if [ "$GT_OSNAME" = "Linux" ]; then
-    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1-x86_64.Linux"
+    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1.4-x86_64.Linux"
 elif [ "$GT_OSNAME" = "Darwin" ]; then
     GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1-i386.Darwin"
 fi
