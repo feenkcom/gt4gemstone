@@ -50,6 +50,16 @@ GtGemStoneConnector >> connector [
 	^ self
 ]
 
+{ #category : #accessing }
+GtGemStoneConnector >> defaultSessionId [
+	^ 'default'
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> defaultSessionName [
+	^ self sessionNameWithId: self defaultSessionId
+]
+
 { #category : #ui }
 GtGemStoneConnector >> gtStatusFor: aView [
 	<gtView>
@@ -215,6 +225,14 @@ GtGemStoneConnector >> serviceName [
 { #category : #accessing }
 GtGemStoneConnector >> serviceName: anObject [
 	serviceName := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> sessionNameWithId: aSessionId [
+	self assert: aSessionId isString.
+	self assert: (aSessionId indexOf: $:) = 0.
+	
+	^ self name, ':', aSessionId.
 ]
 
 { #category : #ui }

@@ -97,7 +97,7 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
 				selectAction cull: (registry 
-					newSessionOrDefaultWithConnector: selectedConnector) ] ].
+					newSessionReusesOrDefaultWithConnector: selectedConnector) ] ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
 

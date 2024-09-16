@@ -16,6 +16,11 @@ GtGemStoneCardWidgetNoSessions >> formatBasedOnStatusText: aText [
 ]
 
 { #category : #accessing }
+GtGemStoneCardWidgetNoSessions >> iconName [
+	^ #empty
+]
+
+{ #category : #accessing }
 GtGemStoneCardWidgetNoSessions >> isDefaultSession [
 
 	^ false

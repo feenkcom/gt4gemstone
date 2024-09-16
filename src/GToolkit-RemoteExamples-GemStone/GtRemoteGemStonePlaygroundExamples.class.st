@@ -682,7 +682,7 @@ GtRemoteGemStonePlaygroundExamples >> runningServer [
 		ifAbsent: [ self gemstoneSessionRegistry connectors
 			at: 'test' put: connector ].
 	^ server := self gemstoneSessionRegistry
-		newSessionOrDefaultWithConnector: connector
+		newSessionReusesOrDefaultWithConnector: connector
 ]
 
 { #category : #accessing }

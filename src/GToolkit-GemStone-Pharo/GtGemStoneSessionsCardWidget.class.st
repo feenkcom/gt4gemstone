@@ -126,7 +126,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
 				newSession := self registry 
-					newSessionOrDefaultWithConnector: selectedConnector.
+					newSessionReusesOrDefaultWithConnector: selectedConnector.
 				newSession beDefaultSession.
 				self updateContent.
 				
@@ -164,7 +164,7 @@ GtGemStoneSessionsCardWidget >> createList [
 		dataBinder: [ :anElement :aSession | 
 			anElement 
 				initializeWithIcon: (self 
-					gtSafeIconNamed: aSession connector iconName)
+					gtSafeIconNamed: aSession iconName)
 				label: (aSession formatBasedOnStatusText: aSession displayName) ].
 			
 	newList column
