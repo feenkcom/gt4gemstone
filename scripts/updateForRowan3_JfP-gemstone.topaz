@@ -22,6 +22,16 @@ true ifTrue: [
 		projectsHome: rowanProjectsHome;
 		load ].
 
+true ifTrue: [ 
+	"temporary patch to ensure feenkcom fork is used"
+	| spec |
+	spec := RwSpecification fromUrl: 'https://raw.githubusercontent.com/feenkcom/RemoteServiceReplication/martin-136PortRange/rowan/specs/RemoteServiceReplication.ston'.
+	spec 
+		revision: 'martin-136PortRange';
+		projectsHome: rowanProjectsHome;
+		load
+]
+
 ] on: CompileWarning do: [:ex |
 	(ex description includesString: 'not optimized')
 			ifFalse: [ warnings 
