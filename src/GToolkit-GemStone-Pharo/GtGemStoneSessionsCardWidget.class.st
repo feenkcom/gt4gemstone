@@ -22,7 +22,7 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 				left: 2 * aGtHomeSection spaceGap
 				bottom: 2 * aGtHomeSection spaceGap
 				right: 2 * aGtHomeSection spaceGap);
-			size: 310 @ 150;
+			size: 325 @ 150;
 			addChild: (self new
 				matchParent;
 				constraintsDo: [ :c | 
@@ -157,14 +157,15 @@ GtGemStoneSessionsCardWidget >> createList [
 	
 	newList column
 		title: 'Name';
-		width: 100;
-		cellStencil:[ 
-			BrLabel new
-				aptitude: BrGlamorousLabelAptitude new;
-				hMatchParent;
-				vFitContent ];
-		dataBinder: [ :aLabel :aSession |
-			aLabel text: (aSession formatBasedOnStatusText: aSession displayName)].
+		width: 130;
+		cellStencil: [ 
+			GtPhlowLabelWithIcon new
+				withSmallSize ];
+		dataBinder: [ :anElement :aSession | 
+			anElement 
+				initializeWithIcon: (self 
+					gtSafeIconNamed: aSession connector iconName)
+				label: (aSession formatBasedOnStatusText: aSession displayName) ].
 			
 	newList column
 		title: 'Status';

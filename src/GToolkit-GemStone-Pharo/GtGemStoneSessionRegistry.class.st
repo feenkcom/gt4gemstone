@@ -295,9 +295,20 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 		title: 'Available connectors';
 		priority: 50;
 		items: [ self availableConnectors sorted: #name ascending ];
-		column: 'Name' text: [ :item | item name ];
+		column: 'Name' do: [ :aColumn | 
+			aColumn
+				cellStencil: [ 
+					GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :item | 
+					anElement 
+						initializeWithIcon: (self 
+							gtSafeIconNamed: item iconName)
+						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
+		column: 'Host' text: [ :item | item host ];
 		column: 'Stone' text: [ :item | item stone ];
+		column: 'Version' text: [ :item | 
+			item versionString ifNil: [ '-' ] ];
 		actionUpdateButton
 ]
 
@@ -359,8 +370,10 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		column: 'Stone' text: [ :item | item stone ];
 		column: 'Version' text: [ :item | 
 			item versionString ifNil: [ '-' ] ];
-		contextItemLabel: 'New Session' action: 
-			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
+		contextItemLabel: 'New Session' 
+			action: [ :anElement :aGtGemStoneConnnector | 
+				aGtGemStoneConnnector registry 
+					newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
@@ -385,9 +398,15 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		title: 'Sessions';
 		priority: 10;
 		items: [ sessions values sorted: #name ascending ];
-		column: 'Name' 
-			text: [ :aSession |
-				aSession formatBasedOnStatusText: aSession name ];
+		column: 'Name' do: [ :aColumn | 
+			aColumn
+				cellStencil: [ 
+					GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :aSession | 
+					anElement 
+						initializeWithIcon: (self 
+							gtSafeIconNamed: aSession connector iconName)
+						label: (aSession formatBasedOnStatusText: aSession name) ] ];
 		column: 'Status' 
 			text: [ :aSession | 
 				aSession formatBasedOnStatusText: aSession statusDescription ]
@@ -747,6 +766,12 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -784,12 +809,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
 ]
 
 { #category : #initialization }
