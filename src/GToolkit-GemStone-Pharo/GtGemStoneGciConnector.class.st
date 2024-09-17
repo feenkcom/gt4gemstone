@@ -14,6 +14,14 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
+{ #category : #accessing }
+GtGemStoneGciConnector class >> defaultGemStoneVersion [
+
+	^ OSPlatform current isLinux
+		ifTrue: [ '3.7.1.4' ]
+		ifFalse: [ '3.7.1' ]
+]
+
 { #category : #connecting }
 GtGemStoneGciConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
@@ -74,7 +82,7 @@ GtGemStoneGciConnector >> initialize [
 	username := 'DataCurator'.
 	password := 'swordfish'.
 	libraryPath := '/path/to/GemStone/client/libraries' asFileReference.
-	gemstoneVersion := '3.7.1'.
+	gemstoneVersion := self class defaultGemStoneVersion.
 ]
 
 { #category : #accessing }
