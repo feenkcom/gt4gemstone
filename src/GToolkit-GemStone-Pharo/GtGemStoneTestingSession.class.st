@@ -20,7 +20,10 @@ GtGemStoneTestingSession >> abortTransaction [
 { #category : #actions }
 GtGemStoneTestingSession >> close [
 
-	state := #disconnected.
+	self markAsDisconnected.
+	registry ifNotNil:[ 
+		registry removeSession: self ].
+	
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
 ]
 
@@ -36,6 +39,10 @@ GtGemStoneTestingSession >> connect [
 	state := #connected.
 	connectionTime := DateAndTime now.
 	self runPostConnectActions.
+	
+	registry ifNotNil:[ 
+		registry addSession: self named: self name ].
+		
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 
@@ -153,6 +160,11 @@ GtGemStoneTestingSession >> initialize [
 GtGemStoneTestingSession >> isRunning [
 
 	^ state = #connected
+]
+
+{ #category : #utils }
+GtGemStoneTestingSession >> markAsDisconnected [
+	state := #disconnected.
 ]
 
 { #category : #accessing }

@@ -1,10 +1,13 @@
 Class {
 	#name : #GtGemStoneSessionRegistryExamples,
 	#superclass : #Object,
+	#instVars : [
+		'theSessionRegistry'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
-{ #category : #examples }
+{ #category : #'examples - announcements' }
 GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is added"
 	<gtExample>
@@ -32,7 +35,7 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : #'examples - announcements' }
 GtGemStoneSessionRegistryExamples >> addSessionAnnouncement [
 	"Confirm that an announcement is received from the session registry when a session is added"
 	<gtExample>
@@ -105,6 +108,35 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	^ registry
 ]
 
+{ #category : #'tear down' }
+GtGemStoneSessionRegistryExamples >> clearGemStoneRegistry [
+	theSessionRegistry ifNil: [ ^ self ].
+	
+	theSessionRegistry sessions copy do: [ :aSession | aSession close ]
+]
+
+{ #category : #utils }
+GtGemStoneSessionRegistryExamples >> createSessionForExampleWithId: aString [ 
+	^ GtGemStoneSession new 
+	 	sessionId: aString;
+	 	connector: (GtRemoteGemstoneExamplesSessionBuilder 
+	 		createConnectorNamed: 'test')
+]
+
+{ #category : #'examples - setup/tear down' }
+GtGemStoneSessionRegistryExamples >> createSessionRegistry [
+	"Answer an empty session registry"
+	<gtExample>
+	<after: #clearGemStoneRegistry>
+	| registry |
+
+	registry := GtGemStoneSessionRegistry new.
+	registry propertiesFile: self propertiesFile.
+	self assert: registry activeSessions size equals: 0.
+	
+	^ registry
+]
+
 { #category : #examples }
 GtGemStoneSessionRegistryExamples >> propertiesFile [
 	"Answer an empty properties file"
@@ -119,7 +151,182 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 	^ propertiesFile
 ]
 
-{ #category : #examples }
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneConnectedSession_addSecondConnectedSession_doesNotChangeDefaultSession [
+	<gtExample>
+	| registry firstSession secondSession |
+	registry := self registry_oneConnectedSession_setsDefaultSession.
+	
+	firstSession := registry activeSessions anyOne.
+	secondSession := self createSessionForExampleWithId: '1'.
+	secondSession connect.
+	self assert: secondSession isRunning.
+	 
+	secondSession registry: registry.
+	registry addSession: secondSession named: 'test:1'.
+	self assert: registry defaultSession == firstSession.
+	self assert: registry activeSessions size equals: 2.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneConnectedSession_disconnectOnlySession_removesDefaultSession [
+	<gtExample>
+	| registry session |
+	registry := self registry_oneConnectedSession_setsDefaultSession.
+	
+	session := registry activeSessions anyOne.
+	session close.
+	self assert: session isRunning not.
+	 
+	self assert: registry defaultSession isNil.
+	self assert: registry activeSessions size equals: 0.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneConnectedSession_setsDefaultSession [
+	<gtExample>
+	| registry session |
+	registry := self sessionRegistry.
+	
+	self assert: registry defaultSession isNil.
+	session := self createSessionForExampleWithId: 'default'.
+	session connect.
+	self assert: session isRunning.
+	self assert: registry defaultSession isNil.
+	 
+	session registry: registry.
+	registry addSession: session named: session name.
+	self assert: registry defaultSession == session.
+	self assert: registry activeSessions size equals: 1.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedDefaultSession [
+	<gtExample>
+	| registry |
+	registry := self registry_oneConnectedSession_setsDefaultSession.
+	
+	self assert: registry defaultSession isNotNil.
+	"We simulate a disconnect of the default session"
+	registry defaultSession connection close.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedDefaultSession_addNewConnectedSession [
+	<gtExample>
+	| registry firstSession secondSession |
+	registry := self registry_oneDisconnectedDefaultSession.
+	
+	firstSession := registry activeSessions anyOne.
+	secondSession := self createSessionForExampleWithId: '1'.
+	secondSession connect.
+	self assert: secondSession isRunning.
+	
+	secondSession registry: registry.
+	registry addSession: secondSession named: secondSession name.
+	
+	self assert: registry defaultSession == secondSession.
+	self assert: registry activeSessions size equals: 2.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedDefaultSession_reconnect [
+	<gtExample>
+	| registry session |
+	registry := self registry_oneDisconnectedDefaultSession.
+	
+	session := registry defaultSession.
+	self assert: session isNotNil.
+	self assert: session isRunning not.
+	
+	"We simulate a disconnect of the default session"
+	session connect.
+	
+	self assert: registry defaultSession == session.
+	self assert: registry activeSessions size equals: 1.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_addSecondConnectedSession_changeDefaultSession [
+	<gtExample>
+	| registry secondSession |
+	registry := self registry_oneDisconnectedSession_noDefaultSession.
+	
+	secondSession := self createSessionForExampleWithId: '1'.
+	secondSession connect.
+	self assert: secondSession isRunning.
+	 
+	secondSession registry: registry.
+	registry addSession: secondSession named: secondSession name.
+	self assert: registry defaultSession == secondSession.
+	self assert: registry activeSessions size equals: 2.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_addSecondDisconnectedSession_doesNotChangeDefaultSession [
+	<gtExample>
+	| registry secondSession |
+	registry := self registry_oneDisconnectedSession_noDefaultSession.
+	
+	secondSession := self createSessionForExampleWithId: '1'.
+	self assert: secondSession isRunning not.
+	 
+	secondSession registry: registry.
+	registry addSession: secondSession named: secondSession name.
+	self assert: registry defaultSession isNil.
+	self assert: registry activeSessions size equals: 2.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_connectInitialDisconnectedSession_setsDefaultSession [
+	<gtExample>
+	| registry session |
+	registry := self registry_oneDisconnectedSession_noDefaultSession.
+	
+	session := registry activeSessions anyOne.
+	session connect.
+	
+	self assert: registry defaultSession == session.
+	self assert: registry activeSessions size equals: 1.
+	
+	^ registry
+]
+
+{ #category : #'examples - default session' }
+GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_noDefaultSession [
+	<gtExample>
+	| registry session |
+	registry := self sessionRegistry.
+	
+	self assert: registry defaultSession isNil.
+	session := self createSessionForExampleWithId: 'default'.
+	self assert: session isRunning not.
+	
+	session registry: registry.
+	registry addSession: session named: session name.
+	self assert: registry defaultSession isNil.
+	self assert: registry activeSessions size equals: 1.
+	
+	^ registry
+]
+
+{ #category : #'examples - announcements' }
 GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is removed"
 	<gtExample>
@@ -161,7 +368,7 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : #'examples - default session' }
 GtGemStoneSessionRegistryExamples >> removeDefaultSession [
 	"Confirm that removing a session that is the default results in the registy no longer having a default session"
 	<gtExample>
@@ -182,7 +389,7 @@ GtGemStoneSessionRegistryExamples >> removeDefaultSession [
 	^ registry
 ]
 
-{ #category : #examples }
+{ #category : #'examples - announcements' }
 GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
 	"Confirm that an announcement is received from the session registry when a session is removed"
 	<gtExample>
@@ -232,14 +439,11 @@ GtGemStoneSessionRegistryExamples >> sessionIdManagement [
 	self assert: newSession sessionId equals: '1'.
 ]
 
-{ #category : #examples }
+{ #category : #'examples - setup/tear down' }
 GtGemStoneSessionRegistryExamples >> sessionRegistry [
 	"Answer an empty session registry"
 	<gtExample>
-	| registry |
-
-	registry := GtGemStoneSessionRegistry new.
-	registry propertiesFile: self propertiesFile.
-	self assert: registry activeSessions size equals: 0.
-	^ registry
+	
+	^ theSessionRegistry ifNil: [
+		theSessionRegistry := self createSessionRegistry ]
 ]
