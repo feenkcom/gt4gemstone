@@ -141,7 +141,7 @@ GtGemStoneTestingSession >> evaluateReturnProxy: remoteScript for: anObject bind
 GtGemStoneTestingSession >> gt4gemstoneVersion [
 
 	super gt4gemstoneVersion.
-	^ '3.7.1'
+	^ GtGemStoneGciConnector defaultGemStoneVersion
 ]
 
 { #category : #initialize }

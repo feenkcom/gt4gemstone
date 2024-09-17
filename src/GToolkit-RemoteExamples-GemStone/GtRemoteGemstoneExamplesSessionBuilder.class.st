@@ -56,7 +56,7 @@ GtRemoteGemstoneExamplesSessionBuilder >> createConnectorNamed: aConnectorName [
 	self assert: libraryDirectory isDirectory.
 	
 	connector := GtGemStoneGciConnector new
-		gemstoneVersion: '3.7.1';
+		gemstoneVersion: GtGemStoneGciConnector defaultGemStoneVersion;
 		libraryPath: libraryDirectory;
 		host: 'localhost';
 		netldi: netldi;
