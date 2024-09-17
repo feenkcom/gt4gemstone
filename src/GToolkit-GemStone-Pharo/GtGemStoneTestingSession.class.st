@@ -169,9 +169,14 @@ GtGemStoneTestingSession >> markAsDisconnected [
 
 { #category : #accessing }
 GtGemStoneTestingSession >> name [
-
-	^ (self isDefaultSession ifTrue: [ 'default:' ] ifFalse: [ 'session:' ]),
-		sessionId
+	^ connector 
+		ifNil: [
+	 	(self isDefaultSession 
+	 		ifTrue: [ 'default:' ] 
+	 		ifFalse: [ 'session:' ]),
+				sessionId ]
+		ifNotNil: [
+			super name ]
 ]
 
 { #category : #private }

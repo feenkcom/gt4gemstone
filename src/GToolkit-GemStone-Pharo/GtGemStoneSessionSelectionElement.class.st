@@ -35,8 +35,12 @@ GtGemStoneSessionSelectionElement >> buildUI [
 GtGemStoneSessionSelectionElement >> connectorActionsFor: aConnector [
 
 	^ BrGlamorousSimpleContextMenuContent new items: {
-		'Select' -> [ :aStatusLineElement | selectAction cull: (registry newSessionWithConnector: aConnector) ].
-		'Inspect' -> [ :aStatusLineElement | aStatusLineElement phlow spawnObject: aConnector ].
+		'Select' -> [ :aStatusLineElement | 
+			selectAction 
+				cull: (registry newSessionWithConnector: aConnector) ].
+		'Inspect' -> [ :aStatusLineElement | 
+			aStatusLineElement phlow 
+				spawnObject: aConnector ].
 	}
 ]
 
