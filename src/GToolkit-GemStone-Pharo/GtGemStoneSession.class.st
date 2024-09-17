@@ -1265,7 +1265,6 @@ GtGemStoneSession >> registry [
 
 { #category : #accessing }
 GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
-
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :registryCodeSyn |
 		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].

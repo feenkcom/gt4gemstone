@@ -1,11 +1,11 @@
 Class {
-	#name : #GtGemStoneSessionRegistryExamples,
+	#name : #GtGemStoneSessionRegistryBasicExamples,
 	#superclass : #Object,
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
-{ #category : #examples }
-GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
+{ #category : #'examples - announcements' }
+GtGemStoneSessionRegistryBasicExamples >> addNewConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is added"
 	<gtExample>
 	| registry connector additionAnnouncement |
@@ -32,8 +32,20 @@ GtGemStoneSessionRegistryExamples >> addNewConnectorAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
-GtGemStoneSessionRegistryExamples >> addSessionAnnouncement [
+{ #category : #utils }
+GtGemStoneSessionRegistryBasicExamples >> addNewTestSessionWithId: aSessionId on: aConnector to: aRegistry [ 
+	| session |
+	session := self 
+		createTestSessionForExampleWithId: aSessionId on: aConnector.
+	
+	session registry: aRegistry.
+	aRegistry addSession: session named: session name.
+	
+	^ session
+]
+
+{ #category : #'examples - announcements' }
+GtGemStoneSessionRegistryBasicExamples >> addSessionAnnouncement [
 	"Confirm that an announcement is received from the session registry when a session is added"
 	<gtExample>
 	| registry connector announcements session |
@@ -65,7 +77,7 @@ GtGemStoneSessionRegistryExamples >> addSessionAnnouncement [
 ]
 
 { #category : #examples }
-GtGemStoneSessionRegistryExamples >> changeConnectorName [
+GtGemStoneSessionRegistryBasicExamples >> changeConnectorName [
 	"Confirm that a name change announcement is received from the session registry when a connector is renamed"
 	<gtExample>
 	| registry oldName connector announcement |
@@ -105,8 +117,15 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	^ registry
 ]
 
+{ #category : #utils }
+GtGemStoneSessionRegistryBasicExamples >> createTestSessionForExampleWithId: aString on: aConnector [
+	^ GtGemStoneTestingSession new 
+	 	sessionId: aString;
+	 	connector: aConnector
+]
+
 { #category : #examples }
-GtGemStoneSessionRegistryExamples >> propertiesFile [
+GtGemStoneSessionRegistryBasicExamples >> propertiesFile [
 	"Answer an empty properties file"
 	<gtExample>
 	| propertiesFile file |
@@ -119,8 +138,8 @@ GtGemStoneSessionRegistryExamples >> propertiesFile [
 	^ propertiesFile
 ]
 
-{ #category : #examples }
-GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
+{ #category : #'examples - announcements' }
+GtGemStoneSessionRegistryBasicExamples >> removeConnectorAnnouncement [
 	"Confirm that an announcement is received from the session registry when a connector is removed"
 	<gtExample>
 	| registry connector additionAnnouncement |
@@ -162,7 +181,7 @@ GtGemStoneSessionRegistryExamples >> removeConnectorAnnouncement [
 ]
 
 { #category : #examples }
-GtGemStoneSessionRegistryExamples >> removeDefaultSession [
+GtGemStoneSessionRegistryBasicExamples >> removeDefaultSession [
 	"Confirm that removing a session that is the default results in the registy no longer having a default session"
 	<gtExample>
 	| registry session |
@@ -182,8 +201,8 @@ GtGemStoneSessionRegistryExamples >> removeDefaultSession [
 	^ registry
 ]
 
-{ #category : #examples }
-GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
+{ #category : #'examples - announcements' }
+GtGemStoneSessionRegistryBasicExamples >> removeSessionAnnouncement [
 	"Confirm that an announcement is received from the session registry when a session is removed"
 	<gtExample>
 	| registry announcements session |
@@ -212,8 +231,95 @@ GtGemStoneSessionRegistryExamples >> removeSessionAnnouncement [
 	^ registry
 ]
 
-{ #category : #examples }
-GtGemStoneSessionRegistryExamples >> sessionIdManagement [
+{ #category : #'examples - session ids' }
+GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWhenDifferentIdPresent [
+	<gtExample>
+	| registry connector session |
+
+	registry := self sessionRegistry.
+	connector := registry propertiesFile addNewConnector.
+	
+	session := self 
+		addNewTestSessionWithId: '1' on: connector to: registry.
+	
+	"If we have another session connected, we use 'default'"
+	session connect.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+]
+
+{ #category : #'examples - session ids' }
+GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWithReusage [
+	<gtExample>
+	| registry connector session |
+
+	registry := self sessionRegistry.
+	connector := registry propertiesFile addNewConnector.
+
+	"Before having a default session, 
+	we should use 'default' as a new session id."
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+	
+	session := self 
+		addNewTestSessionWithId: 'default' on: connector to: registry.
+	
+	"When the default session is present but not connected 
+	we should use 'default' as a new session id."
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+	
+	"After connecting the session we need to get a new id."
+	session connect.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: '1'.
+	
+	"If the session disconnectes for any reason we use 'default'."
+	session markAsDisconnected.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+		
+	"And if we remove the session we will use 'default'."
+	session close.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+]
+
+{ #category : #'examples - session ids' }
+GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWithReusage_anotherSessionConnected [
+	<gtExample>
+	| registry connector sessionOne sessionTwo |
+
+	registry := self sessionRegistry.
+	connector := registry propertiesFile addNewConnector.
+
+	sessionOne := self 
+		addNewTestSessionWithId: 'default' on: connector to: registry.
+	sessionTwo := self 
+		addNewTestSessionWithId: '1' on: connector to: registry.
+	
+	"The default session is still not connected as this point, 
+	so we can use the 'default' id."
+	sessionTwo connect.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: 'default'.
+		
+	"Connecting also the default session should result in a new id."
+	sessionOne connect.
+	self 
+		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		equals: '2'.
+]
+
+{ #category : #'examples - session ids' }
+GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_lowestIdIsUsed [
 	<gtExample>
 	"Confirm that the lowest possible session id is always supplied."
 	| registry connector session1 session2 newSession |
@@ -233,7 +339,7 @@ GtGemStoneSessionRegistryExamples >> sessionIdManagement [
 ]
 
 { #category : #examples }
-GtGemStoneSessionRegistryExamples >> sessionRegistry [
+GtGemStoneSessionRegistryBasicExamples >> sessionRegistry [
 	"Answer an empty session registry"
 	<gtExample>
 	| registry |
@@ -241,5 +347,6 @@ GtGemStoneSessionRegistryExamples >> sessionRegistry [
 	registry := GtGemStoneSessionRegistry new.
 	registry propertiesFile: self propertiesFile.
 	self assert: registry activeSessions size equals: 0.
+	
 	^ registry
 ]

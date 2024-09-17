@@ -678,9 +678,11 @@ GtRemoteGemStonePlaygroundExamples >> runningServer [
 	connector := GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: 'test'.
 	self gemstoneSessionRegistry  
 		connectorNamed: 'test'
-		ifPresent: [ :aConnector | Error signal: 'Connector already present'] 
-		ifAbsent: [ self gemstoneSessionRegistry connectors
-			at: 'test' put: connector ].
+		ifPresent: [ :aConnector | 
+			Error signal: 'Connector already present'] 
+		ifAbsent: [ 
+			self gemstoneSessionRegistry connectors
+				at: 'test' put: connector ].
 	^ server := self gemstoneSessionRegistry
 		newSessionReusedOrDefaultWithConnector: connector
 ]
