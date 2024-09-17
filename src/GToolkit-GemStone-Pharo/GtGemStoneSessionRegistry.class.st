@@ -91,14 +91,6 @@ GtGemStoneSessionRegistry class >> sessionIdFromSessionName: aString [
 	^ (aString splitOn: $:) second
 ]
 
-{ #category : #accessing }
-GtGemStoneSessionRegistry class >> sessionNameForConnectorName: connectorNameString id: idString [
-
-	self assert: idString isString.
-	self assert: (idString indexOf: $:) = 0.
-	^ connectorNameString, ':', idString.
-]
-
 { #category : #'system startup' }
 GtGemStoneSessionRegistry class >> startUp: resuming [
 
@@ -140,8 +132,15 @@ GtGemStoneSessionRegistry >> addNewConnector [
 
 { #category : #private }
 GtGemStoneSessionRegistry >> addSession: aSession named: aString [
-
-	self sessions at: aString put: aSession
+	| allPreviousDisconnected |
+	
+	allPreviousDisconnected := (self sessions
+			copyWithout: aSession) allSatisfy: [ :each |
+		each isRunning not ].
+		
+	self sessions at: aString put: aSession.
+	(allPreviousDisconnected and: [ aSession isRunning ]) ifTrue: [
+		self defaultSession:  aSession ].
 ]
 
 { #category : #accessing }
@@ -201,6 +200,15 @@ GtGemStoneSessionRegistry >> codeSync: aGtGemStoneCodeSync [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> connectedSessions [
+	"Answer the set of session names that are connected"
+	<return: #Array>
+
+	^ self activeSessions select: [ :each |
+		each isRunning ]
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> connectorNamed: aString [
 	"Answer the connector at the supplied name"
 
@@ -239,6 +247,25 @@ GtGemStoneSessionRegistry >> connectors [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> createNewReusesOrDefaultSessionWithConnector: aGtGemStoneConnector [
+	| sessionId newSession |
+		
+	sessionId := self idForNewOrReusedDefaultSessionFor: aGtGemStoneConnector.
+	newSession :=  self 
+		sessionNamed: (aGtGemStoneConnector sessionNameWithId: sessionId) 
+		ifAbsent:  [ 
+			self 
+				newSessionWithConnector: aGtGemStoneConnector 
+				id: sessionId ].
+	
+	self 
+		assert: [ newSession isRunning not ] 
+		description: 'The created session should not be running'.
+			
+	^ newSession
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> defaultConnectorName [ 
 
 	^ defaultName ifNil: [ propertiesFile 
@@ -271,7 +298,7 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 GtGemStoneSessionRegistry >> ensureDefaultSession [
 	self hasDefaultSession ifTrue: [ ^ self defaultSession ].
 	
-	^ self activeSessions 
+	^ self connectedSessions 
 		ifEmpty: [ nil ]
 		ifNotEmpty: [ :aSessionCollection |
 			self defaultSession: aSessionCollection last.
@@ -295,9 +322,20 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 		title: 'Available connectors';
 		priority: 50;
 		items: [ self availableConnectors sorted: #name ascending ];
-		column: 'Name' text: [ :item | item name ];
+		column: 'Name' do: [ :aColumn | 
+			aColumn
+				cellStencil: [ 
+					GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :item | 
+					anElement 
+						initializeWithIcon: (self 
+							iconForSymbol: item iconName)
+						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
+		column: 'Host' text: [ :item | item host ];
 		column: 'Stone' text: [ :item | item stone ];
+		column: 'Version' text: [ :item | 
+			item versionString ifNil: [ '-' ] ];
 		actionUpdateButton
 ]
 
@@ -352,15 +390,17 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 				dataBinder: [ :anElement :item | 
 					anElement 
 						initializeWithIcon: (self 
-							gtSafeIconNamed: item iconName)
+							iconForSymbol: item iconName)
 						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
 		column: 'Host' text: [ :item | item host ];
 		column: 'Stone' text: [ :item | item stone ];
 		column: 'Version' text: [ :item | 
 			item versionString ifNil: [ '-' ] ];
-		contextItemLabel: 'New Session' action: 
-			[ :anElement :aGtGemStoneConnnector | aGtGemStoneConnnector registry newSessionOrDefaultWithConnector: aGtGemStoneConnnector ];
+		contextItemLabel: 'New Session' 
+			action: [ :anElement :aGtGemStoneConnnector | 
+				aGtGemStoneConnnector registry 
+					newSessionReusedOrDefaultWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
@@ -385,9 +425,15 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		title: 'Sessions';
 		priority: 10;
 		items: [ sessions values sorted: #name ascending ];
-		column: 'Name' 
-			text: [ :aSession |
-				aSession formatBasedOnStatusText: aSession name ];
+		column: 'Name' do: [ :aColumn | 
+			aColumn
+				cellStencil: [ 
+					GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :aSession | 
+					anElement  
+						initializeWithIcon: (self 
+							iconForSymbol: aSession connector iconName)
+						label: (aSession formatBasedOnStatusText: aSession name) ] ];
 		column: 'Status' 
 			text: [ :aSession | 
 				aSession formatBasedOnStatusText: aSession statusDescription ]
@@ -473,6 +519,15 @@ GtGemStoneSessionRegistry >> hasDefaultSession [
 ]
 
 { #category : #testing }
+GtGemStoneSessionRegistry >> hasRunningSessionNamed: aSessionName [ 
+	^ sessions 
+		at: aSessionName
+		ifPresent: [ :aSession | 
+			aSession isRunning ]
+		ifAbsent: [ false ]
+]
+
+{ #category : #testing }
 GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named session"
 	<return: #Boolean>
@@ -486,6 +541,27 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 GtGemStoneSessionRegistry >> hasSessions [
 
 	^ sessions isNotEmpty
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> iconForSymbol: anIconName [ 
+	^ [ 
+		anIconName 
+			ifNil: [ BrGlamorousVectorIcons gemStone ]
+			ifNotNil: [ (BrGlamorousVectorIcons classSide 
+			includesSelector: anIconName asSymbol)
+				ifTrue: [ BrGlamorousVectorIcons perform: anIconName asSymbol ]
+				ifFalse:  [ 
+					self gtSafeIconNamed: anIconName ] ]
+	] on: Error do: [ :error | 
+		Smalltalk ui icons iconNamed: #smallWarningIcon ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> idForNewOrReusedDefaultSessionFor: aGtGemStoneConnector [ 
+	^ (self hasRunningSessionNamed: aGtGemStoneConnector defaultSessionName) 
+		ifTrue: [ self nextSessionIdForConnector: aGtGemStoneConnector]
+		ifFalse: [ aGtGemStoneConnector defaultSessionId ]
 ]
 
 { #category : #initialization }
@@ -517,21 +593,32 @@ GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnector: aGtGemStoneConnec
 	"Answer a new session using the supplied connector.
 	Answer the connector's default session if it doesn't exist."
 
-	^ sharedAccess critical:
-		[ (self newSessionWithConnector: aGtGemStoneConnector id: 
-			((sessions includesKey: aGtGemStoneConnector name, ':default') 
-				ifTrue: [ self nextSessionIdForConnector: aGtGemStoneConnector ]
-				ifFalse: [ 'default' ]))
-					connect ].
+	^ sharedAccess critical: [ 
+		| sessionId newSession |
+		sessionId := (sessions includesKey: aGtGemStoneConnector defaultSessionName) 
+			ifTrue: [ self nextSessionIdForConnector: aGtGemStoneConnector ]
+			ifFalse: [ aGtGemStoneConnector defaultSessionId ].
+		newSession := self 
+			newSessionWithConnector: aGtGemStoneConnector 
+			id: sessionId.
+		newSession
+			connect;
+			yourself ].
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnectorNamed: aConnectorName [
+GtGemStoneSessionRegistry >> newSessionReusedOrDefaultWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector.
-	Answer the connector's default session if it doesn't exist."
+	Answer the connector's default session if it doesn't exist.
+	Reuse disconnected sessions for that connector if present"
 
-	^ self newSessionOrDefaultWithConnector: (self 
-		connectorNamed: aConnectorName)
+	^ sharedAccess critical:[ 
+		| newSession |
+		newSession := self 
+			createNewReusesOrDefaultSessionWithConnector: aGtGemStoneConnector.
+		newSession
+			connect;
+			yourself ].
 ]
 
 { #category : #accessing }
@@ -539,8 +626,8 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector.
 	The default session for the connector is never answered."
 
-	^ sharedAccess critical:
-		[ (self newSessionWithConnector: aGtGemStoneConnector
+	^ sharedAccess critical:[ 
+		(self newSessionWithConnector: aGtGemStoneConnector
 			id: (self nextSessionIdForConnector: aGtGemStoneConnector))
 				connect ].
 ]
@@ -550,20 +637,28 @@ GtGemStoneSessionRegistry >> newSessionWithConnector: aGtGemStoneConnector id: s
 	"Answer a new session using the supplied connector"
 	| sessionName newSession |
 
-	sessionName := self class 
-		sessionNameForConnectorName: aGtGemStoneConnector name id: sessionId.
-	(sessions includesKey: sessionName) ifTrue:
-		[ self error: 'session ''', sessionName, ''' already exists' ].
+	sessionName := aGtGemStoneConnector sessionNameWithId: sessionId.
+	(sessions includesKey: sessionName) ifTrue: [ 
+		self error: 'session ''', sessionName, ''' already exists' ].
 	newSession := GtGemStoneSession new
 		connector: aGtGemStoneConnector;
 		sessionId: sessionId;
 		registry: self.
-	sharedAccess critical:
-		[ defaultSession ifNotNil:
-			[ self assert: defaultSession name ~= newSession name ].
+	
+	sharedAccess critical: [ 
+		defaultSession ifNotNil:[ 
+			self assert: defaultSession name ~= newSession name ].
 		sessions at: sessionName put: newSession ].
-	self announce: (GtGemStoneSessionAddedAnnouncement session: newSession).
-	sessions size = 1 ifTrue: [ self defaultSession: newSession ].
+	self announce: (GtGemStoneSessionAddedAnnouncement 
+		session: newSession).
+	
+	"sessions size = 1 
+		ifTrue: [ self defaultSession: newSession ]
+		ifFalse: [
+			(sessions allSatisfy: [ :aSession |
+				aSession isRunning not ])
+					ifTrue: [ self defaultSession: newSession ] ]."
+	
 	^ newSession.
 ]
 

@@ -179,9 +179,16 @@ GtGemStoneSession >> connect [
 		yourself.
 	connectionTime := DateAndTime now.
 	self runPostConnectActions.
-	registry ifNotNil:
-		[ registry addSession: self named: self name ].
+	registry ifNotNil:[ 
+		registry addSession: self named: self name ].
+	
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
+]
+
+{ #category : #actions }
+GtGemStoneSession >> connectAsDefault [
+	self connect.
+	self beDefaultSession.
 ]
 
 { #category : #accessing }
@@ -1139,6 +1146,11 @@ GtGemStoneSession >> hasActiveAsyncExecution [
 GtGemStoneSession >> hasKeepAlive [
 
 	^ keepAlive isNotNil
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> iconName [
+	^ connector iconName
 ]
 
 { #category : #accessing }

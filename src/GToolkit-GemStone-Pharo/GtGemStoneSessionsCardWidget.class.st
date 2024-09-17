@@ -22,7 +22,7 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 				left: 2 * aGtHomeSection spaceGap
 				bottom: 2 * aGtHomeSection spaceGap
 				right: 2 * aGtHomeSection spaceGap);
-			size: 310 @ 150;
+			size: 325 @ 150;
 			addChild: (self new
 				matchParent;
 				constraintsDo: [ :c | 
@@ -90,7 +90,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 		dataBinder: [ :anElement :eachItem | 
 			anElement 
 				initializeWithIcon: (self 
-					iconForConnector: eachItem)
+					iconForSymbol: eachItem iconName)
 				label: eachItem name ].
 	newList column 
 		title: 'Username';
@@ -126,7 +126,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
 				newSession := self registry 
-					newSessionOrDefaultWithConnector: selectedConnector.
+					newSessionReusedOrDefaultWithConnector: selectedConnector.
 				newSession beDefaultSession.
 				self updateContent.
 				
@@ -157,14 +157,15 @@ GtGemStoneSessionsCardWidget >> createList [
 	
 	newList column
 		title: 'Name';
-		width: 100;
-		cellStencil:[ 
-			BrLabel new
-				aptitude: BrGlamorousLabelAptitude new;
-				hMatchParent;
-				vFitContent ];
-		dataBinder: [ :aLabel :aSession |
-			aLabel text: (aSession formatBasedOnStatusText: aSession displayName)].
+		width: 130;
+		cellStencil: [ 
+			GtPhlowLabelWithIcon new
+				withSmallSize ];
+		dataBinder: [ :anElement :aSession | 
+			anElement 
+				initializeWithIcon: (self 
+					iconForSymbol: aSession iconName)
+				label: (aSession formatBasedOnStatusText: aSession displayName) ].
 			
 	newList column
 		title: 'Status';
@@ -257,15 +258,18 @@ GtGemStoneSessionsCardWidget >> doSelectionChanged: anEvent [
 ]
 
 { #category : #utils }
-GtGemStoneSessionsCardWidget >> iconForConnector: aConnector [ 
-	aConnector iconName ifNil: [
-		^ BrGlamorousVectorIcons gemStone ].
-		
-	^ (BrGlamorousVectorIcons classSide 
-		includesSelector: aConnector iconName asSymbol)
-			ifTrue: [ BrGlamorousVectorIcons perform: aConnector iconName asSymbol ]
-			ifFalse:  [ 
-				self gtSafeIconNamed: aConnector iconName ]
+GtGemStoneSessionsCardWidget >> iconForSymbol: anIconName [ 
+	
+	^ [ 
+		anIconName 
+			ifNil: [ BrGlamorousVectorIcons gemStone ]
+			ifNotNil: [ (BrGlamorousVectorIcons classSide 
+			includesSelector: anIconName asSymbol)
+				ifTrue: [ BrGlamorousVectorIcons perform: anIconName asSymbol ]
+				ifFalse:  [ 
+					self gtSafeIconNamed: anIconName ] ]
+	] on: Error do: [ :error | 
+		Smalltalk ui icons iconNamed: #smallWarningIcon ]
 ]
 
 { #category : #'initialization ' }
