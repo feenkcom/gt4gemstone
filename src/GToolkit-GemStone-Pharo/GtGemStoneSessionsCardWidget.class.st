@@ -57,6 +57,7 @@ GtGemStoneSessionsCardWidget >> createAddNewDefaultSessionButton [
 	selectionButton 
 		icon: BrGlamorousVectorIcons add;
 		label: 'Add a new default session';
+		id: GtGemStoneSessionsCardWidgetAddSessionButtonId;
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		addAptitude: ((BrGlamorousWithDropdownAptitude 
 			handle:[ 
@@ -145,6 +146,8 @@ GtGemStoneSessionsCardWidget >> createInspectButton [
 	^ BrButton new 
 			aptitude: BrGlamorousButtonWithIconAptitude new;
 			icon: BrGlamorousVectorIcons inspect;
+			id: GtGemStoneSessionsCardWidgetInspectButtonId ;
+			label: 'Inspect registry';
 			action: [ :aButton | self inspectRegistryFrom: aButton ];
 			yourself.
 ]
@@ -212,6 +215,8 @@ GtGemStoneSessionsCardWidget >> createRefreshButton [
 	^ BrButton new 
 			aptitude: BrGlamorousButtonWithIconAptitude new;
 			icon: BrGlamorousVectorIcons refresh;
+			id: GtGemStoneSessionsCardWidgetRefreshButtonId;
+			label: 'Refresh sessions list';
 			action: [ :aButton | self updateContent ];
 			yourself.
 ]
