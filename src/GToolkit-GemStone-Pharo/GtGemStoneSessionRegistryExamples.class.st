@@ -1,8 +1,6 @@
 Class {
 	#name : #GtGemStoneSessionRegistryExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable',
-	#classTraits : 'TAssertable classTrait',
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
@@ -55,9 +53,10 @@ GtGemStoneSessionRegistryExamples >> addSessionAnnouncement [
 	session := registry newSessionWithConnector: connector id: '11'.
 
 	self assert: session class equals: GtGemStoneSession.
-	self assert: announcements size equals: 2.
+	self assert: announcements size equals: 1.
 	self assert: announcements first class equals: GtGemStoneSessionAddedAnnouncement.
-	self assert: announcements second class equals: GtGemStoneSessionDefaultAnnouncement.
+	"We no longer make sessions default in case they are not connected"
+	"self assert: announcements second class equals: GtGemStoneSessionDefaultAnnouncement."
 
 	registry unsubscribe: self.
 	self assert: registry announcer subscriptions numberOfSubscriptions equals: 0.
@@ -97,7 +96,7 @@ GtGemStoneSessionRegistryExamples >> changeConnectorName [
 	self assert: announcement connector equals: connector.
 
 	"Ensure the registry and properties file have updated their indexes"
-	self deny: (registry hasConnectorNamed: oldName).
+	self assert: (registry hasConnectorNamed: oldName) not.
 	self assert: (registry hasConnectorNamed: connector name).
 
 	registry unsubscribe: self.
@@ -173,11 +172,12 @@ GtGemStoneSessionRegistryExamples >> removeDefaultSession [
 	self assert: registry activeSessions size equals: 1.
 
 	session := registry activeSessions anyOne.
-	self assert: session identicalTo: registry defaultSession.
+	session beDefaultSession.
+	self assert: session == registry defaultSession.
 
 	registry removeSession: session.
 
-	self deny: registry hasDefaultSession.
+	self assert: registry hasDefaultSession not.
 
 	^ registry
 ]
