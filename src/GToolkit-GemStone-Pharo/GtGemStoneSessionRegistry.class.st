@@ -400,7 +400,7 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		contextItemLabel: 'New Session' 
 			action: [ :anElement :aGtGemStoneConnnector | 
 				aGtGemStoneConnnector registry 
-					newSessionReusesOrDefaultWithConnector: aGtGemStoneConnnector ];
+					newSessionReusedOrDefaultWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
@@ -607,7 +607,7 @@ GtGemStoneSessionRegistry >> newSessionOrDefaultWithConnector: aGtGemStoneConnec
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> newSessionReusesOrDefaultWithConnector: aGtGemStoneConnector [
+GtGemStoneSessionRegistry >> newSessionReusedOrDefaultWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector.
 	Answer the connector's default session if it doesn't exist.
 	Reuse disconnected sessions for that connector if present"

@@ -126,7 +126,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
 				newSession := self registry 
-					newSessionReusesOrDefaultWithConnector: selectedConnector.
+					newSessionReusedOrDefaultWithConnector: selectedConnector.
 				newSession beDefaultSession.
 				self updateContent.
 				
