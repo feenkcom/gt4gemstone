@@ -329,7 +329,7 @@ GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 				dataBinder: [ :anElement :item | 
 					anElement 
 						initializeWithIcon: (self 
-							gtSafeIconNamed: item iconName)
+							iconForSymbol: item iconName)
 						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
 		column: 'Host' text: [ :item | item host ];
@@ -390,7 +390,7 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 				dataBinder: [ :anElement :item | 
 					anElement 
 						initializeWithIcon: (self 
-							gtSafeIconNamed: item iconName)
+							iconForSymbol: item iconName)
 						label: item name ] ];
 		column: 'Username' text: [ :item | item username ];
 		column: 'Host' text: [ :item | item host ];
@@ -430,9 +430,9 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				cellStencil: [ 
 					GtPhlowLabelWithIcon new ];
 				dataBinder: [ :anElement :aSession | 
-					anElement 
+					anElement  
 						initializeWithIcon: (self 
-							gtSafeIconNamed: aSession connector iconName)
+							iconForSymbol: aSession connector iconName)
 						label: (aSession formatBasedOnStatusText: aSession name) ] ];
 		column: 'Status' 
 			text: [ :aSession | 
@@ -541,6 +541,20 @@ GtGemStoneSessionRegistry >> hasSessionNamed: aString [
 GtGemStoneSessionRegistry >> hasSessions [
 
 	^ sessions isNotEmpty
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> iconForSymbol: anIconName [ 
+	^ [ 
+		anIconName 
+			ifNil: [ BrGlamorousVectorIcons gemStone ]
+			ifNotNil: [ (BrGlamorousVectorIcons classSide 
+			includesSelector: anIconName asSymbol)
+				ifTrue: [ BrGlamorousVectorIcons perform: anIconName asSymbol ]
+				ifFalse:  [ 
+					self gtSafeIconNamed: anIconName ] ]
+	] on: Error do: [ :error | 
+		Smalltalk ui icons iconNamed: #smallWarningIcon ]
 ]
 
 { #category : #accessing }
@@ -828,12 +842,6 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
-]
-
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -871,6 +879,12 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
 ]
 
 { #category : #initialization }
