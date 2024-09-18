@@ -88,6 +88,17 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForProxyObj
 	self assertStoreOnFor: localObjectWithDelegate equals: storeString
 ]
 
+{ #category : #assertions }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForSmallFractionProxy: aBareProxy [ 
+	| localObjectWithDelegate storeString |
+	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
+	storeString :='(10/31)'.
+
+	self assertStoreOnFor: aBareProxy equals: storeString.
+	self assert: localObjectWithDelegate storeString equals: storeString.
+	self assertStoreOnFor: localObjectWithDelegate equals: storeString
+]
+
 { #category : #'setup & teardown' }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> runningServer [
 	"Answer a running server.
@@ -196,6 +207,20 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectW
 		GtRemotePhlowDeclarativeTestInspectable new ].
 	self assert: result remoteClass equals: #GtRemotePhlowDeclarativeTestInspectable.
 	self assert: result class name equals: #GspoGtRemotePhlowDeclarativeTestInspectable.
+	
+	^ result
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFraction [
+	<gtExample>
+	| session result |
+
+	session := self runningServer.
+	result := session evaluateBlockAndWaitReturnProxy: [ 
+		Fraction numerator: 10 denominator: 31  ].
+	self assert: result remoteClass equals: #SmallFraction.
+	self assert: result class name equals: #GspoSmallFraction.
 	
 	^ result
 ]
@@ -408,6 +433,35 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithPrimitiveVaria
 		
 	self assertStoreStringForProxyObjectWithPrimitiveVariables: bareProxy.
 	
+	localDelegate := GtRsrProxyServiceClient 
+		bareProxyObjectAt: localObjectWithDelegate 
+		ifAbsent: [nil].
+		
+	self assert: localDelegate == bareProxy.
+	
+	^ localObjectWithDelegate
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testSmallFractionObject_onBareProxy [
+	<gtExample>
+	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
+
+	serviceClientProxy := self serviceClientProxyForSmallFraction.
+	bareProxy := serviceClientProxy asGtBareProxyObject.
+	localObjectWithDelegate := bareProxy asGtpoLocalObject.
+	
+	self assert: localObjectWithDelegate class name equals: #Fraction.
+	
+	self 
+		assert: localObjectWithDelegate numerator 
+		equals: 10.
+	self 
+		assert: localObjectWithDelegate denominator
+		equals: 31.
+		
+	self assertStoreStringForSmallFractionProxy: bareProxy.
+
 	localDelegate := GtRsrProxyServiceClient 
 		bareProxyObjectAt: localObjectWithDelegate 
 		ifAbsent: [nil].
