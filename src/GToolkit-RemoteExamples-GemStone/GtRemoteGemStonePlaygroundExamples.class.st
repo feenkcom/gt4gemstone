@@ -115,6 +115,20 @@ GtRemoteGemStonePlaygroundExamples >> assertPromiseResolutionRunning: promiseRes
 ]
 
 { #category : #'assertions - execution' }
+GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter [
+	| promiseResolution |
+	
+	scripter pager
+		assertPageCountIs: 2.
+	
+	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
+	
+	promiseResolution := self 
+		promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+	self assertPromiseResolutionCompleted: promiseResolution.
+]
+
+{ #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter [
 	| secondPageElement gemStoneInspectorTool resolutionInspectorTool promiseResolution |
 	
@@ -134,20 +148,6 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompl
 		fromPageElement: secondPageElement.
 		
 	promiseResolution := resolutionInspectorTool object.
-	self assertPromiseResolutionCompleted: promiseResolution.
-]
-
-{ #category : #'assertions - execution' }
-GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter [
-	| promiseResolution |
-	
-	scripter pager
-		assertPageCountIs: 2.
-	
-	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
-	
-	promiseResolution := self 
-		promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
 	self assertPromiseResolutionCompleted: promiseResolution.
 ]
 
@@ -448,46 +448,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 ]
 
 { #category : #'examples - execution' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
-	<gtExample>
-	| scripter |
-	
-	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
-	
-	self withElapsedTimeUpdateDisabled: [
-		self withEnabledAutomaticReplaceDo: [
-			scripter gemStoneSnippet
-				clickOnDoItAndInspectAsynchronousButton;
-				play.
-				
-			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
-			self waitForPromiseCompletionInSecondPaneFor: scripter.
-			self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter. ] ].
-	 
-	^ scripter
-]
-
-{ #category : #'examples - execution' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_shortcut [
-	<gtExample>
-	| scripter |
-	
-	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
-	
-	self withElapsedTimeUpdateDisabled: [
-		self withEnabledAutomaticReplaceDo: [
-			scripter gemStoneSnippet
-				useDoItAndInspectAsynchronousShortcut;
-				play.
-				
-			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
-			self waitForPromiseCompletionInSecondPaneFor: scripter.
-			self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter. ] ].
-	 
-	^ scripter
-]
-
-{ #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withoutReplace_button [
 	<gtExample>
 	| scripter |
@@ -528,6 +488,46 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_without
 			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
 			self waitForPromiseCompletionInSecondPaneFor: scripter.
 			self assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter. ] ].
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
+	<gtExample>
+	| scripter |
+	
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	
+	self withElapsedTimeUpdateDisabled: [
+		self withEnabledAutomaticReplaceDo: [
+			scripter gemStoneSnippet
+				clickOnDoItAndInspectAsynchronousButton;
+				play.
+				
+			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+			self waitForPromiseCompletionInSecondPaneFor: scripter.
+			self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter. ] ].
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_shortcut [
+	<gtExample>
+	| scripter |
+	
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	
+	self withElapsedTimeUpdateDisabled: [
+		self withEnabledAutomaticReplaceDo: [
+			scripter gemStoneSnippet
+				useDoItAndInspectAsynchronousShortcut;
+				play.
+				
+			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+			self waitForPromiseCompletionInSecondPaneFor: scripter.
+			self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter. ] ].
 	 
 	^ scripter
 ]
@@ -703,19 +703,19 @@ GtRemoteGemStonePlaygroundExamples >> scripterForPageTool: aPageTool [
 ]
 
 { #category : #utils }
+GtRemoteGemStonePlaygroundExamples >> selectedToolFromPageElement: aPageElement [ 
+	| mainToolElement |
+	mainToolElement := aPageElement contentElement tool.
+	^ mainToolElement content children first phlow entity
+]
+
+{ #category : #utils }
 GtRemoteGemStonePlaygroundExamples >> selectToolLabeled: aString fromPageElement: aPageElement [ 
 	^ (aPageElement contentElement tool   query  
 		/ #header 
 		// #tabbar
 		/ [ :aTab | aTab label asString = aString ])
 		result anyOne phlow entity.
-]
-
-{ #category : #utils }
-GtRemoteGemStonePlaygroundExamples >> selectedToolFromPageElement: aPageElement [ 
-	| mainToolElement |
-	mainToolElement := aPageElement contentElement tool.
-	^ mainToolElement content children first phlow entity
 ]
 
 { #category : #'examples - setup/tear down' }

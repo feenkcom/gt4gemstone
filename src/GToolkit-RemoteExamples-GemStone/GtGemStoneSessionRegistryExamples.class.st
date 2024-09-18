@@ -60,7 +60,7 @@ GtGemStoneSessionRegistryExamples >> registryWithConnectedDefaultSession_newSess
 	connector := registry connectors anyOne.
 	
 	existingSession := registry 
-		newSessionWithConnector: connector
+		createNewSessionWithConnector: connector
 		id: 'default'.
 	existingSession connect.
 	
@@ -81,7 +81,7 @@ GtGemStoneSessionRegistryExamples >> registryWithConnectedNonDefaultSession_newS
 	connector := registry connectors anyOne.
 	
 	existingSession := registry 
-		newSessionWithConnector: connector
+		createNewSessionWithConnector: connector
 		id: '1'.
 	existingSession connect.
 	
@@ -102,7 +102,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDisconnectedDefaultSession_newS
 	connector := registry connectors anyOne.
 	
 	existingSession := registry 
-		newSessionWithConnector: connector
+		createNewSessionWithConnector: connector
 		id: 'default'.
 	
 	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
@@ -123,7 +123,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDisconnectedNonDefaultSession_n
 	connector := registry connectors anyOne.
 	
 	existingSession := registry 
-		newSessionWithConnector: connector
+		createNewSessionWithConnector: connector
 		id: '1'.
 	
 	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
