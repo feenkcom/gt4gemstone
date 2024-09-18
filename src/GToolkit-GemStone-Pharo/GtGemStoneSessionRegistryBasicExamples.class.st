@@ -232,6 +232,29 @@ GtGemStoneSessionRegistryBasicExamples >> removeSessionAnnouncement [
 ]
 
 { #category : #'examples - session ids' }
+GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_connectedDefaultSession_reconnectSecondarySession [
+	<gtExample>
+	| registry connector sessionOne sessionTwo |
+
+	registry := self sessionRegistry.
+	connector := registry propertiesFile addNewConnector.
+
+	sessionOne := self 
+		addNewTestSessionWithId: 'default' on: connector to: registry.
+	sessionTwo := self 
+		addNewTestSessionWithId: '1' on: connector to: registry.
+	
+	"When the default session is connected, we should reuse the 
+	smallest available id."
+	sessionOne connect.
+	self 
+		assert: (registry idForNewSessionWithReusageFor: connector)
+		equals: '1'.
+		
+	^ registry
+]
+
+{ #category : #'examples - session ids' }
 GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWhenDifferentIdPresent [
 	<gtExample>
 	| registry connector session |
@@ -245,7 +268,7 @@ GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWhen
 	"If we have another session connected, we use 'default'"
 	session connect.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
 ]
 
@@ -260,7 +283,7 @@ GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWith
 	"Before having a default session, 
 	we should use 'default' as a new session id."
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
 	
 	session := self 
@@ -269,26 +292,29 @@ GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWith
 	"When the default session is present but not connected 
 	we should use 'default' as a new session id."
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
 	
 	"After connecting the session we need to get a new id."
 	session connect.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: '1'.
 	
 	"If the session disconnectes for any reason we use 'default'."
 	session markAsDisconnected.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
 		
 	"And if we remove the session we will use 'default'."
 	session close.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
+	
+	^ registry
+		
 ]
 
 { #category : #'examples - session ids' }
@@ -308,14 +334,16 @@ GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_defaultSessionWith
 	so we can use the 'default' id."
 	sessionTwo connect.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: 'default'.
 		
 	"Connecting also the default session should result in a new id."
 	sessionOne connect.
 	self 
-		assert: (registry idForNewOrReusedDefaultSessionFor: connector)
+		assert: (registry idForNewSessionWithReusageFor: connector)
 		equals: '2'.
+		
+	^ registry
 ]
 
 { #category : #'examples - session ids' }

@@ -95,6 +95,79 @@ GtGemStoneSessionRegistryExamples >> registryWithConnectedNonDefaultSession_newS
 ]
 
 { #category : #'examples - session creation' }
+GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessionConnected_newDefaultSession [
+	<gtExample>
+	| registry connector sessionDefault sessionOne newSession |
+	registry := self sessionRegistryWithTestConnector.
+	connector := registry connectors anyOne.
+	
+	sessionDefault := registry 
+		createNewSessionWithConnector: connector
+		id: 'default'.
+	sessionOne := registry 
+		createNewSessionWithConnector: connector
+		id: '1'.
+	sessionOne connect.
+	sessionOne beDefaultSession.
+	
+	newSession := registry newDefaultSessionWithReusageWithConnector: connector.
+	self assert: newSession isRunning.
+	self assert: newSession name equals: 'test:default'.
+	self assert: registry sessions size equals: 2.
+	self assert: registry defaultSession == newSession.
+
+	^ registry
+]
+
+{ #category : #'examples - session creation' }
+GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessionConnected_newSession [
+	<gtExample>
+	| registry connector sessionDefault sessionOne newSession |
+	registry := self sessionRegistryWithTestConnector.
+	connector := registry connectors anyOne.
+	
+	sessionDefault := registry 
+		createNewSessionWithConnector: connector
+		id: 'default'.
+	sessionOne := registry 
+		createNewSessionWithConnector: connector
+		id: '1'.
+	sessionOne connect.
+	
+	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	self assert: newSession isRunning.
+	self assert: newSession name equals: 'test:default'.
+	self assert: registry sessions size equals: 2.
+	self assert: registry defaultSession == sessionOne.
+
+	^ registry
+]
+
+{ #category : #'examples - session creation' }
+GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessionCurrentNotConnected_newDefaultSession [
+	<gtExample>
+	| registry connector sessionDefault sessionOne newSession |
+	registry := self sessionRegistryWithTestConnector.
+	connector := registry connectors anyOne.
+	
+	sessionDefault := registry 
+		createNewSessionWithConnector: connector
+		id: 'default'.
+	sessionOne := registry 
+		createNewSessionWithConnector: connector
+		id: '1'.
+	sessionOne beDefaultSession.
+	
+	newSession := registry newDefaultSessionWithReusageWithConnector: connector.
+	self assert: newSession isRunning.
+	self assert: newSession name equals: 'test:default'.
+	self assert: registry sessions size equals: 2.
+	self assert: registry defaultSession == newSession.
+
+	^ registry
+]
+
+{ #category : #'examples - session creation' }
 GtGemStoneSessionRegistryExamples >> registryWithDisconnectedDefaultSession_newSession [
 	<gtExample>
 	| registry connector existingSession newSession |
