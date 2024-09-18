@@ -62,7 +62,7 @@ GtGemStoneSessionRegistryBasicExamples >> addSessionAnnouncement [
 	self assert: registry activeSessions size equals: 0.
 
 	connector := registry connectors anyOne.
-	session := registry newSessionWithConnector: connector id: '11'.
+	session := registry createNewSessionWithConnector: connector id: '11'.
 
 	self assert: session class equals: GtGemStoneSession.
 	self assert: announcements size equals: 1.
@@ -326,14 +326,14 @@ GtGemStoneSessionRegistryBasicExamples >> sessionIdManagement_lowestIdIsUsed [
 
 	registry := self sessionRegistry.
 	connector := registry propertiesFile addNewConnector.
-	session1 := registry newSessionWithConnector: connector
+	session1 := registry createNewSessionWithConnector: connector
 			id: (registry nextSessionIdForConnector: connector).
 	self assert: session1 sessionId equals: '1'.
-	session2 := registry newSessionWithConnector: connector
+	session2 := registry createNewSessionWithConnector: connector
 			id: (registry nextSessionIdForConnector: connector).
 	self assert: session2 sessionId equals: '2'.
 	registry removeSession: session1.
-	newSession := registry newSessionWithConnector: connector
+	newSession := registry createNewSessionWithConnector: connector
 			id: (registry nextSessionIdForConnector: connector).
 	self assert: newSession sessionId equals: '1'.
 ]

@@ -411,8 +411,7 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> updateContent [
-
-	sessionList items: ((self registry activeSessions 
+	sessionList items: ((self registry sessionsToDisplay 
 		sorted: #name ascending) ifEmpty:[ 
 			{ GtGemStoneCardWidgetNoSessions new } ]).
 ]
