@@ -18,6 +18,12 @@ GtGemStoneAsyncExecution >> asyncPromise: anAsyncPromise [
 	asyncPromise := anAsyncPromise
 ]
 
+{ #category : #testing }
+GtGemStoneAsyncExecution >> isComputationSuspended [
+	^ promiseResolution isResolvingRunning and: [
+		promiseResolution isResolvingSuspended ]
+]
+
 { #category : #accessing }
 GtGemStoneAsyncExecution >> promiseResolution [
 	^ promiseResolution

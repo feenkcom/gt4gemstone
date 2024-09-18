@@ -4,6 +4,11 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
+{ #category : #testing }
+GtGemStoneSnippetSynchronousExecutionStrategy >> canRunComputationInSession: aGemStoneSession [
+	^ aGemStoneSession hasRunningAsyncExecution not
+]
+
 { #category : #execution }
 GtGemStoneSnippetSynchronousExecutionStrategy >> evaluate: remoteScript inSession: gemstoneSession context: aGtSourceCoderEvaluationContext remoteBindings: remoteBindings pharoBindings: pharoBindings onFailDo: anEvaluationFailBlock coderModel: aCoderModel [
 	| result |

@@ -4,7 +4,12 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #testing }
+GtGemStoneSnippetExecutionStrategy >> canRunComputationInSession: aGemStoneSession [
+	self subclassResponsibility
+]
+
+{ #category : #utils }
 GtGemStoneSnippetExecutionStrategy >> updateWithRemoteComputationResult: aComputedResult pharoBindings: pharoBindings [ 
 
 	aComputedResult associationsDo: [ :binding |
@@ -12,7 +17,7 @@ GtGemStoneSnippetExecutionStrategy >> updateWithRemoteComputationResult: aComput
 			value: (binding value asGtBareProxyObject) ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #utils }
 GtGemStoneSnippetExecutionStrategy >> updateWithRemoteComputationResult: aComputedResult pharoBindings: pharoBindings  serializationStrategy: aSerializationStrategy onFailDo: anEvaluationFailBlock [
 
 	self updateWithRemoteComputationResult: aComputedResult pharoBindings: pharoBindings .
