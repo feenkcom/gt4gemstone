@@ -62,11 +62,11 @@ GtGemStoneSnippetCoderModel >> asCoderViewModel [
 ]
 
 { #category : #utils }
-GtGemStoneSnippetCoderModel >> checkNoComputationRunningInSession: aGemStoneSession [
-	aGemStoneSession hasActiveAsyncExecution ifTrue: [ 
-		GtGemStoneCoderExecutionAlreadyRunningException new 
-			sessionName: aGemStoneSession name;
-			signal.
+GtGemStoneSnippetCoderModel >> canRunComputationWithStrategy: anExecutionStrategy inSession: aGemStoneSession [
+	(anExecutionStrategy canRunComputationInSession: aGemStoneSession) ifFalse: [ 
+			GtGemStoneCoderExecutionAlreadyRunningException new 
+				sessionName: aGemStoneSession name;
+				signal.
 		"Allow for now proceeding to still schedule the execution"
 		^ true ].
 		
@@ -236,8 +236,10 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 		self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 	
-	(self checkNoComputationRunningInSession: gemstoneSession)
-		ifFalse: [ "In case we get a proceed" ^ self ].
+	(self 
+		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
+		inSession: gemstoneSession)
+			ifFalse: [ "In case we get a proceed" ^ self ].
 	
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"

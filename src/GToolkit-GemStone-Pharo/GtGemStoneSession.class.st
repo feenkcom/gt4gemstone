@@ -1138,14 +1138,21 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 ]
 
 { #category : #testing }
-GtGemStoneSession >> hasActiveAsyncExecution [
+GtGemStoneSession >> hasKeepAlive [
+
+	^ keepAlive isNotNil
+]
+
+{ #category : #testing }
+GtGemStoneSession >> hasRegisteredAsyncExecution [
 	^ activeAsyncExecutions notEmpty
 ]
 
 { #category : #testing }
-GtGemStoneSession >> hasKeepAlive [
-
-	^ keepAlive isNotNil
+GtGemStoneSession >> hasRunningAsyncExecution [
+	^ self hasRegisteredAsyncExecution and: [
+		activeAsyncExecutions anySatisfy: [ :anAsycExecution |
+			anAsycExecution isComputationSuspended not ] ]
 ]
 
 { #category : #accessing }

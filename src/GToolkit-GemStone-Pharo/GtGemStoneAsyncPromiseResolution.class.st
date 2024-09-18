@@ -164,6 +164,11 @@ GtGemStoneAsyncPromiseResolution >> isResolutionProcessDone [
 ]
 
 { #category : #testing }
+GtGemStoneAsyncPromiseResolution >> isResolutionProcessSuspended [
+	^ resolutionProcess isSuspended
+]
+
+{ #category : #testing }
 GtGemStoneAsyncPromiseResolution >> isResolvingCompleted [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone ]
@@ -178,6 +183,12 @@ GtGemStoneAsyncPromiseResolution >> isResolvingPending [
 GtGemStoneAsyncPromiseResolution >> isResolvingRunning [
 	^ self hasProcess and: [ 
 		self isResolutionProcessDone not ]
+]
+
+{ #category : #testing }
+GtGemStoneAsyncPromiseResolution >> isResolvingSuspended [
+	^ self hasProcess and: [ 
+		self isResolutionProcessSuspended ]
 ]
 
 { #category : #notifications }
