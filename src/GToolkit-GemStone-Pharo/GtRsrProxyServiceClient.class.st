@@ -68,15 +68,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
-]
-
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -116,12 +107,7 @@ GtRsrProxyServiceClient >> createGtpoLocalObjectLinkedToBareProxy: aBareProxy [
 	"Answer a local copy of the receiver and add a mapping between the local copy and the given bare proxy"
 	| instVarDict localObject |
 
-	instVarDict := self evaluateAndWait: '| names dict |
-names := self class allInstVarNames.
-dict := Dictionary new.
-1 to: names size do: [ :i |
-	dict at: (names at: i) put: (self instVarAt: i) ].
-dict.'.
+	instVarDict := self evaluateAndWait: self extractAttributesForLocalObjectCode.
 	localObject := (self class environment at: remoteClass) basicNew.
 	instVarDict associationsDo: [ :assoc |
 		localObject 
@@ -276,6 +262,16 @@ GtRsrProxyServiceClient >> evaluateReturnProxy: aString autoCommit: aBoolean [
 		for: self
 		bindings: Dictionary new
 		autoCommit: aBoolean.
+]
+
+{ #category : #converting }
+GtRsrProxyServiceClient >> extractAttributesForLocalObjectCode [
+	^ '| names dict |
+names := self class allInstVarNames.
+dict := Dictionary new.
+1 to: names size do: [ :i |
+	dict at: (names at: i) put: (self instVarAt: i) ].
+dict.'
 ]
 
 { #category : #'private-accessing' }
@@ -697,4 +693,13 @@ GtRsrProxyServiceClient >> scriptEvaluation [
 	^ GtRsrScriptEvaluation new
 		receiver: self;
 		gtSession: self gtSession
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]
