@@ -824,6 +824,15 @@ GtGemStoneSessionRegistry >> sessions [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> sessionsToDisplay [
+	"Answer the set of session names that should normally be displayed to users"
+	<return: #Array>
+
+	^ self activeSessions select: [ :aSession |
+		aSession isRunning or: [ aSession isDefaultSession ] ]
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
 
