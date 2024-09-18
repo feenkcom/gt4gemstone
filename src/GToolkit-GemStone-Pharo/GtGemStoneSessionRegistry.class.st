@@ -176,14 +176,39 @@ GtGemStoneSessionRegistry >> availableConnectors [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> cleanSessionOrNilWithConnectorName: aConnectorName forUser: aUserName [
+	<target: #ONLY_VW>
+	| session |
+
+	"In the registry we can have connected sessions and sessions that got
+	silently disconnected, most likely because the stone closed the connection.
+	
+	We first try and use a connected session that is free and 
+	in case we do not have one, we look for a disconnected session."
+	session := self 
+		connectedCleanSessionOrNilWithConnectorName: aConnectorName
+		forUser: aUserName.
+	session ifNil: [
+		session := self 
+			notConnectedCleanSessionOrNilWithConnectorName: aConnectorName
+			forUser: aUserName.
+		session ifNotNil: [ :anExistingGtSession |
+			anExistingGtSession connectAsDefault ] ].
+	
+	^ session
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> cleanSessionWithConnectorNamed: aString [
 	"Answer a clean session with the supplied connector name.
 	Create the session if required."
 
 	^ sessions
 		detect: [ :each | 
-			each connector name = aString
-				and: [ each isRunning and: [ each needsCommit not ] ] ]
+			each connector name = aString and: [ 
+				each isRunning and: [ 
+					each needsCommit not and: [
+						each hasRegisteredAsyncExecution not ] ] ] ]
 		ifNone: [ self newSessionWithConnectorNamed: aString ]
 ]
 
@@ -197,6 +222,23 @@ GtGemStoneSessionRegistry >> codeSync: aGtGemStoneCodeSync [
 
 	codeSync := aGtGemStoneCodeSync.
 	codeSync registry: self.
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> connectedCleanSessionOrNilWithConnectorName: aConnectorName forUser: aUserName [
+	<target: #ONLY_VW>
+	"Look for a connected session not doing any executions.
+	In case we have more we should prioritize the default session
+	in the registry (if it is for this connector), or the default
+	session for this connector (TODO)."
+	^ self sessions 
+		detect: [ :each | 
+			each connector name = aConnectorName and: [ 
+			each connector username = aUserName and: [ 
+			each isRunning and: [ 
+			each needsCommit not and: [
+			each hasRegisteredAsyncExecution not ] ] ] ] ]
+		ifNone: [ nil ]
 ]
 
 { #category : #accessing }
@@ -247,10 +289,11 @@ GtGemStoneSessionRegistry >> connectors [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> createNewReusesOrDefaultSessionWithConnector: aGtGemStoneConnector [
+GtGemStoneSessionRegistry >> createNewReusedOrDefaultSessionWithConnector: aGtGemStoneConnector [
 	| sessionId newSession |
 		
 	sessionId := self idForNewOrReusedDefaultSessionFor: aGtGemStoneConnector.
+	"TODO: replace the connector in the session of we reuse it"
 	newSession :=  self 
 		sessionNamed: (aGtGemStoneConnector sessionNameWithId: sessionId) 
 		ifAbsent:  [ 
@@ -612,6 +655,29 @@ GtGemStoneSessionRegistry >> keepAlive [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionRegistry >> newDefaultSessionWithReusageWithConnector: gtConnector [
+	<target: #ONLY_VW>
+	| gtSession |
+	
+	"First we look in the list of disconnected sessions, 
+	for a session that we can just reconnect"
+	
+	gtSession := self newSessionReusedOrDefaultWithConnector: gtConnector.
+	"gtSession := self sessions
+		detect: [:each | 
+			each connector name = gtConnector name and: [
+			each isRunning not ] ]
+		ifFound: [:anExistingGtSession |
+			anExistingGtSession connect ]
+		ifNone: [
+			self newSessionReusedOrDefaultWithConnector: gtConnector]."
+	
+	gtSession beDefaultSession.
+	
+	^ gtSession 
+]
+
+{ #category : #accessing }
 GtGemStoneSessionRegistry >> newSessionReusedOrDefaultWithConnector: aGtGemStoneConnector [
 	"Answer a new session using the supplied connector.
 	Answer the connector's default session if it doesn't exist.
@@ -620,7 +686,7 @@ GtGemStoneSessionRegistry >> newSessionReusedOrDefaultWithConnector: aGtGemStone
 	^ sharedAccess critical:[ 
 		| newSession |
 		newSession := self 
-			createNewReusesOrDefaultSessionWithConnector: aGtGemStoneConnector.
+			createNewReusedOrDefaultSessionWithConnector: aGtGemStoneConnector.
 		newSession
 			connect;
 			yourself ].
@@ -656,6 +722,18 @@ GtGemStoneSessionRegistry >> nextSessionIdForConnector: aGtGemStoneConnector [
 		[ sessions includesKey: (connectorName, ':', index asString) ] whileTrue:
 			[ index := index + 1 ].
 		index asString ].
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> notConnectedCleanSessionOrNilWithConnectorName: aConnectorName forUser: aUserName [
+	<target: #ONLY_VW>
+	"We look for an registered but disconnected session for this connector."
+	^ self sessions 
+		detect: [ :each | 
+			each connector name = aConnectorName and: [ 
+			each connector username = aUserName and: [ 
+			each isRunning not ] ] ]
+		ifNone: [ nil ]
 ]
 
 { #category : #private }
