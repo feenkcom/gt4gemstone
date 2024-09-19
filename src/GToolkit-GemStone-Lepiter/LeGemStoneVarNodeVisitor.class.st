@@ -4,18 +4,32 @@ Class {
 	#traits : 'TGtPharoProgramNodeVisitor',
 	#classTraits : 'TGtPharoProgramNodeVisitor classTrait',
 	#instVars : [
-		'accessedFirstVariables',
 		'assignedVariables',
-		'temporaryVariables'
+		'temporaryVariables',
+		'definedVariables',
+		'accessedFirstUndeclaredVariables'
 	],
-	#category : 'GToolkit-GemStone-Lepiter-Coder'
+	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
-LeGemStoneVarNodeVisitor >> accessedFirstVariableNames [
+LeGemStoneVarNodeVisitor >> accessedFirstUndeclaredVariableNames [
 	"Answer the set of variable names where the variable is accessed before being assigned a value (if at all)"
 
-	^ accessedFirstVariables 
+	^ accessedFirstUndeclaredVariables 
+]
+
+{ #category : #accessing }
+LeGemStoneVarNodeVisitor >> assignFirstUndeclaredVariablesName [
+
+	^ assignedVariables difference: (accessedFirstUndeclaredVariables, temporaryVariables)
+]
+
+{ #category : #accessing }
+LeGemStoneVarNodeVisitor >> assignedUndeclaredVariableNames [
+	"Answer the set of variable names where the variable is assigned a value, but is not a temporary variable"
+
+	^ self assignedVariableNames asSet difference: self temporaryVariableNames asSet
 ]
 
 { #category : #accessing }
@@ -24,20 +38,50 @@ LeGemStoneVarNodeVisitor >> assignedVariableNames [
 	^ assignedVariables
 ]
 
+{ #category : #accessing }
+LeGemStoneVarNodeVisitor >> definedVariableNames [
+
+	^ definedVariables 
+]
+
 { #category : #'as yet unclassified' }
 LeGemStoneVarNodeVisitor >> globalVariableNames [
 
-	^ (accessedFirstVariables, assignedVariables) difference: temporaryVariables
+	^ (accessedFirstUndeclaredVariables, assignedVariables) difference: temporaryVariables
+]
+
+{ #category : #'gt - extensions' }
+LeGemStoneVarNodeVisitor >> gtViewSummaryFor: aView [
+
+]
+
+{ #category : #'gt - extensions' }
+LeGemStoneVarNodeVisitor >> gtViewVariablesSummaryFor: aView [
+	<gtView>
+	
+	^ aView columnedList 
+		title: 'Variables details';
+		priority: 5;
+		items: [ self variableDetails ];
+		column: #Name text: [ :item | item key ];
+		column: #Variables text: [ :item | item value ];
+		send: [ :item | item value ];
+		actionUpdateButton
 ]
 
 { #category : #initialization }
 LeGemStoneVarNodeVisitor >> initialize [
-
 	super initialize.
+	
+	definedVariables := Set new.
 	assignedVariables := Set new.
 	temporaryVariables := Set new.
-	accessedFirstVariables := Set new.
+	accessedFirstUndeclaredVariables := Set new.
+]
 
+{ #category : #accessing }
+LeGemStoneVarNodeVisitor >> requiredVariableNames [
+	^ self undeclaredVariableNames difference: self assignFirstUndeclaredVariablesName.
 ]
 
 { #category : #accessing }
@@ -48,9 +92,22 @@ LeGemStoneVarNodeVisitor >> temporaryVariableNames [
 
 { #category : #accessing }
 LeGemStoneVarNodeVisitor >> undeclaredVariableNames [
-	"Answer the set of variable names where the variable is assigned a value, but is not a temporary variable"
+	"Answer the set of variable names where the variable is accessed, but is not a temporary variable"
 
-	^ self assignedVariableNames asSet difference: self temporaryVariableNames asSet
+	^ self definedVariableNames asSet difference: self temporaryVariableNames asSet
+]
+
+{ #category : #'gt - extensions' }
+LeGemStoneVarNodeVisitor >> variableDetails [
+^ { 
+	'Defined Variables' -> self definedVariableNames.
+	'Temporary Variables' -> self temporaryVariableNames.
+	'Assigned Variables' -> self assignedVariableNames.
+	'Undeclared Variables' -> self undeclaredVariableNames.
+	'Assigned Undeclared Variable' -> self assignedUndeclaredVariableNames.
+	'Accessed First Undeclared Variables' -> self accessedFirstUndeclaredVariableNames.
+	'Assigned First Undeclared Variables' -> self assignFirstUndeclaredVariablesName.
+	'Required Variables' -> self requiredVariableNames }
 ]
 
 { #category : #generated }
@@ -66,8 +123,13 @@ LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 	| name |
 
 	name := aNamedVariable variableName.
-	((assignedVariables includes: name) or: [ temporaryVariables includes: name ]) ifFalse: 
-		[ accessedFirstVariables add: name ].
+	name first isLowercase ifTrue: [
+		definedVariables add: name ].
+	
+	((assignedVariables includes: name) or: [ 
+		temporaryVariables includes: name ]) ifFalse: [ 
+			accessedFirstUndeclaredVariables add: name ].
+		
 	^ self visitVariable: aNamedVariable
 ]
 

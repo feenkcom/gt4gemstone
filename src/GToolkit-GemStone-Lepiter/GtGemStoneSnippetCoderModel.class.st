@@ -228,7 +228,7 @@ GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
 { #category : #'private - actions' }
 GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| gemstoneSession boundObject |
+	| gemstoneSession |
 
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
 	"Ensure the GtgemstoneSession is connected"
@@ -245,6 +245,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 	(probably because the gemstoneSession has been restarted)"
 	pharoBindings bindingNames
 		do: [ :name | 
+			| boundObject |
 			boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
 			(boundObject isKindOf: RsrService)
 				ifTrue: [ (boundObject isProxyObjectActive not
@@ -252,7 +253,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 						ifTrue: [ pharoBindings removeBindingOf: name ] ] ].
 
 	self updateRemoteFrom: aSourceString.
-	
+
 	^ aGtSourceCoderEvaluationContext executionStrategy
 		evaluate: remoteScript
 		inSession: gemstoneSession
@@ -305,7 +306,7 @@ GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
 GtGemStoneSnippetCoderModel >> updateRemoteFrom: sourceString [
 	"Update remoteScript and remoteBindings based on the supplied source code and the prebuild AST (newAstCache)"
 	| trimmedString trimmedSource visitor lastStatement varNames leftBar sourceAst |
-
+	
 	trimmedString := sourceString trimRight.
 	trimmedSource := SmaCCString on: trimmedString.
 	trimmedString last = $. ifFalse: 
@@ -317,20 +318,20 @@ GtGemStoneSnippetCoderModel >> updateRemoteFrom: sourceString [
 	visitor acceptNode: sourceAst.
 	lastStatement := sourceAst statements last.
 	leftBar := sourceAst leftBar ifNotNil: [ sourceAst leftBar startPosition ].
-	varNames := visitor undeclaredVariableNames.
+	varNames := visitor assignedUndeclaredVariableNames.
 	pharoBindings ifNotNil:
 		[ pharoBindings bindingNames do: [ :name |
 			varNames remove: name ifAbsent: [] ] ].
 
 	"Construct the script to be evaluated on the remote (GemStone server):
-	1. Add any undeclared variables names to the script's list of tempararies"
+	1. Add any undeclared variables names to the script's list of temporaries"
 	self insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar.
 	"2. Assign the final statement to snippetResult"
 	trimmedSource 
 		insert: 'snippetResult := ' 
 		at: lastStatement startPosition.
 	"3. Answer a dictionary containing the returned variables"
-	trimmedSource append: (self returnExpressionWithNames: visitor undeclaredVariableNames).
+	trimmedSource append: (self returnExpressionWithNames: visitor assignedUndeclaredVariableNames).
 	remoteScript := trimmedSource asString.
 
 	"Assign the current value to any variables that:
