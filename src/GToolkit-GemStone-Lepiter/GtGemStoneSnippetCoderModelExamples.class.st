@@ -8,25 +8,7 @@ Class {
 }
 
 { #category : #examples }
-GtGemStoneSnippetCoderModelExamples >> simpleExpression [
-	<gtExample>
-	| source coderModel |
-
-	source := '4+3'.
-	coderModel := GtGemStoneSnippetCoderModel new.
-	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
-	coderModel updateRemoteFrom: source.
-
-	self assert: coderModel remoteScript withUnixLineEndings equals: 
-'| snippetResult |
-snippetResult := 4+3.
-snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
-	self assert: coderModel remoteBindings size equals: 0.
-]
-
-{ #category : #examples }
-GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithGlobal [
+GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithGlobal_writeFirst [
 	<gtExample>
 	| source coderModel |
 
@@ -41,8 +23,9 @@ g + 3'.
 '| g snippetResult |
 g := 4.
 snippetResult := g + 3.
-snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #g -> g. #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
+({ #g -> g. #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
 
 ]
@@ -68,8 +51,9 @@ answer'.
 answer := inputVariable + 2.
 inputVariable := ''Used''.
 snippetResult := answer.
-snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #inputVariable -> inputVariable. #answer -> answer. #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
+({ #inputVariable -> inputVariable. #answer -> answer. #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 1.
 	self assert: (coderModel remoteBindings at: #inputVariable) equals: 40.
 	^ coderModel
@@ -93,8 +77,29 @@ a + 3'.
 '| snippetResult  a |
 a := 4.
 snippetResult := a + 3.
-snippetResult class == GtRsrProxyServiceServer ifFalse: [ snippetResult := GtRsrProxyServiceServer object: snippetResult ].
-{ #snippetResult -> snippetResult. } asDictionary' withUnixLineEndings.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
 	self assert: coderModel remoteBindings size equals: 0.
+	
+	^ coderModel
+]
 
+{ #category : #examples }
+GtGemStoneSnippetCoderModelExamples >> simpleExpressionWithoutBindings [
+	<gtExample>
+	| source coderModel |
+
+	source := '4+3'.
+	coderModel := GtGemStoneSnippetCoderModel new.
+	coderModel sourceCode: (GtCoderExplicitStringSource new source: source).
+	coderModel updateRemoteFrom: source.
+
+	self assert: coderModel remoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := 4+3.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	self assert: coderModel remoteBindings size equals: 0.
 ]
