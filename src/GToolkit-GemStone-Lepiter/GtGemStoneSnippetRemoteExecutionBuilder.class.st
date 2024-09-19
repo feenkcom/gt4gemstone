@@ -88,6 +88,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> generateRemoteScript [
 { #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> gtViewLocalBindingsFor: aView [ 
 	<gtView>
+	self localBindings ifNil: [ ^ aView empty ].
 	
 	^ aView columnedList 
 		title: 'Local bindings';
