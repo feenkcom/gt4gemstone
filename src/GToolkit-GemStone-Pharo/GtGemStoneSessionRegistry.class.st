@@ -654,7 +654,6 @@ GtGemStoneSessionRegistry >> keepAlive [
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> newDefaultSessionWithReusageWithConnector: gtConnector [
-	<target: #ONLY_VW>
 	| gtSession |
 	
 	gtSession := self newSessionReusedOrDefaultWithConnector: gtConnector.
