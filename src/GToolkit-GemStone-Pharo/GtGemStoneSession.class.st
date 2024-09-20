@@ -70,10 +70,22 @@ GtGemStoneSession >> announce: anAnnouncement [
 	registry ifNotNil: [ registry announce: anAnnouncement]
 ]
 
-{ #category : #accessing }
+{ #category : #converting }
+GtGemStoneSession >> asExplicitSessionIdentifier [
+
+	^ GtGemStoneExplicitSessionIdentifier sessionName: self name
+]
+
+{ #category : #converting }
 GtGemStoneSession >> asGemStoneSession [
 
 	^ self
+]
+
+{ #category : #converting }
+GtGemStoneSession >> asGemStoneSessionIdentifier [
+
+	^ GtGemStoneExplicitSessionIdentifier sessionName: self name
 ]
 
 { #category : #testing }
@@ -1190,7 +1202,13 @@ GtGemStoneSession >> isDefaultSession [
 
 	^ registry isNotNil and:
 		[ registry hasDefaultSession and:
-		[ registry defaultSession == self ] ]
+		[ registry defaultSession asGemStoneSession == self ] ]
+]
+
+{ #category : #testing }
+GtGemStoneSession >> isExplicitSessionIdentifier [
+
+	^ false
 ]
 
 { #category : #testing }
@@ -1198,6 +1216,12 @@ GtGemStoneSession >> isRunning [
 
 	connection ifNil: [ ^ false ].
 	^ connection isOpen
+]
+
+{ #category : #testing }
+GtGemStoneSession >> isSessionIdentifier [
+
+	^ false
 ]
 
 { #category : #accessing }

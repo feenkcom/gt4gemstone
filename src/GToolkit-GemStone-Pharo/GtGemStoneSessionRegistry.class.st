@@ -110,7 +110,7 @@ GtGemStoneSessionRegistry >> activeSessionNames [
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> activeSessions [
-	"Answer the set of session names that have active (but not necessarily running) sessions"
+	"Answer the currently registered sessions"
 	<return: #Array>
 
 	^ sessions
@@ -134,9 +134,8 @@ GtGemStoneSessionRegistry >> addNewConnector [
 GtGemStoneSessionRegistry >> addSession: aSession named: aString [
 	| allPreviousDisconnected |
 	
-	allPreviousDisconnected := (self sessions
-			copyWithout: aSession) allSatisfy: [ :each |
-		each isRunning not ].
+	allPreviousDisconnected := self sessions allSatisfy: [ :each |
+		each ~~ aSession and: [ each isRunning not ] ].
 		
 	self sessions at: aString put: aSession.
 	(allPreviousDisconnected and: [ aSession isRunning ]) ifTrue: [
@@ -177,13 +176,13 @@ GtGemStoneSessionRegistry >> availableConnectors [
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> cleanSessionOrNilWithConnectorName: aConnectorName forUser: aUserName [
-	| session |
-
 	"In the registry we can have connected sessions and sessions that got
 	silently disconnected, most likely because the stone closed the connection.
 	
 	We first try and use a connected session that is free and 
 	in case we do not have one, we look for a disconnected session."
+	| session |
+
 	session := self 
 		connectedCleanSessionOrNilWithConnectorName: aConnectorName
 		forUser: aUserName.

@@ -109,12 +109,25 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 ]
 
 { #category : #private }
+GtGemStoneSessionSelectionElement >> createDefaultSessionButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
+		icon: BrGlamorousVectorIcons add;
+		label: 'Default Session';
+		margin: (BlInsets bottom: 5 right: 5);
+		action: [ :theButton | self selectDefaultSessionFrom: theButton ].
+
+]
+
+{ #category : #private }
 GtGemStoneSessionSelectionElement >> createInspectButton [
 
 	^ BrButton new
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		icon: BrGlamorousVectorIcons inspect;
 		label: 'Inspect session registry';
+		margin: (BlInsets bottom: 5 right: 5);
 		action: [ :theButton | theButton phlow spawnObject: registry ]
 ]
 
@@ -125,6 +138,7 @@ GtGemStoneSessionSelectionElement >> createNewSessionButton [
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
 		icon: BrGlamorousVectorIcons add;
 		label: 'New Session';
+		margin: (BlInsets bottom: 5 right: 5);
 		action: [ self switchState ].
 
 ]
@@ -133,63 +147,54 @@ GtGemStoneSessionSelectionElement >> createNewSessionButton [
 GtGemStoneSessionSelectionElement >> createSessionList [
 	| newList |
 	newList := BrColumnedList new.
-	
-	newList 
+
+	newList
 		rowStencil: (BrColumnedListItemElementWithContextMenuDecorator new
-			stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
-			contextMenuStencil: [ :anElement :aSession | 
-				self sessionActionsFor: aSession ] );
+				stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
+				contextMenuStencil: [ :anElement :aSession | self sessionActionsFor: aSession ]);
 		margin: (BlInsets top: 5 left: 10);
 		matchParent.
 
 	newList column
 		title: 'Name' translated;
 		width: 120;
-		cellStencil:
-			[ BrLabel new
+		cellStencil: [ BrLabel new
 				aptitude: BrGlamorousLabelAptitude new;
 				hMatchParent;
 				vFitContent ];
-		dataBinder: [ :aLabel :aSession |
+		dataBinder: [ :aLabel :aSession | 
 			| sessionName sessionLabel |
 			sessionName := aSession displayName.
 			sessionLabel := aSession formatBasedOnStatusText: sessionName.
-			sessionName = currentSessionNameComputation value ifTrue:
-				[ sessionLabel bold ].
+			sessionName = currentSessionNameComputation value
+				ifTrue: [ sessionLabel bold ].
 			aLabel text: sessionLabel ].
-			
+
 	newList column
 		title: 'Status';
 		width: 150;
-		cellStencil:[ 
-			BrLabel new
+		cellStencil: [ BrLabel new
 				aptitude: BrGlamorousLabelAptitude new;
 				hMatchParent;
 				vFitContent ];
-		dataBinder: [ :aLabel :aSession |
+		dataBinder: [ :aLabel :aSession | 
 			| statusLabel |
 			statusLabel := aSession formatBasedOnStatusText: aSession statusDescription.
-			aSession name = currentSessionNameComputation value ifTrue:
-				[ statusLabel bold ].
+			aSession name = currentSessionNameComputation value
+				ifTrue: [ statusLabel bold ].
 			aLabel text: statusLabel ].
-			
+
 	newList column
 		title: 'Default';
 		width: 60;
-		stencil: [ :aSession |
+		stencil: [ :aSession | 
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
+				ifFalse: [ BlElement new size: 0 @ 0 ] ].
 
 	newList
 		when: BrSelectionDoubleClicked
-		do: [ :anEvent | 
-			anEvent selection ifNotEmpty: [ :theIndices | 
-				| aWidgetElement selectedSession |
-				aWidgetElement := anEvent currentTarget.
-				selectedSession := aWidgetElement viewModel
-					itemAt: theIndices first.
-				selectAction cull: selectedSession ] ].
+		do: [ :anEvent | self handleSessionDoubleClick: anEvent ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
 
@@ -205,6 +210,7 @@ GtGemStoneSessionSelectionElement >> createToolbar [
 		layout: BlLinearLayout horizontal alignTopRight;
 		addChild: self createInspectButton as: #inspectButton;
 		addChild: self createNewSessionButton as: #newSessionButton;
+		addChild: self createDefaultSessionButton as: #defaultSessionButton;
 		yourself.
 ]
 
@@ -216,6 +222,15 @@ GtGemStoneSessionSelectionElement >> currentSessionNameComputation [
 { #category : #accessing }
 GtGemStoneSessionSelectionElement >> currentSessionNameComputation: anObject [
 	currentSessionNameComputation := anObject
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> handleSessionDoubleClick: anEvent [
+	^ anEvent selection ifNotEmpty: [ :theIndices | 
+		| aWidgetElement selectedSession |
+		aWidgetElement := anEvent currentTarget.
+		selectedSession := aWidgetElement viewModel itemAt: theIndices first.
+		selectAction cull: selectedSession ]
 ]
 
 { #category : #initialize }
@@ -258,6 +273,14 @@ GtGemStoneSessionSelectionElement >> selectAction [
 { #category : #accessing }
 GtGemStoneSessionSelectionElement >> selectAction: anObject [
 	selectAction := anObject
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> selectDefaultSessionFrom: aButton [ 
+
+	selectAction
+		cull: (GtGemStoneDefaultSessionIdentifier new)
+		cull: aButton
 ]
 
 { #category : #accessing }

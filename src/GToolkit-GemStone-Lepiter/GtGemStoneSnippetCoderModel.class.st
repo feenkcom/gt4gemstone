@@ -230,16 +230,15 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 	"Evaluate the supplied GemStone script."
 	| gemstoneSession |
 
-	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession ifNil: [ 
-		self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession := aGtSourceCoderEvaluationContext session ifNil: 
+		[ self error: 'GemStone session not set.  Does the connector exist?' ]
+	ifNotNil: #asGemStoneSession.
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 	
 	(self 
 		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
 		inSession: gemstoneSession)
-			ifFalse: [ "In case we get a proceed" ^ self ].
+		ifFalse: [ "In case we get a proceed" ^ self ].
 	
 	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
 	(probably because the gemstoneSession has been restarted)"

@@ -36,7 +36,7 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 		addAptitude: (BrGlamorousWithDropdownAptitude 
 			handle:
 				[ BrButton new
-					label: ('GemStone ({1})' format: { currentSessionNameComputation value });
+					label: currentSessionNameComputation value;
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]

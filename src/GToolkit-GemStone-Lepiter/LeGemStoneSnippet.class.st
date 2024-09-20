@@ -2,8 +2,7 @@ Class {
 	#name : #LeGemStoneSnippet,
 	#superclass : #LeCodeSnippet,
 	#instVars : [
-		'sessionName',
-		'session'
+		'sessionIdentifier'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
@@ -22,10 +21,24 @@ LeGemStoneSnippet class >> description [
 ]
 
 { #category : #'lepiter-store' }
+LeGemStoneSnippet class >> leFromJsonV4Dictionary: aDictionary [
+	"Create a new instance of the receiver from the supplied dictionary.
+	Subclasses can override this to provide custom mappings."
+	| aLeModel |
+
+	aLeModel := super leFromJsonV4Dictionary: aDictionary.
+	aDictionary at: #sessionName
+		ifPresent: [ :sessionName |
+			aLeModel sessionIdentifier: 
+				(GtGemStoneExplicitSessionIdentifier sessionName: sessionName) ].
+	^ aLeModel
+]
+
+{ #category : #'lepiter-store' }
 LeGemStoneSnippet class >> leJsonV4AttributeMapping [
 
 	^ super leJsonV4AttributeMapping
-		add: (#sessionName -> #sessionName);
+		add: (#sessionIdentifier -> #sessionIdentifier);
 		yourself
 ]
 
@@ -45,7 +58,7 @@ LeGemStoneSnippet >> acceptVisitor: aVisitor [
 LeGemStoneSnippet >> additionalStateForCopying [
 
 	^ super additionalStateForCopying
-		attributeNamed: #sessionName setValue: sessionName
+		attributeNamed: #sessionIdentifier setValue: self sessionIdentifier
 ]
 
 { #category : #converting }
@@ -69,20 +82,26 @@ LeGemStoneSnippet >> newCoder [
 { #category : #accessing }
 LeGemStoneSnippet >> sessionDisplayName [
 
-	^ GtGemStoneSession displayNameFor: sessionName
+	^ sessionIdentifier
+		ifNil: [ GtGemStoneNullConnector connectorName ]
+		ifNotNil: [ sessionIdentifier displayName ]
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> sessionIdentifier [
+	^ sessionIdentifier
+]
+
+{ #category : #accessing }
+LeGemStoneSnippet >> sessionIdentifier: aGtGemStoneSessionIdentifier [
+
+	self assert: (aGtGemStoneSessionIdentifier isNil or:
+		[ aGtGemStoneSessionIdentifier isKindOf: GtGemStoneSessionIdentifier ]).
+	sessionIdentifier := aGtGemStoneSessionIdentifier
 ]
 
 { #category : #accessing }
 LeGemStoneSnippet >> sessionName [
 
-	^ sessionName
-]
-
-{ #category : #accessing }
-LeGemStoneSnippet >> sessionName: aString [
-
-	sessionName = aString ifTrue: [ ^ self ].
-	sessionName := aString.
-	self updateEditTimeAndEmail.
-	self announceContentChanged.
+	^ sessionIdentifier ifNotNil: #sessionName
 ]

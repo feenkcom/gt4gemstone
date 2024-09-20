@@ -2,36 +2,55 @@ Class {
 	#name : #LeGemStoneSnippetViewModel,
 	#superclass : #LeCodeSnippetViewModel,
 	#instVars : [
-		'sessionName'
+		'gemstoneSessionRegistry'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : #'api - accessing' }
+LeGemStoneSnippetViewModel >> elementLanguageLabel [
+	"Answer the string to be displayed as the owning element's language label"
+	<return: #String>
+	| sessionDisplayName identifierLabel |
+
+	"Ensure that an error while retrieving the session name doesn't cause the label to not be drawn"
+	self sessionIdentifier ifNil:
+		[ sessionDisplayName := GtGemStoneNullConnector connectorName.
+		identifierLabel := '' ]
+	ifNotNil:
+		[ :sessionIdentifier |
+		sessionDisplayName := [ self sessionLocator displayName ]
+			on: GciError
+			do: [ :ex | nil ].
+		identifierLabel := sessionIdentifier identifierLabel ].
+
+	^ String streamContents: [ :stream |
+		stream
+			<< 'GemStone ';
+			<< identifierLabel;
+			<< ' (';
+			<< sessionDisplayName;
+			<< ')' ].
+]
+
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
-	^ sharedContext externalSnippetContext gemstoneSessionRegistry
+
+	^ gemstoneSessionRegistry ifNil:
+		[ self gemstoneSessionRegistry: sharedContext externalSnippetContext gemstoneSessionRegistry.
+		gemstoneSessionRegistry ].
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
-	^ sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry
-]
 
-{ #category : #private }
-LeGemStoneSnippetViewModel >> getSessionName [
-	| registry |
-
-	sessionName ifNotNil: [ ^ sessionName ].
-	self snippetModel sessionName ifNotNil: [ :aName | ^ aName ].
-	registry := self gemstoneSessionRegistry.
-	^ snippetModel page allChildrenDepthFirst
-		detect: [ :snippet | snippet ~~ snippetModel and:
-			[ snippet class = snippetModel class and:
-			[ snippet sessionName isNotNil ] ] ]
-		ifFound: [ :snippet | snippet sessionName ]
-		ifNone: [ ^ registry defaultSession
-			ifNil: [ GtGemStoneNullConnector connectorName ]
-			ifNotNil: [ :defaultSession | defaultSession name ] ].
+	gemstoneSessionRegistry ifNotNil:
+		[ gemstoneSessionRegistry unsubscribe: self ].
+	gemstoneSessionRegistry := aGtGemStoneSessionRegistry.
+	sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry.
+	gemstoneSessionRegistry when: Announcement
+		do: [ :anAnnouncement | self announce: anAnnouncement ]
+		for: self.
 ]
 
 { #category : #initialization }
@@ -58,17 +77,14 @@ LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 
 	coderViewModel selfObject: sharedContext selfObject.
 	(sharedContext selfObject asGtProxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
-		[ coderViewModel session: sharedContext selfObject asGtProxyObject gtSession.
-		sessionName := coderViewModel session name ].
+		[ self halt. coderViewModel session: sharedContext selfObject asGtProxyObject gtSession asExplicitSessionIdentifier ].
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> onSnippetContentChanged [
 
-	snippetModel sessionName ifNil: [ ^ self ].
-	coderViewModel session: (self gemstoneSessionRegistry 
-		sessionNamed: snippetModel sessionName).
-	sessionName := snippetModel sessionName.
+	snippetModel sessionIdentifier ifNil: [ ^ self ].
+	coderViewModel session: self sessionLocator.
 ]
 
 { #category : #'filter view' }
@@ -81,20 +97,41 @@ LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 	"This is called when the session is explicitly set.
 	In other cases the snippet isn't updated."
 
-	sessionName := aGtGemStoneSession name.
-	self snippetModel sessionName: aGtGemStoneSession name.
+	self snippetModel sessionIdentifier: aGtGemStoneSession asGemStoneSessionIdentifier.
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> sessionDisplayName [
 
-	^ GtGemStoneSession displayNameFor: self sessionName.
+	^ self sessionLocator displayName
+]
+
+{ #category : #private }
+LeGemStoneSnippetViewModel >> sessionIdentifier [
+	| registry sessionIdentifier |
+
+	self snippetModel sessionIdentifier ifNotNil: 
+		[ :identifier | ^ identifier ].
+	registry := self gemstoneSessionRegistry.
+	sessionIdentifier := snippetModel page allChildrenDepthFirst
+		detect: [ :snippet | snippet ~~ snippetModel and:
+			[ snippet class = snippetModel class and:
+			[ snippet sessionIdentifier isNotNil ] ] ]
+		ifFound: [ :snippet | snippet sessionIdentifier ]
+		ifNone: [ registry defaultSession
+			ifNil: [ nil ]
+			ifNotNil: [ :defaultSession | defaultSession ] ].
+	sessionIdentifier ifNotNil:
+		[ snippetModel sessionIdentifier: sessionIdentifier ].
+	^ sessionIdentifier.
 ]
 
 { #category : #accessing }
-LeGemStoneSnippetViewModel >> sessionName [
+LeGemStoneSnippetViewModel >> sessionLocator [
 
-	^ self getSessionName
+	^ GtGemStoneSessionLocator new
+		registry: self gemstoneSessionRegistry;
+		identifier: snippetModel sessionIdentifier.
 ]
 
 { #category : #'api - bindings' }
@@ -107,8 +144,8 @@ LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
 	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
 	(sharedContext selfObject asGtProxyObject isKindOf: GtRsrProxyServiceClient) ifTrue:
-		[ coderViewModel session: sharedContext selfObject asGtProxyObject gtSession.
-		sessionName := coderViewModel session name ].
+		[ self sessionLocator asGemStoneSession == sharedContext selfObject asGtProxyObject gtSession ifFalse: [ self halt ].
+		coderViewModel session: sharedContext selfObject asGtProxyObject gtSession ].
 
 	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self.
 ]
@@ -130,19 +167,14 @@ LeGemStoneSnippetViewModel >> subscribeToSnippetModel [
 
 { #category : #'api - bindings' }
 LeGemStoneSnippetViewModel >> updateGemstoneSession [
-	| session |
-	
-	session := [ 
-		snippetModel sessionName 
-			ifNil: [ 
-				self gemstoneSessionRegistry defaultSession ifNil: [ ^ self ] ]
-			ifNotNil: [ :aString |
-				self gemstoneSessionRegistry sessionNamed: aString ] 
-	]
-		on: KeyNotFound, GciError
-		do: [ :ex | ^ self ].
-				.
-	coderViewModel session: session.
-	
-	sessionName := session name.
+	| sessionIdentifier defaultSession |
+
+	sessionIdentifier := snippetModel sessionIdentifier.
+	sessionIdentifier ifNil: 
+		[ defaultSession := self gemstoneSessionRegistry defaultSession.
+		defaultSession ifNotNil:
+			[ sessionIdentifier := defaultSession asExplicitSessionIdentifier.
+			snippetModel sessionIdentifier: sessionIdentifier ] ].
+	sessionIdentifier ifNil: [ ^ self ].
+	coderViewModel session: sessionIdentifier.
 ]
