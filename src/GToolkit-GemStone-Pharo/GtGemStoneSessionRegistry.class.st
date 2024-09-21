@@ -700,6 +700,11 @@ GtGemStoneSessionRegistry >> newSessionWithReusageWithConnector: aGtGemStoneConn
 			yourself ].
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newSessionWithReusageWithConnectorNamed: aString [
+	^ self newSessionWithReusageWithConnector: (self connectorNamed: aString)
+]
+
 { #category : #private }
 GtGemStoneSessionRegistry >> nextSessionIdForConnector: aGtGemStoneConnector [
 	"Answer the next available session id for the supplied connector.

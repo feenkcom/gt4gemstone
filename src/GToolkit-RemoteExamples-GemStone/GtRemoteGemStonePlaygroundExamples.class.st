@@ -448,6 +448,43 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 ]
 
 { #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
+	<gtExample>
+	| scripter initialSession secondSession afterExecutionSession gemStoneInspectorTool |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStone.
+	
+	initialSession := self gemstoneSessionRegistry 
+		sessions at: #'test:default'.
+	self assert: initialSession isRunning.
+	
+	"Close the session and add a new one with the same name."
+	initialSession close.
+	secondSession := self gemstoneSessionRegistry
+		newSessionWithReusageWithConnectorNamed: 'test'.
+
+	"We execute the snippet, which should use the previously added session."
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	gemStoneInspectorTool := self 
+		selectedToolFromPageElement: scripter element pages second.
+	afterExecutionSession := gemStoneInspectorTool object proxyObject gtSession.
+	
+	self gemstoneSessionRegistry 
+		defaultSession: nil. "Needed until the fix"
+	
+	"The session on which the execution happen should be the second session, 
+	not the initial session used when the snippet was created."
+	"self assert: afterExecutionSession == secondSession."
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
 	<gtExample>
 	| scripter |
