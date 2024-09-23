@@ -134,8 +134,9 @@ GtGemStoneSessionRegistry >> addNewConnector [
 GtGemStoneSessionRegistry >> addSession: aSession named: aString [
 	| allPreviousDisconnected |
 	
-	allPreviousDisconnected := self sessions allSatisfy: [ :each |
-		each ~~ aSession and: [ each isRunning not ] ].
+	allPreviousDisconnected := (self sessions
+			copyWithout: aSession) allSatisfy: [ :each |
+		each isRunning not ].
 		
 	self sessions at: aString put: aSession.
 	(allPreviousDisconnected and: [ aSession isRunning ]) ifTrue: [
@@ -770,7 +771,7 @@ GtGemStoneSessionRegistry >> openPlaygroundOn: aSession from: anElement [
 	| page |
 
 	page := LePage unnamedPage.
-	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	page addSnippet: (LeGemStoneSnippet sessionName: aSession name).
 	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
 	GtWorldUtility
 		showSpaceWithTitle: aSession name

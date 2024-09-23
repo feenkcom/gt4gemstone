@@ -59,8 +59,7 @@ LeGemStoneSnippetElement >> subscribeToSnippetViewModel [
 LeGemStoneSnippetElement >> unsubscribeFromSnippetViewModel [
 
 	super unsubscribeFromSnippetViewModel.
-	self snippetViewModel weak
-		unsubscribe: self.
+	self snippetViewModel unsubscribe: self.
 ]
 
 { #category : #private }

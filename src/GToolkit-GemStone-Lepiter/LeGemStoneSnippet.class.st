@@ -48,6 +48,13 @@ LeGemStoneSnippet class >> leJsonV4Name [
 	^ 'gemstoneSnippet'
 ]
 
+{ #category : #'instance creation' }
+LeGemStoneSnippet class >> sessionName: aString [
+
+	^ self new sessionIdentifier: 
+		(GtGemStoneExplicitSessionIdentifier sessionName: aString)
+]
+
 { #category : #visiting }
 LeGemStoneSnippet >> acceptVisitor: aVisitor [
 

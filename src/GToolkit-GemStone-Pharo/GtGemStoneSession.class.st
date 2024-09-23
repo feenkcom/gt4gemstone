@@ -41,6 +41,13 @@ GtGemStoneSession class >> displayNameFor: aString [
 		ifFalse: [ aString ]
 ]
 
+{ #category : #testing }
+GtGemStoneSession >> = aSession [
+
+	(aSession isKindOf: GtGemStoneSession) ifFalse: [ ^ false ].
+	^ self asGemStoneSession == aSession asGemStoneSession
+]
+
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
 	"Abort the current transaction.
@@ -1165,6 +1172,12 @@ GtGemStoneSession >> hasRunningAsyncExecution [
 	^ self hasRegisteredAsyncExecution and: [
 		activeAsyncExecutions anySatisfy: [ :anAsycExecution |
 			anAsycExecution isComputationSuspended not ] ]
+]
+
+{ #category : #testing }
+GtGemStoneSession >> hash [
+
+	^ self identityHash
 ]
 
 { #category : #accessing }
