@@ -15,7 +15,8 @@ LeGemStoneSnippetElement >> initializeLanguageElement [
 			snippetViewModel session: session.
 			self updateLanguageLabel.
 			button dispatchEvent: (BrDropdownHideWish new anchor: button) ];
-		currentSessionNameComputation: [ snippetViewModel elementLanguageLabel ].
+		currentSessionNameComputation: [ snippetViewModel sessionLocator displayName ];
+		currentSessionDisplayLabelComputation: [ snippetViewModel elementLanguageLabel ].
 
 	element := stencil create.
 	element margin: (BlInsets top: 5 right: 0).

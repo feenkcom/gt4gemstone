@@ -5,7 +5,8 @@ Class {
 		'extent',
 		'registry',
 		'selectAction',
-		'currentSessionNameComputation'
+		'currentSessionNameComputation',
+		'currentSessionDisplayLabelComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -16,7 +17,18 @@ GtGemStoneSessionSelectionStencil >> create [
 	^ GtGemStoneSessionSelectionBadgeElement new
 		registry: registry;
 		selectAction: selectAction;
-		currentSessionNameComputation: currentSessionNameComputation
+		currentSessionNameComputation: currentSessionNameComputation;
+		currentSessionDisplayLabelComputation: currentSessionDisplayLabelComputation
+]
+
+{ #category : #accessing }
+GtGemStoneSessionSelectionStencil >> currentSessionDisplayLabelComputation [
+	^ currentSessionDisplayLabelComputation
+]
+
+{ #category : #accessing }
+GtGemStoneSessionSelectionStencil >> currentSessionDisplayLabelComputation: anObject [
+	currentSessionDisplayLabelComputation := anObject
 ]
 
 { #category : #accessing }

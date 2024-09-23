@@ -457,7 +457,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
-	<noTest>
 	| scripter initialSession secondSession afterExecutionSession gemStoneInspectorTool |
 	
 	self runningServer.
@@ -483,12 +482,9 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 		selectedToolFromPageElement: scripter element pages second.
 	afterExecutionSession := gemStoneInspectorTool object proxyObject gtSession.
 	
-	self gemstoneSessionRegistry 
-		defaultSession: nil. "Needed until the fix"
-	
 	"The session on which the execution happen should be the second session, 
 	not the initial session used when the snippet was created."
-	"self assert: afterExecutionSession == secondSession."
+	self assert: afterExecutionSession == secondSession.
 	^ scripter
 ]
 

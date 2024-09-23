@@ -6,7 +6,8 @@ Class {
 		'currentList',
 		'state',
 		'selectAction',
-		'currentSessionNameComputation'
+		'currentSessionNameComputation',
+		'currentSessionDisplayLabelComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -58,15 +59,11 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 		width: 110;
 		cellStencil: [ :each | BrLabel new 
 			aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem | | sessionName sessionLabel |
+		dataBinder: [ :aLabel :eachItem |
 			aLabel parent addAptitude: 
 				(BrGlamorousWithContextMenuAptitude content: 
 						[ self connectorActionsFor: eachItem ]).
-			sessionName := eachItem name.
-			sessionLabel := sessionName asRopedText.
-			sessionName = currentSessionNameComputation value ifTrue:
-				[ sessionLabel bold ].
-			aLabel text: sessionLabel ].
+			aLabel text: eachItem name asRopedText ].
 	newList column 
 		title: 'Username' translated;
 		width: 100;
@@ -113,8 +110,8 @@ GtGemStoneSessionSelectionElement >> createDefaultSessionButton [
 
 	^ BrButton new 
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
-		icon: BrGlamorousVectorIcons add;
-		label: 'Default Session';
+		icon: BrGlamorousIcons settings;
+		label: 'Use Default Session';
 		margin: (BlInsets bottom: 5 right: 5);
 		action: [ :theButton | self selectDefaultSessionFrom: theButton ].
 
@@ -166,6 +163,12 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 			| sessionName sessionLabel |
 			sessionName := aSession displayName.
 			sessionLabel := aSession formatBasedOnStatusText: sessionName.
+			Stdio stdout
+				<< 'sessionName: ';
+				<< sessionName asString;
+				<< ', computation: ';
+				<< currentSessionNameComputation value asString;
+				lf.
 			sessionName = currentSessionNameComputation value
 				ifTrue: [ sessionLabel bold ].
 			aLabel text: sessionLabel ].
@@ -180,7 +183,7 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 		dataBinder: [ :aLabel :aSession | 
 			| statusLabel |
 			statusLabel := aSession formatBasedOnStatusText: aSession statusDescription.
-			aSession name = currentSessionNameComputation value
+			aSession displayName = currentSessionNameComputation value
 				ifTrue: [ statusLabel bold ].
 			aLabel text: statusLabel ].
 
@@ -215,6 +218,16 @@ GtGemStoneSessionSelectionElement >> createToolbar [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionSelectionElement >> currentSessionDisplayLabelComputation [
+	^ currentSessionDisplayLabelComputation
+]
+
+{ #category : #accessing }
+GtGemStoneSessionSelectionElement >> currentSessionDisplayLabelComputation: anObject [
+	currentSessionDisplayLabelComputation := anObject
+]
+
+{ #category : #accessing }
 GtGemStoneSessionSelectionElement >> currentSessionNameComputation [
 	^ currentSessionNameComputation
 ]
@@ -230,6 +243,10 @@ GtGemStoneSessionSelectionElement >> handleSessionDoubleClick: anEvent [
 		| aWidgetElement selectedSession |
 		aWidgetElement := anEvent currentTarget.
 		selectedSession := aWidgetElement viewModel itemAt: theIndices first.
+		Stdio stdout
+			<< 'selecting: ';
+			<< selectedSession printString;
+			lf.
 		selectAction cull: selectedSession ]
 ]
 
@@ -245,7 +262,7 @@ GtGemStoneSessionSelectionElement >> newSessionButtonLabel [
 
 	^ state = #sessions
 		ifTrue: [ 'New Session' ]
-		ifFalse: [ 'Current Session' ]
+		ifFalse: [ 'Existing Session' ]
 ]
 
 { #category : #'private - hooks' }

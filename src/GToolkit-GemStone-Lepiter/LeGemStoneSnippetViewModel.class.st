@@ -101,21 +101,7 @@ LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 	coderViewModel selfObject: self selfObject.
 	self isTiedToProxySession ifTrue:
 		[ sessionIdentifier := self selfObject asGtProxyObject gtSession asExplicitSessionIdentifier.
-		coderViewModel session: self sessionLocator ].
-]
-
-{ #category : #accessing }
-LeGemStoneSnippetViewModel >> onSnippetContentChanged [
-
-	Stdio stdout 
-		<< 'onSnippetContentChanged'; 
-		<< ' in ';
-		<< self snippetModel page title printString;
-		lf.
-	snippetModel sessionIdentifier ifNil: [ ^ self ].
-	coderViewModel 
-		session: self sessionLocator;
-		selfObject: self selfObject.
+		coderViewModel sessionLocator: self sessionLocator ].
 ]
 
 { #category : #'filter view' }
@@ -133,8 +119,8 @@ LeGemStoneSnippetViewModel >> selfObject [
 LeGemStoneSnippetViewModel >> session: aGtGemStoneSession [
 	"This is called when the session is explicitly set.
 	In other cases the snippet isn't updated."
-self halt.
-	self snippetModel sessionIdentifier: aGtGemStoneSession asGemStoneSessionIdentifier.
+
+	self sessionIdentifier: aGtGemStoneSession asGemStoneSessionIdentifier.
 ]
 
 { #category : #accessing }
@@ -149,7 +135,7 @@ LeGemStoneSnippetViewModel >> sessionIdentifier [
 
 	sessionIdentifier ifNotNil: [ ^ sessionIdentifier ].
 	sessionIdentifier := self isTiedToProxySession ifTrue:
-		[ self halt.  self selfObject asGtProxyObject sessionIdentifier ]
+		[ self selfObject asGtProxyObject gtSession asExplicitSessionIdentifier ]
 	ifFalse:
 		[ self snippetModel sessionIdentifier ifNil:
 			[ | pageSessionIdentifer |
@@ -170,6 +156,16 @@ LeGemStoneSnippetViewModel >> sessionIdentifier [
 		<< sessionIdentifier printString;
 		lf.
 	^ sessionIdentifier.
+]
+
+{ #category : #'as yet unclassified' }
+LeGemStoneSnippetViewModel >> sessionIdentifier: aGtGemStoneSessionIdentifier [
+
+	self isTiedToProxySession ifTrue:
+		[ self error: 'Can''t change session in a proxy page' ].
+	sessionIdentifier := aGtGemStoneSessionIdentifier.
+	snippetModel sessionIdentifier: sessionIdentifier.
+	coderViewModel sessionLocator: self sessionLocator.
 ]
 
 { #category : #accessing }
@@ -196,8 +192,8 @@ LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
 	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
 	self isTiedToProxySession ifTrue:
-		[ self sessionLocator asGemStoneSession == self selfObject asGtProxyObject gtSession ifFalse: [ self halt ].
-		coderViewModel session: self sessionLocator ].
+		[ self assert: self sessionLocator asGemStoneSession == self selfObject asGtProxyObject gtSession.
+		coderViewModel sessionLocator: self sessionLocator ].
 
 	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self.
 ]
@@ -205,18 +201,6 @@ LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> snippetElementClass [
 	^ LeGemStoneSnippetElement
-]
-
-{ #category : #accessing }
-LeGemStoneSnippetViewModel >> subscribeToSnippetModel [
-
-	Stdio stdout << 'subscribeToSnippetModel'; lf.
-	super subscribeToSnippetModel.
- 
-	self snippetModel weak
-		when: LeSnippetContentChanged 
-		send: #onSnippetContentChanged 
-		to: self.
 ]
 
 { #category : #'api - bindings' }
@@ -231,5 +215,5 @@ LeGemStoneSnippetViewModel >> updateGemstoneSession [
 		lf.
 	sessionIdentifier := nil.
 	self sessionIdentifier ifNotNil: 
-		[ coderViewModel session: self sessionLocator ].
+		[ coderViewModel sessionLocator: self sessionLocator ].
 ]
