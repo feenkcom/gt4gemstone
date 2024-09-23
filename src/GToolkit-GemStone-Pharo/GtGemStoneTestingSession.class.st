@@ -39,10 +39,8 @@ GtGemStoneTestingSession >> connect [
 	state := #connected.
 	connectionTime := DateAndTime now.
 	self runPostConnectActions.
-	
-	registry ifNotNil:[ 
-		registry addSession: self named: self name ].
-		
+
+	registry ifNotNil:[ registry addSession: self ].
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
 ]
 

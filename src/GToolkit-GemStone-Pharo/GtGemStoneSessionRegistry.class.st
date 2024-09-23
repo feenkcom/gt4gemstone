@@ -131,16 +131,21 @@ GtGemStoneSessionRegistry >> addNewConnector [
 ]
 
 { #category : #private }
-GtGemStoneSessionRegistry >> addSession: aSession named: aString [
+GtGemStoneSessionRegistry >> addSession: aGtGemStoneSession [
 	| allPreviousDisconnected |
 	
 	allPreviousDisconnected := (self sessions
-			copyWithout: aSession) allSatisfy: [ :each |
+			copyWithout: aGtGemStoneSession) allSatisfy: [ :each |
 		each isRunning not ].
 		
-	self sessions at: aString put: aSession.
-	(allPreviousDisconnected and: [ aSession isRunning ]) ifTrue: [
-		self defaultSession:  aSession ].
+	self sessions 
+		at: aGtGemStoneSession name
+		ifPresent: [ :existingSession |
+			aGtGemStoneSession == existingSession ifFalse:
+				[ self error: 'GemStone session already registered: ', aGtGemStoneSession name asString ] ]
+		ifAbsentPut: aGtGemStoneSession.
+	(allPreviousDisconnected and: [ aGtGemStoneSession isRunning ]) ifTrue: [
+		self defaultSession:  aGtGemStoneSession ].
 ]
 
 { #category : #accessing }
