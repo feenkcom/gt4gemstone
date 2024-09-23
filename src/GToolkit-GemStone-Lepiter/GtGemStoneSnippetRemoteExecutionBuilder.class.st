@@ -60,7 +60,8 @@ GtGemStoneSnippetRemoteExecutionBuilder >> gemstoneSession: aGemStoneSession [
 { #category : #api }
 GtGemStoneSnippetRemoteExecutionBuilder >> generateRemoteScript [
 	| trimmedString targetSource lastStatement leftBar extraTemporaries |
-	self assert: remoteBindings notNil.
+	remoteBindings ifNil: [
+		self extractRemoteBindings ].
 
 	trimmedString := sourceString trimRight.
 	targetSource := SmaCCString on: trimmedString.
@@ -176,16 +177,29 @@ GtGemStoneSnippetRemoteExecutionBuilder >> gtViewRequiredBindingsFor: aView [
 				format: [ :aVariableName | 
 					localBindings
 						bindingValueOf: aVariableName
-						ifPresent: [ :aBinding | 
-							self statusLabelForBidding: aBinding ]
+						ifPresent: [ :aBindingValue | 
+							self statusLabelForBiddingValue:aBindingValue ]
 						ifAbsent: [ 'Missing' ]  ];
 				background: [ :aVariableName | 
 					localBindings
 						bindingValueOf: aVariableName
-						ifPresent: [ :aBinding |
-							self statusColorForBinding: aBinding ]
+						ifPresent: [ :aBindingValue |
+							self statusColorForBindingValue: aBindingValue ]
 						ifAbsent: [ BrGlamorousColors paleErrorBackgroundColor ] ] ];
 		send: #value
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneSnippetRemoteExecutionBuilder >> gtViewSourceCodeDefinedVariablesFor:  aView [
+	<gtView>
+	
+	visitor ifNil: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Defined variables';
+		priority: 41;
+		object: [ visitor ];
+		view: #gtViewDefinedVariablesFor: 
 ]
 
 { #category : #'gt - extensions' }
@@ -195,7 +209,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> gtViewSourceCodeVariablesSummaryFor: 
 	visitor ifNil: [ ^ aView empty ].
 	
 	^ aView forward
-		title: 'AST Variable Details';
+		title: 'AST variable details';
 		priority: 40;
 		object: [ visitor ];
 		view: #gtViewVariablesSummaryFor:
@@ -228,8 +242,13 @@ GtGemStoneSnippetRemoteExecutionBuilder >> insert: varNames asTemporariesIn: tri
 
 { #category : #testing }
 GtGemStoneSnippetRemoteExecutionBuilder >> isBindingValid: aBinding [
+	^ self isBindingValueValid: aBinding value
+]
+
+{ #category : #testing }
+GtGemStoneSnippetRemoteExecutionBuilder >> isBindingValueValid: aValue [
 	| bindingValue |
-	bindingValue := aBinding value asGtProxyObject .
+	bindingValue := aValue asGtProxyObject .
 	^ (bindingValue isKindOf: RsrService) not or: [ 
 		bindingValue isProxyObjectActive and: [ 
 			gemstoneSession connection = bindingValue _connection ] ]
@@ -247,18 +266,27 @@ GtGemStoneSnippetRemoteExecutionBuilder >> localBindings: variablesBindings [
 
 { #category : #accessing }
 GtGemStoneSnippetRemoteExecutionBuilder >> remoteBindings [
+	remoteBindings ifNil: [
+		self extractRemoteBindings].
 	^ remoteBindings
+]
+
+{ #category : #api }
+GtGemStoneSnippetRemoteExecutionBuilder >> remoteBindingsDictionary [
+	^ (self remoteBindings bindings values
+		collect: [ :aBinding |
+			aBinding  name -> aBinding value]) asDictionary
 ]
 
 { #category : #utils }
 GtGemStoneSnippetRemoteExecutionBuilder >> remoteCodeExtraTemporaryNames [
-	"As extra temporaries we use assigned variables not 
-	already declared as temporaries that do not have any bound value"
+	"As extra temporaries we use variables that are assigned first,
+	as in that case we do not send a value for the binding."
 	| varNames |
-	varNames := visitor assignedUndeclaredVariableNames.
-	localBindings ifNotNil: [ 
+	varNames := visitor assignFirstUndeclaredVariablesName.
+	"localBindings ifNotNil: [ 
 		localBindings bindingNames do: [ :name |
-			varNames remove: name ifAbsent: [ ] ] ].
+			varNames remove: name ifAbsent: [ ] ] ]."
 	^ varNames
 ]
 
@@ -302,16 +330,31 @@ GtGemStoneSnippetRemoteExecutionBuilder >> sourceString: aString [
 
 { #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> statusColorForBinding: aBinding [
-	^ (self isBindingValid:  aBinding) 
+	^ self statusColorForBindingValue: aBinding value
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneSnippetRemoteExecutionBuilder >> statusColorForBindingValue: aBindingValue [
+	^ (self isBindingValueValid:  aBindingValue) 
 		ifTrue: [ BrGlamorousColors successBackgroundColor ]
 		ifFalse: [BrGlamorousColors failureBackgroundColor]
 ]
 
 { #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> statusLabelForBidding: aBinding [
-	^ (self isBindingValid: aBinding)
+	^ self statusLabelForBiddingValue: aBinding value
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneSnippetRemoteExecutionBuilder >> statusLabelForBiddingValue: aValue [
+	^ (self isBindingValueValid: aValue)
 		ifTrue: ['Valid']
 		ifFalse: [ 'Invalid' ] 
+]
+
+{ #category : #api }
+GtGemStoneSnippetRemoteExecutionBuilder >> stopPositionForVariableNamed: aVariableName [
+	^ visitor stopPositionForVariableNamed: aVariableName
 ]
 
 { #category : #'accessing - bindings' }
@@ -331,4 +374,12 @@ GtGemStoneSnippetRemoteExecutionBuilder >> valueLabelForBinding: aBinding [
 	^ (self isBindingValid:  aBinding) 
 		ifTrue: [ aBinding value ]
 		ifFalse: [ '<invalid>'] 
+]
+
+{ #category : #api }
+GtGemStoneSnippetRemoteExecutionBuilder >> withFirstInvalidRemoteBinding: aBlock [
+	^ self remoteBindings bindings 
+		detect: [ :aBinding | 
+			(self isBindingValid: aBinding) not ]
+		ifFound: [ :aBinding | aBlock cull: aBinding ] 
 ]

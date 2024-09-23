@@ -14,7 +14,8 @@ LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
-	^ sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry
+	^ sharedContext externalSnippetContext 
+		gemstoneSessionRegistry: aGtGemStoneSessionRegistry
 ]
 
 { #category : #private }
