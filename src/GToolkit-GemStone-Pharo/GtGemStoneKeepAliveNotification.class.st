@@ -25,8 +25,7 @@ GtGemStoneKeepAliveNotification >> elementClass [
 GtGemStoneKeepAliveNotification >> registerNotifications [
 	"A different approach would be to show the notification using the UI Manager"
 	self showNotifications.
-	GtWorld allInstancesDo: [ :world |
-		world showNotification: self ].
+	super registerNotifications
 ]
 
 { #category : #accessing }
