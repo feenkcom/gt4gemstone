@@ -110,7 +110,7 @@ GtGemStoneSessionRegistry >> activeSessionNames [
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> activeSessions [
-	"Answer the set of session names that have active (but not necessarily running) sessions"
+	"Answer the currently registered sessions"
 	<return: #Array>
 
 	^ sessions
@@ -182,13 +182,13 @@ GtGemStoneSessionRegistry >> availableConnectors [
 
 { #category : #accessing }
 GtGemStoneSessionRegistry >> cleanSessionOrNilWithConnectorName: aConnectorName forUser: aUserName [
-	| session |
-
 	"In the registry we can have connected sessions and sessions that got
 	silently disconnected, most likely because the stone closed the connection.
 	
 	We first try and use a connected session that is free and 
 	in case we do not have one, we look for a disconnected session."
+	| session |
+
 	session := self 
 		connectedCleanSessionOrNilWithConnectorName: aConnectorName
 		forUser: aUserName.
@@ -781,7 +781,7 @@ GtGemStoneSessionRegistry >> openPlaygroundOn: aSession from: anElement [
 	| page |
 
 	page := LePage unnamedPage.
-	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	page addSnippet: (LeGemStoneSnippet sessionName: aSession name).
 	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
 	GtWorldUtility
 		showSpaceWithTitle: aSession name

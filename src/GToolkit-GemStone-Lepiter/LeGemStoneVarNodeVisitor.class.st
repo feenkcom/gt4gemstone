@@ -4,10 +4,11 @@ Class {
 	#traits : 'TGtPharoProgramNodeVisitor',
 	#classTraits : 'TGtPharoProgramNodeVisitor classTrait',
 	#instVars : [
-		'assignedVariables',
-		'temporaryVariables',
-		'definedVariables',
-		'accessedFirstUndeclaredVariables'
+		'definedVariableNames',
+		'assignedVariableNames',
+		'temporaryVariableNames',
+		'accessedFirstUndeclaredVariableNames',
+		'variableNodesByName'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -16,13 +17,13 @@ Class {
 LeGemStoneVarNodeVisitor >> accessedFirstUndeclaredVariableNames [
 	"Answer the set of variable names where the variable is accessed before being assigned a value (if at all)"
 
-	^ accessedFirstUndeclaredVariables 
+	^ accessedFirstUndeclaredVariableNames 
 ]
 
 { #category : #accessing }
 LeGemStoneVarNodeVisitor >> assignFirstUndeclaredVariablesName [
 
-	^ assignedVariables difference: (accessedFirstUndeclaredVariables, temporaryVariables)
+	^ assignedVariableNames difference: (accessedFirstUndeclaredVariableNames, temporaryVariableNames)
 ]
 
 { #category : #accessing }
@@ -35,24 +36,33 @@ LeGemStoneVarNodeVisitor >> assignedUndeclaredVariableNames [
 { #category : #accessing }
 LeGemStoneVarNodeVisitor >> assignedVariableNames [
 
-	^ assignedVariables
+	^ assignedVariableNames
 ]
 
 { #category : #accessing }
 LeGemStoneVarNodeVisitor >> definedVariableNames [
 
-	^ definedVariables 
+	^ definedVariableNames 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> globalVariableNames [
 
-	^ (accessedFirstUndeclaredVariables, assignedVariables) difference: temporaryVariables
+	^ (accessedFirstUndeclaredVariableNames, assignedVariableNames) difference: temporaryVariableNames
 ]
 
 { #category : #'gt - extensions' }
-LeGemStoneVarNodeVisitor >> gtViewSummaryFor: aView [
-
+LeGemStoneVarNodeVisitor >> gtViewDefinedVariablesFor: aView [
+	<gtView>
+	
+	^ aView list 
+		title: 'Defined variables';
+		priority: 10;
+		items: [ self definedVariableNames sorted ];
+		itemText: [ :aVariableName | aVariableName printString ];
+		send: [ :aVariableName | 
+			variableNodesByName at: aVariableName ];
+		actionUpdateButton
 ]
 
 { #category : #'gt - extensions' }
@@ -73,10 +83,12 @@ LeGemStoneVarNodeVisitor >> gtViewVariablesSummaryFor: aView [
 LeGemStoneVarNodeVisitor >> initialize [
 	super initialize.
 	
-	definedVariables := Set new.
-	assignedVariables := Set new.
-	temporaryVariables := Set new.
-	accessedFirstUndeclaredVariables := Set new.
+	definedVariableNames := Set new.
+	assignedVariableNames := Set new.
+	temporaryVariableNames := Set new.
+	accessedFirstUndeclaredVariableNames := Set new.
+	
+	variableNodesByName := Dictionary new.
 ]
 
 { #category : #accessing }
@@ -85,9 +97,17 @@ LeGemStoneVarNodeVisitor >> requiredVariableNames [
 ]
 
 { #category : #accessing }
+LeGemStoneVarNodeVisitor >> stopPositionForVariableNamed: aVariableName [
+	^ variableNodesByName 
+		at: aVariableName
+		ifPresent: [ :aNode | aNode name stopPosition ] 
+		ifAbsent: [ nil ]
+]
+
+{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> temporaryVariableNames [
 
-	^ temporaryVariables
+	^ temporaryVariableNames
 ]
 
 { #category : #accessing }
@@ -114,7 +134,7 @@ LeGemStoneVarNodeVisitor >> variableDetails [
 LeGemStoneVarNodeVisitor >> visitAssignment: anAssignment [
 
 	"Get the assigned node and save"
-	assignedVariables add: (anAssignment variable variableName).
+	assignedVariableNames add: (anAssignment variable variableName).
 	^ self visitValue: anAssignment
 ]
 
@@ -124,11 +144,12 @@ LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 
 	name := aNamedVariable variableName.
 	name first isLowercase ifTrue: [
-		definedVariables add: name ].
+		definedVariableNames add: name.
+		variableNodesByName at: name ifAbsentPut: [ aNamedVariable ] ].
 	
-	((assignedVariables includes: name) or: [ 
-		temporaryVariables includes: name ]) ifFalse: [ 
-			accessedFirstUndeclaredVariables add: name ].
+	((assignedVariableNames includes: name) or: [ 
+		temporaryVariableNames includes: name ]) ifFalse: [ 
+			accessedFirstUndeclaredVariableNames add: name ].
 		
 	^ self visitVariable: aNamedVariable
 ]
@@ -136,6 +157,6 @@ LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 { #category : #generated }
 LeGemStoneVarNodeVisitor >> visitSequence: aSequence [
 
-	temporaryVariables addAll: (aSequence variables collect: #variableName).
+	temporaryVariableNames addAll: (aSequence variables collect: #variableName).
 	^ self visitProgram: aSequence
 ]

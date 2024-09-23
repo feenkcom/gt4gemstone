@@ -6,10 +6,21 @@ Class {
 		'currentSessionNameComputation',
 		'registry',
 		'selectAction',
-		'extent'
+		'extent',
+		'currentSessionDisplayLabelComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
+
+{ #category : #accessing }
+GtGemStoneSessionSelectionBadgeElement >> currentSessionDisplayLabelComputation [
+	^ currentSessionDisplayLabelComputation
+]
+
+{ #category : #accessing }
+GtGemStoneSessionSelectionBadgeElement >> currentSessionDisplayLabelComputation: anObject [
+	currentSessionDisplayLabelComputation := anObject
+]
 
 { #category : #accessing }
 GtGemStoneSessionSelectionBadgeElement >> currentSessionNameComputation [
@@ -33,10 +44,10 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 	selectionButton 
 		label: 'Select Session';
 		aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
-		addAptitude: (BrGlamorousWithDropdownAptitude 
+		addAptitude: ((BrGlamorousWithDropdownAptitude
 			handle:
 				[ BrButton new
-					label: ('GemStone ({1})' format: { currentSessionNameComputation value });
+					label: currentSessionDisplayLabelComputation value;
 					aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
 					beSmallSize;
 					fitContent ]
@@ -53,7 +64,8 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 				aSelectionElement
 					when: GtPhlowObjectToSpawn
 					do: [ :anEvent | selectionButton fireEvent: anEvent ].
-				aSelectionElement ] );
+				aSelectionElement ] )
+					preferredExtent: extent);
 		beSmallSize;
 		fitContent.
 		
