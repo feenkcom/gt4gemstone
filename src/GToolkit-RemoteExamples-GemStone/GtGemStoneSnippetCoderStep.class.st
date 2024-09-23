@@ -4,7 +4,114 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey is: anObject [
+	| anAssertStep |
+	anAssertStep := self check
+			label: ('Assert binding {1} is {2}'
+					format: {aBindingKey.
+							anObject});
+			satisfies: [ :aCoderElement | 
+				| coderModel |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				coderModel pharoBindings 
+					bindingValueOf: aBindingKey
+					ifPresent: [ :aBindingValue |
+						aBindingValue = anObject ]
+					ifAbsent: [false] ];
+			referenceSender;
+			onParentStepTarget: self.
+
+	^ anAssertStep
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey isProxyWithDisplayString: aString [ 
+	| anAssertStep |
+	anAssertStep := self check
+			label: ('Assert binding  value for {1} satisfies condition.'
+					format: {aBindingKey});
+			satisfies: [ :aCoderElement | 
+				| coderModel |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				coderModel pharoBindings 
+					bindingValueOf: aBindingKey
+					ifPresent: [ :aBindingValue |
+						aBindingValue class = GtGsBareProxy and: [
+							aBindingValue gtDisplayString = aString ]  ]
+					ifAbsent: [false] ];
+			referenceSender;
+			onParentStepTarget: self.
+
+	^ anAssertStep
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertBindingNotPresent: aBindingKey [
+	| anAssertStep |
+	anAssertStep := self check
+			label: ('Assert binding {1} not present'
+					format: {aBindingKey});
+			satisfies: [ :aCoderElement | 
+				| coderModel |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				coderModel pharoBindings 
+					bindingValueOf: aBindingKey
+					ifPresent: [ :aBindingValue | false ]
+					ifAbsent: [ true ] ];
+			referenceSender;
+			onParentStepTarget: self.
+
+	^ anAssertStep
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertBindingValueFor: aBindingKey satisfies: aBlock [
+	| anAssertStep |
+	anAssertStep := self check
+			label: ('Assert binding  value for {1} satisfies condition.'
+					format: {aBindingKey});
+			satisfies: [ :aCoderElement | 
+				| coderModel |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				coderModel pharoBindings 
+					bindingValueOf: aBindingKey
+					ifPresent: [ :aBindingValue |
+						aBlock cull: aBindingValue ]
+					ifAbsent: [false] ];
+			referenceSender;
+			onParentStepTarget: self.
+
+	^ anAssertStep
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertErrorIndicatorPresent [
+
+	self check
+		label: ('Assert error message button present');
+		exists;
+		onParentStepTarget: self;
+		// GtSourceCoderErrorButtonElementId.
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertErrorMessage: anErrorMessage [
+
+	^ self assert
+		label: 'Assert error message content';
+		value: [ :aTextElement | 
+			aTextElement text asString ]
+				equals: [ :aMessage | anErrorMessage ];
+		onSpaceRoot;
+		// BrAnchoredOuterContainer;
+		// BrAnchoredElement;
+		/ #content asBlocElementId;
+		/ GtSourceCoderErrorContentElementId;
+		/ BlTextElement  
+]
+
+{ #category : #'steps - checks' }
 GtGemStoneSnippetCoderStep >> assertEvaluationResultIndicatorExists [
 	| anAssertStep |
 	anAssertStep := self assert
@@ -13,6 +120,31 @@ GtGemStoneSnippetCoderStep >> assertEvaluationResultIndicatorExists [
 			referenceSender;
 			onParentStepTarget: self;
 			// GtCoderEvaluationResultAttributeElementId.
+
+	^ anAssertStep
+]
+
+{ #category : #'steps - checks' }
+GtGemStoneSnippetCoderStep >> assertInvalidBinding: aBindingKey [
+	| anAssertStep |
+	anAssertStep := self check
+			label: ('Assert binding {1} is invalid'
+					format: {aBindingKey});
+			satisfies: [ :aCoderElement | 
+				| coderModel session |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				session := aCoderElement textualCoderViewModel evaluationContext
+					session.
+				coderModel pharoBindings 
+					bindingValueOf: aBindingKey
+					ifPresent: [ :aBindingValue |
+						(GtGemStoneWorkspaceVariable new 
+							value: aBindingValue;
+							name: aBindingKey;
+							gemstoneSession: session) isInvalidBinding ]
+					ifAbsent: [false] ];
+			referenceSender;
+			onParentStepTarget: self.
 
 	^ anAssertStep
 ]
@@ -45,6 +177,24 @@ GtGemStoneSnippetCoderStep >> clickOnDoItButton [
 			label: 'Click on do it button';
 			// GtSourceCoderDoItActionId.
 	^ aClickStep
+]
+
+{ #category : #'steps - actions' }
+GtGemStoneSnippetCoderStep >> updateBinding: aBindingKey to: anObject [
+	| anAssertStep |
+	anAssertStep := self do
+			label: ('Updating binding {1} is {2}'
+					format: {aBindingKey.
+							anObject});
+			action: [ :aCoderElement | 
+				| coderModel |
+				coderModel := aCoderElement textualCoderViewModel coderModel.
+				(coderModel pharoBindings bindingOf: aBindingKey)
+					value: anObject ];
+			referenceSender;
+			onParentStepTarget: self.
+
+	^ anAssertStep
 ]
 
 { #category : #'steps - interactions' }

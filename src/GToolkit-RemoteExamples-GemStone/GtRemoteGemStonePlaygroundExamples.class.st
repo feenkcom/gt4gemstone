@@ -40,6 +40,17 @@ GtRemoteGemStonePlaygroundExamples >> assertCompositeToolElement: mainToolElemen
 
 ]
 
+{ #category : #asserting }
+GtRemoteGemStonePlaygroundExamples >> assertDefaultGemStoneSessionLabel: aString for: aScripter [
+	aScripter
+		assertStep: [ :s | 
+			s
+				label: 'Tab label exists';
+				// GtGemStoneSessionSelectionBadgeElement;
+				value: [ :aSelectionElement | aSelectionElement label asString ]
+					equals: 'GemStone Default (' , aString , ')' ]
+]
+
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFor: scripter [
 	| mainToolElement |
@@ -53,22 +64,22 @@ GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFo
 ]
 
 { #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy: aGemStoneInspectorTool [ 
-	self assert:  aGemStoneInspectorTool object remoteClass equals: #SmallInteger.
-	self 
-		assert: aGemStoneInspectorTool object gtDisplayString 
-		equals: '2'.
-]
-
-{ #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertGemStoneSessionLabel: aString for: aScripter [
+GtRemoteGemStonePlaygroundExamples >> assertExplicitGemStoneSessionLabel: aString for: aScripter [
 	aScripter
 		assertStep: [ :s | 
 			s
 				label: 'Tab label exists';
 				// GtGemStoneSessionSelectionBadgeElement;
 				value: [ :aSelectionElement | aSelectionElement label asString ]
-					equals: 'GemStone (' , aString , ')' ]
+					equals: 'GemStone Explicit (' , aString , ')' ]
+]
+
+{ #category : #asserting }
+GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy: aGemStoneInspectorTool [ 
+	self assert:  aGemStoneInspectorTool object remoteClass equals: #SmallInteger.
+	self 
+		assert: aGemStoneInspectorTool object gtDisplayString 
+		equals: '2'.
 ]
 
 { #category : #'assertions - execution' }
@@ -194,7 +205,8 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterSyncExecutionFor: 
 	| secondPageElement gemStoneInspectorTool |
 	
 	scripter pager
-		assertPageCountIs: 2.
+		assertPageCountIs: 2;
+		play.
 		
 	secondPageElement := scripter element pages second.
 	
@@ -211,6 +223,20 @@ GtRemoteGemStonePlaygroundExamples >> assertRunningDefaultTestSession [
 	self 
 		assert: self gemstoneSessionRegistry sessions values first name
 		equals: 'test:default'.
+]
+
+{ #category : #'assertions - execution' }
+GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBindingName for: scripter [
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: aBindingName;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('{1} holds an object from another session and cannot be used.' format: {aBindingName});
+		play.
 ]
 
 { #category : #'tear down' }
@@ -258,15 +284,14 @@ GtRemoteGemStonePlaygroundExamples >> gemstoneSessionRegistry [
 	^ self externalSnippetContext gemstoneSessionRegistry
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefaultSessionAndBasicCode [
 	<gtExample>
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: 'Delay waitForSeconds: 20. 42';
-			sessionName: 'test:default');
+		addSnippet: (snippet := (LeGemStoneSnippet sessionName: 'test:default')
+			code: 'Delay waitForSeconds: 20. 42');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -279,7 +304,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefa
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithNoSession [
 	<gtExample>
 	| page pageTool |
@@ -293,14 +318,13 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithNoSession [
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 	<gtExample>
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			sessionName: 'test1:1');
+		addSnippet: (snippet := LeGemStoneSnippet sessionName: 'test1:1');
 		yourself.
 	self assert: snippet sessionName equals: 'test1:1'.
 	
@@ -311,15 +335,14 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndBasicCode [
 	<gtExample>
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: '1+1';
-			sessionName: 'test:default');
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: '1+1');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -332,15 +355,14 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndCodeWithDelay [
 	<gtExample>
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: 'Delay waitForSeconds: 10. 2';
-			sessionName: 'test:default');
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: 'Delay waitForSeconds: 10. 2');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -353,7 +375,27 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
+GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString [
+	<gtExample>
+	| page pageTool snippet |
+	
+	page := LePage new
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: aString);
+		yourself.
+	
+	self assert: snippet sessionName equals: 'test:default'.
+	self assert: snippet code equals: aString.
+	
+	pageTool := LePagePhlowTool new
+		page: page.
+	pageTool externalSnippetContext: self externalSnippetContext.
+				
+	^ pageTool
+]
+
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	<gtExample>
 	| page snippet |
@@ -384,7 +426,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assertRunningDefaultTestSession.
@@ -405,6 +447,32 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneAndCode
 	self assert: self gemstoneSessionRegistry hasSessions.
 	
 	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndCodeWithDelay.
+	
+	scripter := self scripterForPageTool: pageTool.
+		
+	self 
+		assertExplicitGemStoneSessionLabel: 'test' 
+		for: scripter.
+		
+	self assertRunningDefaultTestSession.
+	
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneWithSnippetCode: aString [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+		
+	self assert: self gemstoneSessionRegistry hasConnectors.
+	self assert: self gemstoneSessionRegistry hasSessions.
+	
+	pageTool := self 
+		pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString.
 	
 	scripter := self scripterForPageTool: pageTool.
 		
@@ -435,7 +503,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
@@ -450,7 +518,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
-	<noTest>
 	| scripter initialSession secondSession afterExecutionSession gemStoneInspectorTool |
 	
 	self runningServer.
@@ -476,12 +543,75 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 		selectedToolFromPageElement: scripter element pages second.
 	afterExecutionSession := gemStoneInspectorTool object proxyObject gtSession.
 	
-	self gemstoneSessionRegistry 
-		defaultSession: nil. "Needed until the fix"
-	
 	"The session on which the execution happen should be the second session, 
 	not the initial session used when the snippet was created."
-	"self assert: afterExecutionSession == secondSession."
+	self assert: afterExecutionSession == secondSession.
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_oneInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'| x |
+f := 1.
+a + b + e.
+a := 2.'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		updateBinding: #b to: 43;
+		updateBinding: #e to: (GspoString new);
+		assertBinding: #a is: 42;
+		assertBinding: #b is: 43;
+		assertInvalidBinding: #e;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #e for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_threeInvalidBindings [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'| x |
+f := 1.
+a + b + e.  
+a := 2.'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		updateBinding: #b to: (GspoString new);
+		updateBinding: #e to: (GspoString new);
+		assertInvalidBinding: #a;
+		assertInvalidBinding: #b; 
+		assertInvalidBinding: #e; 
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
 	^ scripter
 ]
 
@@ -570,6 +700,303 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_without
 	^ scripter
 ]
 
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_invalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a + 1.
+a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_validBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a + 1.
+a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readValidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a+1'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 1;
+		play.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a is: 1;
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeMissingBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBindingNotPresent: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeValidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_invalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_missingBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBindingNotPresent: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_validBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_syncComputation_doItAndGo_button [
 	<gtExample>
@@ -617,7 +1044,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnEm
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: GtGemStoneNullConnector connectorName 
+		assertDefaultGemStoneSessionLabel: '<not selected>' 
 		for: scripter.
 		
 	self assert: self gemstoneSessionRegistry hasConnectors not.
@@ -649,7 +1076,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnRe
 	scripter := self scripterForPageTool: pageTool.
 	
 	self 
-		assertGemStoneSessionLabel: 'test1:1' 
+		assertDefaultGemStoneSessionLabel: 'test1:1' 
 		for: scripter.
 	
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
@@ -680,15 +1107,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithSessionNameOnRegi
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test1:1' 
+		assertExplicitGemStoneSessionLabel: 'test1:1' 
 		for: scripter.
 		
-	self assert: self gemstoneSessionRegistry sessions size equals: 1.
-	self assert: self gemstoneSessionRegistry sessions values first isRunning not.
-	self 
-		assert: self gemstoneSessionRegistry sessions values first name
-		equals: 'test1:1'.
-	
+	self assert: self gemstoneSessionRegistry sessions isEmpty.
+
 	^ scripter
 ]
 

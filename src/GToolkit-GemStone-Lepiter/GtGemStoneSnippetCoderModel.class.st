@@ -197,6 +197,16 @@ GtGemStoneSnippetCoderModel >> newEvaluationContext [
 	^ GtGemStoneSnippetCoderEvaluationContext new
 ]
 
+{ #category : #'private - notifying' }
+GtGemStoneSnippetCoderModel >> notifyInvalidBinding: anInvalidBinding fromBuilder: anExecutionBuilder inContext: aGtSourceCoderEvaluationContext [ 
+	self
+		notifyParseError: anInvalidBinding invalidBindingErrorMessage
+		at: (anExecutionBuilder 
+			errorPositionForBingingNamed: anInvalidBinding name) +
+				aGtSourceCoderEvaluationContext evaluatedInterval first
+		requesterObject: aGtSourceCoderEvaluationContext requesterObject.
+]
+
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> pharoBindings [
 	^ pharoBindings
@@ -228,31 +238,31 @@ GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
 { #category : #'private - actions' }
 GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| gemstoneSession |
+	| gemstoneSession executionBuilder |
 
-	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession ifNil: [ 
-		self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession := aGtSourceCoderEvaluationContext session ifNil: 
+		[ self error: 'GemStone session not set.  Does the connector exist?' ]
+	ifNotNil: #asGemStoneSession.
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 	
 	(self 
 		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
 		inSession: gemstoneSession)
-			ifFalse: [ "In case we get a proceed" ^ self ].
+		ifFalse: [ "In case we get a proceed" ^ self ].
 	
-	"Remove any proxies from the pharoBindings that may have become stale since the last evaluation
-	(probably because the gemstoneSession has been restarted)"
-	pharoBindings bindingNames
-		do: [ :name | 
-			| boundObject |
-			boundObject := (pharoBindings bindingOf: name) value asGtProxyObject.
-			(boundObject isKindOf: RsrService)
-				ifTrue: [ (boundObject isProxyObjectActive not
-						or: [ gemstoneSession connection ~= boundObject _connection ])
-						ifTrue: [ pharoBindings removeBindingOf: name ] ] ].
-
-	self updateRemoteFrom: aSourceString.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		gemstoneSession: gemstoneSession;
+		localBindings: pharoBindings;
+		sourceString: aSourceString.
+	executionBuilder withFirstInvalidRemoteBinding: [ :anInvalidBinding |
+		self 
+			notifyInvalidBinding: anInvalidBinding
+			fromBuilder: executionBuilder
+			inContext: aGtSourceCoderEvaluationContext.
+		^ anEvaluationFailBlock value ].
+		
+	remoteBindings := executionBuilder remoteBindingsDictionary.
+	remoteScript := executionBuilder generateRemoteScript.
 
 	^ aGtSourceCoderEvaluationContext executionStrategy
 		evaluate: remoteScript

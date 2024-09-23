@@ -12,11 +12,10 @@ GtGemStoneLepiterExamples >> openPageNoProperties [
 	<gtExample>
 	| snippet registry viewModel |
 
-	snippet := LeGemStoneSnippet new
-		code: '4+3';
-		sessionName: 'nonExistentConnector:1'.
-
 	registry := GtGemStoneSessionRegistry new.
+	snippet := (LeGemStoneSnippet sessionName: 'nonExistentConnector:1')
+		code: '4+3'.
+
 	viewModel := snippet asSnippetViewModel.
 	viewModel gemstoneSessionRegistry: registry.
 	self shouldnt: [ viewModel updateGemstoneSession ]

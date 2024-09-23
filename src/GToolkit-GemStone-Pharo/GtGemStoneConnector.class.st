@@ -133,7 +133,19 @@ GtGemStoneConnector >> isDefaultSession [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isExplicitSessionIdentifier [
+
+	^ false
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isNull [
+
+	^ false
+]
+
+{ #category : #testing }
+GtGemStoneConnector >> isSessionIdentifier [
 
 	^ false
 ]
