@@ -326,6 +326,18 @@ GtGemStoneSnippetRemoteExecutionBuilder >> remoteCodeExtraTemporaryNames [
 	^ varNames
 ]
 
+{ #category : #api }
+GtGemStoneSnippetRemoteExecutionBuilder >> remoteInvalidBindingNames [
+	^ self remoteInvalidBindings collect: [ :each |
+		each name ] 
+]
+
+{ #category : #api }
+GtGemStoneSnippetRemoteExecutionBuilder >> remoteInvalidBindings [
+	^ self remoteBindings bindings  values
+		select: [ :aBinding | aBinding isInvalidBinding ]
+]
+
 { #category : #'accessing - bindings' }
 GtGemStoneSnippetRemoteExecutionBuilder >> requiredVariableNames [
 	^ visitor requiredVariableNames
@@ -377,8 +389,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> undeclaredVariableNames [
 { #category : #api }
 GtGemStoneSnippetRemoteExecutionBuilder >> withFirstInvalidRemoteBinding: aBlock [
 	| invalidBindings sortedInvalidBindings |
-	invalidBindings := self remoteBindings bindings 
-		select: [ :aBinding | aBinding isInvalidBinding ].
+	invalidBindings := self remoteInvalidBindings.
 			
 	invalidBindings ifEmpty: [ ^ self ].
 	sortedInvalidBindings := invalidBindings 
