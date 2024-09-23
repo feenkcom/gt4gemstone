@@ -194,7 +194,8 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterSyncExecutionFor: 
 	| secondPageElement gemStoneInspectorTool |
 	
 	scripter pager
-		assertPageCountIs: 2.
+		assertPageCountIs: 2;
+		play.
 		
 	secondPageElement := scripter element pages second.
 	
@@ -211,6 +212,20 @@ GtRemoteGemStonePlaygroundExamples >> assertRunningDefaultTestSession [
 	self 
 		assert: self gemstoneSessionRegistry sessions values first name
 		equals: 'test:default'.
+]
+
+{ #category : #'assertions - execution' }
+GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBindingName for: scripter [
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: aBindingName;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('{1} holds an object from another session and cannot be used.' format: {aBindingName});
+		play.
 ]
 
 { #category : #'tear down' }
@@ -354,6 +369,27 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 ]
 
 { #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString [
+	<gtExample>
+	| page pageTool snippet |
+	
+	page := LePage new
+		addSnippet: (snippet := LeGemStoneSnippet new
+			code: aString;
+			sessionName: 'test:default');
+		yourself.
+	
+	self assert: snippet sessionName equals: 'test:default'.
+	self assert: snippet code equals: aString.
+	
+	pageTool := LePagePhlowTool new
+		page: page.
+	pageTool externalSnippetContext: self externalSnippetContext.
+				
+	^ pageTool
+]
+
+{ #category : #examples }
 GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	<gtExample>
 	| page snippet |
@@ -405,6 +441,32 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneAndCode
 	self assert: self gemstoneSessionRegistry hasSessions.
 	
 	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndCodeWithDelay.
+	
+	scripter := self scripterForPageTool: pageTool.
+		
+	self 
+		assertGemStoneSessionLabel: 'test' 
+		for: scripter.
+		
+	self assertRunningDefaultTestSession.
+	
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneWithSnippetCode: aString [
+	"Example with a GemStone snippet with a session name,
+	and a registry with no session and a configured connector."
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+		
+	self assert: self gemstoneSessionRegistry hasConnectors.
+	self assert: self gemstoneSessionRegistry hasSessions.
+	
+	pageTool := self 
+		pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString.
 	
 	scripter := self scripterForPageTool: pageTool.
 		
@@ -481,6 +543,72 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 	"The session on which the execution happen should be the second session, 
 	not the initial session used when the snippet was created."
 	"self assert: afterExecutionSession == secondSession."
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_oneInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'| x |
+f := 1.
+a + b + e.
+a := 2.'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		updateBinding: #b to: 43;
+		updateBinding: #e to: (GspoString new);
+		assertBinding: #a is: 42;
+		assertBinding: #b is: 43;
+		assertInvalidBinding: #e;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #e for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_threeInvalidBindings [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'| x |
+f := 1.
+a + b + e.  
+a := 2.'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		updateBinding: #b to: (GspoString new);
+		updateBinding: #e to: (GspoString new);
+		assertInvalidBinding: #a;
+		assertInvalidBinding: #b; 
+		assertInvalidBinding: #e; 
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
 	^ scripter
 ]
 
@@ -565,6 +693,303 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_without
 			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
 			self waitForPromiseCompletionInSecondPaneFor: scripter.
 			self assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter. ] ].
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_invalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a + 1.
+a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_validBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a + 1.
+a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertSinglePaneAfterInvalidBinding: #a for: scripter.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readValidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a+1'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 1;
+		play.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a is: 1;
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeInvalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeMissingBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBindingNotPresent: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeValidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_invalidBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_missingBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBindingNotPresent: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_validBinding [
+	<gtExample>
+	| pageTool scripter |
+	
+	self runningServer.
+	
+	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+'a := 2.
+a + 0'.
+	scripter := self scripterForPageTool: pageTool.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
 	 
 	^ scripter
 ]
