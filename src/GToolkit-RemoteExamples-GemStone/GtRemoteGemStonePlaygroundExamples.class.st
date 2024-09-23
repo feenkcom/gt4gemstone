@@ -40,6 +40,17 @@ GtRemoteGemStonePlaygroundExamples >> assertCompositeToolElement: mainToolElemen
 
 ]
 
+{ #category : #asserting }
+GtRemoteGemStonePlaygroundExamples >> assertDefaultGemStoneSessionLabel: aString for: aScripter [
+	aScripter
+		assertStep: [ :s | 
+			s
+				label: 'Tab label exists';
+				// GtGemStoneSessionSelectionBadgeElement;
+				value: [ :aSelectionElement | aSelectionElement label asString ]
+					equals: 'GemStone Default (' , aString , ')' ]
+]
+
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFor: scripter [
 	| mainToolElement |
@@ -53,22 +64,22 @@ GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFo
 ]
 
 { #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy: aGemStoneInspectorTool [ 
-	self assert:  aGemStoneInspectorTool object remoteClass equals: #SmallInteger.
-	self 
-		assert: aGemStoneInspectorTool object gtDisplayString 
-		equals: '2'.
-]
-
-{ #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertGemStoneSessionLabel: aString for: aScripter [
+GtRemoteGemStonePlaygroundExamples >> assertExplicitGemStoneSessionLabel: aString for: aScripter [
 	aScripter
 		assertStep: [ :s | 
 			s
 				label: 'Tab label exists';
 				// GtGemStoneSessionSelectionBadgeElement;
 				value: [ :aSelectionElement | aSelectionElement label asString ]
-					equals: 'GemStone (' , aString , ')' ]
+					equals: 'GemStone Explicit (' , aString , ')' ]
+]
+
+{ #category : #asserting }
+GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy: aGemStoneInspectorTool [ 
+	self assert:  aGemStoneInspectorTool object remoteClass equals: #SmallInteger.
+	self 
+		assert: aGemStoneInspectorTool object gtDisplayString 
+		equals: '2'.
 ]
 
 { #category : #'assertions - execution' }
@@ -264,9 +275,8 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefa
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: 'Delay waitForSeconds: 20. 42';
-			sessionName: 'test:default');
+		addSnippet: (snippet := (LeGemStoneSnippet sessionName: 'test:default')
+			code: 'Delay waitForSeconds: 20. 42');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -299,8 +309,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			sessionName: 'test1:1');
+		addSnippet: (snippet := LeGemStoneSnippet sessionName: 'test1:1');
 		yourself.
 	self assert: snippet sessionName equals: 'test1:1'.
 	
@@ -317,9 +326,8 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: '1+1';
-			sessionName: 'test:default');
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: '1+1');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -338,9 +346,8 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: 'Delay waitForSeconds: 10. 2';
-			sessionName: 'test:default');
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: 'Delay waitForSeconds: 10. 2');
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -384,7 +391,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStone [
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assertRunningDefaultTestSession.
@@ -409,7 +416,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneAndCode
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assertRunningDefaultTestSession.
@@ -435,7 +442,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
@@ -450,7 +457,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
-	<noTest>
 	| scripter initialSession secondSession afterExecutionSession gemStoneInspectorTool |
 	
 	self runningServer.
@@ -476,12 +482,9 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 		selectedToolFromPageElement: scripter element pages second.
 	afterExecutionSession := gemStoneInspectorTool object proxyObject gtSession.
 	
-	self gemstoneSessionRegistry 
-		defaultSession: nil. "Needed until the fix"
-	
 	"The session on which the execution happen should be the second session, 
 	not the initial session used when the snippet was created."
-	"self assert: afterExecutionSession == secondSession."
+	self assert: afterExecutionSession == secondSession.
 	^ scripter
 ]
 
@@ -617,7 +620,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnEm
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: GtGemStoneNullConnector connectorName 
+		assertDefaultGemStoneSessionLabel: '<not selected>' 
 		for: scripter.
 		
 	self assert: self gemstoneSessionRegistry hasConnectors not.
@@ -649,7 +652,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithNoSessionNameOnRe
 	scripter := self scripterForPageTool: pageTool.
 	
 	self 
-		assertGemStoneSessionLabel: 'test1:1' 
+		assertDefaultGemStoneSessionLabel: 'test1:1' 
 		for: scripter.
 	
 	self assert: self gemstoneSessionRegistry sessions size equals: 1.
@@ -680,15 +683,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundWithSnippetWithSessionNameOnRegi
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test1:1' 
+		assertExplicitGemStoneSessionLabel: 'test1:1' 
 		for: scripter.
 		
-	self assert: self gemstoneSessionRegistry sessions size equals: 1.
-	self assert: self gemstoneSessionRegistry sessions values first isRunning not.
-	self 
-		assert: self gemstoneSessionRegistry sessions values first name
-		equals: 'test1:1'.
-	
+	self assert: self gemstoneSessionRegistry sessions isEmpty.
+
 	^ scripter
 ]
 

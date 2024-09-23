@@ -14,7 +14,7 @@ GtGemStoneSourceCoderViewModel >> computeReceiverObject [
 	proxyObject := self selfObject asGtProxyObject.
 	receiverObject := (proxyObject isKindOf: GtRsrProxyServiceClient) 
 		ifTrue:[ 
-			proxyObject gtSession == self session 
+			proxyObject gtSession == self session
 				ifTrue: [ self selfObject ] 
 				ifFalse: [ nil ] ]
 		ifFalse: [ nil ].
