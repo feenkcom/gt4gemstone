@@ -240,17 +240,16 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 	"Evaluate the supplied GemStone script."
 	| gemstoneSession executionBuilder |
 
-	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	"Ensure the GtgemstoneSession is connected"
-	gemstoneSession ifNil: [ 
-		self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession := aGtSourceCoderEvaluationContext session ifNil: 
+		[ self error: 'GemStone session not set.  Does the connector exist?' ]
+	ifNotNil: #asGemStoneSession.
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 	
 	(self 
 		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
 		inSession: gemstoneSession)
-			ifFalse: [ "In case we get a proceed" ^ self ].
-
+		ifFalse: [ "In case we get a proceed" ^ self ].
+	
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		gemstoneSession: gemstoneSession;
 		localBindings: pharoBindings;

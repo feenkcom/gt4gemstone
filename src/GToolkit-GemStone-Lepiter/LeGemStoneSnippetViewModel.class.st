@@ -44,8 +44,22 @@ LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
-	^ sharedContext externalSnippetContext 
-		gemstoneSessionRegistry: aGtGemStoneSessionRegistry
+
+	Stdio stdout 
+		<< 'gemstoneSessionRegistry:'; 
+		<< aGtGemStoneSessionRegistry printString;
+		<< ' in ';
+		<< (self snippetModel page
+			ifNil: [ '<unknown>' ]
+			ifNotNil: [ :page | page title printString ]);
+		lf.
+	gemstoneSessionRegistry ifNotNil:
+		[ gemstoneSessionRegistry unsubscribe: self ].
+	gemstoneSessionRegistry := aGtGemStoneSessionRegistry.
+	sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry.
+	gemstoneSessionRegistry when: Announcement
+		do: [ :anAnnouncement | self announce: anAnnouncement ]
+		for: self.
 ]
 
 { #category : #initialization }
