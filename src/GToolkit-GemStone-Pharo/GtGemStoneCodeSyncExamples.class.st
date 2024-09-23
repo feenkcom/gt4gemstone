@@ -359,8 +359,7 @@ GtGemStoneCodeSyncExamples >> setSession: aGtGemStoneSession [
 
 	aGtGemStoneSession registry: self registry.
 	aGtGemStoneSession codeSync enabled: true.
-	self registry 
-		addSession: aGtGemStoneSession named: aGtGemStoneSession name.
+	self registry addSession: aGtGemStoneSession.
 	aGtGemStoneSession beDefaultSession.
 	
 	codeSync start.

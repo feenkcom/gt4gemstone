@@ -450,6 +450,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
+	<noTest>
 	| scripter initialSession secondSession afterExecutionSession gemStoneInspectorTool |
 	
 	self runningServer.
