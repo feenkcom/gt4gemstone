@@ -756,7 +756,128 @@ a := 2'.
 ]
 
 { #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding [
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession [
+	<gtExample>
+	| scripter bindingValue |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	bindingValue := (self runningServer 
+		evaluateBlockAndWaitReturnProxy: [42]) asGtBareProxyObject.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: bindingValue;
+		assertBinding: #a isProxyWithDisplayString: '42';
+		play.
+		
+	self runningServer close.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a holds an object from another disconnected instance of the session test and cannot be used.');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromNewConnectedSession [
+	<gtExample>
+	| scripter newSession bindingValue |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	newSession :=  self gemstoneSessionRegistry
+		newSessionWithReusageWithConnectorNamed: 'test'.
+	self assert: newSession isDefaultSession not.
+	
+	bindingValue := (newSession evaluateBlockAndWaitReturnProxy: [42])
+			asGtBareProxyObject.
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: bindingValue;
+		assertInvalidBinding: #a;
+		play.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a holds an object from another running instance of the session test:1 and cannot be used.');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromNewDisconnectedSession [
+	<gtExample>
+	| scripter newSession |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	newSession :=  self gemstoneSessionRegistry
+		newSessionWithReusageWithConnectorNamed: 'test'.
+	self assert: newSession isDefaultSession not.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (newSession evaluateBlockAndWaitReturnProxy: [42]);
+		assertInvalidBinding: #a;
+		play.
+	
+	newSession close.
+		
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a holds an object from another disconnected instance of the session test:1 and cannot be used.');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromNoSpecificSession [
 	<gtExample>
 	| scripter |
 	
@@ -782,7 +903,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readValidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
@@ -1111,7 +1232,7 @@ GtRemoteGemStonePlaygroundExamples >> promiseResolutionFromAsyncToolFromSecondPa
 	^ evaluationTool promiseResolution
 ]
 
-{ #category : #'examples - setup/tear down' }
+{ #category : #'examples - setup' }
 GtRemoteGemStonePlaygroundExamples >> runningServer [
 	"Answer a running server.
 	This assumes:
@@ -1167,7 +1288,7 @@ GtRemoteGemStonePlaygroundExamples >> selectedToolFromPageElement: aPageElement 
 	^ mainToolElement content children first phlow entity
 ]
 
-{ #category : #'examples - setup/tear down' }
+{ #category : #'tear down' }
 GtRemoteGemStonePlaygroundExamples >> stopServer [ 
 
 	server ifNotNil: 
