@@ -315,7 +315,7 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
 	| page |
 
 	page := LePage unnamedPage.
-	page addSnippet: (LeGemStoneSnippet new sessionName: aSession name).
+	page addSnippet: (LeGemStoneSnippet sessionName: aSession name).
 	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
 	GtWorldUtility
 		showSpaceWithTitle: aSession name

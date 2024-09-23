@@ -2,8 +2,8 @@ Class {
 	#name : #GtGemStoneSnippetCoderViewModel,
 	#superclass : #GtGemStoneSourceCoderViewModel,
 	#instVars : [
-		'session',
-		'hasAsyncExecution'
+		'hasAsyncExecution',
+		'sessionLocator'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -42,7 +42,7 @@ GtGemStoneSnippetCoderViewModel >> enableExecutionAction [
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	^ super evaluationContext
-		session: session.
+		session: self session.
 ]
 
 { #category : #testing }
@@ -106,13 +106,17 @@ GtGemStoneSnippetCoderViewModel >> notifyAsyncExecutionStarted [
 
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> session [
-	^ session
+	^ sessionLocator asGemStoneSession
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetCoderViewModel >> session: aGtSession [
+GtGemStoneSnippetCoderViewModel >> sessionLocator [
+	^ sessionLocator
+]
 
-	session := aGtSession
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> sessionLocator: anObject [
+	sessionLocator := anObject
 ]
 
 { #category : #'as yet unclassified' }
