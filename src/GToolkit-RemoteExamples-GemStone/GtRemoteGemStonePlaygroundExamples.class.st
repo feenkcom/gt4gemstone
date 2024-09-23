@@ -477,7 +477,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneWithSni
 	scripter := self scripterForPageTool: pageTool.
 		
 	self 
-		assertGemStoneSessionLabel: 'test' 
+		assertExplicitGemStoneSessionLabel: 'test' 
 		for: scripter.
 		
 	self assertRunningDefaultTestSession.
@@ -552,16 +552,15 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_oneInvalidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 '| x |
 f := 1.
 a + b + e.
 a := 2.'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -585,16 +584,15 @@ a := 2.'.
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_threeInvalidBindings [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 '| x |
 f := 1.
 a + b + e.  
 a := 2.'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -703,14 +701,13 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_without
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_invalidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 'a + 1.
 a := 2'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -730,14 +727,13 @@ a := 2'.
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_firstReadWriteSecond_validBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 'a + 1.
 a := 2'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -762,12 +758,11 @@ a := 2'.
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a'.
-	scripter := self scripterForPageTool: pageTool.
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -791,8 +786,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readValidBind
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a+1'.
-	scripter := self scripterForPageTool: pageTool.
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a+1'.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -816,12 +810,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readValidBind
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeInvalidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
-	scripter := self scripterForPageTool: pageTool.
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2'.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -846,12 +839,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeInvalidB
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeMissingBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
-	scripter := self scripterForPageTool: pageTool.
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2'.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -875,12 +867,11 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeMissingB
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeValidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 'a := 2'.
-	scripter := self scripterForPageTool: pageTool.
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2'.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -905,14 +896,13 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeValidBin
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_invalidBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 'a := 2.
 a + 0'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -937,14 +927,13 @@ a + 0'.
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_missingBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 'a := 2.
 a + 0'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
@@ -968,14 +957,13 @@ a + 0'.
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_validBinding [
 	<gtExample>
-	| pageTool scripter |
+	| scripter |
 	
 	self runningServer.
 	
-	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: 
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 
 'a := 2.
 a + 0'.
-	scripter := self scripterForPageTool: pageTool.
 	
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
