@@ -39,7 +39,7 @@ GtGemStoneSessionRegistryBasicExamples >> addNewTestSessionWithId: aSessionId on
 		createTestSessionForExampleWithId: aSessionId on: aConnector.
 	
 	session registry: aRegistry.
-	aRegistry addSession: session named: session name.
+	aRegistry addSession: session.
 	
 	^ session
 ]
