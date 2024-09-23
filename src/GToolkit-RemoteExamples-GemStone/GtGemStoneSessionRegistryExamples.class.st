@@ -220,7 +220,8 @@ GtGemStoneSessionRegistryExamples >> registry_oneConnectedSession_addSecondConne
 	self assert: secondSession isRunning.
 	 
 	secondSession registry: registry.
-	registry addSession: secondSession named: 'test:1'.
+	self assert: secondSession name equals: 'test:1'.
+	registry addSession: secondSession.
 	self assert: registry defaultSession == firstSession.
 	self assert: registry activeSessions size equals: 2.
 	
@@ -256,7 +257,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneConnectedSession_setsDefaultSes
 	self assert: registry defaultSession isNil.
 	 
 	session registry: registry.
-	registry addSession: session named: session name.
+	registry addSession: session.
 	self assert: registry defaultSession == session.
 	self assert: registry activeSessions size equals: 1.
 	
@@ -288,7 +289,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedDefaultSession_addN
 	self assert: secondSession isRunning.
 	
 	secondSession registry: registry.
-	registry addSession: secondSession named: secondSession name.
+	registry addSession: secondSession.
 	
 	self assert: registry defaultSession == secondSession.
 	self assert: registry activeSessions size equals: 2.
@@ -326,7 +327,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_addSecondCo
 	self assert: secondSession isRunning.
 	 
 	secondSession registry: registry.
-	registry addSession: secondSession named: secondSession name.
+	registry addSession: secondSession.
 	self assert: registry defaultSession == secondSession.
 	self assert: registry activeSessions size equals: 2.
 	
@@ -343,7 +344,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_addSecondDi
 	self assert: secondSession isRunning not.
 	 
 	secondSession registry: registry.
-	registry addSession: secondSession named: secondSession name.
+	registry addSession: secondSession.
 	self assert: registry defaultSession isNil.
 	self assert: registry activeSessions size equals: 2.
 	
@@ -376,7 +377,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_noDefaultSe
 	self assert: session isRunning not.
 	
 	session registry: registry.
-	registry addSession: session named: session name.
+	registry addSession: session.
 	self assert: registry defaultSession isNil.
 	self assert: registry activeSessions size equals: 1.
 	
