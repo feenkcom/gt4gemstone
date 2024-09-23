@@ -284,7 +284,7 @@ GtRemoteGemStonePlaygroundExamples >> gemstoneSessionRegistry [
 	^ self externalSnippetContext gemstoneSessionRegistry
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefaultSessionAndBasicCode [
 	<gtExample>
 	| page pageTool snippet |
@@ -304,7 +304,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefa
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithNoSession [
 	<gtExample>
 	| page pageTool |
@@ -318,7 +318,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithNoSession [
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 	<gtExample>
 	| page pageTool snippet |
@@ -335,7 +335,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTest1Session [
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndBasicCode [
 	<gtExample>
 	| page pageTool snippet |
@@ -355,7 +355,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndCodeWithDelay [
 	<gtExample>
 	| page pageTool snippet |
@@ -375,15 +375,14 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString [
 	<gtExample>
 	| page pageTool snippet |
 	
 	page := LePage new
-		addSnippet: (snippet := LeGemStoneSnippet new
-			code: aString;
-			sessionName: 'test:default');
+		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
+			code: aString);
 		yourself.
 	
 	self assert: snippet sessionName equals: 'test:default'.
@@ -396,7 +395,7 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 	^ pageTool
 ]
 
-{ #category : #examples }
+{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	<gtExample>
 	| page snippet |
