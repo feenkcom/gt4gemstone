@@ -8,6 +8,31 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneWorkspaceVariable >> currentSessionName [
+	^ gemstoneSession name
+]
+
+{ #category : #accessing }
+GtGemStoneWorkspaceVariable >> defaultErrorMessage [
+	^ '{1} holds an object from another session and cannot be used.'
+			format: {self name}
+]
+
+{ #category : #accessing }
+GtGemStoneWorkspaceVariable >> fromNamedSessionsErrorMessage [
+	| valueSessionState|
+	valueSessionState := value gtSession isRunning 
+		ifTrue: [ 'running' ]
+		ifFalse: ['disconnected'].
+	
+	^ '{1} holds an object from another {2} instance of the session {3} and cannot be used.'
+		format: {
+			self name.
+			valueSessionState.
+			value gtSession displayName}
+]
+
+{ #category : #accessing }
 GtGemStoneWorkspaceVariable >> gemstoneSession [
 	^ gemstoneSession
 ]
@@ -17,10 +42,20 @@ GtGemStoneWorkspaceVariable >> gemstoneSession: anObject [
 	gemstoneSession := anObject
 ]
 
+{ #category : #testing }
+GtGemStoneWorkspaceVariable >> hasBothNamedSessions [
+	value gtSession ifNil: [ ^ false ].
+	
+	^ self currentSessionName notNil and: [
+		self valueSessionName notNil ]
+]
+
 { #category : #accessing }
 GtGemStoneWorkspaceVariable >> invalidBindingErrorMessage [
-	^ '{1} holds an object from another session and cannot be used.'
-			format: {self name}
+	self hasBothNamedSessions ifTrue: [
+		^ self fromNamedSessionsErrorMessage].
+	
+	^ self defaultErrorMessage
 ]
 
 { #category : #testing }
@@ -63,4 +98,9 @@ GtGemStoneWorkspaceVariable >> valueLabel [
 	^ self isValidBinding
 		ifTrue: [ self value ]
 		ifFalse: [ '<invalid>'] 
+]
+
+{ #category : #accessing }
+GtGemStoneWorkspaceVariable >> valueSessionName [
+	^ value gtSession name
 ]
