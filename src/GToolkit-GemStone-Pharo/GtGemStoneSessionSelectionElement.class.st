@@ -377,4 +377,7 @@ GtGemStoneSessionSelectionElement >> updateContent [
 	items := items sorted: #name ascending.
 	currentList items: items.
 	(self childNamed: #newSessionButton) label: self newSessionButtonLabel.
+	(self childNamed: #defaultSessionButton) visibility: (state = #sessions
+		ifTrue: [ BlVisibility visible ]
+		ifFalse: [ BlVisibility hidden ]).
 ]
