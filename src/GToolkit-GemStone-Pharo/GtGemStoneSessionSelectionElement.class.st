@@ -7,7 +7,8 @@ Class {
 		'state',
 		'selectAction',
 		'currentSessionNameComputation',
-		'currentSessionDisplayLabelComputation'
+		'currentSessionDisplayLabelComputation',
+		'identifierType'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -49,56 +50,39 @@ GtGemStoneSessionSelectionElement >> connectorActionsFor: aConnector [
 GtGemStoneSessionSelectionElement >> createConnectorList [
 	| newList |
 	newList := BrColumnedList new.
-	newList 
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
+	newList
+		rowStencil: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
 		margin: (BlInsets top: 5 left: 10);
 		matchParent.
 
 	newList column
 		title: 'Name' translated;
 		width: 110;
-		cellStencil: [ :each | BrLabel new 
-			aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: 
-						[ self connectorActionsFor: eachItem ]).
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem | 
+			aLabel parent
+				addAptitude: (BrGlamorousWithContextMenuAptitude
+						content: [ self connectorActionsFor: eachItem ]).
 			aLabel text: eachItem name asRopedText ].
-	newList column 
+	newList column
 		title: 'Username' translated;
 		width: 100;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem username ].
-	newList column 
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem | aLabel text: eachItem username ].
+	newList column
 		title: 'Stone' translated;
 		width: 110;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem stoneName ].
-	newList column 
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem | aLabel text: eachItem stoneName ].
+	newList column
 		title: 'Version';
 		width: 60;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: (eachItem versionString ifNil: [ '-' ]) ].
+		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
+		dataBinder: [ :aLabel :eachItem | aLabel text: (eachItem versionString ifNil: [ '-' ]) ].
 
 	newList
 		when: BrSelectionDoubleClicked
-		do: [ :anEvent | 
-			anEvent selection ifNotEmpty: [ :theIndices | 
-				| aWidgetElement selectedConnector |
-				aWidgetElement := anEvent currentTarget.
-				selectedConnector := aWidgetElement viewModel
-					itemAt: theIndices first.
-				selectAction cull: (registry 
-					newSessionReusedOrDefaultWithConnector: selectedConnector) ] ].
+		do: [ :anEvent | self handleConnectorDoubleClick: anEvent ].
 
 	newList addAptitude: BrColumnedListHeaderAptitude.
 
@@ -111,10 +95,34 @@ GtGemStoneSessionSelectionElement >> createDefaultSessionButton [
 	^ BrButton new 
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
 		icon: BrGlamorousIcons settings;
-		label: 'Use Default Session';
+		label: 'Use Default';
 		margin: (BlInsets bottom: 5 right: 5);
 		action: [ :theButton | self selectDefaultSessionFrom: theButton ].
 
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> createDefaultSessionIdentifier [
+
+	identifierType := #default
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> createExistingSessionButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
+		icon: BrGlamorousVectorIcons add;
+		label: 'Existing Session';
+		margin: (BlInsets bottom: 5 right: 5);
+		action: [ self switchState ];
+		visibility: BlVisibility gone.
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> createExplicitSessionIdentifier [
+
+	identifierType := #explicit
 ]
 
 { #category : #private }
@@ -129,14 +137,26 @@ GtGemStoneSessionSelectionElement >> createInspectButton [
 ]
 
 { #category : #private }
-GtGemStoneSessionSelectionElement >> createNewSessionButton [
+GtGemStoneSessionSelectionElement >> createNewDefaultSessionButton [
 
 	^ BrButton new 
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
 		icon: BrGlamorousVectorIcons add;
-		label: 'New Session';
+		label: 'New Default';
 		margin: (BlInsets bottom: 5 right: 5);
-		action: [ self switchState ].
+		action: [ self createDefaultSessionIdentifier; switchState ].
+
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> createNewExplicitSessionButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
+		icon: BrGlamorousVectorIcons add;
+		label: 'New Explicit';
+		margin: (BlInsets bottom: 5 right: 5);
+		action: [ self createExplicitSessionIdentifier; switchState ].
 
 ]
 
@@ -206,8 +226,10 @@ GtGemStoneSessionSelectionElement >> createToolbar [
 		vFitContent;
 		layout: BlLinearLayout horizontal alignTopRight;
 		addChild: self createInspectButton as: #inspectButton;
-		addChild: self createNewSessionButton as: #newSessionButton;
 		addChild: self createDefaultSessionButton as: #defaultSessionButton;
+		addChild: self createNewExplicitSessionButton as: #newExplicitSessionButton;
+		addChild: self createNewDefaultSessionButton as: #newDefaultSessionButton;
+		addChild: self createExistingSessionButton as: #existingSessionButton;
 		yourself.
 ]
 
@@ -232,6 +254,22 @@ GtGemStoneSessionSelectionElement >> currentSessionNameComputation: anObject [
 ]
 
 { #category : #private }
+GtGemStoneSessionSelectionElement >> handleConnectorDoubleClick: anEvent [
+	| aWidgetElement selectedConnector newSession newSessionIdentifier |
+
+	anEvent selection ifEmpty: [ ^ self ].
+	aWidgetElement := anEvent currentTarget.
+	selectedConnector := aWidgetElement viewModel itemAt: anEvent selection first.
+	newSession := registry newSessionReusedOrDefaultWithConnector: selectedConnector.
+	newSessionIdentifier := identifierType == #explicit
+		ifTrue: [ GtGemStoneExplicitSessionIdentifier sessionName: newSession name ]
+		ifFalse: "identifierType == #default"
+			[ newSession beDefaultSession.
+			GtGemStoneDefaultSessionIdentifier new ].
+	selectAction cull: newSessionIdentifier.
+]
+
+{ #category : #private }
 GtGemStoneSessionSelectionElement >> handleSessionDoubleClick: anEvent [
 	^ anEvent selection ifNotEmpty: [ :theIndices | 
 		| aWidgetElement selectedSession |
@@ -245,14 +283,6 @@ GtGemStoneSessionSelectionElement >> initialize [
 
 	super initialize.
 	self buildUI.
-]
-
-{ #category : #private }
-GtGemStoneSessionSelectionElement >> newSessionButtonLabel [
-
-	^ state = #sessions
-		ifTrue: [ 'New Session' ]
-		ifFalse: [ 'Existing Session' ]
 ]
 
 { #category : #'private - hooks' }
@@ -319,8 +349,7 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 	aGtGemStoneSession isDefaultSession ifFalse: [
 		actions addAll: {
 			'Be Default' -> [ :aStatusLineElement | 
-				aGtGemStoneSession beDefaultSession.
-				selectAction cull: aGtGemStoneSession ] } ].
+				self sessionBeDefault: aGtGemStoneSession ] } ].
 	
 	actions addAll: {
 		'Toggle AutoCommit' -> [:aStatusLineElement |
@@ -337,21 +366,42 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionSelectionElement >> sessionBeDefault: aGtGemStoneSession [
+
+	aGtGemStoneSession beDefaultSession.
+	^ selectAction cull: GtGemStoneDefaultSessionIdentifier new.
+]
+
+{ #category : #accessing }
 GtGemStoneSessionSelectionElement >> state [
 	^ state
 ]
 
 { #category : #accessing }
 GtGemStoneSessionSelectionElement >> state: aSymbol [
+	| existingSessionButton newExplicitSessionButton newDefaultSessionButton defaultSessionButton |
 
 	state = aSymbol ifTrue: [ ^ self ].
 	(#(sessions connectors) includes: aSymbol) ifFalse:
 		[ self error: 'Invalid state: ', aSymbol ].
 	state := aSymbol.
+	existingSessionButton := self childNamed: #existingSessionButton.
+	newExplicitSessionButton := self childNamed: #newExplicitSessionButton.
+	newDefaultSessionButton := self childNamed: #newDefaultSessionButton.
+	defaultSessionButton := self childNamed: #defaultSessionButton.
 	currentList removeFromParent.
-	state = #sessions 
-		ifTrue: [ self addChildFirst: (currentList := self createSessionList) ]
-		ifFalse: [ self addChildFirst: (currentList := self createConnectorList) ].
+	state = #sessions ifTrue: 
+		[ self addChildFirst: (currentList := self createSessionList).
+		existingSessionButton visibility: BlVisibility gone.
+		newExplicitSessionButton visibility: BlVisibility visible.
+		newDefaultSessionButton visibility: BlVisibility visible.
+		defaultSessionButton visibility: BlVisibility visible. ]
+	ifFalse: 
+		[ self addChildFirst: (currentList := self createConnectorList).
+		existingSessionButton visibility: BlVisibility visible.
+		newExplicitSessionButton visibility: BlVisibility gone.
+		newDefaultSessionButton visibility: BlVisibility gone.
+		defaultSessionButton visibility: BlVisibility gone. ].
 	self updateContent.
 ]
 
@@ -376,8 +426,4 @@ GtGemStoneSessionSelectionElement >> updateContent [
 			ifNotNil: #values ] ].
 	items := items sorted: #name ascending.
 	currentList items: items.
-	(self childNamed: #newSessionButton) label: self newSessionButtonLabel.
-	(self childNamed: #defaultSessionButton) visibility: (state = #sessions
-		ifTrue: [ BlVisibility visible ]
-		ifFalse: [ BlVisibility hidden ]).
 ]
