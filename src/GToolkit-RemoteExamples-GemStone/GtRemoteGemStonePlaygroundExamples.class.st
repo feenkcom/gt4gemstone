@@ -792,7 +792,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		// GtSourceCoderEditorId;
 		assertInvalidBinding: #a;
 		assertErrorIndicatorPresent;
-		assertErrorMessage: ('a holds an object from another disconnected instance of the session test and cannot be used.');
+		assertErrorMessage: ('a cannot be used because it holds an object from another disconnected test session instance');
 		play.
 	 
 	^ scripter
@@ -831,7 +831,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		// GtSourceCoderEditorId;
 		assertInvalidBinding: #a;
 		assertErrorIndicatorPresent;
-		assertErrorMessage: ('a holds an object from another running instance of the session test:1 and cannot be used.');
+		assertErrorMessage: ('a cannot be used because it holds an object from another running test:1 session instance');
 		play.
 	 
 	^ scripter
@@ -870,7 +870,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		// GtSourceCoderEditorId;
 		assertInvalidBinding: #a;
 		assertErrorIndicatorPresent;
-		assertErrorMessage: ('a holds an object from another disconnected instance of the session test:1 and cannot be used.');
+		assertErrorMessage: ('a cannot be used because it holds an object from another disconnected test:1 session instance');
 		play.
 	 
 	^ scripter
