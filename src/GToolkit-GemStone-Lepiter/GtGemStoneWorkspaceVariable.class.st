@@ -25,7 +25,7 @@ GtGemStoneWorkspaceVariable >> fromNamedSessionsErrorMessage [
 		ifTrue: [ 'running' ]
 		ifFalse: ['disconnected'].
 	
-	^ '{1} holds an object from another {2} instance of the session {3} and cannot be used.'
+	^ '{1} cannot be used because it holds an object from another {2} {3} session instance'
 		format: {
 			self name.
 			valueSessionState.
