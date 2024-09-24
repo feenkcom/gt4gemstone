@@ -45,14 +45,6 @@ LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
 
-	Stdio stdout 
-		<< 'gemstoneSessionRegistry:'; 
-		<< aGtGemStoneSessionRegistry printString;
-		<< ' in ';
-		<< (self snippetModel page
-			ifNil: [ '<unknown>' ]
-			ifNotNil: [ :page | page title printString ]);
-		lf.
 	gemstoneSessionRegistry ifNotNil:
 		[ gemstoneSessionRegistry unsubscribe: self ].
 	gemstoneSessionRegistry := aGtGemStoneSessionRegistry.
@@ -92,12 +84,6 @@ LeGemStoneSnippetViewModel >> isTiedToProxySession [
 { #category : #private }
 LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 
-	Stdio stdout 
-		<< 'selfObjectChanged to: ';
-		<< self selfObject printString;
-		<< ' in ';
-		<< self snippetModel page title printString;
-		lf.
 	coderViewModel selfObject: self selfObject.
 	self isTiedToProxySession ifTrue:
 		[ sessionIdentifier := self selfObject asGtProxyObject gtSession asExplicitSessionIdentifier.
@@ -151,10 +137,6 @@ LeGemStoneSnippetViewModel >> sessionIdentifier [
 			pageSessionIdentifer ]
 		ifNotNil: 
 			[ :identifier | identifier ] ].
-	Stdio stdout
-		<< 'sessionIdentifier: ';
-		<< sessionIdentifier printString;
-		lf.
 	^ sessionIdentifier.
 ]
 
@@ -179,12 +161,6 @@ LeGemStoneSnippetViewModel >> sessionLocator [
 { #category : #'api - bindings' }
 LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 
-	Stdio stdout 
-		<< 'sharedSnippetContext:'; 
-		<< aLeSharedSnippetContext printString;
-		<< ' in ';
-		<< self snippetModel page title printString;
-		lf.
 	super sharedSnippetContext: aLeSharedSnippetContext.
 	
 	self updateGemstoneSession.
@@ -206,13 +182,6 @@ LeGemStoneSnippetViewModel >> snippetElementClass [
 { #category : #'api - bindings' }
 LeGemStoneSnippetViewModel >> updateGemstoneSession [
 
-	Stdio stdout 
-		<< 'updateGemstoneSession'; 
-		<< ' in ';
-		<< (self snippetModel page
-			ifNil: [ '<unknown>' ]
-			ifNotNil: [ :page | page title printString ]);
-		lf.
 	sessionIdentifier := nil.
 	self sessionIdentifier ifNotNil: 
 		[ coderViewModel sessionLocator: self sessionLocator ].

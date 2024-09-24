@@ -163,12 +163,6 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 			| sessionName sessionLabel |
 			sessionName := aSession displayName.
 			sessionLabel := aSession formatBasedOnStatusText: sessionName.
-			Stdio stdout
-				<< 'sessionName: ';
-				<< sessionName asString;
-				<< ', computation: ';
-				<< currentSessionNameComputation value asString;
-				lf.
 			sessionName = currentSessionNameComputation value
 				ifTrue: [ sessionLabel bold ].
 			aLabel text: sessionLabel ].
@@ -243,10 +237,6 @@ GtGemStoneSessionSelectionElement >> handleSessionDoubleClick: anEvent [
 		| aWidgetElement selectedSession |
 		aWidgetElement := anEvent currentTarget.
 		selectedSession := aWidgetElement viewModel itemAt: theIndices first.
-		Stdio stdout
-			<< 'selecting: ';
-			<< selectedSession printString;
-			lf.
 		selectAction cull: selectedSession ]
 ]
 
