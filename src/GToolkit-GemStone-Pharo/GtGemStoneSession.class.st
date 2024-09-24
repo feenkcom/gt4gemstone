@@ -1148,6 +1148,22 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 				button phlow spawnObject: 'Deleted Session Definition']
 ]
 
+{ #category : #ui }
+GtGemStoneSession >> gtUserProfileFor: aView [
+	<gtView>
+
+	self isRunning ifFalse: [ ^ aView empty ].
+	^ aView columnedList
+		  title: 'User Profile';
+		  priority: 50;
+		  items: [ self myUserProfile associations
+		  	sorted: #key ascending ];
+		  column: #Attribute text: [ :item | item key ];
+		  column: #Value text: [ :item | item value ];
+		  send: [ :item | item value ];
+		  actionUpdateButton
+]
+
 { #category : #testing }
 GtGemStoneSession >> hasKeepAlive [
 
@@ -1232,6 +1248,25 @@ GtGemStoneSession >> keepAlive [
 { #category : #accessing }
 GtGemStoneSession >> logEmitter [
 	^ logEmitter
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> myUserProfile [
+	"Answer a dictionary containing a subset of the UserProfile of the receiver"
+
+	^ self evaluateAndWait:
+'| userProfile |
+userProfile := System myUserProfile.
+Dictionary new
+	at: #userId put: userProfile userId;
+	at: #groups put: userProfile groupNames asArray;
+	at: #lastLoginTime put: userProfile lastLoginTime printString;
+	at: #authenticationScheme put: userProfile authenticationScheme;
+	at: #kerberosPrincipal put: userProfile kerberosPrincipal printString;
+	at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
+	at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
+	yourself'
+serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 ]
 
 { #category : #accessing }
