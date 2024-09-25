@@ -166,31 +166,6 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new
 ]
 
-{ #category : #'private - execution' }
-GtGemStoneSnippetCoderModel >> insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar [
-	| temporaries index |
-
-	temporaries := String streamContents: [ :stream |
-		leftBar 
-			ifNil: [ stream << '| ' ]
-			ifNotNil: [ stream space ].
-		varNames do: [ :name |
-			stream 
-				<< name;
-				space ].
-		(varNames includes: #snippetResult) ifFalse:
-			[ stream << 'snippetResult ' ].
-		leftBar ifNil: 
-			[ stream 
-				<< '|';
-				cr ] ].
-
-	index := leftBar
-		ifNil: [ 1 ]
-		ifNotNil: [ leftBar + 1 ].
-	trimmedSource insert: temporaries at: index.
-]
-
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> newEvaluationContext [
 
@@ -215,24 +190,6 @@ GtGemStoneSnippetCoderModel >> pharoBindings [
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> pharoBindings: anObject [
 	pharoBindings := anObject
-]
-
-{ #category : #'private - execution' }
-GtGemStoneSnippetCoderModel >> pharoBindingsFrom: visitor [
-	"Answer a collection of bindings for variables that aren't declared in the source and are in the snippet's bindings"
-	| bindings value |
-
-	bindings := Dictionary new.
-	visitor globalVariableNames do: [ :name |
-		(pharoBindings hasBindingOf: name) ifTrue: 
-			[ value := (pharoBindings bindingOf: name) value asGtProxyObject.
-			((value isBlock and: [ value isClean]) or: [GtRsrEvaluatorService isRsrImmediate: value ]) ifTrue:
-				[ bindings at: name put: value ] ] ].
-	(pharoBindings hasBindingOf: #snippetResult) ifTrue: 
-			[ value := (pharoBindings bindingOf: #snippetResult) value asGtProxyObject.
-			(GtRsrEvaluatorService isRsrImmediate: value) ifTrue:
-				[ bindings at: #snippetResult put: value ] ].
-	^ bindings
 ]
 
 { #category : #'private - actions' }
@@ -284,72 +241,9 @@ GtGemStoneSnippetCoderModel >> remoteScript [
 	^ remoteScript
 ]
 
-{ #category : #'private - execution' }
-GtGemStoneSnippetCoderModel >> returnExpressionWithNames: varNames [
-	"Answer return expression for the remote script"
-
-	^ String streamContents: [ :stream |
-		stream 
-			cr
-			<< '({ '.
-		varNames do: [ :varName |
-			stream
-				<< '#'; 
-				<< varName;
-				<< ' -> ';
-				<< varName;
-				<< '. ' ].
-		stream
-			<< '#snippetResult -> snippetResult } collect: [ :___each |'; 
-			cr; tab;
-			<< '___each  key -> (___each value class == GtRsrProxyServiceServer';
-			cr; tab;
-			<< 'ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' ]
-]
-
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
 	^ GtGemStoneParser startingStateForMethodSequence
-]
-
-{ #category : #'private - execution' }
-GtGemStoneSnippetCoderModel >> updateRemoteFrom: sourceString [
-	"Update remoteScript and remoteBindings based on the supplied source code and the prebuild AST (newAstCache)"
-	| trimmedString trimmedSource visitor lastStatement varNames leftBar sourceAst |
-	
-	trimmedString := sourceString trimRight.
-	trimmedSource := SmaCCString on: trimmedString.
-	trimmedString last = $. ifFalse: 
-		[ trimmedSource append: '.' ].
-	visitor := LeGemStoneVarNodeVisitor new.
-	sourceAst := GtPharoParser
-		parse: trimmedSource asString
-		startingAt: GtPharoParser startingStateForMethodSequence.
-	visitor acceptNode: sourceAst.
-	lastStatement := sourceAst statements last.
-	leftBar := sourceAst leftBar ifNotNil: [ sourceAst leftBar startPosition ].
-	varNames := visitor assignedUndeclaredVariableNames.
-	pharoBindings ifNotNil:
-		[ pharoBindings bindingNames do: [ :name |
-			varNames remove: name ifAbsent: [] ] ].
-
-	"Construct the script to be evaluated on the remote (GemStone server):
-	1. Add any undeclared variables names to the script's list of temporaries"
-	self insert: varNames asTemporariesIn: trimmedSource leftBarPosition: leftBar.
-	"2. Assign the final statement to snippetResult"
-	trimmedSource 
-		insert: 'snippetResult := ' 
-		at: lastStatement startPosition.
-	"3. Answer a dictionary containing the returned variables"
-	trimmedSource append: (self returnExpressionWithNames: visitor assignedUndeclaredVariableNames).
-	remoteScript := trimmedSource asString.
-
-	"Assign the current value to any variables that:
-	1. aren't declared,
-	2. aren't assigned before use and,
-	3. are currently bound in the receiver"
-	remoteBindings := self pharoBindingsFrom: visitor.
-
 ]
 
 { #category : #accessing }
