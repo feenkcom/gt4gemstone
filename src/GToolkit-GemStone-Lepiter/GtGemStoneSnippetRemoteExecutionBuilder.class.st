@@ -139,6 +139,22 @@ GtGemStoneSnippetRemoteExecutionBuilder >> gtViewLocalBindingsFor: aView [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneSnippetRemoteExecutionBuilder >> gtViewOriginalScriptFor: aView [ 
+	<gtView>
+	
+	sourceString ifNil: [ ^ aView empty ].
+	
+	^ aView textEditor
+		title: 'Original Script';
+		priority: 30;
+		text: [ sourceString ];
+		aptitude: BrGlamorousCodeEditorAptitude;
+		styler:  (BrRBTextStyler new
+			isForWorkspace: true;
+			yourself)
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> gtViewRemoteBindingsFor: aView [ 
 	<gtView>
 	
