@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneWorkspaceVariable,
 	#superclass : #WorkspaceVariable,
 	#instVars : [
-		'gemstoneSession'
+		'gemstoneSession',
+		'errorDisplayPosition'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -16,6 +17,17 @@ GtGemStoneWorkspaceVariable >> currentSessionName [
 GtGemStoneWorkspaceVariable >> defaultErrorMessage [
 	^ '{1} holds an object from another session and cannot be used.'
 			format: {self name}
+]
+
+{ #category : #accessing }
+GtGemStoneWorkspaceVariable >> errorDisplayPosition [
+	"In case there is an issue with the binding this indicates the position at which to display the error message, relative to the code that was executed."
+	^ errorDisplayPosition
+]
+
+{ #category : #api }
+GtGemStoneWorkspaceVariable >> errorDisplayPosition: anInteger [
+	 errorDisplayPosition := anInteger
 ]
 
 { #category : #accessing }
