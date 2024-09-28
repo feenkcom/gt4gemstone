@@ -35,16 +35,18 @@ GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
 	^ visitor assignFirstUndeclaredVariablesName
 ]
 
-{ #category : #converting }
+{ #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> convertBindingToGemstone: aBinding [
+	"Use only in views"
 	^ (GtGemStoneWorkspaceVariable new
 		gemstoneSession: gemstoneSession;
 		name: aBinding name;
 		value: aBinding value asGtProxyObject)
 ]
 
-{ #category : #converting }
+{ #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> createGemStoneBingingName: aBindingName  value: aBindingValue [
+	"Use only in views"
 	^ (GtGemStoneWorkspaceVariable new
 		gemstoneSession: gemstoneSession;
 		name: aBindingName;
@@ -73,7 +75,9 @@ GtGemStoneSnippetRemoteExecutionBuilder >> extractRemoteBindings [
 					putVariable: (GtGemStoneWorkspaceVariable new
 						gemstoneSession: gemstoneSession;
 						name: aVariableName;
-						value: aValue asGtProxyObject)  ]
+						value: aValue asGtProxyObject;
+						errorDisplayPosition: (self 
+							errorPositionForBingingNamed: aVariableName))  ]
 			ifAbsent: [ ] ].
 	
 	^ remoteBindings
@@ -136,6 +140,22 @@ GtGemStoneSnippetRemoteExecutionBuilder >> gtViewLocalBindingsFor: aView [
 				background: [ :each | 
 					(self convertBindingToGemstone: each ) statusColor ] ];
 		send: #value
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneSnippetRemoteExecutionBuilder >> gtViewOriginalScriptFor: aView [ 
+	<gtView>
+	
+	sourceString ifNil: [ ^ aView empty ].
+	
+	^ aView textEditor
+		title: 'Original Script';
+		priority: 30;
+		text: [ sourceString ];
+		aptitude: BrGlamorousCodeEditorAptitude;
+		styler:  (BrRBTextStyler new
+			isForWorkspace: true;
+			yourself)
 ]
 
 { #category : #'gt - extensions' }
@@ -394,7 +414,6 @@ GtGemStoneSnippetRemoteExecutionBuilder >> withFirstInvalidRemoteBinding: aBlock
 	invalidBindings ifEmpty: [ ^ self ].
 	sortedInvalidBindings := invalidBindings 
 		sorted: [ :aBinding | 
-			self 
-				stopPositionForVariableNamed: aBinding name ] ascending.
+			aBinding errorDisplayPosition ] ascending.
 	aBlock value: sortedInvalidBindings first
 ]

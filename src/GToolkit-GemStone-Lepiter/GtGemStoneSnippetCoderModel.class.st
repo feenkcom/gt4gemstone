@@ -173,12 +173,13 @@ GtGemStoneSnippetCoderModel >> newEvaluationContext [
 ]
 
 { #category : #'private - notifying' }
-GtGemStoneSnippetCoderModel >> notifyInvalidBinding: anInvalidBinding fromBuilder: anExecutionBuilder inContext: aGtSourceCoderEvaluationContext [ 
+GtGemStoneSnippetCoderModel >> notifyInvalidBinding: anInvalidBinding inContext: aGtSourceCoderEvaluationContext [ 
+	| errorPosition |
+	errorPosition := anInvalidBinding errorDisplayPosition +
+			aGtSourceCoderEvaluationContext evaluatedInterval first.
 	self
 		notifyParseError: anInvalidBinding invalidBindingErrorMessage
-		at: (anExecutionBuilder 
-			errorPositionForBingingNamed: anInvalidBinding name) +
-				aGtSourceCoderEvaluationContext evaluatedInterval first
+		at: errorPosition
 		requesterObject: aGtSourceCoderEvaluationContext requesterObject.
 ]
 
@@ -212,9 +213,8 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 		localBindings: pharoBindings;
 		sourceString: aSourceString.
 	executionBuilder withFirstInvalidRemoteBinding: [ :anInvalidBinding |
-		self 
+		self  
 			notifyInvalidBinding: anInvalidBinding
-			fromBuilder: executionBuilder
 			inContext: aGtSourceCoderEvaluationContext.
 		^ anEvaluationFailBlock value ].
 		
