@@ -7,7 +7,8 @@ Class {
 		'remoteBindings',
 		'visitor',
 		'sourceAst',
-		'gemstoneSession'
+		'gemstoneSession',
+		'classSlotNames'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -33,6 +34,11 @@ GtGemStoneSnippetRemoteExecutionBuilder >> analyseSourceString [
 { #category : #'accessing - bindings' }
 GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
 	^ visitor assignFirstUndeclaredVariablesName
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetRemoteExecutionBuilder >> classSlotNames: anArrayOfSlotNames [
+	 classSlotNames := anArrayOfSlotNames
 ]
 
 { #category : #'gt - extensions' }

@@ -5,10 +5,21 @@ Class {
 		'receiverObject',
 		'session',
 		'serializationStrategy',
-		'pharoBindings'
+		'pharoBindings',
+		'classSlotNames'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> classSlotNames [
+	^ classSlotNames
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> classSlotNames: anObject [
+	classSlotNames := anObject
+]
 
 { #category : #accessing }
 GtGemStoneSnippetCoderEvaluationContext >> executionStrategy [

@@ -1,6 +1,9 @@
 Class {
 	#name : #GtGemStoneSnippetCoderModel,
 	#superclass : #GtGemStoneSourceCoderModel,
+	#instVars : [
+		'gsBehaviourSpecification'
+	],
 	#classVars : [
 		'EnableAsyncPlay'
 	],
@@ -66,6 +69,11 @@ GtGemStoneSnippetCoderModel >> canRunComputationWithStrategy: anExecutionStrateg
 		^ true ].
 		
 	^ true
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderModel >> gsBehaviourSpecification: aGsBehaviourSpecification [
+	gsBehaviourSpecification := aGsBehaviourSpecification
 ]
 
 { #category : #'api - ast' }
@@ -163,8 +171,12 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> newEvaluationContext [
-
+	| slotNames|
+	slotNames := gsBehaviourSpecification ifNotNil: [ :aClassSpecification |
+		aClassSpecification slotNames ].
+	
 	^ GtGemStoneSnippetCoderEvaluationContext new
+		classSlotNames: slotNames
 ]
 
 { #category : #'private - notifying' }
@@ -197,6 +209,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 	pharoBindings := aGtSourceCoderEvaluationContext pharoBindings.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		gemstoneSession: gemstoneSession;
+		classSlotNames:  aGtSourceCoderEvaluationContext classSlotNames;
 		localBindings: pharoBindings;
 		sourceString: aSourceString.
 	executionBuilder withFirstInvalidRemoteBinding: [ :anInvalidBinding |

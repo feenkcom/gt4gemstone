@@ -54,6 +54,14 @@ GtGemStoneSourceCoderViewModel >> selfObject: anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneSourceCoderViewModel >> selfObject: anObject withBehaviourSpecification: aGemStoneClassSpecification [
+
+	self selfObject:  anObject.
+	self coder 
+		gsBehaviourSpecification: aGemStoneClassSpecification
+]
+
+{ #category : #accessing }
 GtGemStoneSourceCoderViewModel >> session [
 	self subclassResponsibility
 ]

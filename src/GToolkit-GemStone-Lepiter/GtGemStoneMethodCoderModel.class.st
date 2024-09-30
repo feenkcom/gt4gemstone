@@ -403,8 +403,8 @@ GtGemStoneMethodCoderModel >> isMeta [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> localBehavior [
-	self methodBehavior localBehaviorDo: [ :aLocalbehavior |
-		^ aLocalbehavior ].
+	self methodBehavior localBehaviorDo: [ :aLocalBehavior |
+		^ aLocalBehavior ].
 		
 	^ super localBehavior
 ]
@@ -475,6 +475,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 	gemstoneSession ifNil: [ 
 		self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
+	
 	self
 		handleCompilerErrorsDuring: [ result := gemstoneSession
 				evaluateAndWaitReturnProxy: aSourceString
