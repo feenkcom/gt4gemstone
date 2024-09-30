@@ -56,6 +56,11 @@ GtpoGtRemotePhlowViewedObject >> getDeclarativeViewMethodNames [
 ]
 
 { #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getInspectorSpecificationData [
+	^ self proxyPerform: #getInspectorSpecificationData autoCommit: false
+]
+
+{ #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getRemoteObjectGtDisplayString [
 	^ self 
 		proxyPerform: #getRemoteObjectGtDisplayString
