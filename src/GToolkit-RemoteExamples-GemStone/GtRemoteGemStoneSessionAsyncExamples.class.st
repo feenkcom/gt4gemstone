@@ -562,13 +562,10 @@ GtRemoteGemStoneSessionAsyncExamples >> testPromiseResolution_terminateProcess [
 { #category : #'examples - promise' }
 GtRemoteGemStoneSessionAsyncExamples >> testSnippetPromiseWrapper_returnProxy [
 	<gtExample>
-	| pharoBindings coderModel evaluatorPromise computedResult hasError promiseWrapper snippetResult |
+	| pharoBindings evaluatorPromise computedResult hasError promiseWrapper snippetResult |
 	
-	coderModel := GtGemStoneSnippetCoderModel new.
-
 	pharoBindings := GtLocalVariablesBindings new.
 	pharoBindings localAt: #snippetResult put: nil.
-	coderModel pharoBindings: pharoBindings.
 	
 	evaluatorPromise := (self runningServer 
 		createScriptEvaluationFor: '
@@ -582,7 +579,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testSnippetPromiseWrapper_returnProxy [
 	promiseWrapper := GtGemStoneSnippetAsyncPromiseWrapper new
 		gtRsrAsycPromise: evaluatorPromise;
 		serializationStrategy: #GtRsrProxyOnlySerializationStrategy;
-		snippetCoderModel: coderModel;
+		pharoBindings: pharoBindings;
 		evaluationFailBlock:  [ hasError := true ].
 		
 	computedResult := promiseWrapper wait.

@@ -18,6 +18,7 @@ GtGemStoneLepiterExamples >> openPageNoProperties [
 
 	viewModel := snippet asSnippetViewModel.
 	viewModel gemstoneSessionRegistry: registry.
-	self shouldnt: [ viewModel updateGemstoneSession ]
+	self 
+		shouldnt: [ viewModel updateGemstoneSession ]
 		raise: Error.
 ]

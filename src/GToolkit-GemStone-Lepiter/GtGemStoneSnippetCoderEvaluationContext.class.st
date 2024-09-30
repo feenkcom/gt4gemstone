@@ -4,14 +4,26 @@ Class {
 	#instVars : [
 		'receiverObject',
 		'session',
-		'serializationStrategy'
+		'serializationStrategy',
+		'pharoBindings'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
 GtGemStoneSnippetCoderEvaluationContext >> executionStrategy [
-	^ executionStrategy ifNil: [ GtGemStoneSnippetSynchronousExecutionStrategy new ]
+	^ executionStrategy ifNil: [ 
+		GtGemStoneSnippetSynchronousExecutionStrategy new ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> pharoBindings [
+	^ pharoBindings
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> pharoBindings: anObject [
+	pharoBindings := anObject
 ]
 
 { #category : #accessing }

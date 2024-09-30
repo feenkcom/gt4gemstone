@@ -21,7 +21,7 @@ GtGemStoneSnippetAsynchronousExecutionStrategy >> evaluate: remoteScript inSessi
 	snippetPromiseWrapper := GtGemStoneSnippetAsyncPromiseWrapper new
 		gtRsrAsycPromise: asyncPromise;
 		serializationStrategy: aGtSourceCoderEvaluationContext serializationStrategy;
-		snippetCoderModel: aCoderModel;
+		pharoBindings: pharoBindings;
 		evaluationFailBlock:  anEvaluationFailBlock.
 		
 	promiseResolution := GtGemStoneAsyncPromiseResolution new 

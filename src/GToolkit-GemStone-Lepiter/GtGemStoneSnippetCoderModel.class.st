@@ -1,11 +1,6 @@
 Class {
 	#name : #GtGemStoneSnippetCoderModel,
 	#superclass : #GtGemStoneSourceCoderModel,
-	#instVars : [
-		'pharoBindings',
-		'remoteScript',
-		'remoteBindings'
-	],
 	#classVars : [
 		'EnableAsyncPlay'
 	],
@@ -183,24 +178,15 @@ GtGemStoneSnippetCoderModel >> notifyInvalidBinding: anInvalidBinding inContext:
 		requesterObject: aGtSourceCoderEvaluationContext requesterObject.
 ]
 
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> pharoBindings [
-	^ pharoBindings
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> pharoBindings: anObject [
-	pharoBindings := anObject
-]
-
 { #category : #'private - actions' }
 GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| gemstoneSession executionBuilder |
-
-	gemstoneSession := aGtSourceCoderEvaluationContext session ifNil: 
-		[ self error: 'GemStone session not set.  Does the connector exist?' ]
-	ifNotNil: #asGemStoneSession.
+	| gemstoneSession executionBuilder pharoBindings remoteBindings remoteScript |
+	
+	gemstoneSession := aGtSourceCoderEvaluationContext session 
+		ifNil: [ 
+			^ self error: 'GemStone session not set.  Does the connector exist?' ]
+		ifNotNil: #asGemStoneSession.
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
 	
 	(self 
@@ -208,6 +194,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 		inSession: gemstoneSession)
 		ifFalse: [ "In case we get a proceed" ^ self ].
 	
+	pharoBindings := aGtSourceCoderEvaluationContext pharoBindings.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		gemstoneSession: gemstoneSession;
 		localBindings: pharoBindings;
@@ -217,7 +204,7 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 			notifyInvalidBinding: anInvalidBinding
 			inContext: aGtSourceCoderEvaluationContext.
 		^ anEvaluationFailBlock value ].
-		
+		 
 	remoteBindings := executionBuilder remoteBindingsDictionary.
 	remoteScript := executionBuilder generateRemoteScript.
 
@@ -232,22 +219,6 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 ]
 
 { #category : #accessing }
-GtGemStoneSnippetCoderModel >> remoteBindings [
-	^ remoteBindings
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> remoteScript [
-	^ remoteScript
-]
-
-{ #category : #accessing }
 GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
 	^ GtGemStoneParser startingStateForMethodSequence
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderModel >> variableBindings: aGtSnippetBindings [
-
-	^ self pharoBindings: aGtSnippetBindings
 ]
