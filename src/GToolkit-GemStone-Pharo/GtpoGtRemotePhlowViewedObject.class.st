@@ -26,6 +26,13 @@ GtpoGtRemotePhlowViewedObject >> getActionSpecifications [
 ]
 
 { #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getClassSpecificationData [
+	^ self 
+		proxyPerform: #getClassSpecificationData
+		autoCommit: false
+]
+
+{ #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getDeclarativeActionDataSourceFor: anActionSelector [
 	^ self
 		proxyPerform: #getDeclarativeActionDataSourceFor: 
