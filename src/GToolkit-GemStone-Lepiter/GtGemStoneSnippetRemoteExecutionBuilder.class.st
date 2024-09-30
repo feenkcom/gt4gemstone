@@ -72,7 +72,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> extractRemoteBindings [
 	self analyseSourceString.
 	
 	remoteBindings := GtLocalVariablesBindings new.
-	visitor requiredVariableNames do: [ :aVariableName |
+	self requiredUndeclararedVariableNames do: [ :aVariableName |
 		localBindings 
 			bindingValueOf: aVariableName 
 			ifPresent: [ :aValue | 
@@ -118,7 +118,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> generateRemoteScript [
 		at: lastStatement startPosition.
 	"3. Answer a dictionary containing the returned variables"
 	targetSource append: (self 
-		returnExpressionWithNames: visitor assignedUndeclaredVariableNames).
+		returnExpressionWithNames: self variableNamesToReturn).
 	
 	^ targetSource asString.
 ]
@@ -342,14 +342,15 @@ GtGemStoneSnippetRemoteExecutionBuilder >> remoteBindingsDictionary [
 
 { #category : #utils }
 GtGemStoneSnippetRemoteExecutionBuilder >> remoteCodeExtraTemporaryNames [
-	"As extra temporaries we use variables that are assigned first,
-	as in that case we do not send a value for the binding."
+	"As extra temporaries we use variables that are assigned first
+	and are not slot names, as in that case we do not send a value 
+	for the binding."
 	| varNames |
 	varNames := visitor assignFirstUndeclaredVariablesName.
 	"localBindings ifNotNil: [ 
 		localBindings bindingNames do: [ :name |
 			varNames remove: name ifAbsent: [ ] ] ]."
-	^ varNames
+	^ varNames difference: (classSlotNames ifNil: [#()])
 ]
 
 { #category : #api }
@@ -362,6 +363,14 @@ GtGemStoneSnippetRemoteExecutionBuilder >> remoteInvalidBindingNames [
 GtGemStoneSnippetRemoteExecutionBuilder >> remoteInvalidBindings [
 	^ self remoteBindings bindings  values
 		select: [ :aBinding | aBinding isInvalidBinding ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetRemoteExecutionBuilder >> requiredUndeclararedVariableNames [
+	"We need to explicitly handle undeclarared variables that are not slots."
+	| requiredVariableNames |
+	requiredVariableNames  := visitor requiredVariableNames.
+	^ requiredVariableNames difference: (classSlotNames ifNil: [ #() ])
 ]
 
 { #category : #'accessing - bindings' }
@@ -410,6 +419,14 @@ GtGemStoneSnippetRemoteExecutionBuilder >> stopPositionForVariableNamed: aVariab
 { #category : #'accessing - bindings' }
 GtGemStoneSnippetRemoteExecutionBuilder >> undeclaredVariableNames [
 	^ visitor undeclaredVariableNames
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetRemoteExecutionBuilder >> variableNamesToReturn [
+	"We need to return values for all undeclarated bindings,
+	that are not slots."
+	^ visitor assignedUndeclaredVariableNames 
+		difference: (classSlotNames ifNil: [#()])
 ]
 
 { #category : #api }
