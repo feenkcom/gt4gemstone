@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStonePhlowInspectorObject,
 	#superclass : #GtRemotePhlowInspectorObject,
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #configuring }
