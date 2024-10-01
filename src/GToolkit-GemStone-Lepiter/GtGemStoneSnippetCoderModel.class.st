@@ -173,7 +173,7 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 GtGemStoneSnippetCoderModel >> newEvaluationContext [
 	| slotNames|
 	slotNames := gsBehaviourSpecification ifNotNil: [ :aClassSpecification |
-		aClassSpecification slotNames ].
+		aClassSpecification viewObjectInstanceVariableNames ].
 	
 	^ GtGemStoneSnippetCoderEvaluationContext new
 		instanceVariableNames: slotNames

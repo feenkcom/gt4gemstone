@@ -8,7 +8,7 @@ LeExternalSnippetContext >> gemstoneBehaviourSpecification [
 ]
 
 { #category : #'*GToolkit-GemStone-Lepiter' }
-LeExternalSnippetContext >> gemstoneClassSpecification: aClassSpecification [
+LeExternalSnippetContext >> gemstoneBehaviourSpecification: aClassSpecification [
 	self 
 		propertyNamed: #gemstoneBehaviourSpecification 
 		put: aClassSpecification

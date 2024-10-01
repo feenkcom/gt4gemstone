@@ -481,6 +481,11 @@ GtRsrProxyServiceClient >> gtRemoteSideInitialPlaygroundSnippet [
 ]
 
 { #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> gtRemoteSideInspectorObjectHolder [
+	^ GtGemStonePhlowInspectorObject new 
+]
+
+{ #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> gtRemoteSideInspectorToolLabel [
 	^ 'GemStone'
 ]
