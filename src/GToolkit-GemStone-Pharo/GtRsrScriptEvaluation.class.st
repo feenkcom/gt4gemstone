@@ -2,7 +2,8 @@ Class {
 	#name : #GtRsrScriptEvaluation,
 	#superclass : #GtRsrEvaluation,
 	#instVars : [
-		'script'
+		'script',
+		'frameIdentifier'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
@@ -63,6 +64,16 @@ GtRsrScriptEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
 		emitEvaluationDeliveryEndFor: self.
 			
 	^ result
+]
+
+{ #category : #accessing }
+GtRsrScriptEvaluation >> frameIdentifier [
+	^ frameIdentifier
+]
+
+{ #category : #accessing }
+GtRsrScriptEvaluation >> frameIdentifier: anObject [
+	frameIdentifier := anObject
 ]
 
 { #category : #evaluating }
