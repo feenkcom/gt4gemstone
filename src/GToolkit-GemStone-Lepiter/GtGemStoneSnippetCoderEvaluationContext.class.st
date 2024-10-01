@@ -6,25 +6,25 @@ Class {
 		'session',
 		'serializationStrategy',
 		'pharoBindings',
-		'classSlotNames'
+		'instanceVariableNames'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
-GtGemStoneSnippetCoderEvaluationContext >> classSlotNames [
-	^ classSlotNames
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetCoderEvaluationContext >> classSlotNames: anObject [
-	classSlotNames := anObject
-]
-
-{ #category : #accessing }
 GtGemStoneSnippetCoderEvaluationContext >> executionStrategy [
 	^ executionStrategy ifNil: [ 
 		GtGemStoneSnippetSynchronousExecutionStrategy new ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> instanceVariableNames [
+	^ instanceVariableNames
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> instanceVariableNames: anObject [
+	instanceVariableNames := anObject
 ]
 
 { #category : #accessing }

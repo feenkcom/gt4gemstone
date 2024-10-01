@@ -120,7 +120,7 @@ a := 1.'.
 	
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: pharoBindings;
-		classSlotNames: #(f a b e);
+		instanceVariableNames: #(f a b e);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -328,7 +328,7 @@ a := 1.'.
 	
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: pharoBindings;
-		classSlotNames: #(f);
+		instanceVariableNames: #(f);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -561,7 +561,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFi
 a := 4'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: GtSharedVariablesBindings new;
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -646,7 +646,7 @@ a := 4'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: (GtLocalVariablesBindings new
 			localAt: #a put: 40);
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -765,7 +765,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessGl
 	source := 'a + 3'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: GtSharedVariablesBindings new;
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -946,7 +946,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeFir
 a + 3'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: GtSharedVariablesBindings new;
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -1114,7 +1114,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 	source := 'a := 3'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: GtSharedVariablesBindings new;
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
@@ -1195,7 +1195,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 	source := 'a := 3'.
 	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
 		localBindings: GtLocalVariablesBindings new;
-		classSlotNames: #(a);
+		instanceVariableNames: #(a);
 		sourceString: source.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.

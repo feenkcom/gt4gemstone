@@ -36,11 +36,6 @@ GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
 	^ visitor assignFirstUndeclaredVariablesName
 ]
 
-{ #category : #accessing }
-GtGemStoneSnippetRemoteExecutionBuilder >> classSlotNames: anArrayOfSlotNames [
-	 classSlotNames := anArrayOfSlotNames
-]
-
 { #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> convertBindingToGemstone: aBinding [
 	"Use only in views"
@@ -300,6 +295,11 @@ GtGemStoneSnippetRemoteExecutionBuilder >> insert: varNames asTemporariesIn: tri
 		ifNil: [ 1 ]
 		ifNotNil: [ leftBar + 1 ].
 	trimmedSource insert: temporaries at: index.
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetRemoteExecutionBuilder >> instanceVariableNames: anArrayOfSlotNames [
+	 classSlotNames := anArrayOfSlotNames
 ]
 
 { #category : #testing }

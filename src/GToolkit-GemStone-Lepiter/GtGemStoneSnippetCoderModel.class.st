@@ -176,7 +176,7 @@ GtGemStoneSnippetCoderModel >> newEvaluationContext [
 		aClassSpecification slotNames ].
 	
 	^ GtGemStoneSnippetCoderEvaluationContext new
-		classSlotNames: slotNames
+		instanceVariableNames: slotNames
 ]
 
 { #category : #'private - notifying' }
