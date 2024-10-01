@@ -28,10 +28,10 @@ GtRsrPerformEvaluation >> basicAsyncEvaluateWithSerialisation [
 GtRsrPerformEvaluation >> basicSyncEvaluateWithSerialisation [
 	
 	"The first two checks are a hack until the server is updated to match"
-	serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
+	"serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
 		[ ^ self evaluateLegacy ].
 	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
-		[ ^ self evaluateProxyOnly ].
+		[ ^ self evaluateProxyOnly ]."
 
 	^ gtSession evaluator evaluatePerform: self 
 ]

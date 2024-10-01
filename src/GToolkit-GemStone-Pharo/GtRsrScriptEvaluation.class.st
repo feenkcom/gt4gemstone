@@ -20,10 +20,10 @@ GtRsrScriptEvaluation >> basicSyncEvaluateWithSerialisation [
 	"Evaluate the receiver on the supplied evaluator"
 
 	"The first two checks are a hack until the server is updated to match"
-	serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
+	"serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
 		[ ^ self evaluateLegacy ].
 	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
-		[ ^ self evaluateProxyOnly ].
+		[ ^ self evaluateProxyOnly ]."
 
 	^ gtSession evaluator evaluateScript: self 
 ]
