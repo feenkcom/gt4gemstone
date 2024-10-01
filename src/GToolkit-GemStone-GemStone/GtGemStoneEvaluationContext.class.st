@@ -52,6 +52,12 @@ GtGemStoneEvaluationContext >> debuggerState [
 ]
 
 { #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> debuggerStateDictionaryForExport [
+
+	^ self debuggerState asDictionaryForExport
+]
+
+{ #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> debuggerStateJsonForExport [
 
 	^ self debuggerState asJsonForExport
@@ -244,6 +250,12 @@ GtGemStoneEvaluationContext >> newDebuggerState [
 ]
 
 { #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> newDebuggerStateDictionaryForExport [
+
+	^ self newDebuggerState asDictionaryForExport
+]
+
+{ #category : 'actions - debug' }
 GtGemStoneEvaluationContext >> newDebuggerStateJsonForExport [
 
 	^ self newDebuggerState asJsonForExport
@@ -400,6 +412,20 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 		process: process
 		exception: exception
 		callStack: currentCallStack) asJsonForExport
+]
+
+{ #category : 'actions - debug' }
+GtGemStoneEvaluationContext >> synchronizeCallStackDictionaryForExport [
+	| currentCallStack stackUpdater |
+	currentCallStack := self callStack.
+	stackUpdater := GtGemStoneLocalCallStackUpdater forCallStack: currentCallStack.
+
+	stackUpdater updateBasedOn: self createNewCallStack.
+
+	^ (GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: currentCallStack) asDictionaryForExport
 ]
 
 { #category : 'actions - debug' }
