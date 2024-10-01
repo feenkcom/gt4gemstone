@@ -520,6 +520,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject inFrame: aFrameIdentif
 	^ (self 
 		createScriptEvaluationFor: remoteScript
 		receiver: anObject
+		frameIdentifier: aFrameIdentifier
 		bindings: remoteBindings
 		serializationStrategy: aSymbol
 		autoCommit: autoCommit) evaluate
