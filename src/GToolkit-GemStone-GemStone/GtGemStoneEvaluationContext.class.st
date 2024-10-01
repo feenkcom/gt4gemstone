@@ -255,6 +255,11 @@ GtGemStoneEvaluationContext >> process [
 	^ process
 ]
 
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> processOop [
+	^ process asOop
+]
+
 { #category : 'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
@@ -412,6 +417,13 @@ GtGemStoneEvaluationContext >> terminateAsyncComputation [
 GtGemStoneEvaluationContext >> terminateProcess [
 
 	process terminate
+]
+
+{ #category : 'actions - frame' }
+GtGemStoneEvaluationContext >> updateBindingsForFrame: aCallFrame with: frameBindings [
+	self callStack 
+		updateBindingsForFrame:aCallFrame
+		with: frameBindings
 ]
 
 { #category : 'actions - debug (level)' }
