@@ -154,11 +154,9 @@ GtGemStoneLocalCallStack >> replaceFrameAt: anIndex with: aNewContext [
 ]
 
 { #category : 'updating' }
-GtGemStoneLocalCallStack >> updateBindingsForFrame: aCallFrame with: frameBindings [
-	| frameLevel |
-	frameLevel := self frameLevelForIdentifier: aCallFrame frameIdentifier.
+GtGemStoneLocalCallStack >> updateBindingsForFrame: aCallFrame atLevel: aFrameLevel with: frameBindings [
 	aCallFrame 
 		updateBindingsWith: frameBindings 
-		forFrameAtLevel: frameLevel 
+		forFrameAtLevel: aFrameLevel 
 		inProcess: gsProcess
 ]

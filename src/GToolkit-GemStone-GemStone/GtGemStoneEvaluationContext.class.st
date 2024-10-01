@@ -446,9 +446,10 @@ GtGemStoneEvaluationContext >> terminateProcess [
 ]
 
 { #category : 'actions - frame' }
-GtGemStoneEvaluationContext >> updateBindingsForFrame: aCallFrame with: frameBindings [
+GtGemStoneEvaluationContext >> updateBindingsForFrame: aCallFrame atLevel: frameLevel with: frameBindings [
 	self callStack 
 		updateBindingsForFrame:aCallFrame
+		atLevel: frameLevel
 		with: frameBindings
 ]
 
