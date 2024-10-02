@@ -73,7 +73,7 @@ GtGemStoneCompilationContext >> initializeFrameWithFrameIdentifierIndex: aFrameI
 ]
 
 { #category : 'private' }
-GtGemStoneCompilationContext >> receiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary [
+GtGemStoneCompilationContext >> setReceiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary [
 	receiver := anObject.
 	clientBindings := self createClientBindingsFrom: aDictionary.
 

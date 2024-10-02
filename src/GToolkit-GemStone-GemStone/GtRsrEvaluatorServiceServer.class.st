@@ -43,6 +43,8 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject inFrameIdentifier
 	evaluationResult := self 
 		gsEvaluate: aString 
 		for: anObject 
+		inFrameIdentifierIndex: aFrameIndex 
+		ofEvaluationContext: aTargetEvaluationContext asGtGsArgument
 		bindings: aDictionary 
 		serializationStrategy: aSymbol.
 
