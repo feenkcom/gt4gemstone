@@ -383,12 +383,12 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject 
 ]
 
 { #category : #actions }
-GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject frameIdentifier: aFrameIdentifier bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
+GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject frameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ self scriptEvaluation
 		script: remoteScript;
 		receiver: anObject;
-		frameIdentifier: aFrameIdentifier;
+		frameContext: aFrameContext;
 		bindings: remoteBindings;
 		serialisationStrategy: aSymbol;
 		autoCommit: aBoolean;
@@ -515,12 +515,12 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 ]
 
 { #category : #actions }
-GtGemStoneSession >> evaluate: remoteScript for: anObject inFrame: aFrameIdentifier bindings: remoteBindings serializationStrategy: aSymbol [
+GtGemStoneSession >> evaluate: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol [
 
 	^ (self 
 		createScriptEvaluationFor: remoteScript
 		receiver: anObject
-		frameIdentifier: aFrameIdentifier
+		frameContext: aFrameContext
 		bindings: remoteBindings
 		serializationStrategy: aSymbol
 		autoCommit: autoCommit) evaluate

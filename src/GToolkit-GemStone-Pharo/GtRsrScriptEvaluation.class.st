@@ -3,7 +3,7 @@ Class {
 	#superclass : #GtRsrEvaluation,
 	#instVars : [
 		'script',
-		'frameIdentifier'
+		'frameContext'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
@@ -67,13 +67,13 @@ GtRsrScriptEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
 ]
 
 { #category : #accessing }
-GtRsrScriptEvaluation >> frameIdentifier [
-	^ frameIdentifier
+GtRsrScriptEvaluation >> frameContext [
+	^ frameContext
 ]
 
 { #category : #accessing }
-GtRsrScriptEvaluation >> frameIdentifier: anObject [
-	frameIdentifier := anObject
+GtRsrScriptEvaluation >> frameContext: aFrameExecutionContext [
+	frameContext := aFrameExecutionContext
 ]
 
 { #category : #evaluating }

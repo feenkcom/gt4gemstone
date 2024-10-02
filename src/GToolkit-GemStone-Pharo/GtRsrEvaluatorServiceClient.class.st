@@ -160,12 +160,22 @@ GtRsrEvaluatorServiceClient >> evaluateScript: aGtRsrScriptEvaluation [
 	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
 	
 	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := remoteSelf
-			evaluate: aGtRsrScriptEvaluation script
-			for: aGtRsrScriptEvaluation receiver
-			bindings: resolvedBindings
-			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy.
-
+		aGtRsrScriptEvaluation frameContext 
+			ifNil: [ 
+				rsrPromise := remoteSelf
+					evaluate: aGtRsrScriptEvaluation script
+					for: aGtRsrScriptEvaluation receiver
+					bindings: resolvedBindings
+					serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy ]
+			ifNotNil: [ :aFrameContext |
+				rsrPromise := remoteSelf
+					evaluate: aGtRsrScriptEvaluation script
+					for: aGtRsrScriptEvaluation receiver
+					inFrameIdentifierIndex: aFrameContext frameIdentifier identityIndex 
+					ofEvaluationContext: aFrameContext evaluationContext
+					bindings: resolvedBindings
+					serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy ].
+	
 		GtRsrEvaluatorPromise
 			rsrPromise: rsrPromise
 			serializationStrategy: aGtRsrScriptEvaluation serialisationStrategy
