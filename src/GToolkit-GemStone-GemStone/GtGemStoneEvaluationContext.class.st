@@ -12,7 +12,8 @@ Class {
 		'devMessage',
 		'evalServer',
 		'block',
-		'callStack'
+		'callStack',
+		'compilationContext'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
@@ -34,6 +35,11 @@ GtGemStoneEvaluationContext >> buildMessageText [
 GtGemStoneEvaluationContext >> callStack [
 	^ callStack ifNil: [
 			callStack := self createNewCallStack ]
+]
+
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> compilationContext: aCompilationContext [
+	compilationContext := aCompilationContext
 ]
 
 { #category : 'private' }

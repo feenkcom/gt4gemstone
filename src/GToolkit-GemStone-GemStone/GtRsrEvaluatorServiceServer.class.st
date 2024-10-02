@@ -101,14 +101,15 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject  inFrameIdentif
 	receiver := compilationContext currentReceiver.
 	allBindings := compilationContext allBindings.
 	
-	[ ^ GtGemStoneEvaluationContext new
+	^ GtGemStoneEvaluationContext new
 		serializationStrategy: aSymbol;
+		compilationContext: compilationContext;
 		evaluateAndWaitBlock: 
 			[ | method |
 			method := aString _compileInContext: receiver symbolList: allBindings.
-			method _executeInContext: receiver ]
-		from: self ] ensure: [
-			compilationContext updatedFrameBindings  ]
+			[ method _executeInContext: receiver] ensure: [
+				compilationContext updatedFrameBindings ] ]
+		from: self
 ]
 
 { #category : 'private - GemStone' }
