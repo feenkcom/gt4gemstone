@@ -480,6 +480,7 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 		handleCompilerErrorsDuring: [ result := gemstoneSession
 				evaluateAndWaitReturnProxy: aSourceString
 				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
+				inCallFrame: aGtSourceCoderEvaluationContext runtimeContext 
 				bindings: Dictionary empty ]
 		errorDo: [ :errorDetails | 
 			self

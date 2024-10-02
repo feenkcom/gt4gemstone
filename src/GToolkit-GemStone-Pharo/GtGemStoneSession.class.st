@@ -427,6 +427,19 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		yourself
 ]
 
+{ #category : #actions }
+GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: remoteBindings;
+		frameContext: aFrameContext;
+		returnProxy;
+		autoCommit: aBoolean;
+		yourself
+]
+
 { #category : #accessing }
 GtGemStoneSession >> dbSize [
 
@@ -673,6 +686,28 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bind
 		for: anObject
 		bindings: remoteBindings
 		autoCommit: aBoolean) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inCallFrame: aCallFrame bindings: remoteBindings [
+
+	^ self 
+		evaluateAndWaitReturnProxy: remoteScript 
+		for: anObject 
+		inFrameContext: (aCallFrame ifNotNil: [ 	
+			aCallFrame frameEvaluationContext] )
+		bindings: remoteBindings
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings [
+
+	^ (self 
+		createScriptEvaluationReturnProxyFor:  remoteScript
+		for: anObject
+		inFrameContext: aFrameContext
+		bindings: remoteBindings
+		autoCommit: autoCommit) evaluateAndWait
 ]
 
 { #category : #actions }

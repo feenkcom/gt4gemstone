@@ -6,7 +6,8 @@ Class {
 		'session',
 		'serializationStrategy',
 		'pharoBindings',
-		'instanceVariableNames'
+		'instanceVariableNames',
+		'runtimeContext'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -48,6 +49,19 @@ GtGemStoneSnippetCoderEvaluationContext >> receiverObject [
 GtGemStoneSnippetCoderEvaluationContext >> receiverObject: anObject [ 
 
 	receiverObject := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> runtimeContext [
+	<return: #GtGemStoneStackFrame>
+
+	^ runtimeContext
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> runtimeContext: aGemStoneStackFrame [
+
+	runtimeContext := aGemStoneStackFrame
 ]
 
 { #category : #accessing }
