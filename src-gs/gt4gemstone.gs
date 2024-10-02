@@ -21,6 +21,24 @@ removeallclassmethods AkgDebuggerPlay
 
 doit
 (Object
+	subclass: 'GtGemStoneCompilationContext'
+	instVarNames: #(receiver frame frameIdentifier frameLevel evaluationContext clientBindings frameBindings)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneCompilationContext
+removeallclassmethods GtGemStoneCompilationContext
+
+doit
+(Object
 	subclass: 'GtGemStoneDebuggerState'
 	instVarNames: #(summary isResumable isSuspended isTerminated messageText remoteMetadata callStackSpecification)
 	classVars: #()
@@ -80,7 +98,7 @@ removeallclassmethods GtGemStoneDoubleLocalCallStack
 doit
 (Object
 	subclass: 'GtGemStoneEvaluationContext'
-	instVarNames: #(exception process semaphore serializationStrategy result evaluationResult completed devMessage evalServer block callStack)
+	instVarNames: #(exception process semaphore serializationStrategy result evaluationResult completed devMessage evalServer block callStack compilationContext)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -94,6 +112,24 @@ true.
 
 removeallmethods GtGemStoneEvaluationContext
 removeallclassmethods GtGemStoneEvaluationContext
+
+doit
+(Object
+	subclass: 'GtGemStoneEvaluationFrameContext'
+	instVarNames: #(frameIdentifier evaluationContext)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneEvaluationFrameContext
+removeallclassmethods GtGemStoneEvaluationFrameContext
 
 doit
 (Object
@@ -224,7 +260,7 @@ removeallclassmethods GtGemStoneExampleObjectForLocalDelegate
 doit
 (Object
 	subclass: 'GtGemStoneLocalCallFrame'
-	instVarNames: #(frameArray homeMethod frameIdentifier)
+	instVarNames: #(frameContents homeMethod frameIdentifier)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -814,6 +850,100 @@ category: 'other'
 method: AkgDebuggerPlay
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneCompilationContext'
+
+!		Class methods for 'GtGemStoneCompilationContext'
+
+category: 'instance creation'
+classmethod: GtGemStoneCompilationContext
+receiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary 
+	^ self new 
+			setReceiver: anObject  
+			frameIdentifierIndex: aFrameIdentifierIndex 
+			evaluationContext: aTargetEvaluationContext 
+			clientBindings: aDictionary
+%
+
+!		Instance methods for 'GtGemStoneCompilationContext'
+
+category: 'accessing'
+method: GtGemStoneCompilationContext
+allBindings
+	| allBindings |
+	allBindings := GsCurrentSession currentSession symbolList
+		, (Array with: clientBindings).
+
+	^ frame
+		ifNil: [allBindings ]
+		ifNotNil: [ allBindings, (Array with: frameBindings) ]
+%
+
+category: 'bindings'
+method: GtGemStoneCompilationContext
+createClientBindingsFrom: aDictionary
+	| newBindings |
+
+	newBindings := SymbolDictionary new
+		name: #'Explicit client bindings'.
+	aDictionary keysAndValuesDo: [ :key :value |
+		newBindings at: key put: value asGtGsArgument ].
+
+	^ newBindings
+%
+
+category: 'bindings'
+method: GtGemStoneCompilationContext
+createFrameBindignsForFrame: aCallFrame ofEvaluationContext: aTargetEvaluationContext
+	^ aCallFrame createFrameBindings
+			name: ('Frame bindings for frame index ' 
+				, frame frameIdentifier identityIndex printString
+				,  ' in process with oop '
+				,  aTargetEvaluationContext processOop printString) asSymbol;
+			yourself
+%
+
+category: 'accessing'
+method: GtGemStoneCompilationContext
+currentReceiver
+	^ frame 
+		ifNil: [ receiver ]
+		ifNotNil: [ frame receiver ]
+%
+
+category: 'private'
+method: GtGemStoneCompilationContext
+initializeFrameWithFrameIdentifierIndex: aFrameIdentifierIndex
+	frame := evaluationContext frameForIdentifierIndex: aFrameIdentifierIndex.
+	frameIdentifier := frame frameIdentifier.
+	frameLevel := evaluationContext frameLevelForIdentifier: frameIdentifier.
+	frameBindings := self 
+		createFrameBindignsForFrame: frame 
+		ofEvaluationContext: evaluationContext
+%
+
+category: 'private'
+method: GtGemStoneCompilationContext
+setReceiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary
+	receiver := anObject.
+	clientBindings := self createClientBindingsFrom: aDictionary.
+
+	(aFrameIdentifierIndex notNil and: [
+		aTargetEvaluationContext notNil]) ifTrue: [
+			evaluationContext := aTargetEvaluationContext.
+			self initializeFrameWithFrameIdentifierIndex: aFrameIdentifierIndex ]
+%
+
+category: 'updating'
+method: GtGemStoneCompilationContext
+updatedFrameBindings
+	frame ifNil: [ ^ self ].
+
+	evaluationContext 
+			updateBindingsForFrame: frame
+			atLevel: frameLevel
+			with: frameBindings
 %
 
 ! Class implementation for 'GtGemStoneDebuggerState'
@@ -1508,6 +1638,12 @@ callStack
 			callStack := self createNewCallStack ]
 %
 
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+compilationContext: aCompilationContext
+	compilationContext := aCompilationContext
+%
+
 category: 'private'
 method: GtGemStoneEvaluationContext
 createNewCallStack
@@ -1523,6 +1659,13 @@ debuggerState
 		process: process
 		exception: exception
 		callStack: callStack
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
+debuggerStateDictionaryForExport
+
+	^ self debuggerState asDictionaryForExport
 %
 
 category: 'actions - debug'
@@ -1741,6 +1884,13 @@ newDebuggerState
 
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
+newDebuggerStateDictionaryForExport
+
+	^ self newDebuggerState asDictionaryForExport
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
 newDebuggerStateJsonForExport
 
 	^ self newDebuggerState asJsonForExport
@@ -1751,6 +1901,12 @@ method: GtGemStoneEvaluationContext
 process
 
 	^ process
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationContext
+processOop
+	^ process asOop
 %
 
 category: 'actions - debug (identifier)'
@@ -1916,6 +2072,21 @@ synchronizeCallStack
 
 category: 'actions - debug'
 method: GtGemStoneEvaluationContext
+synchronizeCallStackDictionaryForExport
+	| currentCallStack stackUpdater |
+	currentCallStack := self callStack.
+	stackUpdater := GtGemStoneLocalCallStackUpdater forCallStack: currentCallStack.
+
+	stackUpdater updateBasedOn: self createNewCallStack.
+
+	^ (GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: currentCallStack) asDictionaryForExport
+%
+
+category: 'actions - debug'
+method: GtGemStoneEvaluationContext
 terminateAsyncComputation
 
 	process terminate.
@@ -1931,6 +2102,15 @@ method: GtGemStoneEvaluationContext
 terminateProcess
 
 	process terminate
+%
+
+category: 'actions - frame'
+method: GtGemStoneEvaluationContext
+updateBindingsForFrame: aCallFrame atLevel: frameLevel with: frameBindings
+	self callStack 
+		updateBindingsForFrame:aCallFrame
+		atLevel: frameLevel
+		with: frameBindings
 %
 
 category: 'actions - debug (level)'
@@ -2032,6 +2212,39 @@ category: 'private'
 method: GtGemStoneEvaluationContext
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'GtGemStoneEvaluationFrameContext'
+
+!		Class methods for 'GtGemStoneEvaluationFrameContext'
+
+category: 'instance creation'
+classmethod: GtGemStoneEvaluationFrameContext
+frameIdentifier: aFrameIdentifier evaluationContext: anEvaluationContext
+	^ self new 
+		initializeWithFrameIdentifier: aFrameIdentifier 
+		evaluationContext: anEvaluationContext
+%
+
+!		Instance methods for 'GtGemStoneEvaluationFrameContext'
+
+category: 'accessing'
+method: GtGemStoneEvaluationFrameContext
+evaluationContext
+	^ evaluationContext
+%
+
+category: 'accessing'
+method: GtGemStoneEvaluationFrameContext
+frameIdentifier
+	^ frameIdentifier
+%
+
+category: 'initialization'
+method: GtGemStoneEvaluationFrameContext
+initializeWithFrameIdentifier: aFrameIdentifier evaluationContext: anEvaluationContext
+	frameIdentifier := aFrameIdentifier.
+	evaluationContext := anEvaluationContext.
 %
 
 ! Class implementation for 'GtGemstoneEvaluationResult'
@@ -2308,21 +2521,38 @@ targetValueTwo: anObject
 
 category: 'accessing'
 classmethod: GtGemStoneLocalCallFrame
-forFrameArray: aFrameArray 
+forFrameContents: aFrameArray 
 	^ self 
-		forFrameArray: aFrameArray 
+		forFrameContents: aFrameArray 
 		withIdentifier: nil
 %
 
 category: 'accessing'
 classmethod: GtGemStoneLocalCallFrame
-forFrameArray: aFrameArray withIdentifier: aFrameIdentifier
+forFrameContents: aFrameArray withIdentifier: aFrameIdentifier
 	^ self new 
-		initializeForFrameArray: aFrameArray 
+		initializeForFrameContents: aFrameArray 
 		withIdentifier: aFrameIdentifier
 %
 
 !		Instance methods for 'GtGemStoneLocalCallFrame'
+
+category: 'bindings'
+method: GtGemStoneLocalCallFrame
+createFrameBindings
+	| frameBindings |
+
+	frameBindings := SymbolDictionary new.
+
+	1 to: (frameContents at: 9) size do: [ :index | 
+				((frameContents at: 9) at: index) first = $.
+					ifFalse: [ 
+						frameBindings
+							at: ((frameContents at: 9) at: index) asSymbol
+							put: (frameContents at: 11 + index - 1) ] ].
+
+	^ frameBindings
+%
 
 category: 'printing'
 method: GtGemStoneLocalCallFrame
@@ -2343,9 +2573,9 @@ gtFrameArrayItemsFor: aView
 	<gtView>
 	
 	^ aView columnedList
-		title: 'Frame Arraw';
+		title: 'Frame Contents';
 		priority: 25;
-		items: [ frameArray ];
+		items: [ frameContents ];
 		column: 'Index' 
 			text: [ :eachItem :eachIndex | eachIndex  ]
 			width: 45;
@@ -2374,22 +2604,21 @@ homeMethodOop
 
 category: 'initialization'
 method: GtGemStoneLocalCallFrame
-initializeForFrameArray: aFrameArray withIdentifier: aFrameIdentifier 
-	frameArray := aFrameArray.
-	homeMethod := frameArray first homeMethod.
-	frameIdentifier := aFrameIdentifier
+initializeForFrameContents: aFrameArray withIdentifier: aFrameIdentifier 
+	frameIdentifier := aFrameIdentifier.
+	self updateWithFrameContents: aFrameArray
 %
 
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 ipOffset
-	^ frameArray at: 2
+	^ frameContents at: 2
 %
 
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 isForBlock
-	^ frameArray first isMethodForBlock
+	^ frameContents first isMethodForBlock
 %
 
 category: 'testing'
@@ -2494,7 +2723,7 @@ programCounterMarkers
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 receiver
-	^ frameArray at: 10
+	^ frameContents at: 10
 %
 
 category: 'accessing'
@@ -2518,7 +2747,7 @@ selector
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 selfObject
-	^ frameArray at: 8
+	^ frameContents at: 8
 %
 
 category: 'accessing'
@@ -2538,9 +2767,9 @@ method: GtGemStoneLocalCallFrame
 sourceInfo
 	| source ipOffset markers startIndex endIndex i |
 
-	source := frameArray first sourceString.
-	ipOffset := frameArray second.
-	markers := frameArray first _buildIpMarkerArray.
+	source := frameContents first sourceString.
+	ipOffset := frameContents second.
+	markers := frameContents first _buildIpMarkerArray.
 	startIndex := markers indexOf: ipOffset.
 	startIndex = 0 ifTrue:
 		[ ^ { 1. source size. source } ].
@@ -2556,6 +2785,24 @@ sourceInfo
 
 category: 'updating'
 method: GtGemStoneLocalCallFrame
+updateBindingsWith: frameBindings  forFrameAtLevel: aFrameLevel inProcess: gsProcess
+	
+	1 to: (frameContents at: 9) size do: [ :index | 
+				| argsAndTemps |
+				argsAndTemps := frameContents at: 9.
+				(argsAndTemps at: index) first = $.
+					ifFalse: [ 
+						gsProcess
+							_frameAt: aFrameLevel
+							tempAt: index
+							put: (frameBindings at: (argsAndTemps at: index))  ] ].
+
+	"After updating the bindings in the process, reinitialize the contents of the frame"
+	self updateWithFrameContents: (gsProcess _frameContentsAt: aFrameLevel).
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallFrame
 updateIdentifierBasedOn: aCallFrame
 	self updateIdentifierTo:  aCallFrame frameIdentifier
 %
@@ -2564,6 +2811,13 @@ category: 'updating'
 method: GtGemStoneLocalCallFrame
 updateIdentifierTo: anIdentifier
 	frameIdentifier := anIdentifier
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallFrame
+updateWithFrameContents: aFrameArray 
+	frameContents := aFrameArray.
+	homeMethod := frameContents first homeMethod.
 %
 
 ! Class implementation for 'GtGemStoneLocalCallStack'
@@ -2685,7 +2939,7 @@ initializeForProcess: aGsProcess
 	callFrames := OrderedCollection withAll: (aGsProcess gtAllFrames 
 		collect: [ :aFrameArray |
 			GtGemStoneLocalCallFrame 
-				forFrameArray:aFrameArray 
+				forFrameContents: aFrameArray 
 				withIdentifier: self generateIdentifier ]).
 %
 
@@ -2732,6 +2986,15 @@ category: 'updating'
 method: GtGemStoneLocalCallStack
 replaceFrameAt: anIndex with: aNewContext
 	self callFrames at: anIndex put: aNewContext
+%
+
+category: 'updating'
+method: GtGemStoneLocalCallStack
+updateBindingsForFrame: aCallFrame atLevel: aFrameLevel with: frameBindings
+	aCallFrame 
+		updateBindingsWith: frameBindings 
+		forFrameAtLevel: aFrameLevel 
+		inProcess: gsProcess
 %
 
 ! Class implementation for 'GtGemStoneLocalCallStackUpdater'
@@ -3957,6 +4220,26 @@ evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSy
 
 category: 'actions'
 method: GtRsrEvaluatorServiceServer
+evaluate: aString for: anObject inFrameIdentifierIndex: aFrameIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol
+	"Evaluate the receiver's script, answering the serialized result.
+	On the server this is a synchronous operation."
+	
+	| evaluationResult |
+
+	evaluationResult := self 
+		gsEvaluate: aString 
+		for: anObject 
+		inFrameIdentifierIndex: aFrameIndex 
+		ofEvaluationContext: aTargetEvaluationContext asGtGsArgument
+		bindings: aDictionary 
+		serializationStrategy: aSymbol.
+
+	^ evaluationResult ifNotNil: [ :anEvaluationResult |  
+		anEvaluationResult asDictionaryForExport ]
+%
+
+category: 'actions'
+method: GtRsrEvaluatorServiceServer
 evaluateReturnProxy: aString for: anObject bindings: aDictionary
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -3993,6 +4276,32 @@ gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: a
 			method := aString _compileInContext: receiver symbolList: bindings.
 			method _executeInContext: receiver ]
 		from: self.
+%
+
+category: 'private - GemStone'
+method: GtRsrEvaluatorServiceServer
+gsEvaluate: aString for: anObject  inFrameIdentifierIndex: aFrameIdentifierIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol
+	"Evaluate the receiver's script, answering the result"
+	| compilationContext receiver  allBindings  |
+
+	compilationContext := GtGemStoneCompilationContext 
+		receiver: anObject  
+		frameIdentifierIndex: aFrameIdentifierIndex 
+		evaluationContext: aTargetEvaluationContext 
+		clientBindings: aDictionary.
+
+	receiver := compilationContext currentReceiver.
+	allBindings := compilationContext allBindings.
+	
+	^ GtGemStoneEvaluationContext new
+		serializationStrategy: aSymbol;
+		compilationContext: compilationContext;
+		evaluateAndWaitBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: allBindings.
+			[ method _executeInContext: receiver] ensure: [
+				compilationContext updatedFrameBindings ] ]
+		from: self
 %
 
 category: 'private - GemStone'
