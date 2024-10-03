@@ -12,9 +12,7 @@ GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey is: anObject [
 					format: {aBindingKey.
 							anObject});
 			satisfies: [ :aCoderElement | 
-				| coderModel |
-				coderModel := aCoderElement textualCoderViewModel coderModel.
-				coderModel pharoBindings 
+				aCoderElement textualCoderViewModel pharoBindings 
 					bindingValueOf: aBindingKey
 					ifPresent: [ :aBindingValue |
 						aBindingValue = anObject ]
@@ -32,9 +30,7 @@ GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey isProxyWithDisplayStrin
 			label: ('Assert binding  value for {1} satisfies condition.'
 					format: {aBindingKey});
 			satisfies: [ :aCoderElement | 
-				| coderModel |
-				coderModel := aCoderElement textualCoderViewModel coderModel.
-				coderModel pharoBindings 
+				aCoderElement textualCoderViewModel pharoBindings 
 					bindingValueOf: aBindingKey
 					ifPresent: [ :aBindingValue |
 						aBindingValue class = GtGsBareProxy and: [
@@ -53,9 +49,7 @@ GtGemStoneSnippetCoderStep >> assertBindingNotPresent: aBindingKey [
 			label: ('Assert binding {1} not present'
 					format: {aBindingKey});
 			satisfies: [ :aCoderElement | 
-				| coderModel |
-				coderModel := aCoderElement textualCoderViewModel coderModel.
-				coderModel pharoBindings 
+				aCoderElement textualCoderViewModel pharoBindings 
 					bindingValueOf: aBindingKey
 					ifPresent: [ :aBindingValue | false ]
 					ifAbsent: [ true ] ];
@@ -131,11 +125,10 @@ GtGemStoneSnippetCoderStep >> assertInvalidBinding: aBindingKey [
 			label: ('Assert binding {1} is invalid'
 					format: {aBindingKey});
 			satisfies: [ :aCoderElement | 
-				| coderModel session |
-				coderModel := aCoderElement textualCoderViewModel coderModel.
-				session := aCoderElement textualCoderViewModel evaluationContext
-					session.
-				coderModel pharoBindings 
+				| coderViewModel session |
+				coderViewModel := aCoderElement textualCoderViewModel .
+				session := coderViewModel evaluationContext session.
+				coderViewModel pharoBindings 
 					bindingValueOf: aBindingKey
 					ifPresent: [ :aBindingValue |
 						(GtGemStoneWorkspaceVariable new 
@@ -187,10 +180,9 @@ GtGemStoneSnippetCoderStep >> updateBinding: aBindingKey to: anObject [
 					format: {aBindingKey.
 							anObject});
 			action: [ :aCoderElement | 
-				| coderModel |
-				coderModel := aCoderElement textualCoderViewModel coderModel.
-				(coderModel pharoBindings bindingOf: aBindingKey)
-					value: anObject ];
+				(aCoderElement textualCoderViewModel pharoBindings 
+					bindingOf: aBindingKey)
+						value: anObject ];
 			referenceSender;
 			onParentStepTarget: self.
 

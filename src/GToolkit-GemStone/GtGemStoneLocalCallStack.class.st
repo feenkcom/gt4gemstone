@@ -110,7 +110,7 @@ GtGemStoneLocalCallStack >> initializeForProcess: aGsProcess [
 	callFrames := OrderedCollection withAll: (aGsProcess gtAllFrames 
 		collect: [ :aFrameArray |
 			GtGemStoneLocalCallFrame 
-				forFrameArray:aFrameArray 
+				forFrameContents: aFrameArray 
 				withIdentifier: self generateIdentifier ]).
 ]
 
@@ -151,4 +151,12 @@ GtGemStoneLocalCallStack >> removeCallFramesUpwardsFromIndex: anIndex [
 { #category : #updating }
 GtGemStoneLocalCallStack >> replaceFrameAt: anIndex with: aNewContext [
 	self callFrames at: anIndex put: aNewContext
+]
+
+{ #category : #updating }
+GtGemStoneLocalCallStack >> updateBindingsForFrame: aCallFrame atLevel: aFrameLevel with: frameBindings [
+	aCallFrame 
+		updateBindingsWith: frameBindings 
+		forFrameAtLevel: aFrameLevel 
+		inProcess: gsProcess
 ]

@@ -7,7 +7,7 @@ Class {
 		'mutex',
 		'serializationStrategy',
 		'evaluationFailBlock',
-		'snippetCoderModel'
+		'pharoBindings'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -73,6 +73,11 @@ GtGemStoneSnippetAsyncPromiseWrapper >> isFulfilled [
 ]
 
 { #category : #accessing }
+GtGemStoneSnippetAsyncPromiseWrapper >> pharoBindings: anObject [
+	pharoBindings := anObject
+]
+
+{ #category : #accessing }
 GtGemStoneSnippetAsyncPromiseWrapper >> resolvedValue [
 	self assert: [ value ~~ self ].
 	
@@ -97,11 +102,6 @@ GtGemStoneSnippetAsyncPromiseWrapper >> sessionDescription [
 { #category : #accessing }
 GtGemStoneSnippetAsyncPromiseWrapper >> sessionName [
 	^ gtRsrAsycPromise sessionName
-]
-
-{ #category : #accessing }
-GtGemStoneSnippetAsyncPromiseWrapper >> snippetCoderModel: anObject [
-	snippetCoderModel := anObject
 ]
 
 { #category : #actions }
@@ -130,7 +130,7 @@ GtGemStoneSnippetAsyncPromiseWrapper >> wait [
 	gtRsrAsycPromise isFulfilled ifFalse: [ ^ false ].
 	
 	computedResult associationsDo: [ :binding |
-		(snippetCoderModel pharoBindings bindingOf: binding key asSymbol) 
+		(pharoBindings bindingOf: binding key asSymbol) 
 			value: (binding value asGtBareProxyObject) ].
 			
 	value := (computedResult

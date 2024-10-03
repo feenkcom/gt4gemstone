@@ -96,6 +96,13 @@ GtGemStoneStackFrame >> frameArray [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> frameEvaluationContext [
+	^ GtGemStoneEvaluationFrameContext 
+		frameIdentifier: self frameIdentifier
+		evaluationContext: self debuggerProxy
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> frameIdentifier [
 	^ frameIdentifier
 ]

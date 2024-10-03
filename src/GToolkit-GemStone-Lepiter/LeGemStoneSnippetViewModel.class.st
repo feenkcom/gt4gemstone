@@ -37,19 +37,23 @@ LeGemStoneSnippetViewModel >> elementLanguageLabel [
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry [
 
-	^ gemstoneSessionRegistry ifNil:
-		[ self gemstoneSessionRegistry: sharedContext externalSnippetContext gemstoneSessionRegistry.
-		gemstoneSessionRegistry ].
+	^ gemstoneSessionRegistry ifNil: [ 
+		self gemstoneSessionRegistry: sharedContext 
+			externalSnippetContext gemstoneSessionRegistry.
+		gemstoneSessionRegistry ]
 ]
 
 { #category : #accessing }
 LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistry [
 
-	gemstoneSessionRegistry ifNotNil:
-		[ gemstoneSessionRegistry unsubscribe: self ].
+	gemstoneSessionRegistry ifNotNil:[ 
+		gemstoneSessionRegistry unsubscribe: self ].
 	gemstoneSessionRegistry := aGtGemStoneSessionRegistry.
-	sharedContext externalSnippetContext gemstoneSessionRegistry: aGtGemStoneSessionRegistry.
-	gemstoneSessionRegistry when: Announcement
+	
+	sharedContext externalSnippetContext 
+		gemstoneSessionRegistry: aGtGemStoneSessionRegistry.
+	gemstoneSessionRegistry 
+		when: Announcement
 		do: [ :anAnnouncement | self announce: anAnnouncement ]
 		for: self.
 ]
@@ -85,8 +89,8 @@ LeGemStoneSnippetViewModel >> isTiedToProxySession [
 LeGemStoneSnippetViewModel >> onSelfObjectChanged [
 
 	coderViewModel selfObject: self selfObject.
-	self isTiedToProxySession ifTrue:
-		[ sessionIdentifier := self selfObject asGtProxyObject gtSession asExplicitSessionIdentifier.
+	self isTiedToProxySession ifTrue:[ 
+		sessionIdentifier := self selfObject asGtProxyObject gtSession asExplicitSessionIdentifier.
 		coderViewModel sessionLocator: self sessionLocator ].
 ]
 
@@ -165,10 +169,14 @@ LeGemStoneSnippetViewModel >> sharedSnippetContext: aLeSharedSnippetContext [
 	
 	self updateGemstoneSession.
 		
-	coderViewModel coderModel pharoBindings: aLeSharedSnippetContext sharedBindings.
-	coderViewModel selfObject: aLeSharedSnippetContext selfObject.
-	self isTiedToProxySession ifTrue:
-		[ self assert: self sessionLocator asGemStoneSession == self selfObject asGtProxyObject gtSession.
+	coderViewModel pharoBindings: aLeSharedSnippetContext sharedBindings.
+	coderViewModel 
+		selfObject: aLeSharedSnippetContext selfObject
+		withBehaviourSpecification: aLeSharedSnippetContext externalSnippetContext
+			gemstoneBehaviourSpecification.
+	
+	self isTiedToProxySession ifTrue:[ 
+		self assert: self sessionLocator asGemStoneSession == self selfObject asGtProxyObject gtSession.
 		coderViewModel sessionLocator: self sessionLocator ].
 
 	aLeSharedSnippetContext whenSelfObjectChangedSend: #onSelfObjectChanged to: self.
@@ -183,6 +191,6 @@ LeGemStoneSnippetViewModel >> snippetElementClass [
 LeGemStoneSnippetViewModel >> updateGemstoneSession [
 
 	sessionIdentifier := nil.
-	self sessionIdentifier ifNotNil: 
-		[ coderViewModel sessionLocator: self sessionLocator ].
+	self sessionIdentifier ifNotNil: [ 
+		coderViewModel sessionLocator: self sessionLocator ].
 ]

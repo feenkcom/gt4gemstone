@@ -30,7 +30,7 @@ LeGemStoneSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 	
 	self updateLanguageLabel.
-	self coder
+	self coderViewModel
 		pharoBindings: self snippetViewModel snippetBindings.
 ]
 

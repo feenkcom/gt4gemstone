@@ -403,8 +403,8 @@ GtGemStoneMethodCoderModel >> isMeta [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> localBehavior [
-	self methodBehavior localBehaviorDo: [ :aLocalbehavior |
-		^ aLocalbehavior ].
+	self methodBehavior localBehaviorDo: [ :aLocalBehavior |
+		^ aLocalBehavior ].
 		
 	^ super localBehavior
 ]
@@ -452,7 +452,6 @@ GtGemStoneMethodCoderModel >> modifiedMessageAstFor: anAST into: coderAddOns [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> newEvaluationContext [
-
 	^ GtGemStoneSnippetCoderEvaluationContext new
 		session: self session
 ]
@@ -470,16 +469,19 @@ GtGemStoneMethodCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSou
 	"Evaluate the supplied GemStone script."
 
 	| result gemstoneSession |
+	
 	"Ensure the GtgemstoneSession is connected"
 	gemstoneSession := aGtSourceCoderEvaluationContext session.
-	gemstoneSession
-		ifNil: [ self error: 'GemStone session not set.  Does the connector exist?' ].
+	gemstoneSession ifNil: [ 
+		self error: 'GemStone session not set.  Does the connector exist?' ].
 	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
+	
 	self
 		handleCompilerErrorsDuring: [ result := gemstoneSession
-					evaluateAndWaitReturnProxy: aSourceString
-					for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
-					bindings: Dictionary empty ]
+				evaluateAndWaitReturnProxy: aSourceString
+				for: aGtSourceCoderEvaluationContext receiverObject asGtProxyObject
+				inCallFrame: aGtSourceCoderEvaluationContext runtimeContext 
+				bindings: Dictionary empty ]
 		errorDo: [ :errorDetails | 
 			self
 				notifyParseError: errorDetails first last

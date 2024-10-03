@@ -2,7 +2,7 @@ Class {
 	#name : #GtGemStoneLocalCallFrame,
 	#superclass : #Object,
 	#instVars : [
-		'frameArray',
+		'frameContents',
 		'homeMethod',
 		'frameIdentifier'
 	],
@@ -10,17 +10,33 @@ Class {
 }
 
 { #category : #accessing }
-GtGemStoneLocalCallFrame class >> forFrameArray: aFrameArray [ 
+GtGemStoneLocalCallFrame class >> forFrameContents: aFrameArray [ 
 	^ self 
-		forFrameArray: aFrameArray 
+		forFrameContents: aFrameArray 
 		withIdentifier: nil
 ]
 
 { #category : #accessing }
-GtGemStoneLocalCallFrame class >> forFrameArray: aFrameArray withIdentifier: aFrameIdentifier [
+GtGemStoneLocalCallFrame class >> forFrameContents: aFrameArray withIdentifier: aFrameIdentifier [
 	^ self new 
-		initializeForFrameArray: aFrameArray 
+		initializeForFrameContents: aFrameArray 
 		withIdentifier: aFrameIdentifier
+]
+
+{ #category : #bindings }
+GtGemStoneLocalCallFrame >> createFrameBindings [
+	| frameBindings |
+
+	frameBindings := SymbolDictionary new.
+
+	1 to: (frameContents at: 9) size do: [ :index | 
+				((frameContents at: 9) at: index) first = $.
+					ifFalse: [ 
+						frameBindings
+							at: ((frameContents at: 9) at: index) asSymbol
+							put: (frameContents at: 11 + index - 1) ] ].
+
+	^ frameBindings
 ]
 
 { #category : #printing }
@@ -39,9 +55,9 @@ GtGemStoneLocalCallFrame >> gtFrameArrayItemsFor: aView [
 	<gtView>
 	
 	^ aView columnedList
-		title: 'Frame Arraw';
+		title: 'Frame Contents';
 		priority: 25;
-		items: [ frameArray ];
+		items: [ frameContents ];
 		column: 'Index' 
 			text: [ :eachItem :eachIndex | eachIndex  ]
 			width: 45;
@@ -66,20 +82,19 @@ GtGemStoneLocalCallFrame >> homeMethodOop [
 ]
 
 { #category : #initialization }
-GtGemStoneLocalCallFrame >> initializeForFrameArray: aFrameArray withIdentifier: aFrameIdentifier [ 
-	frameArray := aFrameArray.
-	homeMethod := frameArray first homeMethod.
-	frameIdentifier := aFrameIdentifier
+GtGemStoneLocalCallFrame >> initializeForFrameContents: aFrameArray withIdentifier: aFrameIdentifier [ 
+	frameIdentifier := aFrameIdentifier.
+	self updateWithFrameContents: aFrameArray
 ]
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> ipOffset [
-	^ frameArray at: 2
+	^ frameContents at: 2
 ]
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> isForBlock [
-	^ frameArray first isMethodForBlock
+	^ frameContents first isMethodForBlock
 ]
 
 { #category : #testing }
@@ -172,7 +187,7 @@ GtGemStoneLocalCallFrame >> programCounterMarkers [
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> receiver [
-	^ frameArray at: 10
+	^ frameContents at: 10
 ]
 
 { #category : #accessing }
@@ -192,7 +207,7 @@ GtGemStoneLocalCallFrame >> selector [
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> selfObject [
-	^ frameArray at: 8
+	^ frameContents at: 8
 ]
 
 { #category : #accessing }
@@ -209,9 +224,9 @@ GtGemStoneLocalCallFrame >> selfObjectClassName [
 GtGemStoneLocalCallFrame >> sourceInfo [
 	| source ipOffset markers startIndex endIndex i |
 
-	source := frameArray first sourceString.
-	ipOffset := frameArray second.
-	markers := frameArray first _buildIpMarkerArray.
+	source := frameContents first sourceString.
+	ipOffset := frameContents second.
+	markers := frameContents first _buildIpMarkerArray.
 	startIndex := markers indexOf: ipOffset.
 	startIndex = 0 ifTrue:
 		[ ^ { 1. source size. source } ].
@@ -226,6 +241,23 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 ]
 
 { #category : #updating }
+GtGemStoneLocalCallFrame >> updateBindingsWith: frameBindings  forFrameAtLevel: aFrameLevel inProcess: gsProcess [
+	
+	1 to: (frameContents at: 9) size do: [ :index | 
+				| argsAndTemps |
+				argsAndTemps := frameContents at: 9.
+				(argsAndTemps at: index) first = $.
+					ifFalse: [ 
+						gsProcess
+							_frameAt: aFrameLevel
+							tempAt: index
+							put: (frameBindings at: (argsAndTemps at: index))  ] ].
+
+	"After updating the bindings in the process, reinitialize the contents of the frame"
+	self updateWithFrameContents: (gsProcess _frameContentsAt: aFrameLevel).
+]
+
+{ #category : #updating }
 GtGemStoneLocalCallFrame >> updateIdentifierBasedOn: aCallFrame [
 	self updateIdentifierTo:  aCallFrame frameIdentifier
 ]
@@ -233,4 +265,10 @@ GtGemStoneLocalCallFrame >> updateIdentifierBasedOn: aCallFrame [
 { #category : #updating }
 GtGemStoneLocalCallFrame >> updateIdentifierTo: anIdentifier [
 	frameIdentifier := anIdentifier
+]
+
+{ #category : #updating }
+GtGemStoneLocalCallFrame >> updateWithFrameContents: aFrameArray [ 
+	frameContents := aFrameArray.
+	homeMethod := frameContents first homeMethod.
 ]

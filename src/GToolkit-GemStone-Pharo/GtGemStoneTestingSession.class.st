@@ -70,6 +70,12 @@ GtGemStoneTestingSession >> evaluate: remoteScript for: anObject bindings: remot
 ]
 
 { #category : #actions }
+GtGemStoneTestingSession >> evaluate: remoteScript for: anObject inFrame: aFrameIdentifier bindings: remoteBindings serializationStrategy: aSymbol [
+
+	^ self recordMessageSend
+]
+
+{ #category : #actions }
 GtGemStoneTestingSession >> evaluate: remoteScript serializationStrategy: aSymbol [
 
 	^ self recordMessageSend

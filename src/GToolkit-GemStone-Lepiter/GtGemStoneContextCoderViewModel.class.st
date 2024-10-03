@@ -16,6 +16,12 @@ GtGemStoneContextCoderViewModel >> context [
 ]
 
 { #category : #accessing }
+GtGemStoneContextCoderViewModel >> evaluationContext [
+	^ super evaluationContext
+		runtimeContext: self context
+]
+
+{ #category : #accessing }
 GtGemStoneContextCoderViewModel >> homeFrameIdentifier [
 	"Answer the home frame identifier.
 	For a frame that isn't in a block, this is the frame's identifier.

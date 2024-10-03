@@ -383,6 +383,19 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject 
 ]
 
 { #category : #actions }
+GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject frameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		frameContext: aFrameContext;
+		bindings: remoteBindings;
+		serialisationStrategy: aSymbol;
+		autoCommit: aBoolean;
+		yourself
+]
+
+{ #category : #actions }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -409,6 +422,19 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		script: remoteScript;
 		receiver: anObject;
 		bindings: remoteBindings;
+		returnProxy;
+		autoCommit: aBoolean;
+		yourself
+]
+
+{ #category : #actions }
+GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		receiver: anObject;
+		bindings: remoteBindings;
+		frameContext: aFrameContext;
 		returnProxy;
 		autoCommit: aBoolean;
 		yourself
@@ -499,6 +525,18 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 		bindings: remoteBindings
 		serializationStrategy: aSymbol
 		autoCommit: aBoolean) evaluate
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluate: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol [
+
+	^ (self 
+		createScriptEvaluationFor: remoteScript
+		receiver: anObject
+		frameContext: aFrameContext
+		bindings: remoteBindings
+		serializationStrategy: aSymbol
+		autoCommit: autoCommit) evaluate
 ]
 
 { #category : #actions }
@@ -648,6 +686,28 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bind
 		for: anObject
 		bindings: remoteBindings
 		autoCommit: aBoolean) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inCallFrame: aCallFrame bindings: remoteBindings [
+
+	^ self 
+		evaluateAndWaitReturnProxy: remoteScript 
+		for: anObject 
+		inFrameContext: (aCallFrame ifNotNil: [ 	
+			aCallFrame frameEvaluationContext] )
+		bindings: remoteBindings
+]
+
+{ #category : #actions }
+GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings [
+
+	^ (self 
+		createScriptEvaluationReturnProxyFor:  remoteScript
+		for: anObject
+		inFrameContext: aFrameContext
+		bindings: remoteBindings
+		autoCommit: autoCommit) evaluateAndWait
 ]
 
 { #category : #actions }

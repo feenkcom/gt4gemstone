@@ -2,7 +2,8 @@ Class {
 	#name : #GtRsrScriptEvaluation,
 	#superclass : #GtRsrEvaluation,
 	#instVars : [
-		'script'
+		'script',
+		'frameContext'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
@@ -19,10 +20,10 @@ GtRsrScriptEvaluation >> basicSyncEvaluateWithSerialisation [
 	"Evaluate the receiver on the supplied evaluator"
 
 	"The first two checks are a hack until the server is updated to match"
-	serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
+	"serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
 		[ ^ self evaluateLegacy ].
 	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
-		[ ^ self evaluateProxyOnly ].
+		[ ^ self evaluateProxyOnly ]."
 
 	^ gtSession evaluator evaluateScript: self 
 ]
@@ -63,6 +64,16 @@ GtRsrScriptEvaluation >> executeBlockWithDeliveryLogging: aBlockClosure [
 		emitEvaluationDeliveryEndFor: self.
 			
 	^ result
+]
+
+{ #category : #accessing }
+GtRsrScriptEvaluation >> frameContext [
+	^ frameContext
+]
+
+{ #category : #accessing }
+GtRsrScriptEvaluation >> frameContext: aFrameExecutionContext [
+	frameContext := aFrameExecutionContext
 ]
 
 { #category : #evaluating }

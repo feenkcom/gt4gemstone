@@ -4,14 +4,38 @@ Class {
 	#instVars : [
 		'receiverObject',
 		'session',
-		'serializationStrategy'
+		'serializationStrategy',
+		'pharoBindings',
+		'instanceVariableNames',
+		'runtimeContext'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
 
 { #category : #accessing }
 GtGemStoneSnippetCoderEvaluationContext >> executionStrategy [
-	^ executionStrategy ifNil: [ GtGemStoneSnippetSynchronousExecutionStrategy new ]
+	^ executionStrategy ifNil: [ 
+		GtGemStoneSnippetSynchronousExecutionStrategy new ]
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> instanceVariableNames [
+	^ instanceVariableNames
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> instanceVariableNames: anObject [
+	instanceVariableNames := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> pharoBindings [
+	^ pharoBindings
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> pharoBindings: anObject [
+	pharoBindings := anObject
 ]
 
 { #category : #accessing }
@@ -25,6 +49,19 @@ GtGemStoneSnippetCoderEvaluationContext >> receiverObject [
 GtGemStoneSnippetCoderEvaluationContext >> receiverObject: anObject [ 
 
 	receiverObject := anObject
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> runtimeContext [
+	<return: #GtGemStoneStackFrame>
+
+	^ runtimeContext
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderEvaluationContext >> runtimeContext: aGemStoneStackFrame [
+
+	runtimeContext := aGemStoneStackFrame
 ]
 
 { #category : #accessing }

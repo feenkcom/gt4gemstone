@@ -34,6 +34,25 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 ]
 
 { #category : #actions }
+GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject inFrameIdentifierIndex: aFrameIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol [
+	"Evaluate the receiver's script, answering the serialized result.
+	On the server this is a synchronous operation."
+	
+	| evaluationResult |
+
+	evaluationResult := self 
+		gsEvaluate: aString 
+		for: anObject 
+		inFrameIdentifierIndex: aFrameIndex 
+		ofEvaluationContext: aTargetEvaluationContext asGtGsArgument
+		bindings: aDictionary 
+		serializationStrategy: aSymbol.
+
+	^ evaluationResult ifNotNil: [ :anEvaluationResult |  
+		anEvaluationResult asDictionaryForExport ]
+]
+
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -68,6 +87,31 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 			method := aString _compileInContext: receiver symbolList: bindings.
 			method _executeInContext: receiver ]
 		from: self.
+]
+
+{ #category : #'private - GemStone' }
+GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject  inFrameIdentifierIndex: aFrameIdentifierIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol [
+	"Evaluate the receiver's script, answering the result"
+	| compilationContext receiver  allBindings  |
+
+	compilationContext := GtGemStoneCompilationContext 
+		receiver: anObject  
+		frameIdentifierIndex: aFrameIdentifierIndex 
+		evaluationContext: aTargetEvaluationContext 
+		clientBindings: aDictionary.
+
+	receiver := compilationContext currentReceiver.
+	allBindings := compilationContext allBindings.
+	
+	^ GtGemStoneEvaluationContext new
+		serializationStrategy: aSymbol;
+		compilationContext: compilationContext;
+		evaluateAndWaitBlock: 
+			[ | method |
+			method := aString _compileInContext: receiver symbolList: allBindings.
+			[ method _executeInContext: receiver] ensure: [
+				compilationContext updatedFrameBindings ] ]
+		from: self
 ]
 
 { #category : #'private - GemStone' }

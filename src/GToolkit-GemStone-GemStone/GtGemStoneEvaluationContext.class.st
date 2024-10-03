@@ -12,7 +12,8 @@ Class {
 		'devMessage',
 		'evalServer',
 		'block',
-		'callStack'
+		'callStack',
+		'compilationContext'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
@@ -36,6 +37,11 @@ GtGemStoneEvaluationContext >> callStack [
 			callStack := self createNewCallStack ]
 ]
 
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> compilationContext: aCompilationContext [
+	compilationContext := aCompilationContext
+]
+
 { #category : #private }
 GtGemStoneEvaluationContext >> createNewCallStack [
 	^ GtGemStoneLocalCallStack forProcess: process
@@ -49,6 +55,12 @@ GtGemStoneEvaluationContext >> debuggerState [
 		process: process
 		exception: exception
 		callStack: callStack
+]
+
+{ #category : #'actions - debug' }
+GtGemStoneEvaluationContext >> debuggerStateDictionaryForExport [
+
+	^ self debuggerState asDictionaryForExport
 ]
 
 { #category : #'actions - debug' }
@@ -244,6 +256,12 @@ GtGemStoneEvaluationContext >> newDebuggerState [
 ]
 
 { #category : #'actions - debug' }
+GtGemStoneEvaluationContext >> newDebuggerStateDictionaryForExport [
+
+	^ self newDebuggerState asDictionaryForExport
+]
+
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> newDebuggerStateJsonForExport [
 
 	^ self newDebuggerState asJsonForExport
@@ -253,6 +271,11 @@ GtGemStoneEvaluationContext >> newDebuggerStateJsonForExport [
 GtGemStoneEvaluationContext >> process [
 
 	^ process
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> processOop [
+	^ process asOop
 ]
 
 { #category : #'actions - debug (identifier)' }
@@ -398,6 +421,20 @@ GtGemStoneEvaluationContext >> synchronizeCallStack [
 ]
 
 { #category : #'actions - debug' }
+GtGemStoneEvaluationContext >> synchronizeCallStackDictionaryForExport [
+	| currentCallStack stackUpdater |
+	currentCallStack := self callStack.
+	stackUpdater := GtGemStoneLocalCallStackUpdater forCallStack: currentCallStack.
+
+	stackUpdater updateBasedOn: self createNewCallStack.
+
+	^ (GtGemStoneDebuggerState
+		process: process
+		exception: exception
+		callStack: currentCallStack) asDictionaryForExport
+]
+
+{ #category : #'actions - debug' }
 GtGemStoneEvaluationContext >> terminateAsyncComputation [
 
 	process terminate.
@@ -412,6 +449,14 @@ GtGemStoneEvaluationContext >> terminateAsyncComputation [
 GtGemStoneEvaluationContext >> terminateProcess [
 
 	process terminate
+]
+
+{ #category : #'actions - frame' }
+GtGemStoneEvaluationContext >> updateBindingsForFrame: aCallFrame atLevel: frameLevel with: frameBindings [
+	self callStack 
+		updateBindingsForFrame:aCallFrame
+		atLevel: frameLevel
+		with: frameBindings
 ]
 
 { #category : #'actions - debug (level)' }

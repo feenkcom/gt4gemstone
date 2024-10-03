@@ -3,7 +3,8 @@ Class {
 	#superclass : #GtGemStoneSourceCoderViewModel,
 	#instVars : [
 		'hasAsyncExecution',
-		'sessionLocator'
+		'sessionLocator',
+		'pharoBindings'
 	],
 	#category : #'GToolkit-GemStone-Lepiter-Coder'
 }
@@ -42,7 +43,8 @@ GtGemStoneSnippetCoderViewModel >> enableExecutionAction [
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> evaluationContext [
 	^ super evaluationContext
-		session: self session.
+		session: self session;
+		pharoBindings: pharoBindings
 ]
 
 { #category : #testing }
@@ -102,6 +104,16 @@ GtGemStoneSnippetCoderViewModel >> notifyAsyncExecutionCompleted [
 { #category : #notifications }
 GtGemStoneSnippetCoderViewModel >> notifyAsyncExecutionStarted [
 	self announce: GtGemStoneCoderAsyncExecutionStartedAnnouncement
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> pharoBindings [
+	^ pharoBindings
+]
+
+{ #category : #accessing }
+GtGemStoneSnippetCoderViewModel >> pharoBindings: anObject [
+	pharoBindings := anObject
 ]
 
 { #category : #accessing }

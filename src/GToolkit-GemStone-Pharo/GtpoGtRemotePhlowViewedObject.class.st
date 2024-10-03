@@ -15,15 +15,21 @@ GtpoGtRemotePhlowViewedObject >> getActionSpecificationDataFor: anActionSelector
 	^ self
 		proxyPerform: #getActionSpecificationDataFor:
 		withArguments: { anActionSelector asSymbol }
+		autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getActionSpecifications [
+	^ self 
+		proxyPerform: #getActionSpecifications
+		autoCommit: false
+]
 
-	^ (self gtSession performEvaluation
-		receiver: self;
-		selector: #getActionSpecifications;
-		returnLegacy) evaluateAndWait
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getClassSpecificationData [
+	^ self 
+		proxyPerform: #getClassSpecificationData
+		autoCommit: false
 ]
 
 { #category : #accessing }
@@ -31,25 +37,34 @@ GtpoGtRemotePhlowViewedObject >> getDeclarativeActionDataSourceFor: anActionSele
 	^ self
 		proxyPerform: #getDeclarativeActionDataSourceFor: 
 		withArguments: { anActionSelector asSymbol }
+		autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getDeclarativeViewFor: aViewSelector [
-	^ (self gtSession performEvaluation
-		receiver: self;
-		selector: #getDeclarativeViewFor:;
-		arguments: { aViewSelector asSymbol };
-		returnLegacy) evaluateAndWait
+	^ self
+		proxyPerform: #getDeclarativeViewFor:
+		withArguments: { aViewSelector asSymbol }
+		autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getDeclarativeViewMethodNames [
-	^ (self proxyPerform: #getDeclarativeViewMethodNames autoCommit: false) object
+	^ (self 
+		proxyPerform: #getDeclarativeViewMethodNames 
+		autoCommit: false) object
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> getInspectorSpecificationData [
+	^ self proxyPerform: #getInspectorSpecificationData autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getRemoteObjectGtDisplayString [
-	^ self proxyPerform: #getRemoteObjectGtDisplayString
+	^ self 
+		proxyPerform: #getRemoteObjectGtDisplayString
+		autoCommit: false
 ]
 
 { #category : #accessing }
@@ -57,12 +72,12 @@ GtpoGtRemotePhlowViewedObject >> getViewDeclaration: aViewSelector [
 	^ self
 		proxyPerform: #getViewDeclaration:
 		withArguments: { aViewSelector asSymbol }
+		autoCommit: false
 ]
 
 { #category : #accessing }
 GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
-	^ (self gtSession performEvaluation
-		receiver: self;
-		selector: #getViewsDeclarations;
-		returnLegacy) evaluateAndWait
+	^ self 
+		proxyPerform: #getViewsDeclarations
+		autoCommit: false
 ]

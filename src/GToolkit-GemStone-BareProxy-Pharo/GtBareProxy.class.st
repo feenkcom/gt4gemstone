@@ -279,28 +279,16 @@ GtBareProxy >> gtRawFor: aView [
 ]
 
 { #category : #'gt inspector' }
-GtBareProxy >> gtRemoteInspectorContentFor: aView [
-	"This is the default entry method for retrieving the wrapper view containing all non-proxy views for the object."
-	<return: #GtPhlowLabelledView>
-	
-	^ GtPhlowLabelledViewBuilder new
-		object: (GtRemotePhlowViewedObjectInspectorAdaptor
-			forTargetObject: self);
-		view: aView;
-		context: GtPhlowContext new;
-		viewsSelector: #gtViewsForRemoteSideInContext:;
-		actionsSelector: #gtActionsForRemoteSideInContext:;
-		titleComputation: [ :anObject |
-			String streamContents: [ :aStream |
-				anObject gtInspectorRemoteSideTitleStringOn: aStream] ];
-		build
+GtBareProxy >> gtRemoteSideInspectorObjectHolder [
+	^ GtGemStonePhlowInspectorObject new 
 ]
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtRemoteSideInspectorTool [
-	^ GtInspectorTool 
-		forObject: self 
-		viewSelector: #gtRemoteInspectorContentFor: 
+	^ GtInspectorTool new 
+		objectHolder: (self gtRemoteSideInspectorObjectHolder
+			object: self; 
+			viewSelector: #gtRemoteInspectorContentFor:)
 ]
 
 { #category : #'gt inspector' }
