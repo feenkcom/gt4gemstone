@@ -1,44 +1,8 @@
 Class {
 	#name : #GtRemoteGemStonePlaygroundExamples,
-	#superclass : #Object,
-	#instVars : [
-		'theExternalSnippetContext',
-		'server'
-	],
+	#superclass : #GtRemoteGemStoneBasicPlaygroundExamples,
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
-
-{ #category : #'assertions - execution' }
-GtRemoteGemStonePlaygroundExamples >> assertCompositeToolElement: mainToolElement withLabels: aCollectionOfLabels andTypes: aCollectionOfTypes selectedIdex: anIndex [
-	| compositeTool evaluationTool |
-	
-	compositeTool := mainToolElement phlow entity.
-	self assert: compositeTool tools size equals: aCollectionOfLabels size.
-	self 
-		assert: (compositeTool tools collect: [ :aTool |
-			aTool name])  asArray
-		equals: aCollectionOfLabels asArray.
-	self 
-		assert: (compositeTool tools collect: [ :aTool |
-			aTool class])  asArray
-		equals: aCollectionOfTypes asArray.
-		
-	self assert: mainToolElement tabs size equals: aCollectionOfLabels size.
-	self 
-		assert: (mainToolElement tabs collect: [ :aTab | 
-			aTab tabLabel text asString ])  asArray
-		equals: aCollectionOfLabels asArray.
-	self 
-		assert: (mainToolElement viewModel 
-			indexOf:  mainToolElement viewModel selectedTab)
-		equals: anIndex.
-		
-	evaluationTool := mainToolElement content children first phlow entity.
-	self assert: evaluationTool == (compositeTool tools at: anIndex).
-	"self assert: evaluationTool name equals: aLabel.
-	self assert: evaluationTool class equals: aToolType."
-
-]
 
 { #category : #asserting }
 GtRemoteGemStonePlaygroundExamples >> assertDefaultGemStoneSessionLabel: aString for: aScripter [
@@ -64,17 +28,6 @@ GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFo
 ]
 
 { #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertExplicitGemStoneSessionLabel: aString for: aScripter [
-	aScripter
-		assertStep: [ :s | 
-			s
-				label: 'Tab label exists';
-				// GtGemStoneSessionSelectionBadgeElement;
-				value: [ :aSelectionElement | aSelectionElement label asString ]
-					equals: 'GemStone Explicit (' , aString , ')' ]
-]
-
-{ #category : #asserting }
 GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy: aGemStoneInspectorTool [ 
 	self assert:  aGemStoneInspectorTool object remoteClass equals: #SmallInteger.
 	self 
@@ -91,18 +44,6 @@ GtRemoteGemStonePlaygroundExamples >> assertPagerPageWithAyncExecutionWithResult
 		assertCompositeToolElement: mainToolElement
 		withLabels: {'GemStone' . 'Proxy' . 'Execution'} 
 		andTypes: {GtInspectorTool . GtInspectorTool. GtInspectorTool} 
-		selectedIdex: 1
-]
-
-{ #category : #'assertions - execution' }
-GtRemoteGemStonePlaygroundExamples >> assertPagerPageWithProxyObject: aPagerPage [
-	| mainToolElement |
-		
-	mainToolElement := aPagerPage contentElement tool.
-	self 
-		assertCompositeToolElement: mainToolElement
-		withLabels: {'GemStone' . 'Proxy'} 
-		andTypes: {GtInspectorTool . GtInspectorTool} 
 		selectedIdex: 1
 ]
 
@@ -216,15 +157,6 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterSyncExecutionFor: 
 	self assertGemStoneInspectorToolOnIntegerProxy: gemStoneInspectorTool.
 ]
 
-{ #category : #asserting }
-GtRemoteGemStonePlaygroundExamples >> assertRunningDefaultTestSession [
-	self assert: self gemstoneSessionRegistry sessions size equals: 1.
-	self assert: self gemstoneSessionRegistry sessions values first isRunning.
-	self 
-		assert: self gemstoneSessionRegistry sessions values first name
-		equals: 'test:default'.
-]
-
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBindingName for: scripter [
 	scripter pager
@@ -237,51 +169,6 @@ GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBind
 		assertErrorIndicatorPresent;
 		assertErrorMessage: ('{1} holds an object from another session and cannot be used.' format: {aBindingName});
 		play.
-]
-
-{ #category : #'tear down' }
-GtRemoteGemStonePlaygroundExamples >> clearExternalSnippetContext [
-	theExternalSnippetContext ifNil: [ ^ self ].
-	
-	theExternalSnippetContext gemstoneSessionRegistry 
-		ifNotNil: [ :aRegistry |
-			self clearGemStoneRegistry: aRegistry ].
-	
-	theExternalSnippetContext := nil.
-]
-
-{ #category : #'tear down' }
-GtRemoteGemStonePlaygroundExamples >> clearGemStoneRegistry: aRegistry [
-	aRegistry sessions do: [ :aSession | aSession close ]
-]
-
-{ #category : #'examples - setup' }
-GtRemoteGemStonePlaygroundExamples >> createGemStoneSessionRegistry [
-	<gtExample>
-	
-	| sessionRegistry |
-	sessionRegistry := GtGemStoneSessionRegistry new.
-	
-	self assert: sessionRegistry hasConnectors not.
-	self assert: sessionRegistry hasSessions not.
-	
-	^ sessionRegistry
-]
-
-{ #category : #'examples - setup' }
-GtRemoteGemStonePlaygroundExamples >> externalSnippetContext [
-	<after: #clearExternalSnippetContext>
-	<gtExample>
-	
-	^ theExternalSnippetContext ifNil: [
-		theExternalSnippetContext := LeExternalSnippetContext new
-			gemstoneSessionRegistry: self createGemStoneSessionRegistry ]
-]
-
-{ #category : #'examples - setup' }
-GtRemoteGemStonePlaygroundExamples >> gemstoneSessionRegistry [
-	<gtExample>
-	^ self externalSnippetContext gemstoneSessionRegistry
 ]
 
 { #category : #'examples - pages' }
@@ -376,26 +263,6 @@ GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionA
 ]
 
 { #category : #'examples - pages' }
-GtRemoteGemStonePlaygroundExamples >> pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString [
-	<gtExample>
-	| page pageTool snippet |
-	
-	page := LePage new
-		addSnippet: ((snippet := LeGemStoneSnippet sessionName: 'test:default')
-			code: aString);
-		yourself.
-	
-	self assert: snippet sessionName equals: 'test:default'.
-	self assert: snippet code equals: aString.
-	
-	pageTool := LePagePhlowTool new
-		page: page.
-	pageTool externalSnippetContext: self externalSnippetContext.
-				
-	^ pageTool
-]
-
-{ #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageWithEmptySnippetWithNoSession [
 	<gtExample>
 	| page snippet |
@@ -447,32 +314,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneAndCode
 	self assert: self gemstoneSessionRegistry hasSessions.
 	
 	pageTool := self pageToolWithSnippetWithTestDefaultSessionAndCodeWithDelay.
-	
-	scripter := self scripterForPageTool: pageTool.
-		
-	self 
-		assertExplicitGemStoneSessionLabel: 'test' 
-		for: scripter.
-		
-	self assertRunningDefaultTestSession.
-	
-	^ scripter
-]
-
-{ #category : #examples }
-GtRemoteGemStonePlaygroundExamples >> playgroundPageWithConnectedGemStoneWithSnippetCode: aString [
-	"Example with a GemStone snippet with a session name,
-	and a registry with no session and a configured connector."
-	<gtExample>
-	| pageTool scripter |
-	
-	self runningServer.
-		
-	self assert: self gemstoneSessionRegistry hasConnectors.
-	self assert: self gemstoneSessionRegistry hasSessions.
-	
-	pageTool := self 
-		pageToolWithSnippetWithTestDefaultSessionAndSnippetCode: aString.
 	
 	scripter := self scripterForPageTool: pageTool.
 		
@@ -1232,46 +1073,6 @@ GtRemoteGemStonePlaygroundExamples >> promiseResolutionFromAsyncToolFromSecondPa
 	^ evaluationTool promiseResolution
 ]
 
-{ #category : #'examples - setup' }
-GtRemoteGemStonePlaygroundExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	| connector |
-	
-	server ifNotNil: [ ^ server ].
-	
-	connector := GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: 'test'.
-	self gemstoneSessionRegistry  
-		connectorNamed: 'test'
-		ifPresent: [ :aConnector | 
-			Error signal: 'Connector already present'] 
-		ifAbsent: [ 
-			self gemstoneSessionRegistry connectors
-				at: 'test' put: connector ].
-	^ server := self gemstoneSessionRegistry
-		newSessionReusedOrDefaultWithConnector: connector
-]
-
-{ #category : #accessing }
-GtRemoteGemStonePlaygroundExamples >> scripter [
-	^ BlScripter new
-]
-
-{ #category : #accessing }
-GtRemoteGemStonePlaygroundExamples >> scripterForPageTool: aPageTool [ 
-	| scripter |
-	scripter := self scripter.
-	scripter
-		model: aPageTool;
-		element: (GtPager createWrappedOn: aPageTool asElement).
-	^ scripter
-]
-
 { #category : #utils }
 GtRemoteGemStonePlaygroundExamples >> selectToolLabeled: aString fromPageElement: aPageElement [ 
 	^ (aPageElement contentElement tool   query  
@@ -1279,21 +1080,6 @@ GtRemoteGemStonePlaygroundExamples >> selectToolLabeled: aString fromPageElement
 		// #tabbar
 		/ [ :aTab | aTab label asString = aString ])
 		result anyOne phlow entity.
-]
-
-{ #category : #utils }
-GtRemoteGemStonePlaygroundExamples >> selectedToolFromPageElement: aPageElement [ 
-	| mainToolElement |
-	mainToolElement := aPageElement contentElement tool.
-	^ mainToolElement content children first phlow entity
-]
-
-{ #category : #'tear down' }
-GtRemoteGemStonePlaygroundExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
 ]
 
 { #category : #utils }
