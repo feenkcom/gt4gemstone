@@ -1656,6 +1656,17 @@ GtGemStoneSession >> transactionConflictsData [
 			evaluateAndWait 
 ]
 
+{ #category : #actions }
+GtGemStoneSession >> transactionConflictsReport [
+	"This is an experimental method for returning an object with all needed data"
+	^ (self 
+		createBlockEvaluationFor: [ 
+			GtGemStoneSessionTransactionConflictsReport forCurrentConflicts ] 
+		autoCommit: false) 
+			serialisationStrategy: #GtRsrLocalObjectSerializationStrategy;
+			evaluateAndWait 
+]
+
 { #category : #accessing }
 GtGemStoneSession >> transactionMode [
 
