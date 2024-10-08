@@ -331,6 +331,24 @@ removeallclassmethods GtGemStoneSemanticVersionNumber
 
 doit
 (Object
+	subclass: 'GtGemStoneSessionTransactionConflictsReport'
+	instVarNames: #(transactionConflicts)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSessionTransactionConflictsReport
+removeallclassmethods GtGemStoneSessionTransactionConflictsReport
+
+doit
+(Object
 	subclass: 'GtGemStoneSpecification'
 	instVarNames: #(remoteMetadata)
 	classVars: #()
@@ -511,6 +529,24 @@ removeallclassmethods GtRsrSerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
+	subclass: 'GtRsrDirectLocalObjectSerializationStrategy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrDirectLocalObjectSerializationStrategy
+removeallclassmethods GtRsrDirectLocalObjectSerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
 	subclass: 'GtRsrLegacySerializationStrategy'
 	instVarNames: #()
 	classVars: #()
@@ -545,6 +581,24 @@ true.
 
 removeallmethods GtRsrLiteralAndProxySerializationStrategy
 removeallclassmethods GtRsrLiteralAndProxySerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
+	subclass: 'GtRsrLocalObjectSerializationStrategy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrLocalObjectSerializationStrategy
+removeallclassmethods GtRsrLocalObjectSerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
@@ -3271,6 +3325,69 @@ versionString
 			<< self patch printString ]
 %
 
+! Class implementation for 'GtGemStoneSessionTransactionConflictsReport'
+
+!		Class methods for 'GtGemStoneSessionTransactionConflictsReport'
+
+category: 'instance - creation'
+classmethod: GtGemStoneSessionTransactionConflictsReport
+forCurrentConflicts
+	^ self new initializeFromCurrentConflicts
+%
+
+!		Instance methods for 'GtGemStoneSessionTransactionConflictsReport'
+
+category: 'accessing'
+method: GtGemStoneSessionTransactionConflictsReport
+commitResult 
+	^ transactionConflicts  
+		at: #commitResult
+		ifAbsent: [ 'unknown' ]
+%
+
+category: 'gt - extensions'
+method: GtGemStoneSessionTransactionConflictsReport
+gtViewTransactionConflictsFor: aView 
+	<gtView>
+	
+	^ aView forward
+		title: 'Transaction Conflicts';
+		priority: 5;
+		object: [ transactionConflicts ];
+		view: #gtItemsFor:
+%
+
+category: 'initialization'
+method: GtGemStoneSessionTransactionConflictsReport
+initializeFromCurrentConflicts
+	transactionConflicts := System transactionConflicts
+%
+
+category: 'printing'
+method: GtGemStoneSessionTransactionConflictsReport
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream << self commitResult asString ]
+%
+
+category: 'converting'
+method: GtGemStoneSessionTransactionConflictsReport
+reportDictionaryForExport
+	^ Dictionary new
+		at: 'commitResult' put: self commitResult;
+		at: 'conflictsReport'
+			put: (self asGtRsrProxyObjectForConnection: nil);
+		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneSessionTransactionConflictsReport
+transactionConflicts
+	^ transactionConflicts
+%
+
 ! Class implementation for 'GtGemStoneSpecification'
 
 !		Class methods for 'GtGemStoneSpecification'
@@ -4062,6 +4179,28 @@ serialize: anObject
 	^ self subclassResponsibility
 %
 
+! Class implementation for 'GtRsrDirectLocalObjectSerializationStrategy'
+
+!		Instance methods for 'GtRsrDirectLocalObjectSerializationStrategy'
+
+category: 'converting'
+method: GtRsrDirectLocalObjectSerializationStrategy
+serialize: anObject 
+	| names instVarDictionary |
+	
+	"This code that sets the attributes be delegated through the class of the object"
+	names := anObject class allInstVarNames.
+	instVarDictionary := Dictionary new.
+	1 to: names size do: [ :i |
+		instVarDictionary at: (names at: i) put: (self instVarAt: i) ].
+	
+	^ Dictionary new 	
+		at: 'instanceVariables' put: instVarDictionary;
+		at: 'remoteInstance' put: (anObject asGtRsrProxyObjectForConnection: nil);
+		at: 'remoteClassName' put: anObject class name;
+		yourself
+%
+
 ! Class implementation for 'GtRsrLegacySerializationStrategy'
 
 !		Instance methods for 'GtRsrLegacySerializationStrategy'
@@ -4090,6 +4229,24 @@ deserialize: anObject
 	"Deserialize the supplied object"
 	
 	^ anObject
+%
+
+! Class implementation for 'GtRsrLocalObjectSerializationStrategy'
+
+!		Instance methods for 'GtRsrLocalObjectSerializationStrategy'
+
+category: 'converting'
+method: GtRsrLocalObjectSerializationStrategy
+deserialize: anObject
+	"Deserialize the supplied object"
+	
+	^ anObject asGtBareProxyObject asGtpoLocalObject
+%
+
+category: 'converting'
+method: GtRsrLocalObjectSerializationStrategy
+serialize: anObject 
+	^ anObject asGtRsrProxyObjectForConnection: nil
 %
 
 ! Class implementation for 'GtRsrPrimitiveOnlySerializationStrategy'
