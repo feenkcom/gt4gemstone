@@ -527,7 +527,7 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				self openPlaygroundOn: aGtGemStoneSession from: anElement ];
 		contextItemLabel: 'Commit' 
 			action: [ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession commitTransaction.
+				aGtGemStoneSession commitTransactionWithErrorChecking.
 				anElement phlow firstParentWithView phlow update ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Abort' 

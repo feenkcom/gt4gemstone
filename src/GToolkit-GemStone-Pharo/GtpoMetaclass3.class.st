@@ -118,7 +118,7 @@ GtpoMetaclass3 >> gtCommitActionFor: anAction [
 		tooltip: 'GemStone Commit Transaction';
 		icon: BrGlamorousVectorIcons accept;
 		action: [ :button | 
-			gtSession commitTransaction.
+			gtSession commitTransactionWithErrorChecking.
 			button phlow spawnObject: 'Successfully committed transaction' ]
 ]
 

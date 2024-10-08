@@ -86,7 +86,7 @@ GtpoGsNMethod >> gtCommitActionFor: anAction [
 		icon: BrGlamorousVectorIcons accept;
 		priority: 20;
 		action: [ :button | 
-			gtSession commitTransaction ]
+			gtSession commitTransactionWithErrorChecking ]
 ]
 
 { #category : #accessing }

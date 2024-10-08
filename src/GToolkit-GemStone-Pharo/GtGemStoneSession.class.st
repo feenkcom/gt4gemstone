@@ -97,7 +97,7 @@ GtGemStoneSession >> autoCommitEnabled [
 { #category : #private }
 GtGemStoneSession >> autoCommitIfRequired [
 
-	autoCommit ifTrue: [ self commitTransaction ]
+	autoCommit ifTrue: [ self commitTransactionWithErrorChecking ]
 ]
 
 { #category : #private }
@@ -105,12 +105,20 @@ GtGemStoneSession >> autoCommitPromise: aGtRsrEvaluatorPromise [
 	"Commit the receiver.
 	Even though the promise has requested auto-commit, only do it if autoCommit has been successfully enabled"
 
-	autoCommit ifTrue: 
-		[ [ self commitTransaction ] ensure:
-			[ (GtGemStoneSessionAutoCommitSignal
+	autoCommit ifTrue: [ 
+		[ self commitTransactionWithErrorChecking ] ensure:[ 
+			(GtGemStoneSessionAutoCommitSignal
 				session: self
 				promise: aGtRsrEvaluatorPromise)
 					emit ] ]
+]
+
+{ #category : #actions }
+GtGemStoneSession >> basicCommitTransaction [
+	^ (self scriptEvaluation
+		script: 'System commitTransaction';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait
 ]
 
 { #category : #actions }
@@ -169,13 +177,26 @@ GtGemStoneSession >> codeSyncEnabled [
 
 { #category : #actions }
 GtGemStoneSession >> commitTransaction [
+	| commitResult |
+	self isRunning ifFalse: [ 
+		Error signal: 'Session not running' ].
 
-	self isRunning ifTrue: [ 
-		(self scriptEvaluation
-			script: 'System commitTransaction. nil';
-			returnPrimitiveOnly) evaluateAndWait ].
+	commitResult := self basicCommitTransaction.
+	commitResult ifTrue: [ 
+		self announce: (GtGemStoneSessionCommittedAnnouncement session: self) ].
 	
-	self announce: (GtGemStoneSessionCommittedAnnouncement session: self).
+	^ commitResult
+]
+
+{ #category : #actions }
+GtGemStoneSession >> commitTransactionWithErrorChecking [
+	| commitResult |
+	
+	commitResult := self commitTransaction.
+	^ commitResult ifFalse: [
+		GtGemStoneSessionCommitFailedError new
+			gemStoneSession: self;
+			signal ]
 ]
 
 { #category : #actions }
@@ -242,7 +263,7 @@ GtGemStoneSession >> contextMenuContent [
 				ifTrue: [ 'Disconnect' -> [ :anElement | self close ] ]
 				ifFalse: [ 'Connect' -> [ :anElement | self connect ] ]).
 			stream 
-				nextPut: 'Commit' -> [ :anElement | self commitTransaction ];
+				nextPut: 'Commit' -> [ :anElement | self commitTransactionWithErrorChecking ];
 				nextPut: 'Abort' -> [ :anElement | self abortTransaction ].
 			self isDefaultSession ifFalse:
 				[ stream nextPut: 'Be Default' -> [ :anElement | self beDefaultSession ] ].
@@ -1606,6 +1627,30 @@ GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
 	toggledState := codeSync enabled not.
 	codeSync enabled: toggledState.
 	autoCommit := toggledState.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> transactionConflicts [
+	^ (self scriptEvaluation
+		script: 'System transactionConflicts';
+		returnProxy) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> transactionConflictsData [
+	^ (self 
+		createBlockEvaluationFor: [ 
+			| currentConflicts |
+			currentConflicts := System transactionConflicts.
+			Dictionary new 
+				at: 'commitResult' put: (currentConflicts 
+					at: #commitResult ifAbsent: [ 'unknown' ]);
+				at: 'transactionConflicts'
+					put: (currentConflicts asGtRsrProxyObjectForConnection: nil);
+				yourself  ] 
+		autoCommit: false) 
+			returnLegacy;
+			evaluateAndWait 
 ]
 
 { #category : #accessing }
