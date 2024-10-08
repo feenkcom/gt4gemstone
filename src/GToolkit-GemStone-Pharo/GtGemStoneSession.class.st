@@ -97,7 +97,7 @@ GtGemStoneSession >> autoCommitEnabled [
 { #category : #private }
 GtGemStoneSession >> autoCommitIfRequired [
 
-	autoCommit ifTrue: [ self commitTransaction ]
+	autoCommit ifTrue: [ self commitTransactionWithErrorChecking ]
 ]
 
 { #category : #private }
@@ -105,15 +105,23 @@ GtGemStoneSession >> autoCommitPromise: aGtRsrEvaluatorPromise [
 	"Commit the receiver.
 	Even though the promise has requested auto-commit, only do it if autoCommit has been successfully enabled"
 
-	autoCommit ifTrue: 
-		[ [ self commitTransaction ] ensure:
-			[ (GtGemStoneSessionAutoCommitSignal
+	autoCommit ifTrue: [ 
+		[ self commitTransactionWithErrorChecking ] ensure:[ 
+			(GtGemStoneSessionAutoCommitSignal
 				session: self
 				promise: aGtRsrEvaluatorPromise)
 					emit ] ]
 ]
 
 { #category : #actions }
+GtGemStoneSession >> basicCommitTransaction [
+	^ (self scriptEvaluation
+		script: 'System commitTransaction';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait
+]
+
+{ #category : #configure }
 GtGemStoneSession >> beDefaultSession [
 
 	registry defaultSession: self.
@@ -135,7 +143,7 @@ GtGemStoneSession >> cacheName: aString [
 	cacheName := nil.
 ]
 
-{ #category : #accessing }
+{ #category : #configure }
 GtGemStoneSession >> clearAutoCommit [
 	"Clear the auto-commit flag"
 
@@ -159,7 +167,8 @@ GtGemStoneSession >> close [
 { #category : #accessing }
 GtGemStoneSession >> codeSync [
 
-	^ codeSync ifNil: [ codeSync := GtGemStoneSessionCodeSync gtSession: self ]
+	^ codeSync ifNil: [ 
+		codeSync := GtGemStoneSessionCodeSync gtSession: self ]
 ]
 
 { #category : #'accessing - code sync' }
@@ -169,13 +178,26 @@ GtGemStoneSession >> codeSyncEnabled [
 
 { #category : #actions }
 GtGemStoneSession >> commitTransaction [
+	| commitResult |
+	self isRunning ifFalse: [ 
+		Error signal: 'Session not running' ].
 
-	self isRunning ifTrue: [ 
-		(self scriptEvaluation
-			script: 'System commitTransaction. nil';
-			returnPrimitiveOnly) evaluateAndWait ].
+	commitResult := self basicCommitTransaction.
+	commitResult ifTrue: [ 
+		self announce: (GtGemStoneSessionCommittedAnnouncement session: self) ].
 	
-	self announce: (GtGemStoneSessionCommittedAnnouncement session: self).
+	^ commitResult
+]
+
+{ #category : #actions }
+GtGemStoneSession >> commitTransactionWithErrorChecking [
+	| commitResult |
+	
+	commitResult := self commitTransaction.
+	^ commitResult ifFalse: [
+		GtGemStoneSessionCommitFailedError new
+			gemStoneSession: self;
+			signal ]
 ]
 
 { #category : #actions }
@@ -242,7 +264,7 @@ GtGemStoneSession >> contextMenuContent [
 				ifTrue: [ 'Disconnect' -> [ :anElement | self close ] ]
 				ifFalse: [ 'Connect' -> [ :anElement | self connect ] ]).
 			stream 
-				nextPut: 'Commit' -> [ :anElement | self commitTransaction ];
+				nextPut: 'Commit' -> [ :anElement | self commitTransactionWithErrorChecking ];
 				nextPut: 'Abort' -> [ :anElement | self abortTransaction ].
 			self isDefaultSession ifFalse:
 				[ stream nextPut: 'Be Default' -> [ :anElement | self beDefaultSession ] ].
@@ -253,7 +275,7 @@ GtGemStoneSession >> contextMenuContent [
 						from: anElement. ] ])
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean [
 	| cmd |
 
@@ -264,7 +286,7 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean 
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray [
 	| evalFields |
 
@@ -276,7 +298,7 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArra
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean [
 	| evalFields |
 
@@ -289,7 +311,7 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArra
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
 	| evalFields |
 
@@ -342,13 +364,13 @@ GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArgum
 		with: bindings.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript [
 
 	^ self createScriptEvaluationFor: remoteScript autoCommit: autoCommit
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -358,7 +380,7 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript autoCommit: aBoolea
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -370,7 +392,7 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject 
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -382,7 +404,7 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject 
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject frameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -395,7 +417,7 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript receiver: anObject 
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationFor: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -405,7 +427,7 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript serializationStrate
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -415,7 +437,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript autoComm
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -427,7 +449,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		yourself
 ]
 
-{ #category : #actions }
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -440,7 +462,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - remote properties' }
 GtGemStoneSession >> dbSize [
 
 	^ (self scriptEvaluation
@@ -470,14 +492,14 @@ GtGemStoneSession >> ensureRunning [
 		ifFalse: [ self connect ]
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript [
 
 	^ (self 
 		createScriptEvaluationFor: remoteScript) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript autoCommit: aBoolean [
 
 	^ (self 
@@ -485,7 +507,7 @@ GtGemStoneSession >> evaluate: remoteScript autoCommit: aBoolean [
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self 
@@ -495,7 +517,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^ (self 
@@ -505,7 +527,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
 
 	^ (self 
@@ -516,7 +538,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -527,7 +549,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject bindings: remoteBindin
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings serializationStrategy: aSymbol [
 
 	^ (self 
@@ -539,7 +561,7 @@ GtGemStoneSession >> evaluate: remoteScript for: anObject inFrameContext: aFrame
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol [
 
 	^ (self 
@@ -548,7 +570,7 @@ GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol [
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -557,7 +579,7 @@ GtGemStoneSession >> evaluate: remoteScript serializationStrategy: aSymbol autoC
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate' }
 GtGemStoneSession >> evaluateAndCollect: aString [
 
 	| remoteProxies result |
@@ -577,14 +599,14 @@ GtGemStoneSession >> evaluateAndCollect: aString [
 		collect: [ :assoc | assoc value asGtBareProxyObject ]
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript [
 
 	^ (self 
 		createScriptEvaluationFor: remoteScript) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript autoCommit: aBoolean [
 
 	^ (self 
@@ -592,7 +614,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript autoCommit: aBoolean [
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self
@@ -602,7 +624,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		autoCommit: autoCommit) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^ (self
@@ -612,7 +634,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol [
 
 	^ (self 
@@ -623,7 +645,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remoteBindings serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -634,7 +656,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript for: anObject bindings: remot
 		autoCommit: aBoolean) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol [
 
 	^ (self
@@ -643,7 +665,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbo
 		autoCommit: autoCommit) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self
@@ -652,7 +674,7 @@ GtGemStoneSession >> evaluateAndWait: remoteScript serializationStrategy: aSymbo
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
 
 	^ (self 
@@ -660,7 +682,7 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript [
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript autoCommit: aBoolean [
 
 	^ (self 
@@ -668,7 +690,7 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript autoCommit: aBoole
 		autoCommit: aBoolean) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self 
@@ -678,7 +700,7 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bind
 		autoCommit: autoCommit) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^  (self 
@@ -688,7 +710,7 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject bind
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inCallFrame: aCallFrame bindings: remoteBindings [
 
 	^ self 
@@ -699,7 +721,7 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inCa
 		bindings: remoteBindings
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inFrameContext: aFrameContext bindings: remoteBindings [
 
 	^ (self 
@@ -710,14 +732,14 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inFr
 		autoCommit: autoCommit) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate' }
 GtGemStoneSession >> evaluateAsRemoteStream: aString [
 	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
 		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
 			format: {aString}))
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateAsync: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self 
@@ -729,7 +751,7 @@ GtGemStoneSession >> evaluateAsync: remoteScript for: anObject bindings: remoteB
 			evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock [
 
 	^ (self 
@@ -739,7 +761,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock [
 			evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock autoCommit: aBoolean [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
@@ -748,7 +770,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock autoCommit: aBoolean [
 			evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
@@ -757,7 +779,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol [
 			evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol autoCommit: aBoolean [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock 
@@ -766,7 +788,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock serializationStrategy: aSymbol a
 			evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock
@@ -774,7 +796,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray [
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray autoCommit: aBoolean [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock
@@ -782,7 +804,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray autoCommi
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializationStrategy: aSymbol [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock
@@ -791,7 +813,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializa
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -801,7 +823,7 @@ GtGemStoneSession >> evaluateBlock: aCleanBlock withArguments: anArray serializa
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock [
 
 	^ (self 
@@ -811,7 +833,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock [
 			evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock autoCommit: aBoolean [
 
 	^ (self 
@@ -821,7 +843,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock autoCommit: aBoolean [
 			evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aSymbol [
 
 	^ (self 
@@ -831,7 +853,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aS
 			evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -841,7 +863,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock serializationStrategy: aS
 			evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray [
 	^ (self 
 		createBlockEvaluationFor: aCleanBlock
@@ -849,7 +871,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray [
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray autoCommit: aBoolean [
 
 	^ (self 
@@ -858,7 +880,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray au
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray serializationStrategy: aSymbol [
 
 	^ (self 
@@ -868,7 +890,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray se
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
 
 	^ (self 
@@ -878,7 +900,7 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray se
 		autoCommit: aBoolean) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 	| cmd |
 
@@ -888,7 +910,7 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
 	| evalFields |
 
@@ -899,7 +921,7 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments:
 		autoCommit: autoCommit) evaluateAndWait.
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateProxyInspector: remoteScript [
 
 	^ (self scriptEvaluation
@@ -909,7 +931,7 @@ GtGemStoneSession >> evaluateProxyInspector: remoteScript [
 		yourself) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateProxyInspector: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self scriptEvaluation
@@ -921,7 +943,7 @@ GtGemStoneSession >> evaluateProxyInspector: remoteScript for: anObject bindings
 		yourself) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateProxyInspectorRawData: remoteScript [
 
 	^ (self scriptEvaluation
@@ -931,7 +953,7 @@ GtGemStoneSession >> evaluateProxyInspectorRawData: remoteScript [
 		yourself) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateProxyInspectorRawData: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self scriptEvaluation
@@ -943,7 +965,7 @@ GtGemStoneSession >> evaluateProxyInspectorRawData: remoteScript for: anObject b
 		yourself) evaluateAndWait
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript [
 
 	^ (self 
@@ -951,7 +973,7 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript [
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript autoCommit: aBoolean [
 
 	^ (self 
@@ -959,7 +981,7 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript autoCommit: aBoolean [
 		autoCommit: aBoolean) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings [
 
 	^ (self 
@@ -969,7 +991,7 @@ GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: r
 		autoCommit: autoCommit) evaluate
 ]
 
-{ #category : #actions }
+{ #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateReturnProxy: remoteScript for: anObject bindings: remoteBindings autoCommit: aBoolean [
 
 	^ (self 
@@ -994,7 +1016,7 @@ GtGemStoneSession >> formatBasedOnStatusText: aText [
 	^ ropedText
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - remote properties' }
 GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
 	This is only useful if the client and server are on the same machine, i.e. for development."
@@ -1010,7 +1032,8 @@ GtGemStoneSession >> gt4gemstoneVersion [
 
 	^ gt4gemstoneVersion ifNil:
 		[ gt4gemstoneVersion := (self scriptEvaluation
-			script: 'GtGsRelease default versionString';
+			script: 'GtGsRelease default versionString';	
+			autoCommit: false;
 			returnPrimitiveOnly) evaluateAndWait ]
 ]
 
@@ -1163,7 +1186,7 @@ GtGemStoneSession >> gtModifiedObjectsFor: aView [
 		actionUpdateButton
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSession >> gtNrsStringFor: aView [
 	<gtView>
 
@@ -1174,7 +1197,7 @@ GtGemStoneSession >> gtNrsStringFor: aView [
 		text: [ session sessionParameters gemResource asNrsString ]
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSession >> gtPlaygroundFor: aView [
 	<gtView>
 
@@ -1247,7 +1270,7 @@ GtGemStoneSession >> iconName [
 	^ connector iconName
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 GtGemStoneSession >> initialize [ 
 
 	super initialize.
@@ -1302,7 +1325,8 @@ GtGemStoneSession >> isSessionIdentifier [
 { #category : #accessing }
 GtGemStoneSession >> keepAlive [
 
-	^ keepAlive ifNil: [ keepAlive := GtGemStoneKeepAliveSession session: self ]
+	^ keepAlive ifNil: [ 
+		keepAlive := GtGemStoneKeepAliveSession session: self ]
 ]
 
 { #category : #accessing }
@@ -1310,7 +1334,7 @@ GtGemStoneSession >> logEmitter [
 	^ logEmitter
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - remote properties' }
 GtGemStoneSession >> myUserProfile [
 	"Answer a dictionary containing a subset of the UserProfile of the receiver"
 
@@ -1451,7 +1475,7 @@ GtGemStoneSession >> scriptEvaluation [
 		gtSession: self
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - remote properties' }
 GtGemStoneSession >> serverTime [
 	"Answer the time on the server"
 
@@ -1480,7 +1504,7 @@ GtGemStoneSession >> sessionParameters [
 	^ session sessionParameters
 ]
 
-{ #category : #accessing }
+{ #category : #configure }
 GtGemStoneSession >> setAutoCommit [
 	"Set the auto-commit flag.
 	If the connector disallows auto-commit, raise an error"
@@ -1560,7 +1584,7 @@ GtGemStoneSession >> stoneName [
 	^ connector stone
 ]
 
-{ #category : #accessing }
+{ #category : #actions }
 GtGemStoneSession >> stop [
 	"Synonym for #close"
 
@@ -1587,25 +1611,60 @@ GtGemStoneSession >> timeDelta [
 	^ DateAndTime now - self serverTime
 ]
 
-{ #category : #actions }
+{ #category : #configure }
 GtGemStoneSession >> toggleAutoCommit [
 
 	autoCommit := autoCommit not
 ]
 
-{ #category : #actions }
+{ #category : #configure }
 GtGemStoneSession >> toggleCodeSync [
 
 	codeSync enabled: codeSync enabled not
 ]
 
-{ #category : #actions }
+{ #category : #configure }
 GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
 	| toggledState |
 
 	toggledState := codeSync enabled not.
 	codeSync enabled: toggledState.
 	autoCommit := toggledState.
+]
+
+{ #category : #actions }
+GtGemStoneSession >> transactionConflicts [
+	^ (self scriptEvaluation
+		script: 'System transactionConflicts';
+		returnProxy) evaluateAndWait
+]
+
+{ #category : #actions }
+GtGemStoneSession >> transactionConflictsData [
+	^ (self 
+		createBlockEvaluationFor: [ 
+			| currentConflicts |
+			currentConflicts := System transactionConflicts.
+			Dictionary new 
+				at: 'commitResult' put: (currentConflicts 
+					at: #commitResult ifAbsent: [ 'unknown' ]);
+				at: 'transactionConflicts'
+					put: (currentConflicts asGtRsrProxyObjectForConnection: nil);
+				yourself  ] 
+		autoCommit: false) 
+			returnLegacy;
+			evaluateAndWait 
+]
+
+{ #category : #actions }
+GtGemStoneSession >> transactionConflictsReport [
+	"This is an experimental method for returning an object with all needed data"
+	^ (self 
+		createBlockEvaluationFor: [ 
+			GtGemStoneSessionTransactionConflictsReport forCurrentConflicts ] 
+		autoCommit: false) 
+			serialisationStrategy: #GtRsrLocalObjectSerializationStrategy;
+			evaluateAndWait 
 ]
 
 { #category : #accessing }
@@ -1633,7 +1692,7 @@ GtGemStoneSession >> username [
 	^ connector username
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - remote properties' }
 GtGemStoneSession >> writtenObjects [
 
 	^ (self scriptEvaluation

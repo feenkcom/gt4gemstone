@@ -366,7 +366,7 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 		ifTrue: [
 			actions addAll: {
 				'Commit' -> [ :aStatusLineElement |
-					aGtGemStoneSession commitTransaction.
+					aGtGemStoneSession commitTransactionWithErrorChecking.
 					self updateContent].
 				'Abort' -> [ :aStatusLineElement |
 					aGtGemStoneSession abortTransaction.

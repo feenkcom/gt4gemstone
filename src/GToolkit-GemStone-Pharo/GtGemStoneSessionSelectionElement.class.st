@@ -336,7 +336,7 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 		ifTrue: [
 			actions addAll: {
 				'Commit' -> [ :aStatusLineElement | 
-					aGtGemStoneSession commitTransaction ].
+					aGtGemStoneSession commitTransactionWithErrorChecking ].
 				'Abort' -> [ :aStatusLineElement | 
 					aGtGemStoneSession abortTransaction ].
 				'Disconnect' -> [ :aStatusLineElement | 
