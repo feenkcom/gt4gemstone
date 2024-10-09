@@ -26,13 +26,6 @@ GtRsrPerformEvaluation >> basicAsyncEvaluateWithSerialisation [
 
 { #category : #evaluating }
 GtRsrPerformEvaluation >> basicSyncEvaluateWithSerialisation [
-	
-	"The first two checks are a hack until the server is updated to match"
-	"serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
-		[ ^ self evaluateLegacy ].
-	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
-		[ ^ self evaluateProxyOnly ]."
-
 	^ gtSession evaluator evaluatePerform: self 
 ]
 
@@ -46,18 +39,6 @@ GtRsrPerformEvaluation >> emitEvaluationExecutionEndSignal [
 GtRsrPerformEvaluation >> emitEvaluationExecutionStartSignal [
 	self gtSession logEmitter 
 		emitPerformEvaluationExecutionStartFor:  self
-]
-
-{ #category : #evaluating }
-GtRsrPerformEvaluation >> evaluateLegacy [
-
-	^ gtSession evaluator evaluateLegacyPerform: self
-]
-
-{ #category : #evaluating }
-GtRsrPerformEvaluation >> evaluateProxyOnly [
-
-	^ gtSession evaluator evaluateProxyOnlyPerform: self
 ]
 
 { #category : #evaluating }

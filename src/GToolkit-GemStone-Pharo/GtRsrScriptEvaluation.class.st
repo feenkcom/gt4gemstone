@@ -18,13 +18,6 @@ GtRsrScriptEvaluation >> basicAsyncEvaluateWithSerialisation [
 { #category : #evaluating }
 GtRsrScriptEvaluation >> basicSyncEvaluateWithSerialisation [
 	"Evaluate the receiver on the supplied evaluator"
-
-	"The first two checks are a hack until the server is updated to match"
-	"serialisationStrategy = #GtRsrLegacySerializationStrategy ifTrue:
-		[ ^ self evaluateLegacy ].
-	serialisationStrategy = #GtRsrProxyOnlySerializationStrategy ifTrue:
-		[ ^ self evaluateProxyOnly ]."
-
 	^ gtSession evaluator evaluateScript: self 
 ]
 
@@ -38,18 +31,6 @@ GtRsrScriptEvaluation >> emitEvaluationExecutionEndSignal [
 GtRsrScriptEvaluation >> emitEvaluationExecutionStartSignal [
 	self gtSession logEmitter 
 		emitScriptEvaluationExecutionStartFor:  self
-]
-
-{ #category : #'private - evaluating' }
-GtRsrScriptEvaluation >> evaluateLegacy [
-
-	^ gtSession evaluator evaluateLegacyScript: self
-]
-
-{ #category : #'private - evaluating' }
-GtRsrScriptEvaluation >> evaluateProxyOnly [
-
-	^ gtSession evaluator evaluateProxyOnlyScript: self
 ]
 
 { #category : #evaluating }

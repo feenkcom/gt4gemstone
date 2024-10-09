@@ -56,43 +56,6 @@ GtRsrEvaluatorServiceClient >> evaluateAsyncScript: aGtRsrScriptEvaluation [
 ]
 
 { #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateLegacyPerform: aGtRsrPerformEvaluation [
-	| resolvedArguments rsrPromise |
-	
-	resolvedArguments := self argumentsFrom: aGtRsrPerformEvaluation arguments.
-	
-	^ aGtRsrPerformEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := aGtRsrPerformEvaluation remoteSelf
-			proxyPerform: aGtRsrPerformEvaluation selector
-			withArguments: resolvedArguments.
-
-		GtRsrEvaluatorPromise
-			rsrPromise: rsrPromise
-			serializationStrategy: nil
-			gtSession: gtSession
-			autoCommit: aGtRsrPerformEvaluation autoCommit
-			sourceEvaluation: aGtRsrPerformEvaluation ]
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateLegacyScript: aGtRsrScriptEvaluation [
-	| resolvedBindings rsrPromise |
-	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
-
-	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := remoteSelf
-			evaluate: aGtRsrScriptEvaluation script
-			for: aGtRsrScriptEvaluation receiver
-			bindings: resolvedBindings.
-		GtRsrEvaluatorPromise
-			rsrPromise: rsrPromise
-			serializationStrategy: nil
-			gtSession: gtSession
-			autoCommit: aGtRsrScriptEvaluation autoCommit
-			sourceEvaluation: aGtRsrScriptEvaluation ]
-]
-
-{ #category : #actions }
 GtRsrEvaluatorServiceClient >> evaluatePerform: aGtRsrPerformEvaluation [
 	| resolvedArguments rsrPromise |
 	
@@ -110,45 +73,6 @@ GtRsrEvaluatorServiceClient >> evaluatePerform: aGtRsrPerformEvaluation [
 			gtSession: gtSession
 			autoCommit: aGtRsrPerformEvaluation autoCommit
 			sourceEvaluation: aGtRsrPerformEvaluation ]
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateProxyOnlyPerform: aGtRsrPerformEvaluation [
-	| resolvedArguments rsrPromise |
-	
-	resolvedArguments := self argumentsFrom: aGtRsrPerformEvaluation arguments.
-	
-	^ aGtRsrPerformEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := aGtRsrPerformEvaluation remoteSelf
-			proxyPerformReturnProxy: aGtRsrPerformEvaluation selector
-			withArguments: resolvedArguments.
-
-		GtRsrEvaluatorPromise
-			rsrPromise: rsrPromise
-			serializationStrategy: nil
-			gtSession: gtSession
-			autoCommit: aGtRsrPerformEvaluation autoCommit
-			sourceEvaluation: aGtRsrPerformEvaluation ]
-]
-
-{ #category : #actions }
-GtRsrEvaluatorServiceClient >> evaluateProxyOnlyScript: aGtRsrScriptEvaluation [
-	| resolvedBindings rsrPromise |
-	
-	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
-	
-	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
-		rsrPromise := remoteSelf
-			evaluateReturnProxy: aGtRsrScriptEvaluation script
-			for: aGtRsrScriptEvaluation receiver
-			bindings: resolvedBindings.
-
-		GtRsrEvaluatorPromise
-			rsrPromise: rsrPromise
-			serializationStrategy: nil
-			gtSession: gtSession
-			autoCommit: aGtRsrScriptEvaluation autoCommit
-			sourceEvaluation: aGtRsrScriptEvaluation ]
 ]
 
 { #category : #actions }
