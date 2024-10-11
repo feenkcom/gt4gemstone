@@ -50,7 +50,7 @@ GtGemStonePropertiesFile >> addNewGciConnector [
 GtGemStonePropertiesFile >> allConnectors [ 
 	"Answer all defined connectors"
 
-	^ (properties at: #namedConnectors) values
+	^ (properties at: 'namedConnectors') values
 ]
 
 { #category : #accessing }
