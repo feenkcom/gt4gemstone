@@ -41,6 +41,20 @@ GtGemStoneSession class >> displayNameFor: aString [
 		ifFalse: [ aString ]
 ]
 
+{ #category : #logging }
+GtGemStoneSession class >> logMessage: aString [ 
+	"For now a basic logging both to the terminal and to the debug log."
+	Smalltalk  logStdOutDuring: [ :stderr|
+		stderr
+			cr; nextPutAll: aString; cr ].
+	Smalltalk  logDuring: [ :logger|
+		logger
+			nextPutAll: 'THERE_BE_DRAGONS_HERE'; cr;
+			nextPutAll: aString; cr.
+		" write some type of separator"
+		logger nextPutAll: (String new: 79 withAll: $- ); cr; cr ].
+]
+
 { #category : #actions }
 GtGemStoneSession >> abortTransaction [
 	"Abort the current transaction.
@@ -1452,7 +1466,11 @@ GtGemStoneSession >> runPostConnectActions [
 
 { #category : #actions }
 GtGemStoneSession >> safeLogout [
-	[ session logout ] 
+	[ 
+		self class logMessage: DateAndTime now printString, ': [BEGIN] Logout'.
+		session logout.
+		self class logMessage: DateAndTime now printString,': [END] Logout'.
+	] 
 		on: GciError   
 		do: [ :anError |
 			"Ignore the specific SSL error when disconnecting,
