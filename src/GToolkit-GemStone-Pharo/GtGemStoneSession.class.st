@@ -1106,9 +1106,8 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 		tooltip: 'GemStone Commit Transaction';
 		label: 'Commit';
 		icon: BrGlamorousVectorIcons accept;
-		action: 
-				[:button |
-				self evaluateAndWait: 'System commitTransaction' ]
+		action: [:button |
+			self commitTransactionWithErrorChecking]
 ]
 
 { #category : #ui }
