@@ -80,8 +80,7 @@ GtGemStoneSessionRegistry class >> initialize [
 GtGemStoneSessionRegistry class >> onRemoveUniqueInstance: anInstance [
 	"Classes may perform some activities on a singleton that is about to be released"
 	
-	uniqueInstance ifNotNil: 
-		[ uniqueInstance shutdown ].
+	anInstance shutdown.
 ]
 
 { #category : #accessing }
