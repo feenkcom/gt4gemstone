@@ -134,7 +134,7 @@ GtGemStoneSnippetAsyncPromiseWrapper >> wait [
 			value: (binding value asGtBareProxyObject) ].
 			
 	value := (computedResult
-		at: 'snippetResult'
+		at: #snippetResult
 		ifPresent: [ :obj | 
 			serializationStrategy
 				ifNil: [ obj ]
