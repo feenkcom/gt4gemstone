@@ -355,14 +355,17 @@ GtGemStoneSessionRegistry >> defaultConnectorName [
 GtGemStoneSessionRegistry >> defaultSession [
 
 	^ defaultSession ifNil: 
-		[ defaultSession := self
+		[ | newSession |
+		newSession := self
 			sessionWithConnectorNamed: 'default'
 			ifAbsent:
 				[ self
 					connectorNamed: 'default'
 					ifPresent: [ :connector | 
 						self newSessionWithConnectorNamed: 'default'  ]
-					ifAbsent: [ nil ] ] ].
+					ifAbsent: [ nil ] ].
+		newSession ifNotNil: [ self defaultSession: newSession ].
+		newSession ].
 ]
 
 { #category : #accessing }
@@ -873,7 +876,7 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 		[ defaultSession ifNotNil:
 			[ aGtGemStoneSession name = defaultSession name ifTrue: 
 				[ self assert: aGtGemStoneSession = defaultSession.
-				defaultSession := nil ] ].
+				self defaultSession: nil ] ].
 		sessions
 			removeKey: aGtGemStoneSession name
 			ifAbsent: [ ^ self ] ].

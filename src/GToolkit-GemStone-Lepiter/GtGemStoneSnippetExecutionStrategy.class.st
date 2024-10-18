@@ -23,7 +23,7 @@ GtGemStoneSnippetExecutionStrategy >> updateWithRemoteComputationResult: aComput
 	self updateWithRemoteComputationResult: aComputedResult pharoBindings: pharoBindings .
 
 	^ (aComputedResult
-		at: 'snippetResult'
+		at: #snippetResult
 		ifPresent: [ :obj | 
 			aSerializationStrategy
 				ifNil: [ obj ]
