@@ -142,7 +142,7 @@ GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 GtGemStonePropertiesFile >> initialize [ 
 
 	super initialize.
-	properties at: #namedConnectors put: Dictionary new.
+	properties at: 'namedConnectors' put: Dictionary new.
 ]
 
 { #category : #private }
