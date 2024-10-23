@@ -456,6 +456,12 @@ GtGemStoneMethodCoderModel >> newEvaluationContext [
 		session: self session
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneMethodCoderModel >> newFilterContext [
+	^ super newFilterContext 
+		selector: self selector
+]
+
 { #category : #notifying }
 GtGemStoneMethodCoderModel >> notifyMethodRecompiledFrom: aPreviousCompiledMethod to: aNewCompiledMethod [
 	self announce: (GtPharoMethodCoderCompiled new 

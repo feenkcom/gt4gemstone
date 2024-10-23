@@ -280,6 +280,12 @@ GtGemStoneSourceCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
 ]
 
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> newFilterContext [
+	^ super newFilterContext 
+		behavior: self localBehavior
+]
+
 { #category : #'private - actions' }
 GtGemStoneSourceCoderModel >> primitiveDebug: aSourceString inContext: aGtGemStoneCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	| sourceStringWithHalt guineaPig |
