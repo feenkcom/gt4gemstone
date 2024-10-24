@@ -146,11 +146,14 @@ GtGemStoneSourceCoderModel >> browseLocalImplementorsAt: aTextPosition requester
 
 	self
 		detectSelectorAt: aTextPosition
-		ifFound: [ :aSelector | 
+		ifFound: [ :aSelector :anAstNode  | 
 			self
-				notifyObjectSpawn: (GtSearchImplementorsFilter selector: aSelector)
+				notifyObjectSpawn: ((GtSearchImplementorsFilter selector: aSelector)
+					requesterContext: (self newFilterContext
+						nodeInPosition: anAstNode;
+						selectorInPosition: aSelector))
 				requesterObject: aRequester ]
-		ifNone: [  ]
+		ifNone: [  ].
 ]
 
 { #category : #'add-ons' }
@@ -174,7 +177,9 @@ GtGemStoneSourceCoderModel >> browseLocalReferencesAt: aTextPosition requesterOb
 		notifyObjectSpawn: (self
 				detectReferencesFilterAt: aTextPosition
 				withBehavior: self localBehavior
-				ifFound: [ :aReferencesFilter | aReferencesFilter ]
+				ifFound: [ :aReferencesFilter :anAstNode | aReferencesFilter 
+					requesterContext: (self newFilterContext
+							nodeInPosition: anAstNode) ]
 				ifNone: [ GtSearchNullFilter new ])
 		requesterObject: aRequester
 ]
@@ -278,6 +283,12 @@ GtGemStoneSourceCoderModel >> localBehavior [
 { #category : #'instance creation' }
 GtGemStoneSourceCoderModel >> newCompletionStrategy [
 	^ GtCompletionStrategy new
+]
+
+{ #category : #'add-ons' }
+GtGemStoneSourceCoderModel >> newFilterContext [
+	^ super newFilterContext 
+		behavior: self localBehavior
 ]
 
 { #category : #'private - actions' }

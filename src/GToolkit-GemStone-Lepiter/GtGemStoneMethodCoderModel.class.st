@@ -51,24 +51,15 @@ GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: a
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
+	
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			| highlightNode |
-			(node isMessage or: [ node isMessageSend or: [ node isMethodPattern ] ])
-				ifTrue: [ 
-					highlightNode := node isMessageSend 
-						ifTrue: [ node message ] 
-						ifFalse: [ node ].
-			coderAddOns
-				addContextMenuItem: (self
-						createLabel: 'Browse local hierarchy implementors'
-						description: node selector)
-				hover: (self highlightNodeBlock: highlightNode)
-				leave: self removeHighlightBlock
-				action: [ :aTextualViewModel | 
-					self
-						browseLocalHierarchyImplementorsAt: highlightNode startPosition
-						requesterObject: aTextualViewModel ] ] ]
+			self 
+				addLinkMenuAddOnsTo: coderAddOns 
+				node: node 
+				selector: #browseLocalHierarchyImplementorsAt:requesterObject: 
+				label: 'Browse local hierarchy implementors'
+				requesterObject: aCoderViewModel ]
 ]
 
 { #category : #'add-ons' }
@@ -77,23 +68,12 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 	
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			| highlightNode |
-			(node isMessage or: [ node isMessageSend or: [ node isMethodPattern ] ])
-				ifTrue: [ 
-					highlightNode := node isMessageSend 
-						ifTrue: [ node message ] 
-						ifFalse: [ node ].
-			
-			coderAddOns
-				addContextMenuItem: (self
-						createLabel: 'Browse local hierarchy references'
-						description: node selector)
-				hover: (self highlightNodeBlock: highlightNode)
-				leave: self removeHighlightBlock
-				action: [ :aTextualViewModel | 
-					self
-						browseLocalHierarchyReferencesAt: highlightNode startPosition
-						requesterObject: aCoderViewModel ] ] ]
+			self 
+				addLinkMenuAddOnsTo: coderAddOns 
+				node: node 
+				selector: #browseLocalHierarchyReferencesAt:requesterObject: 
+				label: 'Browse local hierarchy references'
+				requesterObject: aCoderViewModel ]
 ]
 
 { #category : #converting }
@@ -105,12 +85,13 @@ GtGemStoneMethodCoderModel >> asCoderViewModel [
 GtGemStoneMethodCoderModel >> browseLocalHierarchyImplementorsAt: aTextPosition requesterObject: aRequester [
 	self
 		detectSelectorAt: aTextPosition
-		ifFound: [ :aSelector | 
+		ifFound: [ :aSelector :anAstNode | 
 			self
-				notifyObjectSpawn: ((GtSearchMethodsInClassFilter 
-					forClass: self localBehavior) 
-						withSuperclasses
-						withSubclasses) & aSelector gtImplementors
+				notifyObjectSpawn: (aSelector gtImplementors
+						requesterContext: (self newFilterContext
+							selectorInPosition: aSelector;
+							nodeInPosition: anAstNode;
+							selectedScope: (GtSearchScopedMethodsClassHierarchyScope new itemClass: self localBehavior)))
 				requesterObject: aRequester ]
 		ifNone: [  ]
 ]
@@ -119,10 +100,13 @@ GtGemStoneMethodCoderModel >> browseLocalHierarchyImplementorsAt: aTextPosition 
 GtGemStoneMethodCoderModel >> browseLocalHierarchyReferencesAt: aTextPosition requesterObject: aRequester [
 	self
 		detectSelectorAt: aTextPosition
-		ifFound: [ :aSelector | 
+		ifFound: [ :aSelector :anAstNode | 
 			self
-				notifyObjectSpawn: (GtSearchMethodsInClassFilter forClass: self localBehavior) withSuperclasses
-						withSubclasses & aSelector gtSenders
+				notifyObjectSpawn: (aSelector gtSenders
+						requesterContext: (self newFilterContext
+							selectorInPosition: aSelector;
+							nodeInPosition: anAstNode;
+							selectedScope: (GtSearchScopedMethodsClassHierarchyScope new itemClass: self localBehavior)))
 				requesterObject: aRequester ]
 		ifNone: [  ]
 ]
@@ -454,6 +438,12 @@ GtGemStoneMethodCoderModel >> modifiedMessageAstFor: anAST into: coderAddOns [
 GtGemStoneMethodCoderModel >> newEvaluationContext [
 	^ GtGemStoneSnippetCoderEvaluationContext new
 		session: self session
+]
+
+{ #category : #'add-ons' }
+GtGemStoneMethodCoderModel >> newFilterContext [
+	^ super newFilterContext 
+		selector: self selector
 ]
 
 { #category : #notifying }

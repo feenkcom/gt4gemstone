@@ -25,7 +25,7 @@ GtGsBareProxy class >> leProxyTypeForPlaygroundPage [
 GtGsBareProxy class >> remoteClassMatcher [
 	"Answer the block that matches a given class name"
 
-	^ [ :aSymbol | self remoteClassName = aSymbol ]
+	^ [ :aSymbol | self remoteClassName sameContentAs: aSymbol ]
 ]
 
 { #category : #private }
