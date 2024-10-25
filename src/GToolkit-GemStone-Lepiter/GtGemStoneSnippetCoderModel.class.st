@@ -249,7 +249,7 @@ GtGemStoneSnippetCoderModel >> targetClassInstVarNamesInContext: aGtSourceCoderE
 		instanceVariableNames isNil ])
 			ifTrue: [
 				instanceVariableNames := aGemstoneSession 
-					evaluateAndWait: 'self class instVarNames' 
+					evaluateAndWait: 'self class allInstVarNames' 
 					for: aGtSourceCoderEvaluationContext receiverObject
 						asGtProxyObject  
 					bindings: Dictionary new ].
