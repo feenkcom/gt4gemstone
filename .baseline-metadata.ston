@@ -2,7 +2,7 @@
 	"repositories" : {
 		"github://feenkcom/RemoteServiceReplication/src" : "f7e414b293867579ea56e46d057c5588846c4da9",
 		"github://feenkcom/SparkleFFI/src" : "407160fa0cbd1e7bff9349136b856b1655badf1d",
-		"github://feenkcom/lepiter/src" : "v0.6.2633",
+		"github://feenkcom/lepiter/src" : "v0.6.2634",
 		"github://feenkcom/gtoolkit-remote/src" : "v0.8.1771"
 	}
 }
