@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Set up the remote GemStone environment for running the examples in 
 # GtRemoteGemStoneDeclarativeExamples

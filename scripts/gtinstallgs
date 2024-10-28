@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env sh
 # set -xv
 #=========================================================================
 # Copyright (C) GemTalk Systems 1986-2020.  All Rights Reserved.
@@ -530,7 +530,7 @@ do
   fi
 
   # Give it 770 permissions (not required, but suggested)
-  lsCommand="/bin/ls -ld"
+  lsCommand="ls -ld"
   $lsCommand $theDir >$tmpFile
   read theProt junk <$tmpFile
   rawPerm=`expr $theProt : ".\([rwxSs-]+\)"`
