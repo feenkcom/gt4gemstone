@@ -41,6 +41,14 @@ GtGemStoneSessionsCardWidget >> activeMark [
 		addChild: (BrGlamorousVectorIcons accept asElement)
 ]
 
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self halt.
+	self enqueueTask: (BlTaskAction new 
+		action: [ 
+			self updateContent ])
+]
+
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> buildContent [
 
@@ -327,7 +335,8 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> registry [
 
-	^ registry ifNil: [ GtGemStoneSessionRegistry default ]
+	^ registry ifNil: [ 
+		GtGemStoneSessionRegistry default ]
 ]
 
 { #category : #accessing }
@@ -337,7 +346,7 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry
 		when: GtGemStoneSessionAnnouncement
-		send: #updateContent
+		send: #actOnGemStoneSessionAnnouncement
 		to: self.
 ]
 
