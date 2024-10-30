@@ -43,7 +43,6 @@ GtGemStoneSessionsCardWidget >> activeMark [
 
 { #category : #callbacks }
 GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self halt.
 	self enqueueTask: (BlTaskAction new 
 		action: [ 
 			self updateContent ])
@@ -334,9 +333,10 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
 
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> registry [
-
 	^ registry ifNil: [ 
-		GtGemStoneSessionRegistry default ]
+		"Initialize the registry with the default one"
+		self registry: GtGemStoneSessionRegistry default.
+		registry ]
 ]
 
 { #category : #accessing }
