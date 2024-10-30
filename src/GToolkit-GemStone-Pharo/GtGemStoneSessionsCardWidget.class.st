@@ -30,6 +30,13 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self enqueueTask: (BlTaskAction new 
+		action: [ 
+			self updateContent ])
+]
+
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -326,8 +333,10 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
 
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> registry [
-
-	^ registry ifNil: [ GtGemStoneSessionRegistry default ]
+	^ registry ifNil: [ 
+		"Initialize the registry with the default one"
+		self registry: GtGemStoneSessionRegistry default.
+		registry ]
 ]
 
 { #category : #accessing }
@@ -337,7 +346,7 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry
 		when: GtGemStoneSessionAnnouncement
-		send: #updateContent
+		send: #actOnGemStoneSessionAnnouncement
 		to: self.
 ]
 
