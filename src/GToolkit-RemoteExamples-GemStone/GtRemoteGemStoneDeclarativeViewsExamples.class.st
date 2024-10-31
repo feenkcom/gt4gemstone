@@ -41,21 +41,21 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedNodesForRawView [
 			nodeValue: (GtRemotePhlowRowValue new 
 				columnValues: {
 					GtRemotePhlowItemTextualValue new 
-						itemText: 'stringIcon'.
-					GtRemotePhlowItemTextualValue new 
-						itemText: 'string'.
-					GtRemotePhlowItemTextualValue new 
-						itemText: 'hello world'}).
-	GtRemotePhlowColumnedTreeNode new
-			nodeId: 3;
-			nodeValue: (GtRemotePhlowRowValue new 
-				columnValues: {
-					GtRemotePhlowItemTextualValue new 
 						itemText: 'collectionIcon'.
 					GtRemotePhlowItemTextualValue new 
 						itemText: 'collectionOfObjects'.
 					GtRemotePhlowItemTextualValue new 
-						itemText: 'anArray( 42, ''Hello World'', 2021-04-06T14:43:50.123456+02:00)'}) }
+						itemText: 'anArray( 42, ''Hello World'', 2021-04-06T14:43:50.123456+02:00)'}).
+		GtRemotePhlowColumnedTreeNode new
+			nodeId: 3;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'stringIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'string'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'hello world'})}
 ]
 
 { #category : #'accessing - expected' }
