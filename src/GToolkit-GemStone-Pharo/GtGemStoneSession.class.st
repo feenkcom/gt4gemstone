@@ -157,11 +157,6 @@ GtGemStoneSession >> cacheName: aString [
 	cacheName := nil.
 ]
 
-{ #category : #utils }
-GtGemStoneSession >> checkNoChildProcessesRunning [
-	"Temporary hook method "
-]
-
 { #category : #configure }
 GtGemStoneSession >> clearAutoCommit [
 	"Clear the auto-commit flag"
@@ -173,8 +168,6 @@ GtGemStoneSession >> clearAutoCommit [
 GtGemStoneSession >> close [
 
 	connection ifNil: [ ^ self ].
-	
-	self checkNoChildProcessesRunning.
 
 	connection close.
 	session ifNotNil: [ self safeLogout ].
