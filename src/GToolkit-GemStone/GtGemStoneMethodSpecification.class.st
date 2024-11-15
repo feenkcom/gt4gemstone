@@ -35,17 +35,17 @@ GtGemStoneMethodSpecification >> asDictionaryForExport [
 	| exportData| 
 	exportData := super asDictionaryForExport.
 	exportData
-		at: #coderClassName put: coderClassName;
-		at: #coderClassIconName put: coderClassIconName;
-		at: #isMeta put: isMeta;
-		at: #categoryName put: categoryName;
-		at: #sourceString put: sourceString;
-		at: #protocolName put: protocolName;
-		at: #selector put: selector.
+		at: 'coderClassName' put: coderClassName;
+		at: 'coderClassIconName' put: coderClassIconName;
+		at: 'isMeta' put: isMeta;
+		at: 'categoryName' put: categoryName;
+		at: 'sourceString' put: sourceString;
+		at: 'protocolName' put: protocolName;
+		at: 'selector' put: selector.
 		
 	self explicitProviderBehaviourDetails ifNotNil: [ :anObject | 
 		exportData 
-			at: #explicitProviderBehaviourDetails 
+			at: 'explicitProviderBehaviourDetails'
 			put: anObject asDictionaryForExport ].
 	
 	^ exportData
@@ -139,16 +139,16 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 
 	self
-		initializeForClassName: (aDictionary at: 'coderClassName')
-		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
-		isMeta: (aDictionary at: 'isMeta')
-		categoryName: (aDictionary at: 'categoryName')
-		selector: (aDictionary at: 'selector')
-		sourceString: (aDictionary at: 'sourceString')
-		protocolName: (aDictionary at: 'protocolName')
-		explicitProvider: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')
+		initializeForClassName: (aDictionary at: #coderClassName)
+		iconName: (aDictionary at: #coderClassIconName ifAbsent: [ nil ])
+		isMeta: (aDictionary at: #isMeta)
+		categoryName: (aDictionary at: #categoryName)
+		selector: (aDictionary at: #selector)
+		sourceString: (aDictionary at: #sourceString)
+		protocolName: (aDictionary at: #protocolName)
+		explicitProvider: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
 			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
-				aDictionary at: 'explicitProviderBehaviourDetails')]
+				aDictionary at: #explicitProviderBehaviourDetails)]
 			ifFalse: [ nil ])
 ]
 
