@@ -40,7 +40,7 @@ GtGemStoneMethodsSpecification >> initializeForGsMethods: aCollectionOfGsMethods
 GtGemStoneMethodsSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
+	methodCoderSpecifications := (aDictionary at: #methodCoderSpecifications)
 		collect: [ :aCoderJsonData  |
 			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]
 ]

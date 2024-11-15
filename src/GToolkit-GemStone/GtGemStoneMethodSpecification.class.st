@@ -139,16 +139,16 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 
 	self
-		initializeForClassName: (aDictionary at: 'coderClassName')
-		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
-		isMeta: (aDictionary at: 'isMeta')
-		categoryName: (aDictionary at: 'categoryName')
-		selector: (aDictionary at: 'selector')
-		sourceString: (aDictionary at: 'sourceString')
-		protocolName: (aDictionary at: 'protocolName')
-		explicitProvider: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')
+		initializeForClassName: (aDictionary at: #coderClassName)
+		iconName: (aDictionary at: #coderClassIconName ifAbsent: [ nil ])
+		isMeta: (aDictionary at: #isMeta)
+		categoryName: (aDictionary at: #categoryName)
+		selector: (aDictionary at: #selector)
+		sourceString: (aDictionary at: #sourceString)
+		protocolName: (aDictionary at: #protocolName)
+		explicitProvider: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
 			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
-				aDictionary at: 'explicitProviderBehaviourDetails')]
+				aDictionary at: #explicitProviderBehaviourDetails)]
 			ifFalse: [ nil ])
 ]
 
