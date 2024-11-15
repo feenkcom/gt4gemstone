@@ -35,17 +35,17 @@ GtGemStoneMethodSpecification >> asDictionaryForExport [
 	| exportData| 
 	exportData := super asDictionaryForExport.
 	exportData
-		at: #coderClassName put: coderClassName;
-		at: #coderClassIconName put: coderClassIconName;
-		at: #isMeta put: isMeta;
-		at: #categoryName put: categoryName;
-		at: #sourceString put: sourceString;
-		at: #protocolName put: protocolName;
-		at: #selector put: selector.
+		at: 'coderClassName' put: coderClassName;
+		at: 'coderClassIconName' put: coderClassIconName;
+		at: 'isMeta' put: isMeta;
+		at: 'categoryName' put: categoryName;
+		at: 'sourceString' put: sourceString;
+		at: 'protocolName' put: protocolName;
+		at: 'selector' put: selector.
 		
 	self explicitProviderBehaviourDetails ifNotNil: [ :anObject | 
 		exportData 
-			at: #explicitProviderBehaviourDetails 
+			at: 'explicitProviderBehaviourDetails'
 			put: anObject asDictionaryForExport ].
 	
 	^ exportData
