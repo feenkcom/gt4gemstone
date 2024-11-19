@@ -530,27 +530,27 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		contextItemLabel: 'Commit' 
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession commitTransactionWithErrorChecking.
-				anElement phlow firstParentWithView phlow update ]
+				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Abort' 
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession abortTransaction.
-				anElement phlow firstParentWithView phlow update ]
+				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Connect' 
 			action:[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession connect.
-				anElement phlow firstParentWithView phlow update ]
+				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning not ];
 		contextItemLabel: 'Disconnect' 
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession close.
-				anElement phlow firstParentWithView phlow update ]
+				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Be Default' 
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession.
-				anElement phlow firstParentWithView phlow update ]
+				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aSession | aSession isDefaultSession not ];
 		contextItemLabel: 'Inspect' 
 			action: [ :anElement :aGtGemStoneSession | 
