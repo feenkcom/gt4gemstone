@@ -112,6 +112,13 @@ GtGemStoneMethodCoderModel >> browseLocalHierarchyReferencesAt: aTextPosition re
 ]
 
 { #category : #accessing }
+GtGemStoneMethodCoderModel >> collapsedText [
+	<return: #BlText>
+
+	^ self collapsedTextPromise wait
+]
+
+{ #category : #accessing }
 GtGemStoneMethodCoderModel >> collapsedTextPromise [
 	<return: #TAsyncPromise of: #BlText>
 
