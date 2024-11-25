@@ -42,7 +42,7 @@ GtGemStoneSessionRegistryExamples >> emptyRegistry_newSession [
 	registry := self sessionRegistryWithTestConnector.
 	connector := registry connectors anyOne.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 1.
@@ -64,7 +64,7 @@ GtGemStoneSessionRegistryExamples >> registryWithConnectedDefaultSession_newSess
 		id: 'default'.
 	existingSession connect.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:1'.
 	self assert: registry sessions size equals: 2.
@@ -85,7 +85,7 @@ GtGemStoneSessionRegistryExamples >> registryWithConnectedNonDefaultSession_newS
 		id: '1'.
 	existingSession connect.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 2.
@@ -110,7 +110,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessio
 	sessionOne connect.
 	sessionOne beDefaultSession.
 	
-	newSession := registry newDefaultSessionWithReusageWithConnector: connector.
+	newSession := registry newConnectedDefaultSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 2.
@@ -134,7 +134,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessio
 		id: '1'.
 	sessionOne connect.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 2.
@@ -158,7 +158,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDefaultNotConnectedSecondSessio
 		id: '1'.
 	sessionOne beDefaultSession.
 	
-	newSession := registry newDefaultSessionWithReusageWithConnector: connector.
+	newSession := registry newConnectedDefaultSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 2.
@@ -178,7 +178,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDisconnectedDefaultSession_newS
 		createNewSessionWithConnector: connector
 		id: 'default'.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 1.
@@ -199,7 +199,7 @@ GtGemStoneSessionRegistryExamples >> registryWithDisconnectedNonDefaultSession_n
 		createNewSessionWithConnector: connector
 		id: '1'.
 	
-	newSession := registry newSessionReusedOrDefaultWithConnector: connector.
+	newSession := registry newSessionWithReusageWithConnector: connector.
 	self assert: newSession isRunning.
 	self assert: newSession name equals: 'test:default'.
 	self assert: registry sessions size equals: 2.

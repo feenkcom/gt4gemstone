@@ -481,7 +481,7 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 		contextItemLabel: 'New Session' 
 			action: [ :anElement :aGtGemStoneConnnector | 
 				aGtGemStoneConnnector registry 
-					newSessionReusedOrDefaultWithConnector: aGtGemStoneConnnector ];
+					newSessionWithReusageWithConnector: aGtGemStoneConnnector ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
@@ -666,13 +666,33 @@ GtGemStoneSessionRegistry >> keepAlive [
 ]
 
 { #category : #accessing }
-GtGemStoneSessionRegistry >> newDefaultSessionWithReusageWithConnector: gtConnector [
+GtGemStoneSessionRegistry >> newConnectedDefaultSessionWithReusageWithConnector: gtConnector [
 	| gtSession |
 	
-	gtSession := self newSessionReusedOrDefaultWithConnector: gtConnector.
+	gtSession := self newSessionWithReusageWithConnector: gtConnector.
 	gtSession beDefaultSession.
 	
 	^ gtSession 
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newConnectedSessionWithReusageWithConnector: aGtGemStoneConnector [
+	"Answer a new session using the supplied connector.
+	Answer the connector's default session if it doesn't exist.
+	Reuse disconnected sessions for that connector if present"
+
+	^ sharedAccess critical:[ 
+		| newSession |
+		newSession := self 
+			createNewReusedOrDefaultSessionWithConnector: aGtGemStoneConnector.
+		newSession
+			connect;
+			yourself ].
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> newConnectedSessionWithReusageWithConnectorNamed: aString [
+	^ self newSessionWithReusageWithConnector: (self connectorNamed: aString)
 ]
 
 { #category : #accessing }
@@ -704,18 +724,7 @@ GtGemStoneSessionRegistry >> newSessionWithReusageWithConnector: aGtGemStoneConn
 	Answer the connector's default session if it doesn't exist.
 	Reuse disconnected sessions for that connector if present"
 
-	^ sharedAccess critical:[ 
-		| newSession |
-		newSession := self 
-			createNewReusedOrDefaultSessionWithConnector: aGtGemStoneConnector.
-		newSession
-			connect;
-			yourself ].
-]
-
-{ #category : #accessing }
-GtGemStoneSessionRegistry >> newSessionWithReusageWithConnectorNamed: aString [
-	^ self newSessionWithReusageWithConnector: (self connectorNamed: aString)
+	^ self newConnectedSessionWithReusageWithConnector: aGtGemStoneConnector
 ]
 
 { #category : #private }

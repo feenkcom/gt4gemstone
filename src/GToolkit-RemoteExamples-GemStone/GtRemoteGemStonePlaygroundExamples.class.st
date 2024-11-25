@@ -372,7 +372,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 	"Close the session and add a new one with the same name."
 	initialSession close.
 	secondSession := self gemstoneSessionRegistry
-		newSessionWithReusageWithConnectorNamed: 'test'.
+		newConnectedSessionWithReusageWithConnectorNamed: 'test'.
 
 	"We execute the snippet, which should use the previously added session."
 	scripter gemStoneSnippet
@@ -649,7 +649,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
 	
 	newSession :=  self gemstoneSessionRegistry
-		newSessionWithReusageWithConnectorNamed: 'test'.
+		newConnectedSessionWithReusageWithConnectorNamed: 'test'.
 	self assert: newSession isDefaultSession not.
 	
 	bindingValue := (newSession evaluateBlockAndWaitReturnProxy: [42])
@@ -688,7 +688,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
 	
 	newSession :=  self gemstoneSessionRegistry
-		newSessionWithReusageWithConnectorNamed: 'test'.
+		newConnectedSessionWithReusageWithConnectorNamed: 'test'.
 	self assert: newSession isDefaultSession not.
 	
 	scripter gemStoneSnippet

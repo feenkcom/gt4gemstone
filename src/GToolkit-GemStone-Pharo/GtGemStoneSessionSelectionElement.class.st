@@ -260,7 +260,7 @@ GtGemStoneSessionSelectionElement >> handleConnectorDoubleClick: anEvent [
 	anEvent selection ifEmpty: [ ^ self ].
 	aWidgetElement := anEvent currentTarget.
 	selectedConnector := aWidgetElement viewModel itemAt: anEvent selection first.
-	newSession := registry newSessionReusedOrDefaultWithConnector: selectedConnector.
+	newSession := registry newSessionWithReusageWithConnector: selectedConnector.
 	newSessionIdentifier := identifierType == #explicit
 		ifTrue: [ GtGemStoneExplicitSessionIdentifier sessionName: newSession name ]
 		ifFalse: "identifierType == #default"[ 
