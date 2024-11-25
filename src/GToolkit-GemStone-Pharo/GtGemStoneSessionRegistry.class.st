@@ -524,9 +524,15 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
 			width: 50;
-		contextItemLabel: 'Playground' action:
-			[ :anElement :aGtGemStoneSession | 
-				self openPlaygroundOn: aGtGemStoneSession from: anElement ];
+		contextItemLabel: 'Playground (default snippet)' 
+			action: [ :anElement :aGtGemStoneSession | 
+				self openPlaygroundWithDefaultSessionIdentifierFrom: anElement ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession isDefaultSession ];
+		contextItemLabel: 'Playground (explicit snippet)' 
+			action: [ :anElement :aGtGemStoneSession | 
+				self 
+					openPlaygroundWithExplicitSessionIdentifierNamed: aGtGemStoneSession name
+					from: anElement ];
 		contextItemLabel: 'Commit' 
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession commitTransactionWithErrorChecking.
@@ -779,17 +785,30 @@ GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnoun
 ]
 
 { #category : #ui }
-GtGemStoneSessionRegistry >> openPlaygroundOn: aSession from: anElement [
+GtGemStoneSessionRegistry >> openPlaygroundWithDefaultSessionIdentifierFrom: anElement [
+	^ self 
+		openPlaygroundWithSnippet: LeGemStoneSnippet withDefaultSessionIdentifier 
+		from: anElement
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> openPlaygroundWithExplicitSessionIdentifierNamed: aSessionName from: anElement [
+	^ self 
+		openPlaygroundWithSnippet: (LeGemStoneSnippet 
+			sessionName: aSessionName)
+		from: anElement
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> openPlaygroundWithSnippet: aGemStoneSnippet from: anElement [
 	| page |
 
 	page := LePage unnamedPage.
-	page addSnippet: (LeGemStoneSnippet sessionName: aSession name).
-	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
-	GtWorldUtility
-		showSpaceWithTitle: aSession name
-		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
-				asStencil
-		from: anElement
+	page addSnippet: aGemStoneSnippet.
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB 
+		addPage: page.
+	
+	anElement phlow spawnTool: page asLepiterPagePhlowTool
 ]
 
 { #category : #accessing }

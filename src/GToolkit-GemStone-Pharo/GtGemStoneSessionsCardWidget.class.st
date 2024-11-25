@@ -260,8 +260,12 @@ GtGemStoneSessionsCardWidget >> doDoubleClicked: anEvent [
 
 	session := anEvent currentTarget items at: anEvent selection first.
 	session class = GtGemStoneCardWidgetNoSessions ifTrue: [ ^ self ].
+	session isDefaultSession ifFalse: [ 
+		self informCannotOpenSnippetOnNonDefaultSession.
+		^ self  ].
 
-	self openPlaygroundOn: session
+	self 
+		openPlaygroundWithDefaultSessionIdentifierNamed: session name
 		from: anEvent currentTarget.
 ]
 
@@ -282,6 +286,11 @@ GtGemStoneSessionsCardWidget >> iconForSymbol: anIconName [
 					self gtSafeIconNamed: anIconName ] ]
 	] on: Error do: [ :error | 
 		Smalltalk ui icons iconNamed: #smallWarningIcon ]
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> informCannotOpenSnippetOnNonDefaultSession [
+	self inform: 'Cannot create a GemStone snippet on a session that is not default using double click. Make the session default, or create an explicit GemStone snippet.'
 ]
 
 { #category : #'initialization ' }
@@ -318,16 +327,34 @@ GtGemStoneSessionsCardWidget >> onAddedToSceneGraph [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> openPlaygroundOn: aSession from: anElement [
+GtGemStoneSessionsCardWidget >> openPlaygroundOnSessionNamed: aSessionName withSnippet: aGemStoneSnippet from: anElement [
 	| page |
 
 	page := LePage unnamedPage.
-	page addSnippet: (LeGemStoneSnippet sessionName: aSession name).
-	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
+	page addSnippet: aGemStoneSnippet.
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB 
+		addPage: page.
+	
 	GtWorldUtility
-		showSpaceWithTitle: aSession name
+		showSpaceWithTitle: aSessionName
 		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
 				asStencil
+		from: anElement
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> openPlaygroundWithDefaultSessionIdentifierNamed: aSessionName from: anElement [
+	^ self 
+		openPlaygroundOnSessionNamed: aSessionName
+		withSnippet: LeGemStoneSnippet withDefaultSessionIdentifier 
+		from: anElement
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> openPlaygroundWithExplicitSessionIdentifierNamed: aSessionName from: anElement [
+	^ self 
+		openPlaygroundOnSessionNamed: aSessionName
+		withSnippet: (LeGemStoneSnippet sessionName: aSessionName)
 		from: anElement
 ]
 
@@ -367,9 +394,17 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 	
 	actions := OrderedCollection new.
 	
+	aGtGemStoneSession isDefaultSession 
+		ifTrue: [
+			actions addAll: {'Playground (default snippet)' -> [ :aStatusLineElement | 
+				self 
+					openPlaygroundWithDefaultSessionIdentifierNamed: aGtGemStoneSession name
+					from: aStatusLineElement ]} ].
 	actions addAll: {
-		'Playground' -> [ :aStatusLineElement | 
-				self openPlaygroundOn: aGtGemStoneSession from: aStatusLineElement]}.
+		'Playground (explicit snippet)' -> [ :aStatusLineElement | 
+				self 
+					openPlaygroundWithExplicitSessionIdentifierNamed: aGtGemStoneSession name
+					from: aStatusLineElement]}.
 	
 	aGtGemStoneSession isRunning 
 		ifTrue: [
@@ -395,11 +430,12 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 					aGtGemStoneSession connect.
 					self updateContent] } ].
 					
-	aGtGemStoneSession isDefaultSession ifFalse: [
-		actions addAll: {
-			'Be Default' -> [ :aStatusLineElement |
-				aGtGemStoneSession beDefaultSession.
-				self updateContent]} ].
+	aGtGemStoneSession isDefaultSession 
+		ifFalse: [
+			actions addAll: {
+				'Be Default' -> [ :aStatusLineElement |
+					aGtGemStoneSession beDefaultSession.
+					self updateContent]} ].
 					
 	actions addAll: {
 		'Toggle AutoCommit' -> [:aStatusLineElement |
