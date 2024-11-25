@@ -28,7 +28,8 @@ Class {
 		'codeSync',
 		'keepAlive',
 		'logEmitter',
-		'activeAsyncExecutions'
+		'activeAsyncExecutions',
+		'isBookmarked'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -141,6 +142,11 @@ GtGemStoneSession >> beDefaultSession [
 	registry defaultSession: self.
 ]
 
+{ #category : #actions }
+GtGemStoneSession >> bookmark [
+	isBookmarked := true
+]
+
 { #category : #accessing }
 GtGemStoneSession >> cacheName [
 
@@ -172,7 +178,7 @@ GtGemStoneSession >> close [
 	connection close.
 	session ifNotNil: [ self safeLogout ].
 	session := connection := evaluator := keepAlive := nil.
-	registry ifNotNil:[ 
+	(registry notNil and: self isBookmarked not) ifTrue: [ 
 		registry removeSession: self ].
 	
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
@@ -1303,6 +1309,11 @@ GtGemStoneSession >> isAutoMode [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> isBookmarked [
+	^ isBookmarked ifNil: [ false ]
+]
+
+{ #category : #testing }
 GtGemStoneSession >> isBusy [
 
 	^ connection isBusy
@@ -1701,6 +1712,11 @@ GtGemStoneSession >> transactionMode: aSymbol [
 		returnPrimitiveOnly) evaluateAndWait.
 	
 	transactionMode := aSymbol
+]
+
+{ #category : #actions }
+GtGemStoneSession >> unbookmark [
+	isBookmarked := false
 ]
 
 { #category : #accessing }

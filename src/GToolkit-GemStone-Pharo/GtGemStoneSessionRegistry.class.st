@@ -295,7 +295,7 @@ GtGemStoneSessionRegistry >> createNewReusedOrDefaultSessionWithConnector: aGtGe
 	| sessionId newSession |
 		
 	sessionId := self idForNewSessionWithReusageFor: aGtGemStoneConnector.
-	"TODO: replace the connector in the session of we reuse it"
+	"TODO: replace the connector in the session if we reuse it"
 	newSession :=  self 
 		sessionNamed: (aGtGemStoneConnector sessionNameWithId: sessionId) 
 		ifAbsent:  [ 
@@ -899,6 +899,7 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 		sessions
 			removeKey: aGtGemStoneSession name
 			ifAbsent: [ ^ self ] ].
+	
 	self announce: (GtGemStoneSessionRemovedAnnouncement session: aGtGemStoneSession).
 ]
 
@@ -985,7 +986,9 @@ GtGemStoneSessionRegistry >> sessionsToDisplay [
 	<return: #Array>
 
 	^ self activeSessions select: [ :aSession |
-		aSession isRunning or: [ aSession isDefaultSession ] ]
+		aSession isRunning or: [ 
+			aSession isDefaultSession or: [
+				aSession isBookmarked ] ] ]
 ]
 
 { #category : #initialization }
