@@ -51,8 +51,15 @@ LeGemStoneSnippet class >> leJsonV4Name [
 { #category : #'instance creation' }
 LeGemStoneSnippet class >> sessionName: aString [
 
-	^ self new sessionIdentifier: 
-		(GtGemStoneExplicitSessionIdentifier sessionName: aString)
+	^ self new 
+		sessionIdentifier: (GtGemStoneExplicitSessionIdentifier 
+			sessionName: aString)
+]
+
+{ #category : #'instance creation' }
+LeGemStoneSnippet class >> withDefaultSessionIdentifier [
+	^ self new 
+		sessionIdentifier: GtGemStoneDefaultSessionIdentifier new
 ]
 
 { #category : #visiting }

@@ -263,8 +263,8 @@ GtGemStoneSessionSelectionElement >> handleConnectorDoubleClick: anEvent [
 	newSession := registry newSessionReusedOrDefaultWithConnector: selectedConnector.
 	newSessionIdentifier := identifierType == #explicit
 		ifTrue: [ GtGemStoneExplicitSessionIdentifier sessionName: newSession name ]
-		ifFalse: "identifierType == #default"
-			[ newSession beDefaultSession.
+		ifFalse: "identifierType == #default"[ 
+			newSession beDefaultSession.
 			GtGemStoneDefaultSessionIdentifier new ].
 	selectAction cull: newSessionIdentifier.
 ]
