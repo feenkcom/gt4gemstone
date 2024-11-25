@@ -82,12 +82,7 @@ GtGemStoneKeepAliveNotificationElement >> buildSessionList [
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
 				ifFalse: [ BlElement new size: 0@0 ] ].
-	newList
-		when: BrSelectionDoubleClicked
-		do: [ :anEvent | self doDoubleClicked: anEvent ].
-	newList
-		when: BrSelectionChanged 
-		do: [ :anEvent | self doSelectionChanged: anEvent ].
+	
 	newList addAptitude: BrColumnedListHeaderAptitude.
 	^ newList.
 ]
@@ -133,10 +128,6 @@ GtGemStoneKeepAliveNotificationElement >> clearContent [
 { #category : #initialization }
 GtGemStoneKeepAliveNotificationElement >> defaultLayout [
 	^ BlLinearLayout vertical alignCenterRight
-]
-
-{ #category : #'private - hooks' }
-GtGemStoneKeepAliveNotificationElement >> doSelectionChanged: anEvent [ 
 ]
 
 { #category : #initialization }

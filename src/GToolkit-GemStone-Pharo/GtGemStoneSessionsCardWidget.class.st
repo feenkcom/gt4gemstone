@@ -181,10 +181,7 @@ GtGemStoneSessionsCardWidget >> createList [
 		title: 'Status';
 		width: 125;
 		cellStencil:[ 
-			BrLabel new
-				aptitude: BrGlamorousLabelAptitude new;
-				hMatchParent;
-				vFitContent ];
+			self createStatusLabel ];
 		dataBinder: [ :aLabel :aSession |
 			aLabel text: (aSession formatBasedOnStatusText: aSession statusDescription) ].
 	
@@ -199,15 +196,9 @@ GtGemStoneSessionsCardWidget >> createList [
 	newList
 		when: BrSelectionDoubleClicked
 		do: [ :anEvent | self doDoubleClicked: anEvent ].
-	newList
-		when: BrSelectionChanged 
-		do: [ :anEvent | self doSelectionChanged: anEvent ].
 	
 	newList
-		rowStencil: (BrColumnedListItemElementWithContextMenuDecorator new
-			stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
-			contextMenuStencil: [ :anElement :aSession | 
-				self sessionActionsFor: aSession ] );
+		rowStencil: self createRowStencil;
 		padding: (BlInsets top: 5);
 		matchParent.
 	
@@ -226,6 +217,22 @@ GtGemStoneSessionsCardWidget >> createRefreshButton [
 			label: 'Refresh sessions list';
 			action: [ :aButton | self updateContent ];
 			yourself.
+]
+
+{ #category : #'private - children' }
+GtGemStoneSessionsCardWidget >> createRowStencil [
+	^ BrColumnedListItemElementWithContextMenuDecorator new
+		stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
+		contextMenuStencil: [ :anElement :aSession | 
+			self sessionActionsFor: aSession ] 
+]
+
+{ #category : #'private - children' }
+GtGemStoneSessionsCardWidget >> createStatusLabel [
+	^ BrLabel new
+		aptitude: BrGlamorousLabelAptitude new;
+		hMatchParent;
+		vFitContent
 ]
 
 { #category : #'private - children' }
@@ -267,10 +274,6 @@ GtGemStoneSessionsCardWidget >> doDoubleClicked: anEvent [
 	self 
 		openPlaygroundWithDefaultSessionIdentifierNamed: session name
 		from: anEvent currentTarget.
-]
-
-{ #category : #'private - children' }
-GtGemStoneSessionsCardWidget >> doSelectionChanged: anEvent [ 
 ]
 
 { #category : #utils }
@@ -455,8 +458,13 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> updateContent [
-	sessionList items: ((self registry sessionsToDisplay 
+GtGemStoneSessionsCardWidget >> sessionsToDisplay [
+	^ ((self registry sessionsToDisplay 
 		sorted: #name ascending) ifEmpty:[ 
-			{ GtGemStoneCardWidgetNoSessions new } ]).
+			{ GtGemStoneCardWidgetNoSessions new } ])
+]
+
+{ #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> updateContent [
+	^ sessionList items: self sessionsToDisplay.
 ]
