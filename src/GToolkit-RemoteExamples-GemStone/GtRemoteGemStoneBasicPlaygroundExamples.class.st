@@ -185,7 +185,7 @@ GtRemoteGemStoneBasicPlaygroundExamples >> runningServer [
 			self gemstoneSessionRegistry connectors
 				at: 'test' put: connector ].
 	^ server := self gemstoneSessionRegistry
-		newSessionReusedOrDefaultWithConnector: connector
+		newSessionWithReusageWithConnector: connector
 ]
 
 { #category : #accessing }

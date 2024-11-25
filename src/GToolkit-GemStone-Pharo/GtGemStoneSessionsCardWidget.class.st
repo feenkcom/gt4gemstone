@@ -30,13 +30,6 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self enqueueTask: (BlTaskAction new 
-		action: [ 
-			self updateContent ])
-]
-
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -46,6 +39,13 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
+]
+
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self enqueueTask: (BlTaskAction new 
+		action: [ 
+			self updateContent ])
 ]
 
 { #category : #'private - ui' }
@@ -134,8 +134,7 @@ GtGemStoneSessionsCardWidget >> createConnectorList [
 				selectedConnector := aWidgetElement viewModel
 					itemAt: theIndices first.
 				newSession := self registry 
-					newSessionReusedOrDefaultWithConnector: selectedConnector.
-				newSession beDefaultSession.
+					newConnectedDefaultSessionWithReusageWithConnector: selectedConnector.
 				self updateContent.
 				
 				self selectSession: newSession.
