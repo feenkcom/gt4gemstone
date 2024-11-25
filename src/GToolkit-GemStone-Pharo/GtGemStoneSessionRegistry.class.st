@@ -899,6 +899,7 @@ GtGemStoneSessionRegistry >> removeSession: aGtGemStoneSession [
 		sessions
 			removeKey: aGtGemStoneSession name
 			ifAbsent: [ ^ self ] ].
+	
 	self announce: (GtGemStoneSessionRemovedAnnouncement session: aGtGemStoneSession).
 ]
 

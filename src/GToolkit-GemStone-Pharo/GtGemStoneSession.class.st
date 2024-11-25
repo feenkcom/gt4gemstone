@@ -178,7 +178,7 @@ GtGemStoneSession >> close [
 	connection close.
 	session ifNotNil: [ self safeLogout ].
 	session := connection := evaluator := keepAlive := nil.
-	registry ifNotNil:[ 
+	(registry notNil and: self isBookmarked not) ifTrue: [ 
 		registry removeSession: self ].
 	
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
