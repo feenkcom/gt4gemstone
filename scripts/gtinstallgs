@@ -136,9 +136,9 @@ echo "If this is correct, press return.  Otherwise, interrupt this script now"
 echo "and contact $SCS ."
 echo ""
 
-if [ $HOSTTYPE != "x86_64" -a $HOSTTYPE != "i386" ]
+if [ $HOSTTYPE != "x86_64" -a $HOSTTYPE != "i386" -a $HOSTTYPE != "arm64" ]
 then
-	echo "Expected x86_64 architecture"
+	echo "Expected x86_64 or arm architecture"
 	exit 1
 fi
 if [ $OSTYPE != "Linux" -a $OSTYPE != "Darwin" ]
