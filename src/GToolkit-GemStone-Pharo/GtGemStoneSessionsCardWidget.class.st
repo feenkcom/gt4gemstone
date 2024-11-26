@@ -30,6 +30,13 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self enqueueTask: (BlTaskAction new 
+		action: [ 
+			self updateContent ])
+]
+
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -39,13 +46,6 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self enqueueTask: (BlTaskAction new 
-		action: [ 
-			self updateContent ])
 ]
 
 { #category : #'private - ui' }

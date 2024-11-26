@@ -11,6 +11,12 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Notifications'
 }
 
+{ #category : #accessing }
+GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
+	self clearNotification.
+	self clearContent.
+]
+
 { #category : #'private - accessing' }
 GtGemStoneKeepAliveNotificationElement >> activeMark [
 
@@ -20,12 +26,6 @@ GtGemStoneKeepAliveNotificationElement >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #accessing }
-GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
-	self clearNotification.
-	self clearContent.
 ]
 
 { #category : #'private - accessing' }
@@ -138,7 +138,7 @@ GtGemStoneKeepAliveNotificationElement >> initialize [
 	
 	self initializeBorderElement.
 	namePane := self buildNameLabel.
-	nameLabel text: 'GemStone Diry Sessions'.
+	nameLabel text: 'GemStone Dirty Sessions'.
 	sessionList := self buildSessionList.
 	toolbarPane := self buildToolbar.
 	
