@@ -4,21 +4,33 @@ then
 	exit 1
 fi
 
+ARCH="$(uname -m)"
+case "${ARCH}" in
+    arm64 ) 
+		GS_SERV_FILE=GemStone64Bit3.7.1-arm64.Darwin
+		GS_CLIENT_FILE=GemStoneClientLibs3.7.1-arm64.Darwin
+		;;
+    * ) 
+		GS_SERV_FILE="GemStone64Bit3.7.1-i386.Darwin"
+		GS_CLIENT_FILE=GemStoneClientLibs3.7.1-i386.Darwin
+		;;
+esac
+
 # Download all the required archives, git clones, etc. and upack
-if [ ! -f GemStone64Bit3.7.1-i386.Darwin.dmg ]
+if [ ! -f "${GS_CLIENT_FILE}".dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/GemStone64Bit3.7.1-i386.Darwin.dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/"$GS_SERV_FILE".dmg
 fi
 
-if [ ! -f GemStoneClientLibs3.7.1-i386.Darwin.dmg ]
+if [ ! -f "${GS_CLIENT_FILE}".dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/GemStoneClientLibs3.7.1-i386.Darwin.dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/"${GS_CLIENT_FILE}".dmg
 fi
 
-hdiutil attach GemStone64Bit3.7.1-i386.Darwin.dmg
-cp -R /Volumes/installGemStone/GemStone64Bit3.7.1-i386.Darwin ${GEMSTONE_WORKSPACE}/
+hdiutil attach "${GS_SERV_FILE}".dmg
+cp -R /Volumes/installGemStone/"${GS_SERV_FILE}" "${GEMSTONE_WORKSPACE}/"
 hdiutil detach /Volumes/installGemStone
 
-hdiutil attach GemStoneClientLibs3.7.1-i386.Darwin.dmg
-cp -R /Volumes/GemStoneClientLibs3.7.1-i386.Darwin/3.7.1 ${GEMSTONE_WORKSPACE}/
-hdiutil detach /Volumes/GemStoneClientLibs3.7.1-i386.Darwin
+hdiutil attach "${GS_CLIENT_FILE}".dmg
+cp -R /Volumes/"${GS_CLIENT_FILE}"/3.7.1 "${GEMSTONE_WORKSPACE}/"
+hdiutil detach /Volumes/"${GS_CLIENT_FILE}"
