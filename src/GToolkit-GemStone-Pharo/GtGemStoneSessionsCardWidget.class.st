@@ -337,7 +337,13 @@ GtGemStoneSessionsCardWidget >> openPlaygroundOnSessionNamed: aSessionName withS
 	page := LePage unnamedPage.
 	page addSnippet: aGemStoneSnippet.
 	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
-	anElement phlow spaceBuilder spawnPage: page
+	
+	anElement phlow spaceBuilder
+		title: aSessionName;
+		inPager: [ 
+			page asLepiterPagePhlowTool 
+				asElementDo: [ :e | e ] ] asStencil;
+		show
 ]
 
 { #category : #'private - ui' }
