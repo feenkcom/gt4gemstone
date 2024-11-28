@@ -334,17 +334,16 @@ GtGemStoneSessionsCardWidget >> onAddedToSceneGraph [
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> openPlaygroundOnSessionNamed: aSessionName withSnippet: aGemStoneSnippet from: anElement [
 	| page |
-
 	page := LePage unnamedPage.
 	page addSnippet: aGemStoneSnippet.
-	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB 
-		addPage: page.
+	LeDatabasesRegistry default defaultLogicalDatabase playgroundDB addPage: page.
 	
-	GtWorldUtility
-		showSpaceWithTitle: aSessionName
-		inPagerWith: [ page asLepiterPagePhlowTool asElementDo: [ :e | e ] ]
-				asStencil
-		from: anElement
+	anElement phlow spaceBuilder
+		title: aSessionName;
+		inPager: [ 
+			page asLepiterPagePhlowTool 
+				asElementDo: [ :e | e ] ] asStencil;
+		show
 ]
 
 { #category : #'private - ui' }
