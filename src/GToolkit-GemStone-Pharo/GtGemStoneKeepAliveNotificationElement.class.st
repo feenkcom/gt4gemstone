@@ -138,7 +138,7 @@ GtGemStoneKeepAliveNotificationElement >> initialize [
 	
 	self initializeBorderElement.
 	namePane := self buildNameLabel.
-	nameLabel text: 'GemStone Diry Sessions'.
+	nameLabel text: 'GemStone Dirty Sessions'.
 	sessionList := self buildSessionList.
 	toolbarPane := self buildToolbar.
 	

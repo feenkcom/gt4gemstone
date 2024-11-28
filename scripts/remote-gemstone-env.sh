@@ -6,8 +6,8 @@
 # GemStone will be installed in to {imageDirectory}/remote-gemstone.
 #
 
-ARCH=`uname -m`
-VM_ARCH=${ARCH}
+ARCH="$(uname -m)"
+VM_ARCH="${ARCH}"
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     GT_OSNAME=Linux;;
@@ -21,6 +21,8 @@ export GEMSTONE_WORKSPACE=${GTIMAGE_DIRECTORY}/remote-gemstone
 
 if [ "$GT_OSNAME" = "Linux" ]; then
     GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1.4-x86_64.Linux"
+elif [ "$GT_OSNAME" = "Darwin" -a "$VM_ARCH" = "arm64" ]; then
+    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1-arm64.Darwin"
 elif [ "$GT_OSNAME" = "Darwin" ]; then
     GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit3.7.1-i386.Darwin"
 fi
