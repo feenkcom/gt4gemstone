@@ -78,7 +78,7 @@ GtGemStoneSnippetCoderModel >> gsBehaviourSpecification: aGsBehaviourSpecificati
 
 { #category : #'api - ast' }
 GtGemStoneSnippetCoderModel >> implicitVariableReferencesTo: aString do: aBlock [
-	self astAwait
+	self astSync
 		allNodesDo:
 			[ :each | (each isVariable and: [ aString = each variableName asString and: [ each whoDefines isNil ] ]) ifTrue: [ aBlock value: each ] ]
 ]
