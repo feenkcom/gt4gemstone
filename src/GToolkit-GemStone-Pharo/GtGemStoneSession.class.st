@@ -1179,10 +1179,10 @@ GtGemStoneSession >> gtLiveFor: aView [
 
 { #category : #ui }
 GtGemStoneSession >> gtLogFor: aView [
-
 	"Display the contents of stdout of the receiver if the log file is available locally"
-
 	<gtView>
+	
+	self isRunning ifFalse: [ ^ aView empty ] .
 	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
 	^ aView textEditor
 		  title: 'Log';
