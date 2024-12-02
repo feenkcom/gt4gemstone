@@ -3,7 +3,8 @@ Class {
 	#superclass : #BrVerticalPane,
 	#instVars : [
 		'registry',
-		'sessionList'
+		'sessionList',
+		'elementUpdater'
 	],
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
@@ -32,9 +33,7 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 
 { #category : #callbacks }
 GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self enqueueTask: (BlTaskAction new 
-		action: [ 
-			self updateContent ])
+	self requestContentUpdate
 ]
 
 { #category : #private }
@@ -50,10 +49,9 @@ GtGemStoneSessionsCardWidget >> activeMark [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> buildContent [
-
 	self
-		addChild: (sessionList := self createList);
-		addChild: self createToolbar
+		addChild: (sessionList := self createListWithItems) as: #sessionList;
+		addChild: self createToolbar.
 ]
 
 { #category : #'private - ui' }
@@ -207,6 +205,14 @@ GtGemStoneSessionsCardWidget >> createList [
 ]
 
 { #category : #'private - ui' }
+GtGemStoneSessionsCardWidget >> createListWithItems [
+	| newList |
+	newList := self createList.
+	newList items: self sessionsToDisplay.
+	^ newList
+]
+
+{ #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> createRefreshButton [
 
 	^ BrButton new 
@@ -214,7 +220,7 @@ GtGemStoneSessionsCardWidget >> createRefreshButton [
 			icon: BrGlamorousVectorIcons refresh;
 			id: GtGemStoneSessionsCardWidgetRefreshButtonId;
 			label: 'Refresh sessions list';
-			action: [ :aButton | self updateContent ];
+			action: [ :aButton | self requestContentUpdate ];
 			yourself.
 ]
 
@@ -303,7 +309,9 @@ GtGemStoneSessionsCardWidget >> initialize [
 	super initialize.
 	
 	self buildContent.
-	self updateContent.
+	elementUpdater := BrElementUpdater new 
+		element: self
+		selector: #updateContent.
 ]
 
 { #category : #'private - ui' }
@@ -328,7 +336,7 @@ GtGemStoneSessionsCardWidget >> inspectSession: aSession from: anElement [
 GtGemStoneSessionsCardWidget >> onAddedToSceneGraph [
 	super onAddedToSceneGraph.
 	
-	self updateContent
+	self requestContentUpdate
 ]
 
 { #category : #'private - ui' }
@@ -375,18 +383,24 @@ GtGemStoneSessionsCardWidget >> registry: aGtGemStoneSessionRegistry [
 
 	registry ifNotNil: [ registry unsubscribe: self ].
 	registry := aGtGemStoneSessionRegistry.
-	registry
+	registry announcer weak
 		when: GtGemStoneSessionAnnouncement
 		send: #actOnGemStoneSessionAnnouncement
 		to: self.
 ]
 
+{ #category : #updating }
+GtGemStoneSessionsCardWidget >> requestContentUpdate [
+	elementUpdater ifNil: [ ^ self ].
+	elementUpdater requestUpdate
+]
+
 { #category : #'actions - ui' }
 GtGemStoneSessionsCardWidget >> selectSession: aSession [ 
 	| sessionIndex |
-	sessionIndex := sessionList items indexOf:  aSession.
+	sessionIndex := self sessionList items indexOf:  aSession.
 	sessionIndex > 0 ifTrue: [
-		sessionList selectOne: sessionIndex ].
+		self sessionList selectOne: sessionIndex ].
 ]
 
 { #category : #'private - ui' }
@@ -458,6 +472,11 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 		items: actions
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionsCardWidget >> sessionList [
+	^self childNamed: #sessionList
+]
+
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> sessionsToDisplay [
 	^ ((self registry sessionsToDisplay 
@@ -467,5 +486,17 @@ GtGemStoneSessionsCardWidget >> sessionsToDisplay [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> updateContent [
-	^ sessionList items: self sessionsToDisplay.
+	| selectedSession|
+	
+	selectedSession := self sessionList selectedItems
+		ifEmpty: [ nil ] 
+		ifNotEmpty: [ :aList | aList first ].
+	
+	self 
+		replaceChild: self sessionList 
+		with: self createListWithItems
+		as: #sessionList.
+		
+	selectedSession ifNotNil: [
+		self selectSession: selectedSession ]
 ]
