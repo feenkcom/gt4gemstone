@@ -29,7 +29,8 @@ Class {
 		'keepAlive',
 		'logEmitter',
 		'activeAsyncExecutions',
-		'isBookmarked'
+		'isBookmarked',
+		'lifecycleHandlers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -61,11 +62,12 @@ GtGemStoneSession >> abortTransaction [
 	"Abort the current transaction.
 	autoCommit is always false for this operation"
 
-	self isRunning ifTrue: [ 
-		(self scriptEvaluation
-			script: 'System abortTransaction. nil';
-			returnPrimitiveOnly) evaluateAndWait ].
-	
+	self isRunning ifFalse: [ 
+		Error signal: 'Session not running' ].
+		
+	self executeAboutToAbortHandlers ifFalse: [ ^self ].
+
+	self basicAbortTransaction.
 	self announce: (GtGemStoneSessionAbortedAnnouncement session: self).
 ]
 
@@ -82,7 +84,8 @@ GtGemStoneSession >> addAsyncExecution: anAsyncExecution [
 { #category : #private }
 GtGemStoneSession >> announce: anAnnouncement [
 
-	registry ifNotNil: [ registry announce: anAnnouncement]
+	registry ifNotNil: [ 
+		registry announce: anAnnouncement]
 ]
 
 { #category : #converting }
@@ -126,6 +129,14 @@ GtGemStoneSession >> autoCommitPromise: aGtRsrEvaluatorPromise [
 				session: self
 				promise: aGtRsrEvaluatorPromise)
 					emit ] ]
+]
+
+{ #category : #actions }
+GtGemStoneSession >> basicAbortTransaction [
+	(self scriptEvaluation
+		script: 'System abortTransaction. nil';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait.
 ]
 
 { #category : #actions }
@@ -201,7 +212,9 @@ GtGemStoneSession >> commitTransaction [
 	| commitResult |
 	self isRunning ifFalse: [ 
 		Error signal: 'Session not running' ].
-
+		
+	self executeAboutToCommitHandlers ifFalse: [ ^self ].
+	
 	commitResult := self basicCommitTransaction.
 	commitResult ifTrue: [ 
 		self announce: (GtGemStoneSessionCommittedAnnouncement session: self) ].
@@ -1027,6 +1040,24 @@ GtGemStoneSession >> evaluator [
 	^ evaluator
 ]
 
+{ #category : #actions }
+GtGemStoneSession >> executeAboutToAbortHandlers [
+	1 to: lifecycleHandlers size do:
+		[:i |
+		((lifecycleHandlers at: i) aboutToAbortSession: self)
+			ifFalse: [^false]].
+	^true
+]
+
+{ #category : #actions }
+GtGemStoneSession >> executeAboutToCommitHandlers [
+	1 to: lifecycleHandlers size do:
+		[:i |
+		((lifecycleHandlers at: i) aboutToCommitSession: self)
+			ifFalse: [^false]].
+	^true
+]
+
 { #category : #'ui - utils' }
 GtGemStoneSession >> formatBasedOnStatusText: aText [
 	| ropedText |
@@ -1297,6 +1328,7 @@ GtGemStoneSession >> initialize [
 	mutex := Mutex new.
 	autoCommit := false.
 	activeAsyncExecutions := OrderedCollection new.
+	lifecycleHandlers := OrderedCollection new.
 	logEmitter := GtGemStoneSessionSignalsEmitter new
 		disableEmitting;
 		yourself.
