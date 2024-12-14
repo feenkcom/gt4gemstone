@@ -38,13 +38,6 @@ GtpoMetaclass3 class >> remoteClassName [
 	^ #Metaclass3
 ]
 
-{ #category : #accessing }
-GtpoMetaclass3 >> compiledMethodAt: selector [
-
-	^ self proxyPerform: #compiledMethodAt:
-		withArguments: { selector }.
-]
-
 { #category : #private }
 GtpoMetaclass3 >> compileFromTab: aTab [
 	"Update the receiver's definition based on the current editor contents"
@@ -65,6 +58,13 @@ GtpoMetaclass3 >> compileFromTab: aTab [
 
 { #category : #accessing }
 GtpoMetaclass3 >> compileMethod: source category: categoryName [
+]
+
+{ #category : #accessing }
+GtpoMetaclass3 >> compiledMethodAt: selector [
+
+	^ self proxyPerform: #compiledMethodAt:
+		withArguments: { selector }.
 ]
 
 { #category : #accessing }

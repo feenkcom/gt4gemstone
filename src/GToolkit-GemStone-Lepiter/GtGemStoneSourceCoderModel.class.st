@@ -56,6 +56,7 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 				addContextMenuItem: (self
 						createLabel: 'Browse local class'
 						description: foundClass name)
+				group: BrMenuItemGroupConfiguration navigation
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
@@ -72,6 +73,7 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 		ifNotNil: [ :node | 
 			self
 				addLinkMenuAddOnsTo: coderAddOns
+				group: BrMenuItemGroupConfiguration navigation
 				node: node
 				selector: #browseLocalImplementorsAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalImplementorsShortcut new
@@ -88,6 +90,7 @@ GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: a
 				addContextMenuItem: (self
 						createLabel: 'Browse local references'
 						description: node name value)
+				group: BrMenuItemGroupConfiguration navigation
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
@@ -106,6 +109,7 @@ GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: 
 		ifNotNil: [ :node | 
 			self
 				addLinkMenuAddOnsTo: coderAddOns
+				group: BrMenuItemGroupConfiguration navigation
 				node: node
 				selector: #browseLocalReferencesAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalReferencesShortcut new

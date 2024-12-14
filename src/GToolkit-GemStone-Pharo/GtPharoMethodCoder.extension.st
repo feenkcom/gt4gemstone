@@ -15,6 +15,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 		addContextMenuItem: (self
 				createLabel: 'Compile from GemStone'
 				description: sessionName asString)
+		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
@@ -51,6 +52,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 		addContextMenuItem: (self
 				createLabel: 'Compile to GemStone'
 				description: sessionName asString)
+		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
@@ -93,6 +95,7 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 		addContextMenuItem: (self
 				createLabel: 'Inspect from GemStone'
 				description: sessionName asString)
+		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
