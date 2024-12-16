@@ -56,6 +56,7 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst 
 		ifNotNil: [ :node | 
 			self 
 				addLinkMenuAddOnsTo: coderAddOns 
+				group: BrMenuItemGroupConfiguration navigation
 				node: node 
 				selector: #browseLocalHierarchyImplementorsAt:requesterObject: 
 				label: 'Browse local hierarchy implementors'
@@ -70,6 +71,7 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 		ifNotNil: [ :node | 
 			self 
 				addLinkMenuAddOnsTo: coderAddOns 
+				group: BrMenuItemGroupConfiguration navigation
 				node: node 
 				selector: #browseLocalHierarchyReferencesAt:requesterObject: 
 				label: 'Browse local hierarchy references'
