@@ -9,6 +9,7 @@ GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 	<gtCoderContextMenuAddOns: 250>
 	self
 		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
+		group: BrMenuItemGroupConfiguration refactoring
 		withId: nil
 		to: coderAddOns
 ]
