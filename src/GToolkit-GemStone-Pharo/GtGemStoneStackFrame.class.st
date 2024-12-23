@@ -49,9 +49,9 @@ GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: e
 
 	ast := [ RBParser parseMethod: aString ]
 		on: Error, SyntaxErrorNotification
-		do: [ : ex1 |
+		do: [ :ex1 |
 			[ RBParser parseExpression: aString ]
-				on: Error
+				on: Error, SyntaxErrorNotification
 				do: [ :ex2 | nil ] ].
 	ast ifNil: [ ^ anInteger to: endPoint ].
 	ast nodesDo: [ :each |
