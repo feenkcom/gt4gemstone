@@ -15,7 +15,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:martin-136PortRange/src' ].
 		spec
 			baseline: 'PharoGemStoneFFI'
-			with: [ spec repository: 'github://GemTalk/PharoGemStoneFFI:tag_v1.1/src' ].
+			with: [ spec repository: 'github://gemtalk/PharoGemStoneFFI:tag_v1.1/src' ].
 		spec 
 			baseline: 'GToolkitRemote' 
 			with: [ spec repository: 'github://feenkcom/gtoolkit-remote:main/src' ].
