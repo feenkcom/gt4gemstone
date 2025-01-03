@@ -14,8 +14,8 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
 			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:martin-136PortRange/src' ].
 		spec
-			baseline: 'SparkleFFIForGlamorousToolkit'
-			with: [ spec repository: 'github://feenkcom/SparkleFFI:main/src' ].
+			baseline: 'PharoGemStoneFFI'
+			with: [ spec repository: 'github://GemTalk/PharoGemStoneFFI:tag_v1.1/src' ].
 		spec 
 			baseline: 'GToolkitRemote' 
 			with: [ spec repository: 'github://feenkcom/gtoolkit-remote:main/src' ].
@@ -28,7 +28,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 		spec 
 			package: 'GToolkit-GemStone-Pharo-BeaconLogging';
 			package: 'GToolkit-GemStone' with:
-				[ spec requires: #( 'SparkleFFIForGlamorousToolkit' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
+				[ spec requires: #( 'PharoGemStoneFFI' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging' 'GToolkitWireEncoding') ];
 			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
