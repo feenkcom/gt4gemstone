@@ -13,21 +13,21 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit' with: [
 				spec repository: 'github://feenkcom/RemoteServiceReplication:f7e414b293867579ea56e46d057c5588846c4da9/src' ].
 		spec
-			baseline: 'SparkleFFIForGlamorousToolkit' with: [
-				spec repository: 'github://feenkcom/SparkleFFI:407160fa0cbd1e7bff9349136b856b1655badf1d/src' ].
+			baseline: 'PharoGemStoneFFI' with: [
+				spec repository: 'github://gemtalk/PharoGemStoneFFI:tag_v1.1/src' ].
 		spec
 			baseline: 'GToolkitRemote' with: [
 				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.1866/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.6.2772/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.6.2773/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
 				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.0/src' ].
 
 		spec package: 'GToolkit-GemStone-Pharo-BeaconLogging'.
 		spec package: 'GToolkit-GemStone' with: [
-			spec requires: #(#SparkleFFIForGlamorousToolkit #RemoteServiceReplicationForGlamorousToolkit) ].
+			spec requires: #(#PharoGemStoneFFI #RemoteServiceReplicationForGlamorousToolkit) ].
 		spec package: 'GToolkit-GemStone-Pharo' with: [
 			spec requires: #(#'GToolkit-GemStone' #GToolkitRemote #'GToolkit-GemStone-Pharo-BeaconLogging' #GToolkitWireEncoding) ].
 		spec package: 'GToolkit-GemStone-BareProxy-Pharo' with: [
