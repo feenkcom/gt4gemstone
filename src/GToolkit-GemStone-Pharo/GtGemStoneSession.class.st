@@ -14,7 +14,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'registry',
-		'session',
 		'connection',
 		'evaluator',
 		'connector',
@@ -30,7 +29,8 @@ Class {
 		'logEmitter',
 		'activeAsyncExecutions',
 		'isBookmarked',
-		'lifecycleHandlers'
+		'lifecycleHandlers',
+		'sessionNrsString'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -187,8 +187,7 @@ GtGemStoneSession >> close [
 	connection ifNil: [ ^ self ].
 
 	connection close.
-	session ifNotNil: [ self safeLogout ].
-	session := connection := evaluator := keepAlive := nil.
+	connection := evaluator := keepAlive := nil.
 	(registry notNil and: self isBookmarked not) ifTrue: [ 
 		registry removeSession: self ].
 	
@@ -235,11 +234,17 @@ GtGemStoneSession >> commitTransactionWithErrorChecking [
 
 { #category : #actions }
 GtGemStoneSession >> connect [
+	"Connect to GemStone and establish a RSR session"
+	| session |
 
 	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
 
+	"The GCI session is established as part of creating the RSR session and then discarded"
 	session := connector newSession.
 	connection := connector connectionForSession: session.
+	sessionNrsString := session sessionParameters gemResource asNrsString.
+	session logoutNbNoError.
+	session := nil.
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
 		gtSession: self;
@@ -1240,11 +1245,11 @@ GtGemStoneSession >> gtModifiedObjectsFor: aView [
 GtGemStoneSession >> gtNrsStringFor: aView [
 	<gtView>
 
-	session ifNil: [ ^ aView empty ].
-	^ aView textEditor
+	sessionNrsString ifNil: [ ^ aView empty ].
+	^ aView text
 		title: 'NRS String';
 		priority: 30;
-		text: [ session sessionParameters gemResource asNrsString ]
+		text: [ sessionNrsString ]
 ]
 
 { #category : #ui }
@@ -1506,24 +1511,6 @@ GtGemStoneSession >> runPostConnectActions [
 			method selector ].
 ]
 
-{ #category : #actions }
-GtGemStoneSession >> safeLogout [
-	[ 
-		self class logMessage: DateAndTime now printString, ': [BEGIN] Logout'.
-		session logout.
-		self class logMessage: DateAndTime now printString,': [END] Logout'.
-	] 
-		on: GciError   
-		do: [ :anError |
-			"Ignore the specific SSL error when disconnecting,
-			only logging that error and showing a notification."
-			anError isUnexpectedEofOverSsl 
-				ifFalse: [ anError pass ]
-				ifTrue: [
-					self inform: 'Error: ', anError message asString.
-					UIManager default logError: anError ] ]
-]
-
 { #category : #accessing }
 GtGemStoneSession >> scriptEvaluation [
 	"Answer a GtRsrScriptEvaluation with:
@@ -1560,8 +1547,9 @@ GtGemStoneSession >> sessionId: aString [
 { #category : #accessing }
 GtGemStoneSession >> sessionParameters [
 
-	self connect.
-	^ session sessionParameters
+	self error: 'No longer available as the GCI session is discarded'.
+	"self connect.
+	^ session sessionParameters"
 ]
 
 { #category : #configure }
