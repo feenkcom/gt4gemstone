@@ -179,8 +179,8 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 		connection templateResolver: resolverClass new.
 		SessionTemps current removeKey: #PendingConnectionAcceptor.
 		"UNCOMMENT THESE LINES TO ADD TRACING TO RSR"
-		connection log addSink: (RsrCustomSink action: [:message | GsFile gciLogServer: message ]).
-		connection log verbosity: connection log levelTrace.
+		"connection log addSink: (RsrCustomSink action: [:message | GsFile gciLogServer: message ]).
+		connection log verbosity: connection log levelTrace."
 		GsFile gciLogServer: ''about to waitUntilClose''.
 		connection waitUntilClose.'.
 	thePort := detailBytes unsignedShortAt: 1 bigEndian: true.
