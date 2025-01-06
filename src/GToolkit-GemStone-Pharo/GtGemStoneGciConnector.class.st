@@ -171,17 +171,9 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 			with: acceptor token bytes.
 		detailBytes'
 			maxResultSize: 1024.
-	gsSession executeStringAndDetachNb: '| connection resolverClass |
+	gsSession executeStringNb: '| connection |
 		connection := (SessionTemps current at: #PendingConnectionAcceptor) waitForConnection.
-		resolverClass := ((AllUsers userWithId: ''SystemUser'') objectNamed: ''RowanClientServiceTemplateResolver'').
-		GsFile gciLogServer: ''resolverClass: '', resolverClass printString. 
-		"ifNil: [connection log debug: ''''''''Unable to resolve 			RowanClientServiceTemplateResolver''''''''. connection close. Error signal]."
-		connection templateResolver: resolverClass new.
 		SessionTemps current removeKey: #PendingConnectionAcceptor.
-		"UNCOMMENT THESE LINES TO ADD TRACING TO RSR"
-		"connection log addSink: (RsrCustomSink action: [:message | GsFile gciLogServer: message ]).
-		connection log verbosity: connection log levelTrace."
-		GsFile gciLogServer: ''about to waitUntilClose''.
 		connection waitUntilClose.'.
 	thePort := detailBytes unsignedShortAt: 1 bigEndian: true.
 	token := RsrToken bytes: (detailBytes copyFrom: 3 to: 18).
