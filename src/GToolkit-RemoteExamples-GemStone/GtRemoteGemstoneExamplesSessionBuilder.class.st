@@ -43,16 +43,17 @@ GtRemoteGemstoneExamplesSessionBuilder >> createConnector [
 
 { #category : #accessing }
 GtRemoteGemstoneExamplesSessionBuilder >> createConnectorNamed: aConnectorName [
-	| connector libraryDirectory netldi |
+	| namedConnectors connector libraryDirectory netldi |
 
-	"Connect to the GemStone DB"
-	libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
-	netldi := 'gs64ldi'.
-	libraryDirectory isDirectory ifFalse:
-		[ | aConnector |
-		aConnector := GtGemStoneSessionRegistry default propertiesFile allConnectors anyOne.
-		libraryDirectory := aConnector libraryPath.
-		netldi := aConnector netldi ].
+	namedConnectors := GtGemStoneSessionRegistry default propertiesFile namedConnectors.
+	namedConnectors ifNotEmpty:
+		[ | anyOne |
+		anyOne := namedConnectors anyOne.
+		libraryDirectory := anyOne libraryPath.
+		netldi := anyOne netldi]
+	ifEmpty:
+		[ libraryDirectory := FileLocator imageDirectory / 'remote-gemstone'.
+		netldi := 'gs64ldi' ].
 	self assert: libraryDirectory isDirectory.
 	
 	connector := GtGemStoneGciConnector new
