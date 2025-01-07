@@ -60,19 +60,21 @@ GtpoGsNMethod >> gtAbortActionFor: anAction [
 { #category : #ui }
 GtpoGsNMethod >> gtBrowseLocalFor: anAction [
 	"Browse the local definition of the receiver"
+
 	<gtAction>
 	| cls |
-
-	cls := self class environment at: self inClassName ifAbsent: [].
-	(cls isNil or: [ (cls includesSelector: self selector) not ]) ifTrue: 
-		[ ^ anAction noAction ].
+	cls := self class environment at: self inClassName ifAbsent: [  ].
+	(cls isNil or: [ (cls includesSelector: self selector) not ])
+		ifTrue: [ ^ anAction noAction ].
 
 	^ anAction button
 		icon: BrGlamorousVectorIcons browse;
 		tooltip: 'Browse local definition';
-		name: 'Fred';
-		action: [ :aButton | aButton phlow spawnTool: (GtMethodCoderTool compiledMethod:
-			(self class environment at: self inClassName) >> selector) ]
+		id: 'Fred';
+		action: [ :aButton | 
+			aButton phlow
+				spawnTool: (GtMethodCoderTool
+						compiledMethod: (self class environment at: self inClassName) >> selector) ]
 ]
 
 { #category : #ui }
