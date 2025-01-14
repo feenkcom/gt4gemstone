@@ -17,6 +17,7 @@ function stop_servers()
         stopnetldi
 }
 
+STONE=gs64stone
 DIR=`readlink "$0"` || DIR="$0";
 export SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
 # Set up environment variables
@@ -44,35 +45,45 @@ elif [ "$GT_OSNAME" = "Darwin" ]; then
 fi
 
 mkdir "${ROWAN_PROJECTS_HOME}"
-cd "${ROWAN_PROJECTS_HOME}"
+pushd "${ROWAN_PROJECTS_HOME}"
 ln -s ../../gt4gemstone
 ln -s ../../gtoolkit-remote
-ln -s ../../Sparkle
-cd ..
-cd ..
+popd
+
+chmod +x ./gt4gemstone/scripts/*.sh
+chmod +x ./gt4gemstone/scripts/release/*.sh
 
 # Configure GemStone
-cd "$GEMSTONE/install"
+pushd "$GEMSTONE/install"
 "$SCRIPT_DIR/gtinstallgs"
-
-# Configure Stone
-export STONE="gs64stone"
+popd
 
 # Load RSR and Gt packages
 startnetldi -g
 startstone "${STONE}"
 sleep 1
 
-echo "ROWAN_PROJECTS_HOME=$ROWAN_PROJECTS_HOME :"
-ls -l "$ROWAN_PROJECTS_HOME"
-echo "gtoolkit-remote/scripts:"
-ls -l "$ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts"
-
-#$ROWAN_PROJECTS_HOME/Sparkle/src-gs/bootstrapSparkle.sh
-#ROWAN_PROJECTS_HOME/gt4gemstone/scripts/inputGt4gemstone.sh
-#ROWAN_PROJECTS_HOME/gtoolkit-remote/scripts/inputGtRemote.sh
-
-"${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
-"${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
+then
+  "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
+  "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+else
+  stop_servers
+  pushd $GEMSTONE/data
+  rm *.log tranlog1.dbf 
+  mv extent0.dbf extent0.dbf.bak
+  if [ "$USE_ROWAN" = "rowan2" ]
+  then
+    cp $GEMSTONE/bin/extent0.rowan.dbf ./extent0.dbf
+  else
+    cp $GEMSTONE/bin/extent0.${USE_ROWAN}.dbf ./extent0.dbf
+  fi
+  chmod 644 extent0.dbf
+  popd
+  startnetldi -g
+  startstone gs64stone
+  ./gt4gemstone/scripts/installGt4gemstone_${USE_ROWAN}.sh 
+  ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
+fi
 
 exit 0
