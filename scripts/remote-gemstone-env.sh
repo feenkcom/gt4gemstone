@@ -10,7 +10,7 @@
 # - GT_GEMSTONE_VERSION specifies the GemStone version
 #
 
-if [ -z $GT_GEMSTONE_VERSION ]
+if [ -z "$GT_GEMSTONE_VERSION" ]
 then
   echo "GT_GEMSTONE_VERSION not specified"
   exit 1
