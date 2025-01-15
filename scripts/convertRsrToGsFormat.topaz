@@ -1,0 +1,57 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	expectvalue true
+	run
+| warnings |
+warnings := String new.
+
+	{
+		{
+			'$ROWAN_PROJECTS_HOME/RemoteServiceReplication' asFileReference.
+			'RemoteServiceReplication'.
+		}.
+		{
+			'$ROWAN_PROJECTS_HOME/Announcements' asFileReference.
+			'Announcements'.
+		}
+	} do: [ :each | | repositoryRoot specFileName projectSetModification visitor gsDirectory project projectSetDefinition |
+    repositoryRoot := (each at: 1) asFileReference.
+    specFileName := (each at: 2) asFileReference.
+	  gsDirectory := '$ROWAN_PROJECTS_HOME/gt4gemstone/src-gs' asFileReference.
+
+    project := Rowan 
+      projectFromUrl: 'file:', (repositoryRoot / 'rowan'/ 'specs' / (specFileName withExtension: 'ston') basename) fullName
+      gitUrl: 'file:', repositoryRoot fullName.
+    projectSetDefinition := RwProjectSetDefinition new
+      addProject: project _resolvedProject;
+      yourself.
+    projectSetModification := projectSetDefinition compareAgainstBase: RwProjectSetDefinition new.
+
+    projectSetModification findAddedMethods values do: [ :each |
+      each methodsModification elementsModified values do: [ :another | 
+        another after protocol: another after protocol asString ] ].
+
+    projectSetModification findAddedClasses values do: [ :each |
+      each classesModification elementsModified values collect: [ :another | 
+        another after instanceMethodDefinitions values do: [ :aMethodDefinition |
+          aMethodDefinition protocol: aMethodDefinition protocol asString ].
+        another after classMethodDefinitions values do: [ :aMethodDefinition |
+          aMethodDefinition protocol: aMethodDefinition protocol asString ] ] ].
+
+    visitor := RwGsModificationTopazWriterVisitorV2 new
+      logCreation: true;
+      repositoryRootPath: gsDirectory;
+      topazFilename: specFileName basename;
+      yourself.
+    visitor visit: projectSetModification ].
+
+
+warnings isEmpty
+	ifTrue: [ true ]
+	ifFalse: [ warnings ]
+%
+	abort
+
+	errorCount
