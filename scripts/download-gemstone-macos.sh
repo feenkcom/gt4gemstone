@@ -1,30 +1,40 @@
+#!/bin/bash
+
+set -e
+
 if [ -z "$GEMSTONE_WORKSPACE" ]
 then
 	echo "GEMSTONE_WORKSPACE must be defined"
 	exit 1
 fi
 
+if [ -z "$GT_GEMSTONE_VERSION" ]
+then
+	echo "GT_GEMSTONE_VERSION must be defined"
+	exit 1
+fi
+
 ARCH="$(uname -m)"
 case "${ARCH}" in
     arm64 ) 
-		GS_SERV_FILE=GemStone64Bit3.7.1-arm64.Darwin
-		GS_CLIENT_FILE=GemStoneClientLibs3.7.1-arm64.Darwin
+		GS_SERV_FILE=GemStone64Bit${GT_GEMSTONE_VERSION}-arm64.Darwin
+		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_VERSION}-arm64.Darwin
 		;;
     * ) 
-		GS_SERV_FILE="GemStone64Bit3.7.1-i386.Darwin"
-		GS_CLIENT_FILE=GemStoneClientLibs3.7.1-i386.Darwin
+		GS_SERV_FILE="GemStone64Bit${GT_GEMSTONE_VERSION}-i386.Darwin"
+		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_VERSION}-i386.Darwin
 		;;
 esac
 
 # Download all the required archives, git clones, etc. and upack
 if [ ! -f "${GS_CLIENT_FILE}".dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/"$GS_SERV_FILE".dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/${GT_GEMSTONE_VERSION}/"$GS_SERV_FILE".dmg
 fi
 
 if [ ! -f "${GS_CLIENT_FILE}".dmg ]
 then
-	wget http://downloads.gemtalksystems.com/pub/GemStone64/3.7.1/"${GS_CLIENT_FILE}".dmg
+	wget http://downloads.gemtalksystems.com/pub/GemStone64/${GT_GEMSTONE_VERSION}/"${GS_CLIENT_FILE}".dmg
 fi
 
 hdiutil attach "${GS_SERV_FILE}".dmg
