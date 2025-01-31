@@ -504,7 +504,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 GtGemStoneSession >> dbSize [
 
 	^ (self scriptEvaluation
-		script: 'System commitTransaction. nil';
+		script: 'SystemRepository fileSize - SystemRepository freeSpace';
 		returnPrimitiveOnly) evaluateAndWait
 ]
 
