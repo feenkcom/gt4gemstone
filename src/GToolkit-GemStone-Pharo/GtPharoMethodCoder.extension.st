@@ -93,7 +93,7 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 
 	coderAddOns
 		addContextMenuItem: (self
-				createLabel: 'Inspect from GemStone'
+				createLabel: 'Browse from GemStone'
 				description: sessionName asString)
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
@@ -115,5 +115,39 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 					on: RsrBrokenPromise
 					do: [ :ex | ex ].
 			self notifyObjectSpawn: gsMethod asGtBareProxyObject requesterObject: aCoderUIModel ]
+		id: nil
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
+	<sys_ext>
+	<gtCoderContextMenuAddOns: 304>
+	| sessionName |
+	aCoderViewModel hasSelection ifFalse: [^self].
+	(anAST methodNode isNil
+		or: [GtGemStoneSessionRegistry hasRegistryWithDefaultSession not])
+			ifTrue: [^self].
+	sessionName := GtGemStoneSessionRegistry default defaultSession
+				ifNotNil: [:aSession | aSession name].
+	coderAddOns
+		addContextMenuItem: (self createLabel: 'Do it and inspect from GemStone'
+				description: sessionName asString)
+		group: BrMenuItemGroupConfiguration gemstone
+		hover: nil
+		leave: nil
+		action: 
+			[:aCoderUIModel :anEvent |
+			| clsName session cmd gsMethod |
+			clsName := self compiledMethod methodClass name.
+			session := GtGemStoneSessionRegistry default defaultSession.
+			session ifNil: [self error: 'No default session available'].
+			session connect.
+			cmd := aCoderViewModel coder currentSourceString
+						copyFrom: aCoderViewModel selectedTextInterval first
+						to: aCoderViewModel selectedTextInterval last.
+			gsMethod := [session evaluateAndWaitReturnProxy: cmd] on: RsrBrokenPromise
+						do: [:ex | ex].
+			self notifyObjectSpawn: gsMethod asGtBareProxyObject
+				requesterObject: aCoderUIModel]
 		id: nil
 ]

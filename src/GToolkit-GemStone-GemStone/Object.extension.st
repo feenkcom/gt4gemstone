@@ -23,3 +23,9 @@ Object >> gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock [
 
 	^ gemstoneBlock value
 ]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+Object >> isInteger [
+
+	^ false
+]

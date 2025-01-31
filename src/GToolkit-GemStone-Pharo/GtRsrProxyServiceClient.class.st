@@ -460,9 +460,16 @@ GtRsrProxyServiceClient >> gtRemoteMetaFor: aView [
 		priority: 250;
 		stencil: [
 			| methodSpecifications |
-			methodSpecifications := self evaluateAndWaitReturnProxy: 'GtGemStoneMethodsSpecification 
-	forGsMethods: ((self class theNonMetaClass methodDictForEnv: 0) values 
-		asSortedCollection: [ :a :b | a selector < b selector ]).'.
+			methodSpecifications := self evaluateAndWaitReturnProxy: 
+			'| cls instMethods classMethods |
+			cls := self isClass
+				ifTrue: [ self ]
+				ifFalse: [self class ].
+			instMethods := ((cls class theNonMetaClass methodDictForEnv: 0) values 
+				asSortedCollection: [ :a :b | a selector < b selector ]) asArray.
+			classMethods := ((cls class methodDictForEnv: 0) values 
+				asSortedCollection: [ :a :b | a selector < b selector ]) asArray.
+			GtGemStoneMethodsSpecification forGsMethods: instMethods, classMethods.'.
 		
 		(GtGemStoneMethodCodersModel 
 			forMethodSpecifications: (GtGemStoneMethodsSpecification 

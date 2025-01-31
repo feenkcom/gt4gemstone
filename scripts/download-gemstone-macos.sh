@@ -27,7 +27,7 @@ case "${ARCH}" in
 esac
 
 # Download all the required archives, git clones, etc. and upack
-if [ ! -f "${GS_CLIENT_FILE}".dmg ]
+if [ ! -f "${GS_SERV_FILE}".dmg ]
 then
 	wget http://downloads.gemtalksystems.com/pub/GemStone64/${GT_GEMSTONE_VERSION}/"$GS_SERV_FILE".dmg
 fi

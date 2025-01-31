@@ -32,7 +32,7 @@ if [ $? = 0 ]
 ## Update for 3.7.1 and 3.7.1.4 Rowan 3 image and JadeiteForPharo
 #
 ## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
-topaz -l -I ${gt4GemstoneHome}/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/scripts/updateForRowan3_JfP-gemstone.topaz < /dev/zero
+topaz -l -I ${gt4GemstoneHome}/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/scripts/updateForRowan3_JfP-gemstone.topaz < /dev/null
 if [ $? = 0 ]
     then
         exit 0
