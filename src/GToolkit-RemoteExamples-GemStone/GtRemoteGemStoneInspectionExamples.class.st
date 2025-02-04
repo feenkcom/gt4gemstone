@@ -9,25 +9,6 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
-{ #category : #'asserting - inspection' }
-GtRemoteGemStoneInspectionExamples >> assertRemoteInspectorTitle: aString for: proxyObject [
-	| expectedTitle objectAdapter objectAdapterRemoteTitle |
-	
-	expectedTitle := aString, ' [<unnamed>:nil]'.
-	
-	"Check the title at the level of the adaptor"
-	objectAdapter := GtRemotePhlowViewedObjectInspectorAdaptor
-		forTargetObject:proxyObject.
-	objectAdapterRemoteTitle := String streamContents: [ :aStream |
-		objectAdapter gtInspectorRemoteSideTitleStringOn: aStream ].
-	self assert: objectAdapterRemoteTitle equals: expectedTitle.
-		
-	"Check the title as returned by the inspector"
-	self 
-		assert: proxyObject gtRemoteSideInspectorTool objectHolder view newLabel  
-		equals:expectedTitle.
-]
-
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> associationInspection [
 	<gtExample>
@@ -102,20 +83,7 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	^ self 
 		assertObjectInspectionFor: [ OrderedCollection new ]
 		withTypeName: #OrderedCollection
-]
-
-{ #category : #'examples - inspector title' }
-GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	| proxyObject |
-	
-	proxyObject := self createProxyObjectFor: [ 
-		OrderedCollection new ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'anOrderedCollection [0 items] ()' 
-		for: proxyObject
+		inspectorTitle:  'anOrderedCollection [0 items] ()'
 ]
 
 { #category : #'examples - objects' }
@@ -148,19 +116,7 @@ GtRemoteGemStoneInspectionExamples >> orderedCollectionLargeInspection [
 		assertObjectInspectionFor: [ 
 			(1 to: 1000) asOrderedCollection ]
 		withTypeName: #OrderedCollection
-]
-
-{ #category : #'examples - objects' }
-GtRemoteGemStoneInspectionExamples >> orderedCollectionLargeInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	| proxyObject |
-	proxyObject := self createProxyObjectFor: [ 
-		(1 to: 1000) asOrderedCollection ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'anOrderedCollection [1000 items] (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 5...' 
-		for: proxyObject
+		inspectorTitle: 'anOrderedCollection [1000 items] (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 5...' 
 ]
 
 { #category : #'examples - objects' }
@@ -172,19 +128,7 @@ GtRemoteGemStoneInspectionExamples >> orderedCollectionNotEmptyInspection [
 		assertObjectInspectionFor: [ OrderedCollection 
 			with: 1 with: 2 ]
 		withTypeName: #OrderedCollection
-]
-
-{ #category : #'examples - inspector title' }
-GtRemoteGemStoneInspectionExamples >> orderedCollectionNotEmptyInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	| proxyObject |
-	proxyObject := self createProxyObjectFor: [ 
-		OrderedCollection with: 1 with: 2 ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'anOrderedCollection [2 items] (1 2)' 
-		for: proxyObject
+		inspectorTitle: 'anOrderedCollection [2 items] (1 2)' 
 ]
 
 { #category : #'examples - objects' }
@@ -286,20 +230,7 @@ GtRemoteGemStoneInspectionExamples >> standardObjectInspection [
 	^ self 
 		assertObjectInspectionFor: [ Object new  ]
 		withTypeName: #Object
-]
-
-{ #category : #'examples - inspector title' }
-GtRemoteGemStoneInspectionExamples >> standardObjectInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	| proxyObject |
-	
-	proxyObject := self createProxyObjectFor: [ 
-		Object new ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'anObject' 
-		for: proxyObject
+		inspectorTitle: 'anObject' 
 ]
 
 { #category : #'examples - objects' }
@@ -310,19 +241,7 @@ GtRemoteGemStoneInspectionExamples >> stringInspection [
 	^ self 
 		assertObjectInspectionFor: [ 'some string' ]
 		withTypeName: #String
-]
-
-{ #category : #'examples - inspector title' }
-GtRemoteGemStoneInspectionExamples >> stringInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	
-	| proxyObject |
-	proxyObject := self createProxyObjectFor: [ 'some string' ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'some string' 
-		for: proxyObject
+		inspectorTitle: 'some string' 
 ]
 
 { #category : #'examples - objects' }
@@ -333,19 +252,7 @@ GtRemoteGemStoneInspectionExamples >> symbolInspection [
 	^ self 
 		assertObjectInspectionFor: [ #someSymbol ]
 		withTypeName: #Symbol
-]
-
-{ #category : #'examples - inspector title' }
-GtRemoteGemStoneInspectionExamples >> symbolInspection_inspectorTitle [
-	<gtExample>
-	<after: #stopServer>
-	
-	| proxyObject |
-	proxyObject := self createProxyObjectFor: [ #someSymbol ].
-	
-	^ self 
-		assertRemoteInspectorTitle: 'someSymbol' 
-		for: proxyObject
+		inspectorTitle: 'someSymbol' 
 ]
 
 { #category : #examples }
