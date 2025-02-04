@@ -330,6 +330,24 @@ removeallmethods GtGemStoneRemotePhlowCollectionPrinter
 removeallclassmethods GtGemStoneRemotePhlowCollectionPrinter
 
 doit
+(GtGemStoneRemotePhlowCollectionPrinter
+	subclass: 'GtGemStoneRemotePhlowDictionaryPrinter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneRemotePhlowDictionaryPrinter
+removeallclassmethods GtGemStoneRemotePhlowDictionaryPrinter
+
+doit
 (Object
 	subclass: 'GtGemStoneSemanticVersionNumber'
 	instVarNames: #(major minor patch iceTag)
@@ -3188,6 +3206,12 @@ forTargetCollection: aCollection
 
 !		Instance methods for 'GtGemStoneRemotePhlowCollectionPrinter'
 
+category: 'enumerating'
+method: GtGemStoneRemotePhlowCollectionPrinter
+elementsDo: aBlock
+	targetCollection do: aBlock
+%
+
 category: 'accessing'
 method: GtGemStoneRemotePhlowCollectionPrinter
 targetCollection: aCollection
@@ -3203,21 +3227,22 @@ writeClassDescriptionOn: aStream
 category: 'api'
 method: GtGemStoneRemotePhlowCollectionPrinter
 writeCollectionItemsOn: aStream
-	"Put a displayable representation of the receiver on the given stream
-	 while avoiding recursion from object reference loops."
-
-	| maxPrint tooMany|
-	maxPrint := 1000.
-	tooMany := aStream position + maxPrint.
-	aStream nextPutAll: ' ('.
-	targetCollection 
-		do: [:element | 
-			(aStream position > tooMany or:[aStream position > (maxPrint * 3)]) ifTrue: [
-				aStream nextPutAll: '...', ')'. 
-				^self ].
-			element printOn: aStream]
-		separatedBy: [aStream space].
-	aStream nextPut: $)
+	| maxPrint count collectionSize |
+	
+	aStream 
+		space;
+		nextPutAll: '(' .
+	maxPrint := 180.
+	count := 1 .
+	collectionSize := targetCollection size .
+	self elementsDo: [ :anElement |
+	  aStream position > maxPrint ifTrue:[
+		aStream nextPutAll: '...)' .
+		^ self ].
+	  anElement printOn: aStream.
+	  count < collectionSize ifTrue:[ aStream space ].
+	  count := count + 1 ].
+	aStream nextPut: $).
 %
 
 category: 'printing'
@@ -3226,25 +3251,34 @@ writeCollectionSizeOn: aStream
 	| collectionSize |
 	collectionSize := targetCollection size. 
 	aStream
-		nextPutAll: ' ';
-		nextPutAll: '[';
+		space;
+		nextPut: $[;
 		print: collectionSize;
-		nextPutAll: ' ';
-		nextPutAll: (collectionSize =1 
+		space;
+		nextPutAll: (collectionSize = 1 
 			ifTrue: [ 'item' ]
 			ifFalse: [ 'items' ]);
-		nextPutAll: ']'.
+		nextPut: $].
 %
 
 category: 'api'
 method: GtGemStoneRemotePhlowCollectionPrinter
 writeDisplayStringOn: aStream
-	"Put a displayable representation of the receiver on the given stream
-	 while avoiding recursion from object reference loops."
+	"Put a displayable representation of the receiver on the given stream."
 	
 	self writeClassDescriptionOn: aStream.
 	self writeCollectionSizeOn: aStream.
 	self writeCollectionItemsOn: aStream.
+%
+
+! Class implementation for 'GtGemStoneRemotePhlowDictionaryPrinter'
+
+!		Instance methods for 'GtGemStoneRemotePhlowDictionaryPrinter'
+
+category: 'enumerating'
+method: GtGemStoneRemotePhlowDictionaryPrinter
+elementsDo: aBlock
+	targetCollection associationsDo: aBlock
 %
 
 ! Class implementation for 'GtGemStoneSemanticVersionNumber'
