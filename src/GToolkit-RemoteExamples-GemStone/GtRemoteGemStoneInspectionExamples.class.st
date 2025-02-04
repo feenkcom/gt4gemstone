@@ -9,6 +9,25 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
+{ #category : #'asserting - inspection' }
+GtRemoteGemStoneInspectionExamples >> assertRemoteInspectorTitle: aString for: proxyObject [
+	| expectedTitle objectAdapter objectAdapterRemoteTitle |
+	
+	expectedTitle := aString, ' [<unnamed>:nil]'.
+	
+	"Check the title at the level of the adaptor"
+	objectAdapter := GtRemotePhlowViewedObjectInspectorAdaptor
+		forTargetObject:proxyObject.
+	objectAdapterRemoteTitle := String streamContents: [ :aStream |
+		objectAdapter gtInspectorRemoteSideTitleStringOn: aStream ].
+	self assert: objectAdapterRemoteTitle equals: expectedTitle.
+		
+	"Check the title as returned by the inspector"
+	self 
+		assert: proxyObject gtRemoteSideInspectorTool objectHolder view newLabel  
+		equals:expectedTitle.
+]
+
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> associationInspection [
 	<gtExample>
@@ -83,6 +102,20 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	^ self 
 		assertObjectInspectionFor: [ OrderedCollection new ]
 		withTypeName: #OrderedCollection
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection_inspectorTitle [
+	<gtExample>
+	<after: #stopServer>
+	
+	| proxyObject |
+	proxyObject := self 
+		createProxyObjectFor: [ OrderedCollection new ].
+	
+	self 
+		assertRemoteInspectorTitle: 'anOrderedCollection( )' 
+		for: proxyObject
 ]
 
 { #category : #'examples - objects' }
