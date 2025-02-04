@@ -13,12 +13,23 @@ GtGemStoneRemotePhlowCollectionPrinter class >> displayStringFor: aCollection on
 		writeDisplayStringOn: aStream
 ]
 
+{ #category : #api }
+GtGemStoneRemotePhlowCollectionPrinter class >> forTargetCollection: aCollection [
+	^ self new 
+		targetCollection: aCollection
+]
+
 { #category : #utils }
 GtGemStoneRemotePhlowCollectionPrinter >> createInitialRecursionSet [
 	| identitySet |
 	identitySet := IdentitySet new.
 	identitySet add: targetCollection.
 	^ identitySet
+]
+
+{ #category : #accessing }
+GtGemStoneRemotePhlowCollectionPrinter >> targetCollection: aCollection [
+	targetCollection := aCollection
 ]
 
 { #category : #printing }
@@ -65,8 +76,7 @@ GtGemStoneRemotePhlowCollectionPrinter >> writeCollectionSizeOn: aStream [
 		nextPutAll: (collectionSize =1 
 			ifTrue: [ 'item' ]
 			ifFalse: [ 'items' ]);
-		nextPutAll: ']';
-		nextPutAll: ' '.
+		nextPutAll: ']'.
 ]
 
 { #category : #api }
