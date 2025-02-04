@@ -114,7 +114,7 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection_inspector
 		OrderedCollection new ].
 	
 	^ self 
-		assertRemoteInspectorTitle: 'anOrderedCollection [0 items]( )' 
+		assertRemoteInspectorTitle: 'anOrderedCollection [0 items] ()' 
 		for: proxyObject
 ]
 
@@ -183,7 +183,7 @@ GtRemoteGemStoneInspectionExamples >> orderedCollectionNotEmptyInspection_inspec
 		OrderedCollection with: 1 with: 2 ].
 	
 	^ self 
-		assertRemoteInspectorTitle: 'anOrderedCollection [2 items]( 1, 2)' 
+		assertRemoteInspectorTitle: 'anOrderedCollection [2 items] (1 2)' 
 		for: proxyObject
 ]
 
