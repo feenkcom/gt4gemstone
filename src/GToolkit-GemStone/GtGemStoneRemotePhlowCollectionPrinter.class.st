@@ -19,14 +19,6 @@ GtGemStoneRemotePhlowCollectionPrinter class >> forTargetCollection: aCollection
 		targetCollection: aCollection
 ]
 
-{ #category : #utils }
-GtGemStoneRemotePhlowCollectionPrinter >> createInitialRecursionSet [
-	| identitySet |
-	identitySet := IdentitySet new.
-	identitySet add: targetCollection.
-	^ identitySet
-]
-
 { #category : #accessing }
 GtGemStoneRemotePhlowCollectionPrinter >> targetCollection: aCollection [
 	targetCollection := aCollection
@@ -42,26 +34,18 @@ GtGemStoneRemotePhlowCollectionPrinter >> writeCollectionItemsOn: aStream [
 	"Put a displayable representation of the receiver on the given stream
 	 while avoiding recursion from object reference loops."
 
-	| identitySet count sz |
-	
-	identitySet := self createInitialRecursionSet.
-	
-	aStream nextPutAll: '( ' .
-	count := 1 .
-	sz := targetCollection size .
-	targetCollection do:[:anElement |
-	  aStream position > 700 ifTrue:[
-		"prevent infinite recursion when printing cyclic structures, and
-		 limit the size of result when printing large collections."
-		aStream nextPutAll: '...)' .
-		^ self
-		] .
-	  anElement printOn: aStream recursionSet: identitySet.
-	  count < sz ifTrue:[ aStream nextPutAll: ', ' ].
-	  count := count + 1 .
-	].
-	aStream nextPut: $) .
-
+	| maxPrint tooMany|
+	maxPrint := 1000.
+	tooMany := aStream position + maxPrint.
+	aStream nextPutAll: ' ('.
+	targetCollection 
+		do: [:element | 
+			(aStream position > tooMany or:[aStream position > (maxPrint * 3)]) ifTrue: [
+				aStream nextPutAll: '...', ')'. 
+				^self ].
+			element printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $)
 ]
 
 { #category : #printing }
