@@ -313,6 +313,24 @@ removeallclassmethods GtGemStoneLocalCallStackUpdater
 
 doit
 (Object
+	subclass: 'GtGemStoneRemotePhlowCollectionPrinter'
+	instVarNames: #(targetCollection)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneRemotePhlowCollectionPrinter
+removeallclassmethods GtGemStoneRemotePhlowCollectionPrinter
+
+doit
+(Object
 	subclass: 'GtGemStoneSemanticVersionNumber'
 	instVarNames: #(major minor patch iceTag)
 	classVars: #()
@@ -3150,6 +3168,85 @@ updateTopCommonContextAtIndexPair: anIndexPair basedOn: aNewCallStack
 	targetCallStack replaceFrameAt: anIndexPair first with: newContext.
 %
 
+! Class implementation for 'GtGemStoneRemotePhlowCollectionPrinter'
+
+!		Class methods for 'GtGemStoneRemotePhlowCollectionPrinter'
+
+category: 'api'
+classmethod: GtGemStoneRemotePhlowCollectionPrinter
+displayStringFor: aCollection on: aStream
+	^ (self forTargetCollection: aCollection)
+		writeDisplayStringOn: aStream
+%
+
+category: 'api'
+classmethod: GtGemStoneRemotePhlowCollectionPrinter
+forTargetCollection: aCollection
+	^ self new 
+		targetCollection: aCollection
+%
+
+!		Instance methods for 'GtGemStoneRemotePhlowCollectionPrinter'
+
+category: 'accessing'
+method: GtGemStoneRemotePhlowCollectionPrinter
+targetCollection: aCollection
+	targetCollection := aCollection
+%
+
+category: 'printing'
+method: GtGemStoneRemotePhlowCollectionPrinter
+writeClassDescriptionOn: aStream 
+	aStream nextPutAll: targetCollection class name describeClassName 
+%
+
+category: 'api'
+method: GtGemStoneRemotePhlowCollectionPrinter
+writeCollectionItemsOn: aStream
+	"Put a displayable representation of the receiver on the given stream
+	 while avoiding recursion from object reference loops."
+
+	| maxPrint tooMany|
+	maxPrint := 1000.
+	tooMany := aStream position + maxPrint.
+	aStream nextPutAll: ' ('.
+	targetCollection 
+		do: [:element | 
+			(aStream position > tooMany or:[aStream position > (maxPrint * 3)]) ifTrue: [
+				aStream nextPutAll: '...', ')'. 
+				^self ].
+			element printOn: aStream]
+		separatedBy: [aStream space].
+	aStream nextPut: $)
+%
+
+category: 'printing'
+method: GtGemStoneRemotePhlowCollectionPrinter
+writeCollectionSizeOn: aStream
+	| collectionSize |
+	collectionSize := targetCollection size. 
+	aStream
+		nextPutAll: ' ';
+		nextPutAll: '[';
+		print: collectionSize;
+		nextPutAll: ' ';
+		nextPutAll: (collectionSize =1 
+			ifTrue: [ 'item' ]
+			ifFalse: [ 'items' ]);
+		nextPutAll: ']'.
+%
+
+category: 'api'
+method: GtGemStoneRemotePhlowCollectionPrinter
+writeDisplayStringOn: aStream
+	"Put a displayable representation of the receiver on the given stream
+	 while avoiding recursion from object reference loops."
+	
+	self writeClassDescriptionOn: aStream.
+	self writeCollectionSizeOn: aStream.
+	self writeCollectionItemsOn: aStream.
+%
+
 ! Class implementation for 'GtGemStoneSemanticVersionNumber'
 
 !		Class methods for 'GtGemStoneSemanticVersionNumber'
@@ -5037,6 +5134,29 @@ serialize: anObject
 	 ^ GtRsrProxyServiceServer object: anObject
 %
 
+! Class extensions for 'Integer'
+
+!		Instance methods for 'Integer'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Integer
+isInteger
+
+	^ true
+%
+
+! Class extensions for 'MultiByteString'
+
+!		Instance methods for 'MultiByteString'
+
+category: '*GToolkit-GemStone-GemStone'
+method: MultiByteString
+utf8Encoded
+	"Answer a ByteArray of the receiver in UTF8 format"
+
+	^ self encodeAsUTF8 asByteArray
+%
+
 ! Class extensions for 'Object'
 
 !		Instance methods for 'Object'
@@ -5066,6 +5186,13 @@ gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	"Evaluate the supplied platform specific block"
 
 	^ gemstoneBlock value
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Object
+isInteger
+
+	^ false
 %
 
 ! Class extensions for 'OrderedCollection'
@@ -5117,5 +5244,15 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ GtRsrProxyServiceServer object: self
 %
 
+! Class extensions for 'String'
 
+!		Instance methods for 'String'
+
+category: '*GToolkit-GemStone-GemStone'
+method: String
+utf8Encoded
+	"Answer a ByteArray of the receiver in UTF8 format"
+
+	^ self encodeAsUTF8 asByteArray
+%
 
