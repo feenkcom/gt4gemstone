@@ -322,91 +322,38 @@ GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock [
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean [
-	| cmd |
 
-	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
-	^ self scriptEvaluation
-		script: cmd;
-		autoCommit: aBoolean;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		bindings: evalFields second;
-		returnLegacy;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		returnLegacy;
-		autoCommit: aBoolean;
-		bindings: evalFields second;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		serialisationStrategy: aSymbol;
-		autoCommit: aBoolean;
-		bindings: evalFields second;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean
 ]
 
 { #category : #private }
 GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock [
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
-	aCleanBlock numArgs = 0
-		ifFalse: [self error: 'wrong number of arguments'].
-	^ String streamContents: [ :stream |
-		stream 
-			<< aCleanBlock printString;
-			<< ' value' ].
+	^ self versionedEvaluator createEvaluationStringFromCleanBlock: aCleanBlock
 ]
 
 { #category : #private }
 GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray [
-	"Answer an array containing the source of the supplied clean block and the arguments converted to a set of bindings"
-	| argNames bindings |
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
-	aCleanBlock numArgs = anArray size
-		ifFalse: [self error: 'wrong number of arguments'].
-	anArray do: [:e |
-		(e isGtBareProxyObject not and:
-		[ (e isKindOf: BlockClosure) and:
-		[ e isClean not ] ]) ifTrue: 
-			[self error: 'the block must be clean' ] ].
-	argNames := aCleanBlock argumentNames.
-	bindings := (argNames collectWithIndex: [ :name :index | 
-		name -> (anArray at: index) ]) asDictionary.
-	^ Array
-		with: (String streamContents: [ :stream |
-			stream 
-				<< aCleanBlock printString;
-				<< ' valueWithArguments: { '.
-			argNames
-				do: [ :name | stream << name ]
-				separatedBy: [ stream << '. ' ].
-			stream << ' }' ])
-		with: bindings.
+	^ self versionedEvaluator createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - create script evaluation' }
@@ -1002,13 +949,8 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock autoCommit: aB
 
 { #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ (self createScriptEvaluationReturnProxyFor:  evalFields first
-		for: nil
-		bindings: evalFields second
-		autoCommit: autoCommit) evaluateAndWait.
+	^ self versionedEvaluator evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - evaluate script' }
@@ -1726,7 +1668,6 @@ GtGemStoneSession >> statusAttributes [
 			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
 		add: 'Transcript status' -> (gsAttributes 
 			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['-']).
-
 	^ attributes
 ]
 
@@ -1793,7 +1734,7 @@ GtGemStoneSession >> toggleAutoCommit [
 { #category : #configure }
 GtGemStoneSession >> toggleCodeSync [
 
-	codeSync enabled: codeSync enabled not
+	self codeSync enabled: self codeSync enabled not
 ]
 
 { #category : #configure }
@@ -1868,6 +1809,12 @@ GtGemStoneSession >> unbookmark [
 GtGemStoneSession >> username [
 
 	^ connector username
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> versionedEvaluator [
+
+	^ evaluator versionedEvaluator
 ]
 
 { #category : #'accessing - remote properties' }

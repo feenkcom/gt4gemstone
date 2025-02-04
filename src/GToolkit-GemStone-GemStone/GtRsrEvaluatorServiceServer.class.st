@@ -4,6 +4,21 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
+{ #category : 'logging' }
+GtRsrEvaluatorServiceServer class >> stdoutLog: aMessage [
+	| msgStream |
+
+	msgStream := WriteStream on: String new.
+	msgStream
+		nextPutAll: Time now printString;
+		nextPutAll: ': ';
+		nextPutAll: (aMessage isString
+			ifTrue: [ aMessage asString ]
+			ifFalse: [ aMessage printString ]);
+		lf.
+	FsFileDescriptor stdout write: msgStream contents utf8Encoded.
+]
+
 { #category : 'actions' }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
@@ -44,7 +59,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject inFrameIdentifier
 		gsEvaluate: aString 
 		for: anObject 
 		inFrameIdentifierIndex: aFrameIndex 
-		ofEvaluationContext: aTargetEvaluationContext asGtGsArgument
+		ofEvaluationContext: aTargetEvaluationContext
 		bindings: aDictionary 
 		serializationStrategy: aSymbol.
 
@@ -74,9 +89,10 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 
+	SessionTemps current at: #GtRsrServer put: self.
 	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
-	aDictionary keysAndValuesDo: [ :key :value |
+	aDictionary asGtGsArgument keysAndValuesDo: [ :key :value |
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
@@ -94,15 +110,16 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject  inFrameIdentif
 	"Evaluate the receiver's script, answering the result"
 	| compilationContext receiver  allBindings  |
 
+	SessionTemps current at: #GtRsrServer put: self.
 	compilationContext := GtGemStoneCompilationContext 
-		receiver: anObject  
+		receiver: anObject asGtGsArgument
 		frameIdentifierIndex: aFrameIdentifierIndex 
-		evaluationContext: aTargetEvaluationContext 
-		clientBindings: aDictionary.
+		evaluationContext: aTargetEvaluationContext asGtGsArgument
+		clientBindings: aDictionary asGtGsArgument.
 
 	receiver := compilationContext currentReceiver.
 	allBindings := compilationContext allBindings.
-	
+
 	^ GtGemStoneEvaluationContext new
 		serializationStrategy: aSymbol;
 		compilationContext: compilationContext;
@@ -119,9 +136,10 @@ GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: 
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 
+	SessionTemps current at: #GtRsrServer put: self.
 	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
-	aDictionary keysAndValuesDo: [ :key :value |
+	aDictionary asGtGsArgument keysAndValuesDo: [ :key :value |
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 

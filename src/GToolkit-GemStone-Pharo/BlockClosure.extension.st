@@ -7,7 +7,7 @@ BlockClosure >> asGtGsArgumentIn: aGtGemStoneSession [
 	self assert: [ self isClean ]
 		description: 'Only clean BlockClosures can be passed as arguments'.
 
-	^ aGtGemStoneSession evaluateAndWaitReturnProxy: self printString
+	^ aGtGemStoneSession evaluateAndWaitReturnProxy: self printString autoCommit: false.
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }

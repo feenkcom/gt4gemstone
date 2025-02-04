@@ -126,6 +126,10 @@ then
   then
     ln -s pharo-local/iceberg/feenkcom/gtoolkit-remote
   fi
+  if [ ! -d gtoolkit-wireencoding ]
+  then
+    ln -s pharo-local/iceberg/feenkcom/gtoolkit-wireencoding
+  fi
 
   chmod +x gt4gemstone/scripts/*.sh
   chmod +x gt4gemstone/scripts/release/*.sh

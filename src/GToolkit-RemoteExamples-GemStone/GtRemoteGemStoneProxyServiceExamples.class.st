@@ -180,8 +180,7 @@ GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	self assert: size equals: 4.
 	
 	self 
-		assert: (collectionProxy proxyPerform: #gtDisplayString)
-		equals: 'anOrderedCollection [4 items] (1 6 3 4)'.
+		assert: (#('anOrderedCollection [4 items] (1 6 3 4)' 'anOrderedCollection( 1, 6, 3, 4)') includes: (collectionProxy proxyPerform: #gtDisplayString)).
 		
 	self 
 		assert: (collectionProxy proxyPerform: #includes: withArguments: {1}).

@@ -24,6 +24,8 @@ GtRsrProxyServiceServer >> asGtGsArgument [
 GtRsrProxyServiceServer >> basicPerform: aSymbol withArguments: anArray  serializationStrategy: aSerialisationStrategySymbol [
 	"Perform the requested operation, catching errors and returning exception information"
 
+	SessionTemps current at: #GtRsrServer put: self.
+
 	^ (GtGemStoneEvaluationContext new
 		serializationStrategy: aSerialisationStrategySymbol)
 			evaluateAndWaitBlock: [ 
