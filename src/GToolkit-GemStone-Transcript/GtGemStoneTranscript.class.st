@@ -87,7 +87,9 @@ GtGemStoneTranscript >> show: anObject [
 GtGemStoneTranscript >> toggleStatus [
 	self isEnabled 
 		ifTrue: [ self disable ]	
-		ifFalse: [ self enable ]
+		ifFalse: [ self enable ].
+	
+	^ self isEnabled 
 ]
 
 { #category : #actions }
@@ -99,7 +101,7 @@ GtGemStoneTranscript >> toggleStatusWithLogging [
 		ifFalse: [ 'Deactivate GemStone transcript on current session' ].
 	self lfShow: message.
 	
-	self toggleStatus
+	^ self toggleStatus
 ]
 
 { #category : #utils }
