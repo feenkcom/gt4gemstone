@@ -8,7 +8,8 @@ RwSimpleProjectLoadComponentV2 {
 		'gemstone/Core'
 	],
 	#packageNames : [
-		'GToolkit-GemStone'
+		'GToolkit-GemStone',
+		'GToolkit-GemStone-Transcript'
 	],
 	#comment : ''
 }
