@@ -87,6 +87,21 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlock [
 ]
 
 { #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockReturnPrimitive [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnPrimitive: [ 1 + 1].
+	self assert: returnValue equals: 2.
+	
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnPrimitive: [ 1 + 2] 
+		autoCommit: false.
+	self assert: returnValue equals: 3. 
+]
+
+{ #category : #tests }
 GtRemoteGemStoneSessionExamples >> testEvaluateBlockReturnProxy [
 	<gtExample>
 	| returnValue  |

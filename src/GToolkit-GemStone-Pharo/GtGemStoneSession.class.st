@@ -473,6 +473,16 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript serializationStrate
 ]
 
 { #category : #'actions - create script evaluation' }
+GtGemStoneSession >> createScriptEvaluationReturnPrimitiveFor: remoteScript autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		autoCommit: aBoolean;
+		returnPrimitiveOnly;
+		yourself
+]
+
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -946,6 +956,26 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray se
 ]
 
 { #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnPrimitive: aCleanBlock [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnPrimitiveFor:  cmd
+		autoCommit: autoCommit) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnPrimitive: aCleanBlock autoCommit: aBoolean [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnPrimitiveFor:  cmd
+		autoCommit: aBoolean) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 	| cmd |
 
@@ -1093,11 +1123,11 @@ GtGemStoneSession >> gemLogFileReference [
 { #category : #accessing }
 GtGemStoneSession >> gt4gemstoneVersion [
 
-	^ gt4gemstoneVersion ifNil:
-		[ gt4gemstoneVersion := (self scriptEvaluation
-			script: 'GtGsRelease default versionString';	
-			autoCommit: false;
-			returnPrimitiveOnly) evaluateAndWait ]
+	^ gt4gemstoneVersion ifNil: [ 
+		gt4gemstoneVersion := self 
+			evaluateBlockAndWaitReturnPrimitive: [
+				GtGsRelease default versionString ]
+			autoCommit: false ]
 ]
 
 { #category : #ui }
@@ -1407,7 +1437,7 @@ GtGemStoneSession >> logEmitter [
 GtGemStoneSession >> myUserProfile [
 	"Answer a dictionary containing a subset of the UserProfile of the receiver"
 
-	^ self evaluateBlockAndWait: [
+	^ self evaluateBlockAndWaitReturnPrimitive: [
 		| userProfile |
 		userProfile := System myUserProfile.
 		Dictionary new
@@ -1419,7 +1449,7 @@ GtGemStoneSession >> myUserProfile [
 			at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
 			at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
 			yourself]
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+		autoCommit: false
 ]
 
 { #category : #accessing }
@@ -1591,8 +1621,9 @@ GtGemStoneSession >> statusAttributes [
 
 	isRunning ifFalse: [ ^ attributes ].
 
-	gsAttributes := (self createBlockEvaluationFor: [
-		Dictionary new
+	gsAttributes := (self 
+		evaluateBlockAndWaitReturnPrimitive: [
+			Dictionary new
 			at: 'Size' 
 				put: SystemRepository fileSize 
 					- SystemRepository freeSpace;
@@ -1604,9 +1635,8 @@ GtGemStoneSession >> statusAttributes [
 					(System myUserProfile 
 						objectNamed: #FloatingPointError) enabledExceptions);
 			at: 'Time' put: DateAndTime now;
-			yourself ])
-		returnPrimitiveOnly;
-		evaluateAndWait.
+			yourself ] 
+		autoCommit: false).
 
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
