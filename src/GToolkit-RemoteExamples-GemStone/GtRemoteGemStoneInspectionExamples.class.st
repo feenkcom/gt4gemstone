@@ -171,7 +171,7 @@ GtRemoteGemStoneInspectionExamples >> phlowTextWithDecorationsInspection [
 			GtRemotePhlowDeclarativeTextTestInspectable new  
 				styledPhlowTextWithDecorations ]
 		withTypeName: #GtPhlowRunBasedText
-		inspectorTitle: 'Phlow Rope: Examples of text decorations:
+		inspectorTitle: ('Phlow Rope: Examples of text decorations:
 
 Different styles:
 	Solid style
@@ -186,7 +186,7 @@ Different types:
 	
 Different color:
 	Blue color
-	...'
+	...' copyReplaceAll: String cr with: OSPlatform current lineEnding)
 ]
 
 { #category : #accessing }
