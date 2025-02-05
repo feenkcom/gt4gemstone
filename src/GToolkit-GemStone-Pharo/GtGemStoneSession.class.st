@@ -314,6 +314,13 @@ GtGemStoneSession >> contextMenuContent [
 ]
 
 { #category : #'actions - create block evaluation' }
+GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock [
+	^ self 
+		createBlockEvaluationFor: aCleanBlock 
+		autoCommit: autoCommit
+]
+
+{ #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean [
 	| cmd |
 
@@ -1583,16 +1590,22 @@ GtGemStoneSession >> statusAttributes [
 
 	isRunning ifFalse: [ ^ attributes ].
 
-	gsAttributes := (self scriptEvaluation
-			script: 'Dictionary new
-	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
-	at: ''gt4gemstoneVersion'' put: GtGsRelease versionString;
-	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
-	at: ''fpExceptions'' put: (
-(System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
-	at: ''Time'' put: DateAndTime now;
-	yourself';
-			returnPrimitiveOnly) evaluateAndWait.
+	gsAttributes := (self createBlockEvaluationFor: [
+		Dictionary new
+			at: 'Size' 
+				put: SystemRepository fileSize 
+					- SystemRepository freeSpace;
+			at: 'gt4gemstoneVersion' put: GtGsRelease versionString;
+			at: 'CacheName' 
+				put: (System getSharedCacheAttributes at: #cacheName);
+			at: 'fpExceptions' 
+				put: (
+					(System myUserProfile 
+						objectNamed: #FloatingPointError) enabledExceptions);
+			at: 'Time' put: DateAndTime now;
+			yourself ])
+		returnPrimitiveOnly;
+		evaluateAndWait.
 
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
@@ -1600,7 +1613,11 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
 		add: 'Connection time' -> connectionTime;
-		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
+		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
+		add: 'Transcript class' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptclass' ifAbsent: ['TODO']);
+		add: 'Transcript status' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['TODO']).
 
 	^ attributes
 ]
