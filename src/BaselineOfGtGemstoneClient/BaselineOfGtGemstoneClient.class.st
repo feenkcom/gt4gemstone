@@ -35,6 +35,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
 			package: 'GToolkit-GemStone-Lepiter' with:
 				[ spec requires: #( 'GToolkit-GemStone-Pharo' 'LepiterEngineCore') ];
+			package: 'GToolkit-GemStone-Transcript';
 			package: 'GToolkit-RemoteExamples-GemStone' with:
 				[  spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
 ]
