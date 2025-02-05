@@ -8,10 +8,9 @@ Class {
 	#category : #'GToolkit-GemStone-Transcript'
 }
 
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> cr [
-	self whenEnabledDo: [ 
-		contentStream cr ]
+{ #category : #configuration }
+GtGemStoneInImageTranscript >> disable [
+	isEnabled := false
 ]
 
 { #category : #configuration }
@@ -44,9 +43,9 @@ GtGemStoneInImageTranscript >> isEnabled [
 ]
 
 { #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> lf [
-	self whenEnabledDo: [ 
-		contentStream lf ]
+GtGemStoneInImageTranscript >> nextPut: aCharacter [
+	self whenEnabledDo: [  
+		contentStream nextPut: aCharacter ]
 ]
 
 { #category : #'api - streaming' }

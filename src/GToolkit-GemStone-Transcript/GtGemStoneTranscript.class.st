@@ -21,7 +21,7 @@ GtGemStoneTranscript class >> reset [
 
 { #category : #'api - streaming' }
 GtGemStoneTranscript >> cr [
-	self subclassResponsibility
+	self nextPut: Character cr
 ]
 
 { #category : #'api - streaming' }
@@ -38,7 +38,7 @@ GtGemStoneTranscript >> isEnabled [
 
 { #category : #'api - streaming' }
 GtGemStoneTranscript >> lf [
-	self subclassResponsibility
+	self nextPut: Character lf
 ]
 
 { #category : #'api - streaming' }
@@ -51,6 +51,11 @@ GtGemStoneTranscript >> lfShow: anObject [
 { #category : #'api - streaming' }
 GtGemStoneTranscript >> newLine [
 	self lf
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> nextPut: aCharacter [
+	self subclassResponsibility
 ]
 
 { #category : #'api - streaming' }
