@@ -6,7 +6,17 @@ Class {
 
 { #category : #accessing }
 GtGemStoneTranscript class >> current [
-	^ GtGemStoneTranscriptHandler current
+	^ GtGemStoneTranscriptHandler currentTranscript
+]
+
+{ #category : #accessing }
+GtGemStoneTranscript class >> registerAsCurrentTranscript [
+	^ GtGemStoneTranscriptHandler registerTranscriptClass: self
+]
+
+{ #category : #accessing }
+GtGemStoneTranscript class >> reset [
+	^ GtGemStoneTranscriptHandler resetTranscript
 ]
 
 { #category : #testing }
