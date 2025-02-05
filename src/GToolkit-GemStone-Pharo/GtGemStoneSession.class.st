@@ -1227,6 +1227,7 @@ GtGemStoneSession >> gtLogFor: aView [
 	
 	self isRunning ifFalse: [ ^ aView empty ] .
 	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
+	
 	^ aView textEditor
 		  title: 'Log';
 		  priority: 20;
@@ -1406,19 +1407,19 @@ GtGemStoneSession >> logEmitter [
 GtGemStoneSession >> myUserProfile [
 	"Answer a dictionary containing a subset of the UserProfile of the receiver"
 
-	^ self evaluateAndWait:
-'| userProfile |
-userProfile := System myUserProfile.
-Dictionary new
-	at: #userId put: userProfile userId;
-	at: #groups put: userProfile groupNames asArray;
-	at: #lastLoginTime put: userProfile lastLoginTime printString;
-	at: #authenticationScheme put: userProfile authenticationScheme;
-	at: #kerberosPrincipal put: userProfile kerberosPrincipal printString;
-	at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
-	at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
-	yourself'
-serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	^ self evaluateBlockAndWait: [
+		| userProfile |
+		userProfile := System myUserProfile.
+		Dictionary new
+			at: #userId put: userProfile userId;
+			at: #groups put: userProfile groupNames asArray;
+			at: #lastLoginTime put: userProfile lastLoginTime printString;
+			at: #authenticationScheme put: userProfile authenticationScheme;
+			at: #kerberosPrincipal put: userProfile kerberosPrincipal printString;
+			at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
+			at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
+			yourself]
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 ]
 
 { #category : #accessing }
