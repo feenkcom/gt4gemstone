@@ -1729,6 +1729,14 @@ GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> toggleRemoteTranscript [
+	^ self 
+		evaluateBlockAndWaitReturnPrimitive: [
+			GtGemStoneTranscript current toggleStatusWithLogging ]
+		autoCommit: false
+]
+
+{ #category : #actions }
 GtGemStoneSession >> transactionConflicts [
 	^ (self scriptEvaluation
 		script: 'System transactionConflicts';
