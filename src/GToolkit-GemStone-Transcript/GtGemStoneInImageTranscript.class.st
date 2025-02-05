@@ -10,14 +10,8 @@ Class {
 
 { #category : #'api - streaming' }
 GtGemStoneInImageTranscript >> cr [
-	contentStream cr
-]
-
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> crShow: anObject [
-	self 
-		cr; 
-		show: anObject
+	self whenEnabledDo: [ 
+		contentStream cr ]
 ]
 
 { #category : #configuration }
@@ -51,32 +45,12 @@ GtGemStoneInImageTranscript >> isEnabled [
 
 { #category : #'api - streaming' }
 GtGemStoneInImageTranscript >> lf [
-	contentStream lf
-]
-
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> lfShow: anObject [
-	self 
-		lf; 
-		show: anObject
-]
-
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> newLine [
-	self lf
+	self whenEnabledDo: [ 
+		contentStream lf ]
 ]
 
 { #category : #'api - streaming' }
 GtGemStoneInImageTranscript >> nextPutAll: aString [
-	contentStream nextPutAll: aString
-]
-
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> print: anObject [
-	contentStream print: anObject
-]
-
-{ #category : #'api - streaming' }
-GtGemStoneInImageTranscript >> show: anObject [
-	self print: anObject
+	self whenEnabledDo: [  
+		contentStream nextPutAll: aString ]
 ]

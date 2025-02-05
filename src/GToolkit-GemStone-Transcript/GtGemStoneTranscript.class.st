@@ -19,7 +19,57 @@ GtGemStoneTranscript class >> reset [
 	^ GtGemStoneTranscriptHandler resetTranscript
 ]
 
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> cr [
+	self subclassResponsibility
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> crShow: anObject [
+	self 
+		cr; 
+		show: anObject 
+]
+
 { #category : #testing }
 GtGemStoneTranscript >> isEnabled [
 	^ self subclassResponsibility
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> lf [
+	self subclassResponsibility
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> lfShow: anObject [
+	self 
+		lf; 
+		show: anObject
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> newLine [
+	self lf
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> nextPutAll: aString [
+	self subclassResponsibility
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> print: anObject [
+	self nextPutAll: anObject asString 
+]
+
+{ #category : #'api - streaming' }
+GtGemStoneTranscript >> show: anObject [
+	self print: anObject
+]
+
+{ #category : #utils }
+GtGemStoneTranscript >> whenEnabledDo: aBlock [
+	self isEnabled ifTrue: [
+		aBlock value ]
 ]
