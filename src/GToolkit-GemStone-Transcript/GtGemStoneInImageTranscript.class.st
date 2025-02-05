@@ -27,11 +27,10 @@ GtGemStoneInImageTranscript >> enable [
 GtGemStoneInImageTranscript >> gtViewContentsFor: aView [
 	<gtView>
 	
-	^ aView forward 
+	^ aView text 
 		title: 'Contents';
 		priority: 10;
-		object: [ contentStream contents ];
-		view: #gtStringFor:
+		text: [ contentStream contents ]
 ]
 
 { #category : #initialization }
