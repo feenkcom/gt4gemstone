@@ -27,8 +27,9 @@ GtGemStoneTranscriptHandler class >> registerTranscriptClass: aClass [
 
 { #category : #'transcript - api' }
 GtGemStoneTranscriptHandler class >> resetTranscript [
-	^ SessionTemps current 
+	SessionTemps current 
 		removeKey: self transcriptInstanceKeyName
+		ifAbsent: [ ]
 ]
 
 { #category : #accessing }

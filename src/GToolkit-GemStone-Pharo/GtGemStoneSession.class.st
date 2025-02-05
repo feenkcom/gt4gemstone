@@ -182,6 +182,14 @@ GtGemStoneSession >> clearAutoCommit [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> clearRemoteTranscript [
+	^ self 
+		evaluateBlockAndWaitReturnPrimitive: [
+			GtGemStoneTranscript current clearContent. nil ]
+		autoCommit: false
+]
+
+{ #category : #actions }
 GtGemStoneSession >> close [
 
 	connection ifNil: [ ^ self ].
@@ -986,6 +994,16 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 ]
 
 { #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock autoCommit: aBoolean [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnProxyFor:  cmd
+		autoCommit: aBoolean) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
 	| evalFields |
 
@@ -1259,7 +1277,7 @@ GtGemStoneSession >> gtLogFor: aView [
 	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
 	
 	^ aView textEditor
-		  title: 'Log';
+		  title: 'Gem Log';
 		  priority: 20;
 		  text: [ self gemLogFileReference contents ];
 		  actionUpdateButton
@@ -1338,6 +1356,30 @@ GtGemStoneSession >> gtUserProfileFor: aView [
 		  column: #Value text: [ :item | item value ];
 		  send: [ :item | item value ];
 		  actionUpdateButton
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtViewTranscriptFor: aView [
+	<gtView>
+
+	self isRunning ifFalse: [ ^ aView empty ].
+	
+	^ aView remoteForward
+		title: 'Transcript';
+		priority: 21;
+		object: [ self remoteTranscriptProxy ];
+		view: #gtViewContentsFor:;
+		actionUpdateButton;
+		actionButtonLabel: 'Toggle' 
+			tooltip: 'Toggle the enable/disable status of the remote transcript'
+			action: [ :aButton :aTab |
+				self toggleRemoteTranscript.
+				aTab viewContentElement phlow update ];
+		actionButtonIcon: BrGlamorousIcons trash 
+			 tooltip: 'Clear the transcript content'
+			 action: [:aButton :aTab |
+			 	self clearRemoteTranscript.
+			 	aTab viewContentElement phlow update ]  
 ]
 
 { #category : #testing }
@@ -1516,6 +1558,14 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :registryCodeSyn |
 		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> remoteTranscriptProxy [
+	^ self 
+		evaluateBlockAndWaitReturnProxy: [
+			GtGemStoneTranscript current ]
+		autoCommit: false
 ]
 
 { #category : #'adding/removing' }

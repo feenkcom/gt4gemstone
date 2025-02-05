@@ -19,6 +19,11 @@ GtGemStoneTranscript class >> reset [
 	^ GtGemStoneTranscriptHandler resetTranscript
 ]
 
+{ #category : #actions }
+GtGemStoneTranscript >> clearContent [
+	self subclassResponsibility
+]
+
 { #category : #'api - streaming' }
 GtGemStoneTranscript >> cr [
 	self nextPut: Character cr
@@ -94,14 +99,14 @@ GtGemStoneTranscript >> toggleStatus [
 
 { #category : #actions }
 GtGemStoneTranscript >> toggleStatusWithLogging [
-	| message |
-	
-	message := self isEnabled 
-		ifTrue: [ 'Activate GemStone transcript on current session' ]
-		ifFalse: [ 'Deactivate GemStone transcript on current session' ].
-	self lfShow: message.
-	
-	^ self toggleStatus
+	self isEnabled 
+		ifTrue: [ 
+			self lfShow: 'Deactivate GemStone transcript on current session'.
+			self disable]
+		ifFalse: [ 
+			self enable.
+			self lfShow: 'Activate GemStone transcript on current session' ].
+	^ self isEnabled
 ]
 
 { #category : #utils }

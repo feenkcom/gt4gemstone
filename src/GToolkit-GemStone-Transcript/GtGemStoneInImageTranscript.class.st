@@ -9,6 +9,11 @@ Class {
 }
 
 { #category : #configuration }
+GtGemStoneInImageTranscript >> clearContent [
+	contentStream := PrintStream printingOn: String new.
+]
+
+{ #category : #configuration }
 GtGemStoneInImageTranscript >> disable [
 	isEnabled := false
 ]
@@ -33,8 +38,8 @@ GtGemStoneInImageTranscript >> gtViewContentsFor: aView [
 GtGemStoneInImageTranscript >> initialize [
 	super initialize.
 	
-	contentStream := PrintStream printingOn: String new.
-	isEnabled := false.
+	self clearContent.
+	self disable.
 ]
 
 { #category : #testing }
