@@ -1,5 +1,5 @@
 Class {
-	#name : #GtGemStoneRemoteTranscriptWrapper,
+	#name : #GtGemStoneRemoteTranscript,
 	#superclass : #Object,
 	#instVars : [
 		'gemStoneSession'
@@ -8,13 +8,13 @@ Class {
 }
 
 { #category : #'instance creation' }
-GtGemStoneRemoteTranscriptWrapper class >> forGemStoneSession: aGemStoneSession [
+GtGemStoneRemoteTranscript class >> forGemStoneSession: aGemStoneSession [
 	^ self new
 		initializeForGemStoneSession: aGemStoneSession
 ]
 
 { #category : #actions }
-GtGemStoneRemoteTranscriptWrapper >> clearRemoteTranscript [
+GtGemStoneRemoteTranscript >> clearRemoteTranscript [
 	^ self gemStoneSession
 		evaluateBlockAndWaitReturnPrimitive: [
 			GtGemStoneTranscript current clearContent. nil ]
@@ -22,12 +22,12 @@ GtGemStoneRemoteTranscriptWrapper >> clearRemoteTranscript [
 ]
 
 { #category : #accessing }
-GtGemStoneRemoteTranscriptWrapper >> gemStoneSession [
+GtGemStoneRemoteTranscript >> gemStoneSession [
 	^ gemStoneSession
 ]
 
 { #category : #'gt - extensions' }
-GtGemStoneRemoteTranscriptWrapper >> gtActionInspectProxyFor: anAction [
+GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 	<gtAction>
 	
 	^ anAction button
@@ -45,7 +45,7 @@ GtGemStoneRemoteTranscriptWrapper >> gtActionInspectProxyFor: anAction [
 ]
 
 { #category : #views }
-GtGemStoneRemoteTranscriptWrapper >> gtViewTranscriptFor: aView [
+GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
 
 	self gemStoneSession currentFeatures hasGemStoneTranscriptV1 
@@ -71,12 +71,12 @@ GtGemStoneRemoteTranscriptWrapper >> gtViewTranscriptFor: aView [
 ]
 
 { #category : #initialization }
-GtGemStoneRemoteTranscriptWrapper >> initializeForGemStoneSession: aGemStoneSession [
+GtGemStoneRemoteTranscript >> initializeForGemStoneSession: aGemStoneSession [
 	gemStoneSession := aGemStoneSession
 ]
 
 { #category : #actions }
-GtGemStoneRemoteTranscriptWrapper >> remoteTranscriptProxy [
+GtGemStoneRemoteTranscript >> remoteTranscriptProxy [
 	^ self gemStoneSession
 		evaluateBlockAndWaitReturnProxy: [
 			GtGemStoneTranscript current ]
@@ -84,7 +84,7 @@ GtGemStoneRemoteTranscriptWrapper >> remoteTranscriptProxy [
 ]
 
 { #category : #actions }
-GtGemStoneRemoteTranscriptWrapper >> toggleRemoteTranscript [
+GtGemStoneRemoteTranscript >> toggleRemoteTranscript [
 	^ self gemStoneSession
 		evaluateBlockAndWaitReturnPrimitive: [
 			GtGemStoneTranscript current toggleStatusWithLogging ]

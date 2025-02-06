@@ -1559,7 +1559,7 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 
 { #category : #accessing }
 GtGemStoneSession >> remoteTranscript [
-	^ GtGemStoneRemoteTranscriptWrapper forGemStoneSession: self
+	^ GtGemStoneRemoteTranscript forGemStoneSession: self
 ]
 
 { #category : #'adding/removing' }
