@@ -3,7 +3,7 @@ Class {
 	#superclass : #GtGemStoneTranscript,
 	#instVars : [
 		'contentStream',
-		'isEnabled'
+		'enabled'
 	],
 	#category : #'GToolkit-GemStone-Transcript'
 }
@@ -15,12 +15,12 @@ GtGemStoneInImageTranscript >> clearContent [
 
 { #category : #configuration }
 GtGemStoneInImageTranscript >> disable [
-	isEnabled := false
+	enabled := false
 ]
 
 { #category : #configuration }
 GtGemStoneInImageTranscript >> enable [
-	isEnabled := true
+	enabled := true
 ]
 
 { #category : #'gt - extensions' }
@@ -43,7 +43,7 @@ GtGemStoneInImageTranscript >> initialize [
 
 { #category : #testing }
 GtGemStoneInImageTranscript >> isEnabled [
-	^ isEnabled
+	^ enabled
 ]
 
 { #category : #'api - streaming' }

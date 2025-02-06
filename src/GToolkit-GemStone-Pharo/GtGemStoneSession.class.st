@@ -182,14 +182,6 @@ GtGemStoneSession >> clearAutoCommit [
 ]
 
 { #category : #actions }
-GtGemStoneSession >> clearRemoteTranscript [
-	^ self 
-		evaluateBlockAndWaitReturnPrimitive: [
-			GtGemStoneTranscript current clearContent. nil ]
-		autoCommit: false
-]
-
-{ #category : #actions }
 GtGemStoneSession >> close [
 
 	connection ifNil: [ ^ self ].
@@ -523,6 +515,11 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		returnProxy;
 		autoCommit: aBoolean;
 		yourself
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> currentFeatures [
+	^ GtGemStoneRemoteSessionFeatures forSession: self
 ]
 
 { #category : #'accessing - remote properties' }
@@ -1142,10 +1139,15 @@ GtGemStoneSession >> gemLogFileReference [
 GtGemStoneSession >> gt4gemstoneVersion [
 
 	^ gt4gemstoneVersion ifNil: [ 
-		gt4gemstoneVersion := self 
+		| versionString |
+		versionString := self 
 			evaluateBlockAndWaitReturnPrimitive: [
 				GtGsRelease default versionString ]
-			autoCommit: false ]
+			autoCommit: false.
+		gt4gemstoneVersion := versionString 
+			ifNil: [ GtGemStoneSemanticVersionNumber zero ]
+			ifNotNil: [
+				GtGemStoneSemanticVersionNumber readFromString: versionString ] ]
 ]
 
 { #category : #ui }
@@ -1362,24 +1364,14 @@ GtGemStoneSession >> gtUserProfileFor: aView [
 GtGemStoneSession >> gtViewTranscriptFor: aView [
 	<gtView>
 
+	self currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ aView empty ].
 	self isRunning ifFalse: [ ^ aView empty ].
 	
-	^ aView remoteForward
+	^ aView forward
 		title: 'Transcript';
 		priority: 21;
-		object: [ self remoteTranscriptProxy ];
-		view: #gtViewContentsFor:;
-		actionUpdateButton;
-		actionButtonLabel: 'Toggle' 
-			tooltip: 'Toggle the enable/disable status of the remote transcript'
-			action: [ :aButton :aTab |
-				self toggleRemoteTranscript.
-				aTab viewContentElement phlow update ];
-		actionButtonIcon: BrGlamorousIcons trash 
-			 tooltip: 'Clear the transcript content'
-			 action: [:aButton :aTab |
-			 	self clearRemoteTranscript.
-			 	aTab viewContentElement phlow update ]  
+		object: [ self remoteTranscript ];
+		view: #gtViewTranscriptFor: 
 ]
 
 { #category : #testing }
@@ -1561,11 +1553,8 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> remoteTranscriptProxy [
-	^ self 
-		evaluateBlockAndWaitReturnProxy: [
-			GtGemStoneTranscript current ]
-		autoCommit: false
+GtGemStoneSession >> remoteTranscript [
+	^ GtGemStoneRemoteTranscriptWrapper forGemStoneSession: self
 ]
 
 { #category : #'adding/removing' }
@@ -1673,7 +1662,8 @@ GtGemStoneSession >> statusAttributes [
 
 	gsAttributes := (self 
 		evaluateBlockAndWaitReturnPrimitive: [
-			Dictionary new
+			| currentAttributes |
+			currentAttributes := Dictionary new
 			at: 'Size' 
 				put: SystemRepository fileSize 
 					- SystemRepository freeSpace;
@@ -1685,7 +1675,17 @@ GtGemStoneSession >> statusAttributes [
 					(System myUserProfile 
 						objectNamed: #FloatingPointError) enabledExceptions);
 			at: 'Time' put: DateAndTime now;
-			yourself ] 
+			yourself.
+			
+			(System myUserProfile objectNamed: #GtGemStoneTranscriptHandler)
+				ifNotNil: [ :aClass |
+					currentAttributes
+						at: 'gt4gemstonetranscriptclass' 
+						put: aClass transcriptClassName. 
+					currentAttributes
+						at: 'gt4gemstonetranscriptstatus' 
+						put: aClass currentTranscript statusDescription ].
+			currentAttributes ] 
 		autoCommit: false).
 
 	attributes
@@ -1696,9 +1696,9 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Connection time' -> connectionTime;
 		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
 		add: 'Transcript class' -> (gsAttributes 
-			at: 'gt4gemstonetranscriptclass' ifAbsent: ['TODO']);
+			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
 		add: 'Transcript status' -> (gsAttributes 
-			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['TODO']).
+			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['-']).
 
 	^ attributes
 ]
@@ -1776,14 +1776,6 @@ GtGemStoneSession >> toggleCodeSyncAndAutoCommit [
 	toggledState := codeSync enabled not.
 	codeSync enabled: toggledState.
 	autoCommit := toggledState.
-]
-
-{ #category : #actions }
-GtGemStoneSession >> toggleRemoteTranscript [
-	^ self 
-		evaluateBlockAndWaitReturnPrimitive: [
-			GtGemStoneTranscript current toggleStatusWithLogging ]
-		autoCommit: false
 ]
 
 { #category : #actions }

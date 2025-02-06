@@ -467,9 +467,10 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 			aGtGemStoneSession toggleCodeSyncAndAutoCommit.
 			self updateContent ]}.
 	
-	actions addAll: {
-		'Toggle Transcript' -> [:aStatusLineElement | 
-			aGtGemStoneSession toggleRemoteTranscript ]}.
+	aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
+		actions addAll: {
+			'Toggle Transcript' -> [:aStatusLineElement | 
+				aGtGemStoneSession toggleRemoteTranscript ]} ].
 			
 	actions addAll: {
 		'Inspect' -> [:aStatusLineElement | 

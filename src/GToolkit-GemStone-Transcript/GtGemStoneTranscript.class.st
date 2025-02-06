@@ -88,6 +88,13 @@ GtGemStoneTranscript >> show: anObject [
 	self print: anObject
 ]
 
+{ #category : #accessing }
+GtGemStoneTranscript >> statusDescription [
+	^ self isEnabled
+		ifTrue: [ 'Enabled' ] 
+		ifFalse: [ 'Disabled' ]
+]
+
 { #category : #actions }
 GtGemStoneTranscript >> toggleStatus [
 	self isEnabled 

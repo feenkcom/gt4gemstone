@@ -6,7 +6,7 @@ Class {
 
 { #category : #utils }
 GtGemStoneTranscriptHandler class >> createNewTranscript [
-	^ ((System myUserProfile objectNamed: self transcriptClass asSymbol)
+	^ ((System myUserProfile objectNamed: self transcriptClassName asSymbol)
 		ifNil: [ GtGemStoneInImageTranscript  ]
 		ifNotNil: [ :aClass | aClass ]) basicNew initialize
 ]
@@ -33,15 +33,15 @@ GtGemStoneTranscriptHandler class >> resetTranscript [
 ]
 
 { #category : #accessing }
-GtGemStoneTranscriptHandler class >> transcriptClass [
-	^ SessionTemps current 
-		at: self transcriptClassKeyName
-		ifAbsent: [ GtGemStoneInImageTranscript name ]
+GtGemStoneTranscriptHandler class >> transcriptClassKeyName [
+	^#GT_TRANSCRIPT_INSTANCE
 ]
 
 { #category : #accessing }
-GtGemStoneTranscriptHandler class >> transcriptClassKeyName [
-	^#GT_TRANSCRIPT_INSTANCE
+GtGemStoneTranscriptHandler class >> transcriptClassName [
+	^ SessionTemps current 
+		at: self transcriptClassKeyName
+		ifAbsent: [ GtGemStoneInImageTranscript name ]
 ]
 
 { #category : #accessing }
