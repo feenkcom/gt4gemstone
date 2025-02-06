@@ -490,7 +490,7 @@ GtGemStoneSessionRegistry >> gtInspectKeepAliveFor: anAction [
 	<gtAction>
 
 	^ anAction button
-		label: 'log';
+		label: 'KeepAlive';
 		priority: 10;
 		icon: BrGlamorousVectorIcons transcript;
 		tooltip: 'Inspect KeepAlive log';
@@ -558,6 +558,10 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				aGtGemStoneSession beDefaultSession.
 				anElement phlow firstParentWithViewContent phlow update ]
 			if: [ :aSession | aSession isDefaultSession not ];
+		contextItemLabel: 'Toggle Transcript'
+			action: [ :anElement :aGtGemStoneSession | 
+				aGtGemStoneSession toggleRemoteTranscript  ]
+			if: [ :aSession | aSession currentFeatures hasGemStoneTranscriptV1 ];
 		contextItemLabel: 'Inspect' 
 			action: [ :anElement :aGtGemStoneSession | 
 				anElement phlow spawnObject: aGtGemStoneSession ];

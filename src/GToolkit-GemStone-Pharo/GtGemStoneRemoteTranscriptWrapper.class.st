@@ -26,6 +26,24 @@ GtGemStoneRemoteTranscriptWrapper >> gemStoneSession [
 	^ gemStoneSession
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscriptWrapper >> gtActionInspectProxyFor: anAction [
+	<gtAction>
+	
+	^ anAction button
+		priority: 10;
+		icon: BrGlamorousVectorIcons inspect;
+		label: 'Proxy';
+		tooltip: 'Inspect transcript proxy';
+		action: [ :aButton |
+			aButton phlow 
+				spawnObject: self remoteTranscriptProxy ];
+		primaryModifierAction: [ :aButton |
+				aButton phlow 
+					showObject: self remoteTranscriptProxy ]
+			mouseCursor: BlCopyCursor new
+]
+
 { #category : #views }
 GtGemStoneRemoteTranscriptWrapper >> gtViewTranscriptFor: aView [
 	<gtView>
@@ -49,7 +67,7 @@ GtGemStoneRemoteTranscriptWrapper >> gtViewTranscriptFor: aView [
 			 tooltip: 'Clear the transcript content'
 			 action: [:aButton :aTab |
 			 	self gemStoneSession clearRemoteTranscript.
-			 	aTab viewContentElement phlow update ]  
+			 	aTab viewContentElement phlow update ]
 ]
 
 { #category : #initialization }

@@ -357,7 +357,14 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 		'Toggle CodeSync' -> [:aStatusLineElement |
 			aGtGemStoneSession toggleCodeSync ].
 		'Toggle CodeSync & AutoCommit' -> [:aStatusLineElement |
-			aGtGemStoneSession toggleCodeSyncAndAutoCommit ].
+			aGtGemStoneSession toggleCodeSyncAndAutoCommit ] }.
+			
+	aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
+		actions addAll: {
+			'Toggle Transcript' -> [:aStatusLineElement | 
+				aGtGemStoneSession toggleRemoteTranscript ]} ].
+				
+	actions addAll: {
 		'Inspect' -> [ :aStatusLineElement | 
 			aStatusLineElement phlow spawnObject: aGtGemStoneSession ] }.
 

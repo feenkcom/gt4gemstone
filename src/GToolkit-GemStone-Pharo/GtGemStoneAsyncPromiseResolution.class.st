@@ -133,6 +133,26 @@ GtGemStoneAsyncPromiseResolution >> gtViewSummaryFor: aView [
 		actionUpdateButton
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneAsyncPromiseResolution >> gtViewTranscriptFor: aView [
+	<gtView>
+
+	self gemStoneSession currentFeatures hasGemStoneTranscriptV1 
+		ifFalse: [ ^ aView empty ].
+	self gemStoneSession isRunning ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Session Transcript';
+		priority: 10;
+		object: [ self gemStoneSession remoteTranscript ];
+		view: #gtViewTranscriptFor:;
+		actionButtonIcon: BrGlamorousIcons inspect 
+			tooltip: 'Inspect transcript wrapper'
+			action: [ :aButton  |
+				aButton phlow 
+					spawnObject: self gemStoneSession remoteTranscript ]
+]
+
 { #category : #testing }
 GtGemStoneAsyncPromiseResolution >> hasProcess [
 	^ resolutionProcess notNil

@@ -1371,7 +1371,12 @@ GtGemStoneSession >> gtViewTranscriptFor: aView [
 		title: 'Transcript';
 		priority: 21;
 		object: [ self remoteTranscript ];
-		view: #gtViewTranscriptFor: 
+		view: #gtViewTranscriptFor:;
+		actionButtonIcon: BrGlamorousIcons inspect 
+			tooltip: 'Inspect transcript wrapper'
+			action: [ :aButton  |
+				aButton phlow 
+					spawnObject: self remoteTranscript ]
 ]
 
 { #category : #testing }
