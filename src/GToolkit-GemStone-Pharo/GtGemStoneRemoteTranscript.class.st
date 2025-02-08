@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneRemoteTranscript,
 	#superclass : #Object,
 	#instVars : [
-		'gemStoneSession'
+		'gemStoneSession',
+		'transcriptProxy'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Transcript'
 }
@@ -15,9 +16,14 @@ GtGemStoneRemoteTranscript class >> forGemStoneSession: aGemStoneSession [
 
 { #category : #actions }
 GtGemStoneRemoteTranscript >> clearRemoteTranscript [
+	^ transcriptProxy clearContent
+]
+
+{ #category : #utils }
+GtGemStoneRemoteTranscript >> createRemoteTranscriptProxy [
 	^ self gemStoneSession
-		evaluateBlockAndWaitReturnPrimitive: [
-			GtGemStoneTranscript current clearContent. nil ]
+		evaluateBlockAndWaitReturnProxy: [
+			GtGemStoneTranscript current ]
 		autoCommit: false
 ]
 
@@ -37,10 +43,10 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 		tooltip: 'Inspect transcript proxy';
 		action: [ :aButton |
 			aButton phlow 
-				spawnObject: self remoteTranscriptProxy ];
+				spawnObject: self transcriptProxy ];
 		primaryModifierAction: [ :aButton |
 				aButton phlow 
-					showObject: self remoteTranscriptProxy ]
+					showObject: self transcriptProxy ]
 			mouseCursor: BlCopyCursor new
 ]
 
@@ -48,14 +54,12 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
 
-	self gemStoneSession currentFeatures hasGemStoneTranscriptV1 
-		ifFalse: [ ^ aView empty ].
-	self gemStoneSession isRunning ifFalse: [ ^ aView empty ].
+	self transcriptProxy ifNil: [ ^ aView empty ].
 	
 	^ aView remoteForward
 		title: 'Transcript';
 		priority: 10;
-		object: [ self remoteTranscriptProxy ];
+		object: [ self transcriptProxy ];
 		view: #gtViewContentsFor:;
 		actionUpdateButton;
 		actionButtonLabel: 'Toggle' 
@@ -72,21 +76,28 @@ GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 
 { #category : #initialization }
 GtGemStoneRemoteTranscript >> initializeForGemStoneSession: aGemStoneSession [
-	gemStoneSession := aGemStoneSession
+	gemStoneSession := aGemStoneSession.
+	self isTranscriptSupported ifTrue: [
+		self initializeTranscriptProxy ]
 ]
 
-{ #category : #actions }
-GtGemStoneRemoteTranscript >> remoteTranscriptProxy [
-	^ self gemStoneSession
-		evaluateBlockAndWaitReturnProxy: [
-			GtGemStoneTranscript current ]
-		autoCommit: false
+{ #category : #initialization }
+GtGemStoneRemoteTranscript >> initializeTranscriptProxy [
+	transcriptProxy := self createRemoteTranscriptProxy
+]
+
+{ #category : #testing }
+GtGemStoneRemoteTranscript >> isTranscriptSupported [
+	^ self gemStoneSession isRunning  and: [
+		self gemStoneSession currentFeatures hasGemStoneTranscriptV1 ]
 ]
 
 { #category : #actions }
 GtGemStoneRemoteTranscript >> toggleRemoteTranscript [
-	^ self gemStoneSession
-		evaluateBlockAndWaitReturnPrimitive: [
-			GtGemStoneTranscript current toggleStatusWithLogging ]
-		autoCommit: false
+	^ transcriptProxy toggleStatusWithLogging 
+]
+
+{ #category : #actions }
+GtGemStoneRemoteTranscript >> transcriptProxy [
+	^ transcriptProxy
 ]
