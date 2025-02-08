@@ -70,7 +70,7 @@ GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 		actionButtonIcon: BrGlamorousIcons trash 
 			 tooltip: 'Clear the transcript content'
 			 action: [:aButton :aTab |
-			 	self gemStoneSession clearRemoteTranscript.
+			 	self clearRemoteTranscript.
 			 	aTab viewContentElement phlow update ]
 ]
 
