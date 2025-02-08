@@ -21,10 +21,10 @@ GtGemStoneRemoteTranscript >> clearRemoteTranscript [
 
 { #category : #utils }
 GtGemStoneRemoteTranscript >> createRemoteTranscriptProxy [
-	^ self gemStoneSession
+	^ (self gemStoneSession
 		evaluateBlockAndWaitReturnProxy: [
 			GtGemStoneTranscript current ]
-		autoCommit: false
+		autoCommit: false) asGtBareProxyObject
 ]
 
 { #category : #accessing }
