@@ -519,7 +519,7 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 
 { #category : #accessing }
 GtGemStoneSession >> currentFeatures [
-	^ GtGemStoneRemoteSessionFeatures forSession: self
+	^ GtGemStoneRemoteSessionFeatures forGemStoneSession: self
 ]
 
 { #category : #'accessing - remote properties' }

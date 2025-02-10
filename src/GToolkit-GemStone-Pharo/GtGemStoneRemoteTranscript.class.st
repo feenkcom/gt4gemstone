@@ -16,15 +16,16 @@ GtGemStoneRemoteTranscript class >> forGemStoneSession: aGemStoneSession [
 
 { #category : #actions }
 GtGemStoneRemoteTranscript >> clearRemoteTranscript [
-	^ transcriptProxy clearContent
+	^ transcriptProxy proxyPerform: #clearContent autoCommit: false
 ]
 
 { #category : #utils }
 GtGemStoneRemoteTranscript >> createRemoteTranscriptProxy [
-	^ (self gemStoneSession
-		evaluateBlockAndWaitReturnProxy: [
-			GtGemStoneTranscript current ]
-		autoCommit: false) asGtBareProxyObject
+	^ ((self gemStoneSession
+		createBlockEvaluationFor: [ GtGemStoneTranscript current ])
+			autoCommit: false;
+			returnProxy;
+			evaluateAndWait) 
 ]
 
 { #category : #accessing }
@@ -94,7 +95,7 @@ GtGemStoneRemoteTranscript >> isTranscriptSupported [
 
 { #category : #actions }
 GtGemStoneRemoteTranscript >> toggleRemoteTranscript [
-	^ transcriptProxy toggleStatusWithLogging 
+	^ transcriptProxy proxyPerform: #toggleStatusWithLogging autoCommit: false 
 ]
 
 { #category : #actions }

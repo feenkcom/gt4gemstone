@@ -78,6 +78,11 @@ GtGemStoneSessionFeatures class >> withAll: aCollection [
 		initializeWithFeatures: aCollection
 ]
 
+{ #category : #converting }
+GtGemStoneSessionFeatures >> createSpecification [
+	^ GtGemStoneFeaturesSpecification forFeatures: self
+]
+
 { #category : #views }
 GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 	<gtView>
@@ -86,8 +91,10 @@ GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 	
 	^ aView columnedList
 		title: 'Features';
-		items: [ featuresById associations 
-			sorted: [ :a :b | a < b ] ];
+		items: [ (self 
+			gtDo: [ featuresById associations ] 
+			gemstoneDo: [ featuresById associationsAsArray ] )
+				sort: [ :a :b | a featureId < b featureId ] ];
 		column: 'Id' text: [ :assoc | assoc key ];
 		column: 'Status' text: [ :assoc | assoc value statusDescription ];
 		send: [ :assoc | assoc value ]
@@ -99,6 +106,11 @@ GtGemStoneSessionFeatures >> initializeWithFeatures: aCollection [
 	
 	aCollection do: [ :aFeature |
 		featuresById at: aFeature featureId put: aFeature ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionFeatures >> items [
+	^ featuresById values
 ]
 
 { #category : #accessing }

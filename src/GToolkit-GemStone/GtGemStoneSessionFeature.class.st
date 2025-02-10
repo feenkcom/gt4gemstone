@@ -14,6 +14,11 @@ GtGemStoneSessionFeature class >> withId: anSymbol [
 		featureId: anSymbol
 ]
 
+{ #category : #converting }
+GtGemStoneSessionFeature >> createSpecification [
+	^ GtGemStoneFeatureSpecification forFeature: self
+]
+
 { #category : #actions }
 GtGemStoneSessionFeature >> disable [
 	enabled := false
@@ -45,9 +50,10 @@ GtGemStoneSessionFeature >> printOn: aStream [
 	
 	aStream parenthesize: [
 		aStream 
-			nextPutAll: (featureId ifNil: ['-']);
-			nextPutAll: ' ';
-			nextPutAll: self statusDescription ]
+			nextPutAll: 'id: ';
+			nextPutAll: featureId;
+			nextPutAll: '; enabled: ';
+			print: enabled ]
 ]
 
 { #category : #accessing }
