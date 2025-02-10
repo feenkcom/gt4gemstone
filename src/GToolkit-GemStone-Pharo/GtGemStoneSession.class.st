@@ -1147,7 +1147,9 @@ GtGemStoneSession >> gt4gemstoneVersion [
 		gt4gemstoneVersion := versionString 
 			ifNil: [ GtGemStoneSemanticVersionNumber zero ]
 			ifNotNil: [
-				GtGemStoneSemanticVersionNumber readFromString: versionString ] ]
+				(versionString matchesRegex: GtGemStoneSemanticVersionNumber versionNumberRegexString)
+					ifTrue: [GtGemStoneSemanticVersionNumber readFromString: versionString]
+					ifFalse: [GtGemStoneSemanticVersionNumber zero] ] ]
 ]
 
 { #category : #ui }
