@@ -65,8 +65,14 @@ sleep 1
 
 if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
-  "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
-  "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+  if [[ -z "${LOAD_GT4GS_VERSION}" || "${LOAD_GT4GS_VERSION}" = "no" ]]
+  then
+    "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
+    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+  else
+    $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
+    ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
+  fi
 else
   stop_servers
   pushd $GEMSTONE/data
