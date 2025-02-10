@@ -37,6 +37,7 @@ GtGemStoneRemoteSessionFeatures >> gt4gemstoneVersion [
 { #category : #'gt - views' }
 GtGemStoneRemoteSessionFeatures >> gtViewFeaturesFor: aView [
 	<gtView>
+	self hasGemStoneFeaturesV1 ifFalse: [ ^ aView empty ].
 	
 	^ aView columnedList
 		title: 'Features';
@@ -54,6 +55,8 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesFor: aView [
 { #category : #'gt - views' }
 GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
 	<gtView>
+	
+	self hasGemStoneFeaturesV1 ifFalse: [ ^ aView empty ].
 	
 	^ aView remoteForward
 		title: 'Features (remote side)';
