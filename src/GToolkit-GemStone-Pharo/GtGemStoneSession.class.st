@@ -1361,11 +1361,31 @@ GtGemStoneSession >> gtUserProfileFor: aView [
 ]
 
 { #category : #ui }
+GtGemStoneSession >> gtViewFeaturesFor: aView [
+	<gtView>
+
+	self isRunning ifFalse: [ ^ aView empty ].
+	self currentFeatures hasGemStoneFeaturesV1 ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Features';
+		priority: 22;
+		object: [ self currentFeatures ];
+		view: #gtViewFeaturesFor:;
+		actionButtonIcon: BrGlamorousIcons inspect 
+			tooltip: 'Inspect current features'
+			action: [ :aButton  |
+				aButton phlow 
+					spawnObject: self currentFeatures ]
+]
+
+{ #category : #ui }
 GtGemStoneSession >> gtViewTranscriptFor: aView [
 	<gtView>
 
-	self currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ aView empty ].
 	self isRunning ifFalse: [ ^ aView empty ].
+	self currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ aView empty ].
+	
 	
 	^ aView forward
 		title: 'Transcript';

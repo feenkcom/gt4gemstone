@@ -2,7 +2,8 @@ Class {
 	#name : #GtGemStoneRemoteSessionFeatures,
 	#superclass : #Object,
 	#instVars : [
-		'gemStoneSession'
+		'gemStoneSession',
+		'remoteFeatures'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -13,6 +14,16 @@ GtGemStoneRemoteSessionFeatures class >> forGemStoneSession: aGemStoneSession [
 		initializeForGemStoneSession: aGemStoneSession
 ]
 
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> createRemoteFeaturesProxy [
+	^ ((self gemStoneSession
+		createBlockEvaluationFor: [ 
+				GtGemStoneSessionFeatures currentFeatures ])
+			autoCommit: false;
+			returnProxy;
+			evaluateAndWait) 
+]
+
 { #category : #'as yet unclassified' }
 GtGemStoneRemoteSessionFeatures >> gemStoneSession [
 	^ gemStoneSession
@@ -21,6 +32,35 @@ GtGemStoneRemoteSessionFeatures >> gemStoneSession [
 { #category : #accessing }
 GtGemStoneRemoteSessionFeatures >> gt4gemstoneVersion [
 	^ gemStoneSession gt4gemstoneVersion
+]
+
+{ #category : #'gt - views' }
+GtGemStoneRemoteSessionFeatures >> gtViewFeaturesFor: aView [
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Features';
+		priority: 10;
+		items: [ self remoteFeatures ];
+		column: 'Id' text: [ :each | each featureId ];
+		column: 'Status' text: [ :each | each statusDescription ];
+		actionButtonIcon:  BrGlamorousVectorIcons refresh 
+			tooltip: 'Update'
+			action: [ :aButton :aTab | 
+				remoteFeatures := nil.
+				aTab viewContentElement phlow update  ]
+]
+
+{ #category : #'gt - views' }
+GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
+	<gtView>
+	
+	^ aView remoteForward
+		title: 'Features (remote side)';
+		priority: 20;
+		object: [ self createRemoteFeaturesProxy ];
+		view: #gtViewFeaturesFor: ;
+		actionUpdateButton
 ]
 
 { #category : #'testing - features' }
@@ -41,7 +81,20 @@ GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSessio
 ]
 
 { #category : #accessing }
-GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
+GtGemStoneRemoteSessionFeatures >> remoteFeatures [
+	^ remoteFeatures ifNil: [
+		 remoteFeatures := self retrieveRemoteFeatures ]
+]
+
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecifications [
+	^ (self retrieveRemoteFeatureSpecificationsData at: 'featureSpecifications')
+		collect: [ :featureData |
+			GtGemStoneFeatureSpecification fromJSONDictionary: featureData ] 
+]
+
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 	^ ((self gemStoneSession
 		createBlockEvaluationFor: [ 
 				GtGemStoneSessionFeatures currentFeatures
@@ -49,6 +102,13 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
 			autoCommit: false;
 			returnPrimitiveOnly;
 			evaluateAndWait) 
+]
+
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
+	^ (self retrieveRemoteFeatureSpecifications )
+		collect: [ :aFeatureSpecification |
+			GtGemStoneSessionFeature fromFeatureSpecification: aFeatureSpecification ] 
 ]
 
 { #category : #accessing }

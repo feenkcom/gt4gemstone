@@ -9,6 +9,12 @@ Class {
 }
 
 { #category : #'instance creation' }
+GtGemStoneSessionFeature class >> fromFeatureSpecification: aFeatureSpecification [ 
+	^ self new 
+		initializeFromFeatureSpecification: aFeatureSpecification 
+]
+
+{ #category : #'instance creation' }
 GtGemStoneSessionFeature class >> withId: anSymbol [
 	^ self basicNew initialize 
 		featureId: anSymbol
@@ -37,6 +43,12 @@ GtGemStoneSessionFeature >> featureId [
 { #category : #accessing }
 GtGemStoneSessionFeature >> featureId: anSymbol [
 	featureId := anSymbol
+]
+
+{ #category : #initialization }
+GtGemStoneSessionFeature >> initializeFromFeatureSpecification: aFeatureSpecification [ 
+	enabled := aFeatureSpecification enabled.
+	featureId := aFeatureSpecification featureId.
 ]
 
 { #category : #testing }
