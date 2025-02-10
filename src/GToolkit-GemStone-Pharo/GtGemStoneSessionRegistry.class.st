@@ -375,6 +375,22 @@ GtGemStoneSessionRegistry >> defaultSession: aGtGemStoneSession [
 	self announce: (GtGemStoneSessionDefaultAnnouncement session: defaultSession).
 ]
 
+{ #category : #dangerous }
+GtGemStoneSessionRegistry >> enableGtGemStoneSyncForDefaultSession [
+	"This will enable code sync for the packages listed below for the default session.
+	CALLER ASSUME ALL RESPONSIBILITY!"
+	| classStrategy sessionStrategy |
+
+	codeSync ifNotNil: [ ^ self error: 'Code sync already enabled' ].
+	classStrategy := GtGemStoneCodeSyncCategoriesStrategy new.
+	classStrategy categories: #('GToolkit-GemStone').
+	sessionStrategy := GtGemStoneCodeSyncDefaultSessionStrategy new.
+	self codeSync: (GtGemStoneCodeSync new
+		defaultClassStrategy: classStrategy;
+		sessionStrategy: sessionStrategy).
+	codeSync start.
+]
+
 { #category : #actions }
 GtGemStoneSessionRegistry >> ensureDefaultSession [
 	self hasDefaultSession ifTrue: [ ^ self defaultSession ].
