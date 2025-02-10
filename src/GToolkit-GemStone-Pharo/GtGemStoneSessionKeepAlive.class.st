@@ -228,6 +228,7 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 			#modifiedBlock -> modifiedBlock.
 			#cleanBlock -> cleanBlock.
 			} asDictionary;
+		autoCommit: false;
 		returnPrimitiveOnly;
 		evaluateAndWait.
 	neededCommit ifTrue: 
