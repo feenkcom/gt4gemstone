@@ -13,6 +13,11 @@ GtGemStoneInImageTranscript >> clearContent [
 	contentStream := PrintStream printingOn: String new.
 ]
 
+{ #category : #accessing }
+GtGemStoneInImageTranscript >> contents [
+	^ contentStream contents
+]
+
 { #category : #configuration }
 GtGemStoneInImageTranscript >> disable [
 	enabled := false

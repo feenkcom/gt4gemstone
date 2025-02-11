@@ -86,6 +86,17 @@ GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptyDefaultTranscript [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ GtGemStoneTranscript current  ]
+		withTypeName: #GtGemStoneInImageTranscript
+		inspectorTitle: 'aGtGemStoneInImageTranscript'
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	<gtExample>
 	<after: #stopServer>

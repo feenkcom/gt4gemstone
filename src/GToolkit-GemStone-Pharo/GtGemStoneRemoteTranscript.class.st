@@ -102,6 +102,11 @@ GtGemStoneRemoteTranscript >> initializeTranscriptProxy [
 ]
 
 { #category : #testing }
+GtGemStoneRemoteTranscript >> isEnabled [
+	^ transcriptProxy proxyPerform: #isEnabled autoCommit: false 
+]
+
+{ #category : #testing }
 GtGemStoneRemoteTranscript >> isTranscriptSupported [
 	^ self gemStoneSession isRunning  and: [
 		self gemStoneSession currentFeatures hasGemStoneTranscriptV1 ]
