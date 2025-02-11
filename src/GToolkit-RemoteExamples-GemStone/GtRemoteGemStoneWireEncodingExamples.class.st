@@ -16,7 +16,7 @@ GtRemoteGemStoneWireEncodingExamples >> answerProxy [
 	| session serialisationStrategy result receiver remoteBindings remoteScript autoCommit object |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1502') ifFalse: [ ^ self ].
+	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
 	receiver := nil.
 	remoteBindings := Dictionary new
 		at: #clientVar put: (GtRsrTestServiceClient new object: (Dictionary new at: #a put: 'client'; yourself));
@@ -43,9 +43,9 @@ GtRemoteGemStoneWireEncodingExamples >> answerProxy [
 { #category : #'as yet unclassified' }
 GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session version: versionString [
 	"This test can only run on servers with GT version at least versionString"
-	
+
 	^ (session gt4gemstoneVersion isZero or: 
-		[ (GtGemStoneSemanticVersionNumber readFromString: session gt4gemstoneVersion) >= 
+		[ session gt4gemstoneVersion >= 
 			(GtGemStoneSemanticVersionNumber readFromString: versionString) ])
 ]
 
@@ -55,7 +55,7 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	| session anObject remoteBindings receiver remoteScript serialisationStrategy autoCommit result |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1502') ifFalse: [ ^ self ].
+	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
 	anObject := {
 		#a -> 1.
 		{
@@ -90,7 +90,7 @@ GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 	| session proxy arguments serialisationStrategy autoCommit value |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1502') ifFalse: [ ^ self ].
+	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
 	proxy := session evaluateAndWaitReturnProxy: 'Dictionary new'.
 	arguments := { #assoc. #key -> #value. }.
 	serialisationStrategy := #GtRsrWireSerializationStrategy.
@@ -129,7 +129,7 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 	| session remoteBlock serialisationStrategy result |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1502') ifFalse: [ ^ self ].
+	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
 	remoteBlock := [ :a :b | a + b ].
 	serialisationStrategy := #GtRsrWireSerializationStrategy.
 	result := (session
