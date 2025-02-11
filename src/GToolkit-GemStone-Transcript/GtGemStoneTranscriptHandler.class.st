@@ -27,6 +27,10 @@ GtGemStoneTranscriptHandler class >> registerTranscriptClass: aClass [
 
 { #category : #'transcript - api' }
 GtGemStoneTranscriptHandler class >> resetTranscript [
+	"Remove the current transcript instance.
+	If called from the GT side, the caller should ensure
+	that the old instance is no longer used on the GT side."
+	
 	SessionTemps current 
 		removeKey: self transcriptInstanceKeyName
 		ifAbsent: [ ]

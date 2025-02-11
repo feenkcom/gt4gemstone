@@ -52,6 +52,20 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 ]
 
 { #category : #views }
+GtGemStoneRemoteTranscript >> gtViewStatusAttributesFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Status';
+		priority: 15;
+		items: [ self statusAttributes associations];
+		column: 'Attribute' text: [ :item | item key ];
+		column: 'Value' text: [ :item | item value ];
+		send: [ :item | item value ];
+		actionUpdateButton
+]
+
+{ #category : #views }
 GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
 
@@ -91,6 +105,29 @@ GtGemStoneRemoteTranscript >> initializeTranscriptProxy [
 GtGemStoneRemoteTranscript >> isTranscriptSupported [
 	^ self gemStoneSession isRunning  and: [
 		self gemStoneSession currentFeatures hasGemStoneTranscriptV1 ]
+]
+
+{ #category : #accessing }
+GtGemStoneRemoteTranscript >> statusAttributes [
+	| gsAttributes |
+
+
+	gsAttributes := (gemStoneSession 
+		evaluateBlockAndWaitReturnPrimitive: [
+			| currentAttributes |
+			currentAttributes := Dictionary new.
+			
+			currentAttributes
+				at: 'Transcript class' 
+				put: GtGemStoneTranscriptHandler transcriptClassName. 
+			currentAttributes
+				at: 'Transcript status' 
+				put: GtGemStoneTranscriptHandler currentTranscript statusDescription.
+			
+			currentAttributes ] 
+		autoCommit: false).
+
+	^ gsAttributes
 ]
 
 { #category : #actions }
