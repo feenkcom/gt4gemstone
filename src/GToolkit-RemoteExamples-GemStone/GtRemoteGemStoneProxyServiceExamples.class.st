@@ -1,10 +1,9 @@
 Class {
 	#name : #GtRemoteGemStoneProxyServiceExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable',
-	#classTraits : 'TAssertable classTrait',
+	#traits : 'TAssertable + TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TAssertable classTrait + TGtRemoteGemStoneSesionCreator classTrait',
 	#instVars : [
-		'server',
 		'connector'
 	],
 	#category : #'GToolkit-RemoteExamples-GemStone'
@@ -21,29 +20,6 @@ GtRemoteGemStoneProxyServiceExamples >> remoteObjectCommand [
 	"Answer the command to retrieve the test inspectable from the remote"
 
 	^ self testInspectableName, ' new'
-]
-
-{ #category : #private }
-GtRemoteGemStoneProxyServiceExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
-]
-
-{ #category : #'server - basic' }
-GtRemoteGemStoneProxyServiceExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
-
 ]
 
 { #category : #tests }

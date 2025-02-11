@@ -1,11 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneWireEncodingExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable',
-	#classTraits : 'TAssertable classTrait',
-	#instVars : [
-		'server'
-	],
+	#traits : 'TAssertable + TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TAssertable classTrait + TGtRemoteGemStoneSesionCreator classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -109,20 +106,6 @@ GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 	self assert: value equals: #key -> #value.
 ]
 
-{ #category : #private }
-GtRemoteGemStoneWireEncodingExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
-]
-
 { #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 	<gtExample>
@@ -138,12 +121,4 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 			serialisationStrategy: serialisationStrategy;
 			evaluateAndWait.
 	self assert: result equals: 7.
-]
-
-{ #category : #private }
-GtRemoteGemStoneWireEncodingExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
 ]
