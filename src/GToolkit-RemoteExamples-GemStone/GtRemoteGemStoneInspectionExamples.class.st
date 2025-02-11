@@ -90,6 +90,8 @@ GtRemoteGemStoneInspectionExamples >> emptyDefaultTranscript [
 	<gtExample>
 	<after: #stopServer>
 	
+	self runningServer currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ self ].
+	
 	^ self 
 		assertObjectInspectionFor: [ GtGemStoneTranscript current  ]
 		withTypeName: #GtGemStoneInImageTranscript

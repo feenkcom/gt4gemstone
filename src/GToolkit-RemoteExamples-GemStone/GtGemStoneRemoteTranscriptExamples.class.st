@@ -8,6 +8,7 @@ Class {
 
 { #category : #accessing }
 GtGemStoneRemoteTranscriptExamples >> currentRemoteTranscript [
+	<gtExample>
 	^ self runningServer remoteTranscript
 ]
 
