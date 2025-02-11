@@ -1084,7 +1084,7 @@ GtGemStoneSession >> gt4gemstoneVersion [
 		| versionString |
 		versionString := self 
 			evaluateBlockAndWaitReturnPrimitive: [
-				GtGsRelease default versionString ]
+				GtGsRelease versionString ]
 			autoCommit: false.
 		gt4gemstoneVersion := versionString 
 			ifNil: [ GtGemStoneSemanticVersionNumber zero ]
