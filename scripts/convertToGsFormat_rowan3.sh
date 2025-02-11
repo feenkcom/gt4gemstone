@@ -19,8 +19,8 @@ then
 fi
 
 gt4GemstoneHome=${ROWAN_PROJECTS_HOME}/gt4gemstone
-## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
-topaz -l -I ${gt4GemstoneHome}/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/scripts/convertToGsFormat_rowan3.topaz < /dev/zero
+## Topaz refuses to exit from script if input is stdin, so redirect from /dev/null
+topaz -l -I ${gt4GemstoneHome}/scripts/loginSystemUser.topaz  -S ${gt4GemstoneHome}/scripts/convertToGsFormat_rowan3.topaz < /dev/null
 status=$?
 if [ $status != 0 ]
 then
