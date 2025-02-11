@@ -367,6 +367,42 @@ removeallclassmethods GtGemStoneSemanticVersionNumber
 
 doit
 (Object
+	subclass: 'GtGemStoneSessionFeature'
+	instVarNames: #(enabled featureId)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSessionFeature
+removeallclassmethods GtGemStoneSessionFeature
+
+doit
+(Object
+	subclass: 'GtGemStoneSessionFeatures'
+	instVarNames: #(featuresById)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSessionFeatures
+removeallclassmethods GtGemStoneSessionFeatures
+
+doit
+(Object
 	subclass: 'GtGemStoneSessionTransactionConflictsReport'
 	instVarNames: #(transactionConflicts)
 	classVars: #()
@@ -436,6 +472,42 @@ true.
 
 removeallmethods GtGemStoneClassBasicDetails
 removeallclassmethods GtGemStoneClassBasicDetails
+
+doit
+(GtGemStoneSpecification
+	subclass: 'GtGemStoneFeatureSpecification'
+	instVarNames: #(enabled featureId)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneFeatureSpecification
+removeallclassmethods GtGemStoneFeatureSpecification
+
+doit
+(GtGemStoneSpecification
+	subclass: 'GtGemStoneFeaturesSpecification'
+	instVarNames: #(featureSpecifications)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneFeaturesSpecification
+removeallclassmethods GtGemStoneFeaturesSpecification
 
 doit
 (GtGemStoneSpecification
@@ -526,6 +598,60 @@ true.
 
 removeallmethods GtGemStoneSpecificationMedatada
 removeallclassmethods GtGemStoneSpecificationMedatada
+
+doit
+(Object
+	subclass: 'GtGemStoneTranscript'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-Transcript';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneTranscript
+removeallclassmethods GtGemStoneTranscript
+
+doit
+(GtGemStoneTranscript
+	subclass: 'GtGemStoneInImageTranscript'
+	instVarNames: #(contentStream enabled)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-Transcript';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneInImageTranscript
+removeallclassmethods GtGemStoneInImageTranscript
+
+doit
+(Object
+	subclass: 'GtGemStoneTranscriptHandler'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-Transcript';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneTranscriptHandler
+removeallclassmethods GtGemStoneTranscriptHandler
 
 doit
 (Object
@@ -3456,6 +3582,235 @@ versionString
 			<< self patch printString ]
 %
 
+! Class implementation for 'GtGemStoneSessionFeature'
+
+!		Class methods for 'GtGemStoneSessionFeature'
+
+category: 'instance creation'
+classmethod: GtGemStoneSessionFeature
+fromFeatureSpecification: aFeatureSpecification 
+	^ self new 
+		initializeFromFeatureSpecification: aFeatureSpecification 
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSessionFeature
+withId: anSymbol
+	^ self basicNew initialize 
+		featureId: anSymbol
+%
+
+!		Instance methods for 'GtGemStoneSessionFeature'
+
+category: 'converting'
+method: GtGemStoneSessionFeature
+createSpecification
+	^ GtGemStoneFeatureSpecification forFeature: self
+%
+
+category: 'actions'
+method: GtGemStoneSessionFeature
+disable
+	enabled := false
+%
+
+category: 'actions'
+method: GtGemStoneSessionFeature
+enable
+	enabled := true
+%
+
+category: 'accessing'
+method: GtGemStoneSessionFeature
+featureId
+	^ featureId
+%
+
+category: 'accessing'
+method: GtGemStoneSessionFeature
+featureId: anSymbol
+	featureId := anSymbol
+%
+
+category: 'initialization'
+method: GtGemStoneSessionFeature
+initializeFromFeatureSpecification: aFeatureSpecification 
+	enabled := aFeatureSpecification enabled.
+	featureId := aFeatureSpecification featureId.
+%
+
+category: 'testing'
+method: GtGemStoneSessionFeature
+isEnabled
+	^ enabled ifNil: [ false ]
+%
+
+category: 'printing'
+method: GtGemStoneSessionFeature
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream 
+			nextPutAll: 'id: ';
+			nextPutAll: featureId;
+			nextPutAll: '; enabled: ';
+			print: enabled ]
+%
+
+category: 'accessing'
+method: GtGemStoneSessionFeature
+statusDescription
+	^ self isEnabled
+		ifTrue: [ 'Enabled' ] 
+		ifFalse: [ 'Disabled' ]
+%
+
+! Class implementation for 'GtGemStoneSessionFeatures'
+
+!		Class methods for 'GtGemStoneSessionFeatures'
+
+category: 'accessing'
+classmethod: GtGemStoneSessionFeatures
+collectFeaturesDefinitions
+	| featureSelectors |
+	featureSelectors := ((Pragma 
+		allNamed: #gtGemStoneFeature
+		from: self  class
+		to: self  class ) collect: [ :each | each method selector ]) asSet asArray.
+	
+	^ featureSelectors collect: [ :aSelector |
+		self perform: aSelector asSymbol ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneSessionFeatures
+currentFeatures
+	^ SessionTemps current 
+		at: self featuresKeyName
+		ifAbsent: [ self forCurrentDefinitions ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneSessionFeatures
+featuresKeyName
+	^#GT_FEATURES_LIST_NAME
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSessionFeatures
+forCurrentDefinitions
+	^ self withAll: self collectFeaturesDefinitions
+%
+
+category: 'views'
+classmethod: GtGemStoneSessionFeatures
+gtViewCurrentFeaturesFor: aView
+	<gtView>
+	<gtClassView>
+	
+	^ self 
+		gtDo: [ aView empty ] 
+		gemstoneDo: [
+			aView forward
+				title: 'Current Features';
+				priority: 30;
+				object: [ self currentFeatures ];
+				view: #gtViewFeaturesFor: ]
+%
+
+category: 'views'
+classmethod: GtGemStoneSessionFeatures
+gtViewDefinedFeaturesFor: aView
+	<gtView>
+	<gtClassView>
+	
+	^ aView forward
+		title: 'Defined Features';
+		priority: 31;
+		object: [ self forCurrentDefinitions ];
+		view: #gtViewFeaturesFor:
+%
+
+category: 'features'
+classmethod: GtGemStoneSessionFeatures
+transcriptV1
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #transcriptV1)
+			enable
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSessionFeatures
+withAll: aCollection
+	^ self new 
+		initializeWithFeatures: aCollection
+%
+
+!		Instance methods for 'GtGemStoneSessionFeatures'
+
+category: 'converting'
+method: GtGemStoneSessionFeatures
+createSpecification
+	^ GtGemStoneFeaturesSpecification forFeatures: self
+%
+
+category: 'views'
+method: GtGemStoneSessionFeatures
+gtViewFeaturesFor: aView
+	<gtView>
+	
+	featuresById ifNil: [ ^ aView empty ].
+	
+	^ aView columnedList
+		title: 'Features';
+		items: [ (self 
+			gtDo: [ featuresById associations ] 
+			gemstoneDo: [ featuresById associationsAsArray ] )
+				sort: [ :a :b | a featureId < b featureId ] ];
+		column: 'Id' text: [ :assoc | assoc key ];
+		column: 'Status' text: [ :assoc | assoc value statusDescription ];
+		send: [ :assoc | assoc value ]
+%
+
+category: 'initialization'
+method: GtGemStoneSessionFeatures
+initializeWithFeatures: aCollection 
+	featuresById := Dictionary new.
+	
+	aCollection do: [ :aFeature |
+		featuresById at: aFeature featureId put: aFeature ]
+%
+
+category: 'accessing'
+method: GtGemStoneSessionFeatures
+items
+	^ featuresById values
+%
+
+category: 'accessing'
+method: GtGemStoneSessionFeatures
+numberOfFeatures
+	^ featuresById size
+%
+
+category: 'printing'
+method: GtGemStoneSessionFeatures
+printOn: aStream
+	super printOn: aStream.
+	
+	aStream 
+		<< ' [';
+		print: self numberOfFeatures;
+		<< ' ';
+		<< (self numberOfFeatures = 1 
+			ifTrue: [ 'feature' ]
+			ifFalse: [ 'features' ]);
+		<< ']'
+%
+
 ! Class implementation for 'GtGemStoneSessionTransactionConflictsReport'
 
 !		Class methods for 'GtGemStoneSessionTransactionConflictsReport'
@@ -3731,6 +4086,108 @@ category: 'accessing'
 method: GtGemStoneClassBasicDetails
 targetClassName
 	^ targetClassName
+%
+
+! Class implementation for 'GtGemStoneFeatureSpecification'
+
+!		Class methods for 'GtGemStoneFeatureSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneFeatureSpecification
+forFeature: aFeature
+	^ self new 
+		initializeForFeature: aFeature
+%
+
+!		Instance methods for 'GtGemStoneFeatureSpecification'
+
+category: 'converting'
+method: GtGemStoneFeatureSpecification
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: 'enabled' put: enabled;
+		at: 'featureId' put: featureId;
+		yourself
+%
+
+category: 'accessing'
+method: GtGemStoneFeatureSpecification
+enabled
+	^ enabled
+%
+
+category: 'accessing'
+method: GtGemStoneFeatureSpecification
+enabled: anObject
+	enabled := anObject
+%
+
+category: 'accessing'
+method: GtGemStoneFeatureSpecification
+featureId
+	^ featureId
+%
+
+category: 'accessing'
+method: GtGemStoneFeatureSpecification
+featureId: anObject
+	featureId := anObject
+%
+
+category: 'initialization'
+method: GtGemStoneFeatureSpecification
+initializeForFeature: aFeature 
+	enabled := aFeature isEnabled.
+	featureId := aFeature featureId.
+%
+
+category: 'initialization'
+method: GtGemStoneFeatureSpecification
+initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
+	enabled := aDictionary at: 'enabled'.
+	featureId := aDictionary at: 'featureId'.
+%
+
+! Class implementation for 'GtGemStoneFeaturesSpecification'
+
+!		Class methods for 'GtGemStoneFeaturesSpecification'
+
+category: 'instance creation'
+classmethod: GtGemStoneFeaturesSpecification
+forFeatures: aFeaturesObject
+	^ self new 
+		initializeFromFeatures: aFeaturesObject
+%
+
+!		Instance methods for 'GtGemStoneFeaturesSpecification'
+
+category: 'converting'
+method: GtGemStoneFeaturesSpecification
+asDictionaryForExport
+
+	^ super asDictionaryForExport
+		at: 'featureSpecifications' put: (featureSpecifications collect: [ :each |
+			each asDictionaryForExport ]);
+		yourself
+%
+
+category: 'instance creation'
+method: GtGemStoneFeaturesSpecification
+initializeFromFeatures: aFeaturesObject 
+	featureSpecifications := (aFeaturesObject items collect: [ :each |
+		each createSpecification ]) asArray
+%
+
+category: 'initialization'
+method: GtGemStoneFeaturesSpecification
+initializeFromJSONDictionary: aDictionary
+	super initializeFromJSONDictionary: aDictionary.
+	
+	featureSpecifications := (aDictionary at: 'featureSpecifications') collect: [ :each |
+		GtGemStoneFeatureSpecification fromJSONDictionary: each ].
 %
 
 ! Class implementation for 'GtGemStoneMethodSpecification'
@@ -4235,6 +4692,268 @@ category: 'accessing'
 method: GtGemStoneSpecificationMedatada
 schemaVersion: anObject
 	schemaVersion := anObject
+%
+
+! Class implementation for 'GtGemStoneTranscript'
+
+!		Class methods for 'GtGemStoneTranscript'
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
+current
+	^ GtGemStoneTranscriptHandler currentTranscript
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
+registerAsCurrentTranscript
+	^ GtGemStoneTranscriptHandler registerTranscriptClass: self
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
+reset
+	^ GtGemStoneTranscriptHandler resetTranscript
+%
+
+!		Instance methods for 'GtGemStoneTranscript'
+
+category: 'actions'
+method: GtGemStoneTranscript
+clearContent
+	self subclassResponsibility
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+cr
+	self nextPut: Character cr
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+crShow: anObject
+	self 
+		cr; 
+		show: anObject 
+%
+
+category: 'actions'
+method: GtGemStoneTranscript
+disable
+	self subclassResponsibility
+%
+
+category: 'actions'
+method: GtGemStoneTranscript
+enable
+	self subclassResponsibility
+%
+
+category: 'testing'
+method: GtGemStoneTranscript
+isEnabled
+	^ self subclassResponsibility
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+lf
+	self nextPut: Character lf
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+lfShow: anObject
+	self 
+		lf; 
+		show: anObject
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+newLine
+	self lf
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+nextPut: aCharacter
+	self subclassResponsibility
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+nextPutAll: aString
+	self subclassResponsibility
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+print: anObject
+	self nextPutAll: anObject asString 
+%
+
+category: 'api - streaming'
+method: GtGemStoneTranscript
+show: anObject
+	self print: anObject
+%
+
+category: 'accessing'
+method: GtGemStoneTranscript
+statusDescription
+	^ self isEnabled
+		ifTrue: [ 'Enabled' ] 
+		ifFalse: [ 'Disabled' ]
+%
+
+category: 'actions'
+method: GtGemStoneTranscript
+toggleStatus
+	self isEnabled 
+		ifTrue: [ self disable ]	
+		ifFalse: [ self enable ].
+	
+	^ self isEnabled 
+%
+
+category: 'actions'
+method: GtGemStoneTranscript
+toggleStatusWithLogging
+	self isEnabled 
+		ifTrue: [ 
+			self lfShow: 'Deactivate GemStone transcript on current session'.
+			self disable]
+		ifFalse: [ 
+			self enable.
+			self lfShow: 'Activate GemStone transcript on current session' ].
+	^ self isEnabled
+%
+
+category: 'utils'
+method: GtGemStoneTranscript
+whenEnabledDo: aBlock
+	self isEnabled ifTrue: [
+		aBlock value ]
+%
+
+! Class implementation for 'GtGemStoneInImageTranscript'
+
+!		Instance methods for 'GtGemStoneInImageTranscript'
+
+category: 'configuration'
+method: GtGemStoneInImageTranscript
+clearContent
+	contentStream := PrintStream printingOn: String new.
+%
+
+category: 'configuration'
+method: GtGemStoneInImageTranscript
+disable
+	enabled := false
+%
+
+category: 'configuration'
+method: GtGemStoneInImageTranscript
+enable
+	enabled := true
+%
+
+category: 'gt - extensions'
+method: GtGemStoneInImageTranscript
+gtViewContentsFor: aView
+	<gtView>
+	
+	^ aView text 
+		title: 'Contents';
+		priority: 10;
+		text: [ contentStream contents ]
+%
+
+category: 'initialization'
+method: GtGemStoneInImageTranscript
+initialize
+	super initialize.
+	
+	self clearContent.
+	self disable.
+%
+
+category: 'testing'
+method: GtGemStoneInImageTranscript
+isEnabled
+	^ enabled
+%
+
+category: 'api - streaming'
+method: GtGemStoneInImageTranscript
+nextPut: aCharacter
+	self whenEnabledDo: [  
+		contentStream nextPut: aCharacter ]
+%
+
+category: 'api - streaming'
+method: GtGemStoneInImageTranscript
+nextPutAll: aString
+	self whenEnabledDo: [  
+		contentStream nextPutAll: aString ]
+%
+
+! Class implementation for 'GtGemStoneTranscriptHandler'
+
+!		Class methods for 'GtGemStoneTranscriptHandler'
+
+category: 'utils'
+classmethod: GtGemStoneTranscriptHandler
+createNewTranscript
+	^ ((System myUserProfile objectNamed: self transcriptClassName asSymbol)
+		ifNil: [ GtGemStoneInImageTranscript  ]
+		ifNotNil: [ :aClass | aClass ]) basicNew initialize
+%
+
+category: 'transcript - api'
+classmethod: GtGemStoneTranscriptHandler
+currentTranscript
+	^ SessionTemps current 
+		at: self transcriptInstanceKeyName
+		ifAbsentPut: [ self createNewTranscript  ]
+%
+
+category: 'transcript - api'
+classmethod: GtGemStoneTranscriptHandler
+registerTranscriptClass: aClass
+	^ SessionTemps current 
+		at: self transcriptClassKeyName
+		put: aClass name
+%
+
+category: 'transcript - api'
+classmethod: GtGemStoneTranscriptHandler
+resetTranscript
+	SessionTemps current 
+		removeKey: self transcriptInstanceKeyName
+		ifAbsent: [ ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscriptHandler
+transcriptClassKeyName
+	^#GT_TRANSCRIPT_INSTANCE
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscriptHandler
+transcriptClassName
+	^ SessionTemps current 
+		at: self transcriptClassKeyName
+		ifAbsent: [ GtGemStoneInImageTranscript name ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscriptHandler
+transcriptInstanceKeyName
+	^#GT_TRANSCRIPT_CLASS_NAME
 %
 
 ! Class implementation for 'GtGsRelease'

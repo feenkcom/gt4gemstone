@@ -17,9 +17,20 @@ This script configures GemStone for use in a GT development environment.
 It must be run from the development image directory.
 
 Options:
+  --gt4gs <GT version>
   --gs <gs_version>
   --rowan2
   --rowan3
+
+  If --gt4gs is supplied, gt4gemstone is installed from the specified
+  GT version (retrieved from github), otherwise gt4gemstone is installed
+  from the local image.
+
+  If --gs is supplied, the specified version of GemStone is installed,
+  default = 3.7.1.4.
+
+  If --rowan2 or --rowan3 is specified the appropriate Rowan extent is
+  loaded instead of the default.
 
 EOF
 
@@ -28,6 +39,7 @@ echo "Default GemStone version: ${GT_GEMSTONE_VERSION}"
 
 USE_ROWAN=no
 HELP_ONLY=no
+LOAD_GT4GS_VERSION=no
 
 ARCH="$(uname -m)"
 VM_ARCH="${ARCH}"
@@ -54,6 +66,12 @@ while [[ $# -gt 0 ]]
 do
     key="$1"
     case $key in
+      --gt4gs)
+          if [[ -n "$2" && "$2" != --* ]]; then
+            LOAD_GT4GS_VERSION="$2"
+            shift
+          fi
+          ;;
       --gs)
           if [[ -n "$2" && "$2" != --* ]]; then
              GT_GEMSTONE_VERSION="$2"
@@ -92,6 +110,7 @@ then
 
   export GT_GEMSTONE_VERSION
   export USE_ROWAN
+  export LOAD_GT4GS_VERSION
 
   source $SCRIPT_DIR/remote-gemstone-env.sh
 
@@ -107,6 +126,10 @@ then
   then
     ln -s pharo-local/iceberg/feenkcom/gtoolkit-remote
   fi
+  if [ ! -d gtoolkit-wireencoding ]
+  then
+    ln -s pharo-local/iceberg/feenkcom/gtoolkit-wireencoding
+  fi
 
   chmod +x gt4gemstone/scripts/*.sh
   chmod +x gt4gemstone/scripts/release/*.sh
@@ -121,6 +144,10 @@ then
   if [ $USE_ROWAN != "no" ]
   then
     echo "ROWAN version=$USE_ROWAN"
+  fi
+  if [ $LOAD_GT4GS_VERSION != "no" ]
+  then
+    echo "Loading gt4gs=$LOAD_GT4GS_VERSION"
   fi
   echo "SCRIPT_DIR=$SCRIPT_DIR"
   echo "STONE=$STONE"

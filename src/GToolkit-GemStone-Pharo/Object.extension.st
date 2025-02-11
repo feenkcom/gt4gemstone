@@ -1,6 +1,14 @@
 Extension { #name : #Object }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
+Object >> asGtGsArgument [
+	"GemStone compatibility - on the server this answers the local object from RSR services.
+	On the client it is the receiver."
+	
+	^ self
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
 Object >> asGtGsArgumentIn: aGtGemStoneSession [
 	"Answer the receiver ready to pass as an argument to a GtGemStone evaluation"
 	

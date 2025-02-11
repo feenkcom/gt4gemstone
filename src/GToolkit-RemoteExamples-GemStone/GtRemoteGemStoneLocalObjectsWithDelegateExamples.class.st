@@ -1,9 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneLocalObjectsWithDelegateExamples,
 	#superclass : #Object,
-	#instVars : [
-		'server'
-	],
+	#traits : 'TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -97,20 +96,6 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForSmallFra
 	self assertStoreOnFor: aBareProxy equals: storeString.
 	self assert: localObjectWithDelegate storeString equals: storeString.
 	self assertStoreOnFor: localObjectWithDelegate equals: storeString
-]
-
-{ #category : #'setup & teardown' }
-GtRemoteGemStoneLocalObjectsWithDelegateExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
 { #category : #tests }
@@ -223,15 +208,6 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFr
 	self assert: result class name equals: #GspoSmallFraction.
 	
 	^ result
-]
-
-{ #category : #'setup & teardown' }
-GtRemoteGemStoneLocalObjectsWithDelegateExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
-
 ]
 
 { #category : #assertions }

@@ -415,6 +415,12 @@ GtBareProxy >> remoteClass [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> remoteInspectorProxyDo: aBlock [
+	^ proxyObject ifNotNil: [ :aProxyObject |
+		aProxyObject remoteInspectorProxyDo: aBlock ]
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> remoteViewsFor: aView inContext: aContext from: anInspectorProxy [
 	^ proxyObject
 		ifNil: [ #() ]

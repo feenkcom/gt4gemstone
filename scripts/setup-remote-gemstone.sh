@@ -48,6 +48,7 @@ mkdir "${ROWAN_PROJECTS_HOME}"
 pushd "${ROWAN_PROJECTS_HOME}"
 ln -s ../../gt4gemstone
 ln -s ../../gtoolkit-remote
+ln -s ../../gtoolkit-wireencoding
 popd
 
 chmod +x ./gt4gemstone/scripts/*.sh
@@ -65,8 +66,14 @@ sleep 1
 
 if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
-  "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
-  "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+  if [[ -z "${LOAD_GT4GS_VERSION}" || "${LOAD_GT4GS_VERSION}" = "no" ]]
+  then
+    "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
+    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+  else
+    $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
+    ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
+  fi
 else
   stop_servers
   pushd $GEMSTONE/data
@@ -82,6 +89,7 @@ else
   popd
   startnetldi -g
   startstone gs64stone
+  ./gtoolkit-wireencoding/scripts/installGToolkitWireEncoding_${USE_ROWAN}.sh
   ./gt4gemstone/scripts/installGt4gemstone_${USE_ROWAN}.sh 
   ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
 fi

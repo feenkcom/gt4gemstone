@@ -314,92 +314,46 @@ GtGemStoneSession >> contextMenuContent [
 ]
 
 { #category : #'actions - create block evaluation' }
-GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean [
-	| cmd |
+GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock [
+	^ self 
+		createBlockEvaluationFor: aCleanBlock 
+		autoCommit: autoCommit
+]
 
-	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
-	^ self scriptEvaluation
-		script: cmd;
-		autoCommit: aBoolean;
-		yourself
+{ #category : #'actions - create block evaluation' }
+GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean [
+
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock autoCommit: aBoolean
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		bindings: evalFields second;
-		returnLegacy;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		returnLegacy;
-		autoCommit: aBoolean;
-		bindings: evalFields second;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray autoCommit: aBoolean
 ]
 
 { #category : #'actions - create block evaluation' }
 GtGemStoneSession >> createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
-	| evalFields |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ self scriptEvaluation
-		script: evalFields first;
-		serialisationStrategy: aSymbol;
-		autoCommit: aBoolean;
-		bindings: evalFields second;
-		yourself
+	^ self versionedEvaluator createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean
 ]
 
 { #category : #private }
 GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock [
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
-	aCleanBlock numArgs = 0
-		ifFalse: [self error: 'wrong number of arguments'].
-	^ String streamContents: [ :stream |
-		stream 
-			<< aCleanBlock printString;
-			<< ' value' ].
+	^ self versionedEvaluator createEvaluationStringFromCleanBlock: aCleanBlock
 ]
 
 { #category : #private }
 GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray [
-	"Answer an array containing the source of the supplied clean block and the arguments converted to a set of bindings"
-	| argNames bindings |
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
-	aCleanBlock numArgs = anArray size
-		ifFalse: [self error: 'wrong number of arguments'].
-	anArray do: [:e |
-		(e isGtBareProxyObject not and:
-		[ (e isKindOf: BlockClosure) and:
-		[ e isClean not ] ]) ifTrue: 
-			[self error: 'the block must be clean' ] ].
-	argNames := aCleanBlock argumentNames.
-	bindings := (argNames collectWithIndex: [ :name :index | 
-		name -> (anArray at: index) ]) asDictionary.
-	^ Array
-		with: (String streamContents: [ :stream |
-			stream 
-				<< aCleanBlock printString;
-				<< ' valueWithArguments: { '.
-			argNames
-				do: [ :name | stream << name ]
-				separatedBy: [ stream << '. ' ].
-			stream << ' }' ])
-		with: bindings.
+	^ self versionedEvaluator createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - create script evaluation' }
@@ -466,6 +420,16 @@ GtGemStoneSession >> createScriptEvaluationFor: remoteScript serializationStrate
 ]
 
 { #category : #'actions - create script evaluation' }
+GtGemStoneSession >> createScriptEvaluationReturnPrimitiveFor: remoteScript autoCommit: aBoolean [
+
+	^ self scriptEvaluation
+		script: remoteScript;
+		autoCommit: aBoolean;
+		returnPrimitiveOnly;
+		yourself
+]
+
+{ #category : #'actions - create script evaluation' }
 GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript autoCommit: aBoolean [
 
 	^ self scriptEvaluation
@@ -498,6 +462,11 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 		returnProxy;
 		autoCommit: aBoolean;
 		yourself
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> currentFeatures [
+	^ GtGemStoneRemoteSessionFeatures forGemStoneSession: self
 ]
 
 { #category : #'accessing - remote properties' }
@@ -939,6 +908,26 @@ GtGemStoneSession >> evaluateBlockAndWait: aCleanBlock withArguments: anArray se
 ]
 
 { #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnPrimitive: aCleanBlock [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnPrimitiveFor:  cmd
+		autoCommit: autoCommit) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnPrimitive: aCleanBlock autoCommit: aBoolean [
+	| cmd |
+
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnPrimitiveFor:  cmd
+		autoCommit: aBoolean) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
 GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 	| cmd |
 
@@ -949,14 +938,19 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock [
 ]
 
 { #category : #'actions - evaluate block' }
-GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
-	| evalFields |
+GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock autoCommit: aBoolean [
+	| cmd |
 
-	evalFields := self createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray.
-	^ (self createScriptEvaluationReturnProxyFor:  evalFields first
-		for: nil
-		bindings: evalFields second
-		autoCommit: autoCommit) evaluateAndWait.
+	cmd := self createEvaluationStringFromCleanBlock: aCleanBlock.
+	^ (self 
+		createScriptEvaluationReturnProxyFor:  cmd
+		autoCommit: aBoolean) evaluateAndWait.
+]
+
+{ #category : #'actions - evaluate block' }
+GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray [
+
+	^ self versionedEvaluator evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray
 ]
 
 { #category : #'actions - evaluate script' }
@@ -1086,11 +1080,18 @@ GtGemStoneSession >> gemLogFileReference [
 { #category : #accessing }
 GtGemStoneSession >> gt4gemstoneVersion [
 
-	^ gt4gemstoneVersion ifNil:
-		[ gt4gemstoneVersion := (self scriptEvaluation
-			script: 'GtGsRelease default versionString';	
-			autoCommit: false;
-			returnPrimitiveOnly) evaluateAndWait ]
+	^ gt4gemstoneVersion ifNil: [ 
+		| versionString |
+		versionString := self 
+			evaluateBlockAndWaitReturnPrimitive: [
+				GtGsRelease versionString ]
+			autoCommit: false.
+		gt4gemstoneVersion := versionString 
+			ifNil: [ GtGemStoneSemanticVersionNumber zero ]
+			ifNotNil: [
+				(versionString matchesRegex: GtGemStoneSemanticVersionNumber versionNumberRegexString)
+					ifTrue: [GtGemStoneSemanticVersionNumber readFromString: versionString]
+					ifFalse: [GtGemStoneSemanticVersionNumber zero] ] ]
 ]
 
 { #category : #ui }
@@ -1220,8 +1221,9 @@ GtGemStoneSession >> gtLogFor: aView [
 	
 	self isRunning ifFalse: [ ^ aView empty ] .
 	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
+	
 	^ aView textEditor
-		  title: 'Log';
+		  title: 'Gem Log';
 		  priority: 20;
 		  text: [ self gemLogFileReference contents ];
 		  actionUpdateButton
@@ -1300,6 +1302,45 @@ GtGemStoneSession >> gtUserProfileFor: aView [
 		  column: #Value text: [ :item | item value ];
 		  send: [ :item | item value ];
 		  actionUpdateButton
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtViewFeaturesFor: aView [
+	<gtView>
+
+	self isRunning ifFalse: [ ^ aView empty ].
+	self currentFeatures hasGemStoneFeaturesV1 ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Features';
+		priority: 22;
+		object: [ self currentFeatures ];
+		view: #gtViewFeaturesFor:;
+		actionButtonIcon: BrGlamorousIcons inspect 
+			tooltip: 'Inspect current features'
+			action: [ :aButton  |
+				aButton phlow 
+					spawnObject: self currentFeatures ]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtViewTranscriptFor: aView [
+	<gtView>
+
+	self isRunning ifFalse: [ ^ aView empty ].
+	self currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ aView empty ].
+	
+	
+	^ aView forward
+		title: 'Transcript';
+		priority: 21;
+		object: [ self remoteTranscript ];
+		view: #gtViewTranscriptFor:;
+		actionButtonIcon: BrGlamorousIcons inspect 
+			tooltip: 'Inspect transcript wrapper'
+			action: [ :aButton  |
+				aButton phlow 
+					spawnObject: self remoteTranscript ]
 ]
 
 { #category : #testing }
@@ -1399,19 +1440,19 @@ GtGemStoneSession >> logEmitter [
 GtGemStoneSession >> myUserProfile [
 	"Answer a dictionary containing a subset of the UserProfile of the receiver"
 
-	^ self evaluateAndWait:
-'| userProfile |
-userProfile := System myUserProfile.
-Dictionary new
-	at: #userId put: userProfile userId;
-	at: #groups put: userProfile groupNames asArray;
-	at: #lastLoginTime put: userProfile lastLoginTime printString;
-	at: #authenticationScheme put: userProfile authenticationScheme;
-	at: #kerberosPrincipal put: userProfile kerberosPrincipal printString;
-	at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
-	at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
-	yourself'
-serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	^ self evaluateBlockAndWaitReturnPrimitive: [
+		| userProfile |
+		userProfile := System myUserProfile.
+		Dictionary new
+			at: #userId put: userProfile userId;
+			at: #groups put: userProfile groupNames asArray;
+			at: #lastLoginTime put: userProfile lastLoginTime printString;
+			at: #authenticationScheme put: userProfile authenticationScheme;
+			at: #kerberosPrincipal put: userProfile kerberosPrincipal printString;
+			at: #maxConcurrentLogins put: userProfile activeUserIdLimit;
+			at: #hasSystemLogAccess put: userProfile hasSystemLogAccess;
+			yourself]
+		autoCommit: false
 ]
 
 { #category : #accessing }
@@ -1426,6 +1467,7 @@ GtGemStoneSession >> needsCommit [
 
 	^ self isRunning
 		ifTrue: [ (self scriptEvaluation
+			autoCommit: false;
 			script: 'System needsCommit';
 			returnPrimitiveOnly) evaluateAndWait ]
 		ifFalse: [ false ]
@@ -1478,6 +1520,11 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :registryCodeSyn |
 		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> remoteTranscript [
+	^ GtGemStoneRemoteTranscript forGemStoneSession: self
 ]
 
 { #category : #'adding/removing' }
@@ -1583,16 +1630,33 @@ GtGemStoneSession >> statusAttributes [
 
 	isRunning ifFalse: [ ^ attributes ].
 
-	gsAttributes := (self scriptEvaluation
-			script: 'Dictionary new
-	at: ''Size'' put: SystemRepository fileSize - SystemRepository freeSpace;
-	at: ''gt4gemstoneVersion'' put: GtGsRelease versionString;
-	at: ''CacheName'' put: (System getSharedCacheAttributes at: #cacheName);
-	at: ''fpExceptions'' put: (
-(System myUserProfile objectNamed: #FloatingPointError) enabledExceptions);
-	at: ''Time'' put: DateAndTime now;
-	yourself';
-			returnPrimitiveOnly) evaluateAndWait.
+	gsAttributes := (self 
+		evaluateBlockAndWaitReturnPrimitive: [
+			| currentAttributes |
+			currentAttributes := Dictionary new
+			at: 'Size' 
+				put: SystemRepository fileSize 
+					- SystemRepository freeSpace;
+			at: 'gt4gemstoneVersion' put: GtGsRelease versionString;
+			at: 'CacheName' 
+				put: (System getSharedCacheAttributes at: #cacheName);
+			at: 'fpExceptions' 
+				put: (
+					(System myUserProfile 
+						objectNamed: #FloatingPointError) enabledExceptions);
+			at: 'Time' put: DateAndTime now;
+			yourself.
+			
+			(System myUserProfile objectNamed: #GtGemStoneTranscriptHandler)
+				ifNotNil: [ :aClass |
+					currentAttributes
+						at: 'gt4gemstonetranscriptclass' 
+						put: aClass transcriptClassName. 
+					currentAttributes
+						at: 'gt4gemstonetranscriptstatus' 
+						put: aClass currentTranscript statusDescription ].
+			currentAttributes ] 
+		autoCommit: false).
 
 	attributes
 		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
@@ -1600,8 +1664,11 @@ GtGemStoneSession >> statusAttributes [
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
 		add: 'Connection time' -> connectionTime;
-		add: 'gt4gemstone' -> (gsAttributes at: 'gt4gemstoneVersion').
-
+		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
+		add: 'Transcript class' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
+		add: 'Transcript status' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['-']).
 	^ attributes
 ]
 
@@ -1668,7 +1735,7 @@ GtGemStoneSession >> toggleAutoCommit [
 { #category : #configure }
 GtGemStoneSession >> toggleCodeSync [
 
-	codeSync enabled: codeSync enabled not
+	self codeSync enabled: self codeSync enabled not
 ]
 
 { #category : #configure }
@@ -1720,6 +1787,7 @@ GtGemStoneSession >> transactionMode [
 
 	^ transactionMode ifNil: [ 
 		(self scriptEvaluation
+			autoCommit: false;
 			script: 'System transactionMode';
 			returnPrimitiveOnly) evaluateAndWait ]
 ]
@@ -1743,6 +1811,12 @@ GtGemStoneSession >> unbookmark [
 GtGemStoneSession >> username [
 
 	^ connector username
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> versionedEvaluator [
+
+	^ evaluator versionedEvaluator
 ]
 
 { #category : #'accessing - remote properties' }

@@ -24,9 +24,10 @@ GtRsrEvaluatorPromise class >> rsrPromise: aPromise serializationStrategy: aSymb
 
 { #category : #accessing }
 GtRsrEvaluatorPromise >> basicDeserializeResult: aResult [
-	^ (self class environment 
-		at: serializationStrategy) new 
-			deserialize: aResult.
+	^ GtGemStoneCurrentSession value: gtSession during:
+		[ (self class environment 
+			at: serializationStrategy) new 
+				deserialize: aResult ].
 ]
 
 { #category : #testing }
@@ -39,8 +40,9 @@ GtRsrEvaluatorPromise >> canHandleSpecificDebugger [
 GtRsrEvaluatorPromise >> createEvaluationResultFromData: aDictionaryOrObject [ 
 	"Instantiate an evaluation result object from the given object."
 
-	^ GtGemstoneEvaluationResult 
-		createEvaluationResultFromData: aDictionaryOrObject 
+	^ GtGemStoneCurrentSession value: gtSession during:
+		[ GtGemstoneEvaluationResult 
+			createEvaluationResultFromData: aDictionaryOrObject ]
 ]
 
 { #category : #accessing }

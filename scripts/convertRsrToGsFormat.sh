@@ -5,9 +5,9 @@
 ## Figure out what directory this script is in
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
-topaz -l -I ${script_dir}/loginSystemUser.topaz  -S ${script_dir}/convertRsrToGsFormat.topaz < /dev/zero
-status=$?
+## Topaz refuses to exit from script if input is stdin, so redirect from /dev/null
+topaz -l -I ${script_dir}/loginSystemUser.topaz  -S ${script_dir}/convertRsrToGsFormat.topaz < /dev/null
+status=$?ll
 if [ $status != 0 ]
 then
         echo !!!!!!!!!!!!!!!!

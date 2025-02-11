@@ -25,6 +25,24 @@ Object >> gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock [
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
+Object >> instVarNamed: instVarName [
+	| index |
+
+	index := self class allInstVarNames indexOf: instVarName.
+	index = 0 ifTrue: [ self error: 'Unknown instance variable: ', instVarName printString ].
+	^ self instVarAt: index
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+Object >> instVarNamed: instVarName put: anObject [
+	| index |
+
+	index := self class allInstVarNames indexOf: instVarName.
+	index = 0 ifTrue: [ self error: 'Unknown instance variable: ', instVarName printString ].
+	self instVarAt: index put: anObject
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Object >> isInteger [
 
 	^ false

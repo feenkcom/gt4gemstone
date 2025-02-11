@@ -177,6 +177,10 @@ GtGemStoneGciConnector >> setupRsrConnection: gsSession [
 		"UNCOMMENT THESE LINES TO ADD TRACING TO RSR"
 		"connection log addSink: (RsrCustomSink action: [:message | GsFile gciLogServer: message ]).
 		connection log verbosity: connection log levelTrace."
+		
+		"Add a merker indicating that the GemStone session was started from GT."
+		SessionTemps current at: #GT_GEMSTONE_SESSION_MARKER put: true.
+		
 		GsFile gciLogServer: ''about to waitUntilClose''.
 		connection waitUntilClose.'.
 	thePort := detailBytes unsignedShortAt: 1 bigEndian: true.

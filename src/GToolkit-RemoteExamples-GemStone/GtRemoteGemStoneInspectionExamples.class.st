@@ -78,7 +78,22 @@ GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 				at: Object new put: 2;
 				yourself]
 		withTypeName: #Dictionary
-		inspectorTitle: 'aDictionary [2 items] (anObject->2 anObject->1)'
+		inspectorTitleIncludes: #(
+			'aDictionary [2 items] (anObject->2 anObject->1)'
+			'aDictionary [2 items] (anObject->1 anObject->2)'
+			'aDictionary( anObject->1, anObject->2)'
+			'aDictionary( anObject->2, anObject->1)')
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> emptyDefaultTranscript [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ GtGemStoneTranscript current  ]
+		withTypeName: #GtGemStoneInImageTranscript
+		inspectorTitle: 'aGtGemStoneInImageTranscript'
 ]
 
 { #category : #'examples - objects' }

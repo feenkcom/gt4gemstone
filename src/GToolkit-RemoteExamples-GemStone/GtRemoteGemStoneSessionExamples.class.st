@@ -1,11 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneSessionExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable',
-	#classTraits : 'TAssertable classTrait',
-	#instVars : [
-		'server'
-	],
+	#traits : 'TGtRemoteGemStoneSesionCreator + TAssertable',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait + TAssertable classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -18,28 +15,6 @@ GtRemoteGemStoneSessionExamples >> buildDebuggingSessionWithBrokenPromiseFor: aP
 			^ DebugSession forExceptionFromExampleFor: anException ].
 	
 	self assert: false.
-]
-
-{ #category : #private }
-GtRemoteGemStoneSessionExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
-]
-
-{ #category : #private }
-GtRemoteGemStoneSessionExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
 ]
 
 { #category : #tests }
@@ -84,6 +59,21 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlock [
 		evaluateBlock: [ Object new ]
 		autoCommit: false.
 	self assert: returnValue wait remoteClass equals: #Object.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockReturnPrimitive [
+	<gtExample>
+	| returnValue  |
+
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnPrimitive: [ 1 + 1].
+	self assert: returnValue equals: 2.
+	
+	returnValue := self runningServer 
+		evaluateBlockAndWaitReturnPrimitive: [ 1 + 2] 
+		autoCommit: false.
+	self assert: returnValue equals: 3. 
 ]
 
 { #category : #tests }

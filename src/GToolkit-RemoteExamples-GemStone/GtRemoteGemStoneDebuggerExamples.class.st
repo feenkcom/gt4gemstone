@@ -1,11 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneDebuggerExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable',
-	#classTraits : 'TAssertable classTrait',
-	#instVars : [
-		'server'
-	],
+	#traits : 'TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -25,28 +22,6 @@ GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
 	 	assert: evaluationContext remoteClass 
 	 	equals: #GtGemStoneEvaluationContext.
 	self assert: evaluationContext rawGtSession isNil.
-]
-
-{ #category : #private }
-GtRemoteGemStoneDebuggerExamples >> runningServer [
-	"Answer a running server.
-	This assumes:
-	- The GemStone server is running with Gt loaded
-	- Default usernames and passwords
-	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
-	<gtExample>
-	<after: #stopServer>
-	
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
-]
-
-{ #category : #private }
-GtRemoteGemStoneDebuggerExamples >> stopServer [ 
-
-	server ifNotNil: 
-		[ server stop.
-		server := nil ].
 ]
 
 { #category : #tests }

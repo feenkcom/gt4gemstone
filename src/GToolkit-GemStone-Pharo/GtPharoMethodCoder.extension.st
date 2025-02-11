@@ -111,7 +111,7 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 							<< clsName;
 							<< ' methodDictForEnv: 0) at: #';
 							<< selector ].
-			gsMethod := [ session evaluateAndWait: cmd ]
+			gsMethod := [ session evaluateAndWait: cmd autoCommit: false ]
 					on: RsrBrokenPromise
 					do: [ :ex | ex ].
 			self notifyObjectSpawn: gsMethod asGtBareProxyObject requesterObject: aCoderUIModel ]
