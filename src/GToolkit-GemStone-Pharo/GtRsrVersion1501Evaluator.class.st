@@ -7,7 +7,7 @@ Class {
 { #category : #accessing }
 GtRsrVersion1501Evaluator class >> maxVersionString [
 
-	^ 'v1.0.1501'
+	^ 'v1.0.1520'
 ]
 
 { #category : #private }
