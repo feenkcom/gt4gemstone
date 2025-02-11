@@ -44,7 +44,7 @@ GtRemoteGemStoneWireEncodingExamples >> answerProxy [
 GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session version: versionString [
 	"This test can only run on servers with GT version at least versionString"
 	
-	^ (session gt4gemstoneVersion isNil or: 
+	^ (session gt4gemstoneVersion isZero or: 
 		[ (GtGemStoneSemanticVersionNumber readFromString: session gt4gemstoneVersion) >= 
 			(GtGemStoneSemanticVersionNumber readFromString: versionString) ])
 ]
