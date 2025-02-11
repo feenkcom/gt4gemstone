@@ -1467,6 +1467,7 @@ GtGemStoneSession >> needsCommit [
 
 	^ self isRunning
 		ifTrue: [ (self scriptEvaluation
+			autoCommit: false;
 			script: 'System needsCommit';
 			returnPrimitiveOnly) evaluateAndWait ]
 		ifFalse: [ false ]
@@ -1786,6 +1787,7 @@ GtGemStoneSession >> transactionMode [
 
 	^ transactionMode ifNil: [ 
 		(self scriptEvaluation
+			autoCommit: false;
 			script: 'System transactionMode';
 			returnPrimitiveOnly) evaluateAndWait ]
 ]
