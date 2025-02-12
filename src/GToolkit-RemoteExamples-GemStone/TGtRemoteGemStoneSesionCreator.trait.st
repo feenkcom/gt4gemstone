@@ -20,7 +20,7 @@ TGtRemoteGemStoneSesionCreator >> runningServer [
 	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'tear down' }
 TGtRemoteGemStoneSesionCreator >> stopServer [ 
 
 	server ifNotNil: [ 

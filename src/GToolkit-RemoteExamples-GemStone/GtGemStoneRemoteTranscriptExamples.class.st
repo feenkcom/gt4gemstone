@@ -6,6 +6,31 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #examples }
+GtGemStoneRemoteTranscriptExamples >> checkRemoteTranscriptAccessorOnClosedSession [
+	<gtExample>
+	| noStartedSession remoteTranscript |
+	
+	noStartedSession := GtRemoteGemstoneExamplesSessionBuilder new 
+		createSession.
+		
+	remoteTranscript := noStartedSession remoteTranscript.
+	self assert: noStartedSession remoteTranscript notNil.
+	
+	self assert: remoteTranscript hasTranscriptProxy not.
+]
+
+{ #category : #examples }
+GtGemStoneRemoteTranscriptExamples >> checkTranscriptIsSupportedWorksOnClosedSession [
+	<gtExample>
+	| noStartedSession |
+	
+	noStartedSession := GtRemoteGemstoneExamplesSessionBuilder new 
+		createSession.
+	
+	self assert: noStartedSession currentFeatures hasGemStoneTranscriptV1 not
+]
+
 { #category : #accessing }
 GtGemStoneRemoteTranscriptExamples >> currentRemoteTranscript [
 	<gtExample>

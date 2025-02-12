@@ -24,7 +24,7 @@ GtGemStoneRemoteSessionFeatures >> createRemoteFeaturesProxy [
 			evaluateAndWait) 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtGemStoneRemoteSessionFeatures >> gemStoneSession [
 	^ gemStoneSession
 ]
@@ -68,19 +68,26 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
 
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneFeaturesV1 [
-	^ self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-		major: 1 minor: 0 patch: 1492)
+	^ self isSessionRunning and: [  
+		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
+			major: 1 minor: 0 patch: 1492) ]
 ]
 
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneTranscriptV1 [
-	^ self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-		major: 1 minor: 0 patch: 1492)
+	^ self isSessionRunning and: [ 
+		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
+			major: 1 minor: 0 patch: 1492) ]
 ]
 
 { #category : #initialization }
 GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSession [
 	gemStoneSession := aGemStoneSession
+]
+
+{ #category : #testing }
+GtGemStoneRemoteSessionFeatures >> isSessionRunning [ 
+	^ self gemStoneSession isRunning
 ]
 
 { #category : #accessing }
