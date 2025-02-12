@@ -56,14 +56,13 @@ GtGemStoneRemoteFeaturesExamples >> remoteFeatureSerialization [
 	
 	newSessionFeatures := GtGemStoneRemoteSessionFeatures 
 		forGemStoneSession: self runningServer 
-		withFeaturesDataComputation: [
+		withFeaturesComputation: [
 			(GtGemStoneSessionFeatures withAll: (
 				Array  
 					with: (GtGemStoneSessionFeature
 						withId: #exampleFeature1)
 					with:  ((GtGemStoneSessionFeature
-						withId: #exampleFeature2) enable)))
-				createSpecification asDictionaryForExport ].
+						withId: #exampleFeature2) enable))) ].
 	
 	self assert: newSessionFeatures remoteFeatures size equals: 2.
 	self assert: (newSessionFeatures isFeatureEnabledWithId: #exampleFeature1) not.
