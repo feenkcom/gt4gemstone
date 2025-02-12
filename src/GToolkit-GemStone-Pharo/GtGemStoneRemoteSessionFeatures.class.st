@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'gemStoneSession',
-		'remoteFeatures'
+		'remoteFeatures',
+		'remoteFeaturesDataComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -12,6 +13,13 @@ Class {
 GtGemStoneRemoteSessionFeatures class >> forGemStoneSession: aGemStoneSession [
 	^ self new
 		initializeForGemStoneSession: aGemStoneSession
+]
+
+{ #category : #'instance  creation' }
+GtGemStoneRemoteSessionFeatures class >> forGemStoneSession: aGemStoneSession withFeaturesDataComputation: aBlockClosure [
+	^ self new
+		initializeForGemStoneSession: aGemStoneSession
+		withFeaturesDataComputation: aBlockClosure
 ]
 
 { #category : #accessing }
@@ -86,6 +94,15 @@ GtGemStoneRemoteSessionFeatures >> hasRemoteFeaturesList [
 ]
 
 { #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initialize [
+	super initialize.
+	
+	remoteFeaturesDataComputation := [ 
+		GtGemStoneSessionFeatures currentFeatures
+			createSpecification asDictionaryForExport ]
+]
+
+{ #category : #initialization }
 GtGemStoneRemoteSessionFeatures >> initializeFeaturesList [
 	remoteFeatures := self retrieveRemoteFeatures
 ]
@@ -95,6 +112,22 @@ GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSessio
 	gemStoneSession := aGemStoneSession.
 	self hasGemStoneFeaturesV1 ifTrue: [
 		self initializeFeaturesList ]
+]
+
+{ #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSession withFeaturesDataComputation: aBlockClosure [
+	remoteFeaturesDataComputation := aBlockClosure.
+	self initializeForGemStoneSession: aGemStoneSession
+]
+
+{ #category : #'testing ' }
+GtGemStoneRemoteSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
+	^ self hasRemoteFeaturesList and: [
+		self remoteFeatures
+			detect: [ :aFeature | 
+				aFeature featureId = aFeatureId ] 
+			ifFound: [ :aFeature | aFeature isEnabled ] 
+			ifNone: [ false ] ]
 ]
 
 { #category : #testing }
@@ -117,9 +150,7 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecifications [
 { #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 	^ ((self gemStoneSession
-		createBlockEvaluationFor: [ 
-				GtGemStoneSessionFeatures currentFeatures
-					createSpecification asDictionaryForExport ])
+		createBlockEvaluationFor: remoteFeaturesDataComputation)
 			autoCommit: false;
 			returnPrimitiveOnly;
 			evaluateAndWait) 

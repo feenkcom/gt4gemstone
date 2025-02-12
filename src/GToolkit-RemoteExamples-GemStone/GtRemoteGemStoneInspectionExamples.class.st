@@ -246,6 +246,19 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> sessionFeaturesInspection [
+	<gtExample>
+	<after: #stopServer>
+	
+	^ self 
+		assertObjectInspectionFor: [ GtGemStoneSessionFeatures withAll: (
+			Array with: (GtGemStoneSessionFeature
+				withId: #exampleFeature)) ]
+		withTypeName: #GtGemStoneSessionFeatures
+		inspectorTitle:  'aGtGemStoneSessionFeatures [1 feature]'
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> smallDoubleInspection [
 	<gtExample>
 	<after: #stopServer>

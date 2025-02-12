@@ -26,6 +26,15 @@ GtGemStoneSessionFeatures class >> currentFeatures [
 		ifAbsent: [ self forCurrentDefinitions ]
 ]
 
+{ #category : #features }
+GtGemStoneSessionFeatures class >> exampleFeatureV1 [
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #exampleFeatureV1)
+			enable
+]
+
 { #category : #accessing }
 GtGemStoneSessionFeatures class >> featuresKeyName [
 	^#GT_FEATURES_LIST_NAME
@@ -78,9 +87,22 @@ GtGemStoneSessionFeatures class >> withAll: aCollection [
 		initializeWithFeatures: aCollection
 ]
 
+{ #category : #adding }
+GtGemStoneSessionFeatures >> addFeature: aFeature [
+	featuresById at: aFeature featureId put: aFeature
+]
+
 { #category : #converting }
 GtGemStoneSessionFeatures >> createSpecification [
 	^ GtGemStoneFeaturesSpecification forFeatures: self
+]
+
+{ #category : #enumerating }
+GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
+	^ featuresById
+		at: aFeatureId
+		ifPresent: aPresentBlock
+		ifAbsent: anAbsentBlock
 ]
 
 { #category : #views }
@@ -94,7 +116,7 @@ GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 		items: [ (self 
 			gtDo: [ featuresById associations ] 
 			gemstoneDo: [ featuresById associationsAsArray ] )
-				sort: [ :a :b | a featureId < b featureId ] ];
+				sort: [ :a :b | a value featureId < b value featureId ] ];
 		column: 'Id' text: [ :assoc | assoc key ];
 		column: 'Status' text: [ :assoc | assoc value statusDescription ];
 		send: [ :assoc | assoc value ]
@@ -105,7 +127,15 @@ GtGemStoneSessionFeatures >> initializeWithFeatures: aCollection [
 	featuresById := Dictionary new.
 	
 	aCollection do: [ :aFeature |
-		featuresById at: aFeature featureId put: aFeature ]
+		self addFeature: aFeature ]
+]
+
+{ #category : #testing }
+GtGemStoneSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
+	^ self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | aFeature isEnabled ] 
+		ifAbsent: [ false ] 
 ]
 
 { #category : #accessing }
