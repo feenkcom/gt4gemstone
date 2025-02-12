@@ -15,7 +15,7 @@ GtGemStoneRemoteTranscriptExamples >> checkRemoteTranscriptAccessorOnClosedSessi
 		createSession.
 		
 	remoteTranscript := noStartedSession remoteTranscript.
-	self assert: noStartedSession remoteTranscript notNil.
+	self assert: noStartedSession notNil.
 	
 	self assert: remoteTranscript hasTranscriptProxy not.
 ]

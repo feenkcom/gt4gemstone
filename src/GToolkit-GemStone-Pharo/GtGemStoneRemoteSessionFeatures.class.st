@@ -37,7 +37,7 @@ GtGemStoneRemoteSessionFeatures >> gt4gemstoneVersion [
 { #category : #'gt - views' }
 GtGemStoneRemoteSessionFeatures >> gtViewFeaturesFor: aView [
 	<gtView>
-	self hasGemStoneFeaturesV1 ifFalse: [ ^ aView empty ].
+	self hasRemoteFeaturesList ifFalse: [ ^ aView empty ].
 	
 	^ aView columnedList
 		title: 'Features';
@@ -80,9 +80,21 @@ GtGemStoneRemoteSessionFeatures >> hasGemStoneTranscriptV1 [
 			major: 1 minor: 0 patch: 1502) ]
 ]
 
+{ #category : #testing }
+GtGemStoneRemoteSessionFeatures >> hasRemoteFeaturesList [
+	^ remoteFeatures notNil
+]
+
+{ #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initializeFeaturesList [
+	remoteFeatures := self retrieveRemoteFeatures
+]
+
 { #category : #initialization }
 GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSession [
-	gemStoneSession := aGemStoneSession
+	gemStoneSession := aGemStoneSession.
+	self hasGemStoneFeaturesV1 ifTrue: [
+		self initializeFeaturesList ]
 ]
 
 { #category : #testing }
@@ -92,18 +104,17 @@ GtGemStoneRemoteSessionFeatures >> isSessionRunning [
 
 { #category : #accessing }
 GtGemStoneRemoteSessionFeatures >> remoteFeatures [
-	^ remoteFeatures ifNil: [
-		 remoteFeatures := self retrieveRemoteFeatures ]
+	^ remoteFeatures 
 ]
 
-{ #category : #accessing }
+{ #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecifications [
 	^ (self retrieveRemoteFeatureSpecificationsData at: 'featureSpecifications')
 		collect: [ :featureData |
 			GtGemStoneFeatureSpecification fromJSONDictionary: featureData ] 
 ]
 
-{ #category : #accessing }
+{ #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 	^ ((self gemStoneSession
 		createBlockEvaluationFor: [ 
@@ -114,7 +125,7 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 			evaluateAndWait) 
 ]
 
-{ #category : #accessing }
+{ #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
 	^ (self retrieveRemoteFeatureSpecifications )
 		collect: [ :aFeatureSpecification |
