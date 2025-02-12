@@ -55,6 +55,8 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 GtGemStoneRemoteTranscript >> gtViewStatusAttributesFor: aView [
 	<gtView>
 
+	self hasTranscriptProxy ifFalse: [ ^ aView empty ].
+	
 	^ aView columnedList
 		title: 'Status';
 		priority: 15;
@@ -69,7 +71,7 @@ GtGemStoneRemoteTranscript >> gtViewStatusAttributesFor: aView [
 GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
 
-	self transcriptProxy ifNil: [ ^ aView empty ].
+	self hasTranscriptProxy ifFalse: [ ^ aView empty ].
 	
 	^ aView remoteForward
 		title: 'Transcript';
@@ -87,6 +89,11 @@ GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 			 action: [:aButton :aTab |
 			 	self clearRemoteTranscript.
 			 	aTab viewContentElement phlow update ]
+]
+
+{ #category : #testing }
+GtGemStoneRemoteTranscript >> hasTranscriptProxy [
+	^ self transcriptProxy notNil
 ]
 
 { #category : #initialization }
