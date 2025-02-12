@@ -13,7 +13,7 @@ GtRemoteGemStoneWireEncodingExamples >> answerProxy [
 	| session serialisationStrategy result receiver remoteBindings remoteScript autoCommit object |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
 	receiver := nil.
 	remoteBindings := Dictionary new
 		at: #clientVar put: (GtRsrTestServiceClient new object: (Dictionary new at: #a put: 'client'; yourself));
@@ -37,13 +37,14 @@ GtRemoteGemStoneWireEncodingExamples >> answerProxy [
 	self assert: ((object at: #cv) object at: #a) equals: ((remoteBindings at: #clientVar) object at: #a).
 ]
 
-{ #category : #'as yet unclassified' }
-GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session version: versionString [
+{ #category : #private }
+GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session [
 	"This test can only run on servers with GT version at least versionString"
 
-	^ (session gt4gemstoneVersion isZero or: 
-		[ session gt4gemstoneVersion >= 
-			(GtGemStoneSemanticVersionNumber readFromString: versionString) ])
+	^ session evaluator versionedEvaluator features
+		named: #gtRsrEvaluator
+		ifPresent: [ :attributes | true  ]
+		ifAbsent: [ false ].
 ]
 
 { #category : #examples }
@@ -52,7 +53,7 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	| session anObject remoteBindings receiver remoteScript serialisationStrategy autoCommit result |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
 	anObject := {
 		#a -> 1.
 		{
@@ -87,7 +88,7 @@ GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 	| session proxy arguments serialisationStrategy autoCommit value |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
 	proxy := session evaluateAndWaitReturnProxy: 'Dictionary new'.
 	arguments := { #assoc. #key -> #value. }.
 	serialisationStrategy := #GtRsrWireSerializationStrategy.
@@ -112,7 +113,7 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 	| session remoteBlock serialisationStrategy result |
 
 	session := self runningServer.
-	(self canTestInSession: session version: 'v1.0.1520') ifFalse: [ ^ self ].
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
 	remoteBlock := [ :a :b | a + b ].
 	serialisationStrategy := #GtRsrWireSerializationStrategy.
 	result := (session

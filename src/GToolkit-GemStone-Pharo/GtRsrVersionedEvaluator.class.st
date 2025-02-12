@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'serviceClient',
-		'serverVersion'
+		'features'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Services'
 }
@@ -32,28 +32,27 @@ GtRsrVersionedEvaluator class >> maxVersion [
 { #category : #'instance creation' }
 GtRsrVersionedEvaluator class >> serviceClient: aGtRsrEvaluatorServiceClient [
 	"Answer an instance of the receiver for the current GemStone version"
-	| serverVersion evaluatorClass |
+	| evaluatorFeature evaluatorClass features evaluatorVersion |
 
-	serverVersion := [ GtRsrGtGsReleaseServiceClient new
-		registerWith: aGtRsrEvaluatorServiceClient connection;
-		updateVersion ]
+	features := GtRsrEvaluatorFeatures withAll:
+		([ GtRsrEvaluatorFeaturesServiceClient new
+			registerWith: aGtRsrEvaluatorServiceClient connection;
+			featuresDictionary ]
 			on: RsrBrokenPromise
-			do: [ :ex |
-				"Assume the server is v1.0.1501 or earlier"
-				(GtRsrVersion1501Evaluator new 
-					serviceClient: aGtRsrEvaluatorServiceClient;
-					evaluateScript: (GtRsrScriptEvaluation new
-						gtSession: aGtRsrEvaluatorServiceClient gtSession;
-						script: 'GtGsRelease versionString';
-						autoCommit: false;
-						returnLegacy)) wait
-					 ].
-	evaluatorClass := serverVersion = '<none>'
-		ifTrue: [ self ]
-		ifFalse: [ self classFor: serverVersion ].
+			do: [ :ex | Dictionary new ]).
+
+	evaluatorFeature := features 
+		named: #gtRsrEvaluator
+		ifPresent: [ :attributes | attributes  ]
+		ifAbsent: [ Dictionary new ].
+	evaluatorVersion := GtGemStoneSemanticVersionNumber readFromString: (evaluatorFeature at: #version ifAbsent: [ '0.0.0' ]).
+
+	evaluatorClass := evaluatorVersion isZero
+		ifTrue: [ GtRsrVersion1501Evaluator ]
+		ifFalse: [ GtRsrVersionedEvaluator ].
 	^ evaluatorClass new 
-		serviceClient: aGtRsrEvaluatorServiceClient;
-		serverVersion: serverVersion.
+		features: features;
+		serviceClient: aGtRsrEvaluatorServiceClient.
 ]
 
 { #category : #private }
@@ -286,6 +285,16 @@ GtRsrVersionedEvaluator >> evaluateScript: aGtRsrScriptEvaluation [
 ]
 
 { #category : #accessing }
+GtRsrVersionedEvaluator >> features [
+	^ features
+]
+
+{ #category : #accessing }
+GtRsrVersionedEvaluator >> features: anObject [
+	features := anObject
+]
+
+{ #category : #accessing }
 GtRsrVersionedEvaluator >> gtSession [
 
 	^ serviceClient gtSession
@@ -312,16 +321,6 @@ GtRsrVersionedEvaluator >> scriptEvaluation [
 
 	^ GtRsrScriptEvaluation new
 		gtSession: self gtSession
-]
-
-{ #category : #accessing }
-GtRsrVersionedEvaluator >> serverVersion [
-	^ serverVersion
-]
-
-{ #category : #accessing }
-GtRsrVersionedEvaluator >> serverVersion: anObject [
-	serverVersion := anObject
 ]
 
 { #category : #accessing }
