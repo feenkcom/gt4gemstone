@@ -1,6 +1,6 @@
-Extension { #name : 'GtRsrProxyOnlySerializationStrategy' }
+Extension { #name : #GtRsrProxyOnlySerializationStrategy }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtRsrProxyOnlySerializationStrategy >> serialize: anObject [
 	 ^ GtRsrProxyServiceServer object: anObject
 ]

@@ -1,19 +1,19 @@
 Class {
-	#name : 'GtRsrWireTransferServiceServer',
-	#superclass : 'GtRsrWireTransferService',
+	#name : #GtRsrWireTransferServiceServer,
+	#superclass : #GtRsrWireTransferService,
 	#instVars : [
 		'object'
 	],
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrWireTransferServiceServer >> asGtGsArgument [
 
 	^ self object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrWireTransferServiceServer >> object [
 	"Answer the object.
 	nil should never be passed using the wire transfer service, it should use RsrNilObject"
@@ -21,7 +21,7 @@ GtRsrWireTransferServiceServer >> object [
 	^ object ifNil: [ object := self bufferObject ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrWireTransferServiceServer >> object: anObject [
 
 	object := anObject.

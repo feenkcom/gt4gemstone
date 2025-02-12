@@ -1,6 +1,6 @@
-Extension { #name : 'GtGemstoneEvaluationExceptionResult' }
+Extension { #name : #GtGemstoneEvaluationExceptionResult }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtGemstoneEvaluationExceptionResult >> asDictionaryForExport [
 
 	^ super asDictionaryForExport

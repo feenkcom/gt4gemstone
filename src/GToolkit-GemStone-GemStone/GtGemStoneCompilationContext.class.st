@@ -1,6 +1,6 @@
 Class {
-	#name : 'GtGemStoneCompilationContext',
-	#superclass : 'Object',
+	#name : #GtGemStoneCompilationContext,
+	#superclass : #Object,
 	#instVars : [
 		'receiver',
 		'frame',
@@ -13,7 +13,7 @@ Class {
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneCompilationContext class >> receiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary [ 
 	^ self new 
 			setReceiver: anObject  
@@ -22,7 +22,7 @@ GtGemStoneCompilationContext class >> receiver: anObject  frameIdentifierIndex: 
 			clientBindings: aDictionary
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCompilationContext >> allBindings [
 	| allBindings |
 	allBindings := GsCurrentSession currentSession symbolList
@@ -33,7 +33,7 @@ GtGemStoneCompilationContext >> allBindings [
 		ifNotNil: [ allBindings, (Array with: frameBindings) ]
 ]
 
-{ #category : 'bindings' }
+{ #category : #bindings }
 GtGemStoneCompilationContext >> createClientBindingsFrom: aDictionary [
 	| newBindings |
 
@@ -45,7 +45,7 @@ GtGemStoneCompilationContext >> createClientBindingsFrom: aDictionary [
 	^ newBindings
 ]
 
-{ #category : 'bindings' }
+{ #category : #bindings }
 GtGemStoneCompilationContext >> createFrameBindignsForFrame: aCallFrame ofEvaluationContext: aTargetEvaluationContext [
 	^ aCallFrame createFrameBindings
 			name: ('Frame bindings for frame index ' 
@@ -55,14 +55,14 @@ GtGemStoneCompilationContext >> createFrameBindignsForFrame: aCallFrame ofEvalua
 			yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneCompilationContext >> currentReceiver [
 	^ frame 
 		ifNil: [ receiver ]
 		ifNotNil: [ frame receiver ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneCompilationContext >> initializeFrameWithFrameIdentifierIndex: aFrameIdentifierIndex [
 	frame := evaluationContext frameForIdentifierIndex: aFrameIdentifierIndex.
 	frameIdentifier := frame frameIdentifier.
@@ -72,7 +72,7 @@ GtGemStoneCompilationContext >> initializeFrameWithFrameIdentifierIndex: aFrameI
 		ofEvaluationContext: evaluationContext
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 GtGemStoneCompilationContext >> setReceiver: anObject  frameIdentifierIndex: aFrameIdentifierIndex evaluationContext: aTargetEvaluationContext clientBindings: aDictionary [
 	receiver := anObject.
 	clientBindings := self createClientBindingsFrom: aDictionary.
@@ -83,7 +83,7 @@ GtGemStoneCompilationContext >> setReceiver: anObject  frameIdentifierIndex: aFr
 			self initializeFrameWithFrameIdentifierIndex: aFrameIdentifierIndex ]
 ]
 
-{ #category : 'updating' }
+{ #category : #updating }
 GtGemStoneCompilationContext >> updatedFrameBindings [
 	frame ifNil: [ ^ self ].
 

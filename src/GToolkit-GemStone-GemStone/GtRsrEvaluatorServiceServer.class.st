@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtRsrEvaluatorServiceServer',
-	#superclass : 'GtRsrEvaluatorService',
+	#name : #GtRsrEvaluatorServiceServer,
+	#superclass : #GtRsrEvaluatorService,
 	#category : 'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'logging' }
+{ #category : #logging }
 GtRsrEvaluatorServiceServer class >> stdoutLog: aMessage [
 	| msgStream |
 
@@ -19,7 +19,7 @@ GtRsrEvaluatorServiceServer class >> stdoutLog: aMessage [
 	FsFileDescriptor stdout write: msgStream contents utf8Encoded.
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result.
 	On the server this is a synchronous operation."
@@ -31,7 +31,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 			serializationStrategy: #GtRsrLegacySerializationStrategy
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the serialized result.
 	On the server this is a synchronous operation."
@@ -48,7 +48,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject bindings: aDictio
 		anEvaluationResult asDictionaryForExport ]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject inFrameIdentifierIndex: aFrameIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the serialized result.
 	On the server this is a synchronous operation."
@@ -67,7 +67,7 @@ GtRsrEvaluatorServiceServer >> evaluate: aString for: anObject inFrameIdentifier
 		anEvaluationResult asDictionaryForExport ]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindings: aDictionary [
 	"Evaluate the receiver's script, answering the result as a proxy.
 	On the server this is a synchronous operation."
@@ -79,12 +79,12 @@ GtRsrEvaluatorServiceServer >> evaluateReturnProxy: aString for: anObject bindin
 			serializationStrategy: #GtRsrProxyOnlySerializationStrategy
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary [
 	^ self gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: nil
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
@@ -105,7 +105,7 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject bindings: aDict
 		from: self.
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject  inFrameIdentifierIndex: aFrameIdentifierIndex ofEvaluationContext: aTargetEvaluationContext bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result"
 	| compilationContext receiver  allBindings  |
@@ -131,7 +131,7 @@ GtRsrEvaluatorServiceServer >> gsEvaluate: aString for: anObject  inFrameIdentif
 		from: self
 ]
 
-{ #category : 'private - GemStone' }
+{ #category : #'private - GemStone' }
 GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
@@ -153,7 +153,7 @@ GtRsrEvaluatorServiceServer >> gsStartEvaluate: aString for: anObject bindings: 
 		priority: Processor userBackgroundPriority - 2
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtRsrEvaluatorServiceServer >> startEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: aSymbol [
 	"Start the receiver's script, answering the result."
 	| evaluationResult |

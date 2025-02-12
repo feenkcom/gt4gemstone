@@ -1,6 +1,6 @@
-Extension { #name : 'GtGemstoneEvaluationComputedResult' }
+Extension { #name : #GtGemstoneEvaluationComputedResult }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtGemstoneEvaluationComputedResult >> asDictionaryForExport [
 
 	^ super asDictionaryForExport

@@ -1,6 +1,6 @@
-Extension { #name : 'Integer' }
+Extension { #name : #Integer }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Integer >> isInteger [
 
 	^ true
