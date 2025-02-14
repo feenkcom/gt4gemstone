@@ -23,7 +23,16 @@ GtGemStoneSessionFeatures class >> collectFeaturesDefinitions [
 GtGemStoneSessionFeatures class >> currentFeatures [
 	^ SessionTemps current 
 		at: self featuresKeyName
-		ifAbsent: [ self forCurrentDefinitions ]
+		ifAbsentPut: [ self forCurrentDefinitions ]
+]
+
+{ #category : #features }
+GtGemStoneSessionFeatures class >> exampleFeatureV1 [
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #exampleFeatureV1)
+			enable
 ]
 
 { #category : #accessing }
@@ -63,6 +72,13 @@ GtGemStoneSessionFeatures class >> gtViewDefinedFeaturesFor: aView [
 		view: #gtViewFeaturesFor:
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionFeatures class >> resetFeatures [
+	^ SessionTemps current 
+		removeKey: self featuresKeyName
+		ifAbsent: [  ]
+]
+
 { #category : #features }
 GtGemStoneSessionFeatures class >> transcriptV1 [
 	<gtGemStoneFeature>
@@ -78,9 +94,53 @@ GtGemStoneSessionFeatures class >> withAll: aCollection [
 		initializeWithFeatures: aCollection
 ]
 
+{ #category : #adding }
+GtGemStoneSessionFeatures >> addFeature: aFeature [
+	featuresById at: aFeature featureId put: aFeature
+]
+
 { #category : #converting }
 GtGemStoneSessionFeatures >> createSpecification [
 	^ GtGemStoneFeaturesSpecification forFeatures: self
+]
+
+{ #category : #actions }
+GtGemStoneSessionFeatures >> disableFeatureWithId: aFeatureId [ 
+	self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | aFeature disable ] 
+		ifAbsent: [ Error signal: 'Feature not found' ] 
+]
+
+{ #category : #actions }
+GtGemStoneSessionFeatures >> enableFeatureWithId: aFeatureId [ 
+	self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | aFeature enable ] 
+		ifAbsent: [ Error signal: 'Feature not found' ] 
+]
+
+{ #category : #enumerating }
+GtGemStoneSessionFeatures >> featureWithId: aFeatureId [ 
+	^ featuresById
+		at: aFeatureId
+]
+
+{ #category : #enumerating }
+GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock [ 
+	^ featuresById
+		at: aFeatureId
+		ifPresent: aPresentBlock
+]
+
+{ #category : #enumerating }
+GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
+	| feature |
+	feature := featuresById
+		at: aFeatureId
+		ifAbsent: [ ^ anAbsentBlock value ].
+		
+	^ aPresentBlock cull: feature
 ]
 
 { #category : #views }
@@ -94,7 +154,7 @@ GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 		items: [ (self 
 			gtDo: [ featuresById associations ] 
 			gemstoneDo: [ featuresById associationsAsArray ] )
-				sort: [ :a :b | a featureId < b featureId ] ];
+				sort: [ :a :b | a value featureId < b value featureId ] ];
 		column: 'Id' text: [ :assoc | assoc key ];
 		column: 'Status' text: [ :assoc | assoc value statusDescription ];
 		send: [ :assoc | assoc value ]
@@ -105,7 +165,15 @@ GtGemStoneSessionFeatures >> initializeWithFeatures: aCollection [
 	featuresById := Dictionary new.
 	
 	aCollection do: [ :aFeature |
-		featuresById at: aFeature featureId put: aFeature ]
+		self addFeature: aFeature ]
+]
+
+{ #category : #testing }
+GtGemStoneSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
+	^ self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | aFeature isEnabled ] 
+		ifAbsent: [ false ] 
 ]
 
 { #category : #accessing }

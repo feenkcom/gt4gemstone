@@ -32,7 +32,39 @@ GtGemStoneRemoteFeaturesExamples >> checkRemoteFeaturesIsSupportedWorksOnClosedS
 ]
 
 { #category : #examples }
-GtGemStoneRemoteFeaturesExamples >> currentRemoteFeatures [
+GtGemStoneRemoteFeaturesExamples >> currentSessionFeatures [
 	<gtExample>
 	^ self runningServer currentFeatures
+]
+
+{ #category : #examples }
+GtGemStoneRemoteFeaturesExamples >> currentSessionFeatures_initializationOk [
+	<gtExample>
+	| sessionFeatures|
+	
+	sessionFeatures := self currentSessionFeatures.
+	
+	sessionFeatures hasGemStoneFeaturesV1 ifFalse: [ ^ self ].
+	
+	self assert: sessionFeatures hasRemoteFeaturesList.
+]
+
+{ #category : #examples }
+GtGemStoneRemoteFeaturesExamples >> remoteFeatureSerialization [
+	<gtExample>
+	| newSessionFeatures |
+	
+	newSessionFeatures := GtGemStoneRemoteSessionFeatures 
+		forGemStoneSession: self runningServer 
+		withFeaturesComputation: [
+			(GtGemStoneSessionFeatures withAll: (
+				Array  
+					with: (GtGemStoneSessionFeature
+						withId: #exampleFeature1)
+					with:  ((GtGemStoneSessionFeature
+						withId: #exampleFeature2) enable))) ].
+	
+	self assert: newSessionFeatures remoteFeatures size equals: 2.
+	self assert: (newSessionFeatures isFeatureEnabledWithId: #exampleFeature1) not.
+	self assert: (newSessionFeatures isFeatureEnabledWithId: #exampleFeature2)
 ]

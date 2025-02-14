@@ -3,7 +3,9 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'gemStoneSession',
-		'remoteFeatures'
+		'remoteFeatures',
+		'featuresProxy',
+		'remoteFeaturesComputation'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -14,14 +16,53 @@ GtGemStoneRemoteSessionFeatures class >> forGemStoneSession: aGemStoneSession [
 		initializeForGemStoneSession: aGemStoneSession
 ]
 
+{ #category : #'instance  creation' }
+GtGemStoneRemoteSessionFeatures class >> forGemStoneSession: aGemStoneSession withFeaturesComputation: aBlockClosure [
+	^ self new
+		initializeForGemStoneSession: aGemStoneSession
+		withFeaturesComputation: aBlockClosure
+]
+
 { #category : #accessing }
 GtGemStoneRemoteSessionFeatures >> createRemoteFeaturesProxy [
 	^ ((self gemStoneSession
-		createBlockEvaluationFor: [ 
-				GtGemStoneSessionFeatures currentFeatures ])
+		createBlockEvaluationFor: remoteFeaturesComputation)
 			autoCommit: false;
 			returnProxy;
 			evaluateAndWait) 
+]
+
+{ #category : #actions }
+GtGemStoneRemoteSessionFeatures >> disableFeatureWithId: aFeatureId [ 
+	self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | 
+			self remoteDisableFeatureWithId: aFeatureId.
+			aFeature disable ] 
+		ifAbsent: [ Error signal: 'Feature not found' ] 
+]
+
+{ #category : #actions }
+GtGemStoneRemoteSessionFeatures >> enableFeatureWithId: aFeatureId [ 
+	self
+		featureWithId: aFeatureId
+		ifPresent: [ :aFeature | 
+			self remoteEnableFeatureWithId: aFeatureId.
+			aFeature enable ] 
+		ifAbsent: [ Error signal: 'Feature not found' ] 
+]
+
+{ #category : #enumerating }
+GtGemStoneRemoteSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
+	^ remoteFeatures
+		detect: [ :aFeature | aFeature featureId = aFeatureId] 
+		ifFound: aPresentBlock 
+		ifNone: anAbsentBlock
+]
+
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> featuresProxy [
+	^ featuresProxy
 ]
 
 { #category : #accessing }
@@ -48,7 +89,7 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesFor: aView [
 		actionButtonIcon:  BrGlamorousVectorIcons refresh 
 			tooltip: 'Update'
 			action: [ :aButton :aTab | 
-				remoteFeatures := nil.
+				self updateFeatures.
 				aTab viewContentElement phlow update  ]
 ]
 
@@ -61,7 +102,7 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
 	^ aView remoteForward
 		title: 'Features (remote side)';
 		priority: 20;
-		object: [ self createRemoteFeaturesProxy ];
+		object: [ self featuresProxy ];
 		view: #gtViewFeaturesFor: ;
 		actionUpdateButton
 ]
@@ -86,20 +127,71 @@ GtGemStoneRemoteSessionFeatures >> hasRemoteFeaturesList [
 ]
 
 { #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initialize [
+	super initialize.
+	
+	remoteFeaturesComputation := [ 
+		GtGemStoneSessionFeatures currentFeatures ]
+]
+
+{ #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initializeFeatures [
+	self initializeFeaturesProxy.
+	self initializeFeaturesList.
+]
+
+{ #category : #initialization }
 GtGemStoneRemoteSessionFeatures >> initializeFeaturesList [
 	remoteFeatures := self retrieveRemoteFeatures
+]
+
+{ #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initializeFeaturesProxy [
+	featuresProxy := self createRemoteFeaturesProxy
 ]
 
 { #category : #initialization }
 GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSession [
 	gemStoneSession := aGemStoneSession.
 	self hasGemStoneFeaturesV1 ifTrue: [
-		self initializeFeaturesList ]
+		self initializeFeatures ]
+]
+
+{ #category : #initialization }
+GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSession withFeaturesComputation: aBlockClosure [
+	remoteFeaturesComputation := aBlockClosure.
+	self initializeForGemStoneSession: aGemStoneSession
+]
+
+{ #category : #'testing ' }
+GtGemStoneRemoteSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
+	^ self hasRemoteFeaturesList and: [
+		self remoteFeatures
+			detect: [ :aFeature | 
+				aFeature featureId = aFeatureId ] 
+			ifFound: [ :aFeature | aFeature isEnabled ] 
+			ifNone: [ false ] ]
 ]
 
 { #category : #testing }
 GtGemStoneRemoteSessionFeatures >> isSessionRunning [ 
 	^ self gemStoneSession isRunning
+]
+
+{ #category : #actions }
+GtGemStoneRemoteSessionFeatures >> remoteDisableFeatureWithId: aFeatureId [ 
+	featuresProxy 
+		proxyPerform: #disableFeatureWithId: 
+		withArguments: (Array with: aFeatureId)
+		autoCommit: false
+]
+
+{ #category : #actions }
+GtGemStoneRemoteSessionFeatures >> remoteEnableFeatureWithId: aFeatureId [ 
+	featuresProxy 
+		proxyPerform: #enableFeatureWithId: 
+		withArguments: (Array with: aFeatureId)
+		autoCommit: false
 ]
 
 { #category : #accessing }
@@ -117,9 +209,9 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecifications [
 { #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 	^ ((self gemStoneSession
-		createBlockEvaluationFor: [ 
-				GtGemStoneSessionFeatures currentFeatures
-					createSpecification asDictionaryForExport ])
+		createBlockEvaluationFor: [ :aFeaturesObject |
+			aFeaturesObject createSpecification asDictionaryForExport ]
+		withArguments: (Array with:featuresProxy))
 			autoCommit: false;
 			returnPrimitiveOnly;
 			evaluateAndWait) 
@@ -135,4 +227,12 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
 { #category : #accessing }
 GtGemStoneRemoteSessionFeatures >> session [
 	^ gemStoneSession
+]
+
+{ #category : #updating }
+GtGemStoneRemoteSessionFeatures >> updateFeatures [
+	featuresProxy := nil.
+	remoteFeatures := nil.
+	
+	self initializeFeatures. 
 ]
