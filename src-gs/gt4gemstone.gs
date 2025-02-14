@@ -819,60 +819,6 @@ removeallmethods GtRsrStonSerializationStrategy
 removeallclassmethods GtRsrStonSerializationStrategy
 
 doit
-(GtRsrSerializationStrategy
-	subclass: 'GtRsrWireSerializationStrategy'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrWireSerializationStrategy
-removeallclassmethods GtRsrWireSerializationStrategy
-
-doit
-(RsrService
-	subclass: 'GtRsrEvaluatorFeaturesService'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrEvaluatorFeaturesService
-removeallclassmethods GtRsrEvaluatorFeaturesService
-
-doit
-(GtRsrEvaluatorFeaturesService
-	subclass: 'GtRsrEvaluatorFeaturesServiceServer'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrEvaluatorFeaturesServiceServer
-removeallclassmethods GtRsrEvaluatorFeaturesServiceServer
-
-doit
 (RsrService
 	subclass: 'GtRsrEvaluatorService'
 	instVarNames: #()
@@ -944,96 +890,6 @@ true.
 
 removeallmethods GtRsrProxyServiceServer
 removeallclassmethods GtRsrProxyServiceServer
-
-doit
-(RsrService
-	subclass: 'GtRsrTestService'
-	instVarNames: #(object)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrTestService
-removeallclassmethods GtRsrTestService
-
-doit
-(GtRsrTestService
-	subclass: 'GtRsrTestServiceClient'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrTestServiceClient
-removeallclassmethods GtRsrTestServiceClient
-
-doit
-(GtRsrTestService
-	subclass: 'GtRsrTestServiceServer'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrTestServiceServer
-removeallclassmethods GtRsrTestServiceServer
-
-doit
-(RsrService
-	subclass: 'GtRsrWireTransferService'
-	instVarNames: #(buffer mapping roots)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrWireTransferService
-removeallclassmethods GtRsrWireTransferService
-
-doit
-(GtRsrWireTransferService
-	subclass: 'GtRsrWireTransferServiceServer'
-	instVarNames: #(object)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrWireTransferServiceServer
-removeallclassmethods GtRsrWireTransferServiceServer
 
 doit
 (TestCase
@@ -3832,17 +3688,7 @@ classmethod: GtGemStoneSessionFeatures
 currentFeatures
 	^ SessionTemps current 
 		at: self featuresKeyName
-		ifAbsentPut: [ self forCurrentDefinitions ]
-%
-
-category: 'features'
-classmethod: GtGemStoneSessionFeatures
-exampleFeatureV1
-	<gtGemStoneFeature>
-	
-	^ (GtGemStoneSessionFeature
-		withId: #exampleFeatureV1)
-			enable
+		ifAbsent: [ self forCurrentDefinitions ]
 %
 
 category: 'accessing'
@@ -3886,14 +3732,6 @@ gtViewDefinedFeaturesFor: aView
 		view: #gtViewFeaturesFor:
 %
 
-category: 'accessing'
-classmethod: GtGemStoneSessionFeatures
-resetFeatures
-	^ SessionTemps current 
-		removeKey: self featuresKeyName
-		ifAbsent: [  ]
-%
-
 category: 'features'
 classmethod: GtGemStoneSessionFeatures
 transcriptV1
@@ -3913,60 +3751,10 @@ withAll: aCollection
 
 !		Instance methods for 'GtGemStoneSessionFeatures'
 
-category: 'adding'
-method: GtGemStoneSessionFeatures
-addFeature: aFeature
-	featuresById at: aFeature featureId put: aFeature
-%
-
 category: 'converting'
 method: GtGemStoneSessionFeatures
 createSpecification
 	^ GtGemStoneFeaturesSpecification forFeatures: self
-%
-
-category: 'actions'
-method: GtGemStoneSessionFeatures
-disableFeatureWithId: aFeatureId 
-	self
-		featureWithId: aFeatureId
-		ifPresent: [ :aFeature | aFeature disable ] 
-		ifAbsent: [ Error signal: 'Feature not found' ] 
-%
-
-category: 'actions'
-method: GtGemStoneSessionFeatures
-enableFeatureWithId: aFeatureId 
-	self
-		featureWithId: aFeatureId
-		ifPresent: [ :aFeature | aFeature enable ] 
-		ifAbsent: [ Error signal: 'Feature not found' ] 
-%
-
-category: 'enumerating'
-method: GtGemStoneSessionFeatures
-featureWithId: aFeatureId 
-	^ featuresById
-		at: aFeatureId
-%
-
-category: 'enumerating'
-method: GtGemStoneSessionFeatures
-featureWithId: aFeatureId ifPresent: aPresentBlock 
-	^ featuresById
-		at: aFeatureId
-		ifPresent: aPresentBlock
-%
-
-category: 'enumerating'
-method: GtGemStoneSessionFeatures
-featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock
-	| feature |
-	feature := featuresById
-		at: aFeatureId
-		ifAbsent: [ ^ anAbsentBlock value ].
-		
-	^ aPresentBlock cull: feature
 %
 
 category: 'views'
@@ -3981,7 +3769,7 @@ gtViewFeaturesFor: aView
 		items: [ (self 
 			gtDo: [ featuresById associations ] 
 			gemstoneDo: [ featuresById associationsAsArray ] )
-				sort: [ :a :b | a value featureId < b value featureId ] ];
+				sort: [ :a :b | a featureId < b featureId ] ];
 		column: 'Id' text: [ :assoc | assoc key ];
 		column: 'Status' text: [ :assoc | assoc value statusDescription ];
 		send: [ :assoc | assoc value ]
@@ -3993,16 +3781,7 @@ initializeWithFeatures: aCollection
 	featuresById := Dictionary new.
 	
 	aCollection do: [ :aFeature |
-		self addFeature: aFeature ]
-%
-
-category: 'testing'
-method: GtGemStoneSessionFeatures
-isFeatureEnabledWithId: aFeatureId
-	^ self
-		featureWithId: aFeatureId
-		ifPresent: [ :aFeature | aFeature isEnabled ] 
-		ifAbsent: [ false ] 
+		featuresById at: aFeature featureId put: aFeature ]
 %
 
 category: 'accessing'
@@ -5069,12 +4848,6 @@ clearContent
 	contentStream := PrintStream printingOn: String new.
 %
 
-category: 'accessing'
-method: GtGemStoneInImageTranscript
-contents
-	^ contentStream contents
-%
-
 category: 'configuration'
 method: GtGemStoneInImageTranscript
 disable
@@ -5158,10 +4931,6 @@ registerTranscriptClass: aClass
 category: 'transcript - api'
 classmethod: GtGemStoneTranscriptHandler
 resetTranscript
-	"Remove the current transcript instance.
-	If called from the GT side, the caller should ensure
-	that the old instance is no longer used on the GT side."
-	
 	SessionTemps current 
 		removeKey: self transcriptInstanceKeyName
 		ifAbsent: [ ]
@@ -5399,53 +5168,6 @@ stonClass
 	^ stonClass
 %
 
-! Class implementation for 'GtRsrWireSerializationStrategy'
-
-!		Instance methods for 'GtRsrWireSerializationStrategy'
-
-category: 'converting'
-method: GtRsrWireSerializationStrategy
-deserialize: aGtRsrWireTransferService
-	"Deserialize the supplied object"
-	
-	^ aGtRsrWireTransferService object
-%
-
-category: 'converting'
-method: GtRsrWireSerializationStrategy
-serialize: anObject
-	"Serialize the object to something that RSR can return"
-	
-	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new object: anObject
-%
-
-! Class implementation for 'GtRsrEvaluatorFeaturesService'
-
-!		Class methods for 'GtRsrEvaluatorFeaturesService'
-
-category: 'accessing'
-classmethod: GtRsrEvaluatorFeaturesService
-templateClassName
-
-	^ #GtRsrEvaluatorFeaturesService
-%
-
-! Class implementation for 'GtRsrEvaluatorFeaturesServiceServer'
-
-!		Instance methods for 'GtRsrEvaluatorFeaturesServiceServer'
-
-category: 'accessing'
-method: GtRsrEvaluatorFeaturesServiceServer
-featuresDictionary
-	"Answer a dictionary of primitives defining the server's evaluation features."
-
-	^ Dictionary new
-		at: #gtRsrEvaluator put: (Dictionary new
-			at: #version put: '0.1.0';
-			yourself);
-		yourself.
-%
-
 ! Class implementation for 'GtRsrEvaluatorService'
 
 !		Class methods for 'GtRsrEvaluatorService'
@@ -5469,24 +5191,6 @@ templateClassName
 %
 
 ! Class implementation for 'GtRsrEvaluatorServiceServer'
-
-!		Class methods for 'GtRsrEvaluatorServiceServer'
-
-category: 'logging'
-classmethod: GtRsrEvaluatorServiceServer
-stdoutLog: aMessage
-	| msgStream |
-
-	msgStream := WriteStream on: String new.
-	msgStream
-		nextPutAll: Time now printString;
-		nextPutAll: ': ';
-		nextPutAll: (aMessage isString
-			ifTrue: [ aMessage asString ]
-			ifFalse: [ aMessage printString ]);
-		lf.
-	FsFileDescriptor stdout write: msgStream contents utf8Encoded.
-%
 
 !		Instance methods for 'GtRsrEvaluatorServiceServer'
 
@@ -5533,7 +5237,7 @@ evaluate: aString for: anObject inFrameIdentifierIndex: aFrameIndex ofEvaluation
 		gsEvaluate: aString 
 		for: anObject 
 		inFrameIdentifierIndex: aFrameIndex 
-		ofEvaluationContext: aTargetEvaluationContext
+		ofEvaluationContext: aTargetEvaluationContext asGtGsArgument
 		bindings: aDictionary 
 		serializationStrategy: aSymbol.
 
@@ -5566,10 +5270,9 @@ gsEvaluate: aString for: anObject bindings: aDictionary serializationStrategy: a
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 
-	SessionTemps current at: #GtRsrServer put: self.
 	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
-	aDictionary asGtGsArgument keysAndValuesDo: [ :key :value |
+	aDictionary keysAndValuesDo: [ :key :value |
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
@@ -5588,16 +5291,15 @@ gsEvaluate: aString for: anObject  inFrameIdentifierIndex: aFrameIdentifierIndex
 	"Evaluate the receiver's script, answering the result"
 	| compilationContext receiver  allBindings  |
 
-	SessionTemps current at: #GtRsrServer put: self.
 	compilationContext := GtGemStoneCompilationContext 
-		receiver: anObject asGtGsArgument
+		receiver: anObject  
 		frameIdentifierIndex: aFrameIdentifierIndex 
-		evaluationContext: aTargetEvaluationContext asGtGsArgument
-		clientBindings: aDictionary asGtGsArgument.
+		evaluationContext: aTargetEvaluationContext 
+		clientBindings: aDictionary.
 
 	receiver := compilationContext currentReceiver.
 	allBindings := compilationContext allBindings.
-
+	
 	^ GtGemStoneEvaluationContext new
 		serializationStrategy: aSymbol;
 		compilationContext: compilationContext;
@@ -5615,10 +5317,9 @@ gsStartEvaluate: aString for: anObject bindings: aDictionary serializationStrate
 	"Evaluate the receiver's script, answering the result"
 	| receiver symbolDictionary bindings |
 
-	SessionTemps current at: #GtRsrServer put: self.
 	receiver := anObject asGtGsArgument.
 	symbolDictionary := SymbolDictionary new.
-	aDictionary asGtGsArgument keysAndValuesDo: [ :key :value |
+	aDictionary keysAndValuesDo: [ :key :value |
 		symbolDictionary at: key put: value asGtGsArgument ].
 	bindings := GsCurrentSession currentSession symbolList, (Array with: symbolDictionary).
 
@@ -5709,8 +5410,6 @@ method: GtRsrProxyServiceServer
 basicPerform: aSymbol withArguments: anArray  serializationStrategy: aSerialisationStrategySymbol
 	"Perform the requested operation, catching errors and returning exception information"
 
-	SessionTemps current at: #GtRsrServer put: self.
-
 	^ (GtGemStoneEvaluationContext new
 		serializationStrategy: aSerialisationStrategySymbol)
 			evaluateAndWaitBlock: [ 
@@ -5786,135 +5485,6 @@ proxyPerformReturnProxy: aSymbol withArguments: anArray
 		proxyPerform: aSymbol 
 		withArguments: anArray
 		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
-%
-
-! Class implementation for 'GtRsrTestService'
-
-!		Class methods for 'GtRsrTestService'
-
-category: 'accessing'
-classmethod: GtRsrTestService
-templateClassName
-
-	^ #GtRsrTestService
-%
-
-!		Instance methods for 'GtRsrTestService'
-
-category: 'accessing'
-method: GtRsrTestService
-object
-	^ object
-%
-
-category: 'accessing'
-method: GtRsrTestService
-object: anObject
-	object := anObject
-%
-
-! Class implementation for 'GtRsrWireTransferService'
-
-!		Class methods for 'GtRsrWireTransferService'
-
-category: 'accessing'
-classmethod: GtRsrWireTransferService
-templateClassName
-
-	^ #GtRsrWireTransferService
-%
-
-!		Instance methods for 'GtRsrWireTransferService'
-
-category: 'private'
-method: GtRsrWireTransferService
-addRoot: anObject
-	"Hold on to the supplied object so it is included in the RSR analysis."
-
-	roots add: anObject.
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-buffer
-	^ buffer
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-buffer: anObject
-	buffer := anObject
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-bufferObject
-	"Answer the object.
-	nil should never be passed using the wire transfer service, it should use RsrNilObject"
-	| decoder |
-
-		buffer class = ByteArray ifFalse:
-			[ self error: 'buffer not set' ].
-		decoder := GtWireDecoder on: (ReadStream on: buffer).
-		mapping ifNotNil: [ decoder map: (GtWireEncoderDecoder perform: mapping) ].
-		^ decoder next
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-bufferObject: anObject
-	| encoder |
-
-	encoder := GtWireEncoder onByteArray.
-	mapping ifNotNil: [ encoder map: (GtWireEncoder perform: mapping) copy ].
-	roots := IdentitySet new.
-	encoder nextPut: anObject.
-	buffer := encoder contents.
-	"IdentitySets can't be replicated"
-	roots := roots asArray.
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-mapping
-	self error: 'To be tidied up'.
-	^ mapping
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-mapping: anObject
-	self error: 'To be tidied up'.
-	mapping := anObject
-%
-
-! Class implementation for 'GtRsrWireTransferServiceServer'
-
-!		Instance methods for 'GtRsrWireTransferServiceServer'
-
-category: 'accessing'
-method: GtRsrWireTransferServiceServer
-asGtGsArgument
-
-	^ self object
-%
-
-category: 'accessing'
-method: GtRsrWireTransferServiceServer
-object
-	"Answer the object.
-	nil should never be passed using the wire transfer service, it should use RsrNilObject"
-
-	^ object ifNil: [ object := self bufferObject ]
-%
-
-category: 'accessing'
-method: GtRsrWireTransferServiceServer
-object: anObject
-
-	object := anObject.
-	SessionTemps current at: #GtRsrCurrentWireService put: self.
-	self bufferObject: object.
 %
 
 ! Class implementation for 'GtGemStoneEvaluationContextTest'
@@ -6135,28 +5705,6 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self collect: [ :each | each asGtRsrProxyObjectForConnection: aRsrConnection ]
 %
 
-! Class extensions for 'Association'
-
-!		Class methods for 'Association'
-
-category: '*GToolkit-GemStone-GemStone'
-classmethod: Association
-key: aKey value: aValue
-
-	^ self new key: aKey value: aValue
-%
-
-! Class extensions for 'Character'
-
-!		Class methods for 'Character'
-
-category: '*GToolkit-GemStone-GemStone'
-classmethod: Character
-value: aCodePointInteger
-
-	^ self withValue: aCodePointInteger
-%
-
 ! Class extensions for 'CharacterCollection'
 
 !		Instance methods for 'CharacterCollection'
@@ -6230,13 +5778,6 @@ gtSourceFor: aView
 		title: 'Source';
 		priority: 10;
 		text: [ self _sourceString ].
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: ExecBlock
-isClean
-
-	^ self _isCopyingBlock not and: [ self _cost = 1 ]
 %
 
 ! Class extensions for 'GsProcess'
@@ -6346,17 +5887,6 @@ serialize: anObject
 	 ^ GtRsrProxyServiceServer object: anObject
 %
 
-! Class extensions for 'GtRsrWireTransferService'
-
-!		Instance methods for 'GtRsrWireTransferService'
-
-category: '*GToolkit-GemStone-GemStone'
-method: GtRsrWireTransferService
-serialize: anObject
-
-	^ GtRsrWireTransferServiceServer new object: anObject
-%
-
 ! Class extensions for 'Integer'
 
 !		Instance methods for 'Integer'
@@ -6409,26 +5939,6 @@ gtDo: gtoolkitBlock gemstoneDo: gemstoneBlock
 	"Evaluate the supplied platform specific block"
 
 	^ gemstoneBlock value
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: Object
-instVarNamed: instVarName
-	| index |
-
-	index := self class allInstVarNames indexOf: instVarName.
-	index = 0 ifTrue: [ self error: 'Unknown instance variable: ', instVarName printString ].
-	^ self instVarAt: index
-%
-
-category: '*GToolkit-GemStone-GemStone'
-method: Object
-instVarNamed: instVarName put: anObject
-	| index |
-
-	index := self class allInstVarNames indexOf: instVarName.
-	index = 0 ifTrue: [ self error: 'Unknown instance variable: ', instVarName printString ].
-	self instVarAt: index put: anObject
 %
 
 category: '*GToolkit-GemStone-GemStone'
