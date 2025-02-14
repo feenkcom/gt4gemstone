@@ -120,7 +120,6 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
-	<sys_ext>
 	<gtCoderContextMenuAddOns: 304>
 	| sessionName |
 	aCoderViewModel hasSelection ifFalse: [^self].
