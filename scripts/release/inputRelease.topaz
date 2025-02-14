@@ -5,9 +5,9 @@
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/Announcements.gs
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/RemoteServiceReplication.gs
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/STON.gs
+	input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-wireencoding/src-gs/gtoolkit-wireencoding.gs
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/gt4gemstone.gs
 	input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-remote/src-gs/gtoolkit-remote.gs
-	input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-wireencoding/src-gs/gtoolkit-wireencoding.gs
 	input $GT4GEMSTONE_RELEASE_HOME/inputVersion.topaz
 	commit
 
