@@ -23,7 +23,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://feenkcom/lepiter:v0.6.2832/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
-				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.3/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.4/src' ].
 
 		spec package: 'GToolkit-GemStone-Pharo-BeaconLogging'.
 		spec package: 'GToolkit-GemStone' with: [
