@@ -15,3 +15,13 @@ ExecBlock >> isClean [
 
 	^ self _isCopyingBlock not and: [ self _cost = 1 ]
 ]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+ExecBlock >> timeToRun [
+	| start end |
+
+	start := Time millisecondClockValue.
+	self value.
+	end := Time millisecondClockValue.
+	^ Duration seconds: (end - start) / 1000
+]

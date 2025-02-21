@@ -1002,7 +1002,7 @@ removeallclassmethods GtRsrTestServiceServer
 doit
 (RsrService
 	subclass: 'GtRsrWireTransferService'
-	instVarNames: #(buffer mapping roots)
+	instVarNames: #(buffer roots)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -5856,7 +5856,6 @@ bufferObject
 		buffer class = ByteArray ifFalse:
 			[ self error: 'buffer not set' ].
 		decoder := GtWireDecoder on: (ReadStream on: buffer).
-		mapping ifNotNil: [ decoder map: (GtWireEncoderDecoder perform: mapping) ].
 		^ decoder next
 %
 
@@ -5866,26 +5865,11 @@ bufferObject: anObject
 	| encoder |
 
 	encoder := GtWireEncoder onByteArray.
-	mapping ifNotNil: [ encoder map: (GtWireEncoder perform: mapping) copy ].
 	roots := IdentitySet new.
 	encoder nextPut: anObject.
 	buffer := encoder contents.
 	"IdentitySets can't be replicated"
 	roots := roots asArray.
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-mapping
-	self error: 'To be tidied up'.
-	^ mapping
-%
-
-category: 'accessing'
-method: GtRsrWireTransferService
-mapping: anObject
-	self error: 'To be tidied up'.
-	mapping := anObject
 %
 
 ! Class implementation for 'GtRsrWireTransferServiceServer'
@@ -6244,6 +6228,17 @@ method: ExecBlock
 isClean
 
 	^ self _isCopyingBlock not and: [ self _cost = 1 ]
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: ExecBlock
+timeToRun
+	| start end |
+
+	start := Time millisecondClockValue.
+	self value.
+	end := Time millisecondClockValue.
+	^ Duration seconds: (end - start) / 1000
 %
 
 ! Class extensions for 'GsProcess'

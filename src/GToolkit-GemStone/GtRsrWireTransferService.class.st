@@ -3,7 +3,6 @@ Class {
 	#superclass : #RsrService,
 	#instVars : [
 		'buffer',
-		'mapping',
 		'roots'
 	],
 	#category : #'GToolkit-GemStone'
@@ -41,7 +40,6 @@ GtRsrWireTransferService >> bufferObject [
 		buffer class = ByteArray ifFalse:
 			[ self error: 'buffer not set' ].
 		decoder := GtWireDecoder on: (ReadStream on: buffer).
-		mapping ifNotNil: [ decoder map: (GtWireEncoderDecoder perform: mapping) ].
 		^ decoder next
 ]
 
@@ -50,22 +48,9 @@ GtRsrWireTransferService >> bufferObject: anObject [
 	| encoder |
 
 	encoder := GtWireEncoder onByteArray.
-	mapping ifNotNil: [ encoder map: (GtWireEncoder perform: mapping) copy ].
 	roots := IdentitySet new.
 	encoder nextPut: anObject.
 	buffer := encoder contents.
 	"IdentitySets can't be replicated"
 	roots := roots asArray.
-]
-
-{ #category : #accessing }
-GtRsrWireTransferService >> mapping [
-	self error: 'To be tidied up'.
-	^ mapping
-]
-
-{ #category : #accessing }
-GtRsrWireTransferService >> mapping: anObject [
-	self error: 'To be tidied up'.
-	mapping := anObject
 ]
