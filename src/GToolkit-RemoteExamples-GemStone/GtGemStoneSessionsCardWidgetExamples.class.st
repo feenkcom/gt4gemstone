@@ -14,6 +14,13 @@ GtGemStoneSessionsCardWidgetExamples >> clearGemStoneRegistry [
 	theSessionRegistry sessions copy do: [ :aSession | aSession close ]
 ]
 
+{ #category : #'building elements' }
+GtGemStoneSessionsCardWidgetExamples >> createConnectorsWidget [
+	<gtExample>
+	^ GtGemStoneConnectorsWidget new
+		sessionsRegistry: self sessionRegistryWithTestConnectors
+]
+
 { #category : #'examples - setup/tear down' }
 GtGemStoneSessionsCardWidgetExamples >> createSessionRegistry [
 	"Answer an empty session registry"
@@ -60,6 +67,25 @@ GtGemStoneSessionsCardWidgetExamples >> emptySessionWidget [
 			// GtPhlowLabelWithIcon
 			// #nameLabel;
 			value: [ :aLabel | aLabel text asString] equals: 'No Sessions' ].
+	
+	^ scripter
+]
+
+{ #category : #'building elements' }
+GtGemStoneSessionsCardWidgetExamples >> initialConnectorsWidget [
+	<gtExample>
+	| scripter |
+	
+	scripter := BlScripter new.
+	scripter element: self createConnectorsWidget.
+	
+	scripter checkStep: [ :aStep |
+		aStep
+			// GtGemStoneConnectorsWidgetRebuildConnectorsButtonId;
+			exists ].
+	
+	scripter clickStep: [ :aStep |
+		aStep id: GtGemStoneConnectorsWidgetRebuildConnectorsButtonId ].
 	
 	^ scripter
 ]

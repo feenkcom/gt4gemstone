@@ -31,11 +31,6 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self requestContentUpdate
-]
-
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -45,6 +40,21 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
+]
+
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self requestContentUpdate
+]
+
+{ #category : #actions }
+GtGemStoneSessionsCardWidget >> addSessionForConnector: aGemStoneConnector [ 
+	| newSession |
+	newSession := self registry 
+		newConnectedDefaultSessionWithReusageWithConnector: aGemStoneConnector.
+	
+	self updateContent.
+	self selectSession: newSession.
 ]
 
 { #category : #'private - ui' }
@@ -70,78 +80,19 @@ GtGemStoneSessionsCardWidget >> createAddNewDefaultSessionButton [
 					icon: BrGlamorousVectorIcons add;
 					aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude ]
 			content: [
-				| connectorsList |
-				connectorsList := self createConnectorList.
-				connectorsList padding: (BlInsets left: 10 right: 10).
-				connectorsList items: (self registry connectors
-					sorted: #name ascending) ] )
-			preferredExtent: 380 @250).
+				 (self createConnectorsSelectionWidget)
+				 	hExact: 580 ] )
+			preferredExtent: 580 @250).
 	
 	^ selectionButton
 ]
 
 { #category : #'private - children' }
-GtGemStoneSessionsCardWidget >> createConnectorList [
-	| newList |
-	newList := BrColumnedList new.
-	newList 
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
-		matchParent.
-
-	newList column
-		title: 'Name';
-		width: 130;
-		cellStencil: [ 
-			GtPhlowLabelWithIcon new ];
-		dataBinder: [ :anElement :eachItem | 
-			anElement 
-				initializeWithIcon: (self 
-					iconForSymbol: eachItem iconName)
-				label: eachItem name ].
-	newList column 
-		title: 'Username';
-		width: 120;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem username ].
-	newList column 
-		title: 'Stone';
-		width: 120;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: eachItem stoneName ].
-	newList column 
-		title: 'Version';
-		width: 60;
-		cellStencil: [ :each | 
-			BrLabel new 
-				aptitude: BrGlamorousLabelAptitude new ];
-		dataBinder: [ :aLabel :eachItem |
-			aLabel text: (eachItem versionString ifNil: [ '-' ]) ].
-
-	newList
-		when: BrSelectionDoubleClicked
-		do: [ :anEvent | 
-			anEvent selection ifNotEmpty: [ :theIndices | 
-				| aWidgetElement selectedConnector newSession |
-				aWidgetElement := anEvent currentTarget.
-				selectedConnector := aWidgetElement viewModel
-					itemAt: theIndices first.
-				newSession := self registry 
-					newConnectedDefaultSessionWithReusageWithConnector: selectedConnector.
-				self updateContent.
-				
-				self selectSession: newSession.
-				
-				anEvent target fireEvent: BrDropdownHideWish new] ].
-
-	newList addAptitude: BrColumnedListHeaderAptitude.
-
-	^ newList
+GtGemStoneSessionsCardWidget >> createConnectorsSelectionWidget [
+	^ GtGemStoneConnectorsWidget new
+		sessionsRegistry:  self registry;
+		actionCallback: [ :aGemStoneConnector |
+			self addSessionForConnector: aGemStoneConnector ]
 ]
 
 { #category : #'private - ui' }
