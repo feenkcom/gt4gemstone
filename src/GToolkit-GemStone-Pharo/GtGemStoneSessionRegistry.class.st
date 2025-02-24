@@ -498,6 +498,12 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 			action: [ :anElement :aGtGemStoneConnnector | 
 				aGtGemStoneConnnector registry 
 					newSessionWithReusageWithConnector: aGtGemStoneConnnector ];
+		actionButtonIcon:  BrGlamorousVectorIcons refresh 
+			label: 'Rebuild'
+			tooltip: 'Rebuild the connectors list'
+			action: [ :aButton :aTab | 
+				self resetConnectors.
+				aTab viewContentElement phlow update ];
 		actionUpdateButtonTooltip: 'Refresh connectors list'
 ]
 
