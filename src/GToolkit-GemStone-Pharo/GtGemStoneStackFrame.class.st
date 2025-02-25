@@ -299,6 +299,25 @@ GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> safeVariablesAssociationsBasedOnIndex [
+	"It could happen that the receiver object is a subclass of PrivateObject.
+	In this case gettimg its attributes will fail. 
+	Also in case getting the attributes fails for other reasons on the GemStone
+	side we catch the error and display a warning to prevent multiple
+	debuggers from opening."
+	
+	^ [ self variablesAssociationsBasedOnIndex ] 
+		on: GtRsrEvaluationException 
+		do: [ :anException |
+			anException logStackToFile.
+			{{
+			'Error'.
+			anException printString.
+			''.
+			#error}}]
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> selector [
 
 	^ selector
