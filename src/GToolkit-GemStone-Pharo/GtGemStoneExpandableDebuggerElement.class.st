@@ -508,12 +508,15 @@ GtGemStoneExpandableDebuggerElement >> updateUI [
 
 { #category : #'private - update ui' }
 GtGemStoneExpandableDebuggerElement >> updateVariables [ 
-
+	| varibleItems|
+	
 	variableList ifNil: [ ^ self ].
-	variableList 
-		items: (self currentCallFrame
+	varibleItems := self currentCallFrame
 			ifNil: [ #() ]
-			ifNotNil: [ self currentCallFrame variablesAssociationsBasedOnIndex ])
+			ifNotNil: [ self currentCallFrame safeVariablesAssociationsBasedOnIndex ].
+	
+	variableList 
+		items: varibleItems
 		immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]
