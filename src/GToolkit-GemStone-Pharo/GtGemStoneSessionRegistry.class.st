@@ -528,6 +528,7 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 		title: 'Sessions';
 		priority: 10;
 		items: [ sessions values sorted: #name ascending ];
+		updateWhen: GtGemStoneSessionAnnouncement in: [ self announcer ];
 		column: 'Name' do: [ :aColumn | 
 			aColumn
 				cellStencil: [ 
@@ -557,28 +558,23 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 					from: anElement ];
 		contextItemLabel: 'Commit' 
 			action: [ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession commitTransactionWithErrorChecking.
-				anElement phlow firstParentWithViewContent phlow update ]
+				aGtGemStoneSession commitTransactionWithErrorChecking ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Abort' 
 			action: [ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession abortTransaction.
-				anElement phlow firstParentWithViewContent phlow update ]
+				aGtGemStoneSession abortTransaction ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Connect' 
 			action:[ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession connect.
-				anElement phlow firstParentWithViewContent phlow update ]
+				aGtGemStoneSession connect ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning not ];
 		contextItemLabel: 'Disconnect' 
 			action: [ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession close.
-				anElement phlow firstParentWithViewContent phlow update ]
+				aGtGemStoneSession close ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
 		contextItemLabel: 'Be Default' 
 			action: [ :anElement :aGtGemStoneSession | 
-				aGtGemStoneSession beDefaultSession.
-				anElement phlow firstParentWithViewContent phlow update ]
+				aGtGemStoneSession beDefaultSession]
 			if: [ :aSession | aSession isDefaultSession not ];
 		contextItemLabel: 'Toggle Transcript'
 			action: [ :anElement :aGtGemStoneSession | 
