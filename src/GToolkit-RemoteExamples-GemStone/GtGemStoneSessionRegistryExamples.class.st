@@ -384,6 +384,150 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_noDefaultSe
 	^ registry
 ]
 
+{ #category : #'examples - sessions context menu' }
+GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_abort_clickMenu [
+	<gtExample>
+	| scripter session |
+	
+
+	scripter := self registry_sessionsView_connectedSession_contextMenuActions_abort_openMenu.
+	session := scripter model activeSessions first.
+		
+	scripter 
+		assertStep: [ :s | 
+			s
+				label: 'Assert session status: Connected, changed';
+				// GtPhlowCellElement;
+				@ 2;
+				value: [ :aCellElement |
+					aCellElement content text asString] equals: 'Connected, changed' ].
+			
+	scripter 
+		secondaryClickStep: [ :s | 
+			s
+				label: 'Open context menu';
+				// GtPhlowCellElement;
+				@ 1 ].
+				
+	scripter
+		clickStep: [ :s | 
+			s
+				label: 'Click Abort menu';
+				onSpaceRoot;
+				onDropdown: true;
+				// BrLabel;
+				@ [ :each | each  text asString = 'Abort' ] ].
+				
+	self assert: session needsCommit not.
+	self assert: session statusDescription equals: 'Connected' .
+	scripter 
+		assertStep: [ :s | 
+			s
+				label: 'Assert session status: Connected';
+				// GtPhlowCellElement;
+				@ 2;
+				value: [ :aCellElement |
+					aCellElement content text asString] equals: 'Connected' ].
+	
+	^ scripter
+]
+
+{ #category : #'examples - sessions context menu' }
+GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_abort_openMenu [
+	<gtExample>
+	| registry scripter session |
+	
+	registry := self registry_oneConnectedSession_setsDefaultSession.
+	
+	session := registry activeSessions first.
+	self assert: session isRunning.
+	self assert: session statusDescription equals: 'Connected' .
+	
+	session evaluateBlockAndWaitReturnProxy: [
+		GtGsRelease
+			compileMethod: 'forTestingOnly
+			^ 1'
+			category: #'test'
+			environmentId: 0].
+			
+	self assert: session statusDescription equals: 'Connected, changed'.
+	self assert: session needsCommit.
+	
+	scripter := BlScripter new 
+		model: registry;
+		element: registry gtDefaultInspectorTool asElement.
+		
+	scripter 
+		assertStep: [ :s | 
+			s
+				label: 'Assert session status: Connected, changed';
+				// GtPhlowCellElement;
+				@ 2;
+				value: [ :aCellElement |
+					aCellElement content text asString] equals: 'Connected, changed' ].
+			
+	scripter 
+		secondaryClickStep: [ :s | 
+			s
+				label: 'Open context menu';
+				// GtPhlowCellElement;
+				@ 1 ].
+	
+	^ scripter
+]
+
+{ #category : #'examples - sessions context menu' }
+GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_disconnect [
+	<gtExample>
+	| registry scripter session |
+	
+	registry := self registry_oneConnectedSession_setsDefaultSession.
+	
+	session := registry activeSessions first.
+	self assert: session isRunning.
+	self assert: session statusDescription equals: 'Connected' .
+	
+	scripter := BlScripter new 
+		model: registry;
+		element: registry gtDefaultInspectorTool asElement.
+		
+	scripter 
+		assertStep: [ :s | 
+			s
+				label: 'Assert session status: Connected';
+				// GtPhlowCellElement;
+				@ 2;
+				value: [ :aCellElement |
+					aCellElement content text asString] equals: 'Connected' ].
+			
+	scripter 
+		secondaryClickStep: [ :s | 
+			s
+				label: 'Open context menu';
+				// GtPhlowCellElement;
+				@ 1 ].
+	scripter
+		clickStep: [ :s | 
+			s
+				label: 'Click disconnect menu';
+				onSpaceRoot;
+				onDropdown: true;
+				// BrLabel;
+				@ [ :each | each  text asString = 'Disconnect' ] ].
+				
+	self assert: session isRunning not.
+	
+	self assert: session statusDescription equals: 'Disconnected' .
+	scripter 
+		assertStep: [ :s | 
+			s
+				notExists;
+				label: 'Assert session status: Disconnected';
+				// GtPhlowCellElement].
+	
+	^ scripter
+]
+
 { #category : #'examples - setup/tear down' }
 GtGemStoneSessionRegistryExamples >> sessionRegistry [
 	"Answer an empty session registry"
