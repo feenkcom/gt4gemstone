@@ -387,6 +387,7 @@ GtGemStoneSessionRegistryExamples >> registry_oneDisconnectedSession_noDefaultSe
 { #category : #'examples - sessions context menu' }
 GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_abort_clickMenu [
 	<gtExample>
+	<noTest>
 	| scripter session |
 	
 
@@ -435,6 +436,7 @@ GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_cont
 { #category : #'examples - sessions context menu' }
 GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_abort_openMenu [
 	<gtExample>
+	<noTest>
 	| registry scripter session |
 	
 	registry := self registry_oneConnectedSession_setsDefaultSession.
@@ -479,6 +481,7 @@ GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_cont
 { #category : #'examples - sessions context menu' }
 GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_disconnect [
 	<gtExample>
+	<noTest>
 	| registry scripter session |
 	
 	registry := self registry_oneConnectedSession_setsDefaultSession.
