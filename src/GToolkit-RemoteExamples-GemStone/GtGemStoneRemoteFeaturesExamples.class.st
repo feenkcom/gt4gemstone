@@ -63,6 +63,8 @@ GtGemStoneRemoteFeaturesExamples >> remoteFeatureSerialization [
 						withId: #exampleFeature1)
 					with:  ((GtGemStoneSessionFeature
 						withId: #exampleFeature2) enable))) ].
+						
+	newSessionFeatures hasGemStoneFeaturesV1 ifFalse: [ ^ self ].
 	
 	self assert: newSessionFeatures remoteFeatures size equals: 2.
 	self assert: (newSessionFeatures isFeatureEnabledWithId: #exampleFeature1) not.

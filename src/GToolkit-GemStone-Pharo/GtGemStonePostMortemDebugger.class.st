@@ -17,6 +17,7 @@ GtGemStonePostMortemDebugger >> breakpoints [
 
 { #category : #accessing }
 GtGemStonePostMortemDebugger >> defaultFrameOrdinalFrom: aCollectionOfStackFrames [
+	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
 	"Answer the ordinal (level) of the frame that should be displayed in the debugger.
 	The stack normally includes a number of frames that relate to a halt or breakpoint, which the user isn't interested in.  Select the first frame that is probably user code."
 

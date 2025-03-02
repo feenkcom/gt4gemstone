@@ -30,7 +30,8 @@ Class {
 		'activeAsyncExecutions',
 		'isBookmarked',
 		'lifecycleHandlers',
-		'sessionNrsString'
+		'sessionNrsString',
+		'sessionParameters'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -241,8 +242,10 @@ GtGemStoneSession >> connect [
 
 	"The GCI session is established as part of creating the RSR session and then discarded"
 	session := connector newSession.
+	sessionParameters := session sessionParameters.
+	sessionNrsString := sessionParameters gemResource asNrsString.
+	
 	connection := connector connectionForSession: session.
-	sessionNrsString := session sessionParameters gemResource asNrsString.
 	session logoutNbNoError.
 	session := nil.
 	evaluator := GtRsrEvaluatorServiceClient new
@@ -1592,11 +1595,13 @@ GtGemStoneSession >> sessionId: aString [
 ]
 
 { #category : #accessing }
-GtGemStoneSession >> sessionParameters [
+GtGemStoneSession >> sessionNrsString [
+	^sessionNrsString
+]
 
-	self error: 'No longer available as the GCI session is discarded'.
-	"self connect.
-	^ session sessionParameters"
+{ #category : #accessing }
+GtGemStoneSession >> sessionParameters [
+	^ sessionParameters
 ]
 
 { #category : #configure }

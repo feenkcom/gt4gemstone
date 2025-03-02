@@ -22,6 +22,15 @@ GtGemStoneGciConnector class >> defaultGemStoneVersion [
 		ifFalse: [ '3.7.1' ]
 ]
 
+{ #category : #accessing }
+GtGemStoneGciConnector >> computeGsSessionsParameters [
+	"Compute sessions prameters as it will be done by GsSession"
+	^GsSessionParameters 
+		newForStoneName: self stone 
+		host: self host 
+		netldi: self netldi .
+]
+
 { #category : #connecting }
 GtGemStoneGciConnector >> connectionForSession: aGsSession [
 	"Answer the RsrConnection associated with the supplied session"
