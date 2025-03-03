@@ -30,7 +30,11 @@ source $SCRIPT_DIR/remote-gemstone-env.sh
 
 # Start the remote server
 echo "Start GemStone..."
-startnetldi -g
+if [ ! -z "$GEMSTONE_NETLDI_PORT" ]
+then
+	GEMSTONE_NETLDI_OPTION="-P $GEMSTONE_NETLDI_PORT"
+fi
+startnetldi -g $GEMSTONE_NETLDI_OPTION
 startstone gs64stone
 sleep 1
 # Run the remote examples
