@@ -24,7 +24,13 @@ GtGemstoneHttpClient >> contents: aDict [
 
 { #category : 'other' }
 GtGemstoneHttpClient >> post [
-	^ {} asDictionary
+	| socket |
+	socket := GsSocket new.
+	(socket connectTo: self url port on: self url authority)
+		ifFalse: [ 
+			socket close.
+			Error signal: 'Unable to connect to target.' ].
+	socket close
 ]
 
 { #category : 'other' }
