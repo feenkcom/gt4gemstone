@@ -249,7 +249,9 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 GtRemoteGemStoneInspectionExamples >> sessionFeaturesInspection [
 	<gtExample>
 	<after: #stopServer>
-	
+
+	(self runningServer gt4gemstoneVersion <= (GtGemStoneSemanticVersionNumber readFromString: 'v1.0.1501')) ifTrue: [ ^ self ].
+
 	^ self 
 		assertObjectInspectionFor: [ GtGemStoneSessionFeatures withAll: (
 			Array with: (GtGemStoneSessionFeature

@@ -87,7 +87,9 @@ check_gt_version() {
 
 
 # Rename the current junit xml files
-rename_result_xmls vdev
+# Only required if the backward compatibility tests are
+# run prior to the current version
+#rename_result_xmls vdev
 
 versionsList=$(extract_versions $versionsFile)
 echo "Checking GT versions: $versionsList"
@@ -96,3 +98,4 @@ for version in $versionsList
 do
   check_gt_version $version
 done
+clean_up
