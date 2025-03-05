@@ -106,7 +106,9 @@ GtRemoteGemStoneInspectionExamples >> emptyOrderedCollectionInspection [
 	^ self 
 		assertObjectInspectionFor: [ OrderedCollection new ]
 		withTypeName: #OrderedCollection
-		inspectorTitle:  'anOrderedCollection [0 items] ()'
+		inspectorTitleIncludes: #(
+			'anOrderedCollection [0 items] ()'
+			'anOrderedCollection( )' )
 ]
 
 { #category : #'examples - objects' }
@@ -141,7 +143,9 @@ GtRemoteGemStoneInspectionExamples >> orderedCollectionLargeInspection [
 		assertObjectInspectionFor: [ 
 			(1 to: 1000) asOrderedCollection ]
 		withTypeName: #OrderedCollection
-		inspectorTitle: 'anOrderedCollection [1000 items] (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 ...)' 
+		inspectorTitleIncludes: #(
+			'anOrderedCollection [1000 items] (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 ...)'
+			'anOrderedCollection( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, ...' )
 ]
 
 { #category : #'examples - objects' }
@@ -153,7 +157,9 @@ GtRemoteGemStoneInspectionExamples >> orderedCollectionNotEmptyInspection [
 		assertObjectInspectionFor: [ OrderedCollection 
 			with: 1 with: 2 ]
 		withTypeName: #OrderedCollection
-		inspectorTitle: 'anOrderedCollection [2 items] (1 2)' 
+		inspectorTitleIncludes: #(
+			'anOrderedCollection [2 items] (1 2)'
+			'anOrderedCollection( 1, 2)' )
 ]
 
 { #category : #'examples - objects' }
@@ -250,7 +256,7 @@ GtRemoteGemStoneInspectionExamples >> sessionFeaturesInspection [
 	<gtExample>
 	<after: #stopServer>
 
-	(self runningServer gt4gemstoneVersion <= (GtGemStoneSemanticVersionNumber readFromString: 'v1.0.1501')) ifTrue: [ ^ self ].
+	(self runningServer gt4gemstoneVersion <= (GtGemStoneSemanticVersionNumber v1_0_1501)) ifTrue: [ ^ self ].
 
 	^ self 
 		assertObjectInspectionFor: [ GtGemStoneSessionFeatures withAll: (
