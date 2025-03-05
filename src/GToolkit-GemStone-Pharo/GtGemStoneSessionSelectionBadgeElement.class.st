@@ -44,7 +44,7 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 	selectionButton 
 		label: 'Select Session';
 		aptitude: BrGlamorousButtonWithLabelAptitude - BrGlamorousButtonExteriorAptitude;
-		addAptitude: ((BrGlamorousWithDropdownAptitude
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude
 			handle:
 				[ BrButton new
 					label: currentSessionDisplayLabelComputation value;
@@ -64,8 +64,7 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 				aSelectionElement
 					when: GtPhlowObjectToSpawn
 					do: [ :anEvent | selectionButton fireEvent: anEvent ].
-				aSelectionElement ] )
-					preferredExtent: extent);
+				aSelectionElement ]);
 		beSmallSize;
 		fitContent.
 		

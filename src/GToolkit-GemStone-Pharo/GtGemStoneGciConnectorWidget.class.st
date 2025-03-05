@@ -23,7 +23,7 @@ GtGemStoneGciConnectorWidget >> addDropDownListName: nameSymbol options: aList t
 
 	dropDown := BrButton new
 		aptitude: BrGlamorousButtonWithLabelAptitude new +
-			(BrGlamorousWithDropdownAptitude
+			(BrGlamorousWithExplicitDropdownAptitude
 				handle: [ BrButton new
 					hExact: 120;
 					label: (self childNamed: nameSymbol) label;

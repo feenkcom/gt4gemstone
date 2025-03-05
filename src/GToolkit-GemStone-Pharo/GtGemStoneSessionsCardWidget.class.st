@@ -31,6 +31,11 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self requestContentUpdate
+]
+
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -40,11 +45,6 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self requestContentUpdate
 ]
 
 { #category : #actions }
@@ -74,15 +74,14 @@ GtGemStoneSessionsCardWidget >> createAddNewDefaultSessionButton [
 		label: 'Add a new default session';
 		id: GtGemStoneSessionsCardWidgetAddSessionButtonId;
 		aptitude: BrGlamorousButtonWithIconAptitude;
-		addAptitude: ((BrGlamorousWithDropdownAptitude 
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude 
 			handle:[ 
 				BrButton new
 					icon: BrGlamorousVectorIcons add;
 					aptitude: BrGlamorousButtonWithIconAptitude - BrGlamorousButtonExteriorAptitude ]
 			content: [
 				 (self createConnectorsSelectionWidget)
-				 	hExact: 580 ] )
-			preferredExtent: 580 @250).
+				 	hExact: 580 ] ).
 	
 	^ selectionButton
 ]

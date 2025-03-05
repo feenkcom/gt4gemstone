@@ -125,14 +125,6 @@ GtGemStoneAsyncEvaluationElement >> buildStartTimeRow [
 ]
 
 { #category : #'building widgets' }
-GtGemStoneAsyncEvaluationElement >> buildToolbar [
-	^ BrToolbar new
-		aptitude: BrGlamorousToolbarAptitude new;
-		alignCenterLeft;
-		fitContent.
-]
-
-{ #category : #'building widgets' }
 GtGemStoneAsyncEvaluationElement >> buildToolLabel [
 	^(BrLabel new)
 		aptitude: ((BrGlamorousLabelAptitude new)
@@ -153,6 +145,14 @@ GtGemStoneAsyncEvaluationElement >> buildToolLabel [
 		hMatchParent;
 		vFitContent;
 		background: Color white
+]
+
+{ #category : #'building widgets' }
+GtGemStoneAsyncEvaluationElement >> buildToolbar [
+	^ BrToolbar new
+		aptitude: BrGlamorousToolbarAptitude new;
+		alignCenterLeft;
+		fitContent.
 ]
 
 { #category : #'building widgets' }
