@@ -11,3 +11,8 @@ Character class >> value: aCodePointInteger [
 
 	^ self withValue: aCodePointInteger
 ]
+
+{ #category : '*GToolkit-GemStone-GemStone' }
+Character >> join: aSequenceableCollection [
+	^ self asString join: aSequenceableCollection
+]
