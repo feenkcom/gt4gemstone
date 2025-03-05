@@ -33,6 +33,12 @@ GtGemStoneSemanticVersionNumber class >> readFromString: aString [
 		patch: tokens third asInteger. 
 ]
 
+{ #category : #'instance creation' }
+GtGemStoneSemanticVersionNumber class >> v1_0_1501 [
+
+	^ self major: 1 minor: 0 patch: 1501
+]
+
 { #category : #accessing }
 GtGemStoneSemanticVersionNumber class >> versionNumberRegexString [
 	^ 'v[0-9]+\.[0-9]+\.[0-9]+'
