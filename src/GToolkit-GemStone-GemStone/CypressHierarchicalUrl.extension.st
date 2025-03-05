@@ -1,6 +1,6 @@
-Extension { #name : 'CypressHierarchicalUrl' }
+Extension { #name : #CypressHierarchicalUrl }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 CypressHierarchicalUrl >> / aString [
 	path addAll: ($/ split: aString)
 ]

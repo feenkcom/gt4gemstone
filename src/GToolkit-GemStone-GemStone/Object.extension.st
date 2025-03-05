@@ -43,7 +43,17 @@ Object >> instVarNamed: instVarName put: anObject [
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
+Object >> isDictionary [
+	^ false
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Object >> isInteger [
 
 	^ false
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+Object >> isNotNil [
+	^ self ~~ nil
 ]
