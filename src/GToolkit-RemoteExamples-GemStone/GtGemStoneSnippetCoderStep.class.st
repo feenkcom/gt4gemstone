@@ -98,9 +98,7 @@ GtGemStoneSnippetCoderStep >> assertErrorMessage: anErrorMessage [
 			aTextElement text asString ]
 				equals: [ :aMessage | anErrorMessage ];
 		onSpaceRoot;
-		// BrAnchoredOuterContainer;
-		// BrAnchoredElement;
-		/ #content asBlocElementId;
+		// BrMenuSteppedElement;
 		/ GtSourceCoderErrorContentElementId;
 		/ BlTextElement  
 ]
