@@ -36,7 +36,7 @@ GtGemStoneSessionSelectionElement >> buildUI [
 { #category : #private }
 GtGemStoneSessionSelectionElement >> connectorActionsFor: aConnector [
 
-	^ BrGlamorousSimpleContextMenuContent new items: {
+	^ {
 		'Select' -> [ :aStatusLineElement | 
 			selectAction 
 				cull: (registry newSessionWithConnector: aConnector) ].
@@ -61,8 +61,8 @@ GtGemStoneSessionSelectionElement >> createConnectorList [
 		cellStencil: [ :each | BrLabel new aptitude: BrGlamorousLabelAptitude new ];
 		dataBinder: [ :aLabel :eachItem | 
 			aLabel parent
-				addAptitude: (BrGlamorousWithContextMenuAptitude
-						content: [ self connectorActionsFor: eachItem ]).
+				addAptitude: (BrGlamorousWithExplicitContextMenuAptitude
+						itemsWithAnchorActions: [ self connectorActionsFor: eachItem ]).
 			aLabel text: eachItem name asRopedText ].
 	newList column
 		title: 'Username' translated;

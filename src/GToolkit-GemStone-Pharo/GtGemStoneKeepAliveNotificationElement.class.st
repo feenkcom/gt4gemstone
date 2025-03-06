@@ -71,8 +71,8 @@ GtGemStoneKeepAliveNotificationElement >> buildSessionList [
 				vFitContent ];
 		dataBinder: [ :aLabel :aSession |
 			aLabel parent addAptitude: 
-				(BrGlamorousWithContextMenuAptitude content: 
-						[ aSession contextMenuContent ]).
+				(BrGlamorousWithExplicitContextMenuAptitude 
+					itemsWithAnchorActions: [ aSession contextMenuContent ]).
 			aLabel text: (aSession formatBasedOnStatusText: aSession name)].
 
 	newList column

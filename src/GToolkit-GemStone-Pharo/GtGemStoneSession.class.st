@@ -299,8 +299,7 @@ GtGemStoneSession >> connector: aGtGemstoneConnector [
 GtGemStoneSession >> contextMenuContent [
 	"Answer the default set of actions that can be performed on the receiver"
 
-	^ BrGlamorousSimpleContextMenuContent new items:
-		(Array streamContents: [ :stream |
+	^ Array streamContents: [ :stream |
 			stream nextPut: (self isRunning
 				ifTrue: [ 'Disconnect' -> [ :anElement | self close ] ]
 				ifFalse: [ 'Connect' -> [ :anElement | self connect ] ]).
@@ -313,7 +312,7 @@ GtGemStoneSession >> contextMenuContent [
 					GtPager
 						openWrappedOn: (GtInspector newOn: self)
 						title: self name
-						from: anElement. ] ])
+						from: anElement. ] ]
 ]
 
 { #category : #'actions - create block evaluation' }
