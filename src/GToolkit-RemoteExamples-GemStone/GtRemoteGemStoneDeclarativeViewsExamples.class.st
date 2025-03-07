@@ -59,6 +59,41 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedNodesForRawView [
 ]
 
 { #category : #'accessing - expected' }
+GtRemoteGemStoneDeclarativeViewsExamples >> expectedNodesForRawView1098 [
+	^ {
+		GtRemotePhlowColumnedTreeNode new
+			nodeId: 1;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'classIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'self'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'aGtRemotePhlowDeclarativeTestInspectable'}).
+		GtRemotePhlowColumnedTreeNode new
+			nodeId: 2;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'stringIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'string'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'hello world'}).
+	GtRemotePhlowColumnedTreeNode new
+			nodeId: 3;
+			nodeValue: (GtRemotePhlowRowValue new 
+				columnValues: {
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'collectionIcon'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'collectionOfObjects'.
+					GtRemotePhlowItemTextualValue new 
+						itemText: 'anArray( 42, ''Hello World'', 2021-04-06T14:43:50.123456+02:00)'}) }
+]
+
+{ #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledPhlowTextWithDecorations [
 	^ GtRemotePhlowDeclarativeTextTestInspectable new  
 		styledPhlowTextWithDecorationsForRemoteComparison
@@ -92,7 +127,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	<gtExample>
 	<after: #stopServer>
-	| phlowSpecificationsProvider viewDictionary viewSpecification viewDatasource obtainedNodes |
+	| phlowSpecificationsProvider viewDictionary viewSpecification viewDatasource obtainedNodes expectedNodes |
 
 	phlowSpecificationsProvider := self remotePhlowSpecificationsProvider.
 	viewDictionary :=  phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
@@ -111,11 +146,14 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 		equals: GtPhlowViewSpecification dataLazy.
 	
 	viewDatasource := phlowSpecificationsProvider getDeclarativeViewFor: #gtRawFor:.
-	
+
+	expectedNodes := (self runningServer gt4gemstoneVersion = GtGemStoneSemanticVersionNumber v1_0_1098)
+		ifTrue: [ self expectedNodesForRawView1098 ]
+		ifFalse: [ self expectedNodesForRawView ].
 	obtainedNodes := self 
 		assertNodesInViewDatasource: viewDatasource 
 		ofType: GtRemotePhlowColumnedTreeNode
-		equalNodes: self expectedNodesForRawView.
+		equalNodes: expectedNodes.
 	
 	^ viewSpecification
 ]
