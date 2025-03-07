@@ -49,11 +49,13 @@ echo "Package release"
 GT4GEMSTONE_HOME=${ROWAN_PROJECTS_HOME}/gt4gemstone
 GTOOLKIT_REMOTE_HOME=${ROWAN_PROJECTS_HOME}/gtoolkit-remote
 GTOOLKIT_WIREENCODING_HOME=${ROWAN_PROJECTS_HOME}/gtoolkit-wireencoding
+GT4LLM_HOME=${ROWAN_PROJECTS_HOME}/gt4llm
 
 mkdir $GT4GEMSTONE_RELEASE_FOLDER
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-remote/src-gs
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-wireencoding/src-gs
+mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gt4llm/src-gs
 
 cp ${GT4GEMSTONE_HOME}/src-gs/Announcements.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GT4GEMSTONE_HOME}/src-gs/RemoteServiceReplication.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
@@ -61,6 +63,7 @@ cp ${GT4GEMSTONE_HOME}/src-gs/STON.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/
 cp ${GT4GEMSTONE_HOME}/src-gs/gt4gemstone.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GTOOLKIT_REMOTE_HOME}/src-gs/gtoolkit-remote.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-remote/src-gs/
 cp ${GTOOLKIT_WIREENCODING_HOME}/src-gs/gtoolkit-wireencoding.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-wireencoding/src-gs/
+cp ${GT4LLM_HOME}/src-gs/gt4llm.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4llm/src-gs/
 
 cp ${GT4GEMSTONE_HOME}/scripts/release/inputRelease.sh ${GT4GEMSTONE_RELEASE_FOLDER}/
 cp ${GT4GEMSTONE_HOME}/scripts/release/inputRelease.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
