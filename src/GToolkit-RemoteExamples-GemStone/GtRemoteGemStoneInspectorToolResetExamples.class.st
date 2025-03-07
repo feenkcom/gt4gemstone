@@ -87,6 +87,9 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObject [
 	<gtExample>
 	| scripter |
 	 
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+	
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: '
@@ -95,7 +98,7 @@ GtRemotePhlowDeclarativeTestWithViewIncrement new'.
 	scripter gemStoneSnippet
 		clickOnDoItAndInspectButton;
 		play.
-	
+	 
 	self assertResultingPaneWithTargetObjectFor:  scripter.
 	 
 	^ scripter
@@ -105,7 +108,10 @@ GtRemotePhlowDeclarativeTestWithViewIncrement new'.
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObject.
@@ -123,7 +129,10 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
@@ -155,7 +164,10 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_reversePass [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass.
@@ -188,7 +200,10 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithColumnedViewSelected [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
@@ -214,7 +229,10 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithListViewSelected [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
@@ -240,7 +258,10 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithTextViewSelected [
 	<gtExample>
 	| scripter |
-	 
+	
+	(self runningServer gt4gemstoneVersion <= (
+		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
+		
 	self runningServer. 
 	 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
