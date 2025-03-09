@@ -34,6 +34,12 @@ GtGemStoneSemanticVersionNumber class >> readFromString: aString [
 ]
 
 { #category : #'instance creation' }
+GtGemStoneSemanticVersionNumber class >> v1_0_1098 [
+
+	^ self major: 1 minor: 0 patch: 1098
+]
+
+{ #category : #'instance creation' }
 GtGemStoneSemanticVersionNumber class >> v1_0_1501 [
 
 	^ self major: 1 minor: 0 patch: 1501

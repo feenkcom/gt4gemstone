@@ -49,6 +49,7 @@ pushd "${ROWAN_PROJECTS_HOME}"
 ln -s ../../gt4gemstone
 ln -s ../../gtoolkit-remote
 ln -s ../../gtoolkit-wireencoding
+ln -s ../../gt4llm
 popd
 
 chmod +x ./gt4gemstone/scripts/*.sh
@@ -92,6 +93,7 @@ else
   ./gtoolkit-wireencoding/scripts/installGToolkitWireEncoding_${USE_ROWAN}.sh
   ./gt4gemstone/scripts/installGt4gemstone_${USE_ROWAN}.sh 
   ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
+  ./gt4llm/scripts/installGt4Llm_${USE_ROWAN}.sh 
 fi
 
 exit 0

@@ -130,10 +130,16 @@ then
   then
     ln -s pharo-local/iceberg/feenkcom/gtoolkit-wireencoding
   fi
+  if [ ! -d gt4llm ]
+  then
+    ln -s pharo-local/iceberg/feenkcom/gt4llm
+  fi
+
 
   chmod +x gt4gemstone/scripts/*.sh
   chmod +x gt4gemstone/scripts/release/*.sh
   chmod +x gtoolkit-remote/scripts/*.sh
+  chmod +x gt4llm/scripts/*.sh
 
   export STONE=gs64stone
   export GT4GEMSTONE_VERSION=dev
@@ -154,4 +160,3 @@ then
   echo "GT4GEMSTONE_VERSION=$GT4GEMSTONE_VERSION"
   echo "RELEASED_PACKAGE_GEMSTONE_NAME=$RELEASED_PACKAGE_GEMSTONE_NAME"
 fi
-
