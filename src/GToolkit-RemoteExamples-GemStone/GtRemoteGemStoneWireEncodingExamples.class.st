@@ -83,6 +83,40 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> passProxyAsync [
+	"Check sending a proxy object to GemStone using wire encoding"
+	<gtExample>
+	| session serialisationStrategy result receiver remoteBindings remoteScript autoCommit object promise |
+
+	session := self runningServer.
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
+	receiver := nil.
+	remoteBindings := Dictionary new
+		at: #clientVar put: (GtRsrTestServiceClient new object: (Dictionary new at: #a put: 'client'; yourself));
+		yourself.
+	remoteScript := 'GtRsrTestServiceServer new object: (Dictionary new 
+		at: #a put: ''done''; 
+		at: #cv put: clientVar;
+		yourself)'.
+	serialisationStrategy := #GtRsrLegacySerializationStrategy.
+	autoCommit := false.
+	promise := (session
+		createScriptEvaluationFor: remoteScript
+		receiver: receiver
+		bindings: remoteBindings
+		serializationStrategy: serialisationStrategy
+		autoCommit: autoCommit) 
+			beAsyncExecution;
+			evaluate.
+	result := promise value.
+	self assert: result class equals: GtRsrTestServiceClient.
+	object := result object.
+	self assert: object class equals: Dictionary.
+	self assert: object size equals: 2.
+	self assert: ((object at: #cv) object at: #a) equals: ((remoteBindings at: #clientVar) object at: #a).
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 	<gtExample>
 	| session proxy arguments serialisationStrategy autoCommit value |

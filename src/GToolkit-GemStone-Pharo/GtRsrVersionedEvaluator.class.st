@@ -339,7 +339,8 @@ GtRsrVersionedEvaluator >> startEvaluateAsyncScript: aGtRsrScriptEvaluation [
 	aGtRsrScriptEvaluation serialisationStrategy
 		ifNil: [ self error: 'Serialization strategy not yet set' ].
 
-	resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings.
+	GtGemStoneCurrentSession value: self gtSession during:
+		[ resolvedBindings := self bindingsFrom: aGtRsrScriptEvaluation bindings ].
 	
 	^ aGtRsrScriptEvaluation executeBlockWithDeliveryLogging: [ 
 		rsrPromise := self remoteSelf
