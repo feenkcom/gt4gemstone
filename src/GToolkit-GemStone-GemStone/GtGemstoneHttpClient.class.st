@@ -69,7 +69,7 @@ GtGemstoneHttpClient >> initialize [
 
 { #category : 'other' }
 GtGemstoneHttpClient >> performMethod: aMethod [
-	| callUrl curlArguments |
+	| callUrl curlArguments dataFile |
 	callUrl := self url , '?'.
 
 	query
@@ -92,14 +92,16 @@ GtGemstoneHttpClient >> performMethod: aMethod [
 					{'-H'.
 					('''' , aKey , ': ' , aValue , '''')} ].
 
-	self contents
-		ifNotNil: [ :aContents | 
-			curlArguments
-				addAll:
-					{'--data'.
-					('''' , (GtGemstoneHttpJsonSerializer serialize: aContents) , '''')} ].
+	^ [ self contents ifNotNil: [ :aContents |
+		dataFile := FileReference newTempFilePrefix: self class name asString, '-' suffix: '.json'.
+		dataFile writeStreamDo: [ :stream |
+			stream nextPutAll: (GtGemstoneHttpJsonSerializer serialize: aContents) ].
+		curlArguments addAll:
+			{'--data'.
+			('@', dataFile fullName)} ].
 
-	^ System performOnServer: (' ' join: curlArguments)
+		System performOnServer: (' ' join: curlArguments) ]
+			ensure: [ dataFile ifNotNil: [ dataFile ensureDelete ] ].
 ]
 
 { #category : 'other' }
