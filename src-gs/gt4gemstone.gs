@@ -3179,7 +3179,7 @@ initialize
 category: 'other'
 method: GtGemstoneHttpClient
 performMethod: aMethod
-	| callUrl curlArguments |
+	| callUrl curlArguments dataFile |
 	callUrl := self url , '?'.
 
 	query
@@ -3202,14 +3202,16 @@ performMethod: aMethod
 					{'-H'.
 					('''' , aKey , ': ' , aValue , '''')} ].
 
-	self contents
-		ifNotNil: [ :aContents | 
-			curlArguments
-				addAll:
-					{'--data'.
-					('''' , (GtGemstoneHttpJsonSerializer serialize: aContents) , '''')} ].
+	^ [ self contents ifNotNil: [ :aContents |
+		dataFile := FileReference newTempFilePrefix: self class name asString, '-' suffix: '.json'.
+		dataFile writeStreamDo: [ :stream |
+			stream nextPutAll: (GtGemstoneHttpJsonSerializer serialize: aContents) ].
+		curlArguments addAll:
+			{'--data'.
+			('@', dataFile fullName)} ].
 
-	^ System performOnServer: (' ' join: curlArguments)
+		System performOnServer: (' ' join: curlArguments) ]
+			ensure: [ dataFile ifNotNil: [ dataFile ensureDelete ] ].
 %
 
 category: 'other'
@@ -6650,16 +6652,6 @@ sorted: aBlock
 	^ self sortWithBlock: aBlock
 %
 
-! Class extensions for 'CypressHierarchicalUrl'
-
-!		Instance methods for 'CypressHierarchicalUrl'
-
-category: '*GToolkit-GemStone-GemStone'
-method: CypressHierarchicalUrl
-/ aString
-	path addAll: ($/ split: aString)
-%
-
 ! Class extensions for 'DateAndTime'
 
 !		Class methods for 'DateAndTime'
@@ -7062,6 +7054,25 @@ asGtGsArgument
 	^ self collect: [ :each | each asGtGsArgument ]
 %
 
+category: '*GToolkit-GemStone-GemStone'
+method: SequenceableCollection
+flatCollect: aBlock
+	"Evaluate aBlock for each of the receiver's elements and answer the
+	list of all resulting values flatten one level. Assumes that aBlock returns some kind
+	of collection for each element. optimized version for Sequencable Collection and subclasses
+	implementing #writeStream"
+
+	"(#( (2 -3) (4 -5) #(-6)) flatCollect: [ :e | e abs  ]) >>> #(2 3 4 5 6)"
+
+	"(#( (2 -3) #((4 -5)) #(-6)) flatCollect: [ :e | e abs  ]) >>> #(2 3 #(4 5) 6)"
+
+	self isEmpty
+		ifTrue: [ ^ self copy ].
+	^ self class 
+		new: 0
+		streamContents: [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ]
+%
+
 ! Class extensions for 'Set'
 
 !		Instance methods for 'Set'
@@ -7119,5 +7130,44 @@ utf8Encoded
 	"Answer a ByteArray of the receiver in UTF8 format"
 
 	^ self encodeAsUTF8 asByteArray
+%
+
+! Class extensions for 'Symbol'
+
+!		Instance methods for 'Symbol'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2 cull: arg3
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2 cull: arg3 cull: arg4
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+value: anObject
+
+	^ anObject perform: self
 %
 
