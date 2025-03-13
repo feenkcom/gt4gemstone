@@ -21,6 +21,7 @@ warnings isEmpty
 	ifTrue: [ true ]
 	ifFalse: [ warnings ]
 %
+	input ${ROWAN_PROJECTS_HOME}/gt4gemstone/src-gs/patch-gemstone.gs
 	commit
 
 	errorCount

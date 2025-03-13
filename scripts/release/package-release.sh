@@ -57,6 +57,7 @@ mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-remote/src-gs
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gtoolkit-wireencoding/src-gs
 mkdir -p ${GT4GEMSTONE_RELEASE_FOLDER}/gt4llm/src-gs
 
+cp ${GT4GEMSTONE_HOME}/src-gs/patch-gemstone.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GT4GEMSTONE_HOME}/src-gs/Announcements.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GT4GEMSTONE_HOME}/src-gs/RemoteServiceReplication.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/
 cp ${GT4GEMSTONE_HOME}/src-gs/STON.gs ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone/src-gs/

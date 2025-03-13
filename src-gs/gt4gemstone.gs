@@ -2,6 +2,24 @@
 ! Generated file, do not Edit
 
 doit
+(Error
+	subclass: 'GtGemStoneAssertionFailure'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneAssertionFailure
+removeallclassmethods GtGemStoneAssertionFailure
+
+doit
 (Object
 	subclass: 'AkgDebuggerPlay'
 	instVarNames: #(process trace allFrames allFramesString count block)
@@ -256,6 +274,78 @@ true.
 
 removeallmethods GtGemStoneExampleObjectForLocalDelegate
 removeallclassmethods GtGemStoneExampleObjectForLocalDelegate
+
+doit
+(Object
+	subclass: 'GtGemStoneExampleResult'
+	instVarNames: #(example result exception)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneExampleResult
+removeallclassmethods GtGemStoneExampleResult
+
+doit
+(Object
+	subclass: 'GtGemStoneExampleRunner'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneExampleRunner
+removeallclassmethods GtGemStoneExampleRunner
+
+doit
+(Object
+	subclass: 'GtGemstoneHttpClient'
+	instVarNames: #(url contents headers query)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemstoneHttpClient
+removeallclassmethods GtGemstoneHttpClient
+
+doit
+(Object
+	subclass: 'GtGemstoneHttpJsonSerializer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemstoneHttpJsonSerializer
+removeallclassmethods GtGemstoneHttpJsonSerializer
 
 doit
 (Object
@@ -835,6 +925,24 @@ true.
 
 removeallmethods GtRsrWireSerializationStrategy
 removeallclassmethods GtRsrWireSerializationStrategy
+
+doit
+(Object
+	subclass: 'STONJSON'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods STONJSON
+removeallclassmethods STONJSON
 
 doit
 (RsrService
@@ -2875,6 +2983,301 @@ targetValueTwo: anObject
 	targetValueTwo := anObject
 %
 
+! Class implementation for 'GtGemStoneExampleResult'
+
+!		Instance methods for 'GtGemStoneExampleResult'
+
+category: 'other'
+method: GtGemStoneExampleResult
+example
+	^ example
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+example: anExample
+	example := anExample
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+exception
+	^ exception
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+exception: anException
+	exception := anException
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+gtSourceFor: aView
+	<gtView>
+	^ aView textEditor
+		title: 'Source';
+		priority: 10;
+		text: [ self example fullSource ]
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+isError
+	^ exception isNotNil
+		and: [ (exception isKindOf: GtGemStoneAssertionFailure) not ]
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+isFailure
+	^ exception isNotNil and: [ exception isKindOf: GtGemStoneAssertionFailure ]
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+isSuccess
+	^ result isNotNil
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+result
+	^ result
+%
+
+category: 'other'
+method: GtGemStoneExampleResult
+result: aValue
+	result := aValue
+%
+
+! Class implementation for 'GtGemStoneExampleRunner'
+
+!		Instance methods for 'GtGemStoneExampleRunner'
+
+category: 'other'
+method: GtGemStoneExampleRunner
+newResultFor: anExample
+	^ GtGemStoneExampleResult new example: anExample
+%
+
+category: 'other'
+method: GtGemStoneExampleRunner
+runExample: anExample in: aClass
+	| result |
+	[ 
+	result := (self newResultFor: anExample)
+		result: (aClass new perform: anExample selector) ]
+		on: self signalableExceptions
+		do: [ :anException | 
+			result := (self newResultFor: anExample) exception: anException ].
+	System abortTransaction.
+	^ result
+%
+
+category: 'other'
+method: GtGemStoneExampleRunner
+runExampleClass: aClass
+	^ self
+		runExamples:
+			((Pragma allNamed: #'gtExample' from: aClass to: Object)
+				collect: [ :aPragma | aPragma method ])
+		in: aClass
+%
+
+category: 'other'
+method: GtGemStoneExampleRunner
+runExamples: aListOfExamples in: aClass
+	^ aListOfExamples collect: [:anExample | self runExample: anExample in: aClass ]
+%
+
+category: 'other'
+method: GtGemStoneExampleRunner
+signalableExceptions
+	^ ExceptionSet new ,
+		Halt ,
+		Error ,
+		TestFailure,
+		GtGemStoneAssertionFailure
+%
+
+! Class implementation for 'GtGemstoneHttpClient'
+
+!		Class methods for 'GtGemstoneHttpClient'
+
+category: 'other'
+classmethod: GtGemstoneHttpClient
+new
+	^ self basicNew initialize
+%
+
+!		Instance methods for 'GtGemstoneHttpClient'
+
+category: 'other'
+method: GtGemstoneHttpClient
+authorization: aString
+	headers at: 'Authorization' put: aString
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+beOneShot
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+contents
+	^ contents
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+contents: aDict
+	contents := aDict
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+contentType: aString
+	headers at: 'Content-Type' put: aString
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+defaultContentType
+	^ 'application/json'
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+entity: aDict
+	contents := aDict
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+get
+	^ STONJSON fromString: (self performMethod: 'GET')
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+headerAt: aKey put: aValue
+	headers at: aKey put: aValue
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+initialize
+	super initialize.
+	headers := Dictionary new.
+	query := Dictionary new.
+	self contentType: self defaultContentType
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+performMethod: aMethod
+	| callUrl curlArguments dataFile |
+	callUrl := self url , '?'.
+
+	query
+		keysAndValuesDo: [ :aKey :aValue | callUrl := callUrl , aKey , '=' , aValue , '&' ].
+
+	callUrl := callUrl allButLast.
+
+	curlArguments := {'curl'.
+	'-s'.
+	'--post301'.
+	'-L'.
+	'''', callUrl, ''''.
+	'-X'.
+	aMethod} asOrderedCollection.
+
+	headers
+		keysAndValuesDo: [ :aKey :aValue | 
+			curlArguments
+				addAll:
+					{'-H'.
+					('''' , aKey , ': ' , aValue , '''')} ].
+
+	^ [ self contents ifNotNil: [ :aContents |
+		dataFile := FileReference newTempFilePrefix: self class name asString, '-' suffix: '.json'.
+		dataFile writeStreamDo: [ :stream |
+			stream nextPutAll: (GtGemstoneHttpJsonSerializer serialize: aContents) ].
+		curlArguments addAll:
+			{'--data'.
+			('@', dataFile fullName)} ].
+
+		System performOnServer: (' ' join: curlArguments) ]
+			ensure: [ dataFile ifNotNil: [ dataFile ensureDelete ] ].
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+post
+	^ STONJSON fromString: (self performMethod: 'POST')
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+postStreaming
+	^ (Character cr split: (self performMethod: 'POST')) collect: [:aLine | STONJSON fromString: aLine]
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+queryAt: aKey put: aValue
+	query at: aKey put: aValue asString
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+url
+	^ url
+%
+
+category: 'other'
+method: GtGemstoneHttpClient
+url: aString
+	url := aString
+%
+
+! Class implementation for 'GtGemstoneHttpJsonSerializer'
+
+!		Class methods for 'GtGemstoneHttpJsonSerializer'
+
+category: 'other'
+classmethod: GtGemstoneHttpJsonSerializer
+serialize: anObject
+	^ STONJSON toString: (self serializeObject: anObject)
+%
+
+category: 'other'
+classmethod: GtGemstoneHttpJsonSerializer
+serializeCollection: aCollection
+	^ (aCollection collect: [:aValue | self serializeObject: aValue]) asArray
+%
+
+category: 'other'
+classmethod: GtGemstoneHttpJsonSerializer
+serializeDict: anObject
+	^ anObject collect: [:aValue | self serializeObject: aValue]
+%
+
+category: 'other'
+classmethod: GtGemstoneHttpJsonSerializer
+serializeObject: anObject
+	(anObject isKindOf: Dictionary)
+		ifTrue: [ ^ self serializeDict: anObject ].
+	(anObject isKindOf: String)
+		ifTrue: [ ^ anObject ].
+	(anObject isKindOf: Collection)
+		ifTrue: [ ^ self serializeCollection: anObject ].
+	^ anObject
+%
+
 ! Class implementation for 'GtGemStoneLocalCallFrame'
 
 !		Class methods for 'GtGemStoneLocalCallFrame'
@@ -3579,6 +3982,20 @@ readFromString: aString
 		major: tokens first asInteger
 		minor: tokens second asInteger
 		patch: tokens third asInteger. 
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_0_1098
+
+	^ self major: 1 minor: 0 patch: 1098
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_0_1501
+
+	^ self major: 1 minor: 0 patch: 1501
 %
 
 category: 'accessing'
@@ -5419,6 +5836,28 @@ serialize: anObject
 	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new object: anObject
 %
 
+! Class implementation for 'STONJSON'
+
+!		Class methods for 'STONJSON'
+
+category: 'other'
+classmethod: STONJSON
+fromString: aString
+	^ JsonParser parse: aString
+%
+
+category: 'other'
+classmethod: STONJSON
+toString: object
+	^ STON toJsonString: object
+%
+
+category: 'other'
+classmethod: STONJSON
+toStringPretty: object
+	^ STON toJsonStringPretty: object
+%
+
 ! Class implementation for 'GtRsrEvaluatorFeaturesService'
 
 !		Class methods for 'GtRsrEvaluatorFeaturesService'
@@ -6106,6 +6545,16 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self
 %
 
+! Class extensions for 'AbstractDictionary'
+
+!		Instance methods for 'AbstractDictionary'
+
+category: '*GToolkit-GemStone-GemStone'
+method: AbstractDictionary
+isDictionary
+	^ true
+%
+
 ! Class extensions for 'Array'
 
 !		Instance methods for 'Array'
@@ -6148,6 +6597,14 @@ value: aCodePointInteger
 	^ self withValue: aCodePointInteger
 %
 
+!		Instance methods for 'Character'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Character
+join: aSequenceableCollection
+	^ self asString join: aSequenceableCollection
+%
+
 ! Class extensions for 'CharacterCollection'
 
 !		Instance methods for 'CharacterCollection'
@@ -6158,6 +6615,51 @@ asGtGsArgument
 	"Answer the the local object of the receiver"
 
 	^ self
+%
+
+! Class extensions for 'Collection'
+
+!		Instance methods for 'Collection'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+detect: aBlock ifFound: foundBlock ifNone: exceptionBlock
+	self
+		do: [ :each |
+			(aBlock value: each)
+				ifTrue: [ ^ foundBlock cull: each ] ].
+	^ exceptionBlock value
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+isNotEmpty
+
+"Returns true if the receiver is not empty.  Returns false otherwise."
+
+^self size ~~ 0
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+select: selectBlock thenCollect: collectBlock
+	^ (self select: selectBlock) collect: collectBlock
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+sorted: aBlock
+	^ self sortWithBlock: aBlock
+%
+
+! Class extensions for 'DateAndTime'
+
+!		Class methods for 'DateAndTime'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: DateAndTime
+fromUnixTime: anInteger
+	^ self posixSeconds: anInteger offset: Duration new
 %
 
 ! Class extensions for 'DateAndTimeANSI'
@@ -6176,6 +6678,12 @@ readFrom: aStream
 ! Class extensions for 'Dictionary'
 
 !		Instance methods for 'Dictionary'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Dictionary
+, aCollection
+	^self copy addAll: aCollection; yourself
+%
 
 category: '*GToolkit-GemStone-GemStone'
 method: Dictionary
@@ -6206,6 +6714,37 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 			at: key 
 			put: (value asGtRsrProxyObjectForConnection: aRsrConnection) ].
 	^ proxyDict
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Dictionary
+associations
+	^Array new: self size streamContents: [ :stream |
+		self associationsDo: [ :each | stream nextPut: each ] ]
+%
+
+! Class extensions for 'Duration'
+
+!		Class methods for 'Duration'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: Duration
+nanoSeconds: nanoSeconds
+	^ self seconds: nanoSeconds / 1000000000
+%
+
+!		Instance methods for 'Duration'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Duration
+asDelay
+	^ Delay forSeconds: seconds
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Duration
+wait
+	^ self asDelay wait
 %
 
 ! Class extensions for 'ExecBlock'
@@ -6382,6 +6921,22 @@ utf8Encoded
 	^ self encodeAsUTF8 asByteArray
 %
 
+! Class extensions for 'Number'
+
+!		Instance methods for 'Number'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Number
+nanoSeconds
+	^ Duration nanoSeconds: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Number
+seconds
+	^ Duration seconds: self
+%
+
 ! Class extensions for 'Object'
 
 !		Instance methods for 'Object'
@@ -6435,9 +6990,21 @@ instVarNamed: instVarName put: anObject
 
 category: '*GToolkit-GemStone-GemStone'
 method: Object
+isDictionary
+	^ false
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Object
 isInteger
 
 	^ false
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Object
+isNotNil
+	^ self ~~ nil
 %
 
 ! Class extensions for 'OrderedCollection'
@@ -6453,6 +7020,18 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 	^ self collect: [ :each | 
 			each asGtRsrProxyObjectForConnection: aRsrConnection ]
    "^ GtRsrProxyServiceServer object: self"
+%
+
+! Class extensions for 'Pragma'
+
+!		Instance methods for 'Pragma'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Pragma
+methodSelector
+	"Answer the selector of the method containing the pragma."
+
+	^ method selector.
 %
 
 ! Class extensions for 'SequenceableCollection'
@@ -6475,6 +7054,25 @@ asGtGsArgument
 	^ self collect: [ :each | each asGtGsArgument ]
 %
 
+category: '*GToolkit-GemStone-GemStone'
+method: SequenceableCollection
+flatCollect: aBlock
+	"Evaluate aBlock for each of the receiver's elements and answer the
+	list of all resulting values flatten one level. Assumes that aBlock returns some kind
+	of collection for each element. optimized version for Sequencable Collection and subclasses
+	implementing #writeStream"
+
+	"(#( (2 -3) (4 -5) #(-6)) flatCollect: [ :e | e abs  ]) >>> #(2 3 4 5 6)"
+
+	"(#( (2 -3) #((4 -5)) #(-6)) flatCollect: [ :e | e abs  ]) >>> #(2 3 #(4 5) 6)"
+
+	self isEmpty
+		ifTrue: [ ^ self copy ].
+	^ self class 
+		new: 0
+		streamContents: [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ]
+%
+
 ! Class extensions for 'Set'
 
 !		Instance methods for 'Set'
@@ -6491,7 +7089,40 @@ asGtRsrProxyObjectForConnection: aRsrConnection
 
 ! Class extensions for 'String'
 
+!		Class methods for 'String'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: String
+cr
+	^ self with: Character cr
+%
+
 !		Instance methods for 'String'
+
+category: '*GToolkit-GemStone-GemStone'
+method: String
+/ anotherString
+	^ self , '/', anotherString
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: String
+asZnUrl
+	^ self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: String
+repeat: aNumber
+	"Returns a new string concatenated by itself repeated n times"
+	"('abc' repeat: 3) >>> 'abcabcabc'"
+
+	aNumber < 0 ifTrue: [ self error: 'aNumber cannot be negative' ].
+	^ self species
+		new: self size * aNumber
+		streamContents: [ :stringStream |
+			1 to: aNumber do: [ :idx | stringStream nextPutAll: self ] ]
+%
 
 category: '*GToolkit-GemStone-GemStone'
 method: String
@@ -6499,5 +7130,44 @@ utf8Encoded
 	"Answer a ByteArray of the receiver in UTF8 format"
 
 	^ self encodeAsUTF8 asByteArray
+%
+
+! Class extensions for 'Symbol'
+
+!		Instance methods for 'Symbol'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2 cull: arg3
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+cull: anObject cull: arg2 cull: arg3 cull: arg4
+
+	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+value: anObject
+
+	^ anObject perform: self
 %
 
