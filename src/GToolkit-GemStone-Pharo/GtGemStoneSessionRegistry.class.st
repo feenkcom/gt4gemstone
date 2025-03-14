@@ -526,7 +526,7 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 
 	^ aView columnedList
 		title: 'Sessions';
-		priority: 10;
+		priority: 5;
 		items: [ sessions values sorted: #name ascending ];
 		updateWhen: GtGemStoneSessionAnnouncement in: [ self announcer ];
 		column: 'Name' do: [ :aColumn | 
