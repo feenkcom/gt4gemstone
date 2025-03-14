@@ -62,6 +62,12 @@ GtGemStoneSnippetCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 	^ false
 ]
 
+{ #category : #testing }
+GtGemStoneSnippetCoderViewModel >> hasRunningSession [
+	^ self session notNil and: [
+		self session isRunning ]
+]
+
 { #category : #accessing }
 GtGemStoneSnippetCoderViewModel >> localBehavior [
 	^ self selfObject 
