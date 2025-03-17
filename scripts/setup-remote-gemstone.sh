@@ -17,7 +17,8 @@ function stop_servers()
         stopnetldi
 }
 
-STONE=gs64stone
+export STONE=gs64stone
+echo "STONE=$STONE"
 DIR=`readlink "$0"` || DIR="$0";
 export SCRIPT_DIR="$(cd "$(dirname "${DIR}")" && pwd)"
 # Set up environment variables
