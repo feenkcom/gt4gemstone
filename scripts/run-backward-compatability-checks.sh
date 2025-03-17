@@ -73,6 +73,7 @@ rename_result_xmls() {
 }
 
 
+
 # Function to run the tests on the given GT version
 check_gt_version() {
   local gt_version="$1"
@@ -86,14 +87,22 @@ check_gt_version() {
 
 
 
-# Rename the current junit xml files
-# Only required if the backward compatibility tests are
-# run prior to the current version
-#rename_result_xmls vdev
+# Function to run the tests from the git repository
+check_git_version() {
+  echo "Running tests from git"
+  clean_up
+  export USE_ROWAN=rowan2
+  $SCRIPT_DIR/run-remote-gemstone-examples.sh
+  rename_result_xmls git
+}
 
+
+
+# Main script
 versionsList=$(extract_versions $versionsFile)
 echo "Checking GT versions: $versionsList"
 
+check_git_version
 for version in $versionsList
 do
   check_gt_version $version
