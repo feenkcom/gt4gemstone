@@ -125,7 +125,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItAndGoActionId.
-	addOns
+	"addOns
 		addGemStoneExecutionAction: 'Inspect serialized (blocking)' translated
 		icon: BrGlamorousVectorIcons tohere
 		action: [ :aCoderUIModel :anElement | 
@@ -133,7 +133,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoSerializedActionId.
+		id: GtSourceCoderDoItAndGoSerializedActionId".
 	
 	addOns
 		addGemStoneExecutionAction: 'Debug' translated
