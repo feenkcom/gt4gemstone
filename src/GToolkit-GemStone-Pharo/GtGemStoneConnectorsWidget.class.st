@@ -91,7 +91,7 @@ GtGemStoneConnectorsWidget >> createConnectorList [
 GtGemStoneConnectorsWidget >> createRebuildConnectorsButton [
 	^BrButton new
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
-		addAptitude: (BrGlamorousWithLabelTooltipAptitude new
+		addAptitude: (BrGlamorousWithExplicitTooltipAptitude 
 			text: 'Rebuild the list of connectors');
 		icon: BrGlamorousVectorIcons refresh;
 		label: 'Rebuild';
