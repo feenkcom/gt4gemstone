@@ -42,6 +42,15 @@ GtBareProxy >> = anObject [
 		ifNotNil: [ anObject = proxyObject ]
 ]
 
+{ #category : #accessing }
+GtBareProxy >> asCollectionElement [
+	"Added for compatibility with Set"
+	
+	"Answer an object, which can be put into a Set as element , wrapped
+	by one of SetElement instance, if necessary.
+	Default implementation is to answer self"
+]
+
 { #category : #transformation }
 GtBareProxy >> asGtBareProxyObject [
 	^ self
@@ -80,6 +89,17 @@ GtBareProxy >> doesNotUnderstand: aMessage [
 	^ self isProxyObjectActive 
 		ifFalse: [ super doesNotUnderstand: aMessage  ]
 		ifTrue: [ self performRemotely: aMessage selector withArguments: aMessage arguments ]
+]
+
+{ #category : #accessing }
+GtBareProxy >> enclosedElement [
+	"Added for compatibility with Set"
+	
+	"The receiver is included into a set as an element.
+	Since some objects require wrappers (see SetElement) to be able to be included into a Set,
+	a set sends this message to its element to make sure it getting real object,
+	instead of its wrapper.
+	Only SetElement instance or its subclasses allowed to answer something different than receiver itself"
 ]
 
 { #category : #'gt inspector' }
