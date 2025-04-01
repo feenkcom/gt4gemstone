@@ -39,10 +39,8 @@ GspoSmallFraction >> createGtpoLocalObjectLinkedToBareProxy: aBareProxy [
 
 { #category : #converting }
 GspoSmallFraction >> extractAttributesForLocalObjectCode [
-	^ '| fraction |
-fraction := Fraction numerator: 10 denominator: 31.
-Dictionary new 
-	at: ''denominator'' put: fraction denominator;
-	at: ''numerator'' put: fraction numerator;
+	^ 'Dictionary new 
+	at: ''denominator'' put: self denominator;
+	at: ''numerator'' put: self numerator;
 	yourself'
 ]

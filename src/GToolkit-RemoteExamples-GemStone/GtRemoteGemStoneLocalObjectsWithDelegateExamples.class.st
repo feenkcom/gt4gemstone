@@ -33,6 +33,28 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreOnFor: anObject e
 ]
 
 { #category : #assertions }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDictionaryWithObjectKeysAndDataProxy: aBareProxy [ 
+	| localObjectWithDelegate storeString |
+	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
+	storeString :='((Dictionary new) add: ((Object basicNew yourself)->(Object basicNew yourself)); add: ((Object basicNew yourself)->(Object basicNew yourself)); add: ((Object basicNew yourself)->(Object basicNew yourself)); yourself)'.
+
+	self assertStoreOnFor: aBareProxy equals: storeString.
+	self assert: localObjectWithDelegate storeString equals: storeString.
+	self assertStoreOnFor: localObjectWithDelegate equals: storeString
+]
+
+{ #category : #assertions }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDictionaryWithPrimiteKeysAndDataProxy: aBareProxy [ 
+	| localObjectWithDelegate storeString |
+	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
+	storeString :='((Dictionary new) add: (''two''->2); add: (''one''->1); add: (''three''->3); yourself)'.
+
+	self assertStoreOnFor: aBareProxy equals: storeString.
+	self assert: localObjectWithDelegate storeString equals: storeString.
+	self assertStoreOnFor: localObjectWithDelegate equals: storeString
+]
+
+{ #category : #assertions }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForProxyObjectWithArrayVariable: aBareProxy [ 
 	| localObjectWithDelegate storeString |
 	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
@@ -91,7 +113,7 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForProxyObj
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForSmallFractionProxy: aBareProxy [ 
 	| localObjectWithDelegate storeString |
 	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
-	storeString :='(10/31)'.
+	storeString :='(1/3)'.
 
 	self assertStoreOnFor: aBareProxy equals: storeString.
 	self assert: localObjectWithDelegate storeString equals: storeString.
@@ -109,6 +131,107 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForBasicOb
 	self assert: result class name equals: #GtRsrProxyServiceClient.
 	
 	^ result
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithObjectKeysAndData [
+	<gtExample>
+	| session result |
+
+	session := self runningServer.
+	result := session evaluateBlockAndWaitReturnProxy: [ 
+		Dictionary new 
+			at: Object new put: Object new;
+			at: Object new put: Object new;
+			at: Object new put: Object new;
+			yourself ].
+	self assert: result remoteClass equals: #Dictionary.
+	self assert: result class name equals: #GspoDictionary.
+	
+	^ result
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithObjectKeysAndData_onBareProxy [
+	<gtExample>
+	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
+
+	serviceClientProxy := self serviceClientProxyForDictionaryWithObjectKeysAndData.
+	bareProxy := serviceClientProxy asGtBareProxyObject.
+	localObjectWithDelegate := bareProxy asGtpoLocalObject.
+	
+	self assert: localObjectWithDelegate class name equals: #Dictionary.
+	
+	self 
+		assert: localObjectWithDelegate size 
+		equals: 3.
+	self 
+		assert: localObjectWithDelegate keys anyOne class
+		equals: Object.
+	self 
+		assert: localObjectWithDelegate values anyOne class
+		equals: GtGsBareProxy.
+		
+	self assertStoreStringForForDictionaryWithObjectKeysAndDataProxy: bareProxy.
+
+	localDelegate := GtRsrProxyServiceClient 
+		bareProxyObjectAt: localObjectWithDelegate 
+		ifAbsent: [nil].
+		
+	self assert: localDelegate == bareProxy.
+	
+	^ localObjectWithDelegate
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithPrimiteKeysAndData [
+	<gtExample>
+	| session result |
+
+	session := self runningServer.
+	result := session evaluateBlockAndWaitReturnProxy: [ 
+		Dictionary new 
+			at: 'one' put: 1;
+			at: 'two' put: 2;
+			at: 'three' put: 3;
+			yourself ].
+	self assert: result remoteClass equals: #Dictionary.
+	self assert: result class name equals: #GspoDictionary.
+	
+	^ result
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithPrimiteKeysAndData_onBareProxy [
+	<gtExample>
+	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
+
+	serviceClientProxy := self serviceClientProxyForDictionaryWithPrimiteKeysAndData.
+	bareProxy := serviceClientProxy asGtBareProxyObject.
+	localObjectWithDelegate := bareProxy asGtpoLocalObject.
+	
+	self assert: localObjectWithDelegate class name equals: #Dictionary.
+	
+	self 
+		assert: localObjectWithDelegate size 
+		equals: 3.
+	self 
+		assert: localObjectWithDelegate 
+		equals: (Dictionary new 
+			at: 'one' put: 1;
+			at: 'two' put: 2;
+			at: 'three' put: 3;
+			yourself).
+		
+	self assertStoreStringForForDictionaryWithPrimiteKeysAndDataProxy: bareProxy.
+
+	localDelegate := GtRsrProxyServiceClient 
+		bareProxyObjectAt: localObjectWithDelegate 
+		ifAbsent: [nil].
+		
+	self assert: localDelegate == bareProxy.
+	
+	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
@@ -203,9 +326,31 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFr
 
 	session := self runningServer.
 	result := session evaluateBlockAndWaitReturnProxy: [ 
-		Fraction numerator: 10 denominator: 31  ].
+		Fraction numerator: 1 denominator: 3  ].
 	self assert: result remoteClass equals: #SmallFraction.
 	self assert: result class name equals: #GspoSmallFraction.
+	
+	^ result
+]
+
+{ #category : #tests }
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFraction_anotherOne [
+	<gtExample>
+	| session result localObjectWithDelegate |
+
+	session := self runningServer.
+	result := session evaluateBlockAndWaitReturnProxy: [ 
+		Fraction numerator: 20 denominator: 41 ].
+	self assert: result remoteClass equals: #SmallFraction.
+	self assert: result class name equals: #GspoSmallFraction.
+	
+	localObjectWithDelegate := result asGtpoLocalObject.
+	self 
+		assert: localObjectWithDelegate numerator 
+		equals: 20.
+	self 
+		assert: localObjectWithDelegate denominator
+		equals: 41.
 	
 	^ result
 ]
@@ -431,10 +576,10 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testSmallFractionObject_onBa
 	
 	self 
 		assert: localObjectWithDelegate numerator 
-		equals: 10.
+		equals: 1.
 	self 
 		assert: localObjectWithDelegate denominator
-		equals: 31.
+		equals: 3.
 		
 	self assertStoreStringForSmallFractionProxy: bareProxy.
 
