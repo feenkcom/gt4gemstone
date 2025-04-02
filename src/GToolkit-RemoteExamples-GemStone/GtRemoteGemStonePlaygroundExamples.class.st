@@ -597,7 +597,136 @@ a := 2'.
 ]
 
 { #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession [
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession_asyncExecution_doIt [
+	<gtExample>
+	| scripter bindingValue |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	bindingValue := (self runningServer 
+		evaluateBlockAndWaitReturnProxy: [42]) asGtBareProxyObject.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: bindingValue;
+		assertBinding: #a isProxyWithDisplayString: '42';
+		play.
+		
+	self runningServer close.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAsynchronousButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a cannot be used because it holds an object from another disconnected test session instance');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession_asyncExecution_doItAndGo [
+	<gtExample>
+	| scripter bindingValue |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	bindingValue := (self runningServer 
+		evaluateBlockAndWaitReturnProxy: [42]) asGtBareProxyObject.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: bindingValue;
+		assertBinding: #a isProxyWithDisplayString: '42';
+		play.
+		
+	self runningServer close.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectAsynchronousButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a cannot be used because it holds an object from another disconnected test session instance');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession_blockingExecution_doIt [
+	<gtExample>
+	| scripter bindingValue |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a'.
+	
+	bindingValue := (self runningServer 
+		evaluateBlockAndWaitReturnProxy: [42]) asGtBareProxyObject.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: bindingValue;
+		assertBinding: #a isProxyWithDisplayString: '42';
+		play.
+		
+	self runningServer close.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItButton;
+		play.
+	
+	scripter pager
+		assertPageCountIs: 1;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: ('a cannot be used because it holds an object from another disconnected test session instance');
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBinding_fromDisconnectedSameNamedSession_blockingExecution_doItAndGo [
 	<gtExample>
 	| scripter bindingValue |
 	

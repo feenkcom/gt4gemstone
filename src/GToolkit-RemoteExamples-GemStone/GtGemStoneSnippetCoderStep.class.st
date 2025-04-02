@@ -161,6 +161,16 @@ GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectButton [
 ]
 
 { #category : #'steps - interactions' }
+GtGemStoneSnippetCoderStep >> clickOnDoItAsynchronousButton [
+	| aClickStep |
+	aClickStep := self click
+			referenceSender;
+			label: 'Click on play asynchronous button';
+			// GtSourceCoderDoItAsynchronousActionId.
+	^ aClickStep
+]
+
+{ #category : #'steps - interactions' }
 GtGemStoneSnippetCoderStep >> clickOnDoItButton [
 	| aClickStep |
 	aClickStep := self click
