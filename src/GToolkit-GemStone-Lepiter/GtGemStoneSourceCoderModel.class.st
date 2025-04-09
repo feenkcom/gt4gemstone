@@ -63,7 +63,7 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 				action: [ :aTextualViewModel | 
 					self 
 						browseLocalBehaviorAt: node startPosition 
-						requesterObject: nil ]
+						requesterObject: aTextualViewModel ]
 				shortcutKey: GtGemStoneCoderBrowseLocalBehaviorShortcut new combinationForPlatform gtDisplayString ]
 ]
 

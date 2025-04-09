@@ -356,6 +356,43 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	^ scripter
 ]
 
+{ #category : #'examples - context menu' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClass [
+	<gtExample>
+	| scripter mainToolElement |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'Object new'.
+	
+	scripter menuStep
+		//GtSourceCoderEditorId;
+		openContextMenu;
+		play.
+		
+	scripter
+		clickStep: [ :s | 
+			s
+				label: 'Browse local class';
+				onSpaceRoot;
+				onDropdown: true;
+				// #'menu--label';
+				@ [ :each | each  text asString 
+					beginsWith: 'Browse local class' ] ].
+	
+	scripter pager
+		assertPageCountIs: 2;
+		play.
+	 
+	mainToolElement := scripter element pages second contentElement tool.
+	self 
+		assert: (mainToolElement query // GtPharoBehaviorCoderElement) anyOne
+			coderViewModel coder behavior
+		equals: Object.
+		
+	^ scripter
+]
+
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
