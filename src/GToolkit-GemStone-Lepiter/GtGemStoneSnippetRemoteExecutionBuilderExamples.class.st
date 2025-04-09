@@ -30,7 +30,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParamet
 
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
 '| snippetResult |
-snippetResult := [ :a | a + 1] value: 1.
+snippetResult := [ :a | a + 1 ] value: 1.
 ({ #snippetResult -> snippetResult } collect: [ :___each |
 	___each  key -> (___each value class == GtRsrProxyServiceServer
 	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
