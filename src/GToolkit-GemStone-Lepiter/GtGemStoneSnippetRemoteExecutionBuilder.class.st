@@ -36,6 +36,11 @@ GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
 	^ visitor assignFirstUndeclaredVariablesName
 ]
 
+{ #category : #'accessing - bindings' }
+GtGemStoneSnippetRemoteExecutionBuilder >> assignedVariableNames [
+	^ visitor assignedVariableNames
+]
+
 { #category : #'gt - extensions' }
 GtGemStoneSnippetRemoteExecutionBuilder >> convertBindingToGemstone: aBinding [
 	"Use only in views"
@@ -414,6 +419,11 @@ GtGemStoneSnippetRemoteExecutionBuilder >> sourceString: aString [
 { #category : #api }
 GtGemStoneSnippetRemoteExecutionBuilder >> stopPositionForVariableNamed: aVariableName [
 	^ visitor stopPositionForVariableNamed: aVariableName
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneSnippetRemoteExecutionBuilder >> temporaryVariableNames [
+	^ visitor temporaryVariableNames
 ]
 
 { #category : #'accessing - bindings' }
