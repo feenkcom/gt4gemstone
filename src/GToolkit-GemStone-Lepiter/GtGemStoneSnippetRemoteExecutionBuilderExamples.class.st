@@ -679,6 +679,84 @@ snippetResult := a := 4.
 	^ executionBuilder
 ]
 
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFirstWriteSecond_withBinding_inSameExpression [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := 'a := a + 3'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: 40);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames equals: #(a). 
+	self assert: remoteBindings bindings anyOne value equals: 40. 
+	
+	self assert: executionBuilder requiredVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
+		equals: #().
+		
+	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
+		equals: #().
+	self 
+		assert: executionBuilder accessedFirstUndeclaredVariableNames asArray 
+		equals: #(#a).
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := a := a + 3.
+({ #a -> a. #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFirstWriteSecond_withBinding_inSameExpression_multipleAssigns [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := 'a := b := a + b'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: 40;
+			localAt: #b put: 41);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames sorted equals: #(a b). 
+	self assert: (remoteBindings bindings at: #a) value equals: 40. 
+	self assert: (remoteBindings bindings at: #b) value equals: 41. 
+	
+	self assert: executionBuilder requiredVariableNames asArray sorted equals: #(#a b).
+	self 
+		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
+		equals: #().
+		
+	self assert: executionBuilder undeclaredVariableNames asArray sorted equals: #(#a b).
+	self 
+		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
+		equals: #().
+	self 
+		assert: executionBuilder accessedFirstUndeclaredVariableNames asArray sorted
+		equals: #(#a b).
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := a := b := a + b.
+({ #a -> a. #b -> b. #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
 { #category : #'examples - invalid bindings' }
 GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFirstWriteSecond_withInvalidBinding [
 	<gtExample>

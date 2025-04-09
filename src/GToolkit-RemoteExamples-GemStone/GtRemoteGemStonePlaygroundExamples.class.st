@@ -428,6 +428,39 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 ]
 
 { #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBinding_twoBingsReadBeforeWrite_sameExpression_validBinding [
+	<gtExample>
+	| scripter |
+	
+	self runningServer.
+	
+	scripter := self 
+		playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := b := a + b'.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: -2;
+		assertBinding: #a is: -2;
+		updateBinding: #b to: 4;
+		assertBinding: #b is: 4;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		assertBinding: #b isProxyWithDisplayString: '2';
+		play.
+	
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_oneInvalidBinding [
 	<gtExample>
 	| scripter |

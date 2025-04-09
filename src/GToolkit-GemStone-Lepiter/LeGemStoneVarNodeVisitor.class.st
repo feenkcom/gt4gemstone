@@ -133,8 +133,15 @@ LeGemStoneVarNodeVisitor >> variableDetails [
 { #category : #generated }
 LeGemStoneVarNodeVisitor >> visitAssignment: anAssignment [
 
+	"We first force-visit the value, as if we read and assign the same variable
+	we want to record the reading first."
+	
+	self visitValue: anAssignment value.
+	
 	"Get the assigned node and save"
 	assignedVariableNames add: (anAssignment variable variableName).
+	
+	"This will revisit the value but should have no effect."
 	^ self visitValue: anAssignment
 ]
 
