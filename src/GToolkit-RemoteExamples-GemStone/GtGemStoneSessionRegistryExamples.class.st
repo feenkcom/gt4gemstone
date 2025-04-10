@@ -479,7 +479,6 @@ GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_cont
 { #category : #'examples - sessions context menu' }
 GtGemStoneSessionRegistryExamples >> registry_sessionsView_connectedSession_contextMenuActions_disconnect [
 	<gtExample>
-	<noTest>
 	| registry scripter session |
 	
 	registry := self registry_oneConnectedSession_setsDefaultSession.

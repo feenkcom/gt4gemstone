@@ -133,9 +133,26 @@ LeGemStoneVarNodeVisitor >> variableDetails [
 { #category : #generated }
 LeGemStoneVarNodeVisitor >> visitAssignment: anAssignment [
 
+	"We first force-visit the value, as if we read and assign the same variable
+	we want to record the reading first."
+	
+	self visitValue: anAssignment value.
+	
 	"Get the assigned node and save"
 	assignedVariableNames add: (anAssignment variable variableName).
+	
+	"This will revisit the value but should have no effect."
 	^ self visitValue: anAssignment
+]
+
+{ #category : #generated }
+LeGemStoneVarNodeVisitor >> visitBlock: aBlockNode [
+	temporaryVariableNames addAll: (aBlockNode variables collect: [ :aVariable |
+		aVariable variableName ]).
+	temporaryVariableNames addAll: (aBlockNode body variables collect: [ :aVariable |
+		aVariable variableName ]).
+	
+	^ self visitValue: aBlockNode
 ]
 
 { #category : #generated }
@@ -157,6 +174,11 @@ LeGemStoneVarNodeVisitor >> visitNamedVariable: aNamedVariable [
 { #category : #generated }
 LeGemStoneVarNodeVisitor >> visitSequence: aSequence [
 
-	temporaryVariableNames addAll: (aSequence variables collect: #variableName).
+	"In a playground we do not have method nodes; if we define directly 
+	local parameter we get a sequence node as root."
+	temporaryVariableNames addAll: (aSequence variables 
+		select: [ :aVariableNode | aVariableNode isVariableDefinition ]
+		thenCollect: [ :aVariableNode | aVariableNode variableName ]).
+		
 	^ self visitProgram: aSequence
 ]

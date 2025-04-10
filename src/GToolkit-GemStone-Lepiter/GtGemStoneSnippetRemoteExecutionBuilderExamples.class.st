@@ -8,6 +8,37 @@ Class {
 }
 
 { #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_noBindingWithSameName [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :a | a + 1 ] value: 1'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: GtSharedVariablesBindings new;
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindings isEmpty. 
+	
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray equals: #(a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :a | a + 1 ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
 GtGemStoneSnippetRemoteExecutionBuilderExamples >> complexExpression_noBindings [
 	<gtExample>
 	| source pharoBindings executionBuilder remoteBindings |
@@ -36,6 +67,9 @@ a := 1.'.
 	self 
 		assert: executionBuilder undeclaredVariableNames sorted 
 		equals: #(#a #b #e #f).
+	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#a #f).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#f).
@@ -87,6 +121,9 @@ a := 1.'.
 	self 
 		assert: executionBuilder undeclaredVariableNames sorted 
 		equals: #(#a #b #e #f).
+	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#a #f).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#f).
@@ -140,6 +177,9 @@ a := 1.'.
 		assert: executionBuilder undeclaredVariableNames sorted 
 		equals: #(#a #b #e #f).
 	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#a #f).
+	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#f).
 	self 
@@ -191,6 +231,9 @@ a := 1.'.
 		assert: executionBuilder undeclaredVariableNames sorted 
 		equals: #(#a #b #e #f).
 	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#a #f).
+	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#f).
 	self 
@@ -241,6 +284,9 @@ a := 1.'.
 		assert: executionBuilder undeclaredVariableNames sorted 
 		equals: #(#a #b #e #f).
 	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#a #f).
+	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#f).
 	self 
@@ -281,6 +327,7 @@ a := 1.'.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
 	self assert: remoteBindings bindingNames sorted equals: #(#a #b #e). 
+	self assert: executionBuilder assignedVariableNames asArray sorted equals: #(#a #f).
 	
 	self 
 		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
@@ -333,6 +380,7 @@ a := 1.'.
 	
 	remoteBindings := executionBuilder extractRemoteBindings.
 	self assert: remoteBindings bindingNames sorted equals: #(#a #b #e). 
+	self assert: executionBuilder assignedVariableNames asArray sorted equals: #(#a #f).
 	
 	self 
 		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
@@ -389,6 +437,8 @@ a := 1.'.
 	self assert: remoteBindings bindingNames sorted equals: #(#a #b #e). 
 	
 	self assert: executionBuilder remoteInvalidBindingNames sorted equals: #(a b e).
+	self assert: executionBuilder assignedVariableNames asArray sorted equals: #(#a #f).
+	
 	executionBuilder 
 		withFirstInvalidRemoteBinding: [ :aBinding | firstInvalidBinding := aBinding ].
 	self assert: firstInvalidBinding name equals: #a.
@@ -448,6 +498,8 @@ a := 1.'.
 	self assert: remoteBindings bindingNames sorted equals: #(#a #b #e). 
 	
 	self assert: executionBuilder remoteInvalidBindingNames equals: #(b).
+	self assert: executionBuilder assignedVariableNames asArray sorted equals: #(#a #f).
+	
 	executionBuilder 
 		withFirstInvalidRemoteBinding: [ :aBinding | firstInvalidBinding := aBinding ].
 	self assert: firstInvalidBinding name equals: #b.
@@ -500,6 +552,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessCl
 	self assert: executionBuilder requiredVariableNames isEmpty.
 	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
 	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder assignedVariableNames isEmpty.
 	
 
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
@@ -533,6 +586,7 @@ a := 4'.
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -576,6 +630,7 @@ a := 4'.
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -617,6 +672,7 @@ a := 4'.
 		equals: #().
 		
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -661,6 +717,7 @@ a := 4'.
 		equals: #().
 		
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -673,6 +730,86 @@ a := 4'.
 a + 3.
 snippetResult := a := 4.
 ({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFirstWriteSecond_withBinding_inSameExpression [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := 'a := a + 3'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: 40);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames equals: #(a). 
+	self assert: remoteBindings bindings anyOne value equals: 40. 
+	
+	self assert: executionBuilder requiredVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
+		equals: #().
+		
+	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
+		equals: #().
+	self 
+		assert: executionBuilder accessedFirstUndeclaredVariableNames asArray 
+		equals: #(#a).
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := a := a + 3.
+({ #a -> a. #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessFirstWriteSecond_withBinding_inSameExpression_multipleAssigns [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := 'a := b := a + b'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: 40;
+			localAt: #b put: 41);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames sorted equals: #(a b). 
+	self assert: (remoteBindings bindings at: #a) value equals: 40. 
+	self assert: (remoteBindings bindings at: #b) value equals: 41. 
+	
+	self assert: executionBuilder requiredVariableNames asArray sorted equals: #(#a b).
+	self 
+		assert: executionBuilder remoteCodeExtraTemporaryNames asArray 
+		equals: #().
+		
+	self assert: executionBuilder undeclaredVariableNames asArray sorted equals: #(#a b).
+	self assert: executionBuilder assignedVariableNames asArray sorted equals: #(#a b).
+	self 
+		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
+		equals: #().
+	self 
+		assert: executionBuilder accessedFirstUndeclaredVariableNames asArray sorted
+		equals: #(#a b).
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := a := b := a + b.
+({ #a -> a. #b -> b. #snippetResult -> snippetResult } collect: [ :___each |
 	___each  key -> (___each value class == GtRsrProxyServiceServer
 	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
 	
@@ -747,6 +884,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessGl
 		equals: #(a).
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -782,6 +920,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessGl
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -815,6 +954,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessGl
 		equals: #(a).
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -847,6 +987,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_accessGl
 		equals: #(a).
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #().
@@ -918,6 +1059,7 @@ a + 3'.
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#a).
@@ -963,6 +1105,7 @@ a + 3'.
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#a).
@@ -1005,6 +1148,7 @@ a + 3'.
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#a).
@@ -1089,6 +1233,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(a).
@@ -1131,6 +1276,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self assert: executionBuilder assignedVariableNames asArray equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(a).
@@ -1170,6 +1316,9 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder assignedVariableNames asArray 
+		equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(a).
@@ -1213,6 +1362,9 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
 	self 
+		assert: executionBuilder assignedVariableNames asArray 
+		equals: #(#a).
+	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(a).
 	self 
@@ -1251,6 +1403,9 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithGlobal_writeGlo
 		equals: #().
 	
 	self assert: executionBuilder undeclaredVariableNames asArray equals: #(#a).
+	self 
+		assert: executionBuilder assignedVariableNames asArray 
+		equals: #(#a).
 	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(a).
@@ -1343,6 +1498,9 @@ answer'.
 		assert: executionBuilder undeclaredVariableNames asArray 
 		equals: #(#input answer).
 	self 
+		assert: executionBuilder assignedVariableNames asArray sorted 
+		equals: #(#answer #input).
+	self 
 		assert: executionBuilder assignFirstUndeclaredVariablesName asArray 
 		equals: #(#answer).
 	self 
@@ -1379,6 +1537,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithNotRelatedBindi
 	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
 	
 	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder assignedVariableNames isEmpty.
 
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
 '| snippetResult |
@@ -1409,6 +1568,7 @@ a + 3'.
 	self assert: executionBuilder requiredVariableNames isEmpty.
 	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
 	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder assignedVariableNames asArray equals: #(a).
 
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
 '| snippetResult  a |
@@ -1438,6 +1598,7 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithoutBindings [
 	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
 	
 	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder assignedVariableNames isEmpty.
 
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
 '| snippetResult |

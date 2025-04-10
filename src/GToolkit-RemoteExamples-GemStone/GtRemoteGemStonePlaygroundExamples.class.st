@@ -356,6 +356,43 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	^ scripter
 ]
 
+{ #category : #'examples - context menu' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClass [
+	<gtExample>
+	| scripter mainToolElement |
+	
+	self runningServer.
+	
+	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'Object new'.
+	
+	scripter menuStep
+		//GtSourceCoderEditorId;
+		openContextMenu;
+		play.
+		
+	scripter
+		clickStep: [ :s | 
+			s
+				label: 'Browse local class';
+				onSpaceRoot;
+				onDropdown: true;
+				// #'menu--label';
+				@ [ :each | each  text asString 
+					beginsWith: 'Browse local class' ] ].
+	
+	scripter pager
+		assertPageCountIs: 2;
+		play.
+	 
+	mainToolElement := scripter element pages second contentElement tool.
+	self 
+		assert: (mainToolElement query // GtPharoBehaviorCoderElement) anyOne
+			coderViewModel coder behavior
+		equals: Object.
+		
+	^ scripter
+]
+
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
@@ -387,6 +424,39 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 	"The session on which the execution happen should be the second session, 
 	not the initial session used when the snippet was created."
 	self assert: afterExecutionSession == secondSession.
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBinding_twoBingsReadBeforeWrite_sameExpression_validBinding [
+	<gtExample>
+	| scripter |
+	
+	self runningServer.
+	
+	scripter := self 
+		playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := b := a + b'.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: -2;
+		assertBinding: #a is: -2;
+		updateBinding: #b to: 4;
+		assertBinding: #b is: 4;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		assertBinding: #b isProxyWithDisplayString: '2';
+		play.
+	
 	^ scripter
 ]
 
