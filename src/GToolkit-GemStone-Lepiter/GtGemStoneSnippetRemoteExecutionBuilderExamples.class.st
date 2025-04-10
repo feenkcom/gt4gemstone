@@ -8,7 +8,134 @@ Class {
 }
 
 { #category : #examples }
-GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_noBindingWithSameName [
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_invalidUnusedBindingWithVariableName [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :a | a + 1 ] value: 1'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: GspoString new);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames isEmpty. 
+	
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray equals: #(a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :a | a + 1 ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_nestedBlocks_oneVariable_noBindingWithSameName [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :a | [ :a | a + 1 ] value: a ] value: 1'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: GtSharedVariablesBindings new;
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindings isEmpty. 
+	
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray equals: #(a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :a | [ :a | a + 1 ] value: a ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_nestedBlocks_twoVariables_invalidUnusedBindingWithSameName [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :x | [ :a | a + 1 ] value: x ] value: 1'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: GspoString new;
+			localAt: #x put: GspoString new);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames isEmpty. 
+	
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray sorted equals: #(a x).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :x | [ :a | a + 1 ] value: x ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_nestedBlocks_twoVariables_noBindingWithSameName [
+	<gtExample>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :x | [ :a | a + 1 ] value: x ] value: 1'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: GtSharedVariablesBindings new;
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindings isEmpty. 
+	
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray sorted equals: #(a x).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :x | [ :a | a + 1 ] value: x ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_noBindingWithVariableName [
 	<gtExample>
 	| source executionBuilder remoteBindings |
 
@@ -31,6 +158,39 @@ GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParamet
 	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
 '| snippetResult |
 snippetResult := [ :a | a + 1 ] value: 1.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
+	
+	^ executionBuilder
+]
+
+{ #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> blockExpressionWithOneParameter_validBindingWithSameName [
+	<gtExample>
+	<noTest>
+	| source executionBuilder remoteBindings |
+
+	source := '[ :a | a + 1 ] value: a'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
+		localBindings: (GtLocalVariablesBindings new
+			localAt: #a put: 40);
+		sourceString: source.
+	
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindingNames equals: #(a). 
+	
+	self assert: executionBuilder requiredVariableNames asArray equals: #(a).
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder temporaryVariableNames asArray equals: #(a).
+	self assert: executionBuilder assignedVariableNames isEmpty.
+	self assert: executionBuilder assignFirstUndeclaredVariablesName isEmpty.
+	self assert: executionBuilder accessedFirstUndeclaredVariableNames isEmpty.
+
+	self assert: executionBuilder generateRemoteScript withUnixLineEndings equals: 
+'| snippetResult |
+snippetResult := [ :a | a + 1 ] value: a.
 ({ #snippetResult -> snippetResult } collect: [ :___each |
 	___each  key -> (___each value class == GtRsrProxyServiceServer
 	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary' withUnixLineEndings.
