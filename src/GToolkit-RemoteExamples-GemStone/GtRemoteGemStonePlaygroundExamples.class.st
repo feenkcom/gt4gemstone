@@ -356,6 +356,101 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	^ scripter
 ]
 
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_blockNested_oneVariables_invalidUnusedBindingWithSameName [
+	<gtExample>
+	| scripter |
+	
+	self runningServer.
+	
+	scripter := self 
+		playgroundPageWithConnectedGemStoneWithSnippetCode: 
+			'[ :a | [ :a | a + 1 ] value: a ] value: 1'.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_blockNested_twoVariables_invalidUnusedBindingWithSameName [
+	<gtExample>
+	| scripter |
+	
+	self runningServer.
+	
+	scripter := self 
+		playgroundPageWithConnectedGemStoneWithSnippetCode: 
+			'[ :x | [ :a | a + 1 ] value: x ] value: 1'.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		updateBinding: #x to: (GspoString new);
+		assertInvalidBinding: #a;
+		assertInvalidBinding: #x;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		assertInvalidBinding: #x;
+		play.
+	 
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_blockSimple_invalidUnusedBindingWithSameName [
+	<gtExample>
+	| scripter |
+	
+	self runningServer.
+	
+	scripter := self 
+		playgroundPageWithConnectedGemStoneWithSnippetCode: '[ :a | a + 1 ] value: 1'.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: (GspoString new);
+		assertInvalidBinding: #a;
+		play.
+	
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+	
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+	
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertInvalidBinding: #a;
+		play.
+	 
+	^ scripter
+]
+
 { #category : #'examples - context menu' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClass [
 	<gtExample>
