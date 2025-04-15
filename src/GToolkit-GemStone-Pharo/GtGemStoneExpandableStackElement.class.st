@@ -171,7 +171,7 @@ GtGemStoneExpandableStackElement >> updateStackIndexListTo: aContext [
 
 	self stackIndexList
 		itemSuchThat: [ :each | each = aContext ]
-		do:  [ :anIndex |
+		ifFound:  [ :anIndex |
 			self stackIndexList
 				scrollToIndex: anIndex;
 				selectOne: anIndex ]
