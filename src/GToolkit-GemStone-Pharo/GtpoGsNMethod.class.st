@@ -15,6 +15,11 @@ GtpoGsNMethod class >> remoteClassName [
 	^ #GsNMethod
 ]
 
+{ #category : #ui }
+GtpoGsNMethod >> asGtMethodCoderModel [
+	^ GtGemStoneMethodCoderModel fromGsMethod: self
+]
+
 { #category : #private }
 GtpoGsNMethod >> compileFromTab: aTab [
 	"Compile the receiver's method based on the current editor contents"
@@ -160,12 +165,10 @@ GtpoGsNMethod >> gtTwoPanesDiffFor: aView [
 { #category : #ui }
 GtpoGsNMethod >> gtViewCoderFor: aView [
 	<gtView>
-
-	^ aView explicit 
+	^ aView explicit
 		title: 'Source';
 		priority: 5;
-		stencil: [
-			GtGemStoneMethodCoderModel fromGsMethod: self ];
+		stencil: [ self asGtMethodCoderModel ];
 		actionUpdateButton
 ]
 
