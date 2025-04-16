@@ -61,7 +61,7 @@ GtGemStoneSessionSelectionBadgeElement >> initialize [
 					currentSessionNameComputation: currentSessionNameComputation;
 					exact: extent.
 
-				aSelectionElement addAptitude: BrGlamorousMenuResizableAptitude new.
+				aSelectionElement addAptitude: BrGlamorousPopoverResizableAptitude new.
 					
 				aSelectionElement
 					when: GtPhlowObjectToSpawn
