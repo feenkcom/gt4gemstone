@@ -47,10 +47,16 @@ GtRsrWireTransferService >> bufferObject [
 GtRsrWireTransferService >> bufferObject: anObject [
 	| encoder |
 
-	encoder := GtWireEncoder onByteArray.
+	encoder := self encoder.
 	roots := IdentitySet new.
 	encoder nextPut: anObject.
 	buffer := encoder contents.
 	"IdentitySets can't be replicated"
 	roots := roots asArray.
+]
+
+{ #category : #accessing }
+GtRsrWireTransferService >> encoder [
+
+	^ GtWireEncoder onByteArray
 ]
