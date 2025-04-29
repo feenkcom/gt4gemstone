@@ -87,6 +87,7 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 		connection: _connection 
 		remoteSelf: remoteSelf
 		remoteClass: remoteClass.
+	newProxy gtSession: self gtSession.
 	self becomeForward: newProxy.
 	^ newProxy
 ]
