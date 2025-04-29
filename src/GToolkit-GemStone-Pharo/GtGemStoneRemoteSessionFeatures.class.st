@@ -52,17 +52,17 @@ GtGemStoneRemoteSessionFeatures >> enableFeatureWithId: aFeatureId [
 		ifAbsent: [ Error signal: 'Feature not found' ] 
 ]
 
+{ #category : #accessing }
+GtGemStoneRemoteSessionFeatures >> featuresProxy [
+	^ featuresProxy
+]
+
 { #category : #enumerating }
 GtGemStoneRemoteSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
 	^ remoteFeatures
 		detect: [ :aFeature | aFeature featureId = aFeatureId] 
 		ifFound: aPresentBlock 
 		ifNone: anAbsentBlock
-]
-
-{ #category : #accessing }
-GtGemStoneRemoteSessionFeatures >> featuresProxy [
-	^ featuresProxy
 ]
 
 { #category : #accessing }
@@ -200,6 +200,13 @@ GtGemStoneRemoteSessionFeatures >> remoteFeatures [
 ]
 
 { #category : #utils }
+GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
+	^ (self retrieveRemoteFeatureSpecifications )
+		collect: [ :aFeatureSpecification |
+			GtGemStoneSessionFeature fromFeatureSpecification: aFeatureSpecification ] 
+]
+
+{ #category : #utils }
 GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecifications [
 	^ (self retrieveRemoteFeatureSpecificationsData at: 'featureSpecifications')
 		collect: [ :featureData |
@@ -215,13 +222,6 @@ GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatureSpecificationsData [
 			autoCommit: false;
 			returnPrimitiveOnly;
 			evaluateAndWait) 
-]
-
-{ #category : #utils }
-GtGemStoneRemoteSessionFeatures >> retrieveRemoteFeatures [
-	^ (self retrieveRemoteFeatureSpecifications )
-		collect: [ :aFeatureSpecification |
-			GtGemStoneSessionFeature fromFeatureSpecification: aFeatureSpecification ] 
 ]
 
 { #category : #accessing }
