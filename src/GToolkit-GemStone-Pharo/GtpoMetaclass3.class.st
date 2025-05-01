@@ -1,15 +1,18 @@
 Class {
 	#name : #GtpoMetaclass3,
-	#superclass : #GtRsrProxyServiceClient,
-	#instVars : [
-		'definitionString',
-		'globalsDictionaryName'
-	],
+	#superclass : #GtpoModule,
 	#classVars : [
 		'DefaultDictionary'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
+
+{ #category : #accessing }
+GtpoMetaclass3 class >> cachedSelectors [
+	"Answer the selectors that should be cached by the proxy"
+
+	^ super cachedSelectors, #(#definitionString #globalsDictionaryName)
+]
 
 { #category : #accessing }
 GtpoMetaclass3 class >> defaultDictionary [
@@ -25,24 +28,10 @@ GtpoMetaclass3 class >> defaultDictionary: aBlock [
 	DefaultDictionary := aBlock
 ]
 
-{ #category : #private }
-GtpoMetaclass3 class >> remoteClassMatcher [
-	"Answer the block that matches a given class name"
-
-	^ [ :aSymbol | aSymbol endsWith: ' class' ]
-]
-
 { #category : #accessing }
 GtpoMetaclass3 class >> remoteClassName [
 
 	^ #Metaclass3
-]
-
-{ #category : #accessing }
-GtpoMetaclass3 >> compiledMethodAt: selector [
-
-	^ self proxyPerform: #compiledMethodAt:
-		withArguments: { selector }.
 ]
 
 { #category : #private }
@@ -68,14 +57,21 @@ GtpoMetaclass3 >> compileMethod: source category: categoryName [
 ]
 
 { #category : #accessing }
+GtpoMetaclass3 >> compiledMethodAt: selector [
+
+	^ self proxyPerform: #compiledMethodAt:
+		withArguments: { selector }.
+]
+
+{ #category : #accessing }
 GtpoMetaclass3 >> definitionString [
-	^ definitionString ifNil: [ definitionString := self proxyPerform: #definition ]
+	^ self proxyPerform: #definition
 ]
 
 { #category : #accessing }
 GtpoMetaclass3 >> globalsDictionaryName [
 
-	^ globalsDictionaryName ifNil: [ globalsDictionaryName := self evaluateAndWait: 'self _dictionaryNameForFileout: System myUserProfile' ]
+	^ self evaluateAndWait: 'self _dictionaryNameForFileout: System myUserProfile'
 ]
 
 { #category : #ui }

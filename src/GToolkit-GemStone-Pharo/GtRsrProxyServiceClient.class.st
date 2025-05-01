@@ -4,7 +4,8 @@ Class {
 	#traits : 'TGtRemoteProxySpecificViews + TGtRemoteProxySpecificActions + TGtRemoteProxyInspectorWrappedObjectAttachment + TGtRemoteProxyViewsAttachment + TGtRemoteProxyActionsAttachment',
 	#classTraits : 'TGtRemoteProxySpecificViews classTrait + TGtRemoteProxySpecificActions classTrait + TGtRemoteProxyInspectorWrappedObjectAttachment classTrait + TGtRemoteProxyViewsAttachment classTrait + TGtRemoteProxyActionsAttachment classTrait',
 	#instVars : [
-		'gtSession'
+		'gtSession',
+		'cacheStrategy'
 	],
 	#classVars : [
 		'ObjectMap'
@@ -68,6 +69,15 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 
 ]
 
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
+]
+
 { #category : #converting }
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
@@ -87,7 +97,11 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 		connection: _connection 
 		remoteSelf: remoteSelf
 		remoteClass: remoteClass.
-	newProxy gtSession: self gtSession.
+	"The proxy should be able to determine its gtSession,
+	however a number of examples don't use the global session registry,
+	causing the gtSession to not be found."
+	self gtSession ifNotNil:
+		[ :session | newProxy gtSession: session ].
 	self becomeForward: newProxy.
 	^ newProxy
 ]
@@ -495,8 +509,16 @@ GtRsrProxyServiceClient >> gtSession [
 ]
 
 { #category : #accessing }
-GtRsrProxyServiceClient >> gtSession: anObject [
-	gtSession := anObject
+GtRsrProxyServiceClient >> gtSession: aSession [
+	self assert: [ aSession notNil ]. 
+	gtSession := aSession
+]
+
+{ #category : #initialization }
+GtRsrProxyServiceClient >> initialize [
+	super initialize.
+	
+	cacheStrategy := GtProxyNoCacheStrategy uniqueInstance.
 ]
 
 { #category : #introspection }
@@ -708,11 +730,13 @@ GtRsrProxyServiceClient >> scriptEvaluation [
 		gtSession: self gtSession
 ]
 
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+{ #category : #converting }
+GtRsrProxyServiceClient >> withCacheSend: aMessage computation: aBlockClosure [
+	^ cacheStrategy send: aMessage withComputation: aBlockClosure
+]
 
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
+{ #category : #converting }
+GtRsrProxyServiceClient >> withUnarySelectorsCache [
+	cacheStrategy := (GtProxyCacheStrategy new)
+		matchAllUnarySelectors
 ]

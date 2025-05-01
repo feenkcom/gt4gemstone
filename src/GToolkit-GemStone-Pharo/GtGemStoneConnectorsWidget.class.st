@@ -9,14 +9,14 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
-{ #category : #accessing }
-GtGemStoneConnectorsWidget >> actionCallback: aBlockClosure [
-	actionCallback := aBlockClosure
-]
-
 { #category : #callbacks }
 GtGemStoneConnectorsWidget >> actOnConnectorSelected: aGemStoneConnector [ 
 	actionCallback value: aGemStoneConnector
+]
+
+{ #category : #accessing }
+GtGemStoneConnectorsWidget >> actionCallback: aBlockClosure [
+	actionCallback := aBlockClosure
 ]
 
 { #category : #'building widgets' }
