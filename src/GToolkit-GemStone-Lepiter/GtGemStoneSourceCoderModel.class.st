@@ -233,14 +233,11 @@ GtGemStoneSourceCoderModel >> copyWithInsertedHaltStatementIntoSource: aSourceSt
 { #category : #'api - actions' }
 GtGemStoneSourceCoderModel >> formatWithRequesterObject: aRequester [
 	"We use the same formatter for Pharo code"
+
 	| ast |
 	ast := [ RBParser parseExpression: self currentSourceString ]
 			on: SyntaxErrorNotification
-			do: [ :ex |
-				^ self
-					notifyParseError: ex errorMessage
-					at: ex location
-					requesterObject: aRequester ].
+			do: [ :ex | ^ self notifyParseError: ex requesterObject: aRequester ].
 
 	self currentSourceString: ast formattedCode
 ]
