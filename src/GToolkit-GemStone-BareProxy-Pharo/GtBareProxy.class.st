@@ -354,6 +354,12 @@ GtBareProxy >> isGtBareProxyObject [
 	^ true
 ]
 
+{ #category : #testing }
+GtBareProxy >> isGtProxyObject [
+
+	^ true
+]
+
 { #category : #pinning }
 GtBareProxy >> isPinnedInMemory [
 	"Copied from Object>>isPinnedInMemory"
