@@ -27,6 +27,16 @@ GtpoClass class >> remoteClassName [
 	^ #Class
 ]
 
+{ #category : #private }
+GtpoClass >> addClassHistoryContextMenuActionsTo: aView [
+	"Call methods with the #gtClassHistoryContextAction pragma in this class to add context menu items to the supplied view"
+
+	self class methods 
+		select: [ :each | each hasPragmaNamed: #gtClassHistoryContextAction ]
+		thenDo: [ :each |
+			each valueWithReceiver: self arguments: { aView } ].
+]
+
 { #category : #accessing }
 GtpoClass >> classHistoryArray [
 	"Answer the receiver's class history as an Array of proxies"
@@ -38,13 +48,13 @@ GtpoClass >> classHistoryArray [
 		returnLegacy) evaluateAndWait.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtpoClass >> comment [
 
 	^ self proxyPerform: #comment
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtpoClass >> comment: aString [
 
 	self proxyPerform: #comment: withArguments: { aString }.
@@ -85,15 +95,18 @@ GtpoClass >> gtClassCommentFor: aView [
 { #category : #ui }
 GtpoClass >> gtClassHistoryFor: aView [
 	<gtView>
+	| list |
 
-	^ aView columnedList
+	list := aView columnedList
 		title: 'Class History';
 		priority: 20;
 		items: [ (self classHistoryArray collectWithIndex:
 			[ :item :index | index -> item ]) reversed ];
 		column: 'Index' text: #key width: 70;
 		column: 'Class' text: [ :item | item value name ];
-		send: #value
+		send: #value.
+	self addClassHistoryContextMenuActionsTo: list.
+	^ list
 ]
 
 { #category : #ui }
@@ -105,4 +118,63 @@ GtpoClass >> gtClassVersionsFor: aView [
 		priority: 15;
 		list: [ self classHistoryArray ];
 		actionUpdateButton
+]
+
+{ #category : #'menu items' }
+GtpoClass >> inspectInstancesMenuItemFor: aView [
+	<gtClassHistoryContextAction>
+
+	aView
+		contextItemLabel: 'Inspect all instances'
+		action: [ :element :assoc |
+			element phlow spawnObject: (assoc value asGtBareProxyObject allInstances) ]
+]
+
+{ #category : #'menu items' }
+GtpoClass >> migrateInstancesMenuItemFor: aView [
+	<gtClassHistoryContextAction>
+
+	aView
+		contextItemLabel: 'Migrate instances to current version'
+		action: [ :element :assoc |
+			self migrateInstancesOf: assoc value in: element ]
+]
+
+{ #category : #'private - ui' }
+GtpoClass >> migrateInstancesOf: aGtpoClassProxy [
+	"Migrate all instances of the receiver to it's current version and answer an Array showing any failures.
+	See Module>>migrateInstancesTo: in GemStone for an explanation.
+	Answer:
+	- nil if all instances were migrated.
+	- #noInstances if there were no instances.
+	- failures if there were instances that weren't migrated."
+
+	^ (gtSession scriptEvaluation
+		script: 
+'| allInstances failures |
+allInstances := self allInstances.
+allInstances size = 0 ifTrue: [ ^ #noInstances ].
+failures := self migrateInstances: allInstances to: self currentVersion.
+failures do: [ :array |
+	array size > 0 ifTrue: [ ^ failures ] ].
+^ nil.';
+		receiver: aGtpoClassProxy;
+		autoCommit: false;
+		returnLegacy) evaluateAndWait.
+]
+
+{ #category : #'private - ui' }
+GtpoClass >> migrateInstancesOf: aGtpoClassProxy in: element [
+	"Migrate all instances of the receiver to it's current version and answer an Array showing any failures.
+	See Module>>migrateInstancesTo: in GemStone for an explanation."
+	| result |
+
+	aGtpoClassProxy == self ifTrue:
+		[ self error: 'Attempt to migrate current class version' ].
+
+	result := self migrateInstancesOf: aGtpoClassProxy.
+	result ifNil: [ ^ self ].
+	result == #noInstances ifTrue: [ ^ UIManager default inform: 'No instances of ', self name asString, ' to migrate' ].
+	"If we get here it is an array of instances that couldn't be migrated"
+	element phlow spawnObject: result.
 ]

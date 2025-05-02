@@ -4,13 +4,19 @@ Class {
 	#instVars : [
 		'remoteClass'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }
 GtRsrProxyService class >> templateClassName [
 
 	^ #GtRsrProxyService
+]
+
+{ #category : #testing }
+GtRsrProxyService >> isGtProxyObject [
+
+	^ true
 ]
 
 { #category : #testing }
