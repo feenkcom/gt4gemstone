@@ -127,34 +127,37 @@ GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	<gtExample>
 	<after: #stopServer>
+	<return: #AssertionFailure>
 	| phlowSpecificationsProvider viewDictionary viewSpecification viewDatasource obtainedNodes expectedNodes |
-
 	phlowSpecificationsProvider := self remotePhlowSpecificationsProvider.
-	viewDictionary :=  phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
+	viewDictionary := phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
-	
+
 	self assert: viewSpecification title equals: #Raw.
-	self 
-		assert: viewSpecification columnTitles 
-		equals: {'Icon' . 'Variable' . 'Value'}.
+	self
+		assert: viewSpecification columnTitles
+		equals: {'Icon'.
+				'Variable'.
+				'Value'}.
 	self assert: viewSpecification columnWidths equals: #(36 nil nil).
-	self 
-		assert: (viewSpecification columnTypes collect: #typeLabel) 
+	self
+		assert: (viewSpecification columnTypes collect: #typeLabel)
 		equals: #(#icon #text #text).
-	self 
-		assert: viewSpecification dataTransport 
+	self
+		assert: viewSpecification dataTransport
 		equals: GtPhlowViewSpecification dataLazy.
-	
+
 	viewDatasource := phlowSpecificationsProvider getDeclarativeViewFor: #gtRawFor:.
 
-	expectedNodes := (self runningServer gt4gemstoneVersion = GtGemStoneSemanticVersionNumber v1_0_1098)
-		ifTrue: [ self expectedNodesForRawView1098 ]
-		ifFalse: [ self expectedNodesForRawView ].
-	obtainedNodes := self 
-		assertNodesInViewDatasource: viewDatasource 
-		ofType: GtRemotePhlowColumnedTreeNode
-		equalNodes: expectedNodes.
-	
+	expectedNodes := self runningServer gt4gemstoneVersion
+			= GtGemStoneSemanticVersionNumber v1_0_1098
+			ifTrue: [ self expectedNodesForRawView1098 ]
+			ifFalse: [ self expectedNodesForRawView ].
+	obtainedNodes := self
+			assertNodesInViewDatasource: viewDatasource
+			ofType: GtRemotePhlowColumnedTreeNode
+			equalNodes: expectedNodes.
+
 	^ viewSpecification
 ]
 
