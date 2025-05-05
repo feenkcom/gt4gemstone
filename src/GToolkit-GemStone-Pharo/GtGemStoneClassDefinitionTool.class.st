@@ -12,6 +12,45 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
+{ #category : #'method  utilities' }
+GtGemStoneClassDefinitionTool class >> compileScriptFor: method className: className meta: isMeta [
+
+	^ self compileScriptFor: method className: className meta: isMeta environmentId: 0
+]
+
+{ #category : #'method  utilities' }
+GtGemStoneClassDefinitionTool class >> compileScriptFor: method className: className meta: isMeta environmentId: environmentId [
+
+	^ self compileScriptForSource: method sourceCode
+		protocol: (method category ifNil: [ 'unknown' ])
+		className: className
+		meta: isMeta
+		environmentId: environmentId
+]
+
+{ #category : #'method  utilities' }
+GtGemStoneClassDefinitionTool class >> compileScriptForSource: sourceString protocol: protocolString className: className meta: isMeta environmentId: environmentId [
+ 
+    ^ String streamContents: [ :stream |
+        stream
+            nextPutAll: (isMeta
+                ifTrue: [ className , ' class' ]
+                ifFalse: [ className ] );
+            cr;
+            nextPutAll: 'compileMethod: ';
+            print: sourceString;
+            cr;
+            << 'dictionaries: GsCurrentSession currentSession symbolList';
+            cr;
+            nextPutAll: ' category: #';
+            nextPutAll: protocolString;
+            cr;
+            nextPutAll: 'environmentId: ';
+            print: environmentId;
+            nextPut: $.
+    ].
+]
+
 { #category : #accessing }
 GtGemStoneClassDefinitionTool class >> targetClassName: aSymbol [
 
@@ -61,7 +100,7 @@ GtGemStoneClassDefinitionTool >> compileGt: definitionCode [
 { #category : #testing }
 GtGemStoneClassDefinitionTool >> definitionsDiffer [
 	"Answer a boolean indicating whether the class definitions differ between Gt and Gs.
-	Currently this means that the GS definition strings are different."
+	Currently this means that the GT definition strings are different."
 
 	^ self gtDefinitionString ~= self gtDefinitionStringFromGs
 ]
