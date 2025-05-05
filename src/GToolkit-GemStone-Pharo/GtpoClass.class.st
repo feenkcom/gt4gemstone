@@ -137,42 +137,44 @@ GtpoClass >> migrateInstancesMenuItemFor: aView [
 	aView
 		contextItemLabel: 'Migrate instances to current version'
 		action: [ :element :assoc |
-			self migrateInstancesOf: assoc value in: element ]
+			assoc value migrateInstancesToCurrentIn: element ]
 ]
 
 { #category : #'private - ui' }
-GtpoClass >> migrateInstancesOf: aGtpoClassProxy [
+GtpoClass >> migrateInstancesToCurrent [
 	"Migrate all instances of the receiver to it's current version and answer an Array showing any failures.
 	See Module>>migrateInstancesTo: in GemStone for an explanation.
 	Answer:
 	- nil if all instances were migrated.
 	- #noInstances if there were no instances.
 	- failures if there were instances that weren't migrated."
+	| evaluator |
 
-	^ (gtSession scriptEvaluation
-		script: 
-'| allInstances failures |
-allInstances := self allInstances.
-allInstances size = 0 ifTrue: [ ^ #noInstances ].
-failures := self migrateInstances: allInstances to: self currentVersion.
-failures do: [ :array |
-	array size > 0 ifTrue: [ ^ failures ] ].
-^ nil.';
-		receiver: aGtpoClassProxy;
-		autoCommit: false;
-		returnLegacy) evaluateAndWait.
+	evaluator := gtSession createBlockEvaluationFor: [ :mySelf |
+		| allInstances failures hasFailures |
+		allInstances := mySelf allInstances.
+		allInstances size = 0 ifTrue:
+			[ #noInstances ]
+		ifFalse:
+			[ failures := mySelf migrateInstances: allInstances to: mySelf currentVersion.
+			hasFailures := false.
+			failures do: [ :array |
+				array size > 0 ifTrue: [ hasFailures := true ] ].
+			hasFailures
+				ifTrue: [ failures ]
+				ifFalse: [ nil ] ] ]
+		withArguments: { self }.
+
+	^ evaluator evaluateAndWait.
 ]
 
 { #category : #'private - ui' }
-GtpoClass >> migrateInstancesOf: aGtpoClassProxy in: element [
+GtpoClass >> migrateInstancesToCurrentIn: element [
 	"Migrate all instances of the receiver to it's current version and answer an Array showing any failures.
 	See Module>>migrateInstancesTo: in GemStone for an explanation."
 	| result |
 
-	aGtpoClassProxy == self ifTrue:
-		[ self error: 'Attempt to migrate current class version' ].
-
-	result := self migrateInstancesOf: aGtpoClassProxy.
+	result := self migrateInstancesToCurrent.
 	result ifNil: [ ^ self ].
 	result == #noInstances ifTrue: [ ^ UIManager default inform: 'No instances of ', self name asString, ' to migrate' ].
 	"If we get here it is an array of instances that couldn't be migrated"
