@@ -25,16 +25,17 @@ GtRemoteGemStonePatchExamples >> runningServer [
 { #category : #examples }
 GtRemoteGemStonePatchExamples >> stonQuoteEncoding [
 	<gtExample>
+	<return: #AssertionFailure>
 	| encodedString session |
-
 	session := self runningServer.
-	(session gt4gemstoneVersion isZero not and:
-		[ session gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_0_1501 ]) ifTrue: [ ^ self ].
+	(session gt4gemstoneVersion isZero not
+		and: [ session gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_0_1501 ])
+		ifTrue: [ ^ self ].
 
 	encodedString := session
-		evaluateAndWait: 'STONJSON toString: ''a''''b'''
-		serializationStrategy: #GtRsrWireSerializationStrategy.
-	self assert: encodedString equals: '"a''b"'.
+			evaluateAndWait: 'STONJSON toString: ''a''''b'''
+			serializationStrategy: #GtRsrWireSerializationStrategy.
+	self assert: encodedString equals: '"a''b"'
 ]
 
 { #category : #'private - helpers' }

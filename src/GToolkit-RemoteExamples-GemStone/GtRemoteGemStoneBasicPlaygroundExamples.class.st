@@ -91,13 +91,13 @@ GtRemoteGemStoneBasicPlaygroundExamples >> clearGemStoneRegistry: aRegistry [
 { #category : #'examples - setup' }
 GtRemoteGemStoneBasicPlaygroundExamples >> createGemStoneSessionRegistry [
 	<gtExample>
-	
+	<return: #GtGemStoneSessionRegistry>
 	| sessionRegistry |
 	sessionRegistry := GtGemStoneSessionRegistry new.
-	
+
 	self assert: sessionRegistry hasConnectors not.
 	self assert: sessionRegistry hasSessions not.
-	
+
 	^ sessionRegistry
 ]
 
@@ -105,15 +105,16 @@ GtRemoteGemStoneBasicPlaygroundExamples >> createGemStoneSessionRegistry [
 GtRemoteGemStoneBasicPlaygroundExamples >> externalSnippetContext [
 	<after: #clearExternalSnippetContext>
 	<gtExample>
-	
-	^ theExternalSnippetContext ifNil: [
-		theExternalSnippetContext := LeExternalSnippetContext new
-			gemstoneSessionRegistry: self createGemStoneSessionRegistry ]
+	<return: #LeExternalSnippetContext>
+	^ theExternalSnippetContext
+		ifNil: [ theExternalSnippetContext := LeExternalSnippetContext new
+					gemstoneSessionRegistry: self createGemStoneSessionRegistry ]
 ]
 
 { #category : #'examples - setup' }
 GtRemoteGemStoneBasicPlaygroundExamples >> gemstoneSessionRegistry [
 	<gtExample>
+	<return: #GtGemStoneSessionRegistry>
 	^ self externalSnippetContext gemstoneSessionRegistry
 ]
 
@@ -170,22 +171,21 @@ GtRemoteGemStoneBasicPlaygroundExamples >> runningServer [
 	- The GemStone server is running with Gt loaded
 	- Default usernames and passwords
 	- The library is available in {imageDirectory}/remote-gemstone/3.7.0"
+
 	<gtExample>
 	<after: #stopServer>
+	<return: #AssertionFailure>
 	| connector |
-	
 	server ifNotNil: [ ^ server ].
-	
-	connector := GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: 'test'.
-	self gemstoneSessionRegistry  
+
+	connector := GtRemoteGemstoneExamplesSessionBuilder
+			createConnectorNamed: 'test'.
+	self gemstoneSessionRegistry
 		connectorNamed: 'test'
-		ifPresent: [ :aConnector | 
-			Error signal: 'Connector already present'] 
-		ifAbsent: [ 
-			self gemstoneSessionRegistry connectors
-				at: 'test' put: connector ].
+		ifPresent: [ :aConnector | Error signal: 'Connector already present' ]
+		ifAbsent: [ self gemstoneSessionRegistry connectors at: 'test' put: connector ].
 	^ server := self gemstoneSessionRegistry
-		newSessionWithReusageWithConnector: connector
+			newSessionWithReusageWithConnector: connector
 ]
 
 { #category : #accessing }

@@ -123,235 +123,232 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForSmallFra
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForBasicObject [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
 	result := session evaluateBlockAndWaitReturnProxy: [ Object new ].
 	self assert: result remoteClass equals: #Object.
 	self assert: result class name equals: #GtRsrProxyServiceClient.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithObjectKeysAndData [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		Dictionary new 
-			at: Object new put: Object new;
-			at: Object new put: Object new;
-			at: Object new put: Object new;
-			yourself ].
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ Dictionary new
+					at: Object new put: Object new;
+					at: Object new put: Object new;
+					at: Object new put: Object new;
+					yourself ].
 	self assert: result remoteClass equals: #Dictionary.
 	self assert: result class name equals: #GspoDictionary.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithObjectKeysAndData_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForDictionaryWithObjectKeysAndData.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
+
 	self assert: localObjectWithDelegate class name equals: #Dictionary.
-	
-	self 
-		assert: localObjectWithDelegate size 
-		equals: 3.
-	self 
-		assert: localObjectWithDelegate keys anyOne class
-		equals: Object.
-	self 
-		assert: localObjectWithDelegate values anyOne class
-		equals: GtGsBareProxy.
-		
+
+	self assert: localObjectWithDelegate size equals: 3.
+	self assert: localObjectWithDelegate keys anyOne class equals: Object.
+	self assert: localObjectWithDelegate values anyOne class equals: GtGsBareProxy.
+
 	self assertStoreStringForForDictionaryWithObjectKeysAndDataProxy: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithPrimiteKeysAndData [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		Dictionary new 
-			at: 'one' put: 1;
-			at: 'two' put: 2;
-			at: 'three' put: 3;
-			yourself ].
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ Dictionary new
+					at: 'one' put: 1;
+					at: 'two' put: 2;
+					at: 'three' put: 3;
+					yourself ].
 	self assert: result remoteClass equals: #Dictionary.
 	self assert: result class name equals: #GspoDictionary.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForDictionaryWithPrimiteKeysAndData_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
-	serviceClientProxy := self serviceClientProxyForDictionaryWithPrimiteKeysAndData.
+	serviceClientProxy := self
+			serviceClientProxyForDictionaryWithPrimiteKeysAndData.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
+
 	self assert: localObjectWithDelegate class name equals: #Dictionary.
-	
-	self 
-		assert: localObjectWithDelegate size 
-		equals: 3.
-	self 
-		assert: localObjectWithDelegate 
-		equals: (Dictionary new 
-			at: 'one' put: 1;
-			at: 'two' put: 2;
-			at: 'three' put: 3;
-			yourself).
-		
+
+	self assert: localObjectWithDelegate size equals: 3.
+	self
+		assert: localObjectWithDelegate
+		equals: (Dictionary new
+				at: 'one' put: 1;
+				at: 'two' put: 2;
+				at: 'three' put: 3;
+				yourself).
+
 	self assertStoreStringForForDictionaryWithPrimiteKeysAndDataProxy: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithArrayVariableWithObjects [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		GtGemStoneExampleObjectForLocalDelegate new 
-			targetValueOne: (Array 
-				with: Object new
-				with: Object new ) ;
-			targetValueTwo: nil ].
-	self assert: result remoteClass equals: #GtGemStoneExampleObjectForLocalDelegate.
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ GtGemStoneExampleObjectForLocalDelegate new
+					targetValueOne: (Array with: Object new with: Object new);
+					targetValueTwo: nil ].
+	self
+		assert: result remoteClass
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
 	self assert: result class name equals: #GtRsrProxyServiceClient.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithDictionaryVariableWithObjects [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		GtGemStoneExampleObjectForLocalDelegate new 
-			targetValueOne: (Dictionary  new
-				at: 'one' put: Object new;
-				at: 'two' put: Object new ;
-				yourself) ;
-			targetValueTwo: nil ].
-	self assert: result remoteClass equals: #GtGemStoneExampleObjectForLocalDelegate.
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ GtGemStoneExampleObjectForLocalDelegate new
+					targetValueOne: (Dictionary new
+							at: 'one' put: Object new;
+							at: 'two' put: Object new;
+							yourself);
+					targetValueTwo: nil ].
+	self
+		assert: result remoteClass
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
 	self assert: result class name equals: #GtRsrProxyServiceClient.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithObjectVariables [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		GtGemStoneExampleObjectForLocalDelegate new 
-			targetValueOne: Object new;
-			targetValueTwo: 'a string'].
-	self assert: result remoteClass equals: #GtGemStoneExampleObjectForLocalDelegate.
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ GtGemStoneExampleObjectForLocalDelegate new
+					targetValueOne: Object new;
+					targetValueTwo: 'a string' ].
+	self
+		assert: result remoteClass
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
 	self assert: result class name equals: #GtRsrProxyServiceClient.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithOrderedCollectionVariableWithObjects [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		GtGemStoneExampleObjectForLocalDelegate new 
-			targetValueOne: (OrderedCollection 
-				with: Object new
-				with: Object new ) ;
-			targetValueTwo: nil ].
-	self assert: result remoteClass equals: #GtGemStoneExampleObjectForLocalDelegate.
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ GtGemStoneExampleObjectForLocalDelegate new
+					targetValueOne: (OrderedCollection with: Object new with: Object new);
+					targetValueTwo: nil ].
+	self
+		assert: result remoteClass
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
 	self assert: result class name equals: #GtRsrProxyServiceClient.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForObjectWithPrimitiveVariables [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		GtRemotePhlowDeclarativeTestInspectable new ].
-	self assert: result remoteClass equals: #GtRemotePhlowDeclarativeTestInspectable.
-	self assert: result class name equals: #GspoGtRemotePhlowDeclarativeTestInspectable.
-	
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ GtRemotePhlowDeclarativeTestInspectable new ].
+	self
+		assert: result remoteClass
+		equals: #GtRemotePhlowDeclarativeTestInspectable.
+	self
+		assert: result class name
+		equals: #GspoGtRemotePhlowDeclarativeTestInspectable.
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFraction [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		Fraction numerator: 1 denominator: 3  ].
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ Fraction numerator: 1 denominator: 3 ].
 	self assert: result remoteClass equals: #SmallFraction.
 	self assert: result class name equals: #GspoSmallFraction.
-	
+
 	^ result
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> serviceClientProxyForSmallFraction_anotherOne [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result localObjectWithDelegate |
-
 	session := self runningServer.
-	result := session evaluateBlockAndWaitReturnProxy: [ 
-		Fraction numerator: 20 denominator: 41 ].
+	result := session
+			evaluateBlockAndWaitReturnProxy: [ Fraction numerator: 20 denominator: 41 ].
 	self assert: result remoteClass equals: #SmallFraction.
 	self assert: result class name equals: #GspoSmallFraction.
-	
+
 	localObjectWithDelegate := result asGtpoLocalObject.
-	self 
-		assert: localObjectWithDelegate numerator 
-		equals: 20.
-	self 
-		assert: localObjectWithDelegate denominator
-		equals: 41.
-	
+	self assert: localObjectWithDelegate numerator equals: 20.
+	self assert: localObjectWithDelegate denominator equals: 41.
+
 	^ result
 ]
 
@@ -363,231 +360,226 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> storeString_serviceClientPro
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testBasicObjectWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForBasicObject.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
+
 	self assert: localObjectWithDelegate class name equals: #Object.
-	
+
 	self assertObjectNewStoreStringForBareProxy: bareProxy.
 	self assertObjectNewStoreStringForDelegate: localObjectWithDelegate.
-	
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
-	self assert: localDelegate == bareProxy.
+
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
+	self assert: localDelegate == bareProxy
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testBasicObjectWithProxyDelegate_onServiceClient [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForBasicObject.
-	
+
 	localObjectWithDelegate := serviceClientProxy asGtpoLocalObject.
 	self assert: localObjectWithDelegate class name equals: #Object.
 	self assertObjectNewStoreStringForDelegate: localObjectWithDelegate.
-	
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-	
-	self assert: localDelegate proxyObject == serviceClientProxy.
+
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
+	self assert: localDelegate proxyObject == serviceClientProxy
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithArrayVariableWithObjectsWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
-	serviceClientProxy := self serviceClientProxyForObjectWithArrayVariableWithObjects.
+	serviceClientProxy := self
+			serviceClientProxyForObjectWithArrayVariableWithObjects.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
-	self assert: localObjectWithDelegate class name equals: #GtGemStoneExampleObjectForLocalDelegate.
-	
-	self 
-		assert: localObjectWithDelegate targetValueTwo 
-		equals: nil.
-	self 
-		assert: localObjectWithDelegate targetValueOne class 
-		equals: Array.
-	self 
-		assert: localObjectWithDelegate targetValueOne first class 
+
+	self
+		assert: localObjectWithDelegate class name
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
+
+	self assert: localObjectWithDelegate targetValueTwo equals: nil.
+	self assert: localObjectWithDelegate targetValueOne class equals: Array.
+	self
+		assert: localObjectWithDelegate targetValueOne first class
 		equals: GtGsBareProxy.
-	self 
-		assert: localObjectWithDelegate targetValueOne second class 
+	self
+		assert: localObjectWithDelegate targetValueOne second class
 		equals: GtGsBareProxy.
-		
+
 	self assertStoreStringForProxyObjectWithArrayVariable: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithDictionaryWithObjectsWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
-	serviceClientProxy := self serviceClientProxyForObjectWithDictionaryVariableWithObjects.
+	serviceClientProxy := self
+			serviceClientProxyForObjectWithDictionaryVariableWithObjects.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
-	self assert: localObjectWithDelegate class name equals: #GtGemStoneExampleObjectForLocalDelegate.
-	
-	self 
-		assert: localObjectWithDelegate targetValueTwo 
-		equals: nil.
-	self 
-		assert: localObjectWithDelegate targetValueOne class 
-		equals: Dictionary.
-	self 
+
+	self
+		assert: localObjectWithDelegate class name
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
+
+	self assert: localObjectWithDelegate targetValueTwo equals: nil.
+	self assert: localObjectWithDelegate targetValueOne class equals: Dictionary.
+	self
 		assert: localObjectWithDelegate targetValueOne keys sorted
 		equals: #('one' 'two').
-	self 
-		assert: (localObjectWithDelegate targetValueOne values
-			collect: [ :each | each class ])  
-		equals: {GtGsBareProxy . GtGsBareProxy}.
-		
+	self
+		assert: (localObjectWithDelegate targetValueOne values collect: [ :each | each class ])
+		equals: {GtGsBareProxy.
+				GtGsBareProxy}.
+
 	self assertStoreStringForProxyObjectWithDictionaryWithObjects: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithObjectVariablesWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForObjectWithObjectVariables.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
-	self assert: localObjectWithDelegate class name equals: #GtGemStoneExampleObjectForLocalDelegate.
-	
-	self 
-		assert: localObjectWithDelegate targetValueTwo 
-		equals: 'a string'.
-	self 
-		assert: localObjectWithDelegate targetValueOne class 
-		equals: GtGsBareProxy.
-		
+
+	self
+		assert: localObjectWithDelegate class name
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
+
+	self assert: localObjectWithDelegate targetValueTwo equals: 'a string'.
+	self assert: localObjectWithDelegate targetValueOne class equals: GtGsBareProxy.
+
 	self assertStoreStringForProxyObjectWithObjectVariables: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithOrderedCollectionVariableWithObjectsWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
-	serviceClientProxy := self serviceClientProxyForObjectWithOrderedCollectionVariableWithObjects.
+	serviceClientProxy := self
+			serviceClientProxyForObjectWithOrderedCollectionVariableWithObjects.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
-	self assert: localObjectWithDelegate class name equals: #GtGemStoneExampleObjectForLocalDelegate.
-	
-	self 
-		assert: localObjectWithDelegate targetValueTwo 
-		equals: nil.
-	self 
-		assert: localObjectWithDelegate targetValueOne class 
+
+	self
+		assert: localObjectWithDelegate class name
+		equals: #GtGemStoneExampleObjectForLocalDelegate.
+
+	self assert: localObjectWithDelegate targetValueTwo equals: nil.
+	self
+		assert: localObjectWithDelegate targetValueOne class
 		equals: OrderedCollection.
-	self 
-		assert: localObjectWithDelegate targetValueOne first class 
+	self
+		assert: localObjectWithDelegate targetValueOne first class
 		equals: GtGsBareProxy.
-	self 
-		assert: localObjectWithDelegate targetValueOne second class 
+	self
+		assert: localObjectWithDelegate targetValueOne second class
 		equals: GtGsBareProxy.
-		
+
 	self assertStoreStringForProxyObjectWithOrderedCollectionVariable: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithPrimitiveVariablesWithProxyDelegate_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForObjectWithPrimitiveVariables.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
-	self assert: localObjectWithDelegate class name equals: #GtRemotePhlowDeclarativeTestInspectable.
-	
-	self 
-		assert: localObjectWithDelegate string 
+
+	self
+		assert: localObjectWithDelegate class name
+		equals: #GtRemotePhlowDeclarativeTestInspectable.
+
+	self
+		assert: localObjectWithDelegate string
 		equals: GtRemotePhlowDeclarativeTestInspectable new string.
-	self 
-		assert: localObjectWithDelegate collectionOfObjects 
+	self
+		assert: localObjectWithDelegate collectionOfObjects
 		equals: GtRemotePhlowDeclarativeTestInspectable new collectionOfObjects.
-		
+
 	self assertStoreStringForProxyObjectWithPrimitiveVariables: bareProxy.
-	
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]
 
 { #category : #tests }
 GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testSmallFractionObject_onBareProxy [
 	<gtExample>
+	<return: #AssertionFailure>
 	| serviceClientProxy bareProxy localObjectWithDelegate localDelegate |
-
 	serviceClientProxy := self serviceClientProxyForSmallFraction.
 	bareProxy := serviceClientProxy asGtBareProxyObject.
 	localObjectWithDelegate := bareProxy asGtpoLocalObject.
-	
+
 	self assert: localObjectWithDelegate class name equals: #Fraction.
-	
-	self 
-		assert: localObjectWithDelegate numerator 
-		equals: 1.
-	self 
-		assert: localObjectWithDelegate denominator
-		equals: 3.
-		
+
+	self assert: localObjectWithDelegate numerator equals: 1.
+	self assert: localObjectWithDelegate denominator equals: 3.
+
 	self assertStoreStringForSmallFractionProxy: bareProxy.
 
-	localDelegate := GtRsrProxyServiceClient 
-		bareProxyObjectAt: localObjectWithDelegate 
-		ifAbsent: [nil].
-		
+	localDelegate := GtRsrProxyServiceClient
+			bareProxyObjectAt: localObjectWithDelegate
+			ifAbsent: [ nil ].
+
 	self assert: localDelegate == bareProxy.
-	
+
 	^ localObjectWithDelegate
 ]

@@ -27,48 +27,48 @@ GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testEvaluateExceptionInformation [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result rsrPromise value |
-
 	session := self runningServer.
 	result := session evaluate: 'self error: ''oops'''.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	
+
 	self assertDataForExceptionResult: value
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testEvaluateReturnProxyExceptionInformation [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result rsrPromise value |
-
 	session := self runningServer.
 	result := session evaluateReturnProxy: 'self error: ''oops'''.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	
+
 	self assertDataForExceptionResult: value
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testEvaluateSerializationStrategyExceptionInformation [
 	<gtExample>
+	<return: #AssertionFailure>
 	| session result rsrPromise value |
-
 	session := self runningServer.
-	result := session 
-		evaluate: 'self error: ''oops'''
-		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
+	result := session
+			evaluate: 'self error: ''oops'''
+			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
 	self assertDataForExceptionResult: value.
 
-	result := session 
-		evaluate: 'self error: ''oops'''
-		serializationStrategy: #GtRsrStonSerializationStrategy.
+	result := session
+			evaluate: 'self error: ''oops'''
+			serializationStrategy: #GtRsrStonSerializationStrategy.
 	rsrPromise := result rsrPromise.
 	value := rsrPromise value.
-	self assertDataForExceptionResult: value.
+	self assertDataForExceptionResult: value
 ]
 
 { #category : #private }
@@ -89,64 +89,68 @@ GtRemoteGemStoneDebuggerExamples >> testPerformBlock: aBlock [
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session | 
-		(session evaluateAndWait: 'Object new') 
-			proxyPerform: #iDontUnderstandThis ].
+	self
+		testPerformBlock: [ :session | (session evaluateAndWait: 'Object new') proxyPerform: #iDontUnderstandThis ]
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformReturnProxyExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session |
-		(session evaluateAndWait: 'Object new') 
-			proxyPerformReturnProxy: #iDontUnderstandThis ]
+	self
+		testPerformBlock: [ :session | 
+			(session evaluateAndWait: 'Object new')
+				proxyPerformReturnProxy: #iDontUnderstandThis ]
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformReturnProxyWithArgumentsExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session |
-		(session evaluateAndWait: 'Object new') 
-			proxyPerformReturnProxy: #iDontUnderstandThis
-			withArguments: #() ]
+	self
+		testPerformBlock: [ :session | 
+			(session evaluateAndWait: 'Object new')
+				proxyPerformReturnProxy: #iDontUnderstandThis
+				withArguments: #() ]
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformSerializationStrategyExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session | 
-		(session evaluateAndWait: 'Object new') 
-			proxyPerform: #iDontUnderstandThis
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ].
+	self
+		testPerformBlock: [ :session | 
+			(session evaluateAndWait: 'Object new')
+				proxyPerform: #iDontUnderstandThis
+				serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformWithArgumentsExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session | 
-		(session evaluateAndWait: 'Object new') 
-			proxyPerform: #iDontUnderstandThis
-			withArguments: #() ].
+	self
+		testPerformBlock: [ :session | 
+			(session evaluateAndWait: 'Object new')
+				proxyPerform: #iDontUnderstandThis
+				withArguments: #() ]
 ]
 
 { #category : #tests }
 GtRemoteGemStoneDebuggerExamples >> testPerformWithArgumentsSerializationStrategyExceptionInformation [
 	<gtExample>
-
+	<return: #AssertionFailure>
 	self runningServer.
-	self testPerformBlock: [ :session | 
-		(session evaluateAndWait: 'Object new') 
-			proxyPerform: #iDontUnderstandThis
-			withArguments: #()
-			serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ].
+	self
+		testPerformBlock: [ :session | 
+			(session evaluateAndWait: 'Object new')
+				proxyPerform: #iDontUnderstandThis
+				withArguments: #()
+				serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
 ]

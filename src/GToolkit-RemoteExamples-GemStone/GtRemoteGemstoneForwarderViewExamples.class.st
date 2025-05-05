@@ -22,7 +22,8 @@ GtRemoteGemstoneForwarderViewExamples >> assertTransformedValueInListFor: aTrans
 { #category : #accessing }
 GtRemoteGemstoneForwarderViewExamples >> computeObject [
 	<gtExample>
-	^ self runningServer 
+	<return: #AssertionFailure>
+	^ self runningServer
 		evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'
 ]
 

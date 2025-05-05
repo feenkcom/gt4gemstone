@@ -13,9 +13,19 @@ TGtRemoteGemStoneSesionCreator >> runningServer [
 	- The GemStone server is running with Gt loaded
 	- Default usernames and passwords
 	- The library is available in {imageDirectory}/remote-gemstone/<GemStone version>"
+
 	<gtExample>
 	<after: #stopServer>
-
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #Error>
 	server ifNotNil: [ ^ server ].
 	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]

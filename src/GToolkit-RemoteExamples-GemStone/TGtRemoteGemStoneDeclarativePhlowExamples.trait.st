@@ -35,9 +35,12 @@ TGtRemoteGemStoneDeclarativePhlowExamples >> retrieveRemotePhlowSpecificationsPr
 { #category : #private }
 TGtRemoteGemStoneDeclarativePhlowExamples >> runningServer [
 	"Answer a running server."
+
 	<gtExample>
 	<after: #stopServer>
-
+	<return: #AssertionFailure>
+	<return: #AssertionFailure>
+	<return: #Error>
 	self basicServer ifNotNil: [ ^ self basicServer ].
 	self basicServer: GtRemoteGemstoneExamplesSessionBuilder createAndStartSession.
 	^ self basicServer

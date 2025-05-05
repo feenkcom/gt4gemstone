@@ -325,8 +325,9 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithDefaultSession [
 { #category : #examples }
 GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 	"All changes are tested in a single example as class addition and removal is (relatively) slow and polutes the epicea log"
-	<gtExample>
 
+	<gtExample>
+	<return: #GtGemStoneCodeSyncExamples>
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	(self class environment classOrTraitNamed: self renamedExampleClassName)

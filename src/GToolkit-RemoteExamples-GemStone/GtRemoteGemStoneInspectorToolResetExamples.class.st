@@ -85,56 +85,57 @@ GtRemoteGemStoneInspectorToolResetExamples >> clickPagesNavigationButtonInFirstP
 { #category : #'examples - execution' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObject [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	 
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-	
-	self runningServer. 
-	 
-	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: '
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
+	scripter := self
+			playgroundPageWithConnectedGemStoneWithSnippetCode: '
 GtRemotePhlowDeclarativeTestWithViewIncrement new'.
-		
+
 	scripter gemStoneSnippet
 		clickOnDoItAndInspectButton;
 		play.
-	 
-	self assertResultingPaneWithTargetObjectFor:  scripter.
-	 
+
+	self assertResultingPaneWithTargetObjectFor: scripter.
+
 	^ scripter
 ]
 
 { #category : #'examples - execution' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
 	scripter := self playgroundPageWithTargetObject.
-		
+
 	scripter gemStoneSnippet
 		clickOnDoItAndInspectButton;
 		play.
-	
-	self assertResultingPaneWithTargetObjectFor:  scripter.
-	 
+
+	self assertResultingPaneWithTargetObjectFor: scripter.
+
 	^ scripter
 ]
 
 { #category : #'examples - navigation' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
@@ -142,35 +143,36 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
 	self assertTargetTextViewContent: '1' for: scripter.
-	
+
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
 	self assertTargetListViewFirstRowContent: '2' for: scripter.
-	
+
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
 	self assertTargetColumnedListViewFirstRowContent: '3' for: scripter.
-	 
+
 	^ scripter
 ]
 
 { #category : #'examples - navigation' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_reversePass [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
-	scripter := self playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass.
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
+	scripter := self
+			playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass.
 
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
@@ -178,34 +180,34 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
 	self assertTargetTextViewContent: '1' for: scripter.
-	
+
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
 	self assertTargetListViewFirstRowContent: '2' for: scripter.
-	
+
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
 	self assertTargetColumnedListViewFirstRowContent: '3' for: scripter.
-	 
+
 	^ scripter
 ]
 
 { #category : #'examples - navigation' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithColumnedViewSelected [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
@@ -213,28 +215,28 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
-		
+
 	self assertTargetColumnedListViewFirstRowContent: '2' for: scripter.
-					
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetColumnedListViewFirstRowContent: '3' for: scripter.
-	
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetColumnedListViewFirstRowContent: '4' for: scripter.
-	 
+
 	^ scripter
 ]
 
 { #category : #'examples - navigation' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithListViewSelected [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
@@ -242,42 +244,42 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
-		
+
 	self assertTargetListViewFirstRowContent: '2' for: scripter.
-					
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetListViewFirstRowContent: '3' for: scripter.
-	
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetListViewFirstRowContent: '4' for: scripter.
-	 
+
 	^ scripter
 ]
 
 { #category : #'examples - navigation' }
 GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndFirstNavigation_navigateWithTextViewSelected [
 	<gtExample>
+	<return: #AssertionFailure>
 	| scripter |
-	
-	(self runningServer gt4gemstoneVersion <= (
-		GtGemStoneSemanticVersionNumber v1_0_1098)) ifTrue: [ ^ self ].
-		
-	self runningServer. 
-	 
+	self runningServer gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
+
+	self runningServer.
+
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
 		// (GtPagerPageElementId indexed: 2);
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
-		
+
 	self assertTargetTextViewContent: '1' for: scripter.
-					
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetTextViewContent: '2' for: scripter.
-	
+
 	self clickPagesNavigationButtonInFirstPaneFor: scripter.
 	self assertTargetTextViewContent: '3' for: scripter.
-	 
+
 	^ scripter
 ]
