@@ -27,7 +27,7 @@ Options:
   from the local image.
 
   If --gs is supplied, the specified version of GemStone is installed,
-  default = 3.7.1.4.
+  default = 3.7.2.1.
 
   If --rowan2 or --rowan3 is specified the appropriate Rowan extent is
   loaded instead of the default.
@@ -52,11 +52,11 @@ esac
 export GT_OSNAME
 
 if [ "$GT_OSNAME" = "Linux" ]; then
-  GT_GEMSTONE_VERSION="3.7.1.4"
+  GT_GEMSTONE_VERSION="3.7.2.1"
 elif [ "$GT_OSNAME" = "Darwin" -a "$VM_ARCH" = "arm64" ]; then
-  GT_GEMSTONE_VERSION="3.7.1"
+  GT_GEMSTONE_VERSION="3.7.2.1"
 elif [ "$GT_OSNAME" = "Darwin" ]; then
-  GT_GEMSTONE_VERSION="3.7.1"
+  GT_GEMSTONE_VERSION="3.7.2.1"
 else
   echo "Unable to determine default gemstone version"
   exit 1

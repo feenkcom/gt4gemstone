@@ -17,9 +17,7 @@ Class {
 { #category : #accessing }
 GtGemStoneGciConnector class >> defaultGemStoneVersion [
 
-	^ OSPlatform current isLinux
-		ifTrue: [ '3.7.1.4' ]
-		ifFalse: [ '3.7.1' ]
+	^ '3.7.2.1'
 ]
 
 { #category : #accessing }
