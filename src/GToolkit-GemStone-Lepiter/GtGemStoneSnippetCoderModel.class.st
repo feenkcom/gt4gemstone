@@ -195,6 +195,18 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 	"Evaluate the supplied GemStone script."
 	| gemstoneSession executionBuilder pharoBindings remoteBindings remoteScript  instanceVariableNames |
 	
+	[ GtGemStoneParser
+		parse: aSourceString
+		startingAt: GtGemStoneParser startingStateForMethodSequence ]
+		on: SmaCCParserError
+		do: [ :ex | 
+			self
+				notifyParseError: ex messageText
+				at: ex tag position
+						+ aGtSourceCoderEvaluationContext evaluatedInterval first - 1
+				requesterObject: aGtSourceCoderEvaluationContext requesterObject.
+			^ anEvaluationFailBlock value ].
+	
 	gemstoneSession := aGtSourceCoderEvaluationContext session 
 		ifNil: [ 
 			^ self error: 'GemStone session not set.  Does the connector exist?' ]

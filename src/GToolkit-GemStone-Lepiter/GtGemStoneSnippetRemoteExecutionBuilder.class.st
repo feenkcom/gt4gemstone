@@ -25,7 +25,7 @@ GtGemStoneSnippetRemoteExecutionBuilder >> analyseSourceString [
 	trimmedString := sourceString trimRight.
 		
 	visitor := LeGemStoneVarNodeVisitor new.
-	sourceAst := GtPharoParser
+	sourceAst := GtGemStoneParser
 		parse: trimmedString
 		startingAt: GtPharoParser startingStateForMethodSequence.
 	visitor acceptNode: sourceAst.

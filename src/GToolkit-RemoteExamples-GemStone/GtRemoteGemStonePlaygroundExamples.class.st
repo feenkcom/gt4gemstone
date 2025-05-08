@@ -478,6 +478,39 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClas
 ]
 
 { #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_executeWithSyntaxError [
+	<gtExample>
+	| scripter |
+	self runningServer.
+
+	scripter := self playgroundPageWithConnectedGemStone.
+
+	scripter
+		clickStep: [ :s | 
+			s
+				label: 'Click editor';
+				// GtSourceCoderEditorElement ].
+	scripter
+		typeStep: [ :s | 
+			s
+				label: 'Make invalid expression';
+				text: '#' ].
+
+	scripter shortcut
+		combination: BlKeyCombination primaryG;
+		// GtSourceCoderEditorElement;
+		play.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertErrorIndicatorPresent;
+		assertErrorMessage: 'Token not expected';
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessionChange_correctSession [
 	<gtExample>
 	<return: #AssertionFailure>
