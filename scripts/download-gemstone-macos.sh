@@ -42,5 +42,5 @@ cp -R /Volumes/installGemStone/"${GS_SERV_FILE}" "${GEMSTONE_WORKSPACE}/"
 hdiutil detach /Volumes/installGemStone
 
 hdiutil attach "${GS_CLIENT_FILE}".dmg
-cp -R /Volumes/"${GS_CLIENT_FILE}"/3.7.1 "${GEMSTONE_WORKSPACE}/"
+cp -R /Volumes/"${GS_CLIENT_FILE}"/${GT_GEMSTONE_VERSION} "${GEMSTONE_WORKSPACE}/"
 hdiutil detach /Volumes/"${GS_CLIENT_FILE}"
