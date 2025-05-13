@@ -1,6 +1,11 @@
 Extension { #name : 'Symbol' }
 
 { #category : '*GToolkit-GemStone-GemStone' }
+Symbol >> asMutator [
+	^ self, ':'
+]
+
+{ #category : '*GToolkit-GemStone-GemStone' }
 Symbol >> cull: anObject [
 
 	^ anObject perform: self
