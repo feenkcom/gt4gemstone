@@ -7,7 +7,7 @@ Class {
 { #category : #examples }
 GtGemStoneParser class >> extraPeriodsThrowErrorsExample [
 	<gtExample>
-	^ #(#('.3 + 4' 1) #('|a|.3 + 4. 4 + 3' 4) #('3 + 4..3' 7) #('3 + 4..' 7) #('3 + 4.' nil))
+	^ #(#('.3 + 4' 1) #('|a|.3 + 4. 4 + 3' 4) #('3 + 4..3' 7) #('3 + 4..' 7) #('3 + 4.' nil) #('[] value. [:e | ] value: 2' nil))
 		collect: [ :each | 
 			[ | value |
 			value := self
@@ -64,7 +64,9 @@ GtGemStoneParser >> scanner: aScanner [
 
 { #category : #private }
 GtGemStoneParser >> validatePeriodsAsSeparatorsIn: aSequenceNode [
-	aSequenceNode periods size < aSequenceNode statements size ifTrue: [ ^ self ].
+	(aSequenceNode periods isEmpty
+		or: [ aSequenceNode periods size < aSequenceNode statements size ])
+		ifTrue: [ ^ self ].
 	(aSequenceNode periods size = aSequenceNode statements size
 		and: [ aSequenceNode periods last startPosition
 				> aSequenceNode statements last stopPosition ]) ifTrue: [ ^ self ].
