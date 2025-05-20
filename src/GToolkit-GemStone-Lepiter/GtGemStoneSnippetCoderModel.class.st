@@ -165,8 +165,8 @@ GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
 
 	addOns
 		addShortcut: GtSourceCoderDoItAsynchronousShortcut new;
-		addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new;
-		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new
+		addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new";
+		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new"
 ]
 
 { #category : #accessing }
