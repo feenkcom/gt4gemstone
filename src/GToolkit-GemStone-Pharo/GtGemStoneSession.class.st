@@ -1105,9 +1105,9 @@ GtGemStoneSession >> gtAbortActionFor: anAction [
 		tooltip: 'GemStone Abort Transaction';
 		label: 'Abort';
 		icon: BrGlamorousVectorIcons cancel;
-		action: 
-				[:button |
-				self abortTransaction ]
+		action: [:button |
+			self abortTransaction.
+			button addChangingColorAnimationFor: BrGlamorousColors successBackgroundColor ]
 ]
 
 { #category : #ui }
@@ -1152,7 +1152,8 @@ GtGemStoneSession >> gtCommitActionFor: anAction [
 		label: 'Commit';
 		icon: BrGlamorousVectorIcons accept;
 		action: [:button |
-			self commitTransactionWithErrorChecking]
+			self commitTransactionWithErrorChecking.
+			button addChangingColorAnimationFor: BrGlamorousColors successBackgroundColor   ]
 ]
 
 { #category : #ui }
