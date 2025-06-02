@@ -8,6 +8,11 @@ Class {
 	#category : #'GToolkit-GemStone-Lepiter-Snippet'
 }
 
+{ #category : #callbacks }
+LeGemStoneSnippetViewModel >> actOnSessionAnnouncementFor: anAnnouncement [
+	self announce: anAnnouncement
+]
+
 { #category : #'api - accessing' }
 LeGemStoneSnippetViewModel >> elementLanguageLabel [
 	"Answer the string to be displayed as the owning element's language label"
@@ -52,10 +57,10 @@ LeGemStoneSnippetViewModel >> gemstoneSessionRegistry: aGtGemStoneSessionRegistr
 	
 	sharedContext externalSnippetContext 
 		gemstoneSessionRegistry: aGtGemStoneSessionRegistry.
-	gemstoneSessionRegistry 
+	gemstoneSessionRegistry announcer weak
 		when: Announcement
-		do: [ :anAnnouncement | self announce: anAnnouncement ]
-		for: self.
+		send: #actOnSessionAnnouncementFor:
+		to: self.
 ]
 
 { #category : #initialization }
