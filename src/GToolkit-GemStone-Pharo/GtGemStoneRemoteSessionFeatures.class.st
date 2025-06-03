@@ -110,15 +110,13 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneFeaturesV1 [
 	^ self isSessionRunning and: [  
-		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-			major: 1 minor: 0 patch: 1502) ]
+		self gt4gemstoneVersion >= GtGemStoneSemanticVersionNumber v1_0_1502 ]
 ]
 
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneTranscriptV1 [
 	^ self isSessionRunning and: [ 
-		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-			major: 1 minor: 0 patch: 1502) ]
+		self gt4gemstoneVersion >= GtGemStoneSemanticVersionNumber v1_0_1502 ]
 ]
 
 { #category : #testing }
