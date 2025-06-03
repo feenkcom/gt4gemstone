@@ -165,12 +165,13 @@ GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSessio
 
 { #category : #'testing ' }
 GtGemStoneRemoteSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
-	^ self hasRemoteFeaturesList and: [
-		self remoteFeatures
-			detect: [ :aFeature | 
-				aFeature featureId = aFeatureId ] 
-			ifFound: [ :aFeature | aFeature isEnabled ] 
-			ifNone: [ false ] ]
+	^ self isSessionRunning and: [
+		self hasRemoteFeaturesList and: [
+			self remoteFeatures
+				detect: [ :aFeature | 
+					aFeature featureId = aFeatureId ] 
+				ifFound: [ :aFeature | aFeature isEnabled ] 
+				ifNone: [ false ] ] ]
 ]
 
 { #category : #testing }

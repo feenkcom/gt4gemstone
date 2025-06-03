@@ -9,6 +9,50 @@ GtRemoteGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemoteGemStoneInspectionExamples
 ]
 
+{ #category : #asserting }
+GtRemoteGemStoneInspectionExamples >> assertCompositeToolElement: mainToolElement withLabels: aCollectionOfLabels andTypes: aCollectionOfTypes selectedIdex: anIndex [
+	| compositeTool evaluationTool |
+	
+	compositeTool := mainToolElement phlow entity.
+	self assert: compositeTool tools size equals: aCollectionOfLabels size.
+	self 
+		assert: (compositeTool tools collect: [ :aTool |
+			aTool name])  asArray
+		equals: aCollectionOfLabels asArray.
+	self 
+		assert: (compositeTool tools collect: [ :aTool |
+			aTool class])  asArray
+		equals: aCollectionOfTypes asArray.
+		
+	self assert: mainToolElement tabs size equals: aCollectionOfLabels size.
+	self 
+		assert: (mainToolElement tabs collect: [ :aTab | 
+			aTab tabLabel text asString ])  asArray
+		equals: aCollectionOfLabels asArray.
+	self 
+		assert: (mainToolElement viewModel 
+			indexOf:  mainToolElement viewModel selectedTab)
+		equals: anIndex.
+		
+	evaluationTool := mainToolElement content children first phlow entity.
+	self assert: evaluationTool == (compositeTool tools at: anIndex).
+	"self assert: evaluationTool name equals: aLabel.
+	self assert: evaluationTool class equals: aToolType."
+
+]
+
+{ #category : #asserting }
+GtRemoteGemStoneInspectionExamples >> assertPagerPageWithAyncExecutionWithResult: aPagerPage [
+	| mainToolElement |
+		
+	mainToolElement := aPagerPage contentElement tool.
+	self 
+		assertCompositeToolElement: mainToolElement
+		withLabels: {'GemStone' . 'Proxy'} 
+		andTypes: {GtInspectorTool . GtInspectorTool} 
+		selectedIdex: 1
+]
+
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> associationInspection [
 	<gtExample>
@@ -40,6 +84,22 @@ GtRemoteGemStoneInspectionExamples >> characterInspection [
 		assertObjectInspectionFor: [ $a ]
 		withTypeName: #Character
 		inspectorTitle: '$a'
+]
+
+{ #category : #utils }
+GtRemoteGemStoneInspectionExamples >> clickInColumnedListRowOnSpawnButtonLabeled: aString  in: scripter [
+	scripter clickStep: [ :s | 
+		s
+			label: 'Click on spawn button with label ', aString;
+			// GtPhlowCompositeViewElementId;
+			// #'phlow-columned-list--list';
+			// #scrollable;
+			@1;
+			// GtPhlowCellElement;
+			@ [ :each | each content class = BrButton and: [
+				each content label asString = aString  ] ];
+			@1;
+			// BrButton ].
 ]
 
 { #category : #'examples - objects' }
@@ -234,6 +294,32 @@ GtRemoteGemStoneInspectionExamples >> runningServer [
 	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
 
+{ #category : #'as yet unclassified' }
+GtRemoteGemStoneInspectionExamples >> selectColumnedListSpawnTextViewIn: scripter [ 
+	scripter doStep: [ :s | 
+		s
+			label: 'Select view';
+			// GtPhlowCompositeViewElementId;
+			block: [ :aTabGroup | 
+				(GtInspectorTabSelector byViewMethod
+					methodSelector: #gtColumnedListSpawnTextFor:)
+					selectTabInGroup:  aTabGroup on: nil ] ].
+					
+	scripter assertStep: [ :s | 
+		s
+			label: 'Assert selected view';
+			// GtPhlowCompositeViewElementId;
+			value: [ :aTabGroup | aTabGroup viewModel selectedTab tabLabel text asString ] 
+				equals: 'Spawn text columned list' ].
+]
+
+{ #category : #utils }
+GtRemoteGemStoneInspectionExamples >> selectedToolFromPageElement: aPageElement [ 
+	| mainToolElement |
+	mainToolElement := aPageElement contentElement tool.
+	^ mainToolElement content children first phlow entity
+]
+
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> sessionFeaturesInspection [
 	<gtExample>
@@ -269,6 +355,73 @@ GtRemoteGemStoneInspectionExamples >> smallIntegerInspection [
 		assertObjectInspectionFor: [ 42 ]
 		withTypeName: #SmallInteger
 		inspectorTitle: '42'
+]
+
+{ #category : #'examples - navigation' }
+GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithClassValue [
+	<gtExample>
+	| inspectorTool scripter secondPageElement gemStoneInspectorTool |
+	inspectorTool := self inspectorToolForRemoteProxySide.
+
+	scripter := self scripter.
+	scripter
+		model: inspectorTool object;
+		element: (GtPager createWrappedOn: inspectorTool asElement).
+		
+	self selectColumnedListSpawnTextViewIn: scripter.
+	self clickInColumnedListRowOnSpawnButtonLabeled: 'SmallInteger' in: scripter.
+			
+	scripter pager
+		assertPageCountIs: 2.
+	
+	secondPageElement := scripter element pages second.
+	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
+	
+	gemStoneInspectorTool := self 
+		selectedToolFromPageElement: secondPageElement.
+		
+	self assert:  gemStoneInspectorTool object remoteClass equals: 'SmallInteger class'.
+	self 
+		assert: gemStoneInspectorTool object gtDisplayString 
+		equals: 'SmallInteger'.
+		
+	^ scripter
+]
+
+{ #category : #'examples - navigation' }
+GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithPrimitiveValue [
+	<gtExample>
+	| inspectorTool scripter secondPageElement gemStoneInspectorTool |
+	
+	(self runningServer currentFeatures
+		isFeatureEnabledWithId: #spawnPrimitiveTypeAsProxyExampleFeature)
+			ifFalse: [ ^ self ]. 
+	
+	inspectorTool := self inspectorToolForRemoteProxySide.
+
+	scripter := self scripter.
+	scripter
+		model: inspectorTool object;
+		element: (GtPager createWrappedOn: inspectorTool asElement).
+		
+	self selectColumnedListSpawnTextViewIn: scripter.
+	self clickInColumnedListRowOnSpawnButtonLabeled: '42' in: scripter.
+			
+	scripter pager
+		assertPageCountIs: 2.
+	
+	secondPageElement := scripter element pages second.
+	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
+	
+	gemStoneInspectorTool := self 
+		selectedToolFromPageElement: secondPageElement.
+		
+	self assert:  gemStoneInspectorTool object remoteClass equals: 'SmallInteger'.
+	self 
+		assert: gemStoneInspectorTool object gtDisplayString 
+		equals: '42'.
+		
+	^ scripter
 ]
 
 { #category : #'examples - objects' }
