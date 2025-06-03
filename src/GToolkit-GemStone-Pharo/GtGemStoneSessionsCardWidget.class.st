@@ -432,7 +432,10 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 
 { #category : #accessing }
 GtGemStoneSessionsCardWidget >> sessionList [
-	^self childNamed: #sessionList
+	^self 
+		childNamed: #sessionList    
+		ifFound: [ :anElement | anElement ] 
+		ifNone: [ nil ]
 ]
 
 { #category : #'private - ui' }
@@ -444,14 +447,17 @@ GtGemStoneSessionsCardWidget >> sessionsToDisplay [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> updateContent [
-	| selectedSession|
+	| selectedSession currentSessionList |
 	
-	selectedSession := self sessionList selectedItems
+	currentSessionList := self sessionList.
+	currentSessionList ifNil: [ ^self ].
+	
+	selectedSession := currentSessionList selectedItems
 		ifEmpty: [ nil ] 
 		ifNotEmpty: [ :aList | aList first ].
-	
+		
 	self 
-		replaceChild: self sessionList 
+		replaceChild: currentSessionList
 		with: self createListWithItems
 		as: #sessionList.
 		
