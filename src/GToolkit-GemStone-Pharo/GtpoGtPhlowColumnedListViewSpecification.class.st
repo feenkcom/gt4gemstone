@@ -14,6 +14,6 @@ GtpoGtPhlowColumnedListViewSpecification class >> remoteClassName [
 { #category : #accessing }
 GtpoGtPhlowColumnedListViewSpecification >> retriveSpawnedObjectAtRow: aRowIndex column: aColumnIndex [	
 	^ self
-		proxyPerform: #retriveSpawnedObjectAtRow:column:
+		proxyPerformReturnProxy: #retriveSpawnedObjectAtRow:column:
 		withArguments: { aRowIndex . aColumnIndex }
 ]

@@ -80,6 +80,15 @@ GtGemStoneSessionFeatures class >> resetFeatures [
 ]
 
 { #category : #features }
+GtGemStoneSessionFeatures class >> spawnPrimitiveTypeAsProxyExampleFeature [
+	<gtGemStoneFeature>
+	"Only needed to indicate if GtRemotePhlowDeclarativeTestInspectable>>#gtColumnedListSpawnTextFor: has a column for spawning primitive types"
+	^ (GtGemStoneSessionFeature
+		withId: #spawnPrimitiveTypeAsProxyExampleFeature)
+			enable
+]
+
+{ #category : #features }
 GtGemStoneSessionFeatures class >> transcriptV1 [
 	<gtGemStoneFeature>
 	

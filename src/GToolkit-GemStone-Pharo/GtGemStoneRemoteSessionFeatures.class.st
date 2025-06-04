@@ -110,15 +110,13 @@ GtGemStoneRemoteSessionFeatures >> gtViewFeaturesRemoteSideFor: aView [
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneFeaturesV1 [
 	^ self isSessionRunning and: [  
-		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-			major: 1 minor: 0 patch: 1502) ]
+		self gt4gemstoneVersion >= GtGemStoneSemanticVersionNumber v1_0_1502 ]
 ]
 
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneTranscriptV1 [
 	^ self isSessionRunning and: [ 
-		self gt4gemstoneVersion >= (GtGemStoneSemanticVersionNumber
-			major: 1 minor: 0 patch: 1502) ]
+		self gt4gemstoneVersion >= GtGemStoneSemanticVersionNumber v1_0_1502 ]
 ]
 
 { #category : #testing }
@@ -165,12 +163,13 @@ GtGemStoneRemoteSessionFeatures >> initializeForGemStoneSession: aGemStoneSessio
 
 { #category : #'testing ' }
 GtGemStoneRemoteSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
-	^ self hasRemoteFeaturesList and: [
-		self remoteFeatures
-			detect: [ :aFeature | 
-				aFeature featureId = aFeatureId ] 
-			ifFound: [ :aFeature | aFeature isEnabled ] 
-			ifNone: [ false ] ]
+	^ self isSessionRunning and: [
+		self hasRemoteFeaturesList and: [
+			self remoteFeatures
+				detect: [ :aFeature | 
+					aFeature featureId = aFeatureId ] 
+				ifFound: [ :aFeature | aFeature isEnabled ] 
+				ifNone: [ false ] ] ]
 ]
 
 { #category : #testing }
