@@ -87,8 +87,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObject [
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -110,8 +108,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -131,8 +127,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -166,8 +160,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -203,8 +195,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -232,8 +222,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
@@ -261,8 +249,6 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	self runningServer gt4gemstoneVersion
-		<= GtGemStoneSemanticVersionNumber v1_0_1098 ifTrue: [ ^ self ].
 
 	self runningServer.
 
