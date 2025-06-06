@@ -35,6 +35,7 @@ GtGemStoneSemanticVersionNumber class >> readFromString: aString [
 
 { #category : #'instance creation' }
 GtGemStoneSemanticVersionNumber class >> v1_0_1098 [
+	"Support for v1.0.1098 was dropped on 2025-06-06"
 
 	^ self major: 1 minor: 0 patch: 1098
 ]
