@@ -1086,22 +1086,19 @@ GtGemStoneSessionRegistry >> unsubscribe: anObject [
 
 { #category : #'api - announcer' }
 GtGemStoneSessionRegistry >> when: anAnnouncementClass do: aBlock [
-	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoTemplate'>
-	^ (announcer ifNil: [ announcer := Announcer new ])
+	^ self announcer
 		when: anAnnouncementClass do: aBlock
 ]
 
 { #category : #'api - announcer' }
 GtGemStoneSessionRegistry >> when: anAnnouncementClass do: aBlock for: aSubscriber [
-	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoForTemplate'>
-	^ (self when: anAnnouncementClass do: aBlock)
-		subscriber: aSubscriber;
-		yourself
+	^ self announcer
+		when: anAnnouncementClass do: aBlock for: aSubscriber
 ]
 
 { #category : #'api - announcer' }
 GtGemStoneSessionRegistry >> when: anAnnouncementClass send: aSelector to: anObject [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenSendToTemplate'>
-	^ (announcer ifNil: [ announcer := Announcer new ]) weak
+	^ self announcer weak
 		when: anAnnouncementClass send: aSelector to: anObject
 ]
