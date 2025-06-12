@@ -226,7 +226,7 @@ GtGemStoneMethodCoderModel >> existsInTheLocalSystem [
 GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
 	| ast |
 	ast := [ RBParser parseMethod: self currentSourceString ]
-			on: SyntaxErrorNotification
+			on: RBParser gtParseErrorClass
 			do: [ :ex | ^ self notifyParseError: ex requesterObject: aRequester ].
 
 	self currentSourceString: ast formattedCode
