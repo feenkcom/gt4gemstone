@@ -221,6 +221,11 @@ GtRsrEvaluatorAsyncPromise >> sessionName [
 			 aSession name ]
 ]
 
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> state [
+	^ state
+]
+
 { #category : #actions }
 GtRsrEvaluatorAsyncPromise >> stopEvaluation [
 	| retryCount |
