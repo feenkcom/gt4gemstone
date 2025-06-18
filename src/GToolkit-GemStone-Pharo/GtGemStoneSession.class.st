@@ -175,6 +175,21 @@ GtGemStoneSession >> cacheName: aString [
 	cacheName := nil.
 ]
 
+{ #category : #testing }
+GtGemStoneSession >> cleanupAsyncExecutionsOnConnect [
+	"If the sessions terminated in a bad state, ensure
+	we do not have any async executions that were terminated 
+	but not removed"
+	
+	self hasRegisteredAsyncExecution ifTrue: [
+		activeAsyncExecutions copy do: [ :anAsyncExecution |
+			anAsyncExecution promiseResolution isResolutionProcessDone 
+				ifTrue: [
+					activeAsyncExecutions 
+						remove: anAsyncExecution 
+						ifAbsent: [ ] ] ] ].
+]
+
 { #category : #configure }
 GtGemStoneSession >> clearAutoCommit [
 	"Clear the auto-commit flag"
@@ -254,6 +269,8 @@ GtGemStoneSession >> connect [
 		yourself.
 	connectionTime := DateAndTime now.
 	self runPostConnectActions.
+	self cleanupAsyncExecutionsOnConnect.
+	
 	registry ifNotNil:[ registry addSession: self ].
 	
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).

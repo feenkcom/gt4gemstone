@@ -24,6 +24,18 @@ GtGemStoneAsyncExecution >> isComputationSuspended [
 		promiseResolution isResolvingSuspended ]
 ]
 
+{ #category : #printing }
+GtGemStoneAsyncExecution >> printOn: aStream [ 
+	super printOn: aStream.
+	
+	aStream parenthesize: [
+		aStream 
+			<< 'Promise: '
+			<< asyncPromise state asString;
+			<< '; Resolution: ';
+			<< promiseResolution state asString ]
+]
+
 { #category : #accessing }
 GtGemStoneAsyncExecution >> promiseResolution [
 	^ promiseResolution
