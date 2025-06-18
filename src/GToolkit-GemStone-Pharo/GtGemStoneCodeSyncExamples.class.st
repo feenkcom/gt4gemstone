@@ -333,6 +333,11 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 
 	<gtExample>
 	<return: #GtGemStoneCodeSyncExamples>
+	
+	self 
+		forPharo12: [Error signal:'Temporary fail in Pharo 12 as it blocks'] 
+		forPharo11AndPharo10: [].
+		
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	(self class environment classOrTraitNamed: self renamedExampleClassName)
