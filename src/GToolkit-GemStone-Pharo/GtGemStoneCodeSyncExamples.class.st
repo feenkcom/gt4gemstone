@@ -179,7 +179,12 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
-	self assert: signal change isEpClassModification.
+	
+	self 
+		forPharo12: [
+			self assert: signal change isEpBehaviorRepackagedChange ] 
+		forPharo11AndPharo10: [
+			self assert: signal change isEpClassModification ]
 ]
 
 { #category : #helper }
