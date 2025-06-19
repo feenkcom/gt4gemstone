@@ -179,7 +179,12 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
-	self assert: signal change isEpClassModification.
+	
+	self 
+		forPharo12: [
+			self assert: signal change isEpBehaviorRepackagedChange ] 
+		forPharo11AndPharo10: [
+			self assert: signal change isEpClassModification ]
 ]
 
 { #category : #helper }
@@ -328,6 +333,11 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 
 	<gtExample>
 	<return: #GtGemStoneCodeSyncExamples>
+	
+	self 
+		forPharo12: [Error signal:'Temporary fail in Pharo 12 as it blocks'] 
+		forPharo11AndPharo10: [].
+		
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	(self class environment classOrTraitNamed: self renamedExampleClassName)
