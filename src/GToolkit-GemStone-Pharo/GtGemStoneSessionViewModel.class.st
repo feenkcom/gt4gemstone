@@ -364,9 +364,8 @@ GtGemStoneSessionViewModel >> when: anAnnouncementClass do: aBlock [
 { #category : #'api - announcer' }
 GtGemStoneSessionViewModel >> when: anAnnouncementClass do: aBlock for: aSubscriber [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#whenDoForTemplate'>
-	^ (self when: anAnnouncementClass do: aBlock)
-		subscriber: aSubscriber;
-		yourself
+	^ (announcer ifNil: [ announcer := Announcer new ])
+		when: anAnnouncementClass do: aBlock for: aSubscriber
 ]
 
 { #category : #'api - announcer' }
