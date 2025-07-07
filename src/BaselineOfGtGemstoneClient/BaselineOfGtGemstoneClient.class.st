@@ -17,10 +17,10 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://gemtalk/PharoGemStoneFFI:tag_v1.1/src' ].
 		spec
 			baseline: 'GToolkitRemote' with: [
-				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.2096/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.2097/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.6.3153/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.6.3154/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
 				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.13/src' ].
