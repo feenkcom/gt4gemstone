@@ -11,19 +11,19 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 		spec postLoadDoIt: #'postLoadSetup:'.
 		spec
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit' with: [
-				spec repository: 'github://feenkcom/RemoteServiceReplication:9d41a6f3ce210fa07e4d1b56c8a1a3f5157c995d/src' ].
+				spec repository: 'github://feenkcom/RemoteServiceReplication:4a0a670af184030b606e0b1c73d572d4932caa13/src' ].
 		spec
 			baseline: 'PharoGemStoneFFI' with: [
 				spec repository: 'github://gemtalk/PharoGemStoneFFI:tag_v1.1/src' ].
 		spec
 			baseline: 'GToolkitRemote' with: [
-				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.2110/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.2111/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.6.3182/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.6.3183/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
-				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.13/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.14/src' ].
 
 		spec package: 'GToolkit-GemStone-Pharo-BeaconLogging'.
 		spec package: 'GToolkit-GemStone' with: [
