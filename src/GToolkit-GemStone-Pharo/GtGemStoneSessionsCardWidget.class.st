@@ -265,21 +265,19 @@ GtGemStoneSessionsCardWidget >> initialize [
 ]
 
 { #category : #'private - ui' }
-GtGemStoneSessionsCardWidget >> inspectRegistryFrom: aButton [ 
-
-	GtPager
-		openWrappedOn: (GtInspector newOn: self registry)
-		title: 'GemStone Registry'
-		from: aButton.
+GtGemStoneSessionsCardWidget >> inspectRegistryFrom: aButton [
+	BlSpace new
+		inPager: (GtInspectorTool forObject: self registry);
+		title: 'GemStone Registry';
+		showFrom: aButton
 ]
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> inspectSession: aSession from: anElement [
-
-	GtPager
-		openWrappedOn: (GtInspector newOn: aSession)
-		title: aSession name
-		from: anElement.
+	BlSpace new
+		inPager: (GtInspectorTool forObject: aSession);
+		title: aSession name;
+		showFrom: anElement
 ]
 
 { #category : #'private - hooks' }

@@ -326,10 +326,10 @@ GtGemStoneSession >> contextMenuContent [
 			self isDefaultSession ifFalse:
 				[ stream nextPut: 'Be Default' -> [ :anElement | self beDefaultSession ] ].
 			stream nextPut: 'Inspect' -> [ :anElement | 
-					GtPager
-						openWrappedOn: (GtInspector newOn: self)
-						title: self name
-						from: anElement. ] ]
+				BlSpace new 
+					inPager: (GtInspectorTool forObject: self);
+					title: self name;
+					showFrom: anElement ] ]
 ]
 
 { #category : #'actions - create block evaluation' }
