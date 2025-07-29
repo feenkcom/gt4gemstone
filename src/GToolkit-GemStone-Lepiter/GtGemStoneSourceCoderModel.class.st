@@ -15,9 +15,9 @@ GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 ]
 
 { #category : #'add-ons' }
-GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: anObject withId: aMenuId to: coderAddOns from: aCoderViewModel [ 
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: aShortcut withId: aMenuId to: coderAddOns from: aCoderViewModel [ 
 
-	^ (self addContextMenuItemFrom: anObject 
+	^ (self addContextMenuItemFrom: aShortcut 
 		withId: aMenuId 
 		to: coderAddOns )
 			markAsGemStoneExecutionAction;
