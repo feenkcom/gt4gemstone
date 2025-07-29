@@ -64,8 +64,10 @@ GtGemStoneSnippetCoderViewModel >> hasDeclaredVariableNamed: aVariableName [
 
 { #category : #testing }
 GtGemStoneSnippetCoderViewModel >> hasRunningSession [
-	^ self session notNil and: [
-		self session isRunning ]
+	^ sessionLocator 
+		existingSessionDo: [ :aSession |
+			aSession isRunning ]
+		ifNone: [ false ]
 ]
 
 { #category : #accessing }

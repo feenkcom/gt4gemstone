@@ -32,6 +32,12 @@ GtGemStoneSessionIdentifier >> displayNameIn: aGtGemStoneSessionRegistry [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionIdentifier >> existingSessionInRegistry: aGtGemStoneSessionRegistry do: aBlock ifNone: aNoneBlock [
+
+	^ self subclassResponsibility
+]
+
+{ #category : #accessing }
 GtGemStoneSessionIdentifier >> identifierLabel [
 
 	^ self subclassResponsibility

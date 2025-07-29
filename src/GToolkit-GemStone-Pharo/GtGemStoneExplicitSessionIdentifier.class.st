@@ -49,6 +49,15 @@ GtGemStoneExplicitSessionIdentifier >> displayNameIn: aGtGemStoneSessionRegistry
 ]
 
 { #category : #accessing }
+GtGemStoneExplicitSessionIdentifier >> existingSessionInRegistry: aGtGemStoneSessionRegistry do: aBlock ifNone: aNoneBlock [
+
+	^ aGtGemStoneSessionRegistry 
+		existingSessionNamed: sessionName 
+		do: aBlock 
+		ifNone: aNoneBlock
+]
+
+{ #category : #accessing }
 GtGemStoneExplicitSessionIdentifier >> identifierLabel [
 
 	^ 'Explicit'

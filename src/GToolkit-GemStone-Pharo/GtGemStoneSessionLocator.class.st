@@ -20,6 +20,15 @@ GtGemStoneSessionLocator >> displayName [
 	^ identifier displayNameIn: registry
 ]
 
+{ #category : #utils }
+GtGemStoneSessionLocator >> existingSessionDo: aBlock ifNone: aNoneBlock [
+	^ identifier 
+		existingSessionInRegistry: registry 
+		do: [ :aSession |
+			aBlock cull: aSession ]
+		ifNone: [ aNoneBlock value ]
+]
+
 { #category : #accessing }
 GtGemStoneSessionLocator >> identifier [
 	^ identifier
