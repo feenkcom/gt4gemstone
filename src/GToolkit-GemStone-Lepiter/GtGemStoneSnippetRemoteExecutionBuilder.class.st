@@ -32,13 +32,13 @@ GtGemStoneSnippetRemoteExecutionBuilder >> analyseSourceString [
 ]
 
 { #category : #'accessing - bindings' }
-GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
-	^ visitor assignFirstUndeclaredVariablesName
+GtGemStoneSnippetRemoteExecutionBuilder >> assignedVariableNames [
+	^ visitor assignedVariableNames
 ]
 
 { #category : #'accessing - bindings' }
-GtGemStoneSnippetRemoteExecutionBuilder >> assignedVariableNames [
-	^ visitor assignedVariableNames
+GtGemStoneSnippetRemoteExecutionBuilder >> assignFirstUndeclaredVariablesName [
+	^ visitor assignFirstUndeclaredVariablesName
 ]
 
 { #category : #'gt - extensions' }

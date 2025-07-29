@@ -21,12 +21,6 @@ LeGemStoneVarNodeVisitor >> accessedFirstUndeclaredVariableNames [
 ]
 
 { #category : #accessing }
-LeGemStoneVarNodeVisitor >> assignFirstUndeclaredVariablesName [
-
-	^ assignedVariableNames difference: (accessedFirstUndeclaredVariableNames, temporaryVariableNames)
-]
-
-{ #category : #accessing }
 LeGemStoneVarNodeVisitor >> assignedUndeclaredVariableNames [
 	"Answer the set of variable names where the variable is assigned a value, but is not a temporary variable"
 
@@ -37,6 +31,12 @@ LeGemStoneVarNodeVisitor >> assignedUndeclaredVariableNames [
 LeGemStoneVarNodeVisitor >> assignedVariableNames [
 
 	^ assignedVariableNames
+]
+
+{ #category : #accessing }
+LeGemStoneVarNodeVisitor >> assignFirstUndeclaredVariablesName [
+
+	^ assignedVariableNames difference: (accessedFirstUndeclaredVariableNames, temporaryVariableNames)
 ]
 
 { #category : #accessing }

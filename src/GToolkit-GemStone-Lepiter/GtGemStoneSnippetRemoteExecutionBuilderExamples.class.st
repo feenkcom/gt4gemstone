@@ -1650,6 +1650,37 @@ snippetResult := 4+3.
 ]
 
 { #category : #examples }
+GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithoutBindings [
+	<gtExample>
+	<return: #GtGemStoneSnippetRemoteExecutionBuilder>
+	| source executionBuilder remoteBindings |
+	source := '4+3'.
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new
+			localBindings: GtSharedVariablesBindings new;
+			sourceString: source.
+
+	remoteBindings := executionBuilder extractRemoteBindings.
+	self assert: remoteBindings bindings isEmpty.
+
+	self assert: executionBuilder requiredVariableNames isEmpty.
+	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
+
+	self assert: executionBuilder undeclaredVariableNames isEmpty.
+	self assert: executionBuilder assignedVariableNames isEmpty.
+
+	self
+		assert: executionBuilder generateRemoteScript withUnixLineEndings
+		equals: '| snippetResult |
+snippetResult := 4+3.
+({ #snippetResult -> snippetResult } collect: [ :___each |
+	___each  key -> (___each value class == GtRsrProxyServiceServer
+	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary'
+				withUnixLineEndings.
+
+	^ executionBuilder
+]
+
+{ #category : #examples }
 GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithTemporary [
 	<gtExample>
 	<return: #GtGemStoneSnippetRemoteExecutionBuilder>
@@ -1674,37 +1705,6 @@ a + 3'.
 		equals: '| snippetResult  a |
 a := 4.
 snippetResult := a + 3.
-({ #snippetResult -> snippetResult } collect: [ :___each |
-	___each  key -> (___each value class == GtRsrProxyServiceServer
-	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary'
-				withUnixLineEndings.
-
-	^ executionBuilder
-]
-
-{ #category : #examples }
-GtGemStoneSnippetRemoteExecutionBuilderExamples >> expressionWithoutBindings [
-	<gtExample>
-	<return: #GtGemStoneSnippetRemoteExecutionBuilder>
-	| source executionBuilder remoteBindings |
-	source := '4+3'.
-	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new
-			localBindings: GtSharedVariablesBindings new;
-			sourceString: source.
-
-	remoteBindings := executionBuilder extractRemoteBindings.
-	self assert: remoteBindings bindings isEmpty.
-
-	self assert: executionBuilder requiredVariableNames isEmpty.
-	self assert: executionBuilder remoteCodeExtraTemporaryNames isEmpty.
-
-	self assert: executionBuilder undeclaredVariableNames isEmpty.
-	self assert: executionBuilder assignedVariableNames isEmpty.
-
-	self
-		assert: executionBuilder generateRemoteScript withUnixLineEndings
-		equals: '| snippetResult |
-snippetResult := 4+3.
 ({ #snippetResult -> snippetResult } collect: [ :___each |
 	___each  key -> (___each value class == GtRsrProxyServiceServer
 	ifTrue: [___each value ] ifFalse: [ GtRsrProxyServiceServer object: ___each value ]) ])  asDictionary'

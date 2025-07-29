@@ -23,30 +23,51 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 { #category : #'add-ons' }
 GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 800>
-	self
+	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut new
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel;
+			from: aCoderViewModel) in: [ :anAction |
+				aCoderViewModel hasRunningSession ifTrue: [
+					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
+						anAction disableAction.
+						anAction shortcutKey: '' ] ] ].
+	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut new
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel;
+			from: aCoderViewModel) in: [ :anAction |
+				aCoderViewModel hasRunningSession ifTrue: [
+					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
+						anAction disableAction.
+						anAction shortcutKey: '' ] ] ].
+	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut new
 				name: 'Do it (blocking)')
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel;
+			from: aCoderViewModel) in: [ :anAction |
+				aCoderViewModel hasRunningSession ifTrue: [
+					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
+						anAction shortcutKey: GtSourceCoderDoItAsynchronousShortcut new
+							combinationForPlatform gtDisplayString ] ] ].
+	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut new
 				name: 'Do it and inspect (blocking)')
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel;
+			from: aCoderViewModel) in: [ :anAction |
+				aCoderViewModel hasRunningSession ifTrue: [
+					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
+						anAction shortcutKey: GtSourceCoderDoItAndInspectAsynchronousShortcut new
+							combinationForPlatform gtDisplayString ] ] ].
+	self
 		addGemStoneExecutionContextMenuItemFrom: (GtSourceCoderPrintItShortcut new
 				name: 'Print (blocking)')
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel;
+			from: aCoderViewModel.
+	self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDebugShortcut new
 			withId: nil
 			to: coderAddOns
@@ -160,13 +181,19 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 ]
 
 { #category : #initialize }
-GtGemStoneSnippetCoderModel >> initializeShortcuts: addOns [
-	super initializeShortcuts: addOns.
+GtGemStoneSnippetCoderModel >> initializeAddOns: addOns viewModel: aCoderViewModel [
+	super initializeAddOns: addOns viewModel: aCoderViewModel.
 
-	addOns
-		addShortcut: GtSourceCoderDoItAsynchronousShortcut new;
-		addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new";
-		addShortcut: GtSourceCoderDoItAndInspectSerializedShortcut new"
+	(aCoderViewModel hasRunningSession and: [
+		aCoderViewModel session hasRegisteredAsyncExecution]) 
+			ifTrue: [
+				addOns
+					addShortcut: GtSourceCoderDoItShortcut new;
+					addShortcut: GtSourceCoderDoItAndInspectShortcut new ]
+			ifFalse: [
+				addOns
+					addShortcut: GtSourceCoderDoItAsynchronousShortcut new;
+					addShortcut: GtSourceCoderDoItAndInspectAsynchronousShortcut new]
 ]
 
 { #category : #accessing }
