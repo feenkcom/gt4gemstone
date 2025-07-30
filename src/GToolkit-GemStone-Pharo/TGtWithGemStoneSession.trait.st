@@ -3,7 +3,7 @@ Trait {
 	#instVars : [
 		'gemStoneSession'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Support'
+	#category : #'GToolkit-GemStone-Pharo-Support'
 }
 
 { #category : #'api - gem stone session' }

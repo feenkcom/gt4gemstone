@@ -14,7 +14,7 @@ Class {
 		'connector',
 		'operation'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Announcements'
+	#category : #'GToolkit-GemStone-Pharo-Announcements'
 }
 
 { #category : #accessing }

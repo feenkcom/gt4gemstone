@@ -3,7 +3,7 @@ Trait {
 	#instVars : [
 		'gemStoneSessionsViewModel'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Support'
+	#category : #'GToolkit-GemStone-Pharo-Support'
 }
 
 { #category : #'api - gem stone sessions view model' }

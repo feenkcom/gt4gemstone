@@ -50,7 +50,9 @@ GtGemStoneCodeSyncExamples >> addMethod [
 	self exampleClass
 		compile: 'method1 ^ 1'
 		classified: 'category 1'.
-	semaphore wait.
+	self
+		forPharo12: [ semaphore wait; wait ] 
+		forPharo11AndPharo10: [ semaphore wait ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -178,7 +180,9 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 		instanceVariableNames: 'iVar1' 
 		classVariableNames: '' 
 		package: 'GtGemStoneExamples'.
-	semaphore wait.
+	self
+		forPharo12: [ semaphore wait; wait ] 
+		forPharo11AndPharo10: [ semaphore wait ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -245,7 +249,9 @@ GtGemStoneCodeSyncExamples >> removeClassMethod [
 
 	self renamedExampleClass class removeSelector: #classMethod1.
 	"Removing a selector generates a method modified event followed by the removed event"
-	semaphore wait; wait.
+	self
+		forPharo12: [ semaphore wait] 
+		forPharo11AndPharo10: [ semaphore wait; wait ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -329,14 +335,9 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithDefaultSession [
 { #category : #examples }
 GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 	"All changes are tested in a single example as class addition and removal is (relatively) slow and polutes the epicea log"
-
 	<gtExample>
 	<return: #GtGemStoneCodeSyncExamples>
-	
-	self 
-		forPharo12: [Error signal:'Temporary fail in Pharo 12 as it blocks'] 
-		forPharo11AndPharo10: [].
-		
+
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
 	(self class environment classOrTraitNamed: self renamedExampleClassName)
