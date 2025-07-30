@@ -18,6 +18,12 @@ GtGemStoneDefaultSessionIdentifier >> displayNameIn: aGtGemStoneSessionRegistry 
 		ifNotNil: #displayName
 ]
 
+{ #category : #accessing }
+GtGemStoneDefaultSessionIdentifier >> existingSessionInRegistry: aGtGemStoneSessionRegistry do: aBlock ifNone: aNoneBlock [
+
+	^ aGtGemStoneSessionRegistry existingDefaultSessionDo: aBlock ifNone: aNoneBlock
+]
+
 { #category : #'as yet unclassified' }
 GtGemStoneDefaultSessionIdentifier >> identifierLabel [
 

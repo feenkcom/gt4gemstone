@@ -411,6 +411,24 @@ GtGemStoneSessionRegistry >> ensureKeepAlive [
 		start.
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> existingDefaultSessionDo: aBlock ifNone: aNoneBlock [
+
+	^ defaultSession 
+		ifNil: [ aNoneBlock value ]
+		ifNotNil: [
+			aBlock cull: defaultSession ]
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> existingSessionNamed: aString do: aBlock ifNone: aNoneBlock [
+
+	^ sessions 
+		at: aString
+		ifPresent: [ :aSession | aBlock cull: aSession ]
+		ifAbsent: [ aNoneBlock value ]
+]
+
 { #category : #ui }
 GtGemStoneSessionRegistry >> gtAvailableConnectorsFor: aView [
 	<gtView>
