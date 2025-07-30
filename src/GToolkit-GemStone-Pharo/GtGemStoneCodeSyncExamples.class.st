@@ -184,7 +184,7 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 	self forPharo12: 
 		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
 		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
-	forPharo11AndPharo10: [ self waitOn: semaphore for: 10 seconds description: 'Didn''t receive code change signal'. ].
+	forPharo11AndPharo10: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
