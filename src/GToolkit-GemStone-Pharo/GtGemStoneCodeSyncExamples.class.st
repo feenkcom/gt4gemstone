@@ -21,7 +21,7 @@ GtGemStoneCodeSyncExamples >> addClass [
 		instanceVariableNames: '' 
 		classVariableNames: '' 
 		package: 'GtGemStoneExamples'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -35,7 +35,7 @@ GtGemStoneCodeSyncExamples >> addClassMethod [
 	self exampleClass class
 		compile: 'classMethod1 ^ 1'
 		classified: 'class category 1'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -50,9 +50,10 @@ GtGemStoneCodeSyncExamples >> addMethod [
 	self exampleClass
 		compile: 'method1 ^ 1'
 		classified: 'category 1'.
-	self
-		forPharo12: [ semaphore wait; wait ] 
-		forPharo11AndPharo10: [ semaphore wait ].
+	self forPharo12: 
+		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
+	forPharo11AndPharo10: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -65,7 +66,7 @@ GtGemStoneCodeSyncExamples >> changeClassCategory [
 	| signal |
 
 	self exampleClass category: 'GtGemStoneExamples2'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassCategoryChangeCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -110,7 +111,7 @@ GtGemStoneCodeSyncExamples >> commentClass [
 	| signal |
 
 	self exampleClass comment: 'comment 1'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassCommentCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -180,9 +181,10 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 		instanceVariableNames: 'iVar1' 
 		classVariableNames: '' 
 		package: 'GtGemStoneExamples'.
-	self
-		forPharo12: [ semaphore wait; wait ] 
-		forPharo11AndPharo10: [ semaphore wait ].
+	self forPharo12: 
+		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
+	forPharo11AndPharo10: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -197,7 +199,7 @@ GtGemStoneCodeSyncExamples >> modifyClassMethod [
 	self exampleClass class
 		compile: 'classMethod1 ^ 2'
 		classified: 'class category 1'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -213,7 +215,7 @@ GtGemStoneCodeSyncExamples >> modifyMethod [
 	self exampleClass
 		compile: 'method1 ^ 2'
 		classified: 'category 1'.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -250,8 +252,10 @@ GtGemStoneCodeSyncExamples >> removeClassMethod [
 	self renamedExampleClass class removeSelector: #classMethod1.
 	"Removing a selector generates a method modified event followed by the removed event"
 	self
-		forPharo12: [ semaphore wait] 
-		forPharo11AndPharo10: [ semaphore wait; wait ].
+		forPharo12: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ] 
+		forPharo11AndPharo10: 
+			[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+			self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ].
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -266,7 +270,8 @@ GtGemStoneCodeSyncExamples >> removeMethod [
 
 	self renamedExampleClass removeSelector: #method1.
 	"Removing a selector generates a method modified event followed by the removed event"
-	semaphore wait; wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -284,7 +289,7 @@ GtGemStoneCodeSyncExamples >> renameClass [
 		rename: self exampleClassName
 		to: self renamedExampleClassName)
 			execute.
-	semaphore wait.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassRenameCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -337,6 +342,7 @@ GtGemStoneCodeSyncExamples >> runAllChangesWithSimulatedSession [
 	"All changes are tested in a single example as class addition and removal is (relatively) slow and polutes the epicea log"
 	<gtExample>
 	<return: #GtGemStoneCodeSyncExamples>
+	<shouldLogWithEpicea>
 
 	(self class environment classOrTraitNamed: self exampleClassName)
 		ifNotNil: [ :cls | cls removeFromSystem ].
@@ -396,4 +402,11 @@ GtGemStoneCodeSyncExamples >> tidyUp [
 	self stopCodeSync.
 	self exampleClass ifNotNil: [ :cls | cls removeFromSystem ].
 	self renamedExampleClass ifNotNil: [ :cls | cls removeFromSystem ].
+]
+
+{ #category : #'private - helpers' }
+GtGemStoneCodeSyncExamples >> waitOn: aSemaphore for: anInteger description: descriptionString [
+
+	(aSemaphore waitTimeoutSeconds: anInteger)
+		ifTrue: [ self error: descriptionString ]
 ]
