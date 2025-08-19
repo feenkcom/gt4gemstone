@@ -355,7 +355,13 @@ GtGemStoneAsyncEvaluationElement >> previousPagerPageElementDo: aBlock [
 		allParentsDetect: [ :anElement | anElement class = GtPagerPageElement ] 
 		ifFound: [ :aPageElement | 
 			aPageElement previousSiblingDo: aBlock ]
-		ifNone: [ "do nothing" ]
+		ifNone: [ 
+			self 
+				allParentsDetect: [ :anElement | 
+					anElement class = GtTreePagerPaneElement ] 
+				ifFound: [ :aPageElement | 
+					aPageElement previousSiblingDo: aBlock ]
+				ifNone: [ "do nothing" ] ]
 ]
 
 { #category : #accessing }
@@ -404,7 +410,16 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 			ifFound: [ :anElement |
 				anElement phlow 
 					spawnObject: promiseResolution "resolvedValue".
-				^ self]) ].
+				^ self]
+			ifNone: [
+				aPageElement 
+					allChildrenBreadthFirstDetect: [:anElement |
+						anElement class = GtTreePagerPaneContentElement] 
+					ifFound: [ :anElement |
+						anElement phlow 
+							spawnObject: promiseResolution "resolvedValue".
+						^ self]
+					ifNone: [] ]) ].
 	
 	"We get here if we did not find a page element"
 	aBlock value.
