@@ -349,21 +349,6 @@ GtGemStoneAsyncEvaluationElement >> onSnippetPromiseResolutionChanged [
 	self requestUpdateOrReplaceContent
 ]
 
-{ #category : #querying }
-GtGemStoneAsyncEvaluationElement >> previousPagerPageElementDo: aBlock [
-	self 
-		allParentsDetect: [ :anElement | anElement class = GtPagerPageElement ] 
-		ifFound: [ :aPageElement | 
-			aPageElement previousSiblingDo: aBlock ]
-		ifNone: [ 
-			self 
-				allParentsDetect: [ :anElement | 
-					anElement class = GtTreePagerPaneElement ] 
-				ifFound: [ :aPageElement | 
-					aPageElement previousSiblingDo: aBlock ]
-				ifNone: [ "do nothing" ] ]
-]
-
 { #category : #accessing }
 GtGemStoneAsyncEvaluationElement >> promiseResolution: aGtGemStonePromiseExecution [
 	promiseResolution == aGtGemStonePromiseExecution 
@@ -397,32 +382,7 @@ GtGemStoneAsyncEvaluationElement >> replaceToolWithResultIfNotPossible: aBlock [
 		aBlock value.
 		^ self ].
 
-	self previousPagerPageElementDo: [ :aPageElement |
-		"aPageElement 
-			allParentsDetect: [ :anElement | anElement class = GtPager] 
-			ifFound: [ :aPager | 
-				aPager context toolSelectionStatesHandler
-					resetStoredSelectionState ] 
-			ifNone: []."
-			
-		(aPageElement 
-			childWithId: #toolArea 
-			ifFound: [ :anElement |
-				anElement phlow 
-					spawnObject: promiseResolution "resolvedValue".
-				^ self]
-			ifNone: [
-				aPageElement 
-					allChildrenBreadthFirstDetect: [:anElement |
-						anElement class = GtTreePagerPaneContentElement] 
-					ifFound: [ :anElement |
-						anElement phlow 
-							spawnObject: promiseResolution "resolvedValue".
-						^ self]
-					ifNone: [] ]) ].
-	
-	"We get here if we did not find a page element"
-	aBlock value.
+	self phlow fireToolUpdateWish
 ]
 
 { #category : #updating }
