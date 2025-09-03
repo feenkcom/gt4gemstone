@@ -10,9 +10,15 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 
 	spec for: #common do: [ 
 		spec postLoadDoIt: #'postLoadSetup:'.
+		
 		spec
 			baseline: 'RemoteServiceReplicationForGlamorousToolkit'
-			with: [ spec repository: 'github://feenkcom/RemoteServiceReplication:martin-136PortRange/src' ].
+			with: [ 
+				self 
+					fastForPharo13AndPharo12: [ 
+						spec repository: 'github://feenkcom/RemoteServiceReplication:main-v1-136PortRange/src' ] 
+					forPharo11: [
+						spec repository: 'github://feenkcom/RemoteServiceReplication:martin-136PortRange/src' ]  ].
 		spec
 			baseline: 'PharoGemStoneFFI'
 			with: [ spec repository: 'github://gemtalk/PharoGemStoneFFI:tag_v1.1/src' ].
