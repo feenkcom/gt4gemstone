@@ -81,3 +81,33 @@ GtpoGtRemotePhlowViewedObject >> getViewsDeclarations [
 		proxyPerform: #getViewsDeclarations
 		autoCommit: false
 ]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> profileActionSpecificationsComputation [
+	^ self profileBlockClosure: [ :anObject |
+		(GtRemotePhlowViewedObject object: anObject) getActionSpecificationsData ] 
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> profileBlockClosure: aBlockClosure [
+	^ self gtSession 
+		evaluateBlockAndWaitReturnProxy: [ :anObject :aClosureToProfile :aProfilerClassName | 
+			(System myUserProfile objectNamed: aProfilerClassName asSymbol)
+				monitorBlock: [ aClosureToProfile value: anObject  ] ]
+		withArguments: {
+			self. 
+			aBlockClosure.
+			GtGemStoneRemoteProfileWrapper remoteProfilerClassName}
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> profileInspectorSpecificationComputation [
+	^ self profileBlockClosure: [ :anObject |
+		(GtRemotePhlowViewedObject object: anObject) getInspectorSpecificationData ] 
+]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowViewedObject >> profileViewSpecificationsComputation [
+	^ self profileBlockClosure: [ :anObject |
+		(GtRemotePhlowViewedObject object: anObject) getViewSpecificationsData ] 
+]

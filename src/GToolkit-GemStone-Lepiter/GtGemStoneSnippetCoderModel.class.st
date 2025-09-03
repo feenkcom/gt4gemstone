@@ -170,7 +170,8 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 			[:aCoderUIModel :anEvent |
 			aCoderUIModel coderModel
 				evaluate: [:thisCoder | thisCoder currentSourceString]
-				decorated: [:aSourceString | 'ProfMonitorTree monitorBlock: [ ' , aSourceString , ']']
+				decorated: [:aSourceString | 
+					self profilingCodeFor: aSourceString ]
 				inContext: aCoderUIModel evaluationContext
 				thenDo: 
 					[:anEvaluationResult |
@@ -273,6 +274,12 @@ GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSo
 		pharoBindings: pharoBindings
 		onFailDo: anEvaluationFailBlock
 		coderModel: self
+]
+
+{ #category : #utils }
+GtGemStoneSnippetCoderModel >> profilingCodeFor: aSourceString [ 
+	^ GtGemStoneRemoteProfileWrapper current 
+		wrapCode: aSourceString
 ]
 
 { #category : #accessing }

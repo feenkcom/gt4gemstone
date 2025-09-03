@@ -95,28 +95,30 @@ GtGemStoneAsyncPromiseResolution >> gemStoneSession [
 
 { #category : #'gt - inspector' }
 GtGemStoneAsyncPromiseResolution >> gtDefaultInspectorTool [
-	| compositeTool |
-	compositeTool := GtPhlowCompositeTool new.
+	^ GtPhlowExplicitCompositeTool new 
+		toolStencil: [
+			| compositeTool |
+			compositeTool := GtPhlowCompositeTool new.
 	
-	self hasValidResult 
-		ifTrue: [
-			compositeTool addTools: (self resolvedValue 
-				gtDefaultInspectorTool tools).
-			"compositeTool
-				addTool: (GtGemStoneAsyncEvaluationPhlowTool new 
-					promiseResolution: self;
-					disableContentReplace)."
-			compositeTool 
-				addTool: (super gtDefaultInspectorTool
-					name: 'Execution';
-					withLabelAndIconAptitude) ]
-		ifFalse: [
-			compositeTool
-				addTool: (GtGemStoneAsyncEvaluationPhlowTool new 
-					promiseResolution: self);
-				addTool: super gtDefaultInspectorTool ].
+			self hasValidResult 
+				ifTrue: [
+					compositeTool addTools: (self resolvedValue 
+						gtDefaultInspectorTool tools).
+					"compositeTool
+						addTool: (GtGemStoneAsyncEvaluationPhlowTool new 
+							promiseResolution: self;
+							disableContentReplace)."
+					compositeTool 
+						addTool: (super gtDefaultInspectorTool
+							name: 'Execution';
+							withLabelAndIconAptitude) ]
+				ifFalse: [
+					compositeTool
+						addTool: (GtGemStoneAsyncEvaluationPhlowTool new 
+							promiseResolution: self);
+						addTool: super gtDefaultInspectorTool ].
 		
-	^ compositeTool
+			compositeTool ]
 ]
 
 { #category : #'gt - extensions' }
