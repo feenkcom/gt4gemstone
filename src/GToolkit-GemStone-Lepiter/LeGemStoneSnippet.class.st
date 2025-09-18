@@ -119,3 +119,8 @@ LeGemStoneSnippet >> sessionName [
 
 	^ sessionIdentifier ifNotNil: #sessionName
 ]
+
+{ #category : #testing }
+LeGemStoneSnippet >> shouldPerformLocalRefactoring [
+	^ true
+]
