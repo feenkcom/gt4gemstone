@@ -28,6 +28,7 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.1.
 				aCoderViewModel hasRunningSession ifTrue: [
 					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
 						anAction disableAction.
@@ -37,6 +38,7 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.2.
 				aCoderViewModel hasRunningSession ifTrue: [
 					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
 						anAction disableAction.
@@ -47,6 +49,7 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.3.
 				aCoderViewModel hasRunningSession ifTrue: [
 					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
 						anAction shortcutKey: GtSourceCoderDoItAsynchronousShortcut new
@@ -57,21 +60,24 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 			withId: nil
 			to: coderAddOns
 			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.4.
 				aCoderViewModel hasRunningSession ifTrue: [
 					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
 						anAction shortcutKey: GtSourceCoderDoItAndInspectAsynchronousShortcut new
 							combinationForPlatform gtDisplayString ] ] ].
-	self
+	(self
 		addGemStoneExecutionContextMenuItemFrom: (GtSourceCoderPrintItShortcut new
 				name: 'Print (blocking)')
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel.
-	self
+			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.5 ].
+	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDebugShortcut new
 			withId: nil
 			to: coderAddOns
-			from: aCoderViewModel
+			from: aCoderViewModel) in: [ :anAction |
+				anAction priority: 800.6 ]
 ]
 
 { #category : #converting }

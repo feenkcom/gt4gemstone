@@ -11,7 +11,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 		ifNotNil: [ :aSession | aSession name ].
 		
-	coderAddOns
+	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile from GemStone'
 				description: sessionName asString)
@@ -35,7 +35,8 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 			self compiledMethod methodClass
 				compile: source
 				classified: (self compiledMethod category) ]
-		id: nil
+		id: nil)
+			ifNotNil: [ :anAction | anAction priority: 303 ]
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
@@ -45,10 +46,9 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
 		ifTrue: [ ^ self ].
-
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 			ifNotNil: [ :aSession | aSession name ].
-	coderAddOns
+	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile to GemStone'
 				description: sessionName asString)
@@ -78,7 +78,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 							cr;
 							<< 'environmentId: 0' ].
 			session evaluateAndWait: cmd ]
-		id: nil
+		id: nil) ifNotNil: [ :anAction | anAction priority: 302 ]
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
@@ -91,7 +91,7 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 			ifNotNil: [ :aSession | aSession name ].
 
-	coderAddOns
+	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Browse from GemStone'
 				description: sessionName asString)
@@ -115,7 +115,8 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 					on: RsrBrokenPromise
 					do: [ :ex | ex ].
 			self notifyObjectSpawn: gsMethod asGtBareProxyObject requesterObject: aCoderUIModel ]
-		id: nil
+		id: nil)
+			ifNotNil: [ :anAction | anAction priority: 304 ]
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
@@ -128,7 +129,7 @@ GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns fro
 			ifTrue: [^self].
 	sessionName := GtGemStoneSessionRegistry default defaultSession
 				ifNotNil: [:aSession | aSession name].
-	coderAddOns
+	(coderAddOns
 		addContextMenuItem: (self createLabel: 'Do it and inspect from GemStone'
 				description: sessionName asString)
 		group: BrMenuItemGroupConfiguration gemstone
@@ -148,5 +149,6 @@ GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns fro
 						do: [:ex | ex].
 			self notifyObjectSpawn: gsMethod asGtBareProxyObject
 				requesterObject: aCoderUIModel]
-		id: nil
+		id: nil)
+			ifNotNil: [ :anAction | anAction priority: 304 ]
 ]

@@ -33,19 +33,26 @@ GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 800>
-	self
+	(self
 		addContextMenuItemFrom: GtSourceCoderDoItShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns)
+			ifNotNil: [ :anAction | anAction priority: 800.1 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderDoItAndInspectShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns)
+			ifNotNil: [ :anAction | anAction priority: 800.2 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderPrintItShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns)
+			ifNotNil: [ :anAction | anAction priority: 800.3 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderDebugShortcut new
-			withId: nil
-			to: coderAddOns
+		withId: nil
+		to: coderAddOns)
+			ifNotNil: [ :anAction | anAction priority: 800.4 ]
 ]
 
 { #category : #'add-ons' }
@@ -54,13 +61,14 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst 
 	
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self 
+			(self 
 				addLinkMenuAddOnsTo: coderAddOns 
 				group: BrMenuItemGroupConfiguration navigation
 				node: node 
 				selector: #browseLocalHierarchyImplementorsAt:requesterObject: 
 				label: 'Browse local hierarchy implementors'
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+					ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
 { #category : #'add-ons' }
@@ -69,13 +77,14 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 	
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self 
+			(self 
 				addLinkMenuAddOnsTo: coderAddOns 
 				group: BrMenuItemGroupConfiguration navigation
 				node: node 
 				selector: #browseLocalHierarchyReferencesAt:requesterObject: 
 				label: 'Browse local hierarchy references'
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+					ifNotNil: [ :anAction | anAction priority: 16 ] ]
 ]
 
 { #category : #converting }
