@@ -6,7 +6,7 @@ Class {
 		'gsProcess',
 		'nextFrameIdentifier'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'instance creation' }

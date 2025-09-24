@@ -33,6 +33,7 @@ GtGemStoneClassBasicDetails >> initializeFromJSONDictionary: aDictionary [
 
 { #category : #initialization }
 GtGemStoneClassBasicDetails >> intializeForClass: aGsClass [ 
+	"We should handle here metaclasses through an explicit isMetaclass flag"
 	targetClassName := aGsClass name.
 	targetClassIconName := aGsClass gtSystemIconName.
 ]

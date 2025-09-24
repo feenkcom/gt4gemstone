@@ -1,7 +1,7 @@
 Class {
 	#name : #GtRsrLegacySerializationStrategy,
 	#superclass : #GtRsrSerializationStrategy,
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #converting }
