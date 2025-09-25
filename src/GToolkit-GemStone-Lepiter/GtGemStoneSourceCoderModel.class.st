@@ -7,24 +7,25 @@ Class {
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 	<gtCoderContextMenuAddOns: 250>
-	self
+	<gtCoderContextMenuAddOns>
+	(self
 		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
 		group: BrMenuItemGroupConfiguration refactoring
 		withId: nil
-		to: coderAddOns
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 250 ]
 ]
 
 { #category : #'add-ons' }
-GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: aShortcut withId: aMenuId to: coderAddOns from: aCoderViewModel [ 
-
-	^ (self addContextMenuItemFrom: aShortcut 
-		withId: aMenuId 
-		to: coderAddOns )
-			markAsGemStoneExecutionAction;
-			in: [ :anAction |
-				aCoderViewModel hasAsyncExecution ifTrue: [
-					anAction disableAction ].
-				anAction ]
+GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemFrom: aShortcut withId: aMenuId to: coderAddOns from: aCoderViewModel [
+	<return: #GtCoderContextMenuAction>
+	^ (self
+		addContextMenuItemFrom: aShortcut
+		withId: aMenuId
+		to: coderAddOns)
+		markAsGemStoneExecutionAction;
+		in: [ :anAction | 
+			aCoderViewModel hasAsyncExecution ifTrue: [ anAction disableAction ].
+			anAction ]
 ]
 
 { #category : #'add-ons' }
@@ -43,7 +44,7 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutF
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
-	
+	<gtCoderContextMenuAddOns>
 	(self extractableNodesFrom: aCoderViewModel)
 		ifNotEmpty: [ :nodes | 
 			| node foundClass |
@@ -53,7 +54,7 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 				variableNodeToBehavior: node
 				ifFound: [ :aClass | foundClass := aClass ]
 				ifNone: [ ^ self ].
-			coderAddOns
+			(coderAddOns
 				addContextMenuItem: (self
 						createLabel: 'Browse local class'
 						description: foundClass name)
@@ -61,33 +62,39 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
-					self 
-						browseLocalBehaviorAt: node startPosition 
+					self
+						browseLocalBehaviorAt: node startPosition
 						requesterObject: aTextualViewModel ]
-				shortcutKey: GtGemStoneCoderBrowseLocalBehaviorShortcut new combinationForPlatform gtDisplayString ]
+				shortcutKey: GtGemStoneCoderBrowseLocalBehaviorShortcut new
+						combinationForPlatform gtDisplayString)
+				ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 10>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self
+			(self
 				addLinkMenuAddOnsTo: coderAddOns
 				group: BrMenuItemGroupConfiguration navigation
 				node: node
 				selector: #browseLocalImplementorsAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalImplementorsShortcut new
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 10 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 12>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			(node isVariable and: [ self isLocalInstanceVariable: node ]) ifFalse: [ ^ self ].
-			coderAddOns
+			(node isVariable and: [ self isLocalInstanceVariable: node ])
+				ifFalse: [ ^ self ].
+			(coderAddOns
 				addContextMenuItem: (self
 						createLabel: 'Browse local references'
 						description: node name value)
@@ -95,26 +102,29 @@ GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: a
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
-					self 
-						browseLocalReferencesAt: node startPosition 
+					self
+						browseLocalReferencesAt: node startPosition
 						requesterObject: aTextualViewModel ]
 				id: nil
 				shortcutKey: GtGemStoneCoderBrowseLocalReferencesShortcut new
-						combinationForPlatform gtDisplayString ]
+						combinationForPlatform gtDisplayString)
+				ifNotNil: [ :anAction | anAction priority: 12 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 15>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self
+			(self
 				addLinkMenuAddOnsTo: coderAddOns
 				group: BrMenuItemGroupConfiguration navigation
 				node: node
 				selector: #browseLocalReferencesAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalReferencesShortcut new
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 15 ] ]
 ]
 
 { #category : #'add-ons' }

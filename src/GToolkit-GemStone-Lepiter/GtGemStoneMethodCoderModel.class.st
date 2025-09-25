@@ -33,49 +33,55 @@ GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 800>
-	self
+	<gtCoderContextMenuAddOns>
+	(self
 		addContextMenuItemFrom: GtSourceCoderDoItShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 800.1 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderDoItAndInspectShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 800.2 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderPrintItShortcut new
-			withId: nil
-			to: coderAddOns;
+		withId: nil
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 800.3 ].
+	(self
 		addContextMenuItemFrom: GtSourceCoderDebugShortcut new
-			withId: nil
-			to: coderAddOns
+		withId: nil
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 800.4 ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
-	
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self 
-				addLinkMenuAddOnsTo: coderAddOns 
+			(self
+				addLinkMenuAddOnsTo: coderAddOns
 				group: BrMenuItemGroupConfiguration navigation
-				node: node 
-				selector: #browseLocalHierarchyImplementorsAt:requesterObject: 
+				node: node
+				selector: #browseLocalHierarchyImplementorsAt:requesterObject:
 				label: 'Browse local hierarchy implementors'
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 16>
-	
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			self 
-				addLinkMenuAddOnsTo: coderAddOns 
+			(self
+				addLinkMenuAddOnsTo: coderAddOns
 				group: BrMenuItemGroupConfiguration navigation
-				node: node 
-				selector: #browseLocalHierarchyReferencesAt:requesterObject: 
+				node: node
+				selector: #browseLocalHierarchyReferencesAt:requesterObject:
 				label: 'Browse local hierarchy references'
-				requesterObject: aCoderViewModel ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 16 ] ]
 ]
 
 { #category : #converting }
