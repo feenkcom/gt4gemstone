@@ -3,14 +3,14 @@ Extension { #name : #GtPharoMethodCoder }
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 303>
+	<gtCoderContextMenuAddOns>
 	| sessionName |
-	
-	(anAST methodNode isNil or: 
-		[ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not]) 
-			ifTrue: [ ^ self ].
+	(anAST methodNode isNil
+		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
+		ifTrue: [ ^ self ].
 	sessionName := GtGemStoneSessionRegistry default defaultSession
-		ifNotNil: [ :aSession | aSession name ].
-		
+			ifNotNil: [ :aSession | aSession name ].
+
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile from GemStone'
@@ -24,24 +24,25 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
 			session connect.
-			cmd := String streamContents: [ :stream |
-				stream
-					<< '(';
-					<< clsName;
-					<< ' compiledMethodAt: #';
-					<< selector;
-					<< ') sourceString' ].
+			cmd := String
+					streamContents: [ :stream | 
+						stream
+							<< '(';
+							<< clsName;
+							<< ' compiledMethodAt: #';
+							<< selector;
+							<< ') sourceString' ].
 			source := session evaluateAndWait: cmd.
 			self compiledMethod methodClass
 				compile: source
-				classified: (self compiledMethod category) ]
-		id: nil)
-			ifNotNil: [ :anAction | anAction priority: 303 ]
+				classified: self compiledMethod category ]
+		id: nil) ifNotNil: [ :anAction | anAction priority: 303 ]
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 302>
+	<gtCoderContextMenuAddOns>
 	| sessionName |
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
@@ -84,6 +85,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns: 304>
+	<gtCoderContextMenuAddOns>
 	| sessionName |
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
@@ -114,41 +116,44 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 			gsMethod := [ session evaluateAndWait: cmd autoCommit: false ]
 					on: RsrBrokenPromise
 					do: [ :ex | ex ].
-			self notifyObjectSpawn: gsMethod asGtBareProxyObject requesterObject: aCoderUIModel ]
-		id: nil)
-			ifNotNil: [ :anAction | anAction priority: 304 ]
+			self
+				notifyObjectSpawn: gsMethod asGtBareProxyObject
+				requesterObject: aCoderUIModel ]
+		id: nil) ifNotNil: [ :anAction | anAction priority: 304 ]
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 304>
+	<gtCoderContextMenuAddOns>
 	| sessionName |
-	aCoderViewModel hasSelection ifFalse: [^self].
+	aCoderViewModel hasSelection ifFalse: [ ^ self ].
 	(anAST methodNode isNil
-		or: [GtGemStoneSessionRegistry hasRegistryWithDefaultSession not])
-			ifTrue: [^self].
+		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
+		ifTrue: [ ^ self ].
 	sessionName := GtGemStoneSessionRegistry default defaultSession
-				ifNotNil: [:aSession | aSession name].
+			ifNotNil: [ :aSession | aSession name ].
 	(coderAddOns
-		addContextMenuItem: (self createLabel: 'Do it and inspect from GemStone'
+		addContextMenuItem: (self
+				createLabel: 'Do it and inspect from GemStone'
 				description: sessionName asString)
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
-		action: 
-			[:aCoderUIModel :anEvent |
+		action: [ :aCoderUIModel :anEvent | 
 			| clsName session cmd gsMethod |
 			clsName := self compiledMethod methodClass name.
 			session := GtGemStoneSessionRegistry default defaultSession.
-			session ifNil: [self error: 'No default session available'].
+			session ifNil: [ self error: 'No default session available' ].
 			session connect.
 			cmd := aCoderViewModel coder currentSourceString
-						copyFrom: aCoderViewModel selectedTextInterval first
-						to: aCoderViewModel selectedTextInterval last.
-			gsMethod := [session evaluateAndWaitReturnProxy: cmd] on: RsrBrokenPromise
-						do: [:ex | ex].
-			self notifyObjectSpawn: gsMethod asGtBareProxyObject
-				requesterObject: aCoderUIModel]
-		id: nil)
-			ifNotNil: [ :anAction | anAction priority: 304 ]
+					copyFrom: aCoderViewModel selectedTextInterval first
+					to: aCoderViewModel selectedTextInterval last.
+			gsMethod := [ session evaluateAndWaitReturnProxy: cmd ]
+					on: RsrBrokenPromise
+					do: [ :ex | ex ].
+			self
+				notifyObjectSpawn: gsMethod asGtBareProxyObject
+				requesterObject: aCoderUIModel ]
+		id: nil) ifNotNil: [ :anAction | anAction priority: 304 ]
 ]

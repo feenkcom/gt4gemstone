@@ -23,61 +23,67 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 { #category : #'add-ons' }
 GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 800>
+	<gtCoderContextMenuAddOns>
 	(self
-		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut new
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.1.
-				aCoderViewModel hasRunningSession ifTrue: [
-					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
-						anAction disableAction.
-						anAction shortcutKey: '' ] ] ].
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut
+				new
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel)
+		in: [ :anAction | 
+			anAction priority: 800.1.
+			aCoderViewModel hasRunningSession
+				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
+						ifTrue: [ anAction disableAction.
+							anAction shortcutKey: '' ] ] ].
 	(self
-		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut new
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.2.
-				aCoderViewModel hasRunningSession ifTrue: [
-					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
-						anAction disableAction.
-						anAction shortcutKey: '' ] ] ].
+		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut
+				new
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel)
+		in: [ :anAction | 
+			anAction priority: 800.2.
+			aCoderViewModel hasRunningSession
+				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
+						ifTrue: [ anAction disableAction.
+							anAction shortcutKey: '' ] ] ].
 	(self
-		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut new
-				name: 'Do it (blocking)')
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.3.
-				aCoderViewModel hasRunningSession ifTrue: [
-					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
-						anAction shortcutKey: GtSourceCoderDoItAsynchronousShortcut new
-							combinationForPlatform gtDisplayString ] ] ].
+		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut
+				new name: 'Do it (blocking)')
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel)
+		in: [ :anAction | 
+			anAction priority: 800.3.
+			aCoderViewModel hasRunningSession
+				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
+						ifTrue: [ anAction
+								shortcutKey: GtSourceCoderDoItAsynchronousShortcut new combinationForPlatform gtDisplayString ] ] ].
 	(self
-		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut new
-				name: 'Do it and inspect (blocking)')
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.4.
-				aCoderViewModel hasRunningSession ifTrue: [
-					aCoderViewModel session hasRegisteredAsyncExecution ifTrue: [
-						anAction shortcutKey: GtSourceCoderDoItAndInspectAsynchronousShortcut new
-							combinationForPlatform gtDisplayString ] ] ].
+		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut
+				new name: 'Do it and inspect (blocking)')
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel)
+		in: [ :anAction | 
+			anAction priority: 800.4.
+			aCoderViewModel hasRunningSession
+				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
+						ifTrue: [ anAction
+								shortcutKey: GtSourceCoderDoItAndInspectAsynchronousShortcut new combinationForPlatform
+										gtDisplayString ] ] ].
 	(self
 		addGemStoneExecutionContextMenuItemFrom: (GtSourceCoderPrintItShortcut new
 				name: 'Print (blocking)')
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.5 ].
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel) in: [ :anAction | anAction priority: 800.5 ].
 	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDebugShortcut new
-			withId: nil
-			to: coderAddOns
-			from: aCoderViewModel) in: [ :anAction |
-				anAction priority: 800.6 ]
+		withId: nil
+		to: coderAddOns
+		from: aCoderViewModel) in: [ :anAction | anAction priority: 800.6 ]
 ]
 
 { #category : #converting }

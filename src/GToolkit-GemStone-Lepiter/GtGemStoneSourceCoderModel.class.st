@@ -7,12 +7,12 @@ Class {
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
 	<gtCoderContextMenuAddOns: 250>
+	<gtCoderContextMenuAddOns>
 	(self
 		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
 		group: BrMenuItemGroupConfiguration refactoring
 		withId: nil
-		to: coderAddOns) 
-			ifNotNil: [ :anAction | anAction priority: 250 ]
+		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 250 ]
 ]
 
 { #category : #'add-ons' }
@@ -44,7 +44,7 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutF
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 11>
-	
+	<gtCoderContextMenuAddOns>
 	(self extractableNodesFrom: aCoderViewModel)
 		ifNotEmpty: [ :nodes | 
 			| node foundClass |
@@ -62,16 +62,18 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
-					self 
-						browseLocalBehaviorAt: node startPosition 
+					self
+						browseLocalBehaviorAt: node startPosition
 						requesterObject: aTextualViewModel ]
-				shortcutKey: GtGemStoneCoderBrowseLocalBehaviorShortcut new combinationForPlatform gtDisplayString)
-					ifNotNil: [ :anAction | anAction priority: 11 ] ]
+				shortcutKey: GtGemStoneCoderBrowseLocalBehaviorShortcut new
+						combinationForPlatform gtDisplayString)
+				ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 10>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self
@@ -80,16 +82,18 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 				node: node
 				selector: #browseLocalImplementorsAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalImplementorsShortcut new
-				requesterObject: aCoderViewModel) 
-					ifNotNil: [ :anAction | anAction priority: 10 ] ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 10 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 12>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
-			(node isVariable and: [ self isLocalInstanceVariable: node ]) ifFalse: [ ^ self ].
+			(node isVariable and: [ self isLocalInstanceVariable: node ])
+				ifFalse: [ ^ self ].
 			(coderAddOns
 				addContextMenuItem: (self
 						createLabel: 'Browse local references'
@@ -98,18 +102,19 @@ GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: a
 				hover: (self highlightNodeBlock: node)
 				leave: self removeHighlightBlock
 				action: [ :aTextualViewModel | 
-					self 
-						browseLocalReferencesAt: node startPosition 
+					self
+						browseLocalReferencesAt: node startPosition
 						requesterObject: aTextualViewModel ]
 				id: nil
 				shortcutKey: GtGemStoneCoderBrowseLocalReferencesShortcut new
-						combinationForPlatform gtDisplayString) 
-					ifNotNil: [ :anAction | anAction priority: 12 ] ]
+						combinationForPlatform gtDisplayString)
+				ifNotNil: [ :anAction | anAction priority: 12 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns: 15>
+	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self
@@ -118,8 +123,8 @@ GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: 
 				node: node
 				selector: #browseLocalReferencesAt:requesterObject:
 				shortcut: GtGemStoneCoderBrowseLocalReferencesShortcut new
-				requesterObject: aCoderViewModel) 
-					ifNotNil: [ :anAction | anAction priority: 15 ] ]
+				requesterObject: aCoderViewModel)
+				ifNotNil: [ :anAction | anAction priority: 15 ] ]
 ]
 
 { #category : #'add-ons' }
