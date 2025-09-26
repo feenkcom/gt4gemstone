@@ -32,7 +32,6 @@ GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 800>
 	<gtCoderContextMenuAddOns>
 	(self
 		addContextMenuItemFrom: GtSourceCoderDoItShortcut new
@@ -54,7 +53,6 @@ GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: a
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 11>
 	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
@@ -70,7 +68,6 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst 
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 16>
 	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 

@@ -6,7 +6,6 @@ Class {
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addFormatMethodAst: anAst to: coderAddOns [
-	<gtCoderContextMenuAddOns: 250>
 	<gtCoderContextMenuAddOns>
 	(self
 		addContextMenuItemFrom: GtSourceCoderFormatShortcut new
@@ -43,7 +42,6 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutF
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 11>
 	<gtCoderContextMenuAddOns>
 	(self extractableNodesFrom: aCoderViewModel)
 		ifNotEmpty: [ :nodes | 
@@ -72,7 +70,6 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 10>
 	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
@@ -88,7 +85,6 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 12>
 	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
@@ -113,7 +109,6 @@ GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: a
 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 15>
 	<gtCoderContextMenuAddOns>
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
