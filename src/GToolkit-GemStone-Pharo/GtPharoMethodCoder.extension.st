@@ -2,7 +2,6 @@ Extension { #name : #GtPharoMethodCoder }
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
-	<gtCoderContextMenuAddOns: 303>
 	<gtCoderContextMenuAddOns>
 	| sessionName |
 	(anAST methodNode isNil
@@ -41,7 +40,6 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
-	<gtCoderContextMenuAddOns: 302>
 	<gtCoderContextMenuAddOns>
 	| sessionName |
 	(anAST methodNode isNil
@@ -84,7 +82,6 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
-	<gtCoderContextMenuAddOns: 304>
 	<gtCoderContextMenuAddOns>
 	| sessionName |
 	(anAST methodNode isNil
@@ -124,7 +121,6 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 304>
 	<gtCoderContextMenuAddOns>
 	| sessionName |
 	aCoderViewModel hasSelection ifFalse: [ ^ self ].

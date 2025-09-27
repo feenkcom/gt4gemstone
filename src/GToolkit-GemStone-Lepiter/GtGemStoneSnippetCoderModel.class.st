@@ -22,7 +22,6 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 
 { #category : #'add-ons' }
 GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
-	<gtCoderContextMenuAddOns: 800>
 	<gtCoderContextMenuAddOns>
 	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut
