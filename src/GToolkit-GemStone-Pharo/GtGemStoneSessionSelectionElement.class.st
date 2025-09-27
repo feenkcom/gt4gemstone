@@ -94,7 +94,7 @@ GtGemStoneSessionSelectionElement >> createDefaultSessionButton [
 
 	^ BrButton new 
 		aptitude: BrGlamorousButtonWithIconAndLabelAptitude;
-		icon: BrGlamorousIcons settings;
+		icon: BrGlamorousVectorIcons settings;
 		label: 'Use Default';
 		margin: (BlInsets bottom: 5 right: 5);
 		action: [ :theButton | self selectDefaultSessionFrom: theButton ].

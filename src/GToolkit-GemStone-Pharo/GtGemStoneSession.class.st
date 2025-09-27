@@ -1301,7 +1301,7 @@ GtGemStoneSession >> gtRemoveActionFor: anAction [
 	^(anAction button)
 		priority: 5;
 		tooltip: 'Remove Session from registry';
-		icon: BrGlamorousIcons trash;
+		icon: BrGlamorousVectorIcons bin;
 		action: 
 				[:button |
 				self removeSelf.
@@ -1336,7 +1336,7 @@ GtGemStoneSession >> gtViewFeaturesFor: aView [
 		priority: 22;
 		object: [ self currentFeatures ];
 		view: #gtViewFeaturesFor:;
-		actionButtonIcon: BrGlamorousIcons inspect 
+		actionButtonIcon: BrGlamorousVectorIcons inspect 
 			tooltip: 'Inspect current features'
 			action: [ :aButton  |
 				aButton phlow 
@@ -1356,7 +1356,7 @@ GtGemStoneSession >> gtViewTranscriptFor: aView [
 		priority: 21;
 		object: [ self remoteTranscript ];
 		view: #gtViewTranscriptFor:;
-		actionButtonIcon: BrGlamorousIcons inspect 
+		actionButtonIcon: BrGlamorousVectorIcons inspect 
 			tooltip: 'Inspect transcript wrapper'
 			action: [ :aButton  |
 				aButton phlow 

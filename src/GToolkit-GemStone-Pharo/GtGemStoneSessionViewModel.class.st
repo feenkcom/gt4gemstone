@@ -101,7 +101,7 @@ GtGemStoneSessionViewModel >> gtBeDefaultFor: anAction [
 	
 	^ anAction button
 		label: 'Be Default';
-		icon: BrGlamorousIcons greencircle;
+		icon: BrGlamorousVectorIcons greencircle;
 		action: [ :button | self beDefaultSession ];
 		target: GtGemStoneSessionActionTarget uniqueInstance
 ]

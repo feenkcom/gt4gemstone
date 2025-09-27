@@ -259,7 +259,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionToggleAutomaticReplaceFor: anAction 
 			ifTrue: [ 'Disable' ]
 			ifFalse: [ 'Enable' ]);
 		priority: 150;
-		icon: BrGlamorousIcons spawn;
+		icon: BrGlamorousVectorIcons spawn;
 		tooltip: (self replacePaneContentAutomatically
 			ifTrue: [ 'Disable automatic replacement of content when execution terminates ' ]
 			ifFalse: [ 'Enable automatic replacement of content when execution terminates '  ]);
@@ -275,7 +275,7 @@ GtGemStoneAsyncEvaluationElement >> gtActionUpdateDetailsFor: anAction [
 	^ anAction button
 		tooltip: 'Refresh';
 		priority: 10;
-		icon: BrGlamorousIcons refresh;
+		icon: BrGlamorousVectorIcons refresh;
 		action: [ 
 			self requestMainContainerAndToolbarUpdate ]
 ]

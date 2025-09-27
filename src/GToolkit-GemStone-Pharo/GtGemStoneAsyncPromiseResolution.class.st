@@ -148,7 +148,7 @@ GtGemStoneAsyncPromiseResolution >> gtViewTranscriptFor: aView [
 		priority: 10;
 		object: [ self gemStoneSession remoteTranscript ];
 		view: #gtViewTranscriptFor:;
-		actionButtonIcon: BrGlamorousIcons inspect 
+		actionButtonIcon: BrGlamorousVectorIcons inspect 
 			tooltip: 'Inspect transcript wrapper'
 			action: [ :aButton  |
 				aButton phlow 
