@@ -84,7 +84,7 @@ GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 			action: [ :aButton :aTab |
 				self toggleRemoteTranscript.
 				aTab viewContentElement phlow update ];
-		actionButtonIcon: BrGlamorousIcons trash 
+		actionButtonIcon: BrGlamorousVectorIcons bin 
 			 tooltip: 'Clear the transcript content'
 			 action: [:aButton :aTab |
 			 	self clearRemoteTranscript.

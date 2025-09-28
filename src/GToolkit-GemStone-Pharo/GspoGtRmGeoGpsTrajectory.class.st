@@ -16,7 +16,7 @@ GspoGtRmGeoGpsTrajectory >> gtActionDownloadFor: anAction [
 	^ anAction button
 		tooltip: 'Download copy locally';
 		priority: 10;
-		icon: BrGlamorousIcons cloud;
+		icon: BrGlamorousVectorIcons cloud;
 		action: [ :aButton |
 			aButton phlow spawnObject: (GtRmGeoGpsTrajectory 
 				fromJsonDictionary: (self 
