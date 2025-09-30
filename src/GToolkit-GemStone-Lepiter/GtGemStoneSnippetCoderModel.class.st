@@ -121,24 +121,33 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 
 	self class enableAsyncPlay ifTrue: [ 
 		addOns
-			addGemStoneExecutionAction: 'Evaluate (asynchronous)' translated
-			icon: BrGlamorousVectorIcons playAsynchronous 
-			action: [ :aCoderUIModel :aButtonElement | 
-				GtCoderCodeExecutor doItAsynchronous
-					coderViewModel: aCoderUIModel;
-					element: aButtonElement;
-					execute ]
-			id: GtSourceCoderDoItAsynchronousActionId.
-		addOns
-			addGemStoneExecutionAction: 'Inspect (asynchronous)' translated
-			icon: BrGlamorousVectorIcons playInspectAsynchronous 
+			addGemStoneExecutionAction: 'Evaluate and inspect (asynchronous)' translated
+			icon: BrGlamorousVectorIcons playinspectasync 
 			action: [ :aCoderUIModel :aButtonElement | 
 				GtCoderCodeExecutor doItAndGoAsynchronous
 					coderViewModel: aCoderUIModel;
 					element: aButtonElement;
 					execute ]
-			id: GtSourceCoderDoItAndGoAsynchronousActionId ].
+			id: GtSourceCoderDoItAndGoAsynchronousActionId.
+		addOns
+			addGemStoneExecutionAction: 'Evaluate (asynchronous)' translated
+			icon: BrGlamorousVectorIcons playasync 
+			action: [ :aCoderUIModel :aButtonElement | 
+				GtCoderCodeExecutor doItAsynchronous
+					coderViewModel: aCoderUIModel;
+					element: aButtonElement;
+					execute ]
+			id: GtSourceCoderDoItAsynchronousActionId ].
 			
+	addOns
+		addGemStoneExecutionAction: 'Evaluate and inspect (blocking)' translated
+		icon: BrGlamorousVectorIcons playinspect
+		action: [ :aCoderUIModel :anElement | 
+			GtCoderCodeExecutor doItAndGo
+				coderViewModel: aCoderUIModel;
+				element: anElement;
+				execute ]
+		id: GtSourceCoderDoItAndGoActionId.
 	addOns
 		addGemStoneExecutionAction: 'Evaluate (blocking)' translated
 		icon: BrGlamorousVectorIcons play 
@@ -148,15 +157,6 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				element: anElement;
 				execute ]
 		id: GtSourceCoderDoItActionId.
-	addOns
-		addGemStoneExecutionAction: 'Inspect (blocking)' translated
-		icon: BrGlamorousVectorIcons playinspect
-		action: [ :aCoderUIModel :anElement | 
-			GtCoderCodeExecutor doItAndGo
-				coderViewModel: aCoderUIModel;
-				element: anElement;
-				execute ]
-		id: GtSourceCoderDoItAndGoActionId.
 	"addOns
 		addGemStoneExecutionAction: 'Inspect serialized (blocking)' translated
 		icon: BrGlamorousVectorIcons tohere
@@ -165,7 +165,7 @@ GtGemStoneSnippetCoderModel >> initializeAddOns: addOns [
 				coderViewModel: aCoderUIModel;
 				element: anElement;
 				execute ]
-		id: GtSourceCoderDoItAndGoSerializedActionId".
+		id: GtSourceCoderDoItAndGoSerializedActionId."
 	
 	addOns
 		addGemStoneExecutionAction: 'Debug' translated
