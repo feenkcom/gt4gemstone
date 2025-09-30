@@ -52,7 +52,7 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 	
 	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut
-				new name: 'Do it and inspect (blocking)')
+				new name: 'Evaluate and inspect (blocking)')
 		withId: nil
 		to: coderAddOns
 		from: aCoderViewModel)
@@ -66,7 +66,7 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 	
 	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut
-				new name: 'Do it (blocking)')
+				new name: 'Evaluate (blocking)')
 		withId: nil
 		to: coderAddOns
 		from: aCoderViewModel)
