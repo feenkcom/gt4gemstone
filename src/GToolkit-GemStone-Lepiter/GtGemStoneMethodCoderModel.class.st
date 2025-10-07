@@ -530,6 +530,16 @@ GtGemStoneMethodCoderModel >> protocol: aSymbol [
 	^ self attributeNamed: #category put: aSymbol
 ]
 
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> protocolName [
+	<return: #String or: nil>
+
+	^ self
+		attributeNamed: #category
+		ifAbsent: [
+			Error signal: 'FIX ME' ]
+]
+
 { #category : #'actions - save' }
 GtGemStoneMethodCoderModel >> saveInContext: aGtPharoSourceCoderEvaluationContext [
 	"Try to save the current method validating syntax and return `true` if save was succesful, false otherwise"
