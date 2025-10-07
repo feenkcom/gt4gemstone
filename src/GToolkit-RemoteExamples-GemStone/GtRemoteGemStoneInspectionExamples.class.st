@@ -195,7 +195,10 @@ GtRemoteGemStoneInspectionExamples >> metaViewForRemoteSide [
 		aStep 
 			// GtPharoMethodsCoderElement;
 			exists ].
-
+			
+	self assert: (scripter element query 
+		//  GtExpandableMethodCoderElement) isNotEmpty.
+		
 	^ scripter
 ]
 
