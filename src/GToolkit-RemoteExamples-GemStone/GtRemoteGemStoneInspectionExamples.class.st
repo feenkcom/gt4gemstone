@@ -175,6 +175,31 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> metaViewForRemoteSide [
+	<gtExample>
+	<after: #stopServer>
+	| proxyObject scripter |
+	proxyObject := self createProxyObjectFor: [1].
+
+	scripter := BlScripter new 
+		model: proxyObject;
+		element: proxyObject gtDefaultInspectorTool asElement;
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Meta';
+		assertSelectedTabWithName: 'Meta';
+		play.
+		
+	scripter checkStep: [ :aStep |
+		aStep 
+			// GtPharoMethodsCoderElement;
+			exists ].
+
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> metaclassInspection [
 	<gtExample>
 	<after: #stopServer>
