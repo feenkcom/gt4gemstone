@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'session',
-		'dirtyCount'
+		'dirtyCount',
+		'maxKeepAlive'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
@@ -38,6 +39,19 @@ GtGemStoneKeepAliveSession >> isDirty [
 	"Answer a boolean indicating whether the receiver's session is considered dirty, i.e. it has needed a commit for the last two keepAlive polls"
 
 	^ dirtyCount > 1
+]
+
+{ #category : #accessing }
+GtGemStoneKeepAliveSession >> maxKeepAlive [
+	"Answer the number of minutes to keep the session alive"
+
+	^ maxKeepAlive
+]
+
+{ #category : #accessing }
+GtGemStoneKeepAliveSession >> maxKeepAlive: anInteger [
+
+	maxKeepAlive := anInteger
 ]
 
 { #category : #private }

@@ -14,7 +14,8 @@ Class {
 		'serviceName',
 		'registry',
 		'versionString',
-		'iconName'
+		'iconName',
+		'maxKeepAlive'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -148,6 +149,16 @@ GtGemStoneConnector >> isNull [
 GtGemStoneConnector >> isSessionIdentifier [
 
 	^ false
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> maxKeepAlive [
+	^ maxKeepAlive ifNil: [ GtGemStoneSessionKeepAlive maxKeepAlive ]
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> maxKeepAlive: anObject [
+	maxKeepAlive := anObject
 ]
 
 { #category : #accessing }
