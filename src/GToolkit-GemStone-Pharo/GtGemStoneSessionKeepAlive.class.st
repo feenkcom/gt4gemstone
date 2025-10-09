@@ -1,5 +1,5 @@
 "
-GtGemStoneSessionKeepAlive periodically scans the active sessions in the supplied registry and does an abortTransaction if the session transaction log is empty (the session is unmodified).  This can keep the session alive if there is a timeout configured in the GemStone server.  Subclasses can override #sessionModified: method to perform an action if the session is modified.
+GtGemStoneSessionKeepAlive periodically scans the active sessions in the supplied registry and does an abortTransaction if the session transaction log is empty (the session is unmodified).  This can keep the session alive if there is a timeout configured in the GemStone server.  Users can set a cleanPostAction or modifiedPostAction to add custom behaviour.
 "
 Class {
 	#name : #GtGemStoneSessionKeepAlive,
@@ -94,7 +94,7 @@ GtGemStoneSessionKeepAlive >> gtLiveFor: aView [
 		items: [ {
 			'Status' -> self status.
 			'Next poll' -> self nextPollTime.
-			'Max keep alive (minutes)' -> self class maxKeepAlive.
+			'Default Max keep alive (minutes)' -> self class maxKeepAlive.
 			} ];
 		column: 'Attribute' text: #key;
 		column: 'Value' text: #value;
@@ -108,9 +108,10 @@ GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 	^ aView columnedList
 		title: 'Sessions';
 		priority: 20;
-		items: [ self nonCleanSessions ];
+		items: [ registry activeSessions ];
 		column: 'Session' text: [ :session | session name ];
-		column: 'Count' text: [ :session | session keepAlive dirtyCount ];
+		column: 'Dirty Count' text: [ :session | session keepAlive dirtyCount ];
+		column: 'Max Keep Alive (min.)' text: [ :session | session keepAlive maxKeepAlive ];
 		actionUpdateButton
 ]
 
@@ -125,7 +126,7 @@ GtGemStoneSessionKeepAlive >> hasDirtySession [
 GtGemStoneSessionKeepAlive >> initialize [
 
 	super initialize.
-	delay := 5 minutes.
+	delay := 3 minutes.
 	shouldExit := false.
 	announcer := Announcer new.
 	cleanBlock := [ System abortTransaction ].
@@ -209,7 +210,7 @@ GtGemStoneSessionKeepAlive >> pollSession: session [
 		[ session isBusy ] ]) ifTrue: 
 			[ session keepAlive resetDirtyCount.
 			^ self ].
-	(DateAndTime now - session connectionTime) asMinutes > self class maxKeepAlive ifTrue:
+	(DateAndTime now - session connectionTime) asMinutes > session keepAlive maxKeepAlive ifTrue:
 		[ session needsCommit ifFalse: [ session keepAlive resetDirtyCount ].
 		^ self ].
 		

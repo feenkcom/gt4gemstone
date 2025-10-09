@@ -1448,7 +1448,9 @@ GtGemStoneSession >> isSessionIdentifier [
 GtGemStoneSession >> keepAlive [
 
 	^ keepAlive ifNil: [ 
-		keepAlive := GtGemStoneKeepAliveSession session: self ]
+		keepAlive := GtGemStoneKeepAliveSession session: self.
+		keepAlive maxKeepAlive: connector maxKeepAlive.
+		keepAlive ]
 ]
 
 { #category : #accessing }
