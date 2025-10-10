@@ -1648,9 +1648,12 @@ GtGemStoneSession >> statusAttributes [
 
 	attributes
 		add: (connector isCodeSyncAllowed
-				ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
-				ifFalse: [ 'Code Sync Allowed' -> false ]).
-	attributes add: 'Auto-commit' -> self autoCommitEnabled.
+			ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
+			ifFalse: [ 'Code Sync Allowed' -> false ]);
+		add: 'Auto-commit' -> self autoCommitEnabled;
+		add: 'Keep Alive' -> (self hasKeepAlive
+			ifTrue: [ self keepAlive maxKeepAlive ]
+			ifFalse: [ '-' ]).
 
 	isRunning ifFalse: [ ^ attributes ].
 

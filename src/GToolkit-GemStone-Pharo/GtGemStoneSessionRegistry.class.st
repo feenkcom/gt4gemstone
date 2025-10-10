@@ -565,6 +565,12 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
 			width: 50;
+		column: 'Keep Alive' 
+			text: [ :aSession | 
+				aSession hasKeepAlive
+					ifTrue: [ aSession keepAlive maxKeepAlive ]
+					ifFalse: [ '-' ] ]
+			width: 70;
 		contextItemLabel: 'Playground (default snippet)' 
 			action: [ :anElement :aGtGemStoneSession | 
 				self openPlaygroundWithDefaultSessionIdentifierFrom: anElement ]
