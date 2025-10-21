@@ -8,7 +8,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -28,7 +28,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -72,7 +72,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -184,7 +184,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -205,7 +205,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -225,7 +225,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -245,7 +245,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -265,7 +265,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -285,7 +285,7 @@ doit
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
@@ -304,7 +304,7 @@ doit
 	classVars: #(STONCharacters STONSimpleSymbolCharacters)
 	classInstVars: #()
 	poolDictionaries: #()
-	inDictionary: RowanKernel
+	inDictionary: Globals
 	options: #()
 )
 		category: 'STON-Core';
