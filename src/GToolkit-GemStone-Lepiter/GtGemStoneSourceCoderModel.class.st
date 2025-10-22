@@ -263,7 +263,6 @@ GtGemStoneSourceCoderModel >> initializeShortcuts: addOns [
 			GtGemStoneCoderBrowseLocalImplementorsShortcut.
 			GtGemStoneCoderBrowseLocalReferencesShortcut.
 			GtGemStoneCoderBrowseLocalBehaviorShortcut.
-			GtSourceCoderDiscardChangesShortcut.
 			GtSourceCoderFormatShortcut.
 			GtSourceCoderDebugShortcut.
 			"GtSourceCoderInlineRenameShortcut."
