@@ -3,17 +3,18 @@ Extension { #name : #GtPharoMethodCoder }
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns>
-	| sessionName |
+	| sessionDisplayName |
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
 		ifTrue: [ ^ self ].
-	sessionName := GtGemStoneSessionRegistry default defaultSession
-			ifNotNil: [ :aSession | aSession name ].
+	sessionDisplayName := GtGemStoneSessionRegistry default defaultSession
+			ifNotNil: [ :aSession | aSession displayName ].
 
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile from GemStone'
-				description: sessionName asString)
+				description: (sessionDisplayName 
+					ifNil: ['<missing>']))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
@@ -41,16 +42,17 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns>
-	| sessionName |
+	| sessionDisplayName |
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
 		ifTrue: [ ^ self ].
-	sessionName := GtGemStoneSessionRegistry default defaultSession
-			ifNotNil: [ :aSession | aSession name ].
+	sessionDisplayName := GtGemStoneSessionRegistry default defaultSession
+			ifNotNil: [ :aSession | aSession displayName ].
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile to GemStone'
-				description: sessionName asString)
+				description: (sessionDisplayName 
+					ifNil: ['<missing>']))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
@@ -83,17 +85,18 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 	<gtCoderContextMenuAddOns>
-	| sessionName |
+	| sessionDisplayName |
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
 		ifTrue: [ ^ self ].
-	sessionName := GtGemStoneSessionRegistry default defaultSession
-			ifNotNil: [ :aSession | aSession name ].
+	sessionDisplayName := GtGemStoneSessionRegistry default defaultSession
+			ifNotNil: [ :aSession | aSession displayName ].
 
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Browse from GemStone'
-				description: sessionName asString)
+				description: (sessionDisplayName 
+					ifNil: ['<missing>']))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
@@ -122,17 +125,18 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
-	| sessionName |
+	| sessionDisplayName |
 	aCoderViewModel hasSelection ifFalse: [ ^ self ].
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
 		ifTrue: [ ^ self ].
-	sessionName := GtGemStoneSessionRegistry default defaultSession
-			ifNotNil: [ :aSession | aSession name ].
+	sessionDisplayName := GtGemStoneSessionRegistry default defaultSession
+			ifNotNil: [ :aSession | aSession displayName ].
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Do it and inspect from GemStone'
-				description: sessionName asString)
+				description: (sessionDisplayName 
+					ifNil: ['<missing>']))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
