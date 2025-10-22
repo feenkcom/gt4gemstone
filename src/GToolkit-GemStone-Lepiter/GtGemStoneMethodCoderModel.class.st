@@ -188,7 +188,7 @@ GtGemStoneMethodCoderModel >> currentSelector [
 
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> currentSelectorPromise [
-	<return: #Symbol>
+	<return: #TAsyncPromise of: #Symbol>
 
 	selector
 		ifNotNil: [ ^ selector asAsyncPromise ].
