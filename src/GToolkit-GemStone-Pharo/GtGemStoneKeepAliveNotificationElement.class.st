@@ -13,7 +13,7 @@ Class {
 
 { #category : #accessing }
 GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
-	self clearNotification.
+	super actOnElementDetached.
 	self clearContent.
 ]
 
