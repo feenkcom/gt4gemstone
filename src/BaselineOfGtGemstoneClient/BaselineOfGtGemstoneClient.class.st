@@ -20,7 +20,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://feenkcom/gtoolkit-remote:v0.8.2246/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.6.3457/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.6.3458/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
 				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.15/src' ].
