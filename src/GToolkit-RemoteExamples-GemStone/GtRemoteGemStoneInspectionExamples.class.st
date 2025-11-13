@@ -394,25 +394,25 @@ GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithClassVa
 	scripter := self scripter.
 	scripter
 		model: inspectorTool object;
-		element: (GtPager createWrappedOn: inspectorTool asElement).
-		
+		element: (GtPagerSettings usedPager createWrappedOn: inspectorTool asElement).
+
 	self selectColumnedListSpawnTextViewIn: scripter.
 	self clickInColumnedListRowOnSpawnButtonLabeled: 'SmallInteger' in: scripter.
-			
-	scripter pager
-		assertPageCountIs: 2.
-	
+
+	scripter pager assertPageCountIs: 2.
+
 	secondPageElement := scripter element pages second.
 	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
-	
-	gemStoneInspectorTool := self 
-		selectedToolFromPageElement: secondPageElement.
-		
-	self assert:  gemStoneInspectorTool object remoteClass equals: 'SmallInteger class'.
-	self 
-		assert: gemStoneInspectorTool object gtDisplayString 
+
+	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
+
+	self
+		assert: gemStoneInspectorTool object remoteClass
+		equals: 'SmallInteger class'.
+	self
+		assert: gemStoneInspectorTool object gtDisplayString
 		equals: 'SmallInteger'.
-		
+
 	^ scripter
 ]
 
@@ -420,35 +420,30 @@ GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithClassVa
 GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithPrimitiveValue [
 	<gtExample>
 	| inspectorTool scripter secondPageElement gemStoneInspectorTool |
-	
 	(self runningServer currentFeatures
 		isFeatureEnabledWithId: #spawnPrimitiveTypeAsProxyExampleFeature)
-			ifFalse: [ ^ self ]. 
-	
+		ifFalse: [ ^ self ].
+
 	inspectorTool := self inspectorToolForRemoteProxySide.
 
 	scripter := self scripter.
 	scripter
 		model: inspectorTool object;
-		element: (GtPager createWrappedOn: inspectorTool asElement).
-		
+		element: (GtPagerSettings usedPager createWrappedOn: inspectorTool asElement).
+
 	self selectColumnedListSpawnTextViewIn: scripter.
 	self clickInColumnedListRowOnSpawnButtonLabeled: '42' in: scripter.
-			
-	scripter pager
-		assertPageCountIs: 2.
-	
+
+	scripter pager assertPageCountIs: 2.
+
 	secondPageElement := scripter element pages second.
 	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
-	
-	gemStoneInspectorTool := self 
-		selectedToolFromPageElement: secondPageElement.
-		
-	self assert:  gemStoneInspectorTool object remoteClass equals: 'SmallInteger'.
-	self 
-		assert: gemStoneInspectorTool object gtDisplayString 
-		equals: '42'.
-		
+
+	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
+
+	self assert: gemStoneInspectorTool object remoteClass equals: 'SmallInteger'.
+	self assert: gemStoneInspectorTool object gtDisplayString equals: '42'.
+
 	^ scripter
 ]
 

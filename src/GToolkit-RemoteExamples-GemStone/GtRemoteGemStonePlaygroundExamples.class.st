@@ -144,31 +144,30 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionWithR
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterSyncExecutionFor: scripter [
 	| secondPageElement gemStoneInspectorTool |
-	
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
-		
+
 	secondPageElement := scripter element pages second.
-	
+
 	self assertPagerPageWithProxyObject: secondPageElement.
-	gemStoneInspectorTool := self 
-		selectedToolFromPageElement: secondPageElement.
-	self assertGemStoneInspectorToolOnIntegerProxy: gemStoneInspectorTool.
+	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
+	self assertGemStoneInspectorToolOnIntegerProxy: gemStoneInspectorTool
 ]
 
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBindingName for: scripter [
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;
 		assertInvalidBinding: aBindingName;
 		assertErrorIndicatorPresent;
-		assertErrorMessage: ('{1} holds an object from another session and cannot be used.' format: {aBindingName});
-		play.
+		assertErrorMessage: ('{1} holds an object from another session and cannot be used.'
+				format: {aBindingName});
+		play
 ]
 
 { #category : #'examples - pages' }
@@ -464,8 +463,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClas
 				// #'menu--label';
 				@ [ :each | each text asString beginsWith: 'Browse local class' ] ].
 
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
 
 	mainToolElement := scripter element pages second contentElement tool.
@@ -805,8 +804,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItAsynchronousButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
@@ -848,8 +847,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItAndInspectAsynchronousButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
@@ -891,8 +890,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
@@ -934,8 +933,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItAndInspectButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
@@ -973,8 +972,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItAndInspectButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
@@ -1012,8 +1011,8 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_readInvalidBi
 		clickOnDoItAndInspectButton;
 		play.
 
-	scripter pager
-		assertPageCountIs: 1;
+	scripter treePager
+		assertNumberOfPaneElements: 1;
 		play.
 
 	scripter gemStoneSnippet
