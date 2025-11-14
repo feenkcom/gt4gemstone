@@ -18,12 +18,16 @@ GtRemoteGemStonePlaygroundExamples >> assertDefaultGemStoneSessionLabel: aString
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertExecutionPaneWithAyncExecutionToolFor: scripter [
 	| mainToolElement |
-		
-	mainToolElement := scripter element pages second contentElement tool.
-	self 
+	scripter treePager
+		paneElementAtColumn: 2
+			do: [ :anElement | mainToolElement := anElement contentElement realToolElement ];
+		play.
+	self
 		assertCompositeToolElement: mainToolElement
-		withLabels: {'Execution' . 'inspector'} 
-		andTypes: {GtGemStoneAsyncEvaluationPhlowTool . GtInspectorTool} 
+		withLabels: {'Execution'.
+				'inspector'}
+		andTypes: {GtGemStoneAsyncEvaluationPhlowTool.
+				GtInspectorTool}
 		selectedIdex: 1
 ]
 
@@ -38,12 +42,15 @@ GtRemoteGemStonePlaygroundExamples >> assertGemStoneInspectorToolOnIntegerProxy:
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertPagerPageWithAyncExecutionWithResult: aPagerPage [
 	| mainToolElement |
-		
-	mainToolElement := aPagerPage contentElement tool.
-	self 
+	mainToolElement := aPagerPage contentElement realToolElement.
+	self
 		assertCompositeToolElement: mainToolElement
-		withLabels: {'GemStone' . 'Proxy' . 'Execution'} 
-		andTypes: {GtInspectorTool . GtInspectorTool. GtInspectorTool} 
+		withLabels: {'GemStone'.
+				'Proxy'.
+				'Execution'}
+		andTypes: {GtInspectorTool.
+				GtInspectorTool.
+				GtInspectorTool}
 		selectedIdex: 1
 ]
 
@@ -69,24 +76,22 @@ GtRemoteGemStonePlaygroundExamples >> assertPromiseResolutionRunning: promiseRes
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter [
 	| secondPageElement gemStoneInspectorTool resolutionInspectorTool promiseResolution |
-	
-	scripter pager
-		assertPageCountIs: 2.
-		
-	secondPageElement := scripter element pages second.
-	
+	scripter pager assertPageCountIs: 2; play.
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
+
 	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
-	
-	gemStoneInspectorTool := self 
-		selectedToolFromPageElement: secondPageElement.
+
+	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
 	self assertGemStoneInspectorToolOnIntegerProxy: gemStoneInspectorTool.
-	
-	resolutionInspectorTool := self 
-		selectToolLabeled: 'Execution' 
-		fromPageElement: secondPageElement.
-		
+
+	resolutionInspectorTool := self
+			selectToolLabeled: 'Execution'
+			fromPageElement: secondPageElement.
+
 	promiseResolution := resolutionInspectorTool object.
-	self assertPromiseResolutionCompleted: promiseResolution.
+	self assertPromiseResolutionCompleted: promiseResolution
 ]
 
 { #category : #'assertions - execution' }
@@ -94,7 +99,8 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompl
 	| promiseResolution |
 	
 	scripter pager
-		assertPageCountIs: 2.
+		assertPageCountIs: 2;
+		play.
 	
 	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
 	
@@ -108,7 +114,8 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionStart
 	| promiseResolution |
 	
 	scripter pager
-		assertPageCountIs: 2.
+		assertPageCountIs: 2;
+		play.
 	
 	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
 	
@@ -121,24 +128,29 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionStart
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionWithReplaceFor: scripter [
 	| mainToolElement compositeTool gemStoneInspectorTool |
 	scripter pager
-		assertPageCountIs: 2.
-	
-	mainToolElement := scripter element pages second contentElement tool.
+		assertPageCountIs: 2;
+		play.
+	scripter treePager
+		paneElementAtColumn: 2
+			do: [ :anElement | mainToolElement := anElement contentElement realToolElement ];
+		play.
 	self assert: mainToolElement tabs size equals: 3.
-	self assert: mainToolElement tabs first tabLabel text asString equals: 'GemStone'.
+	self
+		assert: mainToolElement tabs first tabLabel text asString
+		equals: 'GemStone'.
 	self assert: mainToolElement tabs second tabLabel text asString equals: 'Proxy'.
-	self assert: mainToolElement tabs third tabLabel text asString equals: 'Execution'.
-	
+	self
+		assert: mainToolElement tabs third tabLabel text asString
+		equals: 'Execution'.
+
 	compositeTool := mainToolElement phlow entity.
 	self assert: compositeTool tools size equals: 3.
-	
+
 	gemStoneInspectorTool := mainToolElement content children first phlow entity.
 	self assert: gemStoneInspectorTool name equals: 'GemStone'.
 	self assert: gemStoneInspectorTool class equals: GtInspectorTool.
 	self assert: gemStoneInspectorTool object remoteClass equals: #SmallInteger.
-	self 
-		assert: gemStoneInspectorTool object gtDisplayString 
-		equals: '2'.
+	self assert: gemStoneInspectorTool object gtDisplayString equals: '2'
 ]
 
 { #category : #'assertions - execution' }
@@ -147,8 +159,9 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterSyncExecutionFor: 
 	scripter treePager
 		assertNumberOfPaneElements: 2;
 		play.
-
-	secondPageElement := scripter element pages second.
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
 
 	self assertPagerPageWithProxyObject: secondPageElement.
 	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
@@ -466,8 +479,10 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClas
 	scripter treePager
 		assertNumberOfPaneElements: 2;
 		play.
-
-	mainToolElement := scripter element pages second contentElement tool.
+	scripter treePager
+		paneElementAtColumn: 2
+			do: [ :anElement | mainToolElement := anElement contentElement realToolElement ];
+		play.
 	self
 		assert: (mainToolElement query // GtPharoBehaviorCoderElement) anyOne coderViewModel
 				coder behavior

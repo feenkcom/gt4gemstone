@@ -439,9 +439,10 @@ GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithPrimiti
 	self selectColumnedListSpawnTextViewIn: scripter.
 	self clickInColumnedListRowOnSpawnButtonLabeled: '42' in: scripter.
 
-	scripter pager assertPageCountIs: 2.
-
-	secondPageElement := scripter element pages second.
+	scripter pager assertPageCountIs: 2; play.
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
 	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
 
 	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.

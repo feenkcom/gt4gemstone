@@ -20,8 +20,9 @@ GtRemoteGemStoneInspectorToolResetExamples >> assertResultingPaneWithTargetObjec
 	scripter treePager
 		assertNumberOfPaneElements: 2;
 		play.
-
-	secondPageElement := scripter element pages second.
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
 
 	self assertPagerPageWithProxyObject: secondPageElement.
 	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.

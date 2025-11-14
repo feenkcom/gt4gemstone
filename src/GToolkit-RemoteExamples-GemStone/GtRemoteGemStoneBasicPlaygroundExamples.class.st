@@ -54,12 +54,13 @@ GtRemoteGemStoneBasicPlaygroundExamples >> assertExplicitGemStoneSessionLabel: a
 { #category : #'assertions - execution' }
 GtRemoteGemStoneBasicPlaygroundExamples >> assertPagerPageWithProxyObject: aPagerPage [
 	| mainToolElement |
-		
-	mainToolElement := aPagerPage contentElement tool.
-	self 
+	mainToolElement := aPagerPage contentElement realToolElement.
+	self
 		assertCompositeToolElement: mainToolElement
-		withLabels: {'GemStone' . 'Proxy'} 
-		andTypes: {GtInspectorTool . GtInspectorTool} 
+		withLabels: {'GemStone'.
+				'Proxy'}
+		andTypes: {GtInspectorTool.
+				GtInspectorTool}
 		selectedIdex: 1
 ]
 
@@ -204,9 +205,9 @@ GtRemoteGemStoneBasicPlaygroundExamples >> scripterForPageTool: aPageTool [
 ]
 
 { #category : #utils }
-GtRemoteGemStoneBasicPlaygroundExamples >> selectedToolFromPageElement: aPageElement [ 
+GtRemoteGemStoneBasicPlaygroundExamples >> selectedToolFromPageElement: aPageElement [
 	| mainToolElement |
-	mainToolElement := aPageElement contentElement tool.
+	mainToolElement := aPageElement contentElement realToolElement.
 	^ mainToolElement content children first phlow entity
 ]
 
