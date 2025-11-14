@@ -45,7 +45,7 @@ GtRemoteGemStoneInspectionExamples >> assertCompositeToolElement: mainToolElemen
 GtRemoteGemStoneInspectionExamples >> assertPagerPageWithAyncExecutionWithResult: aPagerPage [
 	| mainToolElement |
 		
-	mainToolElement := aPagerPage contentElement tool.
+	mainToolElement := aPagerPage contentElement realToolElement.
 	self 
 		assertCompositeToolElement: mainToolElement
 		withLabels: {'GemStone' . 'Proxy'} 
@@ -344,7 +344,7 @@ GtRemoteGemStoneInspectionExamples >> selectColumnedListSpawnTextViewIn: scripte
 { #category : #utils }
 GtRemoteGemStoneInspectionExamples >> selectedToolFromPageElement: aPageElement [ 
 	| mainToolElement |
-	mainToolElement := aPageElement contentElement tool.
+	mainToolElement := aPageElement contentElement realToolElement.
 	^ mainToolElement content children first phlow entity
 ]
 
@@ -399,9 +399,14 @@ GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithClassVa
 	self selectColumnedListSpawnTextViewIn: scripter.
 	self clickInColumnedListRowOnSpawnButtonLabeled: 'SmallInteger' in: scripter.
 
-	scripter pager assertPageCountIs: 2.
+	scripter treePager
+		assertNumberOfPaneElements: 2;
+		play.
 
-	secondPageElement := scripter element pages second.
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
+
 	self assertPagerPageWithAyncExecutionWithResult: secondPageElement.
 
 	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
