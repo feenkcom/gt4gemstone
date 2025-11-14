@@ -76,7 +76,9 @@ GtRemoteGemStonePlaygroundExamples >> assertPromiseResolutionRunning: promiseRes
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter [
 	| secondPageElement gemStoneInspectorTool resolutionInspectorTool promiseResolution |
-	scripter pager assertPageCountIs: 2; play.
+	scripter treePager
+		assertNumberOfPaneElements: 2;
+		play.
 	scripter treePager
 		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
 		play.
@@ -97,38 +99,36 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompl
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter [
 	| promiseResolution |
-	
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
-	
+
 	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
-	
-	promiseResolution := self 
-		promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
-	self assertPromiseResolutionCompleted: promiseResolution.
+
+	promiseResolution := self
+			promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+	self assertPromiseResolutionCompleted: promiseResolution
 ]
 
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionStartedFor: scripter [
 	| promiseResolution |
-	
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
-	
+
 	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
-	
-	promiseResolution := self 
-		promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+
+	promiseResolution := self
+			promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
 	self assertPromiseResolutionRunning: promiseResolution
 ]
 
 { #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionWithReplaceFor: scripter [
 	| mainToolElement compositeTool gemStoneInspectorTool |
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
 	scripter treePager
 		paneElementAtColumn: 2
@@ -1390,7 +1390,7 @@ GtRemoteGemStonePlaygroundExamples >> promiseResolutionFromAsyncToolFromSecondPa
 
 { #category : #utils }
 GtRemoteGemStonePlaygroundExamples >> selectToolLabeled: aString fromPageElement: aPageElement [ 
-	^ (aPageElement contentElement tool   query  
+	^ (aPageElement contentElement realToolElement query  
 		/ #header 
 		// #tabbar
 		/ [ :aTab | aTab label asString = aString ])
