@@ -73,12 +73,15 @@ GtRemoteGemStoneInspectorToolResetExamples >> assertTargetTextViewContent: aStri
 
 { #category : #'utils - actions' }
 GtRemoteGemStoneInspectorToolResetExamples >> clickPagesNavigationButtonInFirstPaneFor: scripter [
-	scripter
-		clickStep: [ :s | 
-			s
-				label: 'Click the navigation button';
-				onPagerPaneWithIndex: 1;
-				// BrPagerNextButton ]
+	scripter treePager
+		hoverPaneColumn: 2;
+		openDropdownColumn: 2;
+		play.
+
+	scripter menuStep
+		clickMenuItemWithId: #'menu--rebuild-pane-tool-element';
+		onPopover;
+		play.
 ]
 
 { #category : #'examples - execution' }
