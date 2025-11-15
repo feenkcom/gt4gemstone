@@ -17,17 +17,16 @@ GtRemoteGemStoneInspectorToolResetExamples >> assertGemStoneInspectorToolOnTarge
 { #category : #asserting }
 GtRemoteGemStoneInspectorToolResetExamples >> assertResultingPaneWithTargetObjectFor: scripter [
 	| secondPageElement gemStoneInspectorTool |
-	
-	scripter pager
-		assertPageCountIs: 2;
+	scripter treePager
+		assertNumberOfPaneElements: 2;
 		play.
-		
-	secondPageElement := scripter element pages second.
-	
+	scripter treePager
+		paneElementAtColumn: 2 do: [ :anElement | secondPageElement := anElement ];
+		play.
+
 	self assertPagerPageWithProxyObject: secondPageElement.
-	gemStoneInspectorTool := self 
-		selectedToolFromPageElement: secondPageElement.
-	self assertGemStoneInspectorToolOnTargetObject: gemStoneInspectorTool.
+	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
+	self assertGemStoneInspectorToolOnTargetObject: gemStoneInspectorTool
 ]
 
 { #category : #'assertions - execution' }
@@ -73,13 +72,16 @@ GtRemoteGemStoneInspectorToolResetExamples >> assertTargetTextViewContent: aStri
 ]
 
 { #category : #'utils - actions' }
-GtRemoteGemStoneInspectorToolResetExamples >> clickPagesNavigationButtonInFirstPaneFor: scripter [ 
-	scripter
-		clickStep: [ :s | 
-			s
-				label: 'Click the navigation button';
-				// (GtPagerPageElementId indexed: 1);
-				// BrPagerNextButton ].
+GtRemoteGemStoneInspectorToolResetExamples >> clickPagesNavigationButtonInFirstPaneFor: scripter [
+	scripter treePager
+		hoverPaneColumn: 2;
+		openDropdownColumn: 2;
+		play.
+
+	scripter menuStep
+		clickMenuItemWithId: #'menu--rebuild-pane-tool-element';
+		onPopover;
+		play.
 ]
 
 { #category : #'examples - execution' }
@@ -127,26 +129,25 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-
 	self runningServer.
 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
 	self assertTargetTextViewContent: '1' for: scripter.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
 	self assertTargetListViewFirstRowContent: '2' for: scripter.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
@@ -160,28 +161,27 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-
 	self runningServer.
 
 	scripter := self
 			playgroundPageWithTargetObjectAndFirstNavigation_navigateBetweenViews_initialPass.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (text)';
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
 	self assertTargetTextViewContent: '1' for: scripter.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
 	self assertTargetListViewFirstRowContent: '2' for: scripter.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
@@ -195,13 +195,12 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-
 	self runningServer.
 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (columned list)';
 		assertSelectedTabWithName: 'Counter (columned list)';
 		play.
@@ -222,13 +221,12 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-
 	self runningServer.
 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Counter (list)';
 		assertSelectedTabWithName: 'Counter (list)';
 		play.
@@ -249,13 +247,12 @@ GtRemoteGemStoneInspectorToolResetExamples >> playgroundPageWithTargetObjectAndF
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-
 	self runningServer.
 
 	scripter := self playgroundPageWithTargetObjectAndFirstNavigation.
 
 	scripter inspectorStep
-		// (GtPagerPageElementId indexed: 2);
+		onPagerPaneWithIndex: 2;
 		assertSelectedTabWithName: 'Counter (text)';
 		play.
 
