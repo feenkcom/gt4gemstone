@@ -117,6 +117,21 @@ GtRsrProxyServiceClient >> configurePhlowView: aPhlowView withSpecification: aVi
 	aPhlowView autoUpdates removeUpdateOnMethodChanged.
 ]
 
+{ #category : #'as yet unclassified' }
+GtRsrProxyServiceClient >> createBlockEvaluationFor: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
+	| evaluator evalFields |
+	
+	evaluator := self gtSession versionedEvaluator.
+	evalFields := evaluator createEvaluationStringForProxyFromBlock: aCleanBlock withArguments: anArray.
+	^ evaluator scriptEvaluation
+		receiver: self;
+		script: evalFields first;
+		serialisationStrategy: aSymbol;
+		autoCommit: aBoolean;
+		bindings: evalFields second;
+		yourself.
+]
+
 { #category : #converting }
 GtRsrProxyServiceClient >> createGtpoLocalObjectLinkedToBareProxy: aBareProxy [
 	"Answer a local copy of the receiver and add a mapping between the local copy and the given bare proxy"
@@ -236,6 +251,46 @@ GtRsrProxyServiceClient >> evaluateAndWaitReturnStonSerialized: aString [
 	^ self 
 		evaluateAndWait: aString
 		serializationStrategy: #GtRsrStonSerializationStrategy
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateBlock: aCleanBlock withArguments: anArray [
+
+	^ (self 
+		createBlockEvaluationFor: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: #GtRsrLegacySerializationStrategy
+		autoCommit: self gtSession autoCommitEnabled) evaluate
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateBlock: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self 
+		createBlockEvaluationFor: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) evaluate
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateBlockAndWait: aCleanBlock withArguments: anArray [
+
+	^ (self 
+		createBlockEvaluationFor: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: #GtRsrLegacySerializationStrategy
+		autoCommit: self gtSession autoCommitEnabled) evaluateAndWait
+]
+
+{ #category : #performing }
+GtRsrProxyServiceClient >> evaluateBlockAndWait: aCleanBlock withArguments: anArray serializationStrategy: aSymbol autoCommit: aBoolean [
+
+	^ (self 
+		createBlockEvaluationFor: aCleanBlock
+		withArguments: anArray
+		serializationStrategy: aSymbol
+		autoCommit: aBoolean) evaluateAndWait
 ]
 
 { #category : #performing }

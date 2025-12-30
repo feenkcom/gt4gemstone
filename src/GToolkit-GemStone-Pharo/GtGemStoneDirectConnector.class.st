@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'port'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #actions }

@@ -6,5 +6,5 @@ It allows GemStone classes to be loaded in Gtoolkit without undefined class erro
 Class {
 	#name : #CompileError,
 	#superclass : #Error,
-	#category : 'GToolkit-GemStone-Pharo-Stubs'
+	#category : #'GToolkit-GemStone-Pharo-Stubs'
 }

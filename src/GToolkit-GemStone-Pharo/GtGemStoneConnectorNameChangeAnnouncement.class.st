@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneConnectorNameChangeAnnouncement,
 	#superclass : #GtGemStoneConnectorAnnouncement,
-	#category : 'GToolkit-GemStone-Pharo-Announcements'
+	#category : #'GToolkit-GemStone-Pharo-Announcements'
 }
 
 { #category : #initialization }

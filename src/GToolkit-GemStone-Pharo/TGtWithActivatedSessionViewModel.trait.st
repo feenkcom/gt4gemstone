@@ -3,7 +3,7 @@ Trait {
 	#instVars : [
 		'activatedSessionViewModel'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Support'
+	#category : #'GToolkit-GemStone-Pharo-Support'
 }
 
 { #category : #'api - activated session view model' }
