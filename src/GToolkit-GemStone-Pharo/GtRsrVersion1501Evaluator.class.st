@@ -86,6 +86,13 @@ GtRsrVersion1501Evaluator >> createBlockEvaluationFor: aCleanBlock withArguments
 ]
 
 { #category : #'block actions' }
+GtRsrVersion1501Evaluator >> createEvaluationStringForProxyFromBlock: aBlockClosure withArguments: anArray [
+	"Answer an array containing the source of the supplied block and the arguments converted to a set of bindings"
+	
+	self error: 'Proxy block evaluation is not supported in GT 1501'
+]
+
+{ #category : #'block actions' }
 GtRsrVersion1501Evaluator >> createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray [
 	"Answer an array containing the source of the supplied clean block and the arguments converted to a set of bindings"
 	| argNames bindings |

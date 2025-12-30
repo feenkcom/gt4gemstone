@@ -134,6 +134,35 @@ GtRsrVersionedEvaluator >> createBlockEvaluationFor: aCleanBlock withArguments: 
 ]
 
 { #category : #'block actions' }
+GtRsrVersionedEvaluator >> createEvaluationStringForProxyFromBlock: aBlockClosure withArguments: anArray [
+	"Answer an array containing the source of the supplied block and the arguments converted to a set of bindings"
+	| argNames bindings |
+
+	argNames := aBlockClosure argumentNames.
+	aBlockClosure isClean ifFalse: 
+		[ | ast |
+		ast := aBlockClosure compiledBlock ast.
+		(ast variableReadNodes allSatisfy: [ :var |
+			var isSelfOrSuperVariable or: 
+			[ argNames includes: var name ] ]) ifFalse:
+				[ self error: 'The block may only reference self, super and arguments'] ].
+	aBlockClosure numArgs = anArray size
+		ifFalse: [self error: 'wrong number of arguments'].
+	bindings := (argNames collectWithIndex: [ :name :index | 
+		name -> (anArray at: index) ]) asDictionary.
+	^ Array
+		with: (String streamContents: [ :stream |
+			stream
+				<< aBlockClosure printString; 
+				<< ' valueWithArguments: { '.
+			argNames
+				do: [ :name | stream << name ]
+				separatedBy: [ stream << '. ' ].
+			stream << ' }' ])
+		with: bindings.
+]
+
+{ #category : #'block actions' }
 GtRsrVersionedEvaluator >> createEvaluationStringFromCleanBlock: aCleanBlock [
 
 	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].

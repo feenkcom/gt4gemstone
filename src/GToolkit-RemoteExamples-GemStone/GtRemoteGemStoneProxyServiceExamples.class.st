@@ -25,7 +25,7 @@ GtRemoteGemStoneProxyServiceExamples >> remoteObjectCommand [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxy [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #evaluateAndWaitReturnProxy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -42,7 +42,7 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxy [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxyInspector [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| session proxy result |
 	session := self runningServer.
 	proxy := session evaluateAndWaitReturnProxy: 'Object new'.
@@ -58,7 +58,7 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxyInspector [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnSerializedPrimitive [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #evaluateAndWait:serializationStrategy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -85,7 +85,7 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnSerializedPrimitive [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnStonSerialized [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #evaluateAndWait:serializationStrategy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -117,7 +117,7 @@ GtRemoteGemStoneProxyServiceExamples >> testInspectableName [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy value |
 	proxy := self runningServer
 			evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'.
@@ -131,7 +131,7 @@ GtRemoteGemStoneProxyServiceExamples >> testIntegerParameterAsArgument [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| collectionProxy size |
 	collectionProxy := self runningServer
 			evaluateAndWaitReturnProxy: 'OrderedCollection withAll: #(1 6 3 4)'.
@@ -154,7 +154,7 @@ GtRemoteGemStoneProxyServiceExamples >> testOrderedCollectionProxyMessageSends [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testPerformReturnProxy [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #proxyPerformReturnProxy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -171,7 +171,7 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnProxy [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testPerformReturnSerializedPrimitive [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #proxyPerformReturnProxy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -200,7 +200,7 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnSerializedPrimitive [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testPerformReturnStonSerialized [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| proxy result |
 	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #proxyPerformReturnProxy:"	"Ensure that a primitive return value is returned as a proxy"
@@ -228,9 +228,26 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnStonSerialized [
 ]
 
 { #category : #tests }
+GtRemoteGemStoneProxyServiceExamples >> testProxyBlockEvaluation [
+	<gtExample>
+	<after: #stopServer>
+	| proxy result |
+
+	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
+	self assert: proxy remoteClass equals: #Object.
+	
+	result := proxy evaluateBlock: [ self printString, '.' ] withArguments: #().
+	self assert: result class equals: GtRsrEvaluatorPromise.
+	self assert: result value equals: 'anObject.'.
+
+	result := proxy evaluateBlockAndWait: [ self printString, '.' ] withArguments: #().
+	self assert: result equals: 'anObject.'.
+]
+
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| setProxy size |
 	setProxy := self runningServer evaluateAndWait: 'Set withAll: #(1 2 3 4)'.
 
@@ -250,7 +267,7 @@ GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 { #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testWithProxyObjectAsParameterAsArgument [
 	<gtExample>
-	<return: #AssertionFailure>
+	<after: #stopServer>
 	| argumentProxy proxy value |
 	argumentProxy := self runningServer
 			evaluateAndWait: 'GtRemotePhlowDeclarativeTestInspectable new'.
