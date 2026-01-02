@@ -70,9 +70,11 @@ if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
   if [[ -z "${LOAD_GT4GS_VERSION}" || "${LOAD_GT4GS_VERSION}" = "no" ]]
   then
+    echo "Packaging gt4gemstone."
     "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
     "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
   else
+    echo "Downloading gt4gemstone $LOAD_GT4GS_VERSION."
     $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
     ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
   fi

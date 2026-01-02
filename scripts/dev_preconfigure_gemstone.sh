@@ -24,7 +24,7 @@ Options:
 
   If --gt4gs is supplied, gt4gemstone is installed from the specified
   GT version (retrieved from github), otherwise gt4gemstone is installed
-  from the local image.
+  from the local image.  E.g. "--gt4gs v1.0.1501"
 
   If --gs is supplied, the specified version of GemStone is installed,
   default = 3.7.2.1.
@@ -93,6 +93,12 @@ do
     esac
     shift
 done
+
+if [[ $USE_ROWAN != "no" && $LOAD_GT4GS_VERSION != "no" ]]
+then
+  echo "Only one of --rowan and --gt4gs may be used at a time"
+  exit
+fi
 
 if [ $HELP_ONLY = "no" ]
 then
