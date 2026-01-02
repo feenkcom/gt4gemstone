@@ -231,9 +231,13 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnStonSerialized [
 GtRemoteGemStoneProxyServiceExamples >> testProxyBlockEvaluation [
 	<gtExample>
 	<after: #stopServer>
-	| proxy result |
+	| session proxy result |
 
-	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
+	session := self runningServer.
+	session gt4gemstoneVersion
+		<= GtGemStoneSemanticVersionNumber v1_0_1501 ifTrue: [ ^ self ].
+
+	proxy := session evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.
 	
 	result := proxy evaluateBlock: [ self printString, '.' ] withArguments: #().
