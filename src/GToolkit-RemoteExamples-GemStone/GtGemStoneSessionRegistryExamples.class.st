@@ -25,11 +25,14 @@ GtGemStoneSessionRegistryExamples >> createSessionForExampleWithId: aString [
 { #category : #'examples - setup/tear down' }
 GtGemStoneSessionRegistryExamples >> createSessionRegistry [
 	"Answer an empty session registry"
-
 	<gtExample>
 	<return: #GtGemStoneSessionRegistry>
 	| registry |
-	registry := GtGemStoneSessionRegistry new.	"registry propertiesFile: self propertiesFile."
+
+	registry := GtGemStoneSessionRegistry new.
+	"Extension methods allow the registry to be auto-populated with connectors.
+	Explicitly set the connectors to prevent the auto-population."
+	registry initializeConnectors: Dictionary new.
 	self assert: registry activeSessions size equals: 0.
 
 	^ registry

@@ -57,11 +57,11 @@ GtRemoteGemStoneInspectionExamples >> assertPagerPageWithAyncExecutionWithResult
 GtRemoteGemStoneInspectionExamples >> associationInspection [
 	<gtExample>
 	<after: #stopServer>
-	<return: #AssertionFailure>
-	^ self
-		assertObjectInspectionFor: [ Object new -> Object new ]
+
+	^self
+		assertObjectInspectionFor: [Object new -> Object new]
 		withTypeName: #Association
-		inspectorTitle: 'anObject->anObject'
+		inspectorTitle: self expectedAssociationInspectionInspectorTitle
 ]
 
 { #category : #'examples - objects' }
@@ -136,7 +136,14 @@ GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 				at: Object new put: 2;
 				yourself ]
 		withTypeName: #Dictionary
-		inspectorTitleIncludes: #('aDictionary [2 items] (anObject->2 anObject->1)' 'aDictionary [2 items] (anObject->1 anObject->2)' 'aDictionary( anObject->1, anObject->2)' 'aDictionary( anObject->2, anObject->1)')
+		inspectorTitleIncludes: #(
+			'aDictionary [2 items] (anObject->2 anObject->1)' 
+			'aDictionary [2 items] (anObject->1 anObject->2)' 
+			'aDictionary( anObject->1, anObject->2)' 
+			'aDictionary( anObject->2, anObject->1)'
+			'aDictionary [2 items] (anObject -> 2 anObject -> 1)'
+			'aDictionary [2 items] (anObject -> 1 anObject -> 2)'
+			)
 ]
 
 { #category : #'examples - objects' }
@@ -172,6 +179,12 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 		assertObjectInspectionFor: [ Set new ]
 		withTypeName: #Set
 		inspectorTitle: 'aSet( )'
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> expectedAssociationInspectionInspectorTitle [
+
+	^ 'anObject->anObject'
 ]
 
 { #category : #'examples - objects' }
