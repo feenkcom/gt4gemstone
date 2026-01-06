@@ -450,7 +450,7 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> testObjectWithDictionaryWith
 		assert: localObjectWithDelegate targetValueOne keys sorted
 		equals: #('one' 'two').
 	self
-		assert: (localObjectWithDelegate targetValueOne values collect: [ :each | each class ])
+		assert: (localObjectWithDelegate targetValueOne values collect: [ :each | each class ] as: Array)
 		equals: {GtGsBareProxy.
 				GtGsBareProxy}.
 
