@@ -503,7 +503,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executeWithSyntaxError [
 		clickStep: [ :s | 
 			s
 				label: 'Click editor';
-				// GtSourceCoderEditorElement ].
+				// GtSourceCoderElement ].
 	scripter
 		typeStep: [ :s | 
 			s
@@ -512,7 +512,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executeWithSyntaxError [
 
 	scripter shortcut
 		combination: BlKeyCombination primaryG;
-		// GtSourceCoderEditorElement;
+		// GtSourceCoderElement;
 		play.
 
 	scripter gemStoneSnippet
