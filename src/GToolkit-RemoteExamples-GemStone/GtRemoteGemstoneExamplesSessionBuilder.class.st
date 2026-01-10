@@ -78,10 +78,14 @@ GtRemoteGemstoneExamplesSessionBuilder >> createSession [
 	- The GemStone server is running with Gt loaded
 	- Default usernames and passwords
 	- The library is available in {imageDirectory}/remote-gemstone/{gemstoneVersion}"
-	| connector |
-	
+	| connector newSession |
+
 	connector := self createConnector.
-	
-	^ GtGemStoneSession new 
-		connector: connector
+
+	newSession := GtGemStoneSession new 
+		connector: connector.
+	connector registry ifNotNil: [ :registry |
+		newSession sessionId: (registry
+			nextSessionIdForConnector: connector) ].
+	^ newSession
 ]

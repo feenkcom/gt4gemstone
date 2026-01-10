@@ -72,7 +72,12 @@ GtRemoteGemStoneDeclarativeViewsExamples >> expectedStyledText [
 
 { #category : #utils }
 GtRemoteGemStoneDeclarativeViewsExamples >> formatExpectedIconName: anIconName [
-	^ anIconName, #Icon
+	"Ensure that the icon name ends with `Icon`.
+	Required to handle customer site variations."
+
+	^ (anIconName endsWith: 'Icon')
+		ifTrue: [ anIconName ]
+		ifFalse: [ anIconName, #Icon ]
 ]
 
 { #category : #accessing }

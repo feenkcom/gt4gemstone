@@ -117,6 +117,15 @@ GtGemStoneSessionRegistry >> activeSessions [
 		ifNotNil: [ sessions values ]
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> addConnector: aGtGemStoneConnector [
+
+	aGtGemStoneConnector registry: self.
+	sharedAccess critical: 
+		[ connectors at: aGtGemStoneConnector name put: aGtGemStoneConnector ].
+	^ aGtGemStoneConnector
+]
+
 { #category : #actions }
 GtGemStoneSessionRegistry >> addNewConnector [ 
 	| newConnector |
@@ -703,6 +712,14 @@ GtGemStoneSessionRegistry >> initialize [
 	super initialize.
 	sharedAccess := Mutex new.
 	self reload "resetSessions".
+]
+
+{ #category : #initialization }
+GtGemStoneSessionRegistry >> initializeConnectors: aDictionary [
+	"Explicitly set the connectors.
+	For testing purposes."
+
+	connectors := aDictionary
 ]
 
 { #category : #accessing }
