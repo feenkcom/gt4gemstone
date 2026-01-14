@@ -204,6 +204,6 @@ GtGemStoneSnippetCoderStep >> useDoItAndInspectAsynchronousShortcut [
 		combination: GtSourceCoderDoItAndInspectAsynchronousShortcut new 
 			combination;
 		onParentStepTarget: self;
-		onThisOrDeepChildElementId: GtSourceCoderEditorId;
+		onThisOrDeepChildElementId: GtSourceCoderEditorInnerId;
 		onTopMost
 ]
