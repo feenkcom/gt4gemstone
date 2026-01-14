@@ -512,7 +512,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executeWithSyntaxError [
 
 	scripter shortcut
 		combination: BlKeyCombination primaryG;
-		// GtSourceCoderElement;
+		// GtSourceCoderEditorInnerId;
 		play.
 
 	scripter gemStoneSnippet
