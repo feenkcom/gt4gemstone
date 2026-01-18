@@ -799,6 +799,24 @@ removeallclassmethods GtRsrDirectLocalObjectSerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
+	subclass: 'GtRsrGbsWireSerializationStrategy'
+	instVarNames: #(replicationSpec)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrGbsWireSerializationStrategy
+removeallclassmethods GtRsrGbsWireSerializationStrategy
+
+doit
+(GtRsrSerializationStrategy
 	subclass: 'GtRsrLegacySerializationStrategy'
 	instVarNames: #()
 	classVars: #()
@@ -943,6 +961,24 @@ true.
 
 removeallmethods STONJSON
 removeallclassmethods STONJSON
+
+doit
+(Object
+	subclass: 'ZnBase64Encoder'
+	instVarNames: #(alphabet inverse lineLength lineEnd whitespace padding strict)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods ZnBase64Encoder
+removeallclassmethods ZnBase64Encoder
 
 doit
 (RsrService
@@ -3987,6 +4023,7 @@ readFromString: aString
 category: 'instance creation'
 classmethod: GtGemStoneSemanticVersionNumber
 v1_0_1098
+	"Support for v1.0.1098 was dropped on 2025-06-06"
 
 	^ self major: 1 minor: 0 patch: 1098
 %
@@ -3996,6 +4033,13 @@ classmethod: GtGemStoneSemanticVersionNumber
 v1_0_1501
 
 	^ self major: 1 minor: 0 patch: 1501
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_0_1502
+
+	^ self major: 1 minor: 0 patch: 1502
 %
 
 category: 'accessing'
@@ -4309,6 +4353,16 @@ resetFeatures
 	^ SessionTemps current 
 		removeKey: self featuresKeyName
 		ifAbsent: [  ]
+%
+
+category: 'features'
+classmethod: GtGemStoneSessionFeatures
+spawnPrimitiveTypeAsProxyExampleFeature
+	<gtGemStoneFeature>
+	"Only needed to indicate if GtRemotePhlowDeclarativeTestInspectable>>#gtColumnedListSpawnTextFor: has a column for spawning primitive types"
+	^ (GtGemStoneSessionFeature
+		withId: #spawnPrimitiveTypeAsProxyExampleFeature)
+			enable
 %
 
 category: 'features'
@@ -4710,6 +4764,7 @@ initializeFromJSONDictionary: aDictionary
 category: 'initialization'
 method: GtGemStoneClassBasicDetails
 intializeForClass: aGsClass 
+	"We should handle here metaclasses through an explicit isMetaclass flag"
 	targetClassName := aGsClass name.
 	targetClassIconName := aGsClass gtSystemIconName.
 %
@@ -5699,6 +5754,60 @@ serialize: anObject
 		yourself
 %
 
+! Class implementation for 'GtRsrGbsWireSerializationStrategy'
+
+!		Class methods for 'GtRsrGbsWireSerializationStrategy'
+
+category: 'instance creation'
+classmethod: GtRsrGbsWireSerializationStrategy
+replicationSpec: anArray
+	^ self new replicationSpec: anArray
+%
+
+!		Instance methods for 'GtRsrGbsWireSerializationStrategy'
+
+category: 'converting'
+method: GtRsrGbsWireSerializationStrategy
+deserialize: aGtRsrWireTransferService
+	"Deserialize the supplied object"
+	
+	^ aGtRsrWireTransferService object
+%
+
+category: 'accessing'
+method: GtRsrGbsWireSerializationStrategy
+encoder
+	| encoder |
+
+	encoder := GtWireEncoder onByteArray.
+	GtWireGbsReplicationSpecConverter new
+		update: encoder from: replicationSpec.
+	^ encoder
+%
+
+category: 'accessing'
+method: GtRsrGbsWireSerializationStrategy
+replicationSpec
+	^ replicationSpec
+%
+
+category: 'accessing'
+method: GtRsrGbsWireSerializationStrategy
+replicationSpec: anArray
+
+	replicationSpec := anArray
+%
+
+category: 'converting'
+method: GtRsrGbsWireSerializationStrategy
+serialize: anObject
+	"Serialize the object to something that RSR can return"
+	
+	^ (self gtDo: [ GtRsrWireTransferService clientClass ] 
+		gemstoneDo: [ GtRsrWireTransferService serverClass encoder: self encoder ]) 
+				new object: anObject
+%
+
 ! Class implementation for 'GtRsrLegacySerializationStrategy'
 
 !		Instance methods for 'GtRsrLegacySerializationStrategy'
@@ -5856,6 +5965,148 @@ category: 'other'
 classmethod: STONJSON
 toStringPretty: object
 	^ STON toJsonStringPretty: object
+%
+
+! Class implementation for 'ZnBase64Encoder'
+
+!		Class methods for 'ZnBase64Encoder'
+
+category: 'other'
+classmethod: ZnBase64Encoder
+new
+	^ self basicNew initialize
+%
+
+!		Instance methods for 'ZnBase64Encoder'
+
+category: 'other'
+method: ZnBase64Encoder
+beStrict
+	"Configure me to enforce padding when decoding"
+
+	strict := true
+%
+
+category: 'other'
+method: ZnBase64Encoder
+characterCountFor: bytes
+	| n characterCount |
+	"This assumes that padding is used"
+	n := bytes size.
+	characterCount := (n // 3 + (n \\ 3) sign) * 4.
+	^ lineLength
+		ifNil: [ characterCount ]
+		ifNotNil: [ characterCount + (characterCount // lineLength * lineEnd size) ]
+%
+
+category: 'other'
+method: ZnBase64Encoder
+characterForValue: value
+	^ alphabet at: value + 1
+%
+
+category: 'other'
+method: ZnBase64Encoder
+defaultAlphabet
+	^ 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+%
+
+category: 'other'
+method: ZnBase64Encoder
+defaultInverse
+	| defaultInverse |
+	defaultInverse := Array new: 128.
+	0 to: 127 do: [ :each | 
+		| offset |
+		offset := self defaultAlphabet indexOf: each asCharacter ifAbsent: [ nil ].
+		defaultInverse at: each + 1 put: (offset ifNotNil: [ offset - 1 ]) ].
+	^ defaultInverse
+%
+
+category: 'other'
+method: ZnBase64Encoder
+encode: byteArray
+	"Encode byteArray using Base64 encoding and return the resulting string"
+
+	^ String
+		new: (self characterCountFor: byteArray)
+		streamContents: [ :stringStream |
+			self encode: byteArray readStream to: stringStream ]
+%
+
+category: 'other'
+method: ZnBase64Encoder
+encode: byte1 and: byte2 and: byte3 to: stream
+	stream nextPut: (self characterForValue: (byte1 bitShift: -2)).
+	byte2
+		ifNil: [
+			stream nextPut: (self characterForValue: ((byte1 bitAnd: 2r11) bitShift: 4)).
+			padding ifNotNil: [ stream nextPut: padding; nextPut: padding ] ]
+		ifNotNil: [
+			stream nextPut: (self characterForValue: (((byte1 bitAnd: 2r11) bitShift: 4) + (byte2 bitShift: -4))).
+			byte3
+				ifNil: [
+					stream nextPut: (self characterForValue: ((byte2 bitAnd: 2r1111) bitShift: 2)).
+					padding ifNotNil: [ stream nextPut: $= ] ]
+				ifNotNil: [
+					stream nextPut: (self characterForValue: (((byte2 bitAnd: 2r1111) bitShift: 2) + (byte3 bitShift: -6))).
+					stream nextPut: (self characterForValue: (byte3 bitAnd: 2r111111)) ] ]
+%
+
+category: 'other'
+method: ZnBase64Encoder
+encode: byteStream to: stringStream
+	| byte1 byte2 byte3 count |
+	lineLength
+		ifNil: [
+			[ byteStream atEnd ] whileFalse: [
+				byte1 := byteStream next.
+				byte2 := byteStream next.
+				byte3 := byteStream next.
+				self encode: byte1 and: byte2 and: byte3 to: stringStream ] ]
+		ifNotNil: [
+			count := 0.
+			[ byteStream atEnd ] whileFalse: [
+				byte1 := byteStream next.
+				byte2 := byteStream next.
+				byte3 := byteStream next.
+				self encode: byte1 and: byte2 and: byte3 to: stringStream.
+				(count := count + 4) = lineLength
+					ifTrue: [
+						stringStream nextPutAll: lineEnd.
+						count := 0 ] ] ]
+%
+
+category: 'other'
+method: ZnBase64Encoder
+initialize
+	super initialize.
+	alphabet := self defaultAlphabet.
+	inverse := self defaultInverse.
+	self padding: $=.
+	self whitespace: #any.
+	self beStrict
+%
+
+category: 'other'
+method: ZnBase64Encoder
+padding: character
+	"Configure me to use character as padding.
+	One or two padding character might be needed to complete each quad.
+	Use nil to disable padding."
+
+	padding := character
+%
+
+category: 'other'
+method: ZnBase64Encoder
+whitespace: mode
+	"Set the whitespace mode:
+	nil is no whitespace allowed,
+	#separator is CR, LF, FF, SPACE, TAB allowed,
+	#any is all non-alphabet characters allowed (the default)"
+
+	whitespace := mode
 %
 
 ! Class implementation for 'GtRsrEvaluatorFeaturesService'
@@ -6097,6 +6348,13 @@ templateClassName
 
 category: 'testing'
 method: GtRsrProxyService
+isGtProxyObject
+
+	^ true
+%
+
+category: 'testing'
+method: GtRsrProxyService
 isProxyObjectActive
 	"Answer a boolean indicating whether the receiver is expected to be functioning,
 	i.e. it has a connection that is open, and it's connection is the current one."
@@ -6303,12 +6561,19 @@ method: GtRsrWireTransferService
 bufferObject: anObject
 	| encoder |
 
-	encoder := GtWireEncoder onByteArray.
+	encoder := self encoder.
 	roots := IdentitySet new.
 	encoder nextPut: anObject.
 	buffer := encoder contents.
 	"IdentitySets can't be replicated"
 	roots := roots asArray.
+%
+
+category: 'accessing'
+method: GtRsrWireTransferService
+encoder
+
+	^ GtWireEncoder onByteArray
 %
 
 ! Class implementation for 'GtRsrWireTransferServiceServer'
@@ -6577,6 +6842,24 @@ classmethod: Association
 key: aKey value: aValue
 
 	^ self new key: aKey value: aValue
+%
+
+! Class extensions for 'ByteArray'
+
+!		Instance methods for 'ByteArray'
+
+category: '*GToolkit-GemStone-GemStone'
+method: ByteArray
+base64Encoded
+	"Encode the receiver using Base64, returning a String.
+	Base64 encoding is a technique to represent binary data as ASCII text.
+	The inverse operation is String>>#base64Decoded"
+
+	"(0 to: 255) asByteArray base64Encoded"
+	"(Integer primesUpTo: 255) asByteArray base64Encoded"
+	"'Hello World!' utf8Encoded base64Encoded"
+
+	^ ZnBase64Encoder new encode: self
 %
 
 ! Class extensions for 'Character'
@@ -7135,6 +7418,12 @@ utf8Encoded
 ! Class extensions for 'Symbol'
 
 !		Instance methods for 'Symbol'
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+asMutator
+	^ self, ':'
+%
 
 category: '*GToolkit-GemStone-GemStone'
 method: Symbol
