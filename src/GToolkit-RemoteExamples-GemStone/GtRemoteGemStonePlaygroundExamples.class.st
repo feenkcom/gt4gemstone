@@ -463,7 +463,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_contextMenu_browseLocalClas
 			playgroundPageWithConnectedGemStoneWithSnippetCode: 'Object new'.
 
 	scripter menuStep
-		// GtSourceCoderEditorId;
+		// GtSourceCoderEditorInnerId;
 		openContextMenu;
 		play.
 
