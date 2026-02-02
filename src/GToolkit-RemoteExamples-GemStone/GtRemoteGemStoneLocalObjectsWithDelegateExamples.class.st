@@ -44,14 +44,27 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDicti
 ]
 
 { #category : #assertions }
-GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDictionaryWithPrimiteKeysAndDataProxy: aBareProxy [ 
-	| localObjectWithDelegate storeString |
+GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDictionaryWithPrimiteKeysAndDataProxy: aBareProxy [
+	"Confirm that the store strings for the dictionary evaluate to the expected value.
+	Don't compare the strings directly as hashing can result in comparison failures due to different ordering."
+	| localObjectWithDelegate expectedDictionary storeString |
 	localObjectWithDelegate := aBareProxy asGtpoLocalObject.
-	storeString :='((Dictionary new) add: (''two''->2); add: (''one''->1); add: (''three''->3); yourself)'.
-
-	self assertStoreOnFor: aBareProxy equals: storeString.
-	self assert: localObjectWithDelegate storeString equals: storeString.
-	self assertStoreOnFor: localObjectWithDelegate equals: storeString
+	expectedDictionary := Dictionary new
+			add: 'one' -> 1;
+			add: 'two' -> 2;
+			add: 'three' -> 3;
+			yourself.
+	storeString := String
+			streamContents: [ :aStream | aBareProxy storeOn: aStream ].
+	self
+		assert: (self class compiler evaluate: storeString)
+		equals: expectedDictionary.
+	self
+		assert: (self class evaluate: localObjectWithDelegate storeString)
+		equals: expectedDictionary.
+	storeString := String
+			streamContents: [ :aStream | localObjectWithDelegate storeOn: aStream ].
+	self assert: (self class evaluate: storeString) equals: expectedDictionary
 ]
 
 { #category : #assertions }
