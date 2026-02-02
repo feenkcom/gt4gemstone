@@ -3,7 +3,7 @@
 		"github://feenkcom/gtoolkit-remote/src" : "v0.9.43",
 		"github://gemtalk/PharoGemStoneFFI/src" : "tag_v1.1",
 		"github://feenkcom/lepiter/src" : "v0.7.99",
-		"github://feenkcom/gtoolkit-wireencoding/src" : "v0.6.17",
+		"github://feenkcom/gtoolkit-wireencoding/src" : "v0.6.18",
 		"github://feenkcom/RemoteServiceReplication/src" : "5a53d04cb91c4769269a304c7be946477dad5ccf"
 	}
 }
