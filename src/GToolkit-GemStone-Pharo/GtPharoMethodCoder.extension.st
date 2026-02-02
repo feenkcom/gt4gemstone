@@ -59,7 +59,11 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 		action: [ :aCoderUIModel :anEvent | 
 			| clsName source session category cmd |
 			clsName := self compiledMethod methodClass name.
-			source := anAST source.
+			"Big method handling is a hack at the moment...
+			The source is truncated for display purposes, but since it is read-only, we can assume that the source from the compiled method is up-to-date."
+			source := self compiledMethod isBigMethod
+				ifTrue: [ self compiledMethod sourceCode ]
+				ifFalse: [ anAST source ].
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
 			session connect.
