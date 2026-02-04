@@ -4,9 +4,167 @@
 
         expectvalue true
         run
-DateAndTime class removeSelector: #fromString:.
+| dcPublished |
+
+dcPublished := (AllUsers userWithId: 'DataCurator') symbolList objectNamed: #Published.
+"Copy the classes loaded by DataCurator to Published so others can use them (String>>asZnUrl)"
+((AllUsers userWithId: 'DataCurator') symbolList objectNamed: #UserGlobals)
+	keysAndValuesDo: [ :key :value |
+		dcPublished at: key put: value ].
 
 true.
 %
+
+
+! Restore String>>asZnUrl.
+! GT overwrites this since it doesn't load Zinc, but with Seaside it needs the proper definition.
+
+category: 'converting'
+method: String
+asZnUrl
+	^ ZnUrl fromString: self
+%
+
+! The following methods are loaded by Seaside as DataCurator.
+! How to make them accessible to everyone?
+
+category: 'missing'
+classmethod: PositionableStream
+on: aCollection from: firstIndex to: lastIndex 
+	"Answer an instance of me, streaming over the elements of aCollection 
+	starting with the element at firstIndex and ending with the one at 
+	lastIndex."
+
+	^self on: (aCollection copyFrom: firstIndex to: lastIndex)
+%
+
+
+category: 'missing'
+method: Character
+charCode
+	"assuming Unicode"
+	
+	^(self asciiValue bitAnd: 16r3FFFFF)
+%
+
+
+category: 'missing'
+classmethod: Integer
+readFrom: aStringOrStream 
+	"Answer a new Integer as described on the stream, aStream.
+	Embedded radix specifiers not allowed - use Number readFrom: for that."
+	^self readFrom: aStringOrStream base: 10
+%
+
+
+category: 'missing'
+classmethod: Integer
+readFrom: aStream base: base 
+	"Answer an instance of one of the concrete subclasses if Integer. 
+	Initial minus sign accepted, and bases > 10 use letters A-Z.
+	Imbedded radix specifiers not allowed;  use Number 
+	class readFrom: for that. Answer zero if there are no digits."
+
+| stream factor result dv  |
+factor := 1.
+result := 0.
+stream:=aStream isStream ifTrue:[aStream] ifFalse:[aStream readStream].
+(stream peek isEquivalent: $-)
+ifTrue: [
+  stream next.
+  factor := -1.]
+ifFalse: [
+  (stream peek isEquivalent: $+) ifTrue: [
+    stream next]].
+[ stream atEnd not and: [ (dv := stream peek digitValueInRadix: base) ~~ nil ] ] whileTrue: [
+  stream next.
+  result := result * base + dv.
+].
+
+^ result * factor
+%
+
+
+category: 'missing'
+classmethod: Integer
+readFrom: aStringOrStream ifFail: aBlock
+  "Answer an instance of one of the concrete subclasses if Integer. 
+	Initial minus sign accepted.
+	Imbedded radix specifiers not allowed;  use Number 
+	class readFrom: for that.
+	Execute aBlock if there are no digits."
+
+  ^ (NumberParser on: aStringOrStream) nextIntegerBase: 10 ifFail: aBlock
+%
+
+
+category: 'missing'
+classmethod: Integer
+readFrom: aStream radix: radix
+	^self readFrom: aStream base: radix
+%
+
+
+category: 'missing'
+classmethod: Integer
+readFromString: aString
+
+^self fromString: aString
+%
+
+
+category: 'missing'
+method: SmallInteger
+isLarge
+
+	^false
+%
+
+
+category: 'missing'
+method: SmallInteger
+threeDigitName
+
+	| units answer |
+
+	self = 0 ifTrue: [^''].
+	units := #('one' 'two' 'three' 'four' 'five' 'six' 'seven' 'eight' 'nine' 'ten' 
+		'eleven' 'twelve' 'thirteen' 'fourteen' 'fifteen' 'sixteen' 'seventeen' 
+		'eighteen' 'nineteen').
+	self > 99 ifTrue: [
+		answer := (units at: self // 100),' hundred'.
+		(self \\ 100) = 0 ifFalse: [
+			answer := answer,' ',(self \\ 100) threeDigitName
+		].
+		^answer
+	].
+	self < 20 ifTrue: [
+		^units at: self
+	].
+	answer := #('twenty' 'thirty' 'forty' 'fifty' 'sixty' 'seventy' 'eighty' 'ninety')
+			at: self // 10 - 1.
+	(self \\ 10) = 0 ifFalse: [
+		answer := answer,'-',(units at: self \\ 10)
+	].
+	^answer
+%
+
+
+category: 'missing'
+classmethod: SmallInteger
+maxVal
+
+^self maximumValue
+%
+
+
+category: 'missing'
+classmethod: SmallInteger
+minVal
+
+^self minimumValue
+%
+
+
 		commit
 		errorCount

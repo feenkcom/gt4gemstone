@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 #
-# Set up the remote GemStone environment for running the examples in 
-# GtRemoteGemStoneDeclarativeExamples
+# Configure and load a GemStone DB with GT and Seaside.
 #
-# Assumes that the environment should be located in `remote-gemstone` below the 
-# working directory, which is the image directory.
-#
+# Once loaded, executing the following as the DataCurator user should
+# server the welcome page:
+# 
+#     WAGemStoneRunSeasideGems startGemServerOn: 9001.
+# 
 set -e
 set -x
 trap stop_servers EXIT
@@ -86,10 +87,6 @@ topaz -l -I ${SCRIPT_DIR}/loginSystemUser.topaz  -S ${SCRIPT_DIR}/seaside/seasid
 echo "Install seaside."
 topaz -l -I ${SCRIPT_DIR}/loginDataCurator.topaz  -S ${SCRIPT_DIR}/seaside/installSeaside.topaz < /dev/zero
 
-# Patch seaside code for GT compatibility
-echo "Apply Gt/Seaside patches."
-topaz -l -I ${SCRIPT_DIR}/loginDataCurator.topaz  -S ${SCRIPT_DIR}/seaside/seaside-gt-patches.topaz < /dev/zero
-
 
 if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
@@ -123,5 +120,9 @@ else
   ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
   ./gt4llm/scripts/installGt4Llm_${USE_ROWAN}.sh 
 fi
+
+# Patch seaside code for GT compatibility
+echo "Apply Gt/Seaside patches."
+topaz -l -I ${SCRIPT_DIR}/loginSystemUser.topaz  -S ${SCRIPT_DIR}/seaside/seaside-gt-patches.topaz < /dev/zero
 
 exit 0
