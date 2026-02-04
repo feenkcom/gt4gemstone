@@ -1569,13 +1569,15 @@ category: 'initialize'
 method: GtGemStoneDebuggerState
 initializeProcess2: aGsProcess exception: anException
 
-	messageText := anException messageText.
+	messageText := [ anException messageText ifNil: [ anException printString ] ]
+		on: Error
+		do: [ :ex | 'Error while attempting to obtain messageText' ].
 	isResumable := anException isResumable.
 	isSuspended := aGsProcess _isSuspended.
 	isTerminated := aGsProcess _isTerminated.
 	summary := aGsProcess _isTerminated
-		ifTrue: [ 'Terminated: ', anException messageText ]
-		ifFalse: [ anException messageText ].
+		ifTrue: [ 'Terminated: ', messageText ]
+		ifFalse: [ messageText ].
 
 	callStackSpecification := aGsProcess gtAllFrames collect: [ :frameArray |
 		| homeMethod |
@@ -1589,13 +1591,15 @@ category: 'initialize'
 method: GtGemStoneDebuggerState
 initializeProcess: aGsProcess exception: anException
 
-	messageText := anException messageText.
+	messageText := [ anException messageText ifNil: [ anException printString ] ]
+		on: Error
+		do: [ :ex | 'Error while attempting to obtain messageText' ].
 	isResumable := anException isResumable.
 	isSuspended := aGsProcess _isSuspended.
 	isTerminated := aGsProcess _isTerminated.
 	summary := aGsProcess _isTerminated
-		ifTrue: [ 'Terminated: ', anException messageText ]
-		ifFalse: [ anException messageText ].
+		ifTrue: [ 'Terminated: ', messageText ]
+		ifFalse: [ messageText ].
 
 	callStackSpecification := (GtGemStoneLocalCallStack forProcess: aGsProcess) createSpecification
 %
@@ -1604,13 +1608,15 @@ category: 'initialize'
 method: GtGemStoneDebuggerState
 initializeProcess: aGsProcess exception: anException callStack: aCallStack
 
-	messageText := anException messageText.
+	messageText := [ anException messageText ifNil: [ anException printString ] ]
+		on: Error
+		do: [ :ex | 'Error while attempting to obtain messageText' ].
 	isResumable := anException isResumable.
 	isSuspended := aGsProcess _isSuspended.
 	isTerminated := aGsProcess _isTerminated.
 	summary := aGsProcess _isTerminated
-		ifTrue: [ 'Terminated: ', anException messageText ]
-		ifFalse: [ anException messageText ].
+		ifTrue: [ 'Terminated: ', messageText ]
+		ifFalse: [ messageText ].
 
 	callStackSpecification := aCallStack createSpecification
 %
