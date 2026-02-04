@@ -53,7 +53,7 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndResumeCompu
 	<return: #AssertionFailure>
 	| evaluatorPromise interruptResult computedResult executionProcess hasResult hasInterrupt semaphore |
 	evaluatorPromise := (self runningServer
-			createScriptEvaluationFor: 'Delay  waitForSeconds: 20. 1/0')
+			createScriptEvaluationFor: 'Delay  waitForSeconds: 20. 1')
 			returnProxy;
 			beAsyncExecution;
 			evaluate.
