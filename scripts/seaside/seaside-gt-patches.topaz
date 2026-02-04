@@ -1,0 +1,12 @@
+        iferr 1 stk
+        iferr 2 stack
+        iferr 3 exit
+
+        expectvalue true
+        run
+DateAndTime class removeSelector: #fromString:.
+
+true.
+%
+		commit
+		errorCount
