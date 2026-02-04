@@ -6,6 +6,8 @@
         run
 | dcPublished |
 
+DateAndTime class removeSelector: #fromString:.
+
 dcPublished := (AllUsers userWithId: 'DataCurator') symbolList objectNamed: #Published.
 "Copy the classes loaded by DataCurator to Published so others can use them (String>>asZnUrl)"
 ((AllUsers userWithId: 'DataCurator') symbolList objectNamed: #UserGlobals)
