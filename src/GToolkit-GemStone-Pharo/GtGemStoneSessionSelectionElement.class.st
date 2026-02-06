@@ -359,10 +359,10 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 		'Toggle CodeSync & AutoCommit' -> [:aStatusLineElement |
 			aGtGemStoneSession toggleCodeSyncAndAutoCommit ] }.
 			
-	aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
+	"aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
 		actions addAll: {
 			'Toggle Transcript' -> [:aStatusLineElement | 
-				aGtGemStoneSession toggleRemoteTranscript ]} ].
+				aGtGemStoneSession toggleRemoteTranscript ]} ]."
 				
 	actions addAll: {
 		'Inspect' -> [ :aStatusLineElement | 

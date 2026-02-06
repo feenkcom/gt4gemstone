@@ -609,10 +609,10 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession beDefaultSession]
 			if: [ :aSession | aSession isDefaultSession not ];
-		contextItemLabel: 'Toggle Transcript'
+		"contextItemLabel: 'Toggle Transcript'
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession toggleRemoteTranscript  ]
-			if: [ :aSession | aSession currentFeatures hasGemStoneTranscriptV1 ];
+			if: [ :aSession | aSession currentFeatures hasGemStoneTranscriptV1 ];"
 		contextItemLabel: 'Inspect' 
 			action: [ :anElement :aGtGemStoneSession | 
 				anElement phlow spawnObject: aGtGemStoneSession ];
