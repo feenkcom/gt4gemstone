@@ -6,7 +6,7 @@ Class {
 		'homeMethod',
 		'frameIdentifier'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }

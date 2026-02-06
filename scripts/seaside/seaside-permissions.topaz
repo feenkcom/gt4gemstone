@@ -1,0 +1,32 @@
+        iferr 1 stk
+        iferr 2 stack
+        iferr 3 exit
+
+        expectvalue true
+        run
+"The default privileges don't allow GT and Seaside to be installed in to the default seaside extent together.
+The script below undoubtedly grants too many permissions and should be tightened up."
+| curator system systemGroup systemPolicy |
+
+curator := AllUsers userWithId: 'DataCurator'.
+system := AllUsers userWithId: 'SystemUser'.
+
+"Granting CodeModification allows creation and modification of classes"
+curator addPrivilege: #CodeModification.
+system addPrivilege: #CodeModification.
+"Granting other administrative privileges"
+curator addPrivilege: #SystemControl.
+curator addPrivilege: #SessionAccess.
+
+systemGroup := UserProfileGroup groupWithName: 'System'.
+"1. Ensure DataCurator is in the #System group for policy ID 1 access"
+curator addToUserProfileGroup: systemGroup.
+"2. Grant required privileges for code and policy management"
+curator addPrivilege: #ObjectSecurityPolicyProtection.
+"3. Ensure the #System group has write authorization on the policy"
+systemPolicy := SystemObjectSecurityPolicy.
+systemPolicy group: systemGroup authorization: #write.
+true.
+%
+		commit
+		errorCount

@@ -78,7 +78,10 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndResumeCompu
 	interruptResult := evaluatorPromise interruptEvaluation.
 	self assert: interruptResult equals: #interruptedAsync.
 
-	semaphore wait.
+	self
+		waitOn: semaphore
+		for: 30 "seconds"
+		description: 'GtRsrEvaluationException not processed'.
 
 	self assert: hasResult.
 	self assert: hasInterrupt.
@@ -563,4 +566,11 @@ GtRemoteGemStoneSessionAsyncExamples >> waitForResolutionStartedFor: aPromiseRes
 	
 	aPromiseResolution canStopExecution ifFalse: [
 		Error signal: 'Promise failed to start' ]
+]
+
+{ #category : #utils }
+GtRemoteGemStoneSessionAsyncExamples >> waitOn: aSemaphore for: anInteger description: descriptionString [
+
+	(aSemaphore waitTimeoutSeconds: anInteger)
+		ifTrue: [ self error: descriptionString ]
 ]

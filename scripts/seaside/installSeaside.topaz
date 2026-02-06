@@ -1,0 +1,36 @@
+        iferr 1 stk
+        iferr 2 stack
+        iferr 3 exit
+
+        expectvalue true
+        run
+Gofer new
+  package: 'GsUpgrader-Core';
+  url: 'http://ss3.gemtalksystems.com/ss/gsUpgrader';
+  load.
+(Smalltalk at: #GsUpgrader) upgradeGrease.
+true
+%
+        commit
+        run
+GsDeployer deploy: [
+  Metacello new
+    baseline: 'Seaside3';
+    repository: 'github://SeasideSt/Seaside:master/repository';
+    onLock: [:ex | ex honor];
+    load ].
+true
+%
+        commit
+        run
+GsDeployer deploy: [
+  Metacello new
+    baseline: 'Seaside3';
+    repository: 'github://SeasideSt/Seaside:master/repository';
+    onLock: [:ex | ex honor];
+    load: #('Zinc') ].
+
+true.
+%
+		commit
+		errorCount
