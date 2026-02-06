@@ -87,6 +87,9 @@ topaz -l -I ${SCRIPT_DIR}/loginSystemUser.topaz  -S ${SCRIPT_DIR}/seaside/seasid
 echo "Install seaside."
 topaz -l -I ${SCRIPT_DIR}/loginDataCurator.topaz  -S ${SCRIPT_DIR}/seaside/installSeaside.topaz < /dev/zero
 
+echo "Early stop..."
+exit 0
+
 if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
   if [[ -z "${LOAD_GT4GS_VERSION}" || "${LOAD_GT4GS_VERSION}" = "no" ]]
@@ -105,9 +108,6 @@ else
   echo "Seaside and Rowan are currently not supported together."
   exit 1
 fi
-
-echo "Early stop..."
-exit 0
 
 # Patch seaside code for GT compatibility
 echo "Apply Gt/Seaside patches."
