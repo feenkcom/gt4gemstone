@@ -712,6 +712,9 @@ GtGemStoneSessionRegistry >> initialize [
 	super initialize.
 	sharedAccess := Mutex new.
 	self reload "resetSessions".
+	"Unless a custom encoder has been specified, use the GemStone default wire encoder"
+	GtWireEncoder hasDefaultEncoder ifFalse:
+		[ GtWireEncoder setDefaultGemStoneEncoder ].
 ]
 
 { #category : #initialization }
