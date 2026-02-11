@@ -87,42 +87,33 @@ topaz -l -I ${SCRIPT_DIR}/loginSystemUser.topaz  -S ${SCRIPT_DIR}/seaside/seasid
 echo "Install seaside."
 topaz -l -I ${SCRIPT_DIR}/loginDataCurator.topaz  -S ${SCRIPT_DIR}/seaside/installSeaside.topaz < /dev/zero
 
-
 if [[ -z "${USE_ROWAN}" || "${USE_ROWAN}" = "no" ]]
 then
   if [[ -z "${LOAD_GT4GS_VERSION}" || "${LOAD_GT4GS_VERSION}" = "no" ]]
   then
     echo "Packaging gt4gemstone."
     "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
-    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/inputRelease.sh" -s "${STONE}"
+    echo "Add GlamorousToolkitGlobals symbol dictionary."
+    topaz -l -I "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/loginDataCurator.topaz"  -S "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/gt-symbol-dictionary.topaz" < /dev/zero
+    echo "Patch symbol dictionary."
+    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/patch-dictionaries.sh"
+    echo "Load gt4gemstone."
+    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/inputRelease.sh" -s "${STONE}"
   else
     echo "Downloading gt4gemstone $LOAD_GT4GS_VERSION."
+    echo "Aborting for now, not yet tested..."
+    exit 1
     $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
+    ${SCRIPT_DIR}/seaside/patch-dictionaries.sh
     ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
   fi
 else
-  stop_servers
-  pushd $GEMSTONE/data
-  rm *.log tranlog1.dbf 
-  mv extent0.dbf extent0.dbf.bak
-  if [ "$USE_ROWAN" = "rowan2" ]
-  then
-    cp $GEMSTONE/bin/extent0.rowan.dbf ./extent0.dbf
-  else
-    cp $GEMSTONE/bin/extent0.${USE_ROWAN}.dbf ./extent0.dbf
-  fi
-  chmod 644 extent0.dbf
-  popd
-  startnetldi -g
-  startstone gs64stone
-  ./gtoolkit-wireencoding/scripts/installGToolkitWireEncoding_${USE_ROWAN}.sh
-  ./gt4gemstone/scripts/installGt4gemstone_${USE_ROWAN}.sh 
-  ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
-  ./gt4llm/scripts/installGt4Llm_${USE_ROWAN}.sh 
+  echo "Seaside and Rowan are currently not supported together."
+  exit 1
 fi
 
 # Patch seaside code for GT compatibility
 echo "Apply Gt/Seaside patches."
-topaz -l -I ${SCRIPT_DIR}/loginSystemUser.topaz  -S ${SCRIPT_DIR}/seaside/seaside-gt-patches.topaz < /dev/zero
+topaz -l -I "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/loginDataCurator.topaz" -S "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/seaside-gt-patches.topaz" < /dev/zero
 
 exit 0

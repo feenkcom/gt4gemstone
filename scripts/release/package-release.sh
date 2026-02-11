@@ -70,8 +70,7 @@ cp ${GT4GEMSTONE_HOME}/scripts/release/inputRelease.sh ${GT4GEMSTONE_RELEASE_FOL
 cp ${GT4GEMSTONE_HOME}/scripts/release/inputRelease.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
 cp ${GT4GEMSTONE_HOME}/scripts/loginSystemUser.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
 cp ${GT4GEMSTONE_HOME}/scripts/loginDataCurator.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
-cp ${GT4GEMSTONE_HOME}/scripts/seaside/seaside-permissions.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
-cp ${GT4GEMSTONE_HOME}/scripts/seaside/installSeaside.topaz ${GT4GEMSTONE_RELEASE_FOLDER}/
+cp -a ${GT4GEMSTONE_HOME}/scripts/seaside ${GT4GEMSTONE_RELEASE_FOLDER}/
 
 echo ${GT4GEMSTONE_VERSION} >> ${GT4GEMSTONE_RELEASE_FOLDER}/gt4gemstone.version
 echo "run

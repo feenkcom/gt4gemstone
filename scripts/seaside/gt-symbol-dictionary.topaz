@@ -1,0 +1,15 @@
+        iferr 1 stk
+        iferr 2 stack
+        iferr 3 exit
+
+        expectvalue true
+        run
+| symbolList |
+
+symbolList := GsSession currentSession symbolList.
+symbolList createDictionaryNamed: #GlamorousToolkitGlobals at: 1.
+
+true.
+%
+		commit
+		errorCount
