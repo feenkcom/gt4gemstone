@@ -288,6 +288,12 @@ GtGemStoneSession >> connection [
 	^ connection
 ]
 
+{ #category : #private }
+GtGemStoneSession >> connection: aRsrConnection [
+
+	connection := aRsrConnection
+]
+
 { #category : #accessing }
 GtGemStoneSession >> connectionTime [
 
