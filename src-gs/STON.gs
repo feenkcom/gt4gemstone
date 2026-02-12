@@ -4,9 +4,9 @@
 doit
 (Error
 	subclass: 'STONReaderError'
-	instVarNames: #( streamPosition )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(streamPosition)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -24,9 +24,9 @@ removeallclassmethods STONReaderError
 doit
 (Error
 	subclass: 'STONWriterError'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -41,11 +41,36 @@ removeallmethods STONWriterError
 removeallclassmethods STONWriterError
 
 doit
+(FileReference
+	subclass: 'STONFileReference'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #()
+)
+		category: 'STON-GemStone-Kernel';
+		comment: 'Part of STON (not FileSystem)
+
+===
+
+This utility class is used to support serializing FileReference instances for disk-based file systems and in-memory file systems. STON expects a single serialization/deserialization format per class. To match Pharo''s behavior, we need to serialize disk-based file systems specially. This class handles this special treatment.
+
+Do not create instances of this class.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods STONFileReference
+removeallclassmethods STONFileReference
+
+doit
 (Object
 	subclass: 'STON'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -155,9 +180,9 @@ removeallclassmethods STON
 doit
 (Object
 	subclass: 'STONReader'
-	instVarNames: #( readStream objects classes unresolvedReferences stringStream allowComplexMapKeys stack )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(readStream objects classes unresolvedReferences stringStream allowComplexMapKeys stack)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -176,9 +201,9 @@ removeallclassmethods STONReader
 doit
 (Object
 	subclass: 'STONReference'
-	instVarNames: #( index )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(index)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -196,9 +221,9 @@ removeallclassmethods STONReference
 doit
 (Object
 	subclass: 'STONStreamWriter'
-	instVarNames: #( writer first )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #(writer first)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -216,9 +241,9 @@ removeallclassmethods STONStreamWriter
 doit
 (STONStreamWriter
 	subclass: 'STONListWriter'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -236,9 +261,9 @@ removeallclassmethods STONListWriter
 doit
 (STONListWriter
 	subclass: 'STONShortListWriter'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -256,9 +281,9 @@ removeallclassmethods STONShortListWriter
 doit
 (STONStreamWriter
 	subclass: 'STONMapWriter'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -275,9 +300,9 @@ removeallclassmethods STONMapWriter
 doit
 (Object
 	subclass: 'STONWriter'
-	instVarNames: #( writeStream prettyPrint newLine jsonMode referencePolicy level objects )
-	classVars: #( STONCharacters STONSimpleSymbolCharacters )
-	classInstVars: #(  )
+	instVarNames: #(writeStream prettyPrint newLine jsonMode referencePolicy level objects)
+	classVars: #(STONCharacters STONSimpleSymbolCharacters)
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -342,6 +367,24 @@ category: 'accessing'
 method: STONReaderError
 streamPosition: aNumber
 	streamPosition := aNumber
+%
+
+! Class implementation for 'STONFileReference'
+
+!		Class methods for 'STONFileReference'
+
+category: 'ston'
+classmethod: STONFileReference
+fromSton: stonReader
+
+	^stonReader parseListSingleton asFileReference
+%
+
+category: 'ston'
+classmethod: STONFileReference
+stonName
+
+	^#FILE
 %
 
 ! Class implementation for 'STON'
@@ -682,9 +725,9 @@ category: 'parsing-internal'
 method: STONReader
 parseClass
 	| className |
-	className := self stringStreamContents: [ :stream |
-		[ readStream atEnd not and: [ self isClassChar: readStream peek ] ] whileTrue: [ 
-			stream nextPut: readStream next ] ].
+	className := String new.
+	[ readStream atEnd not and: [ self isClassChar: readStream peek ] ]
+		whileTrue: [ className addAll: readStream next ].
 	self consumeWhitespace.
 	^ self lookupClass: className asSymbol
 %
@@ -769,7 +812,7 @@ parseMapDo: block
   (self matchChar: $})
     ifTrue: [ ^ self ].
   [ readStream atEnd ] whileFalse: [ | name value |
-      name := self parseValue.
+      name := self parseSimpleValue.
       (allowComplexMapKeys
         or: [ name isString or: [ name isNumber ] ])
         ifFalse: [ self error: 'unexpected property name type' ].
@@ -788,10 +831,16 @@ parseNumber
 	| negated number |
 	negated := readStream peekFor: $-.
 	number := self parseNumberInteger.
-	(readStream peekFor: $.)
-		ifTrue: [ number := number + self parseNumberFraction ].
-	((readStream peekFor: $e) or: [ readStream peekFor: $E ])
-		ifTrue: [ number := number * self parseNumberExponent ].
+	(readStream peekFor: $/)
+		ifTrue: 
+			[number := Fraction numerator: number denominator: self parseNumberInteger.
+			(readStream peekFor: $s)
+				ifTrue: [ number := ScaledDecimal for: number scale: self parseNumberInteger ] ]
+		ifFalse:
+			[(readStream peekFor: $.)
+				ifTrue: [ number := (number + self parseNumberFraction) asFloat ].
+			((readStream peekFor: $e) or: [ readStream peekFor: $E ])
+				ifTrue: [ number := number * self parseNumberExponent ]].
 	negated
 		ifTrue: [ number := number negated ].
 	self consumeWhitespace.
@@ -856,47 +905,9 @@ parseReference
 	^ STONReference index: index
 %
 
-category: 'parsing-internal'
-method: STONReader
-parseString
-	^ self parseStringInternal
-%
-
-category: 'parsing-internal'
-method: STONReader
-parseStringInternal
-  | result delimiter |
-  delimiter := readStream next.
-  (delimiter = $' or: [ delimiter = $" ])
-    ifFalse: [ self error: ''' or " expected' ].
-  result := self
-    stringStreamContents: [ :stream | 
-      [ readStream atEnd or: [ readStream peek = delimiter ] ]
-        whileFalse: [ stream nextPut: self parseCharacter ] ].
-  self expectChar: delimiter.
-  ^ result
-%
-
-category: 'parsing-internal'
-method: STONReader
-parseSymbol
-	| string |
-	self expectChar: $#.
-	readStream peek = $'
-		ifTrue: [ ^ self parseStringInternal asSymbol ].
-	string := self stringStreamContents: [ :stream |
-		[ readStream atEnd not and: [ self isSimpleSymbolChar: readStream peek ] ] whileTrue: [
-			stream nextPut: readStream next ] ].
-	string isEmpty
-		ifFalse: [ 
-			self consumeWhitespace.
-			^ string asSymbol ].
-	self error: 'unexpected input'
-%
-
 category: 'parsing'
 method: STONReader
-parseValue
+parseSimpleValue
 	| char |
 	readStream atEnd ifFalse: [ 
 		(self isClassStartChar: (char := readStream peek)) 
@@ -915,6 +926,53 @@ parseValue
 			ifTrue: [ ^ self parseNumber ].
 		self parseConstantDo: [ :value | ^ value ] ].
 	self error: 'invalid input'
+%
+
+category: 'parsing-internal'
+method: STONReader
+parseString
+	^ self parseStringInternal
+%
+
+category: 'parsing-internal'
+method: STONReader
+parseStringInternal
+	| result delimiter |
+	delimiter := readStream next.
+	(delimiter = $' or: [ delimiter = $" ])
+		ifFalse: [ self error: ''' or " expected' ].
+	result := String new.
+	[ readStream atEnd or: [ readStream peek = delimiter ] ]
+		whileFalse: [ result addAll: self parseCharacter ].
+	self expectChar: delimiter.
+	^ result
+%
+
+category: 'parsing-internal'
+method: STONReader
+parseSymbol
+	| string |
+	self expectChar: $#.
+	readStream peek = $'
+		ifTrue: [ ^ self parseStringInternal asSymbol ].
+	string := String new.
+	[ readStream atEnd not and: [ self isSimpleSymbolChar: readStream peek ] ]
+		whileTrue: [ string addAll: readStream next ].
+	string isEmpty
+		ifFalse: [ 
+			self consumeWhitespace.
+			^ string asSymbol ].
+	self error: 'unexpected input'
+%
+
+category: 'parsing'
+method: STONReader
+parseValue
+	| value |
+	value := self parseSimpleValue.
+	^ (self matchChar: $:)
+		ifTrue: [ Association new key: value value: self parseValue ]
+		ifFalse: [ value ]
 %
 
 category: 'private'
@@ -1187,7 +1245,7 @@ encodeCharacter: char
   | code encoding |
   ((code := char codePoint) < 127
     and: [ (encoding := STONCharacters at: code + 1) notNil ])
-    ifTrue: [ encoding = #'pass'
+    ifTrue: [ (encoding = #'pass' or: [ jsonMode and: [ char = $' ] ])
         ifTrue: [ writeStream nextPut: char ]
         ifFalse: [ writeStream nextPutAll: encoding ] ]
     ifFalse: [ | paddedStream padding digits |
@@ -1405,6 +1463,16 @@ with: object do: block
 
 category: 'writing'
 method: STONWriter
+writeAssociation: association
+	jsonMode
+		ifTrue: [ self error: 'wrong object class for JSON mode' ].
+	self
+		encodeKey: association key
+		value: association value
+%
+
+category: 'writing'
+method: STONWriter
 writeBoolean: boolean
 	writeStream print: boolean
 %
@@ -1413,6 +1481,18 @@ category: 'writing'
 method: STONWriter
 writeFloat: float
   writeStream nextPutAll: float asString
+%
+
+category: 'writing'
+method: STONWriter
+writeFraction: fraction
+
+	jsonMode
+		ifTrue: [ self writeFloat: fraction asFloat ]
+		ifFalse: [ writeStream
+				print: fraction numerator;
+				nextPut: $/;
+				print: fraction denominator ]
 %
 
 category: 'writing'
@@ -1481,6 +1561,29 @@ writeObject: object listSingleton: element
 
 category: 'writing'
 method: STONWriter
+writeObject: anObject named: stonName do: block
+	(jsonMode and: [ anObject class ~= STON listClass and: [ anObject class ~= STON mapClass ] ])
+		ifTrue: [ self error: 'wrong object class for JSON mode' ].
+	self with: anObject do: [
+		writeStream nextPutAll: stonName.
+		self prettyPrintSpace.
+		block value ]
+%
+
+category: 'writing'
+method: STONWriter
+writeObject: object named: stonName listSingleton: element
+	self writeObject: object named: stonName do: [
+		writeStream nextPut: $[.
+		self
+			prettyPrintSpace;
+			nextPut: element;
+			prettyPrintSpace.
+		writeStream nextPut: $] ]
+%
+
+category: 'writing'
+method: STONWriter
 writeObject: object streamList: block
 	self writeObject: object do: [ | listWriter |
 		listWriter := STONListWriter on: self.
@@ -1524,6 +1627,20 @@ writeReference: index
 	writeStream
 		nextPut: $@;
 		print: index
+%
+
+category: 'writing'
+method: STONWriter
+writeScaledDecimal: scaledDecimal
+
+	jsonMode
+		ifTrue: [ self writeFloat: scaledDecimal asFloat ]
+		ifFalse: [ writeStream
+				print: scaledDecimal numerator;
+				nextPut: $/;
+				print: scaledDecimal denominator;
+				nextPut: $s;
+				print: scaledDecimal scale ]
 %
 
 category: 'writing'
@@ -1593,6 +1710,28 @@ stonProcessSubObjects: block
 									val:= (block value: (self basicAt: each)).
 									self basicAt: each put: val ] ]"
 							super stonProcessSubObjects: block"
+%
+
+! Class extensions for 'AbstractFraction'
+
+!		Instance methods for 'AbstractFraction'
+
+category: '*ston-gemstone-kernel'
+method: AbstractFraction
+stonOn: stonWriter
+
+	stonWriter writeFraction: self
+%
+
+! Class extensions for 'Association'
+
+!		Instance methods for 'Association'
+
+category: '*ston-gemstone-kernel'
+method: Association
+stonOn: stonWriter
+
+	stonWriter writeAssociation: self
 %
 
 ! Class extensions for 'Boolean'
@@ -1742,6 +1881,19 @@ stonOn: stonWriter
 
 ! Class extensions for 'Class'
 
+!		Class methods for 'Class'
+
+category: '*ston-gemstone-kernel'
+classmethod: Class
+fromSton: stonReader
+	| theClassName symbolList |
+	theClassName := stonReader parseListSingleton.
+	symbolList := System myUserProfile symbolList.
+	^(symbolList resolveSymbol:  theClassName)
+		ifNil: [LookupError signal: theClassName asString, ' was not found']
+		ifNotNil: [:assoc | assoc value]
+%
+
 !		Instance methods for 'Class'
 
 category: '*ston-gemstone-kernel'
@@ -1750,6 +1902,14 @@ stonName
 	"Override to encode my instances using a different class name."
 	
 	^ self name
+%
+
+category: '*ston-gemstone-kernel'
+method: Class
+stonOn: stonWriter
+	stonWriter
+		writeObject: self
+		listSingleton: self name asSymbol
 %
 
 ! Class extensions for 'Collection'
@@ -1842,6 +2002,28 @@ stonOn: stonWriter
 			self printOn: stream ])
 %
 
+! Class extensions for 'FileReference'
+
+!		Instance methods for 'FileReference'
+
+category: '*ston-gemstone-kernel'
+method: FileReference
+stonOn: stonWriter
+
+	self fileSystem isDiskFileSystem
+		ifTrue: [ | diskFilePath |
+			"in order to get $/ as delimiter and $. as working directory on all platforms"
+			diskFilePath := path isWorkingDirectory
+				ifTrue: [ '.' ]
+				ifFalse: [ path pathString ].
+			stonWriter
+				writeObject: self
+				named: STONFileReference stonName
+				listSingleton: diskFilePath ]
+		ifFalse: [
+			super stonOn: stonWriter ]
+%
+
 ! Class extensions for 'Integer'
 
 !		Instance methods for 'Integer'
@@ -1850,6 +2032,46 @@ category: '*ston-gemstone-kernel'
 method: Integer
 stonOn: stonWriter
 	stonWriter writeInteger: self
+%
+
+! Class extensions for 'Metaclass3'
+
+!		Class methods for 'Metaclass3'
+
+category: '*ston-gemstone-kernel'
+classmethod: Metaclass3
+fromSton: stonReader
+
+	| theClassName symbolList |
+	theClassName := stonReader parseListSingleton.
+	symbolList := System myUserProfile symbolList.
+	^(symbolList resolveSymbol:  theClassName)
+		ifNil: [LookupError signal: theClassName asString, ' was not found']
+		ifNotNil: [:assoc | assoc value class]
+%
+
+category: '*ston-gemstone-kernel'
+classmethod: Metaclass3
+stonName
+
+	^#Metaclass
+%
+
+!		Instance methods for 'Metaclass3'
+
+category: '*ston-gemstone-kernel'
+method: Metaclass3
+stonName
+
+	^#Class
+%
+
+category: '*ston-gemstone-kernel'
+method: Metaclass3
+stonOn: stonWriter
+	stonWriter
+		writeObject: self
+		listSingleton: self thisClass name asSymbol
 %
 
 ! Class extensions for 'Number'
@@ -1897,12 +2119,6 @@ fromSton: stonReader
       instanceVariableNames := self class allInstVarNames.
       stonReader
         parseMapDo: [ :instVarName :value | self instVarAt: (instanceVariableNames indexOf: instVarName asSymbol) put: value ] ]
-%
-
-category: '*ston-gemstonebase'
-method: Object
-isNumber
-  ^ self _isNumber
 %
 
 category: '*ston-gemstone-kernel'
@@ -1958,6 +2174,42 @@ stonShouldWriteNilInstVars
 	false otherwise. Overwrite when necessary. By default, return false."
 	
 	^ false
+%
+
+! Class extensions for 'Path'
+
+!		Class methods for 'Path'
+
+category: '*ston-gemstone-kernel'
+classmethod: Path
+fromSton: stonReader
+	| elements |
+	elements := Array streamContents: [ :out |
+		stonReader parseListDo: [ :each | out nextPut: each ] ].
+	^ self withAll: elements
+%
+
+!		Instance methods for 'Path'
+
+category: '*ston-gemstone-kernel'
+method: Path
+stonOn: stonWriter
+
+	stonWriter
+		writeObject: self
+		streamShortList: [ :listWriter |
+			self do: [ :each | listWriter add: each ] ]
+%
+
+! Class extensions for 'ScaledDecimal'
+
+!		Instance methods for 'ScaledDecimal'
+
+category: '*ston-gemstone-kernel'
+method: ScaledDecimal
+stonOn: stonWriter
+
+	stonWriter writeScaledDecimal: self
 %
 
 ! Class extensions for 'SequenceableCollection'
