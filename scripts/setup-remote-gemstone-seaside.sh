@@ -96,6 +96,7 @@ then
   else
     echo "Downloading gt4gemstone $LOAD_GT4GS_VERSION."
     $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
+    read -p "patch gt4llm" ignored
     mv gt4gemstone-3.7 ${GEMSTONE_WORKSPACE}/
   fi
   echo "Add GlamorousToolkitGlobals symbol dictionary."
