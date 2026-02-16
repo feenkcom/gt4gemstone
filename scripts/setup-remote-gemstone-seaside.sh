@@ -93,20 +93,17 @@ then
   then
     echo "Packaging gt4gemstone."
     "${ROWAN_PROJECTS_HOME}/gt4gemstone/scripts/release/package-release.sh"
-    echo "Add GlamorousToolkitGlobals symbol dictionary."
-    topaz -l -I "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/loginDataCurator.topaz"  -S "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/gt-symbol-dictionary.topaz" < /dev/zero
-    echo "Patch symbol dictionary."
-    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/patch-dictionaries.sh"
-    echo "Load gt4gemstone."
-    "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/inputRelease.sh" -s "${STONE}"
   else
     echo "Downloading gt4gemstone $LOAD_GT4GS_VERSION."
-    echo "Aborting for now, not yet tested..."
-    exit 1
     $SCRIPT_DIR/download-gt4gemstone.sh $LOAD_GT4GS_VERSION
-    ${SCRIPT_DIR}/seaside/patch-dictionaries.sh
-    ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
+    mv gt4gemstone-3.7 ${GEMSTONE_WORKSPACE}/
   fi
+  echo "Add GlamorousToolkitGlobals symbol dictionary."
+  topaz -l -I "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/loginDataCurator.topaz"  -S "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/gt-symbol-dictionary.topaz" < /dev/zero
+  echo "Patch symbol dictionary."
+  "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/patch-dictionaries.sh"
+  echo "Load gt4gemstone."
+  "${GEMSTONE_WORKSPACE}/${RELEASED_PACKAGE_GEMSTONE_NAME}/seaside/inputRelease.sh" -s "${STONE}"
 else
   echo "Seaside and Rowan are currently not supported together."
   exit 1

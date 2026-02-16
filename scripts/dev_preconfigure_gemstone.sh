@@ -160,6 +160,7 @@ then
   if [ $LOAD_GT4GS_VERSION != "no" ]
   then
     echo "Loading gt4gs=$LOAD_GT4GS_VERSION"
+    export RELEASED_PACKAGE_GEMSTONE_NAME="gt4gemstone-3.7"
   fi
   echo "SCRIPT_DIR=$SCRIPT_DIR"
   echo "STONE=$STONE"
