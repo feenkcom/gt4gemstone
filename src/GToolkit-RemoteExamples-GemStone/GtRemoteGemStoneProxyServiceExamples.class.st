@@ -259,8 +259,8 @@ GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	self assert: size equals: 4.
 
 	self
-		assert: (setProxy proxyPerform: #gtDisplayString)
-		equals: 'aSet( 3, 1, 4, 2)'.
+		assert: (setProxy proxyPerform: #asArray) sorted
+		equals: #(1 2 3 4).
 
 	self assert: (setProxy proxyPerform: #includes: withArguments: {1}).
 	self assert: (setProxy proxyPerform: #includes: withArguments: {5}) not.
