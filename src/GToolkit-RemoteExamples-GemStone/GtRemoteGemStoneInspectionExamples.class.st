@@ -178,7 +178,7 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 	^ self
 		assertObjectInspectionFor: [ Set new ]
 		withTypeName: #Set
-		inspectorTitle: 'aSet( )'
+		inspectorTitleIncludes: #('aSet( )' 'aSet [0 items] ()')
 ]
 
 { #category : #'examples - objects' }
