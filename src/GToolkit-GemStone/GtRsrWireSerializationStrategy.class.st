@@ -1,19 +1,36 @@
 Class {
-	#name : #GtRsrWireSerializationStrategy,
-	#superclass : #GtRsrSerializationStrategy,
-	#category : #'GToolkit-GemStone'
+	#name : 'GtRsrWireSerializationStrategy',
+	#superclass : 'GtRsrSerializationStrategy',
+	#instVars : [
+		'encoder'
+	],
+	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #converting }
+{ #category : 'converting' }
 GtRsrWireSerializationStrategy >> deserialize: aGtRsrWireTransferService [
 	"Deserialize the supplied object"
 	
 	^ aGtRsrWireTransferService object
 ]
 
-{ #category : #converting }
+{ #category : 'accessing' }
+GtRsrWireSerializationStrategy >> encoder [
+
+	^ encoder
+]
+
+{ #category : 'accessing' }
+GtRsrWireSerializationStrategy >> encoder: aGtWireEncoder [
+
+	encoder := aGtWireEncoder
+]
+
+{ #category : 'converting' }
 GtRsrWireSerializationStrategy >> serialize: anObject [
 	"Serialize the object to something that RSR can return"
 	
-	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new object: anObject
+	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new 
+		encoder: encoder;
+		object: anObject
 ]

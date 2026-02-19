@@ -2237,13 +2237,12 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 		computationResult := block value.
 		result := [ self serializationStrategy
 			ifNil: [ computationResult  ]
-			ifNotNil: [ :aSerializationStrategy | | encoder strategies |
-				"at:ifPresent:ifAbsent: may not be available"
-				strategies := SessionTemps current
+			ifNotNil: [ :aSerializationStrategy | | encoder |
+				encoder := SessionTemps current
 					at: #GtSerialisationStrategies
+					ifPresent: [ :strategies |
+						strategies at: aSerializationStrategy ifAbsent: [] ]
 					ifAbsent: [].
-				encoder := strategies ifNotNil:
-					[ strategies at: aSerializationStrategy ifAbsent: [] ].
 				encoder ifNil:
 					[ encoder := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
 				encoder serialize: computationResult ] ]
