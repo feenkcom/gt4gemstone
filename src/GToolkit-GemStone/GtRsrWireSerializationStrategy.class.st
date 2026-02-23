@@ -1,32 +1,32 @@
 Class {
-	#name : 'GtRsrWireSerializationStrategy',
-	#superclass : 'GtRsrSerializationStrategy',
+	#name : #GtRsrWireSerializationStrategy,
+	#superclass : #GtRsrSerializationStrategy,
 	#instVars : [
 		'encoder'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtRsrWireSerializationStrategy >> deserialize: aGtRsrWireTransferService [
 	"Deserialize the supplied object"
 	
 	^ aGtRsrWireTransferService object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrWireSerializationStrategy >> encoder [
 
 	^ encoder
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrWireSerializationStrategy >> encoder: aGtWireEncoder [
 
 	encoder := aGtWireEncoder
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtRsrWireSerializationStrategy >> serialize: anObject [
 	"Serialize the object to something that RSR can return"
 	
