@@ -119,7 +119,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer pr
 			ifNotNil: [ :aSerializationStrategy | 
 				| strategies strategy |
 				strategies := SessionTemps current
-					at: #GtSerialisationStrategies
+					at: #GtSerializationStrategies
 					ifAbsent: [].
 				strategy := strategies ifNotNil:
 					[ strategies at: aSerializationStrategy ifAbsent: [] ].
