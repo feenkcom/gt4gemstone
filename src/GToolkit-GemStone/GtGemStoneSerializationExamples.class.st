@@ -22,11 +22,11 @@ GtGemStoneSerializationExamples >> gbsMaxDepthToWireExample [
 	object := GtWireEncodingExampleInstVarObject new var1: array.
 	encoder := GtWireEncoder onByteArray.
 	GtWireGbsReplicationSpecConverter new update: encoder from: replicationSpec.
-	transferService := GtRsrWireTransferServiceClient new
+	transferService := GtRsrWireTransferService gtClientGsServer new
 		encoder: encoder;
 		object: object.
 	byteArray := transferService buffer.
-	transferService := GtRsrWireTransferServiceClient new
+	transferService := GtRsrWireTransferService gtClientGsServer new
 		buffer: byteArray.
 	next := transferService object.
 
