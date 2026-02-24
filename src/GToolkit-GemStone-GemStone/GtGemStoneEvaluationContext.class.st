@@ -15,7 +15,7 @@ Class {
 		'callStack',
 		'compilationContext'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #private }
@@ -113,10 +113,19 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer pr
 	process := [
 		[ | computationResult |
 		computationResult := block value.
+
 		result := self serializationStrategy
 			ifNil: [ computationResult  ]
-			ifNotNil: [ :aSerializationStrategy |
-				(Globals at: aSerializationStrategy) new serialize: computationResult ].
+			ifNotNil: [ :aSerializationStrategy | 
+				| strategies strategy |
+				strategies := SessionTemps current
+					at: #GtSerializationStrategies
+					ifAbsent: [].
+				strategy := strategies ifNotNil:
+					[ strategies at: aSerializationStrategy ifAbsent: [] ].
+				strategy ifNil:
+					[ strategy := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
+				strategy serialize: computationResult ].
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.

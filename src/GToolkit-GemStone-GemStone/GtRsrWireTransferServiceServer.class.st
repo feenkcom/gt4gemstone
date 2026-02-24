@@ -2,15 +2,28 @@ Class {
 	#name : #GtRsrWireTransferServiceServer,
 	#superclass : #GtRsrWireTransferService,
 	#instVars : [
-		'object'
+		'object',
+		'encoder'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #accessing }
 GtRsrWireTransferServiceServer >> asGtGsArgument [
 
 	^ self object
+]
+
+{ #category : #accessing }
+GtRsrWireTransferServiceServer >> encoder [
+
+	^ encoder ifNil: [ super encoder ]
+]
+
+{ #category : #accessing }
+GtRsrWireTransferServiceServer >> encoder: aGtWireEncoder [
+
+	encoder := aGtWireEncoder
 ]
 
 { #category : #accessing }

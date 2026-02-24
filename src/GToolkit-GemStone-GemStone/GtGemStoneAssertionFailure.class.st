@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneAssertionFailure,
 	#superclass : #Error,
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }

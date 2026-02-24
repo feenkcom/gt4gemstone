@@ -10,7 +10,7 @@ Class {
 		'padding',
 		'strict'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #other }

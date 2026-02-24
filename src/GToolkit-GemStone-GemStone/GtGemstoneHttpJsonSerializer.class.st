@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemstoneHttpJsonSerializer,
 	#superclass : #Object,
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #other }

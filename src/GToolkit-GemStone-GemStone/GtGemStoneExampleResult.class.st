@@ -6,7 +6,7 @@ Class {
 		'result',
 		'exception'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #other }

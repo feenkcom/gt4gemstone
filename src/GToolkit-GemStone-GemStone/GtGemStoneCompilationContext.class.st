@@ -10,7 +10,7 @@ Class {
 		'clientBindings',
 		'frameBindings'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #'instance creation' }
