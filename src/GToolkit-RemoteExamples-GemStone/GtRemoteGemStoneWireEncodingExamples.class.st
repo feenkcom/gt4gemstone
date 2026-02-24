@@ -56,10 +56,11 @@ GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session [
 
 { #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
-	"Demonstrate `max` and `min` keywords in a replication spec"
+	"Demonstrate converting a GemStone GBS replicationSpec to a GT Wire Encoding specification and confirm that the limits are obeyed."
 	<gtExample>
 	| replicationSpec object next array currentArray session |
 
+	"Create an object graph that is larger than the spec will return."
 	array := Array new: 2.
 	currentArray := array.
 	1 to: 10 do: [ :i | 
@@ -68,9 +69,12 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 				at: 2 put: (Array new: 2).
 			currentArray := currentArray second ].
 	object := GtWireEncodingExampleInstVarObject new var1: array.
+
+	"Connect to GemStone and answer a live session."
 	session := self runningServer.
 
-	"First confirm that the entire array is returned by default"
+	"First confirm that the entire array is returned by default
+	(no limits are imposed on the return value)"
 	next := session evaluateBlockAndWait: [ :o | o ]
 		withArguments: { object }
 		serializationStrategy: #GtRsrWireSerializationStrategy.
@@ -82,7 +86,7 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 		self assert: next first equals: i.
 		next := next second. ].
 
-	"Install the replication spec"
+	"Install the replication spec, limiting var1 to a graph 2 deep"
 	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2))} asDictionary.
 	GtGemStoneSerialisationManager 
 		installWireEncodingGbsReplicationSpec: replicationSpec 
@@ -96,6 +100,45 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 	self assert: next var1 class equals: Array.
 	self assert: next var1 first equals: 1.
 	self assert: next var1 second equals: #(2 nil)
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> gtExampleWireReplicationSpecMostSpecific [
+	<gtExample>
+	| root mid leaf specs |
+	
+	"Create temporary classes"
+	root := Object subclass: #GtWireReplicationSpecRoot
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: 'GToolkit-GemStone-Pharo-Examples'.
+	mid := root subclass: #GtWireReplicationSpecMid
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: 'GToolkit-GemStone-Pharo-Examples'.
+	leaf := mid subclass: #GtWireReplicationSpecLeaf
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: 'GToolkit-GemStone-Pharo-Examples'.
+	
+	"Add class-side specs"
+	root class compile: 'replicationSpec ^ #root' classified: 'testing'.
+	mid class compile: 'replicationSpec ^ #mid' classified: 'testing'.
+	
+	[ 
+		specs := GtGemStoneSerialisationManager gtWireReplicationSpecFor: #replicationSpec.
+		self assert: (specs at: #GtWireReplicationSpecRoot) equals: #root.
+		self assert: (specs at: #GtWireReplicationSpecMid) equals: #mid.
+		self assert: (specs at: #GtWireReplicationSpecLeaf) equals: #mid.
+		^ specs
+	] ensure: [
+		(Smalltalk classNamed: #GtWireReplicationSpecLeaf)
+			ifNotNil: [ :cls | cls removeFromSystem ].
+		(Smalltalk classNamed: #GtWireReplicationSpecMid)
+			ifNotNil: [ :cls | cls removeFromSystem ].
+		(Smalltalk classNamed: #GtWireReplicationSpecRoot)
+			ifNotNil: [ :cls | cls removeFromSystem ].
+	].
 ]
 
 { #category : #examples }
