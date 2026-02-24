@@ -55,6 +55,50 @@ GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
+	"Demonstrate `max` and `min` keywords in a replication spec"
+	<gtExample>
+	| replicationSpec object next array currentArray session |
+
+	array := Array new: 2.
+	currentArray := array.
+	1 to: 10 do: [ :i | 
+			currentArray
+				at: 1 put: i;
+				at: 2 put: (Array new: 2).
+			currentArray := currentArray second ].
+	object := GtWireEncodingExampleInstVarObject new var1: array.
+	session := self runningServer.
+
+	"First confirm that the entire array is returned by default"
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 class equals: Array.
+	self assert: next var1 first equals: 1.
+	next := next var1 second.
+	2 to: 10 do: [ :i |
+		self assert: next first equals: i.
+		next := next second. ].
+
+	"Install the replication spec"
+	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2))} asDictionary.
+	GtGemStoneSerialisationManager 
+		installWireEncodingGbsReplicationSpec: replicationSpec 
+		on: session.
+
+	"Check that the replication spec is behaving as expected"
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 class equals: Array.
+	self assert: next var1 first equals: 1.
+	self assert: next var1 second equals: #(2 nil)
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	<gtExample>
 	<return: #AssertionFailure>
