@@ -457,6 +457,24 @@ removeallclassmethods GtGemStoneSemanticVersionNumber
 
 doit
 (Object
+	subclass: 'GtGemStoneSerializationExamples'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneSerializationExamples
+removeallclassmethods GtGemStoneSerializationExamples
+
+doit
+(Object
 	subclass: 'GtGemStoneSessionFeature'
 	instVarNames: #(enabled featureId)
 	classVars: #()
@@ -929,7 +947,7 @@ removeallclassmethods GtRsrStonSerializationStrategy
 doit
 (GtRsrSerializationStrategy
 	subclass: 'GtRsrWireSerializationStrategy'
-	instVarNames: #()
+	instVarNames: #(encoder)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -1164,7 +1182,7 @@ removeallclassmethods GtRsrWireTransferService
 doit
 (GtRsrWireTransferService
 	subclass: 'GtRsrWireTransferServiceServer'
-	instVarNames: #(object)
+	instVarNames: #(object encoder)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -2235,10 +2253,19 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 	process := [
 		[ | computationResult |
 		computationResult := block value.
+
 		result := self serializationStrategy
 			ifNil: [ computationResult  ]
-			ifNotNil: [ :aSerializationStrategy |
-				(Globals at: aSerializationStrategy) new serialize: computationResult ].
+			ifNotNil: [ :aSerializationStrategy | 
+				| strategies strategy |
+				strategies := SessionTemps current
+					at: #GtSerializationStrategies
+					ifAbsent: [].
+				strategy := strategies ifNotNil:
+					[ strategies at: aSerializationStrategy ifAbsent: [] ].
+				strategy ifNil:
+					[ strategy := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
+				strategy serialize: computationResult ].
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.
@@ -4193,6 +4220,43 @@ versionString
 			<< self patch printString ]
 %
 
+! Class implementation for 'GtGemStoneSerializationExamples'
+
+!		Instance methods for 'GtGemStoneSerializationExamples'
+
+category: 'examples'
+method: GtGemStoneSerializationExamples
+gbsMaxDepthToWireExample
+	"Demonstrate `max` and `min` keywords in a replication spec"
+	<gtExample>
+	| replicationSpec object encoder byteArray next array currentArray transferService |
+
+	replicationSpec := {GtWireEncodingExampleInstVarObject -> #(#(var1 max 2))}
+			asDictionary.
+	array := Array new: 2.
+	currentArray := array.
+	1 to: 10 do: [ :i | 
+			currentArray
+				at: 1 put: i;
+				at: 2 put: (Array new: 2).
+			currentArray := currentArray second ].
+	object := GtWireEncodingExampleInstVarObject new var1: array.
+	encoder := GtWireEncoder onByteArray.
+	GtWireGbsReplicationSpecConverter new update: encoder from: replicationSpec.
+	transferService := GtRsrWireTransferService gtClientGsServer new
+		encoder: encoder;
+		object: object.
+	byteArray := transferService buffer.
+	transferService := GtRsrWireTransferService gtClientGsServer new
+		buffer: byteArray.
+	next := transferService object.
+
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 class equals: Array.
+	self assert: next var1 first equals: 1.
+	self assert: next var1 second equals: #(2 nil)
+%
+
 ! Class implementation for 'GtGemStoneSessionFeature'
 
 !		Class methods for 'GtGemStoneSessionFeature'
@@ -5943,12 +6007,28 @@ deserialize: aGtRsrWireTransferService
 	^ aGtRsrWireTransferService object
 %
 
+category: 'accessing'
+method: GtRsrWireSerializationStrategy
+encoder
+
+	^ encoder
+%
+
+category: 'accessing'
+method: GtRsrWireSerializationStrategy
+encoder: aGtWireEncoder
+
+	encoder := aGtWireEncoder
+%
+
 category: 'converting'
 method: GtRsrWireSerializationStrategy
 serialize: anObject
 	"Serialize the object to something that RSR can return"
 	
-	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new object: anObject
+	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new 
+		encoder: encoder;
+		object: anObject
 %
 
 ! Class implementation for 'STONJSON'
@@ -6595,6 +6675,20 @@ asGtGsArgument
 
 category: 'accessing'
 method: GtRsrWireTransferServiceServer
+encoder
+
+	^ encoder ifNil: [ super encoder ]
+%
+
+category: 'accessing'
+method: GtRsrWireTransferServiceServer
+encoder: aGtWireEncoder
+
+	encoder := aGtWireEncoder
+%
+
+category: 'accessing'
+method: GtRsrWireTransferServiceServer
 object
 	"Answer the object.
 	nil should never be passed using the wire transfer service, it should use RsrNilObject"
@@ -7147,6 +7241,27 @@ asDictionaryForExport
 			yourself.
 %
 
+! Class extensions for 'GtGemStoneSerializationExamples'
+
+!		Instance methods for 'GtGemStoneSerializationExamples'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtGemStoneSerializationExamples
+assert: aBoolean description: aString
+
+	aBoolean == true ifFalse:
+		[ TestResult failure signal: aString value ]
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtGemStoneSerializationExamples
+assert: actual equals: expected
+
+	self
+		assert: actual = expected
+		description: actual printString, ' is not equal to ', expected printString.
+%
+
 ! Class extensions for 'GtRsrLiteralAndProxySerializationStrategy'
 
 !		Instance methods for 'GtRsrLiteralAndProxySerializationStrategy'
@@ -7321,6 +7436,20 @@ methodSelector
 	"Answer the selector of the method containing the pragma."
 
 	^ method selector.
+%
+
+! Class extensions for 'RsrService'
+
+!		Class methods for 'RsrService'
+
+category: '*GToolkit-GemStone'
+classmethod: RsrService
+gtClientGsServer
+	"Answer the receiver's client class on GT and server class on GS"
+
+	^ self
+		gtDo: [ self clientClass] 
+		gemstoneDo: [ self serverClass ]
 %
 
 ! Class extensions for 'SequenceableCollection'
