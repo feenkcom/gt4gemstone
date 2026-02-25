@@ -1104,6 +1104,8 @@ GtGemStoneSession >> gemLogFileReference [
 
 { #category : #accessing }
 GtGemStoneSession >> gt4gemstoneVersion [
+	"Answer the gt4gemstone libary version installed on the server"
+	<return: #GtGemStoneSemanticVersionNumber>
 
 	^ gt4gemstoneVersion ifNil: [ 
 		| versionString |

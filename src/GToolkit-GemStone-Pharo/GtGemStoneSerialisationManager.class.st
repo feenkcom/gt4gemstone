@@ -17,13 +17,16 @@ GtGemStoneSerialisationManager class >> gtWireReplicationSpec [
 { #category : #replication }
 GtGemStoneSerialisationManager class >> gtWireReplicationSpecFor: aSelector [
 	"Collect GemStone GBS replication specs for all implementors of the given class-side selector. 
-	For each implementing class and its subclasses, answer a dictionary keyed by class name and valued with the result of evaluating the selector, using the most specific implementation (a class’s own selector overrides inherited specs)."
+	For each implementing class and its subclasses, answer a dictionary keyed by class name and valued with the result of evaluating the selector, using the most specific implementation (a class's own selector overrides inherited specs).
+	Note: Object is excluded as it provides only the default empty spec."
 	| specs nav implementors |
 	
 	specs := Dictionary new.
 	nav := SystemNavigation default.
 	implementors := (nav allImplementorsOf: aSelector)
-		select: [ :methodRef | methodRef methodClass isMeta ].
+		select: [ :methodRef | 
+			methodRef methodClass isMeta 
+				and: [ methodRef methodClass instanceSide ~~ Object ] ].
 	implementors do: [ :methodRef |
 		| baseClass |
 		baseClass := methodRef methodClass instanceSide.

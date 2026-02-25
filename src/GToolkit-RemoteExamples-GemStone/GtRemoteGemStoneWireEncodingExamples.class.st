@@ -58,7 +58,15 @@ GtRemoteGemStoneWireEncodingExamples >> canTestInSession: session [
 GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 	"Demonstrate converting a GemStone GBS replicationSpec to a GT Wire Encoding specification and confirm that the limits are obeyed."
 	<gtExample>
-	| replicationSpec object next array currentArray session |
+	| replicationSpec object next array currentArray session minimumVersion |
+
+	"Connect to GemStone and answer a live session."
+	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.199"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 199.
+	session gt4gemstoneVersion < minimumVersion ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.199' ].
 
 	"Create an object graph that is larger than the spec will return."
 	array := Array new: 2.
@@ -69,9 +77,6 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 				at: 2 put: (Array new: 2).
 			currentArray := currentArray second ].
 	object := GtWireEncodingExampleInstVarObject new var1: array.
-
-	"Connect to GemStone and answer a live session."
-	session := self runningServer.
 
 	"First confirm that the entire array is returned by default
 	(no limits are imposed on the return value)"
