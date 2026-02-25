@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtGemStoneSerializationExamples',
-	#superclass : 'Object',
-	#category : 'GToolkit-GemStone'
+	#name : #GtGemStoneSerializationExamples,
+	#superclass : #Object,
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 GtGemStoneSerializationExamples >> gbsMaxDepthToWireExample [
 	"Demonstrate `max` and `min` keywords in a replication spec"
 	<gtExample>
