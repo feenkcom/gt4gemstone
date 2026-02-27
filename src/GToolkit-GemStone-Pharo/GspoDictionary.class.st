@@ -1,7 +1,7 @@
 Class {
 	#name : #GspoDictionary,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }

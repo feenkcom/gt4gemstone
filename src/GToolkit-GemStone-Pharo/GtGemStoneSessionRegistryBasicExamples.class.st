@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneSessionRegistryBasicExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Pharo-Examples'
+	#category : 'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #'examples - announcements' }

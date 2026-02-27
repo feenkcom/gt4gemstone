@@ -1,5 +1,5 @@
 Class {
 	#name : #PrintStream,
 	#superclass : #WriteStream,
-	#category : #'GToolkit-GemStone-Pharo-Stubs'
+	#category : 'GToolkit-GemStone-Pharo-Stubs'
 }

@@ -6,17 +6,17 @@ Class {
 		'sessionsRegistry',
 		'actionCallback'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
-
-{ #category : #callbacks }
-GtGemStoneConnectorsWidget >> actOnConnectorSelected: aGemStoneConnector [ 
-	actionCallback value: aGemStoneConnector
-]
 
 { #category : #accessing }
 GtGemStoneConnectorsWidget >> actionCallback: aBlockClosure [
 	actionCallback := aBlockClosure
+]
+
+{ #category : #callbacks }
+GtGemStoneConnectorsWidget >> actOnConnectorSelected: aGemStoneConnector [ 
+	actionCallback value: aGemStoneConnector
 ]
 
 { #category : #'building widgets' }

@@ -18,7 +18,7 @@ Class {
 		'frameIdentifier',
 		'programCounterMarkers'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : 'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #'instance creation' }

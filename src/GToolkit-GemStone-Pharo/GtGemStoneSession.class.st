@@ -33,7 +33,7 @@ Class {
 		'sessionNrsString',
 		'sessionParameters'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }
@@ -274,6 +274,12 @@ GtGemStoneSession >> connect [
 	registry ifNotNil:[ registry addSession: self ].
 	
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
+]
+
+{ #category : #actions }
+GtGemStoneSession >> connectAndBookmark [
+	self connect.
+	self bookmark.
 ]
 
 { #category : #actions }
