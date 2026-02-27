@@ -574,6 +574,11 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
 			width: 50;
+		column: 'Bookmarked' icon: [ :aSession |
+			aSession isBookmarked
+				ifTrue: [ BrGlamorousVectorIcons accept ]
+				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
+			width: 75;
 		column: 'Keep Alive' 
 			text: [ :aSession | 
 				aSession hasKeepAlive

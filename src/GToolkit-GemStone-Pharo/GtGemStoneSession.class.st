@@ -277,6 +277,12 @@ GtGemStoneSession >> connect [
 ]
 
 { #category : #actions }
+GtGemStoneSession >> connectAndBookmark [
+	self connect.
+	self bookmark.
+]
+
+{ #category : #actions }
 GtGemStoneSession >> connectAsDefault [
 	self connect.
 	self beDefaultSession.

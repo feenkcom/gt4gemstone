@@ -52,6 +52,7 @@ GtGemStoneSessionsCardWidget >> addSessionForConnector: aGemStoneConnector [
 	| newSession |
 	newSession := self registry 
 		newConnectedDefaultSessionWithReusageWithConnector: aGemStoneConnector.
+	newSession bookmark.
 	
 	self updateContent.
 	self selectSession: newSession.
@@ -419,6 +420,18 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 		actions addAll: {
 			'Toggle Transcript' -> [:aStatusLineElement | 
 				aGtGemStoneSession toggleRemoteTranscript ]} ]."
+				
+	aGtGemStoneSession isBookmarked 
+		ifTrue: [
+			actions addAll: {
+				'Unbookmark' -> [ :aStatusLineElement |
+					aGtGemStoneSession unbookmark.
+					self updateContent]} ]
+		ifFalse: [
+			actions addAll: {
+				'Bookmark' -> [ :aStatusLineElement |
+					aGtGemStoneSession bookmark.
+					self updateContent]} ].
 			
 	actions addAll: {
 		'Inspect' -> [:aStatusLineElement | 

@@ -168,7 +168,8 @@ GtGemStoneSessionSelectionElement >> createSessionList [
 	newList
 		rowStencil: (BrColumnedListItemElementWithContextMenuDecorator new
 				stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
-				contextMenuStencil: [ :anElement :aSession | self sessionActionsFor: aSession ]);
+				contextMenuStencil: [ :anElement :aSession | 
+					self sessionActionsFor: aSession ]);
 		margin: (BlInsets top: 5 left: 10);
 		matchParent.
 
@@ -261,6 +262,7 @@ GtGemStoneSessionSelectionElement >> handleConnectorDoubleClick: anEvent [
 	aWidgetElement := anEvent currentTarget.
 	selectedConnector := aWidgetElement viewModel itemAt: anEvent selection first.
 	newSession := registry newSessionWithReusageWithConnector: selectedConnector.
+	newSession bookmark.
 	newSessionIdentifier := identifierType == #explicit
 		ifTrue: [ GtGemStoneExplicitSessionIdentifier sessionName: newSession name ]
 		ifFalse: "identifierType == #default"[ 
@@ -336,33 +338,53 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 		ifTrue: [
 			actions addAll: {
 				'Commit' -> [ :aStatusLineElement | 
-					aGtGemStoneSession commitTransactionWithErrorChecking ].
+					aGtGemStoneSession commitTransactionWithErrorChecking.
+					self updateContent ].
 				'Abort' -> [ :aStatusLineElement | 
-					aGtGemStoneSession abortTransaction ].
+					aGtGemStoneSession abortTransaction.
+					self updateContent ].
 				'Disconnect' -> [ :aStatusLineElement | 
-					aGtGemStoneSession close ]} ]
+					aGtGemStoneSession close.
+					self updateContent ]} ]
 		ifFalse: [
 			actions addAll: {
 				'Connect' -> [ :aStatusLineElement | 
-					aGtGemStoneSession connect ]} ].
+					aGtGemStoneSession connect.
+					self updateContent ]} ].
 		
 	aGtGemStoneSession isDefaultSession ifFalse: [
 		actions addAll: {
 			'Be Default' -> [ :aStatusLineElement | 
-				self sessionBeDefault: aGtGemStoneSession ] } ].
+				self sessionBeDefault: aGtGemStoneSession.
+				self updateContent ] } ].
 	
 	actions addAll: {
 		'Toggle AutoCommit' -> [:aStatusLineElement |
-			aGtGemStoneSession toggleAutoCommit ].
+			aGtGemStoneSession toggleAutoCommit.
+			self updateContent ].
 		'Toggle CodeSync' -> [:aStatusLineElement |
-			aGtGemStoneSession toggleCodeSync ].
+			aGtGemStoneSession toggleCodeSync.
+			self updateContent ].
 		'Toggle CodeSync & AutoCommit' -> [:aStatusLineElement |
-			aGtGemStoneSession toggleCodeSyncAndAutoCommit ] }.
+			aGtGemStoneSession toggleCodeSyncAndAutoCommit.
+			self updateContent ] }.
 			
 	"aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
 		actions addAll: {
 			'Toggle Transcript' -> [:aStatusLineElement | 
 				aGtGemStoneSession toggleRemoteTranscript ]} ]."
+				
+	aGtGemStoneSession isBookmarked 
+		ifTrue: [
+			actions addAll: {
+				'Unbookmark' -> [ :aStatusLineElement |
+					aGtGemStoneSession unbookmark.
+					self updateContent]} ]
+		ifFalse: [
+			actions addAll: {
+				'Bookmark' -> [ :aStatusLineElement |
+					aGtGemStoneSession bookmark.
+					self updateContent]} ].
 				
 	actions addAll: {
 		'Inspect' -> [ :aStatusLineElement | 
@@ -377,6 +399,13 @@ GtGemStoneSessionSelectionElement >> sessionBeDefault: aGtGemStoneSession [
 
 	aGtGemStoneSession beDefaultSession.
 	^ selectAction cull: GtGemStoneDefaultSessionIdentifier new.
+]
+
+{ #category : #private }
+GtGemStoneSessionSelectionElement >> sessionsToDisplay [
+	^ ((self registry sessionsToDisplay 
+		sorted: #name ascending) ifEmpty:[ 
+			{ GtGemStoneCardWidgetNoSessions new } ])
 ]
 
 { #category : #accessing }
@@ -425,8 +454,7 @@ GtGemStoneSessionSelectionElement >> updateContent [
 	| items |
 
 	items := state = #sessions ifTrue:
-		[ self registry activeSessions ifEmpty:
-			[ { GtGemStoneCardWidgetNoSessions new } ] ]
+		[ self sessionsToDisplay ]
 	ifFalse: [ state = #connectors ifTrue:
 		[ self registry connectors 
 			ifNil: [ #() ]
