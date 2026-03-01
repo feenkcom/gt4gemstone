@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'categories'
 	],
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #accessing }

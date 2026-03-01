@@ -9,7 +9,7 @@ Class {
 		'stdoutEditor',
 		'toolbarElement'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #testing }
@@ -56,14 +56,6 @@ GtGemStoneExpandableDebuggerElement class >> sessionClass [
 ]
 
 { #category : #callbacks }
-GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
-
-	self debugSession synchronizeCallStack.
-	self currentCallFrame resetState.
-	self scheduleUpdateUI.
-]
-
-{ #category : #callbacks }
 GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 
 	toolbarElement actOnDebugSessionChanged.
@@ -72,6 +64,14 @@ GtGemStoneExpandableDebuggerElement >> actOnDebugSessionChanged [
 		send: #actOnDebuggerStateChanged
 		to: self.
 	
+	self scheduleUpdateUI.
+]
+
+{ #category : #callbacks }
+GtGemStoneExpandableDebuggerElement >> actOnDebuggerStateChanged [
+
+	self debugSession synchronizeCallStack.
+	self currentCallFrame resetState.
 	self scheduleUpdateUI.
 ]
 
@@ -172,21 +172,23 @@ GtGemStoneExpandableDebuggerElement >> buildStackTabGroupForElement: aStackConta
 	^ tabGroup
 ]
 
-{ #category : #'private - element creation' }
-GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
-	| tree |
+{ #category : #private }
+GtGemStoneExpandableDebuggerElement >> buildVariablesList [
+	| list |
 
-	tree := BrColumnedTree new
-		rowStencil: (BrGlamorousColumnedTreeSelectableRowElementStencilBuilder new cellSpacing: self cellSpacing);
+	list := BrColumnedList new
+		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new cellSpacing: self cellSpacing);
 		margin: (BlInsets top: 10);
 		background: Color white;
 		addEventHandler: (GtPhlowListToSelectHandler new 
 			transformation: [ :variableNode :index | 
 				(self currentFrameVariable: variableNode value first
 					atIndex: index first) asGtBareProxyObject ]).
+	list addAptitude: (BrColumnedListHeaderAptitude new 
+		cellSpacing: self cellSpacing).
 
-	tree column
-		title: 'I.';
+	list column
+		title: '';
 		width: 32;
 		cellStencil: [ BlElement new
 			constraintsDo: [ :c |
@@ -196,9 +198,10 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 			aCellElement removeChildren.
 			anArray fourth ifNotNil:
 				[ aCellElement addChild: (Smalltalk ui icons iconNamed:  anArray fourth) asElement ] ].
-	tree column 
+	list column 
 		title: 'Variable';
 		width: 100;
+		matchParent;
 		cellStencil: [ 
 			BrLabel new
 				aptitude: (BrGlamorousLabelAptitude new foreground: Color black);
@@ -207,8 +210,9 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
 		dataBinder: [ :aCellElement :anArray |
 			aCellElement text: anArray first asRopedText ].
-	tree column
+	list column
 		title: 'Value';
+		matchParent;
 		cellStencil: [
 			BrLabel new
 				aptitude: BrGlamorousLabelAptitude new;
@@ -218,7 +222,7 @@ GtGemStoneExpandableDebuggerElement >> buildVariablesTree [
 		dataBinder: [ :aCellElement :anArray |
 			aCellElement text: anArray second asRopedText ].
 
-	^ tree
+	^ list
 ]
 
 { #category : #'private - accessing' }
@@ -428,9 +432,9 @@ GtGemStoneExpandableDebuggerElement >> newToolbar [
 		yourself
 ]
 
-{ #category : #'instance creation' }
+{ #category : #private }
 GtGemStoneExpandableDebuggerElement >> newVariablesList [
-	| container tree |
+	| container list |
 
 	container := BlElement new
 		aptitude: BrShadowAptitude;
@@ -439,8 +443,8 @@ GtGemStoneExpandableDebuggerElement >> newVariablesList [
 			c horizontal matchParent.
 			c vertical matchParent ];
 		layout: BlLinearLayout vertical.
-	tree := self buildVariablesTree.
-	container addChild: tree as: #variablesList.
+	list := self buildVariablesList.
+	container addChild: list as: #variablesList.
 	^ container
 ]
 
@@ -506,9 +510,9 @@ GtGemStoneExpandableDebuggerElement >> updateUI [
 	toolbarElement updateUI.
 ]
 
-{ #category : #'private - update ui' }
+{ #category : #private }
 GtGemStoneExpandableDebuggerElement >> updateVariables [ 
-	| varibleItems|
+	| varibleItems |
 	
 	variableList ifNil: [ ^ self ].
 	varibleItems := self currentCallFrame
@@ -516,14 +520,14 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 			ifNotNil: [ self currentCallFrame safeVariablesAssociationsBasedOnIndex ].
 	
 	variableList 
-		items: varibleItems
-		immediate: [ :item | 
+		items: varibleItems.
+		"immediate: [ :item | 
 			item value isDictionary
 				ifTrue: [ item value associations ]
 				ifFalse: [ (item value isArray and: [ item value allSatisfy: #isDictionary ])
 						ifTrue: [ item value collectWithIndex: [ :x :i | i -> x ] ]
 						ifFalse: [ #() ] ] ].
-	variableList expandAll.
+	variableList expandAll."
 ]
 
 { #category : #'private - element creation' }

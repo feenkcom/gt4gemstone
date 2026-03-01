@@ -8,7 +8,7 @@ Class {
 		'commandHistory',
 		'state'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Examples'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #actions }

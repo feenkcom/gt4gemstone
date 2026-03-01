@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneCodeSyncClassStrategy,
 	#superclass : #Object,
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #testing }

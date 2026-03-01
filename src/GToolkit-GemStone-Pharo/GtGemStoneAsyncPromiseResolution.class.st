@@ -9,7 +9,7 @@ Class {
 		'state',
 		'asyncPromise'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Promises'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #callbacks }

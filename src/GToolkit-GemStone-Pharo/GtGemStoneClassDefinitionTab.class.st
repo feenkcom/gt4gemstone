@@ -8,7 +8,7 @@ Class {
 		'label',
 		'classDefinitionWidget'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UiClassDefinition'
+	#category : #'GToolkit-GemStone-Pharo-UiClassDefinition'
 }
 
 { #category : #accessing }

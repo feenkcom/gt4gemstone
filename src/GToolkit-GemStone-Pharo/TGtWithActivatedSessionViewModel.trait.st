@@ -3,17 +3,8 @@ Trait {
 	#instVars : [
 		'activatedSessionViewModel'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Support'
+	#category : #'GToolkit-GemStone-Pharo-Support'
 }
-
-{ #category : #'api - activated session view model' }
-TGtWithActivatedSessionViewModel >> activatedSessionViewModel [
-	<return: #GtGemStoneSessionViewModel>
-	<propertyGetter: #activatedSessionViewModel>
-	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
-
-	^ activatedSessionViewModel
-]
 
 { #category : #'api - activated session view model' }
 TGtWithActivatedSessionViewModel >> activateSessionViewModel: aNewActivatedSessionViewModel [
@@ -33,6 +24,15 @@ TGtWithActivatedSessionViewModel >> activateSessionViewModel: aNewActivatedSessi
 	activatedSessionViewModel := aNewActivatedSessionViewModel.
 	self onNewActivatedSessionViewModelSet: aNewActivatedSessionViewModel.
 	self notifyActivatedSessionViewModelChanged
+]
+
+{ #category : #'api - activated session view model' }
+TGtWithActivatedSessionViewModel >> activatedSessionViewModel [
+	<return: #GtGemStoneSessionViewModel>
+	<propertyGetter: #activatedSessionViewModel>
+	<generatedFrom: #'TGtRobocoderWithPropertyTraitTemplate>>#propertyGetterTemplate'>
+
+	^ activatedSessionViewModel
 ]
 
 { #category : #'api - activated session view model' }

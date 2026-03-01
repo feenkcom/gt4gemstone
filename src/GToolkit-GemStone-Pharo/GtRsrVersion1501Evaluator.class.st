@@ -1,7 +1,7 @@
 Class {
 	#name : #GtRsrVersion1501Evaluator,
 	#superclass : #GtRsrVersionedEvaluator,
-	#category : 'GToolkit-GemStone-Pharo-Services'
+	#category : #'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #accessing }

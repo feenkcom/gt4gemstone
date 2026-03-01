@@ -7,7 +7,7 @@ Class {
 		'parentGemStoneSessionsViewModel',
 		'announcer'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'api - activation' }
