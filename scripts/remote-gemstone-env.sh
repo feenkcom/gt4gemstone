@@ -16,6 +16,9 @@ then
   exit 1
 fi
 
+# GemStone directory name omits any -BetaN suffix.
+GT_GEMSTONE_ARCHIVE_VERSION=${GT_GEMSTONE_VERSION%-Beta*}
+
 ARCH="$(uname -m)"
 VM_ARCH="${ARCH}"
 unameOut="$(uname -s)"
@@ -30,11 +33,11 @@ export GTIMAGE_DIRECTORY=`pwd`
 export GEMSTONE_WORKSPACE=${GTIMAGE_DIRECTORY}/remote-gemstone
 
 if [ "$GT_OSNAME" = "Linux" ]; then
-    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_VERSION}-x86_64.Linux"
+    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_ARCHIVE_VERSION}-x86_64.Linux"
 elif [ "$GT_OSNAME" = "Darwin" -a "$VM_ARCH" = "arm64" ]; then
-    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_VERSION}-arm64.Darwin"
+    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_ARCHIVE_VERSION}-arm64.Darwin"
 elif [ "$GT_OSNAME" = "Darwin" ]; then
-    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_VERSION}-i386.Darwin"
+    GEMSTONE="${GEMSTONE_WORKSPACE}/GemStone64Bit${GT_GEMSTONE_ARCHIVE_VERSION}-i386.Darwin"
 fi
 
 export GEMSTONE

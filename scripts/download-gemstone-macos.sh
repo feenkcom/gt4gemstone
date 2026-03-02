@@ -14,15 +14,18 @@ then
 	exit 1
 fi
 
+# Archive filenames omit any -BetaN suffix, but the download directory keeps it.
+GT_GEMSTONE_ARCHIVE_VERSION=${GT_GEMSTONE_VERSION%-Beta*}
+
 ARCH="$(uname -m)"
 case "${ARCH}" in
     arm64 ) 
-		GS_SERV_FILE=GemStone64Bit${GT_GEMSTONE_VERSION}-arm64.Darwin
-		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_VERSION}-arm64.Darwin
+		GS_SERV_FILE=GemStone64Bit${GT_GEMSTONE_ARCHIVE_VERSION}-arm64.Darwin
+		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_ARCHIVE_VERSION}-arm64.Darwin
 		;;
     * ) 
-		GS_SERV_FILE="GemStone64Bit${GT_GEMSTONE_VERSION}-i386.Darwin"
-		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_VERSION}-i386.Darwin
+		GS_SERV_FILE="GemStone64Bit${GT_GEMSTONE_ARCHIVE_VERSION}-i386.Darwin"
+		GS_CLIENT_FILE=GemStoneClientLibs${GT_GEMSTONE_ARCHIVE_VERSION}-i386.Darwin
 		;;
 esac
 
