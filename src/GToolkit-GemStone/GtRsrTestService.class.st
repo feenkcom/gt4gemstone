@@ -1,30 +1,30 @@
 Class {
-	#name : 'GtRsrTestService',
-	#superclass : 'RsrService',
+	#name : #GtRsrTestService,
+	#superclass : #RsrService,
 	#instVars : [
 		'object'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrTestService class >> templateClassName [
 
 	^ #GtRsrTestService
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtRsrTestService >> isGtGemStoneRsrProxy [
 
 	^ true
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrTestService >> object [
 	^ object
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtRsrTestService >> object: anObject [
 	object := anObject
 ]
