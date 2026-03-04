@@ -14,6 +14,12 @@ GtRsrProxyService class >> templateClassName [
 ]
 
 { #category : #testing }
+GtRsrProxyService >> isGtGemStoneRsrProxy [
+
+	^ true
+]
+
+{ #category : #testing }
 GtRsrProxyService >> isGtProxyObject [
 
 	^ true

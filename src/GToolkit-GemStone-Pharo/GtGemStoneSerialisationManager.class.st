@@ -54,6 +54,7 @@ GtGemStoneSerialisationManager class >> installWireEncodingGbsReplicationSpec: r
 			encoder := serializer encoder ifNil: 
 				[ serializer encoder: GtWireEncoder onByteArray.
 				serializer encoder. ].
+			encoder maxDepthEncoder: GtWireGemStoneRsrEncoder new.
 			GtWireGbsReplicationSpecConverter new update: encoder from: rs.
 			nil. ]
 		withArguments: { replicationSpecification associations }.

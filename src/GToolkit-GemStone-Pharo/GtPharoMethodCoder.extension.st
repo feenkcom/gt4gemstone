@@ -51,23 +51,21 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Compile to GemStone'
-				description: (sessionDisplayName 
-					ifNil: ['<missing>']))
+				description: (sessionDisplayName ifNil: [ '<missing>' ]))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
 			| clsName source session category cmd |
-			clsName := self compiledMethod methodClass name.
-			"Big method handling is a hack at the moment...
+			clsName := self compiledMethod methodClass name.	"Big method handling is a hack at the moment...
 			The source is truncated for display purposes, but since it is read-only, we can assume that the source from the compiled method is up-to-date."
 			source := self compiledMethod isBigMethod
-				ifTrue: [ self compiledMethod sourceCode ]
-				ifFalse: [ anAST source ].
+					ifTrue: [ self compiledMethod sourceCode ]
+					ifFalse: [ anAST source ].
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
 			session connect.
-			category := self compiledMethod category.
+			category := self compiledMethod protocolName.
 			cmd := String
 					streamContents: [ :stream | 
 						stream

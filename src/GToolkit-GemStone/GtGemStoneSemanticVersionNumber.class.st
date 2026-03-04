@@ -23,6 +23,11 @@ GtGemStoneSemanticVersionNumber class >> oneZeroZero [
 	^ self major: 1 minor: 0 patch: 0
 ]
 
+{ #category : #'instance creation' }
+GtGemStoneSemanticVersionNumber class >> pointOne [
+	^ self major: 0 minor: 0 patch: 1
+]
+
 { #category : #converting }
 GtGemStoneSemanticVersionNumber class >> readFromString: aString [
 	| tokens |
@@ -50,6 +55,12 @@ GtGemStoneSemanticVersionNumber class >> v1_0_1501 [
 GtGemStoneSemanticVersionNumber class >> v1_0_1502 [
 
 	^ self major: 1 minor: 0 patch: 1502
+]
+
+{ #category : #'instance creation' }
+GtGemStoneSemanticVersionNumber class >> v1_1_199 [
+
+	^ self major: 1 minor: 1 patch: 199
 ]
 
 { #category : #accessing }
@@ -99,6 +110,22 @@ GtGemStoneSemanticVersionNumber >> >= aSemanticVersionNumber [
 	"Answer whether the receiver is greater than or equal to the argument."
 
 	^ aSemanticVersionNumber <= self
+]
+
+{ #category : #comparing }
+GtGemStoneSemanticVersionNumber >> between: min and: max [
+	"Answer whether the receiver is less than or equal to the argument, max,
+	and greater than or equal to the argument, min."
+
+	^self >= min and: [self <= max]
+]
+
+{ #category : #comparing }
+GtGemStoneSemanticVersionNumber >> exBetween: min and: max [
+	"Answer whether the receiver is less than or equal to the argument, max,
+	and greater than or equal to the argument, min."
+
+	^self > min and: [self < max]
 ]
 
 { #category : #comparing }
