@@ -20,10 +20,10 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 				spec repository: 'github://feenkcom/gtoolkit-remote:v0.9.57/src' ].
 		spec
 			baseline: 'LepiterEngineCore' with: [
-				spec repository: 'github://feenkcom/lepiter:v0.7.139/src' ].
+				spec repository: 'github://feenkcom/lepiter:v0.7.140/src' ].
 		spec
 			baseline: 'GToolkitWireEncoding' with: [
-				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.22/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-wireencoding:v0.6.23/src' ].
 
 		spec package: 'GToolkit-GemStone-Pharo-BeaconLogging'.
 		spec package: 'GToolkit-GemStone' with: [
