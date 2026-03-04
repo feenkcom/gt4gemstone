@@ -65,7 +65,9 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 
 	"Skip this example if the server version is below v1.1.199"
 	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 199.
-	session gt4gemstoneVersion < minimumVersion ifTrue: [
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
 		^ self skip: 'Requires gt4gemstone version >= 1.1.199' ].
 
 	"Create an object graph that is larger than the spec will return."
@@ -104,7 +106,14 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 	self assert: next class equals: GtWireEncodingExampleInstVarObject.
 	self assert: next var1 class equals: Array.
 	self assert: next var1 first equals: 1.
-	self assert: next var1 second equals: #(2 nil)
+	next := next var1 second.
+	self assert: next class equals: Array.
+	self assert: next first equals: 2.
+	next := next second.
+	self assert: next class equals: Array.
+	self assert: next first equals: 3.
+	self assert: next second remoteClass equals: #Array.
+	self assert: (next second evaluateAndWait: 'self at: 1') equals: 4.
 ]
 
 { #category : #examples }

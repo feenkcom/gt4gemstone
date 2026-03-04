@@ -33,5 +33,10 @@ GtGemStoneSerializationExamples >> gbsMaxDepthToWireExample [
 	self assert: next class equals: GtWireEncodingExampleInstVarObject.
 	self assert: next var1 class equals: Array.
 	self assert: next var1 first equals: 1.
-	self assert: next var1 second equals: #(2 nil)
+	next := next var1 second.
+	self assert: next class equals: Array.
+	self assert: next first equals: 2.
+	next := next second.
+	self assert: next class equals: Array.
+	self assert: next equals: #(3 nil)
 ]

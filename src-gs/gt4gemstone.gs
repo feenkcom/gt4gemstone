@@ -817,24 +817,6 @@ removeallclassmethods GtRsrDirectLocalObjectSerializationStrategy
 
 doit
 (GtRsrSerializationStrategy
-	subclass: 'GtRsrGbsWireSerializationStrategy'
-	instVarNames: #(replicationSpec)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Globals
-	options: #( #logCreation )
-)
-		category: 'GToolkit-GemStone';
-		immediateInvariant.
-true.
-%
-
-removeallmethods GtRsrGbsWireSerializationStrategy
-removeallclassmethods GtRsrGbsWireSerializationStrategy
-
-doit
-(GtRsrSerializationStrategy
 	subclass: 'GtRsrLegacySerializationStrategy'
 	instVarNames: #()
 	classVars: #()
@@ -4042,6 +4024,12 @@ oneZeroZero
 	^ self major: 1 minor: 0 patch: 0
 %
 
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+pointOne
+	^ self major: 0 minor: 0 patch: 1
+%
+
 category: 'converting'
 classmethod: GtGemStoneSemanticVersionNumber
 readFromString: aString
@@ -4073,6 +4061,13 @@ classmethod: GtGemStoneSemanticVersionNumber
 v1_0_1502
 
 	^ self major: 1 minor: 0 patch: 1502
+%
+
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_1_199
+
+	^ self major: 1 minor: 1 patch: 199
 %
 
 category: 'accessing'
@@ -4131,6 +4126,24 @@ method: GtGemStoneSemanticVersionNumber
 	"Answer whether the receiver is greater than or equal to the argument."
 
 	^ aSemanticVersionNumber <= self
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+between: min and: max
+	"Answer whether the receiver is less than or equal to the argument, max,
+	and greater than or equal to the argument, min."
+
+	^self >= min and: [self <= max]
+%
+
+category: 'comparing'
+method: GtGemStoneSemanticVersionNumber
+exBetween: min and: max
+	"Answer whether the receiver is less than or equal to the argument, max,
+	and greater than or equal to the argument, min."
+
+	^self > min and: [self < max]
 %
 
 category: 'comparing'
@@ -5824,60 +5837,6 @@ serialize: anObject
 		yourself
 %
 
-! Class implementation for 'GtRsrGbsWireSerializationStrategy'
-
-!		Class methods for 'GtRsrGbsWireSerializationStrategy'
-
-category: 'instance creation'
-classmethod: GtRsrGbsWireSerializationStrategy
-replicationSpec: anArray
-	^ self new replicationSpec: anArray
-%
-
-!		Instance methods for 'GtRsrGbsWireSerializationStrategy'
-
-category: 'converting'
-method: GtRsrGbsWireSerializationStrategy
-deserialize: aGtRsrWireTransferService
-	"Deserialize the supplied object"
-	
-	^ aGtRsrWireTransferService object
-%
-
-category: 'accessing'
-method: GtRsrGbsWireSerializationStrategy
-encoder
-	| encoder |
-
-	encoder := GtWireEncoder onByteArray.
-	GtWireGbsReplicationSpecConverter new
-		update: encoder from: replicationSpec.
-	^ encoder
-%
-
-category: 'accessing'
-method: GtRsrGbsWireSerializationStrategy
-replicationSpec
-	^ replicationSpec
-%
-
-category: 'accessing'
-method: GtRsrGbsWireSerializationStrategy
-replicationSpec: anArray
-
-	replicationSpec := anArray
-%
-
-category: 'converting'
-method: GtRsrGbsWireSerializationStrategy
-serialize: anObject
-	"Serialize the object to something that RSR can return"
-	
-	^ (self gtDo: [ GtRsrWireTransferService clientClass ] 
-		gemstoneDo: [ GtRsrWireTransferService serverClass encoder: self encoder ]) 
-				new object: anObject
-%
-
 ! Class implementation for 'GtRsrLegacySerializationStrategy'
 
 !		Instance methods for 'GtRsrLegacySerializationStrategy'
@@ -6434,6 +6393,13 @@ templateClassName
 
 category: 'testing'
 method: GtRsrProxyService
+isGtGemStoneRsrProxy
+
+	^ true
+%
+
+category: 'testing'
+method: GtRsrProxyService
 isGtProxyObject
 
 	^ true
@@ -6583,6 +6549,13 @@ templateClassName
 %
 
 !		Instance methods for 'GtRsrTestService'
+
+category: 'testing'
+method: GtRsrTestService
+isGtGemStoneRsrProxy
+
+	^ true
+%
 
 category: 'accessing'
 method: GtRsrTestService
@@ -7302,6 +7275,32 @@ serialize: anObject
 	^ GtRsrWireTransferServiceServer new object: anObject
 %
 
+! Class extensions for 'GtWireGemStoneRsrEncoder'
+
+!		Instance methods for 'GtWireGemStoneRsrEncoder'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtWireGemStoneRsrEncoder
+encode: anObject with: aGtWireEncoderContext
+	"It is up to the user to ensure that anObject isn't GCd during transfer and decoding
+	(which would allow the oop to be reused and the wrong object returned), or that the
+	session is aborted."
+	| rsrService |
+
+	rsrService := anObject isGtGemStoneRsrProxy
+		ifTrue: [ anObject ]
+		ifFalse: [ GtRsrProxyServiceServer object: anObject ].
+	"Ensure that the service is at least registered so that it has an _id
+	and has a reference in the service.
+	Remaining set up will be done during snapshot analysis."
+
+	self connection _ensureRegistered: rsrService.
+	self currentWireService addRoot: rsrService.
+	aGtWireEncoderContext
+		putTypeIdentifier: self class typeIdentifier;
+		nextPut: rsrService _id
+%
+
 ! Class extensions for 'Integer'
 
 !		Instance methods for 'Integer'
@@ -7395,6 +7394,13 @@ instVarNamed: instVarName put: anObject
 category: '*GToolkit-GemStone-GemStone'
 method: Object
 isDictionary
+	^ false
+%
+
+category: '*GToolkit-GemStone'
+method: Object
+isGtGemStoneRsrProxy
+
 	^ false
 %
 
