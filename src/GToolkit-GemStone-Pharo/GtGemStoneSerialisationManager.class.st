@@ -44,7 +44,7 @@ GtGemStoneSerialisationManager class >> installWireEncodingGbsReplicationSpec: r
 			| encoder serializer rs serializers |
 			rsArray do: [ :assoc |
 				assoc key: (GsSession currentSession objectNamed: assoc key) ].
-			rs := rsArray asDictionary.
+			rs := (rsArray reject: [ :assoc | assoc key isNil ]) asDictionary.
 			serializers := SessionTemps current
 				at: #GtSerializationStrategies
 				ifAbsentPut: [ Dictionary new ].
