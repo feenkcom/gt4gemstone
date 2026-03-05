@@ -43,6 +43,7 @@ GtGemStoneGciConnector >> defaultLibraryPath [
 	| remoteGemstone fields dirs libPath majorMinor |
 
 	remoteGemstone := FileLocator imageDirectory / 'remote-gemstone'.
+	remoteGemstone isDirectory ifFalse: [ ^ nil ].
 	"First check to see if the default version directory exists"
 	libPath := remoteGemstone / gemstoneVersion.
 	libPath isDirectory ifTrue: [ ^ remoteGemstone ].
