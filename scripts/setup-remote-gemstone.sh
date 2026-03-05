@@ -96,7 +96,6 @@ else
   ./gtoolkit-wireencoding/scripts/installGToolkitWireEncoding_${USE_ROWAN}.sh
   ./gt4gemstone/scripts/installGt4gemstone_${USE_ROWAN}.sh 
   ./gtoolkit-remote/scripts/installGtoolkitRemote_${USE_ROWAN}.sh 
-  ./gt4llm/scripts/installGt4Llm_${USE_ROWAN}.sh 
 fi
 
 exit 0
