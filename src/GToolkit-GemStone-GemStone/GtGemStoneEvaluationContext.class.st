@@ -125,6 +125,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer pr
 					[ strategies at: aSerializationStrategy ifAbsent: [] ].
 				strategy ifNil:
 					[ strategy := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
+				GtRsrEvaluatorServiceServer stdoutLog: 'About to serialize: ', computationResult printString.
 				strategy serialize: computationResult ].
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
