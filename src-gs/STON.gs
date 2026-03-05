@@ -1405,6 +1405,16 @@ with: object do: block
 
 category: 'writing'
 method: STONWriter
+writeAssociation: association
+	jsonMode
+		ifTrue: [ self error: 'wrong object class for JSON mode' ].
+	self
+		encodeKey: association key
+		value: association value
+%
+
+category: 'writing'
+method: STONWriter
 writeBoolean: boolean
 	writeStream print: boolean
 %
@@ -1413,6 +1423,18 @@ category: 'writing'
 method: STONWriter
 writeFloat: float
   writeStream nextPutAll: float asString
+%
+
+category: 'writing'
+method: STONWriter
+writeFraction: fraction
+
+	jsonMode
+		ifTrue: [ self writeFloat: fraction asFloat ]
+		ifFalse: [ writeStream
+				print: fraction numerator;
+				nextPut: $/;
+				print: fraction denominator ]
 %
 
 category: 'writing'
@@ -1524,6 +1546,20 @@ writeReference: index
 	writeStream
 		nextPut: $@;
 		print: index
+%
+
+category: 'writing'
+method: STONWriter
+writeScaledDecimal: scaledDecimal
+
+	jsonMode
+		ifTrue: [ self writeFloat: scaledDecimal asFloat ]
+		ifFalse: [ writeStream
+				print: scaledDecimal numerator;
+				nextPut: $/;
+				print: scaledDecimal denominator;
+				nextPut: $s;
+				print: scaledDecimal scale ]
 %
 
 category: 'writing'
