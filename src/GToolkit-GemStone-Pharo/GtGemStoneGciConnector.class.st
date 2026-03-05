@@ -38,6 +38,26 @@ GtGemStoneGciConnector >> connectionForSession: aGsSession [
 ]
 
 { #category : #accessing }
+GtGemStoneGciConnector >> defaultLibraryPath [
+	"If it exists, answer the path set up by the gt4gemstone development script"
+	| remoteGemstone fields dirs libPath majorMinor |
+
+	remoteGemstone := FileLocator imageDirectory / 'remote-gemstone'.
+	remoteGemstone isDirectory ifFalse: [ ^ nil ].
+	"First check to see if the default version directory exists"
+	libPath := remoteGemstone / gemstoneVersion.
+	libPath isDirectory ifTrue: [ ^ remoteGemstone ].
+
+	"If not, try anything that matches the major and minor version numbers from the default version"
+	fields := gemstoneVersion splitOn: $..
+	majorMinor := fields first, '.', fields second.
+	dirs := remoteGemstone childrenMatching: majorMinor, '*'.
+	dirs := dirs select: #isDirectory.
+	dirs size = 1 ifTrue: [ ^ dirs first parent ].
+	^ nil.
+]
+
+{ #category : #accessing }
 GtGemStoneGciConnector >> gemstoneVersion [
 	^ gemstoneVersion
 ]
@@ -88,7 +108,6 @@ GtGemStoneGciConnector >> initialize [
 	netldi := 'gs64ldi'.
 	username := 'DataCurator'.
 	password := 'swordfish'.
-	libraryPath := '/path/to/GemStone/client/libraries' asFileReference.
 	gemstoneVersion := self class defaultGemStoneVersion.
 ]
 
@@ -96,7 +115,7 @@ GtGemStoneGciConnector >> initialize [
 GtGemStoneGciConnector >> libraryPath [
 	<return: #FileReference>
 
-	^ libraryPath
+	^ libraryPath ifNil: [ self defaultLibraryPath ]
 ]
 
 { #category : #accessing }
@@ -143,7 +162,7 @@ GtGemStoneGciConnector >> newSession [
 	"Answer the session defined by the receiver"
 	<return: #GsSession>
 
-	GciInterface libraryDirectory: libraryPath fullName.
+	GciInterface libraryDirectory: self libraryPath fullName.
 	^ self loggedInSession. 
 ]
 
