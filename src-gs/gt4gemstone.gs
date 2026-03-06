@@ -945,6 +945,25 @@ removeallmethods GtRsrWireSerializationStrategy
 removeallclassmethods GtRsrWireSerializationStrategy
 
 doit
+(GtRsrWireSerializationStrategy
+	subclass: 'GtRsrRemoteObjectWireSerializationStrategy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'GtRsrWithProxyWireSerializationStrategy provides the same functionality as its parent class, but having the separate name allows clients to choose whether to retrieve objects by value (wire serialisation) or with the object''s associated proxy.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtRsrRemoteObjectWireSerializationStrategy
+removeallclassmethods GtRsrRemoteObjectWireSerializationStrategy
+
+doit
 (Object
 	subclass: 'STONJSON'
 	instVarNames: #()
@@ -2247,6 +2266,7 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 					[ strategies at: aSerializationStrategy ifAbsent: [] ].
 				strategy ifNil:
 					[ strategy := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
+				GtRsrEvaluatorServiceServer stdoutLog: 'About to serialize: ', computationResult printString.
 				strategy serialize: computationResult ].
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
@@ -7269,6 +7289,30 @@ serialize: anObject
 	 ^ GtRsrProxyServiceServer object: anObject
 %
 
+! Class extensions for 'GtRsrSerializationStrategy'
+
+!		Class methods for 'GtRsrSerializationStrategy'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: GtRsrSerializationStrategy
+serializationStrategies
+	"Answer the session specific dictionary of serialisation strategies"
+
+	^ SessionTemps current
+		at: #GtSerializationStrategies
+		ifAbsentPut: [ Dictionary new ].
+%
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: GtRsrSerializationStrategy
+serializationStrategyNamed: aSymbol
+	"Answer the session specific strategy, creating it if required"
+
+	^ self serializationStrategies
+		at: aSymbol
+		ifAbsentPut: [ (GsSession currentSession objectNamed: aSymbol) new ]
+%
+
 ! Class extensions for 'GtRsrWireTransferService'
 
 !		Instance methods for 'GtRsrWireTransferService'
@@ -7304,6 +7348,44 @@ encode: anObject with: aGtWireEncoderContext
 	aGtWireEncoderContext
 		putTypeIdentifier: self class typeIdentifier;
 		nextPut: rsrService _id
+%
+
+! Class extensions for 'GtWireGemStoneWithRsrEncoder'
+
+!		Instance methods for 'GtWireGemStoneWithRsrEncoder'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtWireGemStoneWithRsrEncoder
+encode: anObject with: aGtWireEncoderContext
+
+	self error: self class name asString, '>>encode:with: should not be reached'
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtWireGemStoneWithRsrEncoder
+encode: anObject with: aGtWireEncoderContext objectEncoder: objectEncoder
+	| rsrService |
+
+	anObject isGtGemStoneRsrProxy ifTrue: 
+		[ self error: 'Proxies should not be encoded with RSR encoder' ].
+
+	GtRsrEvaluatorServiceServer 
+		stdoutLog: 'encode: ', anObject printString;
+		stdoutLog: 'encoder: ', objectEncoder printString.
+	"Put the proxy object on the wire first"
+	rsrService := GtRsrProxyServiceServer object: anObject.
+	"Ensure that the service is at least registered so that it has an _id
+	and has a reference in the service.
+	Remaining set up will be done during snapshot analysis."
+	self connection _ensureRegistered: rsrService.
+	self currentWireService addRoot: rsrService.
+	aGtWireEncoderContext putTypeIdentifier: self class typeIdentifier.
+	"To avoid attempting to create a proxy for the service ID,
+	instead of passing back to the GtWireEncoder, call the integer object encoder directly."
+	GtWireIntegerEncoder new encode: rsrService _id with: aGtWireEncoderContext.
+
+	"Then put the object itself"
+	objectEncoder encode: anObject with: aGtWireEncoderContext.
 %
 
 ! Class extensions for 'Integer'
