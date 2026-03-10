@@ -5,6 +5,16 @@ Class {
 }
 
 { #category : #logging }
+GtRsrEvaluatorServiceServer class >> stdout [
+	"Cache stdout in the session temps as in a large database reflection is very slow,
+	so the initial call could take 10 - 20 seconds."
+
+	^ SessionTemps current
+		at: #stdout
+		ifAbsentPut: [ FsFileDescriptor stdout ].
+]
+
+{ #category : #logging }
 GtRsrEvaluatorServiceServer class >> stdoutLog: aMessage [
 	| msgStream |
 
@@ -16,7 +26,7 @@ GtRsrEvaluatorServiceServer class >> stdoutLog: aMessage [
 			ifTrue: [ aMessage asString ]
 			ifFalse: [ aMessage printString ]);
 		lf.
-	FsFileDescriptor stdout write: msgStream contents utf8Encoded.
+	self stdout write: msgStream contents utf8Encoded.
 ]
 
 { #category : #actions }
