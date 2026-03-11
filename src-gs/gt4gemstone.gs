@@ -2266,7 +2266,6 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 					[ strategies at: aSerializationStrategy ifAbsent: [] ].
 				strategy ifNil:
 					[ strategy := (GsSession currentSession objectNamed: aSerializationStrategy) new ].
-				GtRsrEvaluatorServiceServer stdoutLog: 'About to serialize: ', computationResult printString.
 				strategy serialize: computationResult ].
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
@@ -6234,6 +6233,17 @@ templateClassName
 
 category: 'logging'
 classmethod: GtRsrEvaluatorServiceServer
+stdout
+	"Cache stdout in the session temps as in a large database reflection is very slow,
+	so the initial call could take 10 - 20 seconds."
+
+	^ SessionTemps current
+		at: #stdout
+		ifAbsentPut: [ FsFileDescriptor stdout ].
+%
+
+category: 'logging'
+classmethod: GtRsrEvaluatorServiceServer
 stdoutLog: aMessage
 	| msgStream |
 
@@ -6245,7 +6255,7 @@ stdoutLog: aMessage
 			ifTrue: [ aMessage asString ]
 			ifFalse: [ aMessage printString ]);
 		lf.
-	FsFileDescriptor stdout write: msgStream contents utf8Encoded.
+	self stdout write: msgStream contents utf8Encoded.
 %
 
 !		Instance methods for 'GtRsrEvaluatorServiceServer'
@@ -7369,9 +7379,6 @@ encode: anObject with: aGtWireEncoderContext objectEncoder: objectEncoder
 	anObject isGtGemStoneRsrProxy ifTrue: 
 		[ self error: 'Proxies should not be encoded with RSR encoder' ].
 
-	GtRsrEvaluatorServiceServer 
-		stdoutLog: 'encode: ', anObject printString;
-		stdoutLog: 'encoder: ', objectEncoder printString.
 	"Put the proxy object on the wire first"
 	rsrService := GtRsrProxyServiceServer object: anObject.
 	"Ensure that the service is at least registered so that it has an _id
