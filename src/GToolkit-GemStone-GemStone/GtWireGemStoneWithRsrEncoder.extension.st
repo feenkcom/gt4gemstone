@@ -13,9 +13,6 @@ GtWireGemStoneWithRsrEncoder >> encode: anObject with: aGtWireEncoderContext obj
 	anObject isGtGemStoneRsrProxy ifTrue: 
 		[ self error: 'Proxies should not be encoded with RSR encoder' ].
 
-	GtRsrEvaluatorServiceServer 
-		stdoutLog: 'encode: ', anObject printString;
-		stdoutLog: 'encoder: ', objectEncoder printString.
 	"Put the proxy object on the wire first"
 	rsrService := GtRsrProxyServiceServer object: anObject.
 	"Ensure that the service is at least registered so that it has an _id
