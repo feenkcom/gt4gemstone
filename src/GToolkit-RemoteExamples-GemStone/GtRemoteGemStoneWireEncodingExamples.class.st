@@ -315,3 +315,114 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncoding [
 	proxy := GtRsrProxyServiceClient proxyObjectMap at: next.
 	self assert: proxy var2 equals: object var2.
 ]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth0 [
+	"Demonstrate retrieving an object with proxy only at the root when maxProxyDepth = 0."
+	<gtExample>
+	| replicationSpec object next array currentArray session minimumVersion proxy |
+
+	"Connect to GemStone and answer a live session."
+	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.250"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 250.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.250' ].
+
+	"Create an object graph that is larger than the spec will return."
+	array := Array new: 2.
+	currentArray := array.
+	1 to: 10 do: [ :i |
+		currentArray
+			at: 1 put: i;
+			at: 2 put: (Array new: 2).
+		currentArray := currentArray second ].
+	object := GtWireEncodingExampleInstVarObject new
+		var1: array;
+		var2: DateAndTime now printString.
+
+	"Install the replication spec, limiting var1 to a graph 2 deep and enabling object shadowing."
+	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2)) } asDictionary.
+	GtGemStoneSerialisationManager
+		installWithProxyWireEncodingGbsReplicationSpec: replicationSpec
+		on: session.
+	session evaluateBlockAndWait: [ :anInteger |
+		| serializer |
+		serializer := GtRsrSerializationStrategy
+			serializationStrategyNamed: #GtRsrRemoteObjectWireSerializationStrategy.
+		serializer encoder maxProxyDepth: anInteger.
+		nil ] withArguments: { 0 }.
+
+	"Check that only the root object has a proxy mapping."
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrRemoteObjectWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 class equals: Array.
+	self assert: next var1 first equals: 1.
+	self assert: next var2 equals: object var2.
+
+	proxy := GtRsrProxyServiceClient proxyObjectMap at: next.
+	self assert: proxy var2 equals: object var2.
+	self deny: (GtRsrProxyServiceClient proxyObjectMap includesKey: next var1).
+	^ next
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth1 [
+	"Demonstrate retrieving an object with proxy at the root and first nested level when maxProxyDepth = 1."
+	<gtExample>
+	| replicationSpec object next array currentArray session minimumVersion proxy |
+
+	"Connect to GemStone and answer a live session."
+	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.250"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 250.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.250' ].
+
+	"Create an object graph that is larger than the spec will return."
+	array := Array new: 2.
+	currentArray := array.
+	1 to: 10 do: [ :i |
+		currentArray
+			at: 1 put: i;
+			at: 2 put: (Array new: 2).
+		currentArray := currentArray second ].
+	object := GtWireEncodingExampleInstVarObject new
+		var1: array;
+		var2: DateAndTime now printString.
+
+	"Install the replication spec, limiting var1 to a graph 2 deep and enabling object shadowing."
+	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2)) } asDictionary.
+	GtGemStoneSerialisationManager
+		installWithProxyWireEncodingGbsReplicationSpec: replicationSpec
+		on: session.
+	session evaluateBlockAndWait: [ :anInteger |
+		| serializer |
+		serializer := GtRsrSerializationStrategy
+			serializationStrategyNamed: #GtRsrRemoteObjectWireSerializationStrategy.
+		serializer encoder maxProxyDepth: anInteger.
+		nil ] withArguments: { 1 }.
+
+	"Check that the root object and var1 have proxy mappings, but deeper objects do not."
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrRemoteObjectWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 class equals: Array.
+	self assert: next var1 first equals: 1.
+	self assert: next var2 equals: object var2.
+
+	proxy := GtRsrProxyServiceClient proxyObjectMap at: next.
+	self assert: proxy var2 equals: object var2.
+	self assert: (GtRsrProxyServiceClient proxyObjectMap includesKey: next var1).
+	self deny: (GtRsrProxyServiceClient proxyObjectMap includesKey: next var1 second).
+	^ next
+]
