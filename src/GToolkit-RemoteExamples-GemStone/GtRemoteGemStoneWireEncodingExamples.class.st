@@ -325,12 +325,12 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth0 [
 	"Connect to GemStone and answer a live session."
 	session := self runningServer.
 
-	"Skip this example if the server version is below v1.1.250"
-	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 250.
+	"Skip this example if the server version is below v1.1.256"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 256.
 	(session gt4gemstoneVersion
 		exBetween: GtGemStoneSemanticVersionNumber zero
 		and: minimumVersion) ifTrue: [
-		^ self skip: 'Requires gt4gemstone version >= 1.1.250' ].
+		^ self skip: 'Requires gt4gemstone version >= 1.1.256' ].
 
 	"Create an object graph that is larger than the spec will return."
 	array := Array new: 2.
@@ -380,12 +380,12 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth1 [
 	"Connect to GemStone and answer a live session."
 	session := self runningServer.
 
-	"Skip this example if the server version is below v1.1.250"
-	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 250.
+	"Skip this example if the server version is below v1.1.256"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 256.
 	(session gt4gemstoneVersion
 		exBetween: GtGemStoneSemanticVersionNumber zero
 		and: minimumVersion) ifTrue: [
-		^ self skip: 'Requires gt4gemstone version >= 1.1.250' ].
+		^ self skip: 'Requires gt4gemstone version >= 1.1.256' ].
 
 	"Create an object graph that is larger than the spec will return."
 	array := Array new: 2.
