@@ -31,6 +31,6 @@ GtRsrWireSerializationStrategy >> serialize: anObject [
 	"Serialize the object to something that RSR can return"
 	
 	^ (self gtDo: [ GtRsrWireTransferService clientClass ] gemstoneDo: [ GtRsrWireTransferService serverClass ]) new 
-		encoder: encoder;
+		encoder: encoder copy;
 		object: anObject
 ]

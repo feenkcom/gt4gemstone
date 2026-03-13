@@ -269,6 +269,57 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> wireIndividualRemoteObjectEncoding [
+	"Demonstrate retrieving an object where only the specified class is a remote object."
+	<gtExample>
+	| object next session minimumVersion proxy |
+
+	"Connect to GemStone and answer a live session."
+	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.270"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 270.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.270' ].
+
+	object := GtWireEncodingExampleInstVarObject new 
+		var1: 'var1';
+		var2: DateAndTime now.
+
+	"Wrap the DateAndTime encoder to also return a proxy (remote object)"
+	session evaluateBlockAndWait: [ | encoder strategy sdt |
+		encoder := GtWireEncoder onByteArray.
+		sdt := GsSession currentSession objectNamed: #SmallDateAndTime.
+		encoder map 
+			at: DateAndTime put: (GtWireGemStoneRemoteObjectEncoder new
+				encoder: (encoder map at: DateAndTime));
+			at: sdt put: (GtWireGemStoneRemoteObjectEncoder new
+				encoder: (encoder map at: sdt)).
+		strategy := GtRsrWireSerializationStrategy new.
+		strategy encoder: encoder.
+		GtRsrSerializationStrategy serializationStrategies
+			at: #GtRsrRemoteObjectWireSerializationStrategy	put: strategy.
+		nil. ].
+
+	"Check that the replication spec is behaving as expected"
+	next := session evaluateBlockAndWait: [ :o |
+		o var3: o var2 class name.
+		o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrRemoteObjectWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 equals: object var1.
+	self assert: next var2 equals: object var2.
+
+	proxy := GtRsrProxyServiceClient proxyObjectMap at: next var2.
+	self assert: proxy asGtProxyObject remoteClass equals: #SmallDateAndTime.
+	self deny: (GtRsrProxyServiceClient proxyObjectMap includesKey: next).
+	self deny: (GtRsrProxyServiceClient proxyObjectMap includesKey: next var1).
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncoding [
 	"Demonstrate retrieving an object with proxy and that the local and remote objects are as expected."
 	<gtExample>
@@ -300,7 +351,7 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncoding [
 	enabling object shadowing."
 	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2))} asDictionary.
 	GtGemStoneSerialisationManager 
-		installWithProxyWireEncodingGbsReplicationSpec: replicationSpec 
+		installRemoteObjectWireEncodingGbsReplicationSpec: replicationSpec 
 		on: session.
 
 	"Check that the replication spec is behaving as expected"
@@ -314,6 +365,48 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncoding [
 
 	proxy := GtRsrProxyServiceClient proxyObjectMap at: next.
 	self assert: proxy var2 equals: object var2.
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingBufferReset [
+	"Demonstrate retrieving that remote objects don't have a buffer reset problem, 
+	i.e. the original object returned multiple times."
+	<gtExample>
+	| object next session minimumVersion |
+
+	"Connect to GemStone and answer a live session."
+	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.270"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 270.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.270' ].
+
+	GtGemStoneSerialisationManager 
+		installRemoteObjectWireEncodingGbsReplicationSpec: Dictionary new 
+		on: session.
+
+	object := GtWireEncodingExampleInstVarObject new 
+		var1: 'one';
+		var2: DateAndTime now printString.
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrRemoteObjectWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 equals: object var1.
+	self assert: next var2 equals: object var2.
+
+	object := GtWireEncodingExampleInstVarObject new 
+		var1: 'two';
+		var2: DateAndTime now printString.
+	next := session evaluateBlockAndWait: [ :o | o ]
+		withArguments: { object }
+		serializationStrategy: #GtRsrRemoteObjectWireSerializationStrategy.
+	self assert: next class equals: GtWireEncodingExampleInstVarObject.
+	self assert: next var1 equals: object var1.
+	self assert: next var2 equals: object var2.
 ]
 
 { #category : #examples }
@@ -345,9 +438,9 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth0 [
 		var2: DateAndTime now printString.
 
 	"Install the replication spec, limiting var1 to a graph 2 deep and enabling object shadowing."
-	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2)) } asDictionary.
+	replicationSpec := Dictionary new.
 	GtGemStoneSerialisationManager
-		installWithProxyWireEncodingGbsReplicationSpec: replicationSpec
+		installRemoteObjectWireEncodingGbsReplicationSpec: replicationSpec
 		on: session.
 	session evaluateBlockAndWait: [ :anInteger |
 		| serializer |
@@ -400,9 +493,9 @@ GtRemoteGemStoneWireEncodingExamples >> wireRemoteObjectEncodingMaxProxyDepth1 [
 		var2: DateAndTime now printString.
 
 	"Install the replication spec, limiting var1 to a graph 2 deep and enabling object shadowing."
-	replicationSpec := { #GtWireEncodingExampleInstVarObject -> #(#(var1 max 2)) } asDictionary.
+	replicationSpec := Dictionary new.
 	GtGemStoneSerialisationManager
-		installWithProxyWireEncodingGbsReplicationSpec: replicationSpec
+		installRemoteObjectWireEncodingGbsReplicationSpec: replicationSpec
 		on: session.
 	session evaluateBlockAndWait: [ :anInteger |
 		| serializer |

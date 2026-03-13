@@ -148,10 +148,17 @@ GtRsrEvaluation >> returnStonSerialized [
 
 { #category : #accessing }
 GtRsrEvaluation >> serialisationStrategy [
+	<return: #Symbol>
+
 	^ serialisationStrategy
 ]
 
 { #category : #accessing }
-GtRsrEvaluation >> serialisationStrategy: anObject [
-	serialisationStrategy := anObject
+GtRsrEvaluation >> serialisationStrategy: aSymbol [
+	"Set the serialization strategy"
+
+	"The strategy is a symbol, but allow the class to be passed."
+	serialisationStrategy := aSymbol isSymbol
+		ifTrue: [ aSymbol ]
+		ifFalse: [ aSymbol name ]
 ]
