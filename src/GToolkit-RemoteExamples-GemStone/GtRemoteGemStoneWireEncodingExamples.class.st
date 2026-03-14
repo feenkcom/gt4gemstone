@@ -277,16 +277,17 @@ GtRemoteGemStoneWireEncodingExamples >> wireIndividualRemoteObjectEncoding [
 	"Connect to GemStone and answer a live session."
 	session := self runningServer.
 
-	"Skip this example if the server version is below v1.1.270"
-	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 270.
+	"Skip this example if the server version is below v1.1.261"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 261.
 	(session gt4gemstoneVersion
 		exBetween: GtGemStoneSemanticVersionNumber zero
 		and: minimumVersion) ifTrue: [
-		^ self skip: 'Requires gt4gemstone version >= 1.1.270' ].
+		^ self skip: 'Requires gt4gemstone version >= 1.1.261' ].
 
 	object := GtWireEncodingExampleInstVarObject new 
 		var1: 'var1';
-		var2: DateAndTime now.
+		var2: DateAndTime now;
+		var4: Object new.
 
 	"Wrap the DateAndTime encoder to also return a proxy (remote object)"
 	session evaluateBlockAndWait: [ | encoder strategy sdt |
@@ -296,7 +297,9 @@ GtRemoteGemStoneWireEncodingExamples >> wireIndividualRemoteObjectEncoding [
 			at: DateAndTime put: (GtWireGemStoneRemoteObjectEncoder new
 				encoder: (encoder map at: DateAndTime));
 			at: sdt put: (GtWireGemStoneRemoteObjectEncoder new
-				encoder: (encoder map at: sdt)).
+				encoder: (encoder map at: sdt));
+			at: Object put: (GtWireGemStoneRemoteObjectEncoder new
+				encoder: GtWireObjectByNameEncoder new).
 		strategy := GtRsrWireSerializationStrategy new.
 		strategy encoder: encoder.
 		GtRsrSerializationStrategy serializationStrategies
@@ -312,6 +315,8 @@ GtRemoteGemStoneWireEncodingExamples >> wireIndividualRemoteObjectEncoding [
 	self assert: next class equals: GtWireEncodingExampleInstVarObject.
 	self assert: next var1 equals: object var1.
 	self assert: next var2 equals: object var2.
+	self assert: next var3 equals: #SmallDateAndTime.
+	self assert: next var4 class equals: Object.
 
 	proxy := GtRsrProxyServiceClient proxyObjectMap at: next var2.
 	self assert: proxy asGtProxyObject remoteClass equals: #SmallDateAndTime.
