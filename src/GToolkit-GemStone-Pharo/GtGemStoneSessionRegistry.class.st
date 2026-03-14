@@ -701,7 +701,7 @@ GtGemStoneSessionRegistry >> iconForSymbol: anIconName [
 				ifFalse:  [ 
 					self gtSafeIconNamed: anIconName ] ]
 	] on: Error do: [ :error | 
-		Smalltalk ui icons iconNamed: #smallWarningIcon ]
+		Smalltalk ui icons iconNamed: #smallWarning ]
 ]
 
 { #category : #accessing }

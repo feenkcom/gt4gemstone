@@ -38,26 +38,28 @@ GtGemStoneSerialisationManager class >> gtWireReplicationSpecFor: aSelector [
 ]
 
 { #category : #serialization }
-GtGemStoneSerialisationManager class >> installWireEncodingGbsReplicationSpec: replicationSpecification on: aGtGemStoneSession [
+GtGemStoneSerialisationManager class >> installRemoteObjectWireEncodingGbsReplicationSpec: replicationSpecification maxProxyDepth: maxProxyDepth on: aGtGemStoneSession [
 
-	aGtGemStoneSession evaluateBlockAndWait: [ :rsArray | 
+	aGtGemStoneSession evaluateBlockAndWait: [ :rsArray :proxyDepth | 
 			| encoder serializer rs |
 			rsArray do: [ :assoc |
 				assoc key: (GsSession currentSession objectNamed: assoc key) ].
 			rs := (rsArray reject: [ :assoc | assoc key isNil ]) asDictionary.
-			serializer := GtRsrSerializationStrategy serializationStrategyNamed: #GtRsrWireSerializationStrategy.
+			serializer := GtRsrSerializationStrategy 
+				serializationStrategyNamed: #GtRsrRemoteObjectWireSerializationStrategy.
 			encoder := serializer encoder ifNil: 
-				[ serializer encoder: GtWireEncoder onByteArray.
+				[ serializer encoder: GtRemoteObjectWireEncoder onByteArray.
 				serializer encoder. ].
 			encoder maxDepthEncoder: GtWireGemStoneRsrEncoder new.
+			proxyDepth ifNotNil: [ encoder maxProxyDepth: proxyDepth ].
 			GtWireGbsReplicationSpecConverter new update: encoder from: rs.
 			nil. ]
-		withArguments: { replicationSpecification associations }.
+		withArguments: { replicationSpecification associations. maxProxyDepth }.
 
 ]
 
 { #category : #serialization }
-GtGemStoneSerialisationManager class >> installWithProxyWireEncodingGbsReplicationSpec: replicationSpecification on: aGtGemStoneSession [
+GtGemStoneSerialisationManager class >> installRemoteObjectWireEncodingGbsReplicationSpec: replicationSpecification on: aGtGemStoneSession [
 
 	aGtGemStoneSession evaluateBlockAndWait: [ :rsArray | 
 			| encoder serializer rs |
@@ -68,6 +70,25 @@ GtGemStoneSerialisationManager class >> installWithProxyWireEncodingGbsReplicati
 				serializationStrategyNamed: #GtRsrRemoteObjectWireSerializationStrategy.
 			encoder := serializer encoder ifNil: 
 				[ serializer encoder: GtRemoteObjectWireEncoder onByteArray.
+				serializer encoder. ].
+			encoder maxDepthEncoder: GtWireGemStoneRsrEncoder new.
+			GtWireGbsReplicationSpecConverter new update: encoder from: rs.
+			nil. ]
+		withArguments: { replicationSpecification associations }.
+
+]
+
+{ #category : #serialization }
+GtGemStoneSerialisationManager class >> installWireEncodingGbsReplicationSpec: replicationSpecification on: aGtGemStoneSession [
+
+	aGtGemStoneSession evaluateBlockAndWait: [ :rsArray | 
+			| encoder serializer rs |
+			rsArray do: [ :assoc |
+				assoc key: (GsSession currentSession objectNamed: assoc key) ].
+			rs := (rsArray reject: [ :assoc | assoc key isNil ]) asDictionary.
+			serializer := GtRsrSerializationStrategy serializationStrategyNamed: #GtRsrWireSerializationStrategy.
+			encoder := serializer encoder ifNil: 
+				[ serializer encoder: GtWireEncoder onByteArray.
 				serializer encoder. ].
 			encoder maxDepthEncoder: GtWireGemStoneRsrEncoder new.
 			GtWireGbsReplicationSpecConverter new update: encoder from: rs.
