@@ -23,6 +23,8 @@ GtRsrWireSerializationStrategy >> encoder [
 { #category : #accessing }
 GtRsrWireSerializationStrategy >> encoder: aGtWireEncoder [
 
+	"self assert: aGtWireEncoder hasValidConfiguration
+		description: 'Supplied wire encoder has invalid configuration'."
 	encoder := aGtWireEncoder
 ]
 
