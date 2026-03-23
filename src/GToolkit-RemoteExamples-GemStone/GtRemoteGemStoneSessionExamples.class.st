@@ -12,7 +12,7 @@ GtRemoteGemStoneSessionExamples >> buildDebuggingSessionWithBrokenPromiseFor: aP
 	[ aPromise wait  ] 
 		on: RsrBrokenPromise
 		do: [ :anException | 
-			^ DebugSession forExceptionFromExampleFor: anException ].
+			^ GtDebugSession forExceptionFromExampleFor: anException ].
 	
 	self assert: false.
 ]
