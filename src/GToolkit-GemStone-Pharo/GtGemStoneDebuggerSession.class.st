@@ -1,6 +1,6 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
-	#superclass : #DebugSession,
+	#superclass : #GtDebugSession,
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
