@@ -1,8 +1,8 @@
 {
 	"repositories" : {
-		"github://feenkcom/gtoolkit-remote/src" : "v0.9.73",
+		"github://feenkcom/gtoolkit-remote/src" : "v0.9.74",
 		"github://gemtalk/PharoGemStoneFFI/src" : "tag_v1.1",
-		"github://feenkcom/lepiter/src" : "v0.7.166",
+		"github://feenkcom/lepiter/src" : "v0.7.167",
 		"github://feenkcom/gtoolkit-wireencoding/src" : "v0.6.32",
 		"github://feenkcom/RemoteServiceReplication/src" : "5a53d04cb91c4769269a304c7be946477dad5ccf"
 	}
