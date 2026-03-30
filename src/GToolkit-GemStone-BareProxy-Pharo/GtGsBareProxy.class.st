@@ -4,7 +4,7 @@ GtGsBareProxy is the bare-proxy object class for GemStone remote objects.
 Class {
 	#name : #GtGsBareProxy,
 	#superclass : #GtBareProxy,
-	#category : #'GToolkit-GemStone-BareProxy-Pharo-Model'
+	#category : 'GToolkit-GemStone-BareProxy-Pharo-Model'
 }
 
 { #category : #'instance creation' }

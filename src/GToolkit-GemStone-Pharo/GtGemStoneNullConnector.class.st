@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneNullConnector,
 	#superclass : #GtGemStoneConnector,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }

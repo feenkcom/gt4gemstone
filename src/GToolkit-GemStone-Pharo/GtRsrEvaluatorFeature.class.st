@@ -5,7 +5,7 @@ Class {
 		'featureId',
 		'attributes'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Services'
+	#category : 'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #accessing }

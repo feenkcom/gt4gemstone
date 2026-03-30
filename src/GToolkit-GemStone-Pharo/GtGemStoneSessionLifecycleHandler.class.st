@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneSessionLifecycleHandler,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #actions }

@@ -9,7 +9,7 @@ Class {
 		'gemStoneSessionViewModels',
 		'announcer'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'api - active sessions' }

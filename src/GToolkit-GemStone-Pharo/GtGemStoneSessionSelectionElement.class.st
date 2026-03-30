@@ -10,7 +10,7 @@ Class {
 		'currentSessionDisplayLabelComputation',
 		'identifierType'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #private }

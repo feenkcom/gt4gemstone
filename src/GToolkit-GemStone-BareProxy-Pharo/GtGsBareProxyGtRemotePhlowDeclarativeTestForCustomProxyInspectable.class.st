@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGsBareProxyGtRemotePhlowDeclarativeTestForCustomProxyInspectable,
 	#superclass : #GtGsBareProxy,
-	#category : #'GToolkit-GemStone-BareProxy-Pharo-Examples'
+	#category : 'GToolkit-GemStone-BareProxy-Pharo-Examples'
 }
 
 { #category : #accessing }

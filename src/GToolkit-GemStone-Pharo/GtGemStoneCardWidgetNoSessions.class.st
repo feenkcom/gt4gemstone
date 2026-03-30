@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneCardWidgetNoSessions,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #accessing }

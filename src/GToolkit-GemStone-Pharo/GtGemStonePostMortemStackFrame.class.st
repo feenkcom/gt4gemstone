@@ -9,7 +9,7 @@ Class {
 		'sourceCode',
 		'method'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : 'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }

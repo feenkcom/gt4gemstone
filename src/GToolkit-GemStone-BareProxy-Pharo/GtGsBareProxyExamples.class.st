@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'TAssertable',
 	#classTraits : 'TAssertable classTrait',
-	#category : #'GToolkit-GemStone-BareProxy-Pharo-Examples'
+	#category : 'GToolkit-GemStone-BareProxy-Pharo-Examples'
 }
 
 { #category : #examples }

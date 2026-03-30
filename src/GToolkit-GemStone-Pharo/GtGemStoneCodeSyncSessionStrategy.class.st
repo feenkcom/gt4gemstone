@@ -4,7 +4,7 @@ GtGemStoneCodeSyncSessionStrategy determines which sessions in the receiver's re
 Class {
 	#name : #GtGemStoneCodeSyncSessionStrategy,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Pharo-CodeSync'
+	#category : 'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #testing }

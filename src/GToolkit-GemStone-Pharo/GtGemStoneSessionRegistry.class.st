@@ -31,7 +31,7 @@ Class {
 	#classInstVars : [
 		'uniqueInstance'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Registry'
+	#category : 'GToolkit-GemStone-Pharo-Registry'
 }
 
 { #category : #accessing }
@@ -1015,6 +1015,23 @@ GtGemStoneSessionRegistry >> sessionNamed: aString ifAbsent: absentBlock [
 	^ sessions at: aString ifAbsent: absentBlock
 ]
 
+{ #category : #private }
+GtGemStoneSessionRegistry >> sessions [ 
+
+	^ sessions
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> sessionsToDisplay [
+	"Answer the set of session names that should normally be displayed to users"
+	<return: #Array>
+
+	^ self activeSessions select: [ :aSession |
+		aSession isRunning or: [ 
+			aSession isDefaultSession or: [
+				aSession isBookmarked ] ] ]
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> sessionWithConnection: aRsrConnection [
 	<return: #GtGemStoneSession>
@@ -1052,23 +1069,6 @@ GtGemStoneSessionRegistry >> sessionWithConnectorNamed: aString ifAbsent: absent
 		ifEmpty: absentBlock
 		ifNotEmpty: [ :sessionCollection |
 			(sessionCollection sorted: #sessionId ascending) first ].
-]
-
-{ #category : #private }
-GtGemStoneSessionRegistry >> sessions [ 
-
-	^ sessions
-]
-
-{ #category : #accessing }
-GtGemStoneSessionRegistry >> sessionsToDisplay [
-	"Answer the set of session names that should normally be displayed to users"
-	<return: #Array>
-
-	^ self activeSessions select: [ :aSession |
-		aSession isRunning or: [ 
-			aSession isDefaultSession or: [
-				aSession isBookmarked ] ] ]
 ]
 
 { #category : #initialization }

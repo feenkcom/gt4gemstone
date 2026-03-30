@@ -6,7 +6,7 @@ Class {
 		'dirtyCount',
 		'maxKeepAlive'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Registry'
+	#category : 'GToolkit-GemStone-Pharo-Registry'
 }
 
 { #category : #'instance creation' }

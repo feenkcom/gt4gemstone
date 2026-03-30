@@ -9,7 +9,7 @@ Class {
 	#instVars : [
 		'proxyObject'
 	],
-	#category : #'GToolkit-GemStone-BareProxy-Pharo-Model'
+	#category : 'GToolkit-GemStone-BareProxy-Pharo-Model'
 }
 
 { #category : #'instance creation' }
@@ -114,6 +114,11 @@ GtBareProxy >> gtActionInspectFor: anAction [
 	<gtProxyAction>
 	
 	^ super gtActionInspectFor: anAction
+]
+
+{ #category : #'gt inspector' }
+GtBareProxy >> gtActionObjectDropdownFor: anAction [
+	^anAction noAction
 ]
 
 { #category : #'gt inspector' }

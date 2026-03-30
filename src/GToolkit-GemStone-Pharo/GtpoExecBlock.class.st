@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoExecBlock,
 	#superclass : #GtpoBlockClosure,
-	#category : #'GToolkit-GemStone-Pharo-Proxies'
+	#category : 'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }
