@@ -422,6 +422,14 @@ GtRsrProxyServiceClient >> gtActionLocalSideInspectSessionFor: anAction [
 			button phlow spawnObject: gtSession ].
 ]
 
+{ #category : #'gt - inspector' }
+GtRsrProxyServiceClient >> gtActionObjectChatFor: anAction [
+	<gtAction>
+	<gtProxyAction>
+	
+	^super gtActionObjectChatFor: anAction
+]
+
 { #category : #'gt - extensions' }
 GtRsrProxyServiceClient >> gtActionRemoteSideInspectSessionFor: anAction [
 	<gtAction>
@@ -594,6 +602,43 @@ GtRsrProxyServiceClient >> isProxyObjectActive [
 
 	^ super isProxyObjectActive and:
 		[ (gtSession isNil or: [ gtSession connection ~~ _connection]) not ]
+]
+
+{ #category : #'llm views' }
+GtRsrProxyServiceClient >> llmRawDataViewsFor: aDataView [
+	<gtLlmDataView>
+	
+	^ aDataView 
+			title: 'Example results';
+			jsonData: [ self llmRemoteJsonObject ]
+]
+
+{ #category : #'llm views' }
+GtRsrProxyServiceClient >> llmRemoteJsonObject [
+	  ^self  evaluateBlockAndWait: [:anObject |
+			{
+				'class' -> anObject class name asString.
+				'superclass'
+						-> (anObject class superclass 
+								ifNil: [ nil ] 
+								ifNotNil: [ :aSuperclass | aSuperclass name ]).
+				'package' -> anObject class category.
+				'printString' -> ([(anObject printString )] on: Error do: [:e | 'Error printing object' ]).
+				'views' -> ((anObject gtDeclarativePhlowViews
+					reject: [ :aView | aView isKindOf: GtRemotePhlowEmptyView])
+					collect: [ :aView | {
+						'methodName' ->aView definingSelector.
+						'title' -> aView title } asDictionary ] )asArray.
+				'allInstanceSlots'
+						-> (anObject class allInstVarNames
+							collect: [ :aVariable | 
+								| variableValue |
+								variableValue := anObject instVarNamed: aVariable.
+								{
+									'name' -> aVariable.
+									'class' -> variableValue class asString.
+									'value' -> (variableValue printString )} asDictionary ])asArray
+			} asDictionary] withArguments: {self}
 ]
 
 { #category : #accessing }

@@ -117,6 +117,11 @@ GtBareProxy >> gtActionInspectFor: anAction [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> gtActionObjectDropdownFor: anAction [
+	^anAction noAction
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> gtActionsInContext: aPhlowContext [
 	| proxyActions localActions collectedActions |
 

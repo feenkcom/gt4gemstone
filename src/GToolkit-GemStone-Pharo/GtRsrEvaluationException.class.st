@@ -99,6 +99,21 @@ GtRsrEvaluationException >> gtSession: aGtGemStoneSession [
 		[ self assert: gtSession == aGtGemStoneSession ]
 ]
 
+{ #category : #initialize }
+GtRsrEvaluationException >> gtViewRemoteStackFor: aView [
+	<gtView>
+	^aView list
+		title: 'Remote Stack';
+		priority: 0;
+		items: [ self debuggerState callStackSpecification frameSpecifications];
+		itemText: [ :aStackFrame |
+							String streamContents: [:aStream |
+								aStream 
+									<< aStackFrame printBehaviorName;
+									<< '>>';
+									<< (aStackFrame selector ifNil: [ '<none>' ]) ]]
+]
+
 { #category : #accessing }
 GtRsrEvaluationException >> hasDebugResult [
 	^ hasDebugResult
@@ -138,6 +153,15 @@ GtRsrEvaluationException >> isSuspended [
 GtRsrEvaluationException >> isTerminated [
 
 	^ self debuggerState isTerminated
+]
+
+{ #category : #'llm views' }
+GtRsrEvaluationException >> llmDataViewFor: aDataView [
+	<gtLlmDataView>
+	
+	^aDataView forwardObject
+			title: 'Exception properties';
+			object: [ self debuggerState ]
 ]
 
 { #category : #accessing }
