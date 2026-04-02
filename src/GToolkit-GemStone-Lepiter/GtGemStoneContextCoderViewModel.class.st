@@ -110,11 +110,11 @@ GtGemStoneContextCoderViewModel >> updateProgramCounterRange: aSourceCode [
 	self programCounterRange
 		ifNotNil: [ :anInterval | 
 			programCounterAttributes
-				ifNotNil: [ :theAttributes | 
-					self removeCoderTextAttributes: theAttributes ].
+				ifNotNil: [ :theAttributes | self removeCoderTextAttributes: theAttributes ].
 			programCounterAttributes := self
-				addTextAttribute: self programCounterTextAttribute
-				onText: aSourceText text
-				from: (anInterval first min: aSourceText text size)
-				to: (anInterval last min: aSourceText text size) ]
+					addTextAttribute: self programCounterTextAttribute
+					onText: aSourceText text
+					from: (anInterval first min: aSourceText text size)
+					to: (anInterval last min: aSourceText text size)
+					documentId: documentId ]
 ]
