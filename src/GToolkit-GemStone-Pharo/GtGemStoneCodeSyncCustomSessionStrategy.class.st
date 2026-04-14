@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'valuable'
 	],
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #printing }

@@ -5,7 +5,7 @@ Class {
 		'transactionConflictsReport',
 		'transactionConflicts'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }

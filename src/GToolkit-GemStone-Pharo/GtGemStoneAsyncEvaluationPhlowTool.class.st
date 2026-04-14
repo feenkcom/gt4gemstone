@@ -9,7 +9,7 @@ Class {
 		'EnableElapsedTimeUpdate',
 		'ReplacePaneContentAutomatically'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Promises'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #settings }

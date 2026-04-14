@@ -43,6 +43,8 @@ GtGemStoneSourceCoderModel >> addGemStoneExecutionContextMenuItemWithNoShortcutF
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self extractableNodesFrom: aCoderViewModel)
 		ifNotEmpty: [ :nodes | 
 			| node foundClass |
@@ -57,8 +59,8 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 						createLabel: 'Browse local class'
 						description: foundClass name)
 				group: BrMenuItemGroupConfiguration navigation
-				hover: (self highlightNodeBlock: node)
-				leave: self removeHighlightBlock
+				hover: (self highlightNodeBlock: node documentId: aDocumentId)
+				leave: self removeHighlightsBlock
 				action: [ :aTextualViewModel | 
 					self
 						browseLocalBehaviorAt: node startPosition
@@ -71,6 +73,8 @@ GtGemStoneSourceCoderModel >> addLocalClassMenuAddOnsAst: anAst to: coderAddOns 
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self
@@ -86,6 +90,8 @@ GtGemStoneSourceCoderModel >> addLocalImplementorsMenuAddOnsAst: anAst to: coder
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(node isVariable and: [ self isLocalInstanceVariable: node ])
@@ -110,6 +116,8 @@ GtGemStoneSourceCoderModel >> addLocalInstanceVariableReferencesMenuAddOnsAst: a
 { #category : #'add-ons' }
 GtGemStoneSourceCoderModel >> addLocalMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self

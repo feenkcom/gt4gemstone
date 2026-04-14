@@ -25,7 +25,7 @@ Class {
 	#classInstVars : [
 		'uniqueInstance'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Registry'
+	#category : #'GToolkit-GemStone-Pharo-Registry'
 }
 
 { #category : #accessing }

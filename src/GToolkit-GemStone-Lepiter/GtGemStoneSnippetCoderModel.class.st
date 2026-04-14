@@ -23,7 +23,8 @@ GtGemStoneSnippetCoderModel class >> enableAsyncPlay: anObject [
 { #category : #'add-ons' }
 GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
-	
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAndInspectAsynchronousShortcut
 				new
@@ -36,7 +37,6 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
 						ifTrue: [ anAction disableAction.
 							anAction shortcutKey: '' ] ] ].
-	
 	(self
 		addGemStoneExecutionContextMenuItemFrom: GtSourceCoderDoItAsynchronousShortcut
 				new
@@ -49,7 +49,6 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
 						ifTrue: [ anAction disableAction.
 							anAction shortcutKey: '' ] ] ].
-	
 	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItAndInspectShortcut
 				new name: 'Evaluate and inspect (blocking)')
@@ -63,7 +62,6 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 						ifTrue: [ anAction
 								shortcutKey: GtSourceCoderDoItAndInspectAsynchronousShortcut new combinationForPlatform
 										gtDisplayString ] ] ].
-	
 	(self
 		addGemStoneExecutionContextMenuItemWithNoShortcutFrom: (GtSourceCoderDoItShortcut
 				new name: 'Evaluate (blocking)')
@@ -76,7 +74,6 @@ GtGemStoneSnippetCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: 
 				ifTrue: [ aCoderViewModel session hasRegisteredAsyncExecution
 						ifTrue: [ anAction
 								shortcutKey: GtSourceCoderDoItAsynchronousShortcut new combinationForPlatform gtDisplayString ] ] ].
-	
 	(self
 		addGemStoneExecutionContextMenuItemFrom: (GtSourceCoderPrintItShortcut new
 				name: 'Print (blocking)')

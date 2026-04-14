@@ -5,7 +5,7 @@ Class {
 		'gemStoneSession',
 		'transcriptProxy'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Transcript'
+	#category : #'GToolkit-GemStone-Pharo-Transcript'
 }
 
 { #category : #'instance creation' }

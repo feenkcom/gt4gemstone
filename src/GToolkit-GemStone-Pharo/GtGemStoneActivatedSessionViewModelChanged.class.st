@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'activatedSessionViewModel'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Events'
+	#category : #'GToolkit-GemStone-Pharo-Events'
 }
 
 { #category : #generated }

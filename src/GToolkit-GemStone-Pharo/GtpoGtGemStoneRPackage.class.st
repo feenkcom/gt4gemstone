@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'name'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }

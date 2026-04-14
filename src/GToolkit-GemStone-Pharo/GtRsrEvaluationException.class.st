@@ -10,12 +10,22 @@ Class {
 		'debuggerClient',
 		'gemStonePromise'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
 GtRsrEvaluationException >> currentDebuggerState [
 	^ debuggerState
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debugResult [
+	^ debugResult
+]
+
+{ #category : #accessing }
+GtRsrEvaluationException >> debugResult: anObject [
+	debugResult := anObject
 ]
 
 { #category : #accessing }
@@ -41,16 +51,6 @@ GtRsrEvaluationException >> debuggerState [
 
 	^ debuggerState ifNil: [ 
 		debuggerState := self getDebuggerState ]
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> debugResult [
-	^ debugResult
-]
-
-{ #category : #accessing }
-GtRsrEvaluationException >> debugResult: anObject [
-	debugResult := anObject
 ]
 
 { #category : #accessing }

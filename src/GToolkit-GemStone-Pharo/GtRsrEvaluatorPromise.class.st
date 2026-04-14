@@ -9,7 +9,7 @@ Class {
 		'value',
 		'autoCommit'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Promises'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #'instance creation' }

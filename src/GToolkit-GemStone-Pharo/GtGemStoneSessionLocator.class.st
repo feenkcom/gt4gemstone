@@ -5,7 +5,7 @@ Class {
 		'registry',
 		'identifier'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #converting }

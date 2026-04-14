@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneCodeSyncDefaultSessionStrategy,
 	#superclass : #GtGemStoneCodeSyncSessionStrategy,
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #accessing }
