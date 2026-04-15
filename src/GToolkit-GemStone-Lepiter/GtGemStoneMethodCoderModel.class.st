@@ -66,7 +66,8 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst 
 				node: node
 				selector: #browseLocalHierarchyImplementorsAt:requesterObject:
 				label: 'Browse local hierarchy implementors'
-				requesterObject: aCoderViewModel)
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
 				ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
@@ -83,7 +84,8 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 				node: node
 				selector: #browseLocalHierarchyReferencesAt:requesterObject:
 				label: 'Browse local hierarchy references'
-				requesterObject: aCoderViewModel)
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
 				ifNotNil: [ :anAction | anAction priority: 16 ] ]
 ]
 
