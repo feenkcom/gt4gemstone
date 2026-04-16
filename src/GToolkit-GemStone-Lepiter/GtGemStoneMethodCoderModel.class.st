@@ -124,6 +124,11 @@ GtGemStoneMethodCoderModel >> browseLocalHierarchyReferencesAt: aTextPosition re
 		ifNone: [  ]
 ]
 
+{ #category : #testing }
+GtGemStoneMethodCoderModel >> canMoveMethodToInstanceOrClass [
+	^ true
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> collapsedText [
 	<return: #BlText>
