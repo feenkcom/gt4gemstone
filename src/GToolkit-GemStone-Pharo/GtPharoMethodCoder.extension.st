@@ -127,7 +127,8 @@ GtPharoMethodCoder >> gtGemStoneInspectMethodFor: anAST into: coderAddOns [
 { #category : #'*GToolkit-GemStone-Pharo' }
 GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
-	| sessionDisplayName |
+	| sessionDisplayName aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	aCoderViewModel hasSelection ifFalse: [ ^ self ].
 	(anAST methodNode isNil
 		or: [ GtGemStoneSessionRegistry hasRegistryWithDefaultSession not ])
@@ -137,8 +138,7 @@ GtPharoMethodCoder >> gtGemStoneInspectSelectionFor: anAST into: coderAddOns fro
 	(coderAddOns
 		addContextMenuItem: (self
 				createLabel: 'Do it and inspect from GemStone'
-				description: (sessionDisplayName 
-					ifNil: ['<missing>']))
+				description: (sessionDisplayName ifNil: [ '<missing>' ]))
 		group: BrMenuItemGroupConfiguration gemstone
 		hover: nil
 		leave: nil

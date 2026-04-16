@@ -33,6 +33,8 @@ GtGemStoneMethodCoderModel class >> fromGsMethod: aGsMethod [
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self
 		addContextMenuItemFrom: GtSourceCoderDoItShortcut new
 		withId: nil
@@ -54,6 +56,8 @@ GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: a
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self
@@ -62,13 +66,16 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst 
 				node: node
 				selector: #browseLocalHierarchyImplementorsAt:requesterObject:
 				label: 'Browse local hierarchy implementors'
-				requesterObject: aCoderViewModel)
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
 				ifNotNil: [ :anAction | anAction priority: 11 ] ]
 ]
 
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
 	(self nodeFrom: aCoderViewModel)
 		ifNotNil: [ :node | 
 			(self
@@ -77,7 +84,8 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 				node: node
 				selector: #browseLocalHierarchyReferencesAt:requesterObject:
 				label: 'Browse local hierarchy references'
-				requesterObject: aCoderViewModel)
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
 				ifNotNil: [ :anAction | anAction priority: 16 ] ]
 ]
 
@@ -114,6 +122,11 @@ GtGemStoneMethodCoderModel >> browseLocalHierarchyReferencesAt: aTextPosition re
 							selectedScope: (GtSearchScopedMethodsClassHierarchyScope new itemClass: self localBehavior)))
 				requesterObject: aRequester ]
 		ifNone: [  ]
+]
+
+{ #category : #testing }
+GtGemStoneMethodCoderModel >> canMoveMethodToInstanceOrClass [
+	^ true
 ]
 
 { #category : #accessing }
