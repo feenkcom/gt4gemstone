@@ -42,4 +42,4 @@ if [ $? = 0 ]
         echo LOAD FAILED for gt4gemstone
         echo !!!!!!!!!!!
         exit 1
-    fi
+fi
