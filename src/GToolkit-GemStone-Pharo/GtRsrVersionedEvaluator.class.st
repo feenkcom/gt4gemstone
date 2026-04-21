@@ -170,7 +170,7 @@ GtRsrVersionedEvaluator >> createEvaluationStringFromCleanBlock: aCleanBlock [
 		ifFalse: [self error: 'wrong number of arguments'].
 	^ String streamContents: [ :stream |
 		stream 
-			<< aCleanBlock printString;
+			<< aCleanBlock sourceNode sourceCode;
 			<< ' value' ].
 ]
 
