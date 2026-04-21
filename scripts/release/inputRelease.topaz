@@ -3,12 +3,19 @@
 	iferr 3 exit
 
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/Announcements.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/RemoteServiceReplication.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/STON.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/patch-gemstone.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-wireencoding/src-gs/gtoolkit-wireencoding.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gt4gemstone/src-gs/gt4gemstone.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/gtoolkit-remote/src-gs/gtoolkit-remote.gs
+	commit
 	input $GT4GEMSTONE_RELEASE_HOME/inputVersion.topaz
 	commit
 
