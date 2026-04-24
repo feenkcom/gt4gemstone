@@ -1661,6 +1661,27 @@ isTerminated
 	^ isTerminated
 %
 
+category: 'converting'
+method: GtGemStoneDebuggerState
+llmDataViewFor: aDataView
+	<gtLlmDataView>
+	
+	^aDataView jsonData
+			title: 'Exception properties';
+			data: [ 
+				{
+					'summary' -> self summary.
+					'messageText' -> self messageText.
+					'callStack' -> (self callStackSpecification frameSpecifications
+						collect: [ :aStackFrame |
+							String streamContents: [:aStream |
+								aStream 
+									<< aStackFrame printBehaviorName;
+									<< '>>';
+									<< (aStackFrame selector ifNil: [ '<none>' ]) ]])
+				} asDictionary]
+%
+
 category: 'accessing - metadata'
 method: GtGemStoneDebuggerState
 localApiVersion
@@ -6001,6 +6022,8 @@ category: 'accessing'
 method: GtRsrWireSerializationStrategy
 encoder: aGtWireEncoder
 
+	"self assert: aGtWireEncoder hasValidConfiguration
+		description: 'Supplied wire encoder has invalid configuration'."
 	encoder := aGtWireEncoder
 %
 
