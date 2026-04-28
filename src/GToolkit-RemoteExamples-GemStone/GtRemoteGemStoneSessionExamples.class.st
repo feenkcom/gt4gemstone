@@ -143,6 +143,28 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_proxyO
 ]
 
 { #category : #tests }
+GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_stonSerialization [
+	"Check for regressions in GemStone STON primitive type encoding"
+	<gtExample>
+	| returnValue block |
+	
+	block := [ OrderedCollection new
+		add: 1 -> 'one';
+		add: true;
+		add: 2.5;
+		add: 1/2;
+		add: 3;
+		add: 'string';
+		add: #symbol;
+		yourself ].
+
+	returnValue := self runningServer
+			evaluateBlockAndWait: block
+			serializationStrategy: GtRsrStonSerializationStrategy.
+	self assert: returnValue equals: block value.
+]
+
+{ #category : #tests }
 GtRemoteGemStoneSessionExamples >> testEvaluateBlockWithArguments [
 	<gtExample>
 	<return: #AssertionFailure>
