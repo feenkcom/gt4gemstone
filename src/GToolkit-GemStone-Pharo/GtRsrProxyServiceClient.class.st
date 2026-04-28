@@ -577,6 +577,13 @@ GtRsrProxyServiceClient >> gtSession: aSession [
 	gtSession := aSession
 ]
 
+{ #category : #'gt - extensions' }
+GtRsrProxyServiceClient >> gtViewDefinedLlmDataViewsFor:  aView [
+	<gtProxyView>
+
+	^ super gtViewDefinedLlmDataViewsFor:  aView
+]
+
 { #category : #initialization }
 GtRsrProxyServiceClient >> initialize [
 	super initialize.
