@@ -201,8 +201,18 @@ GtRemoteGemStoneProxyServiceExamples >> testPerformReturnSerializedPrimitive [
 GtRemoteGemStoneProxyServiceExamples >> testPerformReturnStonSerialized [
 	<gtExample>
 	<after: #stopServer>
-	| proxy result |
-	proxy := self runningServer evaluateAndWaitReturnProxy: 'Object new'.
+	| proxy result session minimumVersion |
+	
+	session := self runningServer.
+	"Skip this example if the server version is below v1.1.362.
+	STON>>writeAssociation: was fixed some time earlier, but this is close enough"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 362.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.362' ].
+	
+	proxy := session evaluateAndWaitReturnProxy: 'Object new'.
 	self assert: proxy remoteClass equals: #Object.	"Test #proxyPerformReturnProxy:"	"Ensure that a primitive return value is returned as a proxy"
 	result := proxy
 			proxyPerform: #printString
