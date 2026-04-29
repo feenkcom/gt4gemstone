@@ -52,11 +52,11 @@ esac
 export GT_OSNAME
 
 if [ "$GT_OSNAME" = "Linux" ]; then
-  GT_GEMSTONE_VERSION="3.7.5-Beta1"
+  GT_GEMSTONE_VERSION="3.7.5"
 elif [ "$GT_OSNAME" = "Darwin" -a "$VM_ARCH" = "arm64" ]; then
-  GT_GEMSTONE_VERSION="3.7.5-Beta1"
+  GT_GEMSTONE_VERSION="3.7.5"
 elif [ "$GT_OSNAME" = "Darwin" ]; then
-  GT_GEMSTONE_VERSION="3.7.5-Beta1"
+  GT_GEMSTONE_VERSION="3.7.5"
 else
   echo "Unable to determine default gemstone version"
   exit 1
