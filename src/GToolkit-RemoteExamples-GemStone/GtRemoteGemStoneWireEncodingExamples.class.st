@@ -122,18 +122,15 @@ GtRemoteGemStoneWireEncodingExamples >> gtExampleWireReplicationSpecMostSpecific
 	| root mid leaf specs |
 	
 	"Create temporary classes"
-	root := Object subclass: #GtWireReplicationSpecRoot
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: 'GToolkit-GemStone-Pharo-Examples'.
-	mid := root subclass: #GtWireReplicationSpecMid
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: 'GToolkit-GemStone-Pharo-Examples'.
-	leaf := mid subclass: #GtWireReplicationSpecLeaf
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: 'GToolkit-GemStone-Pharo-Examples'.
+	root := ((Object << #GtWireReplicationSpecRoot)
+		slots: {};
+		package: 'GToolkit-GemStone-Pharo-Examples') install.
+	mid := ((root << #GtWireReplicationSpecMid)
+		slots: {};
+		package: 'GToolkit-GemStone-Pharo-Examples') install.
+	leaf := ((mid << #GtWireReplicationSpecLeaf)
+		slots: {};
+		package: 'GToolkit-GemStone-Pharo-Examples') install.
 	
 	"Add class-side specs"
 	root class compile: 'replicationSpec ^ #root' classified: 'testing'.

@@ -12,15 +12,13 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
-{ #category : #helper }
+{ #category : #examples }
 GtGemStoneCodeSyncExamples >> addClass [
 	| signal |
 
-	Object 
-		subclass: self exampleClassName
-		instanceVariableNames: '' 
-		classVariableNames: '' 
-		package: 'GtGemStoneExamples'.
+	((Object << self exampleClassName)
+		slots: {};
+		package: 'GtGemStoneExamples') install.
 	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
@@ -172,15 +170,13 @@ GtGemStoneCodeSyncExamples >> getSimulatedSession [
 	^ GtGemStoneTestingSession new sessionId: '1'
 ]
 
-{ #category : #helper }
+{ #category : #examples }
 GtGemStoneCodeSyncExamples >> modifyClass [
 	| signal |
 
-	Object 
-		subclass: self exampleClassName
-		instanceVariableNames: 'iVar1' 
-		classVariableNames: '' 
-		package: 'GtGemStoneExamples'.
+	((Object << self exampleClassName)
+		slots: { #iVar1 };
+		package: 'GtGemStoneExamples') install.
 	self forPharo12AndNewer: 
 		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
 		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
