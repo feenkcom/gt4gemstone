@@ -146,8 +146,17 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_proxyO
 GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_stonSerialization [
 	"Check for regressions in GemStone STON primitive type encoding"
 	<gtExample>
-	| returnValue block |
-	
+	| returnValue block minimumVersion session |
+
+	session := self runningServer.
+	"Skip this example if the server version is below v1.1.362.
+	STON>>writeAssociation: was fixed some time earlier, but this is close enough"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 362.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.362' ].
+
 	block := [ OrderedCollection new
 		add: 1 -> 'one';
 		add: true;
@@ -158,7 +167,7 @@ GtRemoteGemStoneSessionExamples >> testEvaluateBlockSerializationStrategy_stonSe
 		add: #symbol;
 		yourself ].
 
-	returnValue := self runningServer
+	returnValue := session
 			evaluateBlockAndWait: block
 			serializationStrategy: GtRsrStonSerializationStrategy.
 	self assert: returnValue equals: block value.
