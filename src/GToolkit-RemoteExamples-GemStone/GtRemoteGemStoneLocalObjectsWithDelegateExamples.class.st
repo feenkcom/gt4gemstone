@@ -60,11 +60,11 @@ GtRemoteGemStoneLocalObjectsWithDelegateExamples >> assertStoreStringForForDicti
 		assert: (self class compiler evaluate: storeString)
 		equals: expectedDictionary.
 	self
-		assert: (self class evaluate: localObjectWithDelegate storeString)
+		assert: (self class compiler evaluate: localObjectWithDelegate storeString)
 		equals: expectedDictionary.
 	storeString := String
 			streamContents: [ :aStream | localObjectWithDelegate storeOn: aStream ].
-	self assert: (self class evaluate: storeString) equals: expectedDictionary
+	self assert: (self class compiler evaluate: storeString) equals: expectedDictionary
 ]
 
 { #category : #assertions }
