@@ -477,10 +477,16 @@ GtRsrProxyServiceClient >> gtInspectorConnectionDetailsOn: aStream [
 ]
 
 { #category : #printing }
-GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleStringOn: aStream [
-	self gtBasicDisplayOn: aStream.
-	
-	self gtInspectorConnectionDetailsOn: aStream.
+GtRsrProxyServiceClient >> gtInspectorRemoteSideTitleString [
+	| remoteTitleString|
+	remoteTitleString := String streamContents: [ :aStream |
+		self gtBasicDisplayOn: aStream ].
+		
+	^ String streamContents: [ :aStream |
+			aStream nextPutAll: (GtPhlowLabelBuilder new 
+				ensureClassName: self remoteClass
+				inTitle: remoteTitleString).
+			self gtInspectorConnectionDetailsOn: aStream ]
 ]
 
 { #category : #printing }

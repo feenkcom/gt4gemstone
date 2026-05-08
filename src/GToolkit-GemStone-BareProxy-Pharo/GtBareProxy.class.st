@@ -191,10 +191,16 @@ GtBareProxy >> gtInspectorConnectionDetailsOn: aStream [
 ]
 
 { #category : #printing }
-GtBareProxy >> gtInspectorRemoteSideTitleStringOn: aStream [
-	self gtBasicDisplayOn: aStream.
-
-	self gtInspectorConnectionDetailsOn: aStream
+GtBareProxy >> gtInspectorRemoteSideTitleString [
+	| remoteTitleString|
+	remoteTitleString := String streamContents: [ :aStream |
+		self gtBasicDisplayOn: aStream ].
+		
+	^ String streamContents: [ :aStream |
+			aStream nextPutAll: (GtPhlowLabelBuilder new 
+				ensureClassName: self remoteClass
+				inTitle: remoteTitleString).
+			self gtInspectorConnectionDetailsOn: aStream ]
 ]
 
 { #category : #printing }
