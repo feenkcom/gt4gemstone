@@ -72,7 +72,7 @@ GtRemoteGemStoneInspectionExamples >> booleanInspection [
 	^ self
 		assertObjectInspectionFor: [ true ]
 		withTypeName: #Boolean
-		inspectorTitle: 'true'
+		inspectorTitle: 'a Boolean (true)'
 ]
 
 { #category : #'examples - objects' }
@@ -83,7 +83,7 @@ GtRemoteGemStoneInspectionExamples >> characterInspection [
 	^ self
 		assertObjectInspectionFor: [ $a ]
 		withTypeName: #Character
-		inspectorTitle: '$a'
+		inspectorTitle: 'a Character ($a)'
 ]
 
 { #category : #utils }
@@ -111,7 +111,7 @@ GtRemoteGemStoneInspectionExamples >> dateAndTimeInspection [
 		assertObjectInspectionFor: [ DateAndTime
 				readFrom: '2021-04-06T14:43:50.123456+02:00' readStream ]
 		withTypeName: #SmallDateAndTime
-		inspectorTitle: '2021-04-06T14:43:50.123456+02:00'
+		inspectorTitle: 'a SmallDateAndTime (2021-04-06T14:43:50.123456+02:00)'
 ]
 
 { #category : #'examples - objects' }
@@ -122,7 +122,7 @@ GtRemoteGemStoneInspectionExamples >> dateInspection [
 	^ self
 		assertObjectInspectionFor: [ Date fromString: '01/01/2000' ]
 		withTypeName: #SmallDate
-		inspectorTitle: '01/01/2000'
+		inspectorTitle: 'a SmallDate (01/01/2000)'
 ]
 
 { #category : #'examples - objects' }
@@ -184,7 +184,7 @@ GtRemoteGemStoneInspectionExamples >> emptySetInspection [
 { #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> expectedAssociationInspectionInspectorTitle [
 
-	^ 'anObject->anObject'
+	^ 'an Association (anObject->anObject)'
 ]
 
 { #category : #'examples - objects' }
@@ -223,7 +223,7 @@ GtRemoteGemStoneInspectionExamples >> metaclassInspection [
 	^ self
 		assertObjectInspectionFor: [ Object class ]
 		withTypeName: #Metaclass3
-		inspectorTitle: 'Object class'
+		inspectorTitle: 'a Metaclass3 (Object class)'
 ]
 
 { #category : #'examples - objects' }
@@ -266,7 +266,7 @@ GtRemoteGemStoneInspectionExamples >> phlowTextInspection [
 			(text from: 8 to: 15) thin.
 			text ]
 		withTypeName: #GtPhlowRunBasedText
-		inspectorTitle: 'Phlow Rope: Now is the time'
+		inspectorTitle: 'a GtPhlowRunBasedText (Phlow Rope: Now is the time)'
 ]
 
 { #category : #'examples - objects' }
@@ -278,7 +278,7 @@ GtRemoteGemStoneInspectionExamples >> phlowTextWithDecorationsInspection [
 		assertObjectInspectionFor: [ GtRemotePhlowDeclarativeTextTestInspectable new
 				styledPhlowTextWithDecorations ]
 		withTypeName: #GtPhlowRunBasedText
-		inspectorTitle: ('Phlow Rope: Examples of text decorations:
+		inspectorTitle: ('a GtPhlowRunBasedText (Phlow Rope: Examples of text decorations:
 
 Different styles:
 	Solid style
@@ -293,7 +293,7 @@ Different types:
 	
 Different color:
 	Blue color
-	...' copyReplaceAll: String cr with: OSPlatform current lineEnding)
+	...)' copyReplaceAll: String cr with: OSPlatform current lineEnding )
 ]
 
 { #category : #accessing }
@@ -384,7 +384,7 @@ GtRemoteGemStoneInspectionExamples >> smallDoubleInspection [
 	^ self
 		assertObjectInspectionFor: [ 4.2 ]
 		withTypeName: #SmallDouble
-		inspectorTitle: '4.2'
+		inspectorTitle: 'a SmallDouble (4.2)'
 ]
 
 { #category : #'examples - objects' }
@@ -395,7 +395,7 @@ GtRemoteGemStoneInspectionExamples >> smallIntegerInspection [
 	^ self
 		assertObjectInspectionFor: [ 42 ]
 		withTypeName: #SmallInteger
-		inspectorTitle: '42'
+		inspectorTitle: 'a SmallInteger (42)'
 ]
 
 { #category : #'examples - navigation' }
@@ -487,7 +487,7 @@ GtRemoteGemStoneInspectionExamples >> stringInspection [
 	^ self
 		assertObjectInspectionFor: [ 'some string' ]
 		withTypeName: #String
-		inspectorTitle: 'some string'
+		inspectorTitle: 'a String (some string)'
 ]
 
 { #category : #'examples - objects' }
@@ -498,7 +498,7 @@ GtRemoteGemStoneInspectionExamples >> symbolInspection [
 	^ self
 		assertObjectInspectionFor: [ #someSymbol ]
 		withTypeName: #Symbol
-		inspectorTitle: 'someSymbol'
+		inspectorTitle: 'a Symbol (someSymbol)'
 ]
 
 { #category : #examples }
@@ -517,5 +517,5 @@ GtRemoteGemStoneInspectionExamples >> timeInspection [
 	^ self
 		assertObjectInspectionFor: [ Time fromString: '15:30:00' ]
 		withTypeName: #SmallTime
-		inspectorTitle: '15:30:00'
+		inspectorTitle: 'a SmallTime (15:30:00)'
 ]
