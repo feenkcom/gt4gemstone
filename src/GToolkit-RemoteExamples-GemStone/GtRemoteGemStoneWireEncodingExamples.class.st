@@ -225,6 +225,29 @@ GtRemoteGemStoneWireEncodingExamples >> passProxyAsync [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> passProxyServiceClientandBare [
+	<gtExample>
+	| session proxy name |
+
+	session := self runningServer.
+
+	proxy := session 
+		evaluateBlockAndWait: [ Object new ]
+		serializationStrategy: GtRsrProxyOnlySerializationStrategy.
+	self assert: proxy class equals: GtRsrProxyServiceClient.
+
+	name := session
+		evaluateBlockAndWait: [ :anObject | anObject class name ]
+		withArguments: { proxy }.
+	self assert: name equals: #Object.
+
+	name := session
+		evaluateBlockAndWait: [ :anObject | anObject class name ]
+		withArguments: { proxy asGtBareProxyObject }.
+	self assert: name equals: #Object.
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 	<gtExample>
 	<return: #AssertionFailure>
