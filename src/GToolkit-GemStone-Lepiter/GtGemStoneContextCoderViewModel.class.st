@@ -109,12 +109,13 @@ GtGemStoneContextCoderViewModel >> updateProgramCounterRange: aSourceCode [
 	aSourceText := aSourceCode currentSourceText.
 	self programCounterRange
 		ifNotNil: [ :anInterval | 
-			programCounterAttributes
-				ifNotNil: [ :theAttributes | self removeCoderTextAttributes: theAttributes ].
-			programCounterAttributes := self
-					addTextAttribute: self programCounterTextAttribute
-					onText: aSourceText text
-					from: (anInterval first min: aSourceText text size)
-					to: (anInterval last min: aSourceText text size)
-					documentId: documentId ]
+			self
+				removeHighlightsWithId: #'debugger--program-counter';
+				addHighlight: (BrTextHighlight
+							id: #'debugger--program-counter'
+							color: BrGlamorousColors debuggerTextHighlightColor)
+					overRange: (BrTextCharacterRange
+							start: (anInterval first min: aSourceText text size)
+							end: (anInterval last min: aSourceText text size)
+							documentId: documentId) ]
 ]
