@@ -112,8 +112,9 @@ GtRemoteGemStoneWireEncodingExamples >> gbsMaxDepthToWireExample [
 	next := next second.
 	self assert: next class equals: Array.
 	self assert: next first equals: 3.
-	self assert: next second remoteClass equals: #Array.
-	self assert: (next second evaluateAndWait: 'self at: 1') equals: 4.
+	self assert: next second class equals: GtGsBareProxy.
+	self assert: next second proxyObject remoteClass equals: #Array.
+	self assert: (next second at: 1) equals: 4.
 ]
 
 { #category : #examples }

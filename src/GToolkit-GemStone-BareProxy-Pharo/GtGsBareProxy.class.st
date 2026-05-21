@@ -53,6 +53,12 @@ GtGsBareProxy >> asGtpoLocalObject [
 	^ proxyObject createGtpoLocalObjectLinkedToBareProxy:  self.
 ]
 
+{ #category : #initialization }
+GtGsBareProxy >> gtPharoProxyInitializeWithSession: aSession [
+
+	proxyObject gtPharoProxyInitializeWithSession: aSession
+]
+
 { #category : #printing }
 GtGsBareProxy >> gtRemoteSideInitialPlaygroundSnippet [
 	^ LeGemStoneSnippet new
