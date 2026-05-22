@@ -122,7 +122,10 @@ GtRsrProxyServiceClient >> createBlockEvaluationFor: aCleanBlock withArguments: 
 	| evaluator evalFields |
 	
 	evaluator := self gtSession versionedEvaluator.
-	evalFields := evaluator createEvaluationStringForProxyFromBlock: aCleanBlock withArguments: anArray.
+	evalFields := evaluator 
+		createEvaluationStringForProxyFromBlock: aCleanBlock 
+		withArguments: anArray
+		receiver: self.
 	^ evaluator scriptEvaluation
 		receiver: self;
 		script: evalFields first;
