@@ -190,7 +190,7 @@ GtGemStoneKeepAliveNotificationElement >> keepAlive [
 GtGemStoneKeepAliveNotificationElement >> onAddedToSceneGraph [
 
 	super onAddedToSceneGraph.
-	self requestUpdate.
+	self updateContent.
 ]
 
 { #category : #'private - hooks' }
@@ -238,7 +238,10 @@ GtGemStoneKeepAliveNotificationElement >> updateContent [
 GtGemStoneKeepAliveNotificationElement >> updateSessions [
 	| dirtySessions |
 
-	dirtySessions := self keepAlive dirtySessions.
+	dirtySessions := self notification
+		ifNil: [ #() ]
+		ifNotNil: [ self keepAlive dirtySessions ].
+	
 	sessionList items: dirtySessions.
 	dirtySessions ifEmpty: [ notification requestRemoval ].
 ]
