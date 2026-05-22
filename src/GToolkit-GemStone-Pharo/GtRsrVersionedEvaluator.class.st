@@ -23,10 +23,28 @@ GtRsrVersionedEvaluator class >> classFor: serverVersionString [
 		ifNone: [ self ]
 ]
 
+{ #category : #messages }
+GtRsrVersionedEvaluator class >> expectZeroBlockErrorMessage [
+
+	^ 'Block must have zero arguments'
+]
+
 { #category : #accessing }
 GtRsrVersionedEvaluator class >> maxVersion [
 
 	^ GtGemStoneSemanticVersionNumber readFromString: self maxVersionString
+]
+
+{ #category : #messages }
+GtRsrVersionedEvaluator class >> notCleanBlockErrorMessage [
+
+	^ 'The block must be clean'
+]
+
+{ #category : #messages }
+GtRsrVersionedEvaluator class >> selfAndSuperOnlyBlockErrorMessage [
+
+	^ 'The block may only reference self, super and arguments'
 ]
 
 { #category : #'instance creation' }
@@ -53,6 +71,12 @@ GtRsrVersionedEvaluator class >> serviceClient: aGtRsrEvaluatorServiceClient [
 	^ evaluatorClass new 
 		features: features;
 		serviceClient: aGtRsrEvaluatorServiceClient.
+]
+
+{ #category : #messages }
+GtRsrVersionedEvaluator class >> wrongArgCountBlockErrorMessage [
+
+	^ 'Wrong number of arguments: got {1} instead of {2}'
 ]
 
 { #category : #private }
@@ -134,20 +158,25 @@ GtRsrVersionedEvaluator >> createBlockEvaluationFor: aCleanBlock withArguments: 
 ]
 
 { #category : #'block actions' }
-GtRsrVersionedEvaluator >> createEvaluationStringForProxyFromBlock: aBlockClosure withArguments: anArray [
-	"Answer an array containing the source of the supplied block and the arguments converted to a set of bindings"
+GtRsrVersionedEvaluator >> createEvaluationStringForProxyFromBlock: aBlockClosure withArguments: anArray receiver: anObject [
+	"Answer an array containing the source of the supplied block and the arguments converted to a set of bindings.
+	Note that the receiver (anObject) is only used for checking that 'self' and 'super' will be bound to the appropriate class.  Passing in the wrong object will result in incorrectly bound variables."
 	| argNames bindings |
 
 	argNames := aBlockClosure argumentNames.
 	aBlockClosure isClean ifFalse: 
 		[ | ast |
-		ast := aBlockClosure compiledBlock ast.
-		(ast variableReadNodes allSatisfy: [ :var |
-			var isSelfOrSuperVariable or: 
-			[ argNames includes: var name ] ]) ifFalse:
-				[ self error: 'The block may only reference self, super and arguments'] ].
+		aBlockClosure outerContext receiver class name == anObject remoteClass ifTrue:
+			[ ast := aBlockClosure compiledBlock ast.
+			(ast variableReadNodes allSatisfy: [ :var |
+				var isSelfOrSuperVariable or: 
+				[ argNames includes: var name ] ]) ifFalse:
+					[ self error: self class selfAndSuperOnlyBlockErrorMessage ] ]
+		ifFalse:
+			[ self error: self class notCleanBlockErrorMessage ] ].
 	aBlockClosure numArgs = anArray size
-		ifFalse: [self error: 'wrong number of arguments'].
+		ifFalse: [self error: (self class wrongArgCountBlockErrorMessage format:
+			{ anArray size. aBlockClosure numArgs. })].
 	bindings := (argNames collectWithIndex: [ :name :index | 
 		name -> (anArray at: index) ]) asDictionary.
 	^ Array
@@ -165,9 +194,9 @@ GtRsrVersionedEvaluator >> createEvaluationStringForProxyFromBlock: aBlockClosur
 { #category : #'block actions' }
 GtRsrVersionedEvaluator >> createEvaluationStringFromCleanBlock: aCleanBlock [
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
+	aCleanBlock isClean ifFalse: [self error: self class notCleanBlockErrorMessage ].
 	aCleanBlock numArgs = 0
-		ifFalse: [self error: 'wrong number of arguments'].
+		ifFalse: [self error: (self class expectZeroBlockErrorMessage)].
 	^ String streamContents: [ :stream |
 		stream 
 			<< aCleanBlock sourceNode sourceCode;
@@ -179,9 +208,10 @@ GtRsrVersionedEvaluator >> createEvaluationStringFromCleanBlock: aCleanBlock wit
 	"Answer an array containing the source of the supplied clean block and the arguments converted to a set of bindings"
 	| argNames bindings |
 
-	aCleanBlock isClean ifFalse: [self error: 'the block must be clean'].
+	aCleanBlock isClean ifFalse: [self error: self class notCleanBlockErrorMessage ].
 	aCleanBlock numArgs = anArray size
-		ifFalse: [self error: 'wrong number of arguments'].
+		ifFalse: [self error: (self class wrongArgCountBlockErrorMessage format:
+			{ anArray size. aCleanBlock numArgs. })].
 	argNames := aCleanBlock argumentNames.
 	bindings := (argNames collectWithIndex: [ :name :index | 
 		name -> (anArray at: index) ]) asDictionary.

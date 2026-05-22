@@ -24,11 +24,11 @@ GtGemStoneCoderBrowseLocalReferencesShortcut >> name [
 { #category : #evaluation }
 GtGemStoneCoderBrowseLocalReferencesShortcut >> performOnEditor: aBrTextEditor element: aBrEditorElement coder: aGtSourceCoder dueTo: aShortcutEvent requesterObject: aRequester [
 	aBrEditorElement
-		selectedStringDo: [ :aSelectedString | 
+		selectedStringAndIntervalDo: [ :aSelectedString | 
 			aGtSourceCoder
 				browseLocalReferencesIn: aSelectedString
 				requesterObject: aRequester ]
-		orCursorStringPositionDo: [ :aStringPosition | 
+		orCursorPositionDo: [ :aStringPosition | 
 			aGtSourceCoder
 				browseLocalReferencesAt: aStringPosition
 				requesterObject: aRequester ]
