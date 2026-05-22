@@ -17,7 +17,7 @@ Class {
 { #category : #accessing }
 GtGemStoneGciConnector class >> defaultGemStoneVersion [
 
-	^ '3.7.2.1'
+	^ '3.7.5'
 ]
 
 { #category : #accessing }

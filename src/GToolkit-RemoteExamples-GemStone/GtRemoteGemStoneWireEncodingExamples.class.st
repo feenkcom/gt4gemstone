@@ -154,6 +154,40 @@ GtRemoteGemStoneWireEncodingExamples >> gtExampleWireReplicationSpecMostSpecific
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveClass [
+	<gtExample>
+	<return: #AssertionFailure>
+	| minimumVersion session result |
+
+	"Skip this example if the server version is below v1.1.420"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 420.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Only valid for gt4gemstone version >= 1.1.420' ].
+
+	session := self runningServer.
+	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
+
+	result := session evaluateBlockAndWait: [ :c :cc | 
+			Array
+				with: c name
+				with: c isMeta
+				with: cc name
+				with: cc isMeta
+				with: Dictionary ]
+		withArguments: { Association. Association class. }
+		serializationStrategy: GtRsrWireSerializationStrategy.
+
+	self assert: result size equals: 5.
+	self assert: result first identicalTo: #Association.
+	self deny: result second.
+	self assert: result third equals: 'Association class'.
+	self assert: result fourth.
+	self assert: result fifth identicalTo: Dictionary.
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	<gtExample>
 	<return: #AssertionFailure>
