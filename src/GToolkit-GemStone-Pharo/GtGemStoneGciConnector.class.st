@@ -16,6 +16,15 @@ Class {
 
 { #category : #accessing }
 GtGemStoneGciConnector class >> defaultGemStoneVersion [
+	"Answer the default GemStone version.
+	If there is a local installation, use it's number."
+	| regEx |
+
+	regEx := '\d+(\.\d+)+' asRegex.
+	(FileLocator imageDirectory / 'remote-gemstone') directories
+		detect: [ :dir | regEx matches: dir basename ]
+		ifFound: [ :dir | ^ dir basename ]
+		ifNone: [].
 
 	^ '3.7.2.1'
 ]
