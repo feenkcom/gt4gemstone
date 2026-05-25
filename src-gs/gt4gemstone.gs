@@ -7037,6 +7037,14 @@ asGtGsArgument
 
 category: '*GToolkit-GemStone-GemStone'
 method: Collection
+anyOne
+
+	self do: [ :each | ^ each ].
+	self error: 'Receiver is empty'.
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
 detect: aBlock ifFound: foundBlock ifNone: exceptionBlock
 	self
 		do: [ :each |
@@ -7052,6 +7060,14 @@ isNotEmpty
 "Returns true if the receiver is not empty.  Returns false otherwise."
 
 ^self size ~~ 0
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+max
+	"Answer the maximum value of the receiver"
+
+	^ self inject: self anyOne into: [ :max :each | max max: each ]
 %
 
 category: '*GToolkit-GemStone-GemStone'
