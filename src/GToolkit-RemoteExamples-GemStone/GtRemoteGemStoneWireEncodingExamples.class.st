@@ -159,6 +159,7 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveClass [
 	<return: #AssertionFailure>
 	| minimumVersion session result |
 
+	session := self runningServer.
 	"Skip this example if the server version is below v1.1.420"
 	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 420.
 	(session gt4gemstoneVersion
@@ -166,7 +167,6 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveClass [
 		and: minimumVersion) ifTrue: [
 		^ self skip: 'Only valid for gt4gemstone version >= 1.1.420' ].
 
-	session := self runningServer.
 	(self canTestInSession: session) ifFalse: [ ^ 'unsupported feature' ].
 
 	result := session evaluateBlockAndWait: [ :c :cc | 
