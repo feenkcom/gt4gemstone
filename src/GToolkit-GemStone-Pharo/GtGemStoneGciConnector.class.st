@@ -16,8 +16,19 @@ Class {
 
 { #category : #accessing }
 GtGemStoneGciConnector class >> defaultGemStoneVersion [
+	"Answer the default GemStone version.
+	If there is a local installation, use it's number."
+	| fallbackVersion remoteGemstone regEx |
 
-	^ '3.7.2.1'
+	fallbackVersion := '3.7.2.1'.
+	remoteGemstone := FileLocator imageDirectory / 'remote-gemstone'.
+	remoteGemstone exists ifFalse: [ ^ fallbackVersion ].
+
+	regEx := '\d+(\.\d+)+' asRegex.
+	^ remoteGemstone directories
+		detect: [ :dir | regEx matches: dir basename ]
+		ifFound: [ :dir | dir basename ]
+		ifNone: [ fallbackVersion ].
 ]
 
 { #category : #accessing }
