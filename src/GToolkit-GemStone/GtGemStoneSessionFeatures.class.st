@@ -72,6 +72,15 @@ GtGemStoneSessionFeatures class >> gtViewDefinedFeaturesFor: aView [
 		view: #gtViewFeaturesFor:
 ]
 
+{ #category : #features }
+GtGemStoneSessionFeatures class >> proxyIdentity [
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #proxyIdentity)
+			enable
+]
+
 { #category : #accessing }
 GtGemStoneSessionFeatures class >> resetFeatures [
 	^ SessionTemps current 

@@ -13,10 +13,15 @@ GtWireGemStoneRsrEncoder >> encode: anObject with: aGtWireEncoderContext [
 	"Ensure that the service is at least registered so that it has an _id
 	and has a reference in the service.
 	Remaining set up will be done during snapshot analysis."
-
-	self connection _ensureRegistered: rsrService.
-	self currentWireService addRoot: rsrService.
+	self register: rsrService.
 	aGtWireEncoderContext
 		putTypeIdentifier: self class typeIdentifier;
 		nextPut: rsrService _id
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+GtWireGemStoneRsrEncoder >> register: aRsrService [
+
+	self connection _ensureRegistered: aRsrService.
+	self currentWireService addRoot: aRsrService.
 ]

@@ -7,10 +7,31 @@ Class {
 	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : #other }
+{ #category : #'instance creation' }
 GtRsrProxyServiceServer class >> object: anObject [
 
-	^ self new object: anObject
+	^ self registeredObjects
+		at: anObject
+		ifPresent: [ :sid | (SessionTemps current at: #GtRsrServer) _connection serviceAt: sid ifAbsent: [ self new object: anObject ] ]
+		ifAbsent: [ self new object: anObject ]
+]
+
+{ #category : #accessing }
+GtRsrProxyServiceServer class >> registeredObjects [
+
+	^ SessionTemps current
+		at: #GtRsrRegisteredObjects
+		ifAbsentPut: [ GtThreadSafeIdentityDictionary new ]
+]
+
+{ #category : #private }
+GtRsrProxyServiceServer >> _id: anRsrId connection: aConnection [
+
+	super _id: anRsrId connection: aConnection.
+	GtRsrEvaluatorServiceServer stdoutLog: 'register _id: ', anRsrId printString.
+	(GtRsrEvaluatorService isRsrImmediate: object) ifFalse:
+		[ 	GtRsrEvaluatorServiceServer stdoutLog: 'registered'.
+		GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
 ]
 
 { #category : #accessing }
