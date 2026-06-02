@@ -1199,6 +1199,24 @@ removeallmethods GtRsrWireTransferServiceServer
 removeallclassmethods GtRsrWireTransferServiceServer
 
 doit
+(RsrThreadSafeDictionary
+	subclass: 'GtThreadSafeIdentityDictionary'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtThreadSafeIdentityDictionary
+removeallclassmethods GtThreadSafeIdentityDictionary
+
+doit
 (TestCase
 	subclass: 'GtGemStoneEvaluationContextTest'
 	instVarNames: #()
@@ -4475,6 +4493,16 @@ gtViewDefinedFeaturesFor: aView
 		view: #gtViewFeaturesFor:
 %
 
+category: 'features'
+classmethod: GtGemStoneSessionFeatures
+proxyIdentity
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #proxyIdentity)
+			enable
+%
+
 category: 'accessing'
 classmethod: GtGemStoneSessionFeatures
 resetFeatures
@@ -6494,11 +6522,23 @@ remoteClass: aSymbol
 
 !		Class methods for 'GtRsrProxyServiceServer'
 
-category: 'other'
+category: 'instance creation'
 classmethod: GtRsrProxyServiceServer
 object: anObject
 
-	^ self new object: anObject
+	^ self registeredObjects
+		at: anObject
+		ifPresent: [ :sid | (SessionTemps current at: #GtRsrServer) _connection serviceAt: sid ifAbsent: [ self new object: anObject ] ]
+		ifAbsent: [ self new object: anObject ]
+%
+
+category: 'accessing'
+classmethod: GtRsrProxyServiceServer
+registeredObjects
+
+	^ SessionTemps current
+		at: #GtRsrRegisteredObjects
+		ifAbsentPut: [ GtThreadSafeIdentityDictionary new ]
 %
 
 !		Instance methods for 'GtRsrProxyServiceServer'
@@ -6593,6 +6633,17 @@ proxyPerformReturnProxy: aSymbol withArguments: anArray
 		proxyPerform: aSymbol 
 		withArguments: anArray
 		serializationStrategy: #GtRsrProxyOnlySerializationStrategy
+%
+
+category: 'private'
+method: GtRsrProxyServiceServer
+_id: anRsrId connection: aConnection
+
+	super _id: anRsrId connection: aConnection.
+	GtRsrEvaluatorServiceServer stdoutLog: 'register _id: ', anRsrId printString.
+	(GtRsrEvaluatorService isRsrImmediate: object) ifFalse:
+		[ 	GtRsrEvaluatorServiceServer stdoutLog: 'registered'.
+		GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
 %
 
 ! Class implementation for 'GtRsrTestService'
@@ -6734,6 +6785,30 @@ object: anObject
 	object := anObject.
 	SessionTemps current at: #GtRsrCurrentWireService put: self.
 	self bufferObject: object.
+%
+
+! Class implementation for 'GtThreadSafeIdentityDictionary'
+
+!		Instance methods for 'GtThreadSafeIdentityDictionary'
+
+category: 'accessing'
+method: GtThreadSafeIdentityDictionary
+at: aKey ifPresent: presentBlock ifAbsent: absentBlock
+	| isPresent result |
+
+	isPresent := true.
+	result := self critical: [map at: aKey ifAbsent: [isPresent := false]].
+	^isPresent
+		ifTrue: [ presentBlock value: result ]
+		ifFalse: [ absentBlock value ].
+%
+
+category: 'initialization'
+method: GtThreadSafeIdentityDictionary
+initialize
+
+	super initialize.
+	map := IdentityDictionary new.
 %
 
 ! Class implementation for 'GtGemStoneEvaluationContextTest'
@@ -7391,12 +7466,18 @@ encode: anObject with: aGtWireEncoderContext
 	"Ensure that the service is at least registered so that it has an _id
 	and has a reference in the service.
 	Remaining set up will be done during snapshot analysis."
-
-	self connection _ensureRegistered: rsrService.
-	self currentWireService addRoot: rsrService.
+	self register: rsrService.
 	aGtWireEncoderContext
 		putTypeIdentifier: self class typeIdentifier;
 		nextPut: rsrService _id
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtWireGemStoneRsrEncoder
+register: aRsrService
+
+	self connection _ensureRegistered: aRsrService.
+	self currentWireService addRoot: aRsrService.
 %
 
 ! Class extensions for 'GtWireGemStoneWithRsrEncoder'
@@ -7423,8 +7504,7 @@ encode: anObject with: aGtWireEncoderContext objectEncoder: objectEncoder
 	"Ensure that the service is at least registered so that it has an _id
 	and has a reference in the service.
 	Remaining set up will be done during snapshot analysis."
-	self connection _ensureRegistered: rsrService.
-	self currentWireService addRoot: rsrService.
+	self register: rsrService.
 	aGtWireEncoderContext putTypeIdentifier: self class typeIdentifier.
 	"To avoid attempting to create a proxy for the service ID,
 	instead of passing back to the GtWireEncoder, call the integer object encoder directly."
@@ -7432,6 +7512,14 @@ encode: anObject with: aGtWireEncoderContext objectEncoder: objectEncoder
 
 	"Then put the object itself"
 	objectEncoder encode: anObject with: aGtWireEncoderContext.
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtWireGemStoneWithRsrEncoder
+register: rsrService
+
+	self connection _ensureRegistered: rsrService.
+	self currentWireService addRoot: rsrService.
 %
 
 ! Class extensions for 'Integer'
@@ -7575,6 +7663,23 @@ methodSelector
 	"Answer the selector of the method containing the pragma."
 
 	^ method selector.
+%
+
+! Class extensions for 'RsrConnection'
+
+!		Instance methods for 'RsrConnection'
+
+category: '*GToolkit-GemStone-GemStone'
+method: RsrConnection
+mournActionForServerSID: aSID
+
+	^[ | object |
+		object := registry removeKey: aSID.
+		GtRsrEvaluatorServiceServer stdoutLog: 'removing key: ', aSID printString, ' object: ', object printString.
+		GtRsrProxyServiceServer registeredObjects
+			removeKey: object ifAbsent: 
+				[ GtRsrEvaluatorServiceServer stdoutLog: 'object not found' ].
+		object ]
 %
 
 ! Class extensions for 'RsrService'
