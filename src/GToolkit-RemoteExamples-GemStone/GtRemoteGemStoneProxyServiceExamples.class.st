@@ -261,6 +261,30 @@ GtRemoteGemStoneProxyServiceExamples >> testProxyBlockEvaluation [
 ]
 
 { #category : #tests }
+GtRemoteGemStoneProxyServiceExamples >> testProxyIdentity [
+	<gtExample>
+	<after: #stopServer>
+	"Check that the same proxy service is used when the same object is retrieved independently"
+	| session features available proxy1 array proxy2 |
+
+	session := self runningServer.
+	features := session currentFeatures.
+	features initializeFeatures.
+	available := features
+		featureWithId: #proxyIdentity
+		ifPresent: [ :id | id isEnabled ]
+		ifAbsent: [ false ].
+	available ifFalse:
+		[ self skip: 'Server doesn''t support proxy identity' ].
+	
+	proxy1 := session evaluateAndWait: 'Object new'.
+	array := session evaluateAndWaitReturnProxy: 'Array new: 10'.
+	array proxyPerform: #at:put: withArguments: { 1. proxy1. }.
+	proxy2 := array proxyPerform: #at: withArguments: { 1. }.
+	self assert: proxy1 identicalTo: proxy2. 
+]
+
+{ #category : #tests }
 GtRemoteGemStoneProxyServiceExamples >> testSetProxyMessageSends [
 	<gtExample>
 	<after: #stopServer>
