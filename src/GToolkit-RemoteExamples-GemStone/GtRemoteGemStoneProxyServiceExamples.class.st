@@ -275,7 +275,7 @@ GtRemoteGemStoneProxyServiceExamples >> testProxyIdentity [
 		ifPresent: [ :id | id isEnabled ]
 		ifAbsent: [ false ].
 	available ifFalse:
-		[ self skip: 'Server doesn''t support proxy identity' ].
+		[ ^ self skip: 'Server doesn''t support proxy identity' ].
 	
 	proxy1 := session evaluateAndWait: 'Object new'.
 	array := session evaluateAndWaitReturnProxy: 'Array new: 10'.
