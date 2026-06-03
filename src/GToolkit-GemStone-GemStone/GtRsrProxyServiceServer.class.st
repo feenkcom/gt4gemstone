@@ -28,10 +28,8 @@ GtRsrProxyServiceServer class >> registeredObjects [
 GtRsrProxyServiceServer >> _id: anRsrId connection: aConnection [
 
 	super _id: anRsrId connection: aConnection.
-	GtRsrEvaluatorServiceServer stdoutLog: 'register _id: ', anRsrId printString.
 	(GtRsrEvaluatorService isRsrImmediate: object) ifFalse:
-		[ 	GtRsrEvaluatorServiceServer stdoutLog: 'registered'.
-		GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
+		[ GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
 ]
 
 { #category : #accessing }

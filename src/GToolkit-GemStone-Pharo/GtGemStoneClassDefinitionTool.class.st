@@ -22,7 +22,7 @@ GtGemStoneClassDefinitionTool class >> compileScriptFor: method className: class
 GtGemStoneClassDefinitionTool class >> compileScriptFor: method className: className meta: isMeta environmentId: environmentId [
 
 	^ self compileScriptForSource: method sourceCode
-		protocol: (method category ifNil: [ 'unknown' ])
+		protocol: (method protocolName ifNil: [ 'unknown' ])
 		className: className
 		meta: isMeta
 		environmentId: environmentId
