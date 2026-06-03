@@ -48,7 +48,7 @@ GtRemoteGemStonePlaygroundExamples >> assertPagerPageWithAyncExecutionWithResult
 		withLabels: {'GemStone'.
 				'Proxy'.
 				'Execution'}
-		andTypes: {GtInspectorTool.
+		andTypes: {GtGemStoneInspectorTool.
 				GtInspectorTool.
 				GtInspectorTool}
 		selectedIdex: 1
@@ -148,7 +148,7 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionWithR
 
 	gemStoneInspectorTool := mainToolElement content children first phlow entity.
 	self assert: gemStoneInspectorTool name equals: 'GemStone'.
-	self assert: gemStoneInspectorTool class equals: GtInspectorTool.
+	self assert: gemStoneInspectorTool class equals: GtGemStoneInspectorTool.
 	self assert: gemStoneInspectorTool object remoteClass equals: #SmallInteger.
 	self assert: gemStoneInspectorTool object gtDisplayString equals: '2'
 ]

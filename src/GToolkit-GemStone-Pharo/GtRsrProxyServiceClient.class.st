@@ -571,8 +571,11 @@ GtRsrProxyServiceClient >> gtRemoteSideInspectorObjectHolder [
 ]
 
 { #category : #'gt - inspector' }
-GtRsrProxyServiceClient >> gtRemoteSideInspectorToolLabel [
-	^ 'GemStone'
+GtRsrProxyServiceClient >> gtRemoteSideInspectorTool [
+	^GtGemStoneInspectorTool new 
+		objectHolder: (self gtRemoteSideInspectorObjectHolder
+			object: self; 
+			viewSelector: #gtRemoteInspectorContentFor:)
 ]
 
 { #category : #accessing }

@@ -156,7 +156,6 @@ GtBareProxy >> gtBasicDisplayOn: aStream [
 GtBareProxy >> gtDefaultInspectorTool [
 	^ GtPhlowCompositeTool new
 		addTool: (self gtRemoteSideInspectorTool
-			name: self gtRemoteSideInspectorToolLabel;
 			playgroundPageStrategy: (LeInspectorPlaygroundProxyClassPageStrategy
 				forRemoteProxySide);
 			withLabelAndIconAptitude);
@@ -316,15 +315,10 @@ GtBareProxy >> gtRemoteSideInspectorObjectHolder [
 
 { #category : #'gt inspector' }
 GtBareProxy >> gtRemoteSideInspectorTool [
-	^ GtInspectorTool new 
+	^GtGemStoneInspectorTool new 
 		objectHolder: (self gtRemoteSideInspectorObjectHolder
 			object: self; 
 			viewSelector: #gtRemoteInspectorContentFor:)
-]
-
-{ #category : #'gt inspector' }
-GtBareProxy >> gtRemoteSideInspectorToolLabel [
-	^ 'GemStone'
 ]
 
 { #category : #'gt inspector' }

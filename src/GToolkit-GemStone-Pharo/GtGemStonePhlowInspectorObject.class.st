@@ -9,3 +9,8 @@ GtGemStonePhlowInspectorObject >> configurePageViewModel: aPageViewModel [
 	aPageViewModel sharedSnippetContext externalSnippetContext 
 		gemstoneBehaviourSpecification: objectInspectorAdaptor gtRemoteBehaviourSpecification
 ]
+
+{ #category : #'as yet unclassified' }
+GtGemStonePhlowInspectorObject >> inspectorTitleStringForWrappedObject [
+	^ objectInspectorAdaptor gtInspectorRemoteSideTitleString
+]

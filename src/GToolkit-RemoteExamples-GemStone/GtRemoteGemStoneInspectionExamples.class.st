@@ -49,7 +49,7 @@ GtRemoteGemStoneInspectionExamples >> assertPagerPageWithAyncExecutionWithResult
 	self 
 		assertCompositeToolElement: mainToolElement
 		withLabels: {'GemStone' . 'Proxy'} 
-		andTypes: {GtInspectorTool . GtInspectorTool} 
+		andTypes: {GtGemStoneInspectorTool . GtInspectorTool} 
 		selectedIdex: 1
 ]
 
