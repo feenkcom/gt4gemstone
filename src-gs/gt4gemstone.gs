@@ -6640,10 +6640,8 @@ method: GtRsrProxyServiceServer
 _id: anRsrId connection: aConnection
 
 	super _id: anRsrId connection: aConnection.
-	GtRsrEvaluatorServiceServer stdoutLog: 'register _id: ', anRsrId printString.
 	(GtRsrEvaluatorService isRsrImmediate: object) ifFalse:
-		[ 	GtRsrEvaluatorServiceServer stdoutLog: 'registered'.
-		GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
+		[ GtRsrProxyServiceServer registeredObjects at: object put: anRsrId ].
 %
 
 ! Class implementation for 'GtRsrTestService'
@@ -7675,10 +7673,8 @@ mournActionForServerSID: aSID
 
 	^[ | object |
 		object := registry removeKey: aSID.
-		GtRsrEvaluatorServiceServer stdoutLog: 'removing key: ', aSID printString, ' object: ', object printString.
 		GtRsrProxyServiceServer registeredObjects
-			removeKey: object ifAbsent: 
-				[ GtRsrEvaluatorServiceServer stdoutLog: 'object not found' ].
+			removeKey: object ifAbsent:	[ ].
 		object ]
 %
 
