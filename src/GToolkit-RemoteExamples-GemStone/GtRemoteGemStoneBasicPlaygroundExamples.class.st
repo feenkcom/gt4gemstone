@@ -59,7 +59,7 @@ GtRemoteGemStoneBasicPlaygroundExamples >> assertPagerPageWithProxyObject: aPage
 		assertCompositeToolElement: mainToolElement
 		withLabels: {'GemStone'.
 				'Proxy'}
-		andTypes: {GtInspectorTool.
+		andTypes: {GtGemStoneInspectorTool.
 				GtInspectorTool}
 		selectedIdex: 1
 ]
