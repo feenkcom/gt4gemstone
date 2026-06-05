@@ -22,16 +22,10 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 	scripter element: GtWorldElement new.
 	scripter model: pageTool.
 
-	scripter do
-		label: 'Spawn page tool into a new world tab';
-		block: [ :anElement |
-			anElement phlow showObject: pageTool ];
-		play.
-
-	scripter assert
-		label: 'World tab title is Page';
-		value: [ :aWorldElement | aWorldElement tabs tabs second widget label asString ]
-		equals: 'Page';
+	scripter worldStep
+		label: 'Open page in new tab';
+		showInNewTabObject: pageTool;
+		assertTabAtIndex: 2 hasLabel:  'Page';
 		play.
 
 	^ scripter
@@ -49,10 +43,18 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 		clickOnDoItAndInspectButton;
 		play.
 		
-	scripter assert
-		label: 'World tab title is Page';
-		value: [ :aWorldElement | aWorldElement tabs tabs second widget label asString ]
-		equals: 'Page';
+	scripter worldStep
+		label: 'World tab title is still Page after spawning a new pane';
+		assertTabAtIndex: 2 hasLabel: 'Page';
+		play.
+	
+	scripter phlowCompositeToolStep
+		onPagerPaneWithIndex: 2;
+		assertPhlowToolTabsHaveBothIconsAndLabels;
+		assertPhlowToolTabsCount: 2;
+		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
+			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
+		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
 		play.
 
 	^ scripter
@@ -66,19 +68,18 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 
 	scripter := self worldTabWithGemStoneInspectorOnInteger_doItAndGo.
 
-	scripter click
+	scripter phlowCompositeToolStep
 		label: 'Select Proxy tool';
 		onPagerPaneWithIndex: 2;
-		id: #header;
-		id: #scrolltabbar;
-		id: #tabbar;
-		onChildAt: 2;
+		clickOnToolAtIndex: 2;
+		assertSelectedToolAtIndex: 2 withTabName: 'Proxy';
 		play.
 
 	scripter inspectorStep
 		label: 'Select the Raw view in the proxy tool';
 		onPagerPaneWithIndex: 2;
 		clickOnTabWithName: 'Raw';
+		assertSelectedTabWithName: 'Raw';
 		play.
 
 	scripter click
@@ -89,10 +90,9 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 		@ [ :aLabel | aLabel text asString = 'self' ];
 		play.
 
-	scripter assert
+	scripter worldStep
 		label: 'World tab title changed after selecting a proxy raw-view element';
-		value: [ :aWorldElement | aWorldElement tabs tabs second widget label asString ]
-		equals: 'Bare Proxy on: 2 [test:default]';
+		assertTabAtIndex: 2 hasLabel: 'Bare Proxy on: 2 [test:default]';
 		play.
 
 	^ scripter
@@ -112,10 +112,9 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 		// GtSourceCoderElement;
 		play.
 
-	scripter assert
+	scripter worldStep
 		label: 'World tab title is Page again';
-		value: [ :aWorldElement | aWorldElement tabs tabs second widget label asString ]
-		equals: 'Page';
+		assertTabAtIndex: 2 hasLabel: 'Page';
 		play.
 
 	^ scripter
@@ -127,11 +126,7 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 	<return: #BlScripter>
 	| scripter |
 
-	scripter := self worldTabWithGemStoneInspectorOnInteger.
-
-	scripter gemStoneSnippet
-		clickOnDoItAndInspectButton;
-		play.
+	scripter := self worldTabWithGemStoneInspectorOnInteger_doItAndGo.
 
 	scripter inspectorStep
 		label: 'Select the Raw view in the second page';
@@ -147,10 +142,31 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 		@ [ :aLabel | aLabel text asString = 'self' ];
 		play.
 
-	scripter assert
+	scripter worldStep
 		label: 'World tab title changed after selecting self';
-		value: [ :aWorldElement | aWorldElement tabs tabs second widget label asString ]
-		equals: 'a SmallInteger (2) [test:default]';
+		assertTabAtIndex: 2 hasLabel: 'a SmallInteger (2) [test:default]';
+		play.
+
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger_doItAndGo_selectSelfInRawView_backToPage [
+	<gtExample>
+	<return: #BlScripter>
+	| scripter |
+
+	scripter := self worldTabWithGemStoneInspectorOnInteger_doItAndGo_selectSelfInRawView.
+
+	scripter click
+		label: 'Click editor in first pane';
+		onPagerPaneWithIndex: 1;
+		// GtSourceCoderElement;
+		play.
+
+	scripter worldStep
+		label: 'World tab title is Page again';
+		assertTabAtIndex: 2 hasLabel: 'Page';
 		play.
 
 	^ scripter
