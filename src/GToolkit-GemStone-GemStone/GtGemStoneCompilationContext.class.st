@@ -59,7 +59,7 @@ GtGemStoneCompilationContext >> createFrameBindignsForFrame: aCallFrame ofEvalua
 GtGemStoneCompilationContext >> currentReceiver [
 	^ frame 
 		ifNil: [ receiver ]
-		ifNotNil: [ frame receiver ]
+		ifNotNil: [ frame selfObject ]
 ]
 
 { #category : #private }
