@@ -2,7 +2,10 @@ Extension { #name : #GtRsrProxyServiceClient }
 
 { #category : #'*GToolkit-GemStone-BareProxy-Pharo' }
 GtRsrProxyServiceClient >> asGtBareProxyObject [
-	^ GtGsBareProxy forProxyObject: self
+
+	^ self bareProxy ifNil:
+		[ self bareProxy: (GtGsBareProxy forProxyObject: self).
+		self bareProxy ]
 ]
 
 { #category : #'*GToolkit-GemStone-BareProxy-Pharo' }
