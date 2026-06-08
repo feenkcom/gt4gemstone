@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'TGtRemoteProxySpecificViews classTrait + TGtRemoteProxySpecificActions classTrait + TGtRemoteProxyInspectorWrappedObjectAttachment classTrait + TGtRemoteProxyViewsAttachment classTrait + TGtRemoteProxyActionsAttachment classTrait',
 	#instVars : [
 		'gtSession',
-		'cacheStrategy'
+		'cacheStrategy',
+		'bareProxy'
 	],
 	#classVars : [
 		'ObjectMap'
@@ -82,6 +83,16 @@ GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject r
 GtRsrProxyServiceClient >> asGtpoLocalObject [
 	"Answer a local copy of the receiver"
 	^ self createGtpoLocalObjectLinkedToBareProxy:  self asGtBareProxyObject.
+]
+
+{ #category : #'private - accessing' }
+GtRsrProxyServiceClient >> bareProxy [
+	^ bareProxy
+]
+
+{ #category : #'private-accessing' }
+GtRsrProxyServiceClient >> bareProxy: anObject [
+	bareProxy := anObject
 ]
 
 { #category : #private }
