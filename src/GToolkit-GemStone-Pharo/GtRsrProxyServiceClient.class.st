@@ -521,6 +521,11 @@ GtRsrProxyServiceClient >> gtInspectorTitleStringOn: aStream [
 	self gtInspectorConnectionDetailsOn: aStream
 ]
 
+{ #category : #inspector }
+GtRsrProxyServiceClient >> gtLlmPhlowViewExtractor [
+	^ GtLGemStoneProxyObjectPhlowViewExtractor forTargetObject: self
+]
+
 { #category : #initialization }
 GtRsrProxyServiceClient >> gtPharoProxyInitializeWithSession: aSession [
 	"Update the session from the given context".
