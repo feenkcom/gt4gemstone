@@ -53,6 +53,11 @@ GtGsBareProxy >> asGtpoLocalObject [
 	^ proxyObject createGtpoLocalObjectLinkedToBareProxy:  self.
 ]
 
+{ #category : #inspector }
+GtGsBareProxy >> gtLlmPhlowViewExtractor [
+	^ GtLGemStoneProxyObjectPhlowViewExtractor forTargetObject: self
+]
+
 { #category : #initialization }
 GtGsBareProxy >> gtPharoProxyInitializeWithSession: aSession [
 

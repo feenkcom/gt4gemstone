@@ -460,6 +460,14 @@ GtBareProxy >> remoteInspectorProxyDo: aBlock [
 ]
 
 { #category : #'gt inspector' }
+GtBareProxy >> remoteViewWithSelector: aViewSelector for: aView inContext: aContext from: anInspectorProxy [
+	^ proxyObject
+		ifNil: [ #() ]
+		ifNotNil: [ proxyObject 
+			remoteViewWithSelector: aViewSelector for: aView inContext: aContext from: anInspectorProxy ]
+]
+
+{ #category : #'gt inspector' }
 GtBareProxy >> remoteViewsFor: aView inContext: aContext from: anInspectorProxy [
 	^ proxyObject
 		ifNil: [ #() ]
