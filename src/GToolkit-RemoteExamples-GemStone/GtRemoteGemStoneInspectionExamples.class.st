@@ -342,7 +342,7 @@ GtRemoteGemStoneInspectionExamples >> selectColumnedListSpawnTextViewIn: scripte
 			label: 'Select view';
 			// GtPhlowCompositeViewElementId;
 			block: [ :aTabGroup | 
-				(GtInspectorTabSelector byViewMethod
+				(GtPhlowTabSelector byViewMethod
 					methodSelector: #gtColumnedListSpawnTextFor:)
 					selectTabInGroup:  aTabGroup on: nil ] ].
 					
