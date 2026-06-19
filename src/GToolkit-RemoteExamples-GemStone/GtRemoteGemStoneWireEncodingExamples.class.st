@@ -188,6 +188,28 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveClass [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveFloat [
+	"Ensure that a floating point number is correctly passed each way.
+	For GT / Pharo 13 and GemStone 3.7.5 GtWireFloatPrintStringEncoder matches exactly."
+	<gtExample>
+	<return: #AssertionFailure>
+	| session result |
+
+	session := self runningServer.
+
+	(session hasFeatureNamed: #floatStringEncoding) ifFalse: [ ^ self ].
+
+	result := session evaluateBlockAndWait: [ :in |
+		in = Float pi ifFalse:
+			[ nil error: 'in=', in asString ].
+	 Float pi ]
+		withArguments: { Float pi }
+		serializationStrategy: GtRsrWireSerializationStrategy.
+
+	self assert: result equals: Float pi.
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	<gtExample>
 	<return: #AssertionFailure>
