@@ -40,6 +40,16 @@ GtGemStoneSessionFeatures class >> featuresKeyName [
 	^#GT_FEATURES_LIST_NAME
 ]
 
+{ #category : #features }
+GtGemStoneSessionFeatures class >> floatStringEncoding [
+	"GtWireFloatPrintStringEncoder was added at the same time as this method"
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #floatStringEncoding)
+			enable
+]
+
 { #category : #'instance creation' }
 GtGemStoneSessionFeatures class >> forCurrentDefinitions [
 	^ self withAll: self collectFeaturesDefinitions

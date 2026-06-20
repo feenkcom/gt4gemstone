@@ -1378,6 +1378,16 @@ GtGemStoneSession >> gtViewTranscriptFor: aView [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> hasFeatureNamed: aSymbol [
+	"Answer a boolean indicating whether the server has the named feature"
+
+	^ self currentFeatures updateFeatures remoteFeatures
+		detect: [ :aFeature | aFeature featureId = aSymbol ]
+		ifFound: [ :feature | true  ]
+		ifNone: [ false ].
+]
+
+{ #category : #testing }
 GtGemStoneSession >> hasKeepAlive [
 
 	^ keepAlive isNotNil

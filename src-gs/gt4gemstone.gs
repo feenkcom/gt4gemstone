@@ -4458,6 +4458,17 @@ featuresKeyName
 	^#GT_FEATURES_LIST_NAME
 %
 
+category: 'features'
+classmethod: GtGemStoneSessionFeatures
+floatStringEncoding
+	"GtWireFloatPrintStringEncoder was added at the same time as this method"
+	<gtGemStoneFeature>
+	
+	^ (GtGemStoneSessionFeature
+		withId: #floatStringEncoding)
+			enable
+%
+
 category: 'instance creation'
 classmethod: GtGemStoneSessionFeatures
 forCurrentDefinitions
