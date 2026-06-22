@@ -193,20 +193,44 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveFloat [
 	For GT / Pharo 13 and GemStone 3.7.5 GtWireFloatPrintStringEncoder matches exactly."
 	<gtExample>
 	<return: #AssertionFailure>
-	| session result |
+	| session values result |
 
 	session := self runningServer.
 
-	(session hasFeatureNamed: #floatStringEncoding) ifFalse: [ ^ self ].
+	values := {
+		Float zero.
+		Float pi.
+		Float negativeZero.
+		Float infinity.
+		1.0.
+		-1.0.
+		0.1.
+		-0.1.
+		}.
 
-	result := session evaluateBlockAndWait: [ :in |
-		in = Float pi ifFalse:
-			[ nil error: 'in=', in asString ].
-	 Float pi ]
-		withArguments: { Float pi }
+	result := session evaluateBlockAndWait: [ :array :infinity |
+		(array at: 1) = 0.0 ifFalse:
+			[ nil error: 'Not zero: ', (array at: 1) asString ].
+		(array at: 2) = Float pi ifFalse:
+			[ nil error: 'Not pi: ', (array at: 2) asString ].
+		(array at: 3) = -0.0 ifFalse:
+			[ nil error: 'Not negative zero: ', (array at: 3) asString ].
+		(array at: 4) = infinity ifFalse:
+			[ nil error: 'Not infinity: ', (array at: 4) asString ].
+		(array at: 5) = 1.0 ifFalse:
+			[ nil error: 'Not one: ', (array at: 5) asString ].
+		(array at: 6) = -1.0 ifFalse:
+			[ nil error: 'Not minus one: ', (array at: 6) asString ].
+		(array at: 7) = 0.1 ifFalse:
+			[ nil error: 'Not 0.1: ', (array at: 7) asString ].
+		(array at: 8) = -0.1 ifFalse:
+			[ nil error: 'Not -0.1: ', (array at: 8) asString ].
+		array.
+	 ]
+		withArguments: { values. Float infinity }
 		serializationStrategy: GtRsrWireSerializationStrategy.
 
-	self assert: result equals: Float pi.
+	self assert: result equals: values.
 ]
 
 { #category : #examples }
@@ -238,6 +262,54 @@ GtRemoteGemStoneWireEncodingExamples >> passAndRetrieveGeneralObject [
 	self assert: (result copyFrom: 1 to: 3) = (anObject copyFrom: 1 to: 3).
 	self assert: result last class identicalTo: GtRmGeoGpsGroup.
 	self assert: result last items first equals: anObject last items first
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> passAndRetrievePrimitives [
+	"Ensure that primitive types (subclasses of GtWireObjectEncoder) are passed correctly using the wire encoder."
+	<gtExample>
+	<return: #AssertionFailure>
+	| values block session result |
+
+	session := self runningServer.
+
+	(session hasFeatureNamed: #floatStringEncoding) ifFalse: [ ^ self ].
+	
+	values := {
+		1 -> 'one'.
+		false.
+		true.
+		#[1 2 3].
+		'a string'.
+		#aSymbol.
+		$x.
+		Dictionary.
+		{ 1. 2. 3. }.
+		{ 1 -> 'one' } asDictionary.
+		{ 1. 2. 3. } asOrderedCollection.
+		{ 1. 2. 3. } asSet.
+		DateAndTime now.
+		1.25.
+		SmallInteger minVal.
+		SmallInteger maxVal.
+		SmallInteger minVal negated * 2.
+		SmallInteger maxVal negated * 2.
+		nil.
+		3 / 5.
+		1000000000/7.
+		}.
+	self assert: (values at: 21) class identicalTo: Fraction.
+	block := [ 42 ].
+
+	result := session evaluateBlockAndWait: [ :array :bc | 
+			bc value = 42 ifFalse:
+				[ nil error: 'Unexpected block value: ', bc value asString ].
+			{ array. bc. } ]
+		withArguments: { values. block. }
+		serializationStrategy: GtRsrWireSerializationStrategy.
+
+	self assert: result first equals: values.
+	self assert: result second value equals: block value.
 ]
 
 { #category : #examples }
