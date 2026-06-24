@@ -238,7 +238,7 @@ GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection [
 			ifTrue: [ ^ self ].
 	
 	scripter := self
-		assertObjectInspectionFor: [ GtRemotePhlowDeclarativeDetailsInspectableForExamples new ]
+		assertObjectInspectionFor: #GtRemotePhlowDeclarativeDetailsInspectableForExamples asString, ' new'
 		withTypeName: #GtRemotePhlowDeclarativeDetailsInspectableForExamples
 		inspectorTitle: 'aGtRemotePhlowDeclarativeDetailsInspectableForExamples'.
 	
