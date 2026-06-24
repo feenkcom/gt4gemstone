@@ -4128,6 +4128,13 @@ v1_1_199
 	^ self major: 1 minor: 1 patch: 199
 %
 
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_1_362
+
+	^ self major: 1 minor: 1 patch: 362
+%
+
 category: 'accessing'
 classmethod: GtGemStoneSemanticVersionNumber
 versionNumberRegexString
