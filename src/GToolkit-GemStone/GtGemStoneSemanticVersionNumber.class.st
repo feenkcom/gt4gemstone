@@ -63,6 +63,12 @@ GtGemStoneSemanticVersionNumber class >> v1_1_199 [
 	^ self major: 1 minor: 1 patch: 199
 ]
 
+{ #category : #'instance creation' }
+GtGemStoneSemanticVersionNumber class >> v1_1_362 [
+
+	^ self major: 1 minor: 1 patch: 362
+]
+
 { #category : #accessing }
 GtGemStoneSemanticVersionNumber class >> versionNumberRegexString [
 	^ 'v[0-9]+\.[0-9]+\.[0-9]+'

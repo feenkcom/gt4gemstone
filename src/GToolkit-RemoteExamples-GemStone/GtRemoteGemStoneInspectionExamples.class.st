@@ -227,6 +227,67 @@ GtRemoteGemStoneInspectionExamples >> metaclassInspection [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection [
+	<gtExample>
+	<after: #stopServer>
+	<return: #AssertionFailure>
+	| scripter |
+	
+	(self runningServer gt4gemstoneVersion isZero not and: [ 
+		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+			ifTrue: [ ^ self ].
+	
+	scripter := self
+		assertObjectInspectionFor: [ GtRemotePhlowDeclarativeDetailsInspectableForExamples new ]
+		withTypeName: #GtRemotePhlowDeclarativeDetailsInspectableForExamples
+		inspectorTitle: 'aGtRemotePhlowDeclarativeDetailsInspectableForExamples'.
+	
+	scripter phlowCompositeToolStep
+		label: 'Select remote inspector';
+		clickOnToolAtIndex: 1;
+		assertSelectedToolAtIndex: 1 withPhlowName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		assertSelectedTabWithName: 'Details (default print)';
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'String value' ];
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'hello world' ];
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Details (custom print)';
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Now is the time' ];
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Details (with errors)';
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString includesSubstring: 'ZeroDivide' ];
+		play.
+		
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> orderedCollectionLargeInspection [
 	<gtExample>
 	<after: #stopServer>

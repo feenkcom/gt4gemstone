@@ -49,7 +49,7 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 		play.
 	
 	scripter phlowCompositeToolStep
-		onPagerPaneWithIndex: 2;
+		onPagerToolInPaneWithIndex: 2;
 		assertPhlowToolTabsHaveBothIconsAndLabels;
 		assertPhlowToolTabsCount: 2;
 		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
@@ -70,7 +70,7 @@ GtRemoteGemStoneInspectorWorldExamples >> worldTabWithGemStoneInspectorOnInteger
 
 	scripter phlowCompositeToolStep
 		label: 'Select Proxy tool';
-		onPagerPaneWithIndex: 2;
+		onPagerToolInPaneWithIndex: 2;
 		clickOnToolAtIndex: 2;
 		assertSelectedToolAtIndex: 2 withTabName: 'Proxy';
 		play.
