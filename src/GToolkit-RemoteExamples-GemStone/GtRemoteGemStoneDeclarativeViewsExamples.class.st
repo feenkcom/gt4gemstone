@@ -18,8 +18,39 @@ GtRemoteGemStoneDeclarativeViewsExamples >> computeStyledTextForTreeNumber: anIn
 	^ computedString
 ]
 
+{ #category : #'as yet unclassified' }
+GtRemoteGemStoneDeclarativeViewsExamples >> detailsView [
+	<gtExample>
+	
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+		ifTrue: [ ^ self  ].
+		
+	^ super detailsView
+]
+
+{ #category : #'as yet unclassified' }
+GtRemoteGemStoneDeclarativeViewsExamples >> detailsViewWithCustomPrinting [
+	<gtExample>
+	
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+		ifTrue: [ ^ self  ].
+		
+	^ super detailsViewWithCustomPrinting
+]
+
 { #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> expectedColumnedListTypedColumnsTwoItems [
+		(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+		ifTrue: [ ^ self expectedColumnedListTypedColumnsTwoItemsOldValue ].
+
+	^ ((Array new: 2) at: 1 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+1.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: (#nodeId->1); yourself); at: 2 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+3'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: (#nodeId->2); yourself); yourself)
+]
+
+{ #category : #'accessing - expected' }
+GtRemoteGemStoneDeclarativeViewsExamples >> expectedColumnedListTypedColumnsTwoItemsOldValue [
 	^ ((Array new: 2) at: 1 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+1.0'); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2'); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->#classIcon); yourself); yourself)); yourself)); add: (#nodeId->1); yourself); at: 2 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2.0'); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+3'); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->#classIcon); yourself); yourself)); yourself)); add: (#nodeId->2); yourself); yourself)
 ]
 

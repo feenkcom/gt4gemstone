@@ -1,13 +1,13 @@
 Class {
-	#name : 'GtGemStoneSessionFeatures',
-	#superclass : 'Object',
+	#name : #GtGemStoneSessionFeatures,
+	#superclass : #Object,
 	#instVars : [
 		'featuresById'
 	],
-	#category : 'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures class >> collectFeaturesDefinitions [
 	| featureSelectors |
 	featureSelectors := ((Pragma 
@@ -19,14 +19,14 @@ GtGemStoneSessionFeatures class >> collectFeaturesDefinitions [
 		self perform: aSelector asSymbol ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures class >> currentFeatures [
 	^ SessionTemps current 
 		at: self featuresKeyName
 		ifAbsentPut: [ self forCurrentDefinitions ]
 ]
 
-{ #category : 'features' }
+{ #category : #features }
 GtGemStoneSessionFeatures class >> exampleFeatureV1 [
 	<gtGemStoneFeature>
 	
@@ -35,12 +35,12 @@ GtGemStoneSessionFeatures class >> exampleFeatureV1 [
 			enable
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures class >> featuresKeyName [
 	^#GT_FEATURES_LIST_NAME
 ]
 
-{ #category : 'features' }
+{ #category : #features }
 GtGemStoneSessionFeatures class >> floatStringEncoding [
 	"GtWireFloatPrintStringEncoder was added at the same time as this method"
 	<gtGemStoneFeature>
@@ -50,12 +50,12 @@ GtGemStoneSessionFeatures class >> floatStringEncoding [
 			enable
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneSessionFeatures class >> forCurrentDefinitions [
 	^ self withAll: self collectFeaturesDefinitions
 ]
 
-{ #category : 'views' }
+{ #category : #views }
 GtGemStoneSessionFeatures class >> gtViewCurrentFeaturesFor: aView [
 	<gtView>
 	<gtClassView>
@@ -70,7 +70,7 @@ GtGemStoneSessionFeatures class >> gtViewCurrentFeaturesFor: aView [
 				view: #gtViewFeaturesFor: ]
 ]
 
-{ #category : 'views' }
+{ #category : #views }
 GtGemStoneSessionFeatures class >> gtViewDefinedFeaturesFor: aView [
 	<gtView>
 	<gtClassView>
@@ -82,7 +82,7 @@ GtGemStoneSessionFeatures class >> gtViewDefinedFeaturesFor: aView [
 		view: #gtViewFeaturesFor:
 ]
 
-{ #category : 'features' }
+{ #category : #features }
 GtGemStoneSessionFeatures class >> proxyIdentity [
 	<gtGemStoneFeature>
 	
@@ -91,14 +91,14 @@ GtGemStoneSessionFeatures class >> proxyIdentity [
 			enable
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures class >> resetFeatures [
 	^ SessionTemps current 
 		removeKey: self featuresKeyName
 		ifAbsent: [  ]
 ]
 
-{ #category : 'features' }
+{ #category : #features }
 GtGemStoneSessionFeatures class >> spawnPrimitiveTypeAsProxyExampleFeature [
 	<gtGemStoneFeature>
 	"Only needed to indicate if GtRemotePhlowDeclarativeTestInspectable>>#gtColumnedListSpawnTextFor: has a column for spawning primitive types"
@@ -107,7 +107,7 @@ GtGemStoneSessionFeatures class >> spawnPrimitiveTypeAsProxyExampleFeature [
 			enable
 ]
 
-{ #category : 'features' }
+{ #category : #features }
 GtGemStoneSessionFeatures class >> transcriptV1 [
 	<gtGemStoneFeature>
 	
@@ -116,23 +116,23 @@ GtGemStoneSessionFeatures class >> transcriptV1 [
 			enable
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 GtGemStoneSessionFeatures class >> withAll: aCollection [
 	^ self new 
 		initializeWithFeatures: aCollection
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 GtGemStoneSessionFeatures >> addFeature: aFeature [
 	featuresById at: aFeature featureId put: aFeature
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 GtGemStoneSessionFeatures >> createSpecification [
 	^ GtGemStoneFeaturesSpecification forFeatures: self
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtGemStoneSessionFeatures >> disableFeatureWithId: aFeatureId [ 
 	self
 		featureWithId: aFeatureId
@@ -140,7 +140,7 @@ GtGemStoneSessionFeatures >> disableFeatureWithId: aFeatureId [
 		ifAbsent: [ Error signal: 'Feature not found' ] 
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 GtGemStoneSessionFeatures >> enableFeatureWithId: aFeatureId [ 
 	self
 		featureWithId: aFeatureId
@@ -148,20 +148,20 @@ GtGemStoneSessionFeatures >> enableFeatureWithId: aFeatureId [
 		ifAbsent: [ Error signal: 'Feature not found' ] 
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtGemStoneSessionFeatures >> featureWithId: aFeatureId [ 
 	^ featuresById
 		at: aFeatureId
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock [ 
 	^ featuresById
 		at: aFeatureId
 		ifPresent: aPresentBlock
 ]
 
-{ #category : 'enumerating' }
+{ #category : #enumerating }
 GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
 	| feature |
 	feature := featuresById
@@ -171,7 +171,7 @@ GtGemStoneSessionFeatures >> featureWithId: aFeatureId ifPresent: aPresentBlock 
 	^ aPresentBlock cull: feature
 ]
 
-{ #category : 'views' }
+{ #category : #views }
 GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 	<gtView>
 	
@@ -188,7 +188,7 @@ GtGemStoneSessionFeatures >> gtViewFeaturesFor: aView [
 		send: [ :assoc | assoc value ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtGemStoneSessionFeatures >> initializeWithFeatures: aCollection [ 
 	featuresById := Dictionary new.
 	
@@ -196,7 +196,7 @@ GtGemStoneSessionFeatures >> initializeWithFeatures: aCollection [
 		self addFeature: aFeature ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 GtGemStoneSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
 	^ self
 		featureWithId: aFeatureId
@@ -204,17 +204,17 @@ GtGemStoneSessionFeatures >> isFeatureEnabledWithId: aFeatureId [
 		ifAbsent: [ false ] 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures >> items [
 	^ featuresById values
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneSessionFeatures >> numberOfFeatures [
 	^ featuresById size
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneSessionFeatures >> printOn: aStream [
 	super printOn: aStream.
 	

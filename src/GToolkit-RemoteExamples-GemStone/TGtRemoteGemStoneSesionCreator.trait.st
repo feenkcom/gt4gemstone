@@ -16,16 +16,6 @@ TGtRemoteGemStoneSesionCreator >> runningServer [
 
 	<gtExample>
 	<after: #stopServer>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #Error>
 	server ifNotNil: [ ^ server ].
 	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
 ]
