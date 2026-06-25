@@ -406,6 +406,76 @@ GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection_propertiesViewRefreshesOk [
+	<gtExample>
+	<after: #stopServer>
+	<return: #AssertionFailure>
+	| proxyObject scripter |
+	
+	(self runningServer gt4gemstoneVersion isZero not and: [ 
+		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+			ifTrue: [ ^ self ].
+	
+	proxyObject := self createProxyObjectFor: [
+		GtRemotePhlowDeclarativeDetailsInspectableForExamples new
+			propertyOne: 'Value One Before Update';
+			propertyTwo: 'Value Two Before Update'].
+	
+	scripter := self 
+		assertObjectInspectionForProxy: proxyObject 
+		withTypeName: #GtRemotePhlowDeclarativeDetailsInspectableForExamples.
+	
+	scripter phlowCompositeToolStep
+		label: 'Select remote inspector';
+		clickOnToolAtIndex: 1;
+		assertSelectedToolAtIndex: 1 withPhlowName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Properties';
+		assertSelectedTabWithName: 'Properties';
+		play.
+		
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value One After Update' ];
+		play.
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value Two After Update' ];
+		play.
+		
+	self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ :anObject |
+			anObject
+				propertyOne: 'Value One After Update';
+				propertyTwo: 'Value Two After Update' ] 
+		withArguments: {proxyObject}.
+		
+	scripter click
+		label: 'Click the refresh button';
+		// GtPhlowCompositeViewElementId;
+		// GtPhlowViewRefreshContentButtonId;
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value One After Update' ];
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value Two After Update' ];
+		play.
+		
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> orderedCollectionLargeInspection [
 	<gtExample>
 	<after: #stopServer>

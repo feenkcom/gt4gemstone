@@ -10,6 +10,11 @@ GtpoGtPhlowDetailsViewSpecification class >> remoteClassName [
 ]
 
 { #category : #'as yet unclassified' }
+GtpoGtPhlowDetailsViewSpecification >> flushCachedData [
+	^ self proxyPerform: #flushCachedData
+]
+
+{ #category : #'as yet unclassified' }
 GtpoGtPhlowDetailsViewSpecification >> retrieveRowNodeData [
 	^ self proxyPerform: #retrieveRowNodeData
 ]
