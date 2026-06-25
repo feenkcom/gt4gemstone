@@ -359,6 +359,44 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPageWithLongRunningSnippetWithCo
 	^ scripter
 ]
 
+{ #category : #examples }
+GtRemoteGemStonePlaygroundExamples >> playgroundPageWithStateChangingComputationInMultipleSnippetsSharingBinding [
+
+	<gtExample>
+	<return: #AssertionFailure>
+	| page pageTool  scripter |
+	self runningServer.
+
+	self assert: self gemstoneSessionRegistry hasConnectors.
+	self assert: self gemstoneSessionRegistry hasSessions.
+
+	page := LePage new
+			addSnippet: ((LeGemStoneSnippet sessionName: 'test:default') 
+				uid: LeUID new;
+				code: 'dictionary := Dictionary new
+		at: ''key1'' put: ''Value for key one'';
+		yourself');
+			addSnippet: ((LeGemStoneSnippet sessionName: 'test:default') 
+				uid: LeUID new;
+				code: 'dictionary at: ''key2'' put: ''Value for key two''');
+			addSnippet: ((LeGemStoneSnippet sessionName: 'test:default') 
+				uid: LeUID new;
+				code: 'dictionary at: ''key3'' put: ''Value for key three''');
+			addSnippet: ((LeGemStoneSnippet sessionName: 'test:default') 
+				uid: LeUID new;
+				code: 'dictionary keys');
+			yourself.
+
+	pageTool := LePagePhlowTool new page: page.
+	pageTool externalSnippetContext: self externalSnippetContext.
+
+	scripter := self scripterForPageTool: pageTool.
+	
+	self assertRunningDefaultTestSession.
+
+	^ scripter
+]
+
 { #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_blockNested_oneVariables_invalidUnusedBindingWithSameName [
 	<gtExample>
@@ -1267,6 +1305,84 @@ a + 0'.
 		assertBinding: #a isProxyWithDisplayString: '2';
 		play.
 
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_stateChangingComputationInMultipleSnippetsSharingBinding [
+	<gtExample>
+	<return: #AssertionFailure>
+	<noTest>
+	| scripter page |
+	scripter := self playgroundPageWithStateChangingComputationInMultipleSnippetsSharingBinding.
+	page := scripter model page.
+
+	scripter gemStoneSnippet
+		// (LeSnippetId new uid: page children first uid);
+		clickOnDoItButton;
+		play.
+		
+	scripter gemStoneSnippet
+		// (LeSnippetId new uid: page children second uid);
+		mouseMoveOver;
+		clickOnDoItButton;
+		play.
+		
+	scripter gemStoneSnippet
+		// (LeSnippetId new uid: page children third uid);
+		mouseMoveOver;
+		clickOnDoItButton;
+		play.
+		
+	scripter treePager
+		assertNumberOfPaneElements: 1;
+		play.
+	scripter gemStoneSnippet
+		// (LeSnippetId new uid: page children fourth uid);
+		mouseMoveOver;
+		clickOnDoItAndInspectButton;
+		play.
+	scripter treePager
+		assertNumberOfPaneElements: 2;
+		play.
+		
+	scripter phlowCompositeToolStep
+		onPagerToolInPaneWithIndex: 2;
+		assertPhlowToolTabsHaveBothIconsAndLabels;
+		assertPhlowToolTabsCount: 2;
+		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
+			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
+		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		onPagerPaneWithIndex: 2;
+		assertSelectedTabWithName: 'Items';
+		assertInspectedObjectOfType: GtGsBareProxy;
+		assertInspectedObjectValueFor: [ :aSet | aSet remoteClass ] 
+			equals: 'Set';
+		assertInspectedObjectValueFor: [ :aSet | aSet size ] 
+			equals: 3;
+		assertInspectedObjectValueFor: [ :aSet | aSet asArray sorted ] 
+			equals: #('key1' 'key2' 'key3');
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'key1' ];
+		play.
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'key2' ];
+		play.
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'key3' ];
+		play.
+	
 	^ scripter
 ]
 

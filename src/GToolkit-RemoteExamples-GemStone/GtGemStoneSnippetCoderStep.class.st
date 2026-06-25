@@ -154,8 +154,9 @@ GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectAsynchronousButton [
 GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectButton [
 	| aClickStep |
 	aClickStep := self click
-			referenceSender;
 			label: 'Click on do it and inspect button';
+			referenceSender;
+			onParentStepTarget: self;
 			// GtSourceCoderDoItAndGoActionId.
 	^ aClickStep
 ]
