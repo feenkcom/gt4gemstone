@@ -126,6 +126,124 @@ GtRemoteGemStoneInspectionExamples >> dateInspection [
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> dictionaryObject_itemsViewRefreshesOk [
+	<gtExample>
+	<after: #stopServer>
+	<noTest>
+	| proxyObject scripter |
+	  
+	proxyObject := self createProxyObjectFor: [
+		Dictionary new
+			at: 'keyOne' put: 'Value for key one';
+			yourself].
+	
+	scripter := self 
+		assertObjectInspectionForProxy: proxyObject 
+		withTypeName: #Dictionary.
+	
+	scripter phlowCompositeToolStep
+		label: 'Select remote inspector';
+		clickOnToolAtIndex: 1;
+		assertSelectedToolAtIndex: 1 withPhlowName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Items';
+		assertSelectedTabWithName: 'Items';
+		play.
+		
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value for key two' ];
+		play.
+		
+	self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ :aDictionary |
+			aDictionary at: 'keyTwo' put: 'Value for key two' ] 
+		withArguments: {proxyObject}.
+		
+	scripter click
+		label: 'Click the refresh button';
+		// GtPhlowCompositeViewElementId;
+		// GtPhlowViewRefreshContentButtonId;
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value for key one' ];
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value for key two' ];
+		play.
+		
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> dictionaryObject_rawViewRefreshesOk [
+	<gtExample>
+	<after: #stopServer>
+	<noTest>
+	| proxyObject scripter |
+	  
+	proxyObject := self createProxyObjectFor: [
+		Dictionary new
+			at: 'keyOne' put: 'Value for key one';
+			yourself].
+	
+	scripter := self 
+		assertObjectInspectionForProxy: proxyObject 
+		withTypeName: #Dictionary.
+	
+	scripter phlowCompositeToolStep
+		label: 'Select remote inspector';
+		clickOnToolAtIndex: 1;
+		assertSelectedToolAtIndex: 1 withPhlowName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Raw';
+		assertSelectedTabWithName: 'Raw';
+		play.
+		
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = '''keyTwo''->''Value for key two''' ];
+		play.
+		
+	self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ :aDictionary |
+			aDictionary at: 'keyTwo' put: 'Value for key two' ] 
+		withArguments: {proxyObject}.
+		
+	scripter click
+		label: 'Click the refresh button';
+		// GtPhlowCompositeViewElementId;
+		// GtPhlowViewRefreshContentButtonId;
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = '''keyOne''->''Value for key one''' ];
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = '''keyTwo''->''Value for key two''' ];
+		play.
+		
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> dictionaryWithObjectKeysInspection [
 	<gtExample>
 	<after: #stopServer>
@@ -282,6 +400,76 @@ GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection [
 		exists;
 		//BrLabel;
 		@ [ :each | each text asString includesSubstring: 'ZeroDivide' ];
+		play.
+		
+	^ scripter
+]
+
+{ #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection_propertiesViewRefreshesOk [
+	<gtExample>
+	<after: #stopServer>
+	<return: #AssertionFailure>
+	| proxyObject scripter |
+	
+	(self runningServer gt4gemstoneVersion isZero not and: [ 
+		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
+			ifTrue: [ ^ self ].
+	
+	proxyObject := self createProxyObjectFor: [
+		GtRemotePhlowDeclarativeDetailsInspectableForExamples new
+			propertyOne: 'Value One Before Update';
+			propertyTwo: 'Value Two Before Update'].
+	
+	scripter := self 
+		assertObjectInspectionForProxy: proxyObject 
+		withTypeName: #GtRemotePhlowDeclarativeDetailsInspectableForExamples.
+	
+	scripter phlowCompositeToolStep
+		label: 'Select remote inspector';
+		clickOnToolAtIndex: 1;
+		assertSelectedToolAtIndex: 1 withPhlowName: 'GemStone';
+		play.
+		
+	scripter inspectorStep
+		clickOnTabWithName: 'Properties';
+		assertSelectedTabWithName: 'Properties';
+		play.
+		
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value One After Update' ];
+		play.
+	scripter check
+		notExists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value Two After Update' ];
+		play.
+		
+	self runningServer 
+		evaluateBlockAndWaitReturnProxy: [ :anObject |
+			anObject
+				propertyOne: 'Value One After Update';
+				propertyTwo: 'Value Two After Update' ] 
+		withArguments: {proxyObject}.
+		
+	scripter click
+		label: 'Click the refresh button';
+		// GtPhlowCompositeViewElementId;
+		// GtPhlowViewRefreshContentButtonId;
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value One After Update' ];
+		play.
+		
+	scripter check
+		exists;
+		//BrLabel;
+		@ [ :each | each text asString = 'Value Two After Update' ];
 		play.
 		
 	^ scripter

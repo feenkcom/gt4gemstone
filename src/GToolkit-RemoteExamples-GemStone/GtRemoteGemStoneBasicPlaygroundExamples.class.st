@@ -200,7 +200,7 @@ GtRemoteGemStoneBasicPlaygroundExamples >> scripterForPageTool: aPageTool [
 	scripter := self scripter.
 	scripter
 		model: aPageTool;
-			element: (GtPagerSettings usedPager createWrappedOn: aPageTool asElement).
+		element: (GtPagerSettings usedPager createWrappedOn: aPageTool asElement).
 	^ scripter
 ]
 
