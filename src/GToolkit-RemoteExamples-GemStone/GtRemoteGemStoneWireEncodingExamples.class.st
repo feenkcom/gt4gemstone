@@ -418,6 +418,122 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> updateCollections [
+	"Ensure that proxy objects are updated as expected"
+	<gtExample>
+	| session array result proxyObject1 proxyObject2 proxyObject3 proxyObject4 checkArray proxyArray |
+	
+	session := self runningServer.
+	proxyObject1 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 1 } ].
+	proxyObject2 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 2 } ].
+	proxyObject3 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 3 } ].
+	proxyObject4 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 4 } ].
+	array := {
+		proxyObject1.
+		{ proxyObject2. }.
+		{ 'p3' -> proxyObject3. } asDictionary.
+		'p4' -> proxyObject4.
+		}.
+	checkArray := [ :arrayArg |
+			arrayArg size = 4 ifFalse:
+				[ nil error: 'Unexpected array size: ', arrayArg size printString ].
+			(arrayArg at: 1) = #(1) ifFalse:
+				[ nil error: 'Unexpected first value: ', (arrayArg at: 1) printString ].
+			((arrayArg at: 2) at: 1) = #(2) ifFalse:
+				[ nil error: 'Unexpected second value: ', (arrayArg at: 2) printString ].
+			((arrayArg at: 3) at: 'p3') = #(3) ifFalse:
+				[ nil error: 'Unexpected third value: ', (arrayArg at: 3) printString ].
+			(arrayArg at: 4) value = #(4) ifFalse:
+				[ nil error: 'Unexpected fourth value: ', (arrayArg at: 4) printString ].
+			 ].
+	result := session evaluateBlockAndWait: [ :arrayArg :checkBlock |
+			checkBlock value: arrayArg.
+			arrayArg. ]
+		withArguments: { array. checkArray. }
+		serializationStrategy: GtRsrWireSerializationStrategy.
+	checkArray value: result.
+
+	proxyArray := array collect: [ :each |
+		session evaluateBlockAndWaitReturnProxy: [ :anObject | anObject ]
+			withArguments: { each } ].
+
+	session evaluateBlockAndWait:
+			[ :anObject | anObject at: 1 put: 5 ]
+		withArguments: { proxyArray at: 1 }.
+	self assert: (proxyObject1 proxyPerform: #at: withArguments: { 1 }) equals: 5.
+
+	session evaluateBlockAndWait:
+			[ :anObject | (anObject at: 1) at: 1 put: 6 ]
+		withArguments: { proxyArray at: 2 }.
+	self assert: (proxyObject2 proxyPerform: #at: withArguments: { 1 }) equals: 6.
+
+	session evaluateBlockAndWait:
+			[ :anObject | (anObject at: 'p3') at: 1 put: 7 ]
+		withArguments: { proxyArray at: 3 }.
+	self assert: (proxyObject3 proxyPerform: #at: withArguments: { 1 }) equals: 7.
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> updateDictionary [
+	"Ensure that proxy objects are updated as expected"
+	<gtExample>
+	| session proxy keys |
+	
+	session := self runningServer.
+	proxy := session evaluateBlockAndWaitReturnProxy: 
+		[ Dictionary new ].
+	proxy evaluateAndWait: 'self at: ''k1'' put: 1'.
+	proxy evaluateBlockAndWait: [ :dict |
+			dict at: 'k2' put: 2 ]
+		withArguments: { proxy }.
+	keys := proxy evaluateAndWait: 'self keys asArray'.
+	self assert: keys asSet equals: #('k1' 'k2') asSet.
+]
+
+{ #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> updateObjects [
+	"Ensure that proxy objects are updated as expected"
+	<gtExample>
+	| session array result proxyObject1 proxyObject2 proxyObject3 object checkObject proxyArray |
+	
+	session := self runningServer.
+	proxyObject1 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 1 } ].
+	proxyObject2 := session evaluateBlockAndWaitReturnProxy: 
+		[ { 2 } ].
+	object := GtWireEncodingExampleInstVarObject new
+		var1: proxyObject1;
+		var2: proxyObject2.
+	checkObject := [ :exampleObject |
+			exampleObject class name = #GtWireEncodingExampleInstVarObject ifFalse:
+				[ nil error: 'Wrong class name: ', exampleObject class name printString ].
+			(exampleObject var1) = #(1) ifFalse:
+				[ nil error: 'Unexpected first value: ', exampleObject var1 printString ].
+			exampleObject var2 = #(2) ifFalse:
+				[ nil error: 'Unexpected second value: ', exampleObject var2 printString ].
+			 ].
+	result := session evaluateBlockAndWaitReturnProxy:
+			[ :anObject :checkBlock |
+			checkBlock value: anObject.
+			anObject. ]
+		withArguments: { object. checkObject. }.
+
+	session evaluateBlockAndWait:
+			[ :anObject | anObject var1: 'newVal' ]
+		withArguments: { result }.
+	self assert: (result proxyPerform: #var1) equals: 'newVal'.
+	
+	session evaluateBlockAndWait:
+			[ :anObject | anObject var2 at: 1 put: 3 ]
+		withArguments: { result }.
+	self assert: (proxyObject2 proxyPerform: #at: withArguments: { 1 }) equals: 3.
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> wireIndividualRemoteObjectEncoding [
 	"Demonstrate retrieving an object where only the specified class is a remote object."
 	<gtExample>
