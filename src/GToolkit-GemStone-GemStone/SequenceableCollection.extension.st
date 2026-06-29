@@ -11,7 +11,8 @@ SequenceableCollection >> allButFirstDo: block [
 SequenceableCollection >> asGtGsArgument [
 	"Answer the the local object of the receiver"
 
-	^ self collect: [ :each | each asGtGsArgument ]
+	1 to: self size do: [ :i |
+		self at: i put: (self at: i) asGtGsArgument ]
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }

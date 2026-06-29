@@ -7210,12 +7210,9 @@ category: '*GToolkit-GemStone-GemStone'
 method: Dictionary
 asGtGsArgument
 	"Answer the the local object of the receiver"
-	| local |
 
-	local := self copy.
-	local associationsDo: [ :assoc |
+	self associationsDo: [ :assoc |
 		assoc value: assoc value asGtGsArgument ].
-	^ local
 %
 
 category: '*GToolkit-GemStone-GemStone'
@@ -7727,7 +7724,8 @@ method: SequenceableCollection
 asGtGsArgument
 	"Answer the the local object of the receiver"
 
-	^ self collect: [ :each | each asGtGsArgument ]
+	1 to: self size do: [ :i |
+		self at: i put: (self at: i) asGtGsArgument ]
 %
 
 category: '*GToolkit-GemStone-GemStone'

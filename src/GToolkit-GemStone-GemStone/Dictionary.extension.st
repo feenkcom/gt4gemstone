@@ -8,12 +8,9 @@ Dictionary >> , aCollection [
 { #category : #'*GToolkit-GemStone-GemStone' }
 Dictionary >> asGtGsArgument [
 	"Answer the the local object of the receiver"
-	| local |
 
-	local := self copy.
-	local associationsDo: [ :assoc |
+	self associationsDo: [ :assoc |
 		assoc value: assoc value asGtGsArgument ].
-	^ local
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
