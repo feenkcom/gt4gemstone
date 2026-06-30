@@ -26,7 +26,7 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 
 { #category : #'actions - spawning' }
 GtGemStoneMethodCoderHeaderModel >> spawnMethodBehaviorFor: aCoderViewModel from: anElement [
-	aCoderViewModel coderModel explicitProviderBehaviour realBehaviorDo: [ :aGsBehavior |
+	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
 		anElement phlow spawnObject:  aGsBehavior ]
 ]
 
@@ -37,6 +37,6 @@ GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anEle
 
 { #category : #'actions - spawning' }
 GtGemStoneMethodCoderHeaderModel >> spawnProviderBehaviorFor: aCoderViewModel  from: anElement [
-	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
+	aCoderViewModel coderModel explicitProviderBehaviour realBehaviorDo: [ :aGsBehavior |
 		anElement phlow spawnObject:  aGsBehavior ]
 ]
