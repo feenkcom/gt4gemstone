@@ -243,5 +243,6 @@ GtGemStoneKeepAliveNotificationElement >> updateSessions [
 		ifNotNil: [ self keepAlive dirtySessions ].
 	
 	sessionList items: dirtySessions.
-	dirtySessions ifEmpty: [ notification requestRemoval ].
+	dirtySessions ifEmpty: [ notification
+		ifNotNil: [ :aNotification | aNotification requestRemoval ] ].
 ]

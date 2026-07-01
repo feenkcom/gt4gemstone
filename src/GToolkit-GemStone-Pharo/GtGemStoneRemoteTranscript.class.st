@@ -14,6 +14,25 @@ GtGemStoneRemoteTranscript class >> forGemStoneSession: aGemStoneSession [
 		initializeForGemStoneSession: aGemStoneSession
 ]
 
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> addSessionActionsOnMenu: aMenu [
+	aMenu addItemLabel: 'Commit changes'
+		action: 
+			[:aButton |
+			self gemStoneSession commitTransactionWithErrorChecking.
+			aButton phlow fireToolUpdateWish].
+	aMenu addItemLabel: 'Abort changes'
+		action: 
+			[:aButton |
+			self gemStoneSession abortTransaction.
+			aButton phlow fireToolUpdateWish].
+	aMenu addItemLabel: 'Inspect session'
+		action: 
+			[:aButton |
+			aButton phlow
+				spawnObject: self gemStoneSession ]
+]
+
 { #category : #actions }
 GtGemStoneRemoteTranscript >> clearRemoteTranscript [
 	^ transcriptProxy proxyPerform: #clearContent autoCommit: false
@@ -34,11 +53,28 @@ GtGemStoneRemoteTranscript >> gemStoneSession [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtActionClearFor: anAction [
+	<gtAction>
+	<gtToolAction>
+		
+	self hasTranscriptProxy ifFalse: [ ^ anAction noAction ].
+
+	^(anAction button)
+		label: 'Clear';
+		icon: BrGlamorousVectorIcons bin;
+		tooltip: 'Clear the transcript content';
+		priority: 25;
+		action: [ :aButton |
+			self clearRemoteTranscript.
+			aButton phlow fireCurrentToolUpdateWish  ]
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 	<gtAction>
 	
 	^ anAction button
-		priority: 10;
+		priority: 50;
 		icon: BrGlamorousVectorIcons inspect;
 		label: 'Proxy';
 		tooltip: 'Inspect transcript proxy';
@@ -49,6 +85,58 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 				aButton phlow 
 					showObject: self transcriptProxy ]
 			mouseCursor: BlCopyCursor new
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtActionToggleFor: anAction [
+	<gtAction>
+	<gtToolAction>
+	| isEnabled | 
+		
+	self hasTranscriptProxy ifFalse: [ ^ anAction noAction ].
+	isEnabled := self isEnabled.
+
+	^(anAction button)
+		label: (isEnabled ifTrue: ['Disable'] ifFalse: ['Enable']);
+		tooltip: 'Toggle the enable/disable status of the remote transcript';
+		priority: 5;
+		action: [ :aButton |
+			self toggleRemoteTranscript.
+			aButton phlow fireCurrentToolUpdateWish ]
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtActionUpdateFor: anAction [
+	<gtAction>
+	<gtToolAction>
+
+	^(anAction button)
+		tooltip: 'Update the content of the transcript';
+		icon: BrGlamorousVectorIcons refresh;
+		priority: 15;
+		action: [ :aButton |
+			aButton phlow fireCurrentToolUpdateWish ]
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtActionsGsSessionFor: anAction [
+	<gtAction>
+	<gtToolAction>
+	
+	^(anAction dropdown)
+		label: 'GS Session';
+		withDropdownIndicator;
+		priority: 20;
+		items: [ :dropdownButton :aHostElement :aMenu |
+			self addSessionActionsOnMenu: aMenu ].
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtDefaultInspectorTool [
+	^ GtPhlowCompositeTool new
+			addTool: (GtGemStoneTranscriptPhlowTool new
+				remoteTranscript: self) ;
+			addTool: super gtDefaultInspectorTool
 ]
 
 { #category : #views }
@@ -70,25 +158,13 @@ GtGemStoneRemoteTranscript >> gtViewStatusAttributesFor: aView [
 { #category : #views }
 GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
-
-	self hasTranscriptProxy ifFalse: [ ^ aView empty ].
+	<gtToolView>
 	
 	^ aView remoteForward
 		title: 'Transcript';
 		priority: 10;
 		object: [ self transcriptProxy ];
-		view: #gtViewContentsFor:;
-		actionUpdateButton;
-		actionButtonLabel: 'Toggle' 
-			tooltip: 'Toggle the enable/disable status of the remote transcript'
-			action: [ :aButton :aTab |
-				self toggleRemoteTranscript.
-				aTab viewContentElement phlow update ];
-		actionButtonIcon: BrGlamorousVectorIcons bin 
-			 tooltip: 'Clear the transcript content'
-			 action: [:aButton :aTab |
-			 	self clearRemoteTranscript.
-			 	aTab viewContentElement phlow update ]
+		view: #gtViewContentsFor:
 ]
 
 { #category : #testing }
