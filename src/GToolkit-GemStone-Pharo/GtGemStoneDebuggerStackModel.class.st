@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneDebuggerStackModel,
 	#superclass : #GtDebuggerAbstractStackModel,
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : 'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }

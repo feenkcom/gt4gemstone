@@ -9,7 +9,7 @@ Class {
 		'extent',
 		'currentSessionDisplayLabelComputation'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #accessing }

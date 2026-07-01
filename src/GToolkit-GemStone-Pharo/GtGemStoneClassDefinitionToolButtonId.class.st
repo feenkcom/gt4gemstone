@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneClassDefinitionToolButtonId,
 	#superclass : #GtCoderElementId,
-	#category : #'GToolkit-GemStone-Pharo-Coder - Ids'
+	#category : 'GToolkit-GemStone-Pharo-Coder - Ids'
 }
 
 { #category : #converting }

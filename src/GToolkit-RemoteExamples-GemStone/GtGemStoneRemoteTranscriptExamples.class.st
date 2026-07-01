@@ -45,27 +45,30 @@ GtGemStoneRemoteTranscriptExamples >> currentRemoteTranscript_inspection [
 	^ self assertObjectPhlowViewsFor: self currentRemoteTranscript
 ]
 
-{ #category : #examples }
-GtGemStoneRemoteTranscriptExamples >> enableTranscriptThroughToggle [
-	<gtExample>
-	<return: #AssertionFailure>
-	| remoteTranscript |
-	self isTranscriptSupported ifFalse: [ ^ self ].
-
-	remoteTranscript := self currentRemoteTranscript.
-	self assert: remoteTranscript isEnabled not.
-
-	remoteTranscript toggleRemoteTranscript.
-	self assert: remoteTranscript isEnabled
-]
-
 { #category : #testing }
 GtGemStoneRemoteTranscriptExamples >> isTranscriptSupported [
 	^ self runningServer currentFeatures hasGemStoneTranscriptV1 
 ]
 
 { #category : #examples }
-GtGemStoneRemoteTranscriptExamples >> transcriptIsDisabledByDefault [
+GtGemStoneRemoteTranscriptExamples >> toggleTranscriptState [
+	<gtExample>
+	<return: #AssertionFailure>
+	| remoteTranscript currentState |
+	self isTranscriptSupported ifFalse: [ ^ self ].
+
+	remoteTranscript := self currentRemoteTranscript.
+	currentState := remoteTranscript isEnabled.
+
+	remoteTranscript toggleRemoteTranscript.
+	self assert: remoteTranscript isEnabled equals: currentState not .
+	
+	remoteTranscript toggleRemoteTranscript.
+	self assert: remoteTranscript isEnabled equals: currentState .
+]
+
+{ #category : #examples }
+GtGemStoneRemoteTranscriptExamples >> transcriptIsDisableByDefault [
 	<gtExample>
 	<return: #AssertionFailure>
 	self isTranscriptSupported ifFalse: [ ^ self ].
@@ -82,7 +85,8 @@ GtGemStoneRemoteTranscriptExamples >> writeRemotelyToTranscriptWhenDisabled [
 
 	remoteTranscript := self currentRemoteTranscript.
 	result := self runningServer
-			evaluateBlockAndWaitReturnPrimitive: [ GtGemStoneTranscript current disable.
+			evaluateBlockAndWaitReturnPrimitive: [ 
+				GtGemStoneTranscript current disable.
 				GtGemStoneTranscript current show: 'haba2'.
 				true ].
 
@@ -98,7 +102,8 @@ GtGemStoneRemoteTranscriptExamples >> writeRemotelyToTranscriptWhenEnabled [
 
 	remoteTranscript := self currentRemoteTranscript.
 	result := self runningServer
-			evaluateBlockAndWaitReturnPrimitive: [ GtGemStoneTranscript current enable.
+			evaluateBlockAndWaitReturnPrimitive: [ 
+				GtGemStoneTranscript current enable.
 				GtGemStoneTranscript current crShow: 'haba2'.
 				true ].
 

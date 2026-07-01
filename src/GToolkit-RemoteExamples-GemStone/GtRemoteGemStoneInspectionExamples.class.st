@@ -312,6 +312,17 @@ GtRemoteGemStoneInspectionExamples >> expectedAssociationInspectionInspectorTitl
 ]
 
 { #category : #'examples - objects' }
+GtRemoteGemStoneInspectionExamples >> metaclassInspection [
+	<gtExample>
+	<after: #stopServer>
+	<return: #AssertionFailure>
+	^ self
+		assertObjectInspectionFor: [ Object class ]
+		withTypeName: #Metaclass3
+		inspectorTitle: 'a Metaclass3 (Object class)'
+]
+
+{ #category : #'examples - objects' }
 GtRemoteGemStoneInspectionExamples >> metaViewForRemoteSide [
 	<gtExample>
 	<after: #stopServer>
@@ -337,17 +348,6 @@ GtRemoteGemStoneInspectionExamples >> metaViewForRemoteSide [
 		//  GtExpandableMethodCoderElement) isNotEmpty.
 		
 	^ scripter
-]
-
-{ #category : #'examples - objects' }
-GtRemoteGemStoneInspectionExamples >> metaclassInspection [
-	<gtExample>
-	<after: #stopServer>
-	<return: #AssertionFailure>
-	^ self
-		assertObjectInspectionFor: [ Object class ]
-		withTypeName: #Metaclass3
-		inspectorTitle: 'a Metaclass3 (Object class)'
 ]
 
 { #category : #'examples - objects' }

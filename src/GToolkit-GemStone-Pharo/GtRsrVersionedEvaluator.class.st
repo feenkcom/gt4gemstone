@@ -5,7 +5,7 @@ Class {
 		'serviceClient',
 		'features'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Services'
+	#category : 'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #accessing }

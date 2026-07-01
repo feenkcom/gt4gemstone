@@ -6,7 +6,7 @@ Class {
 		'sessionList',
 		'elementUpdater'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }
@@ -31,11 +31,6 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self requestContentUpdate
-]
-
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -45,6 +40,11 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
+]
+
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self requestContentUpdate
 ]
 
 { #category : #actions }
@@ -416,10 +416,10 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 			aGtGemStoneSession toggleCodeSyncAndAutoCommit.
 			self updateContent ]}.
 	
-	"aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
+	aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
 		actions addAll: {
 			'Toggle Transcript' -> [:aStatusLineElement | 
-				aGtGemStoneSession toggleRemoteTranscript ]} ]."
+				aGtGemStoneSession toggleRemoteTranscript ]} ].
 				
 	aGtGemStoneSession isBookmarked 
 		ifTrue: [

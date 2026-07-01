@@ -8,6 +8,11 @@ Class {
 	#category : #'GToolkit-GemStone-Transcript'
 }
 
+{ #category : #'instance creation' }
+GtGemStoneInImageTranscript class >> new [
+	^ self basicNew initialize
+]
+
 { #category : #configuration }
 GtGemStoneInImageTranscript >> clearContent [
 	contentStream := PrintStream printingOn: String new.
@@ -32,7 +37,7 @@ GtGemStoneInImageTranscript >> enable [
 GtGemStoneInImageTranscript >> gtViewContentsFor: aView [
 	<gtView>
 	
-	^ aView text 
+	^ aView textEditor 
 		title: 'Contents';
 		priority: 10;
 		text: [ contentStream contents ]

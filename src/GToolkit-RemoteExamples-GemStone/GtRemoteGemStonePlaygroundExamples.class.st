@@ -74,6 +74,20 @@ GtRemoteGemStonePlaygroundExamples >> assertPromiseResolutionRunning: promiseRes
 ]
 
 { #category : #'assertions - execution' }
+GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter [
+	| promiseResolution |
+	scripter treePager
+		assertNumberOfPaneElements: 2;
+		play.
+
+	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
+
+	promiseResolution := self
+			promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+	self assertPromiseResolutionCompleted: promiseResolution
+]
+
+{ #category : #'assertions - execution' }
 GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter [
 	| secondPageElement gemStoneInspectorTool resolutionInspectorTool promiseResolution |
 	scripter treePager
@@ -93,20 +107,6 @@ GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompl
 			fromPageElement: secondPageElement.
 
 	promiseResolution := resolutionInspectorTool object.
-	self assertPromiseResolutionCompleted: promiseResolution
-]
-
-{ #category : #'assertions - execution' }
-GtRemoteGemStonePlaygroundExamples >> assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter [
-	| promiseResolution |
-	scripter treePager
-		assertNumberOfPaneElements: 2;
-		play.
-
-	self assertExecutionPaneWithAyncExecutionToolFor: scripter.
-
-	promiseResolution := self
-			promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
 	self assertPromiseResolutionCompleted: promiseResolution
 ]
 
@@ -590,39 +590,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 ]
 
 { #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBinding_twoBingsReadBeforeWrite_sameExpression_validBinding [
-	<gtExample>
-	<return: #AssertionFailure>
-	| scripter |
-	self runningServer.
-
-	scripter := self
-			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := b := a + b'.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		updateBinding: #a to: -2;
-		assertBinding: #a is: -2;
-		updateBinding: #b to: 4;
-		assertBinding: #b is: 4;
-		play.
-
-	scripter gemStoneSnippet
-		clickOnDoItAndInspectButton;
-		play.
-
-	self assertResultingPaneAfterSyncExecutionFor: scripter.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		assertBinding: #a isProxyWithDisplayString: '2';
-		assertBinding: #b isProxyWithDisplayString: '2';
-		play.
-
-	^ scripter
-]
-
-{ #category : #'examples - execution bindings' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBindings_oneInvalidBinding [
 	<gtExample>
 	<return: #AssertionFailure>
@@ -686,42 +653,35 @@ a := 2.'.
 	^ scripter
 ]
 
-{ #category : #'examples - execution' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_multipleBinding_twoBingsReadBeforeWrite_sameExpression_validBinding [
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter |
-	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	self runningServer.
 
-	self
-		withElapsedTimeUpdateDisabled: [ self
-				withEnabledAutomaticReplaceDo: [ scripter gemStoneSnippet
-						clickOnDoItAndInspectAsynchronousButton;
-						play.
+	scripter := self
+			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := b := a + b'.
 
-					self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
-					self waitForPromiseCompletionInSecondPaneFor: scripter.
-					self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter ] ].
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: -2;
+		assertBinding: #a is: -2;
+		updateBinding: #b to: 4;
+		assertBinding: #b is: 4;
+		play.
 
-	^ scripter
-]
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
 
-{ #category : #'examples - execution' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_shortcut [
-	<gtExample>
-	<return: #AssertionFailure>
-	| scripter |
-	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
 
-	self
-		withElapsedTimeUpdateDisabled: [ self
-				withEnabledAutomaticReplaceDo: [ scripter gemStoneSnippet
-						useDoItAndInspectAsynchronousShortcut;
-						play.
-
-					self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
-					self waitForPromiseCompletionInSecondPaneFor: scripter.
-					self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter ] ].
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		assertBinding: #b isProxyWithDisplayString: '2';
+		play.
 
 	^ scripter
 ]
@@ -767,6 +727,138 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_without
 					self waitForPromiseCompletionInSecondPaneFor: scripter.
 					self
 						assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter ] ].
+
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
+	<gtExample>
+	<return: #AssertionFailure>
+	| scripter |
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+
+	self
+		withElapsedTimeUpdateDisabled: [ self
+				withEnabledAutomaticReplaceDo: [ scripter gemStoneSnippet
+						clickOnDoItAndInspectAsynchronousButton;
+						play.
+
+					self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+					self waitForPromiseCompletionInSecondPaneFor: scripter.
+					self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter ] ].
+
+	^ scripter
+]
+
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_shortcut [
+	<gtExample>
+	<return: #AssertionFailure>
+	| scripter |
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+
+	self
+		withElapsedTimeUpdateDisabled: [ self
+				withEnabledAutomaticReplaceDo: [ scripter gemStoneSnippet
+						useDoItAndInspectAsynchronousShortcut;
+						play.
+
+					self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+					self waitForPromiseCompletionInSecondPaneFor: scripter.
+					self assertResultingPaneAfterAyncExecutionCompletedWithReplaceFor: scripter ] ].
+
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_invalidBinding [
+	<gtExample>
+	<return: #AssertionFailure>
+	| scripter |
+	self runningServer.
+
+	scripter := self
+			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
+a + 0'.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: GspoString new;
+		assertInvalidBinding: #a;
+		play.
+
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_missingBinding [
+	<gtExample>
+	<return: #AssertionFailure>
+	| scripter |
+	self runningServer.
+
+	scripter := self
+			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
+a + 0'.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBindingNotPresent: #a;
+		play.
+
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - execution bindings' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_validBinding [
+	<gtExample>
+	<return: #AssertionFailure>
+	| scripter |
+	self runningServer.
+
+	scripter := self
+			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
+a + 0'.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		updateBinding: #a to: 42;
+		assertBinding: #a is: 42;
+		play.
+
+	scripter gemStoneSnippet
+		clickOnDoItAndInspectButton;
+		play.
+
+	self assertResultingPaneAfterSyncExecutionFor: scripter.
+
+	scripter gemStoneSnippet
+		// GtSourceCoderEditorId;
+		assertBinding: #a isProxyWithDisplayString: '2';
+		play.
 
 	^ scripter
 ]
@@ -1195,98 +1287,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBinding_writeValidBin
 	self runningServer.
 
 	scripter := self playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2'.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		updateBinding: #a to: 42;
-		assertBinding: #a is: 42;
-		play.
-
-	scripter gemStoneSnippet
-		clickOnDoItAndInspectButton;
-		play.
-
-	self assertResultingPaneAfterSyncExecutionFor: scripter.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		assertBinding: #a isProxyWithDisplayString: '2';
-		play.
-
-	^ scripter
-]
-
-{ #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_invalidBinding [
-	<gtExample>
-	<return: #AssertionFailure>
-	| scripter |
-	self runningServer.
-
-	scripter := self
-			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
-a + 0'.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		updateBinding: #a to: GspoString new;
-		assertInvalidBinding: #a;
-		play.
-
-	scripter gemStoneSnippet
-		clickOnDoItAndInspectButton;
-		play.
-
-	self assertResultingPaneAfterSyncExecutionFor: scripter.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		assertBinding: #a isProxyWithDisplayString: '2';
-		play.
-
-	^ scripter
-]
-
-{ #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_missingBinding [
-	<gtExample>
-	<return: #AssertionFailure>
-	| scripter |
-	self runningServer.
-
-	scripter := self
-			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
-a + 0'.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		assertBindingNotPresent: #a;
-		play.
-
-	scripter gemStoneSnippet
-		clickOnDoItAndInspectButton;
-		play.
-
-	self assertResultingPaneAfterSyncExecutionFor: scripter.
-
-	scripter gemStoneSnippet
-		// GtSourceCoderEditorId;
-		assertBinding: #a isProxyWithDisplayString: '2';
-		play.
-
-	^ scripter
-]
-
-{ #category : #'examples - execution bindings' }
-GtRemoteGemStonePlaygroundExamples >> playgroundPage_singleBindings_writeFirstReadSecond_validBinding [
-	<gtExample>
-	<return: #AssertionFailure>
-	| scripter |
-	self runningServer.
-
-	scripter := self
-			playgroundPageWithConnectedGemStoneWithSnippetCode: 'a := 2.
-a + 0'.
 
 	scripter gemStoneSnippet
 		// GtSourceCoderEditorId;

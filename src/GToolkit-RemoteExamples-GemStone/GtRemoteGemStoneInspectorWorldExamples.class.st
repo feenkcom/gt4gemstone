@@ -4,7 +4,7 @@ Examples for opening GemStone playground inspector content in a world tab and as
 Class {
 	#name : #GtRemoteGemStoneInspectorWorldExamples,
 	#superclass : #GtRemoteGemStoneBasicPlaygroundExamples,
-	#category : #'GToolkit-RemoteExamples-GemStone-Examples'
+	#category : 'GToolkit-RemoteExamples-GemStone-Examples'
 }
 
 { #category : #examples }

@@ -10,7 +10,7 @@ Class {
 		'currentSessionDisplayLabelComputation',
 		'identifierType'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #private }
@@ -369,10 +369,10 @@ GtGemStoneSessionSelectionElement >> sessionActionsFor: aGtGemStoneSession [
 			aGtGemStoneSession toggleCodeSyncAndAutoCommit.
 			self updateContent ] }.
 			
-	"aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
+	aGtGemStoneSession currentFeatures hasGemStoneTranscriptV1 ifTrue: [ 
 		actions addAll: {
 			'Toggle Transcript' -> [:aStatusLineElement | 
-				aGtGemStoneSession toggleRemoteTranscript ]} ]."
+				aGtGemStoneSession toggleRemoteTranscript ]} ].
 				
 	aGtGemStoneSession isBookmarked 
 		ifTrue: [

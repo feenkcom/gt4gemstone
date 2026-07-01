@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'registry'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Notifications'
+	#category : 'GToolkit-GemStone-Pharo-Notifications'
 }
 
 { #category : #'instance creation' }
