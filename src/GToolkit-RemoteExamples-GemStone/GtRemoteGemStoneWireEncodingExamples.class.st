@@ -421,9 +421,17 @@ GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 GtRemoteGemStoneWireEncodingExamples >> updateCollections [
 	"Ensure that proxy objects are updated as expected"
 	<gtExample>
-	| session array result proxyObject1 proxyObject2 proxyObject3 proxyObject4 checkArray proxyArray |
+	| session array result proxyObject1 proxyObject2 proxyObject3 proxyObject4 checkArray proxyArray minimumVersion |
 	
 	session := self runningServer.
+
+	"Skip this example if the server version is below v1.1.481"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 481.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.481' ].
+
 	proxyObject1 := session evaluateBlockAndWaitReturnProxy: 
 		[ { 1 } ].
 	proxyObject2 := session evaluateBlockAndWaitReturnProxy: 
@@ -481,9 +489,16 @@ GtRemoteGemStoneWireEncodingExamples >> updateCollections [
 GtRemoteGemStoneWireEncodingExamples >> updateDictionary [
 	"Ensure that proxy objects are updated as expected"
 	<gtExample>
-	| session proxy keys |
+	| session proxy keys minimumVersion |
 	
 	session := self runningServer.
+	"Skip this example if the server version is below v1.1.481"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 481.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.481' ].
+
 	proxy := session evaluateBlockAndWaitReturnProxy: 
 		[ Dictionary new ].
 	proxy evaluateAndWait: 'self at: ''k1'' put: 1'.
@@ -498,9 +513,16 @@ GtRemoteGemStoneWireEncodingExamples >> updateDictionary [
 GtRemoteGemStoneWireEncodingExamples >> updateObjects [
 	"Ensure that proxy objects are updated as expected"
 	<gtExample>
-	| session array result proxyObject1 proxyObject2 proxyObject3 object checkObject proxyArray |
+	| session result proxyObject1 proxyObject2 object checkObject minimumVersion |
 	
 	session := self runningServer.
+	"Skip this example if the server version is below v1.1.481"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 481.
+	(session gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: [
+		^ self skip: 'Requires gt4gemstone version >= 1.1.481' ].
+
 	proxyObject1 := session evaluateBlockAndWaitReturnProxy: 
 		[ { 1 } ].
 	proxyObject2 := session evaluateBlockAndWaitReturnProxy: 
