@@ -26,7 +26,10 @@ GtGemStoneCoderNamedBehavior >> behaviorNameDo: aBlock [
 
 { #category : #accessing }
 GtGemStoneCoderNamedBehavior >> computeRealBehaviour [
-	^ session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1})' format: {self behaviorName} ).
+
+	^ session evaluateAndWait: ('(GsCurrentSession currentSession symbolList objectNamed: #{1}){2}' format:
+		{ self behaviorName.
+		self isMeta ifTrue: [ ' class' ] ifFalse: [ '' ]. } ).
 ]
 
 { #category : #accessing }
