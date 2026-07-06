@@ -650,7 +650,7 @@ GtRsrProxyServiceClient >> llmRawDataViewsFor: aDataView [
 
 { #category : #'llm views' }
 GtRsrProxyServiceClient >> llmRemoteJsonObject [
-	  ^self  evaluateBlockAndWait: [:anObject |
+	  ^(self  evaluateBlockAndWait: [:anObject |
 			{
 				'class' -> anObject class name asString.
 				'superclass'
@@ -673,7 +673,14 @@ GtRsrProxyServiceClient >> llmRemoteJsonObject [
 									'name' -> aVariable.
 									'class' -> variableValue class asString.
 									'value' -> (variableValue printString )} asDictionary ])asArray
-			} asDictionary] withArguments: {self}
+			} asDictionary] withArguments: {self})
+				at: 'extraViews' put: (((self gtLocalProxyViewsForRemoteSideInContext:GtPhlowContext new)
+					reject: [ :each | 
+					each definingMethod compiledMethod hasPragmaNamed: #gtProxyView ])
+						collect: [ :aView | {
+							'methodName' ->aView definingSelector.
+							'title' -> aView title } asDictionary ]) asArray;
+				yourself
 ]
 
 { #category : #accessing }

@@ -13,14 +13,27 @@ GspoGtRmGeoGpsTrajectory class >> remoteClassName [
 GspoGtRmGeoGpsTrajectory >> gtActionDownloadFor: anAction [ 
 	<gtAction>
 	
-	^ anAction button
+	^(anAction dropdown)
+		priority: 10;
+		icon: BrGlamorousVectorIcons down;
+		withDropdownIndicator;
+		tooltip: 'Download data';
+		items: [:theButton :aHostElement :aMenu | 
+			aMenu addItemLabel: 'STON'
+				action: [:anotherButton |
+					anotherButton phlow spawnObject: (self getSerialized)].
+			aMenu addItemLabel: 'Replication Spec'
+				action: [:anotherButton |
+					anotherButton phlow spawnObject: (self 
+						proxyPerform: #yourself 
+						serializationStrategy:#GtRsrRemoteObjectWireSerializationStrategy)] ]
+		
+	"^ anAction button
 		tooltip: 'Download copy locally';
 		priority: 10;
-		icon: BrGlamorousVectorIcons cloud;
+		icon: BrGlamorousVectorIcons down;
 		action: [ :aButton |
-			aButton phlow spawnObject: (GtRmGeoGpsTrajectory 
-				fromJsonDictionary: (self 
-					proxyPerform: #asJsonDictionary))  ]
+			aButton phlow spawnObject: (self getSerialized)  ]"
 ]
 
 { #category : #accessing }
