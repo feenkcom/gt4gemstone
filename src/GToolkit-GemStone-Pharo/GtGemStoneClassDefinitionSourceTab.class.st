@@ -7,7 +7,7 @@ Class {
 		'compileLabel',
 		'existsSelector'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UiClassDefinition'
+	#category : #'GToolkit-GemStone-Pharo-UiClassDefinition'
 }
 
 { #category : #'private - actions' }

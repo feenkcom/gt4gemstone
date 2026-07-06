@@ -5,7 +5,7 @@ Class {
 		'gemStoneSession',
 		'transcriptProxy'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Transcript'
+	#category : #'GToolkit-GemStone-Pharo-Transcript'
 }
 
 { #category : #'instance creation' }
@@ -88,19 +88,6 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 ]
 
 { #category : #'gt - extensions' }
-GtGemStoneRemoteTranscript >> gtActionsGsSessionFor: anAction [
-	<gtAction>
-	<gtToolAction>
-	
-	^(anAction dropdown)
-		label: 'GS Session';
-		withDropdownIndicator;
-		priority: 20;
-		items: [ :dropdownButton :aHostElement :aMenu |
-			self addSessionActionsOnMenu: aMenu ].
-]
-
-{ #category : #'gt - extensions' }
 GtGemStoneRemoteTranscript >> gtActionToggleFor: anAction [
 	<gtAction>
 	<gtToolAction>
@@ -129,6 +116,19 @@ GtGemStoneRemoteTranscript >> gtActionUpdateFor: anAction [
 		priority: 15;
 		action: [ :aButton |
 			aButton phlow fireCurrentToolUpdateWish ]
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneRemoteTranscript >> gtActionsGsSessionFor: anAction [
+	<gtAction>
+	<gtToolAction>
+	
+	^(anAction dropdown)
+		label: 'GS Session';
+		withDropdownIndicator;
+		priority: 20;
+		items: [ :dropdownButton :aHostElement :aMenu |
+			self addSessionActionsOnMenu: aMenu ].
 ]
 
 { #category : #'gt - extensions' }

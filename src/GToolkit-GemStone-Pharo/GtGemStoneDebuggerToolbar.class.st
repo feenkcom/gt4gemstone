@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'debuggerMessageEditor'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #callbacks }

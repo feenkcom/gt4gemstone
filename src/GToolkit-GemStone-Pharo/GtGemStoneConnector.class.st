@@ -17,7 +17,7 @@ Class {
 		'iconName',
 		'maxKeepAlive'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #'api - announcer' }

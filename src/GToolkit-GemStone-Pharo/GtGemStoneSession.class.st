@@ -33,7 +33,7 @@ Class {
 		'sessionNrsString',
 		'sessionParameters'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }

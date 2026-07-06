@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneMethodCodeSyncSignal,
 	#superclass : #GtGemStoneCodeSyncSignal,
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #accessing }

@@ -4,7 +4,7 @@ Convenience methods for managing serialisation
 Class {
 	#name : #GtGemStoneSerialisationManager,
 	#superclass : #Object,
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #replication }

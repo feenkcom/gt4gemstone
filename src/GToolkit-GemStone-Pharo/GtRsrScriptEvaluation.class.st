@@ -5,7 +5,7 @@ Class {
 		'script',
 		'frameContext'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Services'
+	#category : #'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #evaluating }

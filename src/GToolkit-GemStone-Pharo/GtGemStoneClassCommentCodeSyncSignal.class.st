@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneClassCommentCodeSyncSignal,
 	#superclass : #GtGemStoneClassCodeSyncSignal,
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }

@@ -6,7 +6,7 @@ Class {
 		'sessionList',
 		'elementUpdater'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }
@@ -31,6 +31,11 @@ GtGemStoneSessionsCardWidget class >> addToHomeSectionCardsContainer: cardsConta
 					c frame vertical alignCenter ]))
 ]
 
+{ #category : #callbacks }
+GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
+	self requestContentUpdate
+]
+
 { #category : #private }
 GtGemStoneSessionsCardWidget >> activeMark [
 
@@ -40,11 +45,6 @@ GtGemStoneSessionsCardWidget >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #callbacks }
-GtGemStoneSessionsCardWidget >> actOnGemStoneSessionAnnouncement [
-	self requestContentUpdate
 ]
 
 { #category : #actions }

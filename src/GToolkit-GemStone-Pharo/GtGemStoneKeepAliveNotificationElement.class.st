@@ -8,8 +8,14 @@ Class {
 		'statesPane',
 		'sessionList'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Notifications'
+	#category : #'GToolkit-GemStone-Pharo-Notifications'
 }
+
+{ #category : #accessing }
+GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
+	super actOnElementDetached.
+	self clearContent.
+]
 
 { #category : #'private - accessing' }
 GtGemStoneKeepAliveNotificationElement >> activeMark [
@@ -20,12 +26,6 @@ GtGemStoneKeepAliveNotificationElement >> activeMark [
 			c horizontal matchParent.
 			c vertical fitContent ];
 		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #accessing }
-GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
-	super actOnElementDetached.
-	self clearContent.
 ]
 
 { #category : #'private - accessing' }
