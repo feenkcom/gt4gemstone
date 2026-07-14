@@ -772,9 +772,17 @@ GtGemStoneSession >> evaluateAndWaitReturnProxy: remoteScript for: anObject inFr
 
 { #category : #'actions - evaluate' }
 GtGemStoneSession >> evaluateAsRemoteStream: aString [
-	^ GtRemoteInspectorListingBufferedStream itemsProvider: ( self
-		evaluateAndWait: ('({1}) asGPhlowItemsIterator' 
-			format: {aString}))
+	^ GtRemoteInspectorListingBufferedStream 
+		itemsProvider: ((self evaluateAndWaitReturnProxy: aString) 
+			asGtProxyObject proxyPerform: #asGPhlowItemsIterator)
+]
+
+{ #category : #'actions - evaluate' }
+GtGemStoneSession >> evaluateAsRemoteStreamBlock: aBlock withArguments: anArray [
+	^ GtRemoteInspectorListingBufferedStream itemsProvider: (self
+			evaluateBlockAndWait: [ :targetBlock :targetArguments |
+				(targetBlock valueWithArguments: targetArguments) asGPhlowItemsIterator  ]
+			withArguments: { aBlock .anArray  })
 ]
 
 { #category : #'actions - evaluate script' }

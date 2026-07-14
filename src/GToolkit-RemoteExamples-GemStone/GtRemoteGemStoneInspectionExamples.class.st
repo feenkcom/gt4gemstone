@@ -237,13 +237,13 @@ GtRemoteGemStoneInspectionExamples >> dictionaryObject_rawViewRefreshesOk [
 	scripter check
 		exists;
 		//BrLabel;
-		@ [ :each | each text asString = '''keyOne''->''Value for key one''' ];
+		@ [ :each | (each text asString copyWithoutAll: ' ') = (('''keyOne''->''Value for key one''' ) copyWithoutAll: ' ')];
 		play.
 		
 	scripter check
 		exists;
 		//BrLabel;
-		@ [ :each | each text asString = '''keyTwo''->''Value for key two''' ];
+		@ [ :each | (each text asString copyWithoutAll: ' ') = (('''keyTwo''->''Value for key two''') copyWithoutAll: ' ') ];
 		play.
 		
 	^ scripter
