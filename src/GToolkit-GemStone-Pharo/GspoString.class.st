@@ -67,6 +67,17 @@ GspoString >> gtCharactersFor: aView [
 ]
 
 { #category : #accessing }
+GspoString >> gtHexDumpFor: aView [
+	<gtView>
+
+	^ aView forward
+			title: 'Hex dump';
+			priority: 70;
+			object: [ self limitedDisplayString  ];
+			view: #gtHexDumpFor:
+]
+
+{ #category : #accessing }
 GspoString >> gtLiveFor: aView [
 	<gtView>
 
@@ -82,7 +93,7 @@ GspoString >> limitedDisplayString [
 	"Answer the receiver, up to the first 1000 characters"
 
 	^ self evaluateAndWait:
-'self size < 1000
+'self size < 10000
 	ifTrue: [ self ]
 	ifFalse: [ (self copyFrom: 1 to: 997), ''...'' ]'
 ]
