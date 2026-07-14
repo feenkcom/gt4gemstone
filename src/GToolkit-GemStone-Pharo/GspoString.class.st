@@ -63,7 +63,7 @@ GspoString >> gtCharactersFor: aView [
 					on: NotFound
 					do: [ 'N/A' ] ];
 		send: [ :each :selection |
-			self proxyPerformReturnProxy: #at: withArguments: {selection first}  ]
+			(self proxyPerformReturnProxy: #at: withArguments: {selection first}) asGtBareProxyObject  ]
 ]
 
 { #category : #accessing }
