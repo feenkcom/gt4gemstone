@@ -11,7 +11,7 @@ Class {
 		'libraryPath',
 		'gemstoneVersion'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }

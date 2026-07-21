@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoBehavior,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #initialization }

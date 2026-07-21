@@ -7,7 +7,7 @@ Class {
 		'currentTab',
 		'toolbarContainer'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UiClassDefinition'
+	#category : 'GToolkit-GemStone-Pharo-UiClassDefinition'
 }
 
 { #category : #'private - ui' }

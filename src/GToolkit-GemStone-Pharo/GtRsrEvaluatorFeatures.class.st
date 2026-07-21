@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'features'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Services'
+	#category : 'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #'instance creation' }

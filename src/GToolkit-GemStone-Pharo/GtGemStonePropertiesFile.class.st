@@ -8,7 +8,7 @@ The properties file is not normally manipulated directly, but through the regist
 Class {
 	#name : #GtGemStonePropertiesFile,
 	#superclass : #GtPropertiesFile,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #adding }

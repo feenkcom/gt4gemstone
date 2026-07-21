@@ -11,7 +11,7 @@ Class {
 	#classVars : [
 		'ObjectMap'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }
@@ -68,15 +68,6 @@ GtRsrProxyServiceClient class >> subclassForRemoteClass: aSymbol [
 		detect: [ :each | each remoteClassMatcher value: aSymbol ]
 		ifNone: [ nil ].
 
-]
-
-{ #category : #private }
-GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
-
-	_id := id.
-	_connection := connection.
-	remoteSelf := anObject.
-	remoteClass := aString.
 ]
 
 { #category : #converting }
@@ -881,4 +872,13 @@ GtRsrProxyServiceClient >> withCacheSend: aMessage computation: aBlockClosure [
 GtRsrProxyServiceClient >> withUnarySelectorsCache [
 	cacheStrategy := (GtProxyCacheStrategy new)
 		matchAllUnarySelectors
+]
+
+{ #category : #private }
+GtRsrProxyServiceClient >> _id: id connection: connection remoteSelf: anObject remoteClass: aString [
+
+	_id := id.
+	_connection := connection.
+	remoteSelf := anObject.
+	remoteClass := aString.
 ]

@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'session'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Announcements'
+	#category : 'GToolkit-GemStone-Pharo-Announcements'
 }
 
 { #category : #'instance creation' }

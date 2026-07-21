@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'debugger'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : 'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #accessing }
