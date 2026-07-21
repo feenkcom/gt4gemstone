@@ -1,5 +1,5 @@
 Class {
 	#name : #GtGemStoneAnnouncement,
 	#superclass : #Announcement,
-	#category : #'GToolkit-GemStone-Pharo-Announcements'
+	#category : 'GToolkit-GemStone-Pharo-Announcements'
 }

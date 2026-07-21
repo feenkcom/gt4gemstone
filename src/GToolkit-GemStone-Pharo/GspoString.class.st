@@ -1,7 +1,7 @@
 Class {
 	#name : #GspoString,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : #'GToolkit-GemStone-Pharo-Client'
+	#category : 'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }
@@ -95,7 +95,7 @@ GspoString >> limitedDisplayString [
 	^ self evaluateAndWait:
 'self size < 10000
 	ifTrue: [ self ]
-	ifFalse: [ (self copyFrom: 1 to: 997), ''...'' ]'
+	ifFalse: [ (self copyFrom: 1 to: 9997), ''...'' ]'
 ]
 
 { #category : #accessing }

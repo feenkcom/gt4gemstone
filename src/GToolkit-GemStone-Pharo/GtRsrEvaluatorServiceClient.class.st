@@ -5,7 +5,7 @@ Class {
 		'gtSession',
 		'versionedEvaluator'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Services'
+	#category : 'GToolkit-GemStone-Pharo-Services'
 }
 
 { #category : #actions }

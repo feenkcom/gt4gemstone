@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'remoteTranscript'
 	],
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }

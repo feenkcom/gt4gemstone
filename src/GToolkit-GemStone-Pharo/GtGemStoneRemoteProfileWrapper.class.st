@@ -7,7 +7,7 @@ Class {
 	#classInstVars : [
 		'current'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Utilities'
+	#category : 'GToolkit-GemStone-Pharo-Utilities'
 }
 
 { #category : #accessing }

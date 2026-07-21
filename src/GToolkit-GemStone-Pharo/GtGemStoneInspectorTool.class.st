@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneInspectorTool,
 	#superclass : #GtRemoteInspectorTool,
-	#category : #'GToolkit-GemStone-Pharo-Phlow Tool'
+	#category : 'GToolkit-GemStone-Pharo-Phlow Tool'
 }
 
 { #category : #accessing }

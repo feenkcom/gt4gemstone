@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneSessionsCardWidgetAddSessionButtonId,
 	#superclass : #BlElementUniqueId,
-	#category : #'GToolkit-GemStone-Pharo-UI'
+	#category : 'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #accessing }
