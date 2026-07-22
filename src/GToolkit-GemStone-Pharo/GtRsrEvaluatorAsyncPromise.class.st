@@ -10,7 +10,7 @@ Class {
 		'serializationStrategy',
 		'evaluationMutex'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Promises'
+	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
 { #category : #accessing }
@@ -155,18 +155,18 @@ GtRsrEvaluatorAsyncPromise >> printOn: aStream [
 		aStream << state ]
 ]
 
-{ #category : #accessing }
-GtRsrEvaluatorAsyncPromise >> resolvedValue [
-	self assert: [ value ~~ self ].
-	
-	^ value
-]
-
 { #category : #resolving }
 GtRsrEvaluatorAsyncPromise >> resolveWithEvaluationResult: evaluationResult [ 
 	evaluationResult isEvaluationCancelledResult 
 		ifTrue: [ self breakWithEvaluationResult: evaluationResult ]
 		ifFalse: [ self fulfillWithEvaluationResult: evaluationResult ]
+]
+
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> resolvedValue [
+	self assert: [ value ~~ self ].
+	
+	^ value
 ]
 
 { #category : #actions }

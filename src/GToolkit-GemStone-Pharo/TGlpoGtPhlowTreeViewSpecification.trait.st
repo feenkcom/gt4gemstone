@@ -1,6 +1,6 @@
 Trait {
 	#name : #TGlpoGtPhlowTreeViewSpecification,
-	#category : 'GToolkit-GemStone-Pharo-Stubs'
+	#category : #'GToolkit-GemStone-Pharo-Stubs'
 }
 
 { #category : #accessing }

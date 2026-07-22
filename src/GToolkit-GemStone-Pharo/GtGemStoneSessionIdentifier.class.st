@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneSessionIdentifier,
 	#superclass : #Object,
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #'lepiter-store' }

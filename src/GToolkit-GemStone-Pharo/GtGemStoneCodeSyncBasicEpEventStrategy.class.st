@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneCodeSyncBasicEpEventStrategy,
 	#superclass : #GtGemStoneCodeSyncEpEventStrategy,
-	#category : 'GToolkit-GemStone-Pharo-CodeSync'
+	#category : #'GToolkit-GemStone-Pharo-CodeSync'
 }
 
 { #category : #ui }

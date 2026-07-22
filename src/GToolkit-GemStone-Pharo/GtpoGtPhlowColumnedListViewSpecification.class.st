@@ -3,7 +3,7 @@ Class {
 	#superclass : #GtpoGtPhlowViewSpecification,
 	#traits : 'TGlpoGtPhlowListingViewSpecification',
 	#classTraits : 'TGlpoGtPhlowListingViewSpecification classTrait',
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }

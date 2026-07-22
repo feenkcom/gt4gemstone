@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoGtGemStoneEvaluationContext,
 	#superclass : #GtRsrProxyServiceClient,
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }

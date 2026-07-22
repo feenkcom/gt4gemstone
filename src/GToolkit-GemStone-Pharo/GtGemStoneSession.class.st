@@ -33,7 +33,7 @@ Class {
 		'sessionNrsString',
 		'sessionParameters'
 	],
-	#category : 'GToolkit-GemStone-Pharo-Client'
+	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
 { #category : #accessing }
@@ -1378,11 +1378,22 @@ GtGemStoneSession >> gtViewTranscriptFor: aView [
 		priority: 21;
 		object: [ self remoteTranscript ];
 		view: #gtViewTranscriptFor:;
+		actionUpdateButton;
 		actionButtonIcon: BrGlamorousVectorIcons inspect 
 			tooltip: 'Inspect transcript wrapper'
 			action: [ :aButton  |
 				aButton phlow 
-					spawnObject: self remoteTranscript ]
+					spawnObject: aButton phlow forwardViewObjectFromViewAction  ];
+		actionButtonLabel: 'Toggle' 
+			tooltip: 'Toggle the enable/disable status of the remote transcript'
+			action: [ :aButton :aTab |
+				aButton phlow forwardViewObjectFromViewAction toggleRemoteTranscript.
+				aButton phlow fireViewUpdateWish ];
+		actionButtonIcon: BrGlamorousVectorIcons bin 
+			 tooltip: 'Clear the transcript content'
+			 action: [:aButton :aTab |
+			 	aButton phlow forwardViewObjectFromViewAction clearRemoteTranscript.
+			 	aButton phlow fireViewUpdateWish ]
 ]
 
 { #category : #testing }

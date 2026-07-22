@@ -1,7 +1,7 @@
 Class {
 	#name : #GtpoGtPhlowForwardViewSpecification,
 	#superclass : #GtpoGtPhlowViewSpecification,
-	#category : 'GToolkit-GemStone-Pharo-Proxies'
+	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
 { #category : #accessing }

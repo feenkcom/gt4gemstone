@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'contentSelector'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UiClassDefinition'
+	#category : #'GToolkit-GemStone-Pharo-UiClassDefinition'
 }
 
 { #category : #accessing }

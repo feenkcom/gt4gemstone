@@ -5,7 +5,7 @@ Class {
 		'connectorViewModel',
 		'saveButton'
 	],
-	#category : 'GToolkit-GemStone-Pharo-UI'
+	#category : #'GToolkit-GemStone-Pharo-UI'
 }
 
 { #category : #'instance creation' }
