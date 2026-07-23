@@ -52,7 +52,7 @@ GtGemStoneRemoteTranscript >> gemStoneSession [
 	^ gemStoneSession
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #'gt-actions' }
 GtGemStoneRemoteTranscript >> gtActionClearFor: anAction [
 	<gtAction>
 	<gtToolAction>
@@ -60,6 +60,7 @@ GtGemStoneRemoteTranscript >> gtActionClearFor: anAction [
 	self hasTranscriptProxy ifFalse: [ ^ anAction noAction ].
 
 	^(anAction button)
+		id: GtGemStoneRemoteTranscriptClearButtonId;
 		label: 'Clear';
 		icon: BrGlamorousVectorIcons bin;
 		tooltip: 'Clear the transcript content';
@@ -69,14 +70,16 @@ GtGemStoneRemoteTranscript >> gtActionClearFor: anAction [
 			aButton phlow fireCurrentToolUpdateWish  ]
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #'gt-actions' }
 GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 	<gtAction>
+	<gtToolAction>
 	
 	^ anAction button
+		id: GtGemStoneRemoteTranscriptInspectProxyButtonId;
 		priority: 50;
 		icon: BrGlamorousVectorIcons inspect;
-		label: 'Proxy';
+		label: 'Label';
 		tooltip: 'Inspect transcript proxy';
 		action: [ :aButton |
 			aButton phlow 
@@ -87,7 +90,7 @@ GtGemStoneRemoteTranscript >> gtActionInspectProxyFor: anAction [
 			mouseCursor: BlCopyCursor new
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #'gt-actions' }
 GtGemStoneRemoteTranscript >> gtActionToggleFor: anAction [
 	<gtAction>
 	<gtToolAction>
@@ -97,6 +100,7 @@ GtGemStoneRemoteTranscript >> gtActionToggleFor: anAction [
 	isEnabled := self isEnabled.
 
 	^(anAction button)
+		id: GtGemStoneRemoteTranscriptToggleButtonId;
 		label: (isEnabled ifTrue: ['Disable'] ifFalse: ['Enable']);
 		tooltip: 'Toggle the enable/disable status of the remote transcript';
 		priority: 5;
@@ -112,18 +116,20 @@ GtGemStoneRemoteTranscript >> gtActionUpdateFor: anAction [
 
 	^(anAction button)
 		tooltip: 'Update the content of the transcript';
+		id: GtGemStoneRemoteTranscriptRefreshContentButtonId;
 		icon: BrGlamorousVectorIcons refresh;
 		priority: 15;
 		action: [ :aButton |
 			aButton phlow fireCurrentToolUpdateWish ]
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #'gt-actions' }
 GtGemStoneRemoteTranscript >> gtActionsGsSessionFor: anAction [
 	<gtAction>
 	<gtToolAction>
 	
 	^(anAction dropdown)
+		id: GtGemStoneRemoteTranscriptSessionButtonId;
 		label: 'GS Session';
 		withDropdownIndicator;
 		priority: 20;
@@ -160,6 +166,9 @@ GtGemStoneRemoteTranscript >> gtViewTranscriptFor: aView [
 	<gtView>
 	<gtToolView>
 	
+	(transcriptProxy isNil or: [transcriptProxy isProxyObjectActive not])
+		ifTrue: [ ^ aView empty ].
+	
 	^ aView remoteForward
 		title: 'Transcript';
 		priority: 10;
@@ -186,7 +195,8 @@ GtGemStoneRemoteTranscript >> initializeTranscriptProxy [
 
 { #category : #testing }
 GtGemStoneRemoteTranscript >> isEnabled [
-	^ transcriptProxy proxyPerform: #isEnabled autoCommit: false 
+	^ transcriptProxy isProxyObjectActive and: [ 
+		transcriptProxy proxyPerform: #isEnabled autoCommit: false  ]
 ]
 
 { #category : #testing }
