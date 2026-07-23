@@ -6,7 +6,7 @@ Class {
 	#instVars : [
 		'server'
 	],
-	#category : #'GToolkit-RemoteExamples-GemStone-Examples'
+	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
 { #category : #private }
@@ -38,8 +38,8 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementClearTrans
 	<after: #stopServer>
 	<return: #BlScripter>
 	<noTest>
-	| scripter |
-	
+	| scripter | 
+	 
 	self writeTranscriptText: 'testing'.
 	scripter := self defaultObjectToolElementShowsTranscriptContents.
 	
