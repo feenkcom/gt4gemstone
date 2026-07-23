@@ -40,14 +40,8 @@ GtGemStoneRemoteTranscriptExamples >> currentRemoteTranscript [
 GtGemStoneRemoteTranscriptExamples >> currentRemoteTranscript_inspection [
 	<gtExample>
 	<return: #AssertionFailure>
-	self isTranscriptSupported ifFalse: [ ^ self ].
 
 	^ self assertObjectPhlowViewsFor: self currentRemoteTranscript
-]
-
-{ #category : #testing }
-GtGemStoneRemoteTranscriptExamples >> isTranscriptSupported [
-	^ self runningServer currentFeatures hasGemStoneTranscriptV1 
 ]
 
 { #category : #examples }
@@ -55,7 +49,6 @@ GtGemStoneRemoteTranscriptExamples >> toggleTranscriptState [
 	<gtExample>
 	<return: #AssertionFailure>
 	| remoteTranscript currentState |
-	self isTranscriptSupported ifFalse: [ ^ self ].
 
 	remoteTranscript := self currentRemoteTranscript.
 	currentState := remoteTranscript isEnabled.
@@ -71,7 +64,6 @@ GtGemStoneRemoteTranscriptExamples >> toggleTranscriptState [
 GtGemStoneRemoteTranscriptExamples >> transcriptIsDisableByDefault [
 	<gtExample>
 	<return: #AssertionFailure>
-	self isTranscriptSupported ifFalse: [ ^ self ].
 
 	self assert: self currentRemoteTranscript isEnabled not
 ]
@@ -81,7 +73,6 @@ GtGemStoneRemoteTranscriptExamples >> writeRemotelyToTranscriptWhenDisabled [
 	<gtExample>
 	<return: #AssertionFailure>
 	| remoteTranscript result |
-	self isTranscriptSupported ifFalse: [ ^ self ].
 
 	remoteTranscript := self currentRemoteTranscript.
 	result := self runningServer
@@ -98,7 +89,6 @@ GtGemStoneRemoteTranscriptExamples >> writeRemotelyToTranscriptWhenEnabled [
 	<gtExample>
 	<return: #AssertionFailure>
 	| remoteTranscript result |
-	self isTranscriptSupported ifFalse: [ ^ self ].
 
 	remoteTranscript := self currentRemoteTranscript.
 	result := self runningServer

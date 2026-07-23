@@ -1370,8 +1370,6 @@ GtGemStoneSession >> gtViewTranscriptFor: aView [
 	<gtView>
 
 	self isRunning ifFalse: [ ^ aView empty ].
-	self currentFeatures hasGemStoneTranscriptV1 ifFalse: [ ^ aView empty ].
-	
 	
 	^ aView forward
 		title: 'Transcript';

@@ -139,8 +139,6 @@ GtGemStoneAsyncPromiseResolution >> gtViewSummaryFor: aView [
 GtGemStoneAsyncPromiseResolution >> gtViewTranscriptFor: aView [
 	<gtView>
 
-	self gemStoneSession currentFeatures hasGemStoneTranscriptV1 
-		ifFalse: [ ^ aView empty ].
 	self gemStoneSession isRunning ifFalse: [ ^ aView empty ].
 	
 	^ aView forward

@@ -115,8 +115,7 @@ GtGemStoneRemoteSessionFeatures >> hasGemStoneFeaturesV1 [
 
 { #category : #'testing - features' }
 GtGemStoneRemoteSessionFeatures >> hasGemStoneTranscriptV1 [
-	^ self isSessionRunning and: [ 
-		self gt4gemstoneVersion >= GtGemStoneSemanticVersionNumber v1_0_1502 ]
+	^ self isSessionRunning 
 ]
 
 { #category : #testing }
