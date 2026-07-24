@@ -17,7 +17,6 @@ GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey is: anObject [
 					ifPresent: [ :aBindingValue |
 						aBindingValue = anObject ]
 					ifAbsent: [false] ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
@@ -36,7 +35,6 @@ GtGemStoneSnippetCoderStep >> assertBinding: aBindingKey isProxyWithDisplayStrin
 						aBindingValue class = GtGsBareProxy and: [
 							aBindingValue gtDisplayString = aString ]  ]
 					ifAbsent: [false] ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
@@ -53,7 +51,6 @@ GtGemStoneSnippetCoderStep >> assertBindingNotPresent: aBindingKey [
 					bindingValueOf: aBindingKey
 					ifPresent: [ :aBindingValue | false ]
 					ifAbsent: [ true ] ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
@@ -73,7 +70,6 @@ GtGemStoneSnippetCoderStep >> assertBindingValueFor: aBindingKey satisfies: aBlo
 					ifPresent: [ :aBindingValue |
 						aBlock cull: aBindingValue ]
 					ifAbsent: [false] ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
@@ -109,7 +105,6 @@ GtGemStoneSnippetCoderStep >> assertEvaluationResultIndicatorExists [
 	anAssertStep := self assert
 			label: 'Assert evaluation result indicator button exists';
 			exists;
-			referenceSender;
 			onParentStepTarget: self;
 			// GtCoderEvaluationResultAttributeElementId.
 
@@ -134,7 +129,6 @@ GtGemStoneSnippetCoderStep >> assertInvalidBinding: aBindingKey [
 							name: aBindingKey;
 							gemstoneSession: session) isInvalidBinding ]
 					ifAbsent: [false] ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
@@ -155,7 +149,6 @@ GtGemStoneSnippetCoderStep >> clickOnDoItAndInspectButton [
 	| aClickStep |
 	aClickStep := self click
 			label: 'Click on do it and inspect button';
-			referenceSender;
 			onParentStepTarget: self;
 			// GtSourceCoderDoItAndGoActionId.
 	^ aClickStep
@@ -192,7 +185,6 @@ GtGemStoneSnippetCoderStep >> updateBinding: aBindingKey to: anObject [
 				(aCoderElement textualCoderViewModel pharoBindings 
 					bindingOf: aBindingKey)
 						value: anObject ];
-			referenceSender;
 			onParentStepTarget: self.
 
 	^ anAssertStep
