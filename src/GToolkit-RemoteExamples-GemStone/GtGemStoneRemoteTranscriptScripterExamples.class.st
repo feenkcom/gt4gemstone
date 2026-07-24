@@ -37,7 +37,6 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementClearTrans
 	<gtExample>
 	<after: #stopServer>
 	<return: #BlScripter>
-	<noTest>
 	| scripter | 
 	 
 	self writeTranscriptText: 'testing'.
@@ -65,7 +64,6 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementDisableEna
 	<gtExample>
 	<after: #stopServer>
 	<return: #BlScripter>
-	<noTest>
 	| scripter |
 	
 	self setTranscriptEnabledRemotely: true.
@@ -117,7 +115,6 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementRefreshTra
 	<gtExample>
 	<after: #stopServer>
 	<return: #BlScripter>
-	<noTest>
 	| scripter |
 	
 	self clearTranscriptRemotely.
