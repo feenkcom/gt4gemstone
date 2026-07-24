@@ -263,36 +263,6 @@ GtGemStoneExpandableDebuggerElement >> defaultMargin [
 	^ 5
 ]
 
-{ #category : #initialization }
-GtGemStoneExpandableDebuggerElement >> defineShortcuts [
-	self
-		addShortcut: ((BlShortcutWithAction new)
-					combination: ((BlKeyCombination builder)
-								key: BlKeyboardKey F7;
-								build);
-					action: [:anEvent :aShortcut | self gsStepOver]);
-		addShortcut: ((BlShortcutWithAction new)
-					combination: ((BlKeyCombination builder)
-								key: BlKeyboardKey F5;
-								build);
-					action: [:anEvent :aShortcut | self gsStepInto]);
-		addShortcut: ((BlShortcutWithAction new)
-					combination: ((BlKeyCombination builder)
-								key: BlKeyboardKey F6;
-								build);
-					action: [:anEvent :aShortcut | self gsStepThrough]);
-		addShortcut: ((BlShortcutWithAction new)
-					combination: ((BlKeyCombination builder)
-								key: BlKeyboardKey F9;
-								build);
-					action: [:anEvent :aShortcut | self gsResume]);
-		addShortcut: ((BlShortcutWithAction new)
-					combination: ((BlKeyCombination builder)
-								key: BlKeyboardKey F8;
-								build);
-					action: [:anEvent :aShortcut | self gsRestartFrame])
-]
-
 { #category : #'private - accessing' }
 GtGemStoneExpandableDebuggerElement >> exception [
 
@@ -347,7 +317,27 @@ GtGemStoneExpandableDebuggerElement >> initialize [
 			c horizontal matchParent].
 	self userData at: #debuggerContainer put: #debuggerElement.
 	self addChild: self buildMainContent.
-	self defineShortcuts
+	self initializeShortcuts
+]
+
+{ #category : #initialization }
+GtGemStoneExpandableDebuggerElement >> initializeShortcuts [
+	self
+		addShortcut: ((BlShortcutWithAction new)
+					debuggerShortcutId: GtDebuggerShortcutIds default stepOverShortcutId;
+					action: [:anEvent :aShortcut | self gsStepOver]);
+		addShortcut: ((BlShortcutWithAction new)
+					debuggerShortcutId: GtDebuggerShortcutIds default stepIntoShortcutId;
+					action: [:anEvent :aShortcut | self gsStepInto]);
+		addShortcut: ((BlShortcutWithAction new)
+					debuggerShortcutId: GtDebuggerShortcutIds default stepThroughShortcutId;
+					action: [:anEvent :aShortcut | self gsStepThrough]);
+		addShortcut: ((BlShortcutWithAction new)
+					debuggerShortcutId: GtDebuggerShortcutIds default resumeShortcutId;
+					action: [:anEvent :aShortcut | self gsResume]);
+		addShortcut: ((BlShortcutWithAction new)
+					debuggerShortcutId: GtDebuggerShortcutIds default restartShortcutId;
+					action: [:anEvent :aShortcut | self gsRestartFrame])
 ]
 
 { #category : #testing }
