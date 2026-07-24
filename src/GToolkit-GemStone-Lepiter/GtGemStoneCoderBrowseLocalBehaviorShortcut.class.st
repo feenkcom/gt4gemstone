@@ -13,7 +13,8 @@ GtGemStoneCoderBrowseLocalBehaviorShortcut >> description [
 GtGemStoneCoderBrowseLocalBehaviorShortcut >> initialize [
 	super initialize.
 	
-	combination := BlKeyCombination primaryB
+	combination := BlKeyCombination primaryB.
+	self coderShortcutId: GtCoderShortcutIds default gemStoneBrowseLocalBehaviorShortcutId
 ]
 
 { #category : #accessing }
