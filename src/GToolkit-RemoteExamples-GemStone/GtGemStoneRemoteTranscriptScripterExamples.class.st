@@ -10,6 +10,16 @@ Class {
 }
 
 { #category : #private }
+GtGemStoneRemoteTranscriptScripterExamples >> appendTranscriptText: aString [
+	self runningServer ensureRunning.
+	self runningServer evaluateBlockAndWaitReturnProxy: [ :aStringValue |
+		GtGemStoneTranscript current enable.
+		GtGemStoneTranscript current lfShow: aStringValue.
+		true ]
+		withArguments: { aString }
+]
+
+{ #category : #private }
 GtGemStoneRemoteTranscriptScripterExamples >> clearTranscriptRemotely [
 	self runningServer ensureRunning.
 	self runningServer evaluateBlockAndWaitReturnProxy: [
@@ -39,7 +49,7 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementClearTrans
 	<return: #BlScripter>
 	| scripter | 
 	 
-	self writeTranscriptText: 'testing'.
+	self writeClearingContentTranscriptText: 'testing'.
 	scripter := self defaultObjectToolElementShowsTranscriptContents.
 	
 	scripter multipleViewsToolStep
@@ -128,9 +138,7 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementRefreshTra
 			satisfies: [ :anEditor |
 				anEditor editor text asString isEmpty] ].
 			
-	self runningServer evaluateBlockAndWaitReturnProxy: [
-		GtGemStoneTranscript current enable.
-		GtGemStoneTranscript current lfShow: 'testing' ].
+	self appendTranscriptText: 'testing'.
 		
 	scripter multipleViewsToolStep
 		label: 'Click the refresh button';
@@ -175,7 +183,7 @@ GtGemStoneRemoteTranscriptScripterExamples >> defaultObjectToolElementShowsTrans
 	<return: #BlScripter>
 	| scripter |
 	
-	self writeTranscriptText: 'testing'.
+	self writeClearingContentTranscriptText: 'testing'.
 	scripter := self defaultObjectToolElementShowsTranscriptTabsAndActions.
 	
 	scripter assertStep: [ :step |
@@ -243,7 +251,7 @@ GtGemStoneRemoteTranscriptScripterExamples >> setTranscriptEnabledRemotely: aBoo
 ]
 
 { #category : #private }
-GtGemStoneRemoteTranscriptScripterExamples >> writeTranscriptText: aString [
+GtGemStoneRemoteTranscriptScripterExamples >> writeClearingContentTranscriptText: aString [
 	self runningServer ensureRunning.
 	self runningServer evaluateBlockAndWaitReturnProxy: [ :aStringValue |
 		GtGemStoneTranscript current enable.
