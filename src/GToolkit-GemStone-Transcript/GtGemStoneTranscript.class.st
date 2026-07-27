@@ -5,8 +5,23 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneTranscript class >> activateTranscript [
+	self current enable
+]
+
+{ #category : #accessing }
+GtGemStoneTranscript class >> clearCurrent [
+	self current clearContent
+]
+
+{ #category : #accessing }
 GtGemStoneTranscript class >> current [
 	^ GtGemStoneTranscriptHandler currentTranscript
+]
+
+{ #category : #accessing }
+GtGemStoneTranscript class >> deactivateTranscript [
+	self current disable
 ]
 
 { #category : #accessing }
