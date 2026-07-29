@@ -15,7 +15,7 @@ GtpoGtRemotePhlowPictureViewSpecification >> retrieveData [
 	
 	dictionary := self retrievePrimitiveData.
 	data := GtRemotePhlowBasicViewData fromDictionary: dictionary.
-	data isError ifTrue: [ data beRemoteException ].
+	data isPhlowErrorData ifTrue: [ data beRemoteException ].
 	
 	^data
 ]
