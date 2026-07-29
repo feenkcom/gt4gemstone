@@ -32,14 +32,12 @@ GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilData [
 
 { #category : #accessing }
 GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilSpecification [
-	| dictionary specification stencilData |
+	| dictionary specification |
 	
 	dictionary := self retrievePrimitiveStencilSpecificationData.
-	specification := GtRemotePhlowAbstractStencilSpecification fromDictionary: dictionary.
-	stencilData := self retrieveStencilData.
-	stencilData isPhlowErrorData ifTrue: [ 
-		stencilData beRemoteException ].
-	specification stencilData: stencilData.
+	specification := GtRemotePhlowAbstractStencilSpecification 
+		fromDictionary: dictionary.
+	specification initializeForGemStoneStencilSpecification: self.
 	
 	^specification
 ]
