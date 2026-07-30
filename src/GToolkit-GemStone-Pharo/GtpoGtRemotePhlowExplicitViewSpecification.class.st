@@ -13,6 +13,11 @@ GtpoGtRemotePhlowExplicitViewSpecification class >> remoteClassName [
 ]
 
 { #category : #accessing }
+GtpoGtRemotePhlowExplicitViewSpecification >> flushCachedData [
+	^ self proxyPerform: #flushCachedData
+]
+
+{ #category : #accessing }
 GtpoGtRemotePhlowExplicitViewSpecification >> retrievePrimitiveStencilData [
 	^ self proxyPerform: #retrievePrimitiveStencilData
 ]
