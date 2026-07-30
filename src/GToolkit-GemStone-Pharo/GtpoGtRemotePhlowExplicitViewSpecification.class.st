@@ -1,6 +1,9 @@
 Class {
 	#name : #GtpoGtRemotePhlowExplicitViewSpecification,
 	#superclass : #GtpoGtPhlowViewSpecification,
+	#instVars : [
+		'q'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
 
@@ -20,14 +23,10 @@ GtpoGtRemotePhlowExplicitViewSpecification >> retrievePrimitiveStencilSpecificat
 ]
 
 { #category : #accessing }
-GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilData [
-	| dictionary data |
-	
-	dictionary := self retrievePrimitiveStencilData.
-	data := GtRemotePhlowBasicViewData fromDictionary: dictionary.
-	data isPhlowErrorData ifTrue: [ data beRemoteException ].
-	
-	^data
+GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilDataWithSerializerNamed: aDataSerializationStrategyClassName [
+	^ self 
+		proxyPerform: #retrieveStencilData 
+		serializationStrategy: aDataSerializationStrategyClassName.
 ]
 
 { #category : #accessing }
@@ -37,7 +36,6 @@ GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilSpecification [
 	dictionary := self retrievePrimitiveStencilSpecificationData.
 	specification := GtRemotePhlowAbstractStencilSpecification 
 		fromDictionary: dictionary.
-	specification initializeForGemStoneStencilSpecification: self.
 	
 	^specification
 ]
