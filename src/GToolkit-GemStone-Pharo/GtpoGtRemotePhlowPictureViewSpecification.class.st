@@ -23,3 +23,8 @@ GtpoGtRemotePhlowPictureViewSpecification >> retrieveData [
 GtpoGtRemotePhlowPictureViewSpecification >> retrievePrimitiveData [
 	^ self proxyPerform: #retrievePrimitiveData
 ]
+
+{ #category : #accessing }
+GtpoGtRemotePhlowPictureViewSpecification >> retrieveStencilData [
+	^ self retrieveData
+]
