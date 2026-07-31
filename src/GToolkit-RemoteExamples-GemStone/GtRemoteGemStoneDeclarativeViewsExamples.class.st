@@ -120,6 +120,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparis
 { #category : #examples }
 GtRemoteGemStoneDeclarativeViewsExamples >> pictureView [
 	<gtExample>
+	<noTest>
 	
 	(self runningServer gt4gemstoneVersion isZero not and:
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
