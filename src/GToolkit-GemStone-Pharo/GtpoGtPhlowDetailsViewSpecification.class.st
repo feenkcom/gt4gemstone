@@ -9,7 +9,7 @@ GtpoGtPhlowDetailsViewSpecification class >> remoteClassName [
 	^ #GtPhlowDetailsViewSpecification
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 GtpoGtPhlowDetailsViewSpecification >> flushCachedData [
 	^ self proxyPerform: #flushCachedData
 ]
