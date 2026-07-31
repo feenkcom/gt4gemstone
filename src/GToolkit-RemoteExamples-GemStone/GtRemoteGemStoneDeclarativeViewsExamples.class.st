@@ -117,6 +117,17 @@ GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparis
 			objectsForListWithStyledTextForRemoteComparison
 ]
 
+{ #category : #examples }
+GtRemoteGemStoneDeclarativeViewsExamples >> pictureView [
+	<gtExample>
+	
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
+		ifTrue: [ ^ self  ].
+		
+	^ super pictureView
+]
+
 { #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> printForString [
 	^ 'aGtRemotePhlowDeclarativeTestInspectable'
