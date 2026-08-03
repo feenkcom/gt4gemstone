@@ -4135,6 +4135,13 @@ v1_1_362
 	^ self major: 1 minor: 1 patch: 362
 %
 
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_1_533
+
+	^ self major: 1 minor: 1 patch: 533
+%
+
 category: 'accessing'
 classmethod: GtGemStoneSemanticVersionNumber
 versionNumberRegexString
@@ -5567,8 +5574,26 @@ schemaVersion: anObject
 
 category: 'accessing'
 classmethod: GtGemStoneTranscript
+activateTranscript
+	self current enable
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
+clearCurrent
+	self current clearContent
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
 current
 	^ GtGemStoneTranscriptHandler currentTranscript
+%
+
+category: 'accessing'
+classmethod: GtGemStoneTranscript
+deactivateTranscript
+	self current disable
 %
 
 category: 'accessing'
@@ -5707,6 +5732,14 @@ whenEnabledDo: aBlock
 
 ! Class implementation for 'GtGemStoneInImageTranscript'
 
+!		Class methods for 'GtGemStoneInImageTranscript'
+
+category: 'instance creation'
+classmethod: GtGemStoneInImageTranscript
+new
+	^ self basicNew initialize
+%
+
 !		Instance methods for 'GtGemStoneInImageTranscript'
 
 category: 'configuration'
@@ -5738,7 +5771,7 @@ method: GtGemStoneInImageTranscript
 gtViewContentsFor: aView
 	<gtView>
 	
-	^ aView text 
+	^ aView textEditor 
 		title: 'Contents';
 		priority: 10;
 		text: [ contentStream contents ]
