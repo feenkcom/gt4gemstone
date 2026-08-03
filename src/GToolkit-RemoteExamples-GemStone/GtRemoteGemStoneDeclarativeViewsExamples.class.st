@@ -21,6 +21,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> computeStyledTextForTreeNumber: anIn
 { #category : #'as yet unclassified' }
 GtRemoteGemStoneDeclarativeViewsExamples >> detailsView [
 	<gtExample>
+	<after: #stopServer>
 	
 	(self runningServer gt4gemstoneVersion isZero not and:
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
@@ -32,6 +33,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> detailsView [
 { #category : #'as yet unclassified' }
 GtRemoteGemStoneDeclarativeViewsExamples >> detailsViewWithCustomPrinting [
 	<gtExample>
+	<after: #stopServer>
 	
 	(self runningServer gt4gemstoneVersion isZero not and:
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
@@ -120,7 +122,7 @@ GtRemoteGemStoneDeclarativeViewsExamples >> objectsForListWithStyledTextComparis
 { #category : #examples }
 GtRemoteGemStoneDeclarativeViewsExamples >> pictureView [
 	<gtExample>
-	<noTest>
+	<after: #stopServer>
 	
 	(self runningServer gt4gemstoneVersion isZero not and:
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
