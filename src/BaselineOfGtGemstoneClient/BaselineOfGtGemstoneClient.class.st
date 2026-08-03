@@ -33,10 +33,11 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			with: [ spec repository: 'github://feenkcom/gtoolkit-wireencoding:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone-Pharo-BeaconLogging';
+			package: 'GToolkit-GemStone-Pharo-Stubs';
 			package: 'GToolkit-GemStone' with:
 				[ spec requires: #( 'PharoGemStoneFFI' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
-				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging' 'GToolkitWireEncoding') ];
+				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging' 'GToolkitWireEncoding' 'GToolkit-GemStone-Pharo-Stubs') ];
 			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
 			package: 'GToolkit-GemStone-Lepiter' with:
