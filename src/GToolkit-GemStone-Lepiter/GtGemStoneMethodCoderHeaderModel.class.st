@@ -31,9 +31,18 @@ GtGemStoneMethodCoderHeaderModel >> spawnMethodDefiningBehaviorFor: aCoderViewMo
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnMethodReceiverBehaviorFor: aCoderViewModel  from: anElement [
-	aCoderViewModel coderModel explicitProviderBehaviour realBehaviorDo: [ :aGsBehavior |
-		anElement phlow spawnObject:  aGsBehavior ]
+GtGemStoneMethodCoderHeaderModel >> spawnMethodReceiverBehaviorFor: aCoderViewModel from: anElement [
+	"Spawn a method receiver behavior which is either:
+	- #explicitReceiverBehaviour if defined,
+	- or defining method behavior if #explicitReceiverBehaviour is not defined.
+	
+	Explicit receiver behaviour is defined in GemStone side (specification) if the method defining and receiver behavior are same (which is exact opposite compared to Pharo header model at this moment)."
+
+	aCoderViewModel coderModel explicitReceiverBehaviour
+		ifNil: [ self spawnMethodDefiningBehaviorFor: aCoderViewModel from: anElement ]
+		ifNotNil: [ :aReceiverBehavior | 
+			aReceiverBehavior
+				realBehaviorDo: [ :aGsBehavior | anElement phlow spawnObject: aGsBehavior ] ]
 ]
 
 { #category : #'actions - spawning' }
