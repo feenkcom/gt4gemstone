@@ -61,7 +61,7 @@ GtGemStoneContextSpecification >> initializeProviderBehaviorFromFrame: aGsCallFr
 	| selfObjectClass |
 	selfObjectClass := aGsCallFrame selfObjectClass.
 	aGsCallFrame methodClass ~= selfObjectClass ifTrue: [
-		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
+		explicitReceiverBehaviourDetails := GtGemStoneClassBasicDetails 
 			forClass: selfObjectClass ]
 ]
 

@@ -10,33 +10,42 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 	coderSpecification := aCoderViewModel coderModel initialMethodCoderSpecification.
 	
 	coderSpecification explicitProviderBehaviourDetails ifNil:
-		[ providerBehaviourName := aCoderViewModel coderModel methodBehavior
+		[ methodReceiverBehaviorName := aCoderViewModel coderModel methodBehavior
 			behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
-		providerBehaviourIconName := coderSpecification coderClassIconName.
+		methodReceiverBehaviourIconName := coderSpecification coderClassIconName.
 		]
 	ifNotNil: [ :aProviderDetails |
-			methodBehaviourName := aCoderViewModel coderModel methodBehavior
+			methodDefiningBehaviourName := aCoderViewModel coderModel methodBehavior
 				behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
-			methodBehaviourIconName := coderSpecification coderClassIconName.
-			providerBehaviourName := aProviderDetails targetClassName.
-			providerBehaviourIconName := aProviderDetails targetClassIconName ].
+			methodDefiningBehaviourIconName := coderSpecification coderClassIconName.
+			methodReceiverBehaviorName := aProviderDetails targetClassName.
+			methodReceiverBehaviourIconName := aProviderDetails targetClassIconName ].
 
 	packageName := coderSpecification categoryName.
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnMethodBehaviorFor: aCoderViewModel from: anElement [
+GtGemStoneMethodCoderHeaderModel >> spawnMethodDefiningBehaviorFor: aCoderViewModel from: anElement [
 	aCoderViewModel coderModel methodBehavior realBehaviorDo: [ :aGsBehavior |
 		anElement phlow spawnObject:  aGsBehavior ]
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anElement [
-	"No package spawning supported at the moment"
+GtGemStoneMethodCoderHeaderModel >> spawnMethodReceiverBehaviorFor: aCoderViewModel from: anElement [
+	"Spawn a method receiver behavior which is either:
+	- #explicitReceiverBehaviour if defined,
+	- or defining method behavior if #explicitReceiverBehaviour is not defined.
+	
+	Explicit receiver behaviour is defined in GemStone side (specification) if the method defining and receiver behavior are same (which is exact opposite compared to Pharo header model at this moment)."
+
+	aCoderViewModel coderModel explicitReceiverBehaviour
+		ifNil: [ self spawnMethodDefiningBehaviorFor: aCoderViewModel from: anElement ]
+		ifNotNil: [ :aReceiverBehavior | 
+			aReceiverBehavior
+				realBehaviorDo: [ :aGsBehavior | anElement phlow spawnObject: aGsBehavior ] ]
 ]
 
 { #category : #'actions - spawning' }
-GtGemStoneMethodCoderHeaderModel >> spawnProviderBehaviorFor: aCoderViewModel  from: anElement [
-	aCoderViewModel coderModel explicitProviderBehaviour realBehaviorDo: [ :aGsBehavior |
-		anElement phlow spawnObject:  aGsBehavior ]
+GtGemStoneMethodCoderHeaderModel >> spawnPackageFor: aCoderViewModel from: anElement [
+	"No package spawning supported at the moment"
 ]
