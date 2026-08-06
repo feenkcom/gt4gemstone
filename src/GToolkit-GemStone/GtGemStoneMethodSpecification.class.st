@@ -9,7 +9,7 @@ Class {
 		'protocolName',
 		'categoryName',
 		'coderClassIconName',
-		'explicitProviderBehaviourDetails'
+		'explicitReceiverBehaviourDetails'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -68,7 +68,7 @@ GtGemStoneMethodSpecification >> coderClassName [
 
 { #category : #accessing }
 GtGemStoneMethodSpecification >> explicitProviderBehaviourDetails [
-	^ explicitProviderBehaviourDetails
+	^ explicitReceiverBehaviourDetails
 ]
 
 { #category : #'gt - extensions' }
@@ -102,7 +102,7 @@ GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aC
 ]
 
 { #category : #initialization }
-GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitProvider: aProviderDetails [
+GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitReceiver: aReceiverDetails [
 	self 
 		initializeForClassName: aClassName 
 		iconName: aClassIconName 
@@ -112,7 +112,7 @@ GtGemStoneMethodSpecification >> initializeForClassName: aClassName iconName: aC
 	
 	sourceString := aSourceCode.
 	selector := aSelector.
-	explicitProviderBehaviourDetails := aProviderDetails.
+	explicitReceiverBehaviourDetails := aReceiverDetails.
 ]
 
 { #category : #initialization }
@@ -146,7 +146,7 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 		selector: (aDictionary at: #selector)
 		sourceString: (aDictionary at: #sourceString)
 		protocolName: (aDictionary at: #protocolName)
-		explicitProvider: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
+		explicitReceiver: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
 			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
 				aDictionary at: #explicitProviderBehaviourDetails)]
 			ifFalse: [ nil ])

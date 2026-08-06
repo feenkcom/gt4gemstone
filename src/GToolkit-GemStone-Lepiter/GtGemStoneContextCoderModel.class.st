@@ -35,7 +35,7 @@ GtGemStoneContextCoderModel >> debuggingSession: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneContextCoderModel >> explicitProviderBehaviour [
+GtGemStoneContextCoderModel >> explicitReceiverBehaviour [
 	| targetClassName |
 	initialMethodCoderSpecification ifNil: [ ^ nil ].
 	initialMethodCoderSpecification explicitProviderBehaviourDetails
