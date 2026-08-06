@@ -5,8 +5,7 @@ Trait {
 
 { #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> flushItemsIterator [
-	^ self
-		proxyPerform: #flushItemsIterator
+	^ self proxyPerform: #flushItemsIterator
 ]
 
 { #category : #accessing }
