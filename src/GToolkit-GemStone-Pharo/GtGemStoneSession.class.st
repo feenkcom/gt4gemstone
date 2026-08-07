@@ -1610,6 +1610,13 @@ GtGemStoneSession >> removeSelf [
 ]
 
 { #category : #private }
+GtGemStoneSession >> resetRunningExecutions [
+	"Drops memory of any running executions"
+	
+	activeAsyncExecutions removeAll.
+]
+
+{ #category : #private }
 GtGemStoneSession >> runPostConnectActions [
 	"Run any post-connect actions.
 	These are methods with pragma #gsPostConnectAction"
