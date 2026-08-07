@@ -4,12 +4,6 @@ Trait {
 }
 
 { #category : #accessing }
-TGlpoGtPhlowTreeViewSpecification >> flushItemsIterator [
-	^ self
-		proxyPerform: #flushItemsIterator
-]
-
-{ #category : #accessing }
 TGlpoGtPhlowTreeViewSpecification >> retrieveChildrenForNodeAtPath: aNodePath [
 	^ self
 		proxyPerform: #retrieveChildrenForNodeAtPath:
