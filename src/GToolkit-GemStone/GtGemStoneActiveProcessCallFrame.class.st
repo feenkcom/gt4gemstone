@@ -1,16 +1,16 @@
 Class {
-	#name : 'GtGemStoneActiveProcessCallFrame',
-	#superclass : 'GtGemStoneLocalCallFrame',
-	#category : 'GToolkit-GemStone'
+	#name : #GtGemStoneActiveProcessCallFrame,
+	#superclass : #GtGemStoneLocalCallFrame,
+	#category : #'GToolkit-GemStone'
 }
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneActiveProcessCallFrame >> printClassLabelOn: aStream [
 
 	aStream nextPutAll: '[unknown]'
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 GtGemStoneActiveProcessCallFrame >> printMethodDescriptionOn: aStream [
 	self isForBlock ifTrue: [
 		aStream nextPutAll: '[] in ' ].
@@ -20,7 +20,7 @@ GtGemStoneActiveProcessCallFrame >> printMethodDescriptionOn: aStream [
 			aStream nextPutAll: aSelector ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtGemStoneActiveProcessCallFrame >> selfObject [
 
 	self error: 'Active process call frames don''t know self'
