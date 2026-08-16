@@ -238,6 +238,23 @@ GtGemStoneMethodCoderModel >> existsInTheLocalSystem [
 	^ self localBehavior includesSelector: self selector
 ]
 
+{ #category : #accessing }
+GtGemStoneMethodCoderModel >> explicitReceiverBehaviour [
+	| targetClassName |
+	initialMethodCoderSpecification ifNil: [ ^ nil ].
+	initialMethodCoderSpecification explicitProviderBehaviourDetails
+		ifNil: [ ^ nil ].
+	targetClassName := initialMethodCoderSpecification explicitProviderBehaviourDetails
+			targetClassName.
+
+	^ GtGemStoneCoderBehavior
+		named: ((targetClassName endsWith: ' class')
+			ifTrue: [ targetClassName withoutSuffix:' class' ]
+			ifFalse: [ targetClassName ])
+		isMeta: initialMethodCoderSpecification isMeta
+		inSession: session
+]
+
 { #category : #'api - actions' }
 GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
 	| ast |

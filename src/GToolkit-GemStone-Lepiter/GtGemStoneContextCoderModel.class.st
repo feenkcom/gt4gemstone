@@ -35,23 +35,6 @@ GtGemStoneContextCoderModel >> debuggingSession: anObject [
 ]
 
 { #category : #accessing }
-GtGemStoneContextCoderModel >> explicitReceiverBehaviour [
-	| targetClassName |
-	initialMethodCoderSpecification ifNil: [ ^ nil ].
-	initialMethodCoderSpecification explicitProviderBehaviourDetails
-		ifNil: [ ^ nil ].
-	targetClassName := initialMethodCoderSpecification explicitProviderBehaviourDetails
-			targetClassName.
-
-	^ GtGemStoneCoderBehavior
-		named: ((targetClassName endsWith: ' class')
-			ifTrue: [ targetClassName withoutSuffix:' class' ]
-			ifFalse: [ targetClassName ])
-		isMeta: initialMethodCoderSpecification isMeta
-		inSession: session
-]
-
-{ #category : #accessing }
 GtGemStoneContextCoderModel >> gsMethod [
 	^ targetGsMethod ifNil: [
 		targetGsMethod := self stackFrame method ]
