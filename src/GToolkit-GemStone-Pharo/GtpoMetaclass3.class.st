@@ -153,10 +153,11 @@ GtpoMetaclass3 >> pharoEquivalentDefinitionString [
 			<< 'package: '''.
 		(self class environment classOrTraitNamed: remoteClass) ifNotNil: [ :gtClass |
 			stream << gtClass package name.
-			gtClass tags do: [ :tagName |
-				stream
-					nextPut: $-;
-					<< tagName ] ].
+			gtClass packageTag isUndefined ifFalse: [
+				gtClass packageTag isRoot ifFalse: [ :aPackageName |
+					stream
+						nextPut: $-;
+						<< aPackageName ] ] ].
 		stream
 			<< '''.';
 			cr; cr.
