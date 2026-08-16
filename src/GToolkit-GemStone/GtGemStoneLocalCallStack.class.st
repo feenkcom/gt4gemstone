@@ -86,6 +86,17 @@ GtGemStoneLocalCallStack >> generateIdentifier [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneLocalCallStack >> gtStackFor: aView [
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Stack';
+		priority: 1;
+		items: [ self callFrames ];
+		column: 'Method' text: [ :aStackFrame | aStackFrame methodDescription ]
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [ 
 	<gtView>
 	
