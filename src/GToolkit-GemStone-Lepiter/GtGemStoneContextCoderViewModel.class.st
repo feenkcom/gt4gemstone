@@ -112,7 +112,7 @@ GtGemStoneContextCoderViewModel >> updateProgramCounterRange: aSourceCode [
 			self
 				removeHighlightsWithId: #'debugger--program-counter';
 				addHighlight: (BrTextHighlight
-							id: #'debugger--program-counter'
+							id: self class debuggerTextHighlightId
 							color: BrGlamorousColors debuggerTextHighlightColor)
 					overRange: (BrTextCharacterRange
 							start: (anInterval first min: aSourceText text size)
