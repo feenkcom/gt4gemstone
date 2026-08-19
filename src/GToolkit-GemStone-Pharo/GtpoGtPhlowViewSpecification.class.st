@@ -6,5 +6,5 @@ Class {
 
 { #category : #accessing }
 GtpoGtPhlowViewSpecification >> definingMethod [
-	^ self proxyPerform: #definingMethod
+	^ (self proxyPerform: #definingMethod) asGtBareProxyObject
 ]
