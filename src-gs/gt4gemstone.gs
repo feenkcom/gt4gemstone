@@ -39,6 +39,25 @@ removeallclassmethods AkgDebuggerPlay
 
 doit
 (Object
+	subclass: 'BlockClosureOnProcessExamples'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'Examples for BlockClosure>>#on:withProcessDo:. They exercise normal evaluation, exception handling in the caller process, access to the suspended failing process, handler arity via cull:, and release of the failing process after the handler completes.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods BlockClosureOnProcessExamples
+removeallclassmethods BlockClosureOnProcessExamples
+
+doit
+(Object
 	subclass: 'GtGemStoneCompilationContext'
 	instVarNames: #(receiver frame frameIdentifier frameLevel evaluationContext clientBindings frameBindings)
 	classVars: #()
@@ -366,6 +385,24 @@ removeallmethods GtGemStoneLocalCallFrame
 removeallclassmethods GtGemStoneLocalCallFrame
 
 doit
+(GtGemStoneLocalCallFrame
+	subclass: 'GtGemStoneActiveProcessCallFrame'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneActiveProcessCallFrame
+removeallclassmethods GtGemStoneActiveProcessCallFrame
+
+doit
 (Object
 	subclass: 'GtGemStoneLocalCallStack'
 	instVarNames: #(callFrames gsProcess nextFrameIdentifier)
@@ -400,6 +437,24 @@ true.
 
 removeallmethods GtGemStoneLocalCallStackUpdater
 removeallclassmethods GtGemStoneLocalCallStackUpdater
+
+doit
+(Object
+	subclass: 'GtGemStoneLocalExceptionWithCallStack'
+	instVarNames: #(exception callStack)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneLocalExceptionWithCallStack
+removeallclassmethods GtGemStoneLocalExceptionWithCallStack
 
 doit
 (Object
@@ -620,7 +675,7 @@ removeallclassmethods GtGemStoneFeaturesSpecification
 doit
 (GtGemStoneSpecification
 	subclass: 'GtGemStoneMethodSpecification'
-	instVarNames: #(coderClassName selector isMeta sourceString protocolName categoryName coderClassIconName explicitProviderBehaviourDetails)
+	instVarNames: #(coderClassName selector isMeta sourceString protocolName categoryName coderClassIconName explicitReceiverBehaviourDetails)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
@@ -1391,6 +1446,226 @@ category: 'other'
 method: AkgDebuggerPlay
 waitMS: milliseconds
 	(Delay forMilliseconds: milliseconds) wait
+%
+
+! Class implementation for 'BlockClosureOnProcessExamples'
+
+!		Instance methods for 'BlockClosureOnProcessExamples'
+
+category: 'as yet unclassified'
+method: BlockClosureOnProcessExamples
+assert: aBoolean
+
+	^ self
+		gtDo: [ super assert: aBoolean ]
+		gemstoneDo: [
+	aBoolean ifFalse:
+		[ TestResult failure signal: 'Assertion failed'] ].
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+blockRunsInCallingProcess
+	<gtExample>
+	<return: #Process>
+	| callingProcess blockProcess handlerProcess result |
+	
+	self runAndWait:
+		[ callingProcess := Processor activeProcess.
+		result := [ blockProcess := Processor activeProcess ]
+			on: ZeroDivide
+			withProcessDo: [ :exception :process |
+				handlerProcess := Processor activeProcess ] ].
+	
+	self assert: result == callingProcess.
+	self assert: callingProcess == blockProcess.
+	self assert: handlerProcess isNil.
+	^ callingProcess
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+evaluatesHandlerAndReturnsItsValueWhenExceptionMatches
+	<gtExample>
+	<return: #Array>
+	| result |
+	
+	self runAndWait:
+		[ result := [ 1 / 0 ]
+			on: ZeroDivide
+			withProcessDo: [ :exception :process |
+				{ exception class. process class. process isSuspended } ] ].
+	
+	self assert: result first equals: ZeroDivide.
+	self assert: result second equals: self processClass.
+	self assert: result third.
+	^ result
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+exceptionInHandlerIsPropagatedToCaller
+	<gtExample>
+	<return: #Symbol>
+	| result returned |
+	
+	self runAndWait:
+		[ result := [ [ 1 / 0 ]
+		on: ZeroDivide
+		withProcessDo: [ :exception :process | 
+			self error: 'oops' ] ]
+				on: Error
+				do: [ :exception | 
+					self assert: exception messageText = 'oops'.
+					#propagated ].
+		returned := true ].
+
+	self assert: returned.
+	self assert: result == #propagated.
+	^ result
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+getCallStack
+	<gtExample>
+	<return: #SmallInteger>
+	| result |
+	
+	result := [ 1 / 0 ]
+		on: ZeroDivide
+		withProcessDo: [ :exception :process |
+			self
+				gtDo: [ exception stackString ]
+				gemstoneDo: [ process stackReportToLevel: 100 withArgsAndTemps: true andMethods: true includeSource: false. ] ].
+	
+	self assert: result size > 500.
+	^ result
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+nonMatchingExceptionIsPropagatedToCaller
+	<gtExample>
+	<return: #Symbol>
+	| result returned |
+	
+	self runAndWait:
+		[ result := [ [ 1 / 0 ]
+		on: MessageNotUnderstood
+		withProcessDo: [ :exception :process | #unexpected ] ]
+			on: ZeroDivide
+		do: [ :exception | #propagated ].
+		returned := true ].
+
+	self assert: returned.
+	self assert: result == #propagated.
+	^ result
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+oneArgumentHandlerReceivesOnlyTheException
+	<gtExample>
+	<return: #ZeroDivide>
+	| result |
+	
+	result := [ 1 / 0 ]
+		on: ZeroDivide
+		withProcessDo: [ :exception | exception class ].
+	
+	self assert: result == ZeroDivide.
+	^ result
+%
+
+category: 'private'
+method: BlockClosureOnProcessExamples
+processClass
+
+	^ self
+		gtDo: [ #Process asClass ]
+		gemstoneDo: [ (System myUserProfile resolveSymbol: #GsProcess) value ]
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+providesTheSeparateFailingProcessToHandler
+	<gtExample>
+	<return: #Process>
+	| callingProcess failingProcess processState suspendedContext |
+	
+	callingProcess := Processor activeProcess.
+	failingProcess := [ 1 / 0 ]
+		on: ZeroDivide
+		withProcessDo: [ :exception :process |
+			processState := self
+				gtDo: [ process state ]
+				gemstoneDo: [ process _statusString ].
+			suspendedContext := self
+				gtDo: [ process suspendedContext ]
+				gemstoneDo: [ #ignored ].
+			process ].
+	
+	self assert: failingProcess class == self processClass.
+	self assert: failingProcess == callingProcess.
+	self assert: processState asString = 'suspended'.
+	self assert: suspendedContext notNil.
+	^ failingProcess
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+returnsReceiverValueWhenNoException
+	<gtExample>
+	<return: #SmallInteger>
+	| handlerWasEvaluated result |
+	
+	handlerWasEvaluated := false.
+	result := [ 42 ]
+		on: ZeroDivide
+		withProcessDo: [ :exception :process |
+			handlerWasEvaluated := true.
+			#handled ].
+	
+	self assert: result = 42.
+	self assert: handlerWasEvaluated not.
+	^ result
+%
+
+category: 'private'
+method: BlockClosureOnProcessExamples
+runAndWait: aBlockClosure
+	| semaphore result proc |
+	semaphore := Semaphore new.
+	proc := [ result := aBlockClosure value.
+		semaphore signal ] fork.
+	self waitForSeconds: semaphore.
+
+	^ result
+%
+
+category: 'private'
+method: BlockClosureOnProcessExamples
+waitForSeconds: semaphore
+	(self
+		gtDo: [ semaphore waitTimeoutSeconds: 60 ]
+		gemstoneDo: [ (semaphore waitForSeconds: 60) not ])
+		ifTrue: [ self error: 'Block didn''t complete in time' ]
+%
+
+category: 'examples'
+method: BlockClosureOnProcessExamples
+zeroArgumentHandlerIsSupported
+	<gtExample>
+	<return: #Symbol>
+	| result |
+	
+	result := [ 1 / 0 ]
+		on: ZeroDivide
+		withProcessDo: [ #handled ].
+	
+	self assert: result == #handled.
+	^ result
 %
 
 ! Class implementation for 'GtGemStoneCompilationContext'
@@ -3692,9 +3967,49 @@ updateWithFrameContents: aFrameArray
 	homeMethod := frameContents first homeMethod.
 %
 
+! Class implementation for 'GtGemStoneActiveProcessCallFrame'
+
+!		Instance methods for 'GtGemStoneActiveProcessCallFrame'
+
+category: 'printing'
+method: GtGemStoneActiveProcessCallFrame
+printClassLabelOn: aStream
+
+	aStream nextPutAll: '[unknown]'
+%
+
+category: 'printing'
+method: GtGemStoneActiveProcessCallFrame
+printMethodDescriptionOn: aStream
+	| gsMethod currentReceiver |
+	
+	gsMethod := frameContents at: 1.
+	gsMethod ifNil:[
+   	aStream nextPutAll: '<Reenter marker>'.
+   	^ self ].
+   	
+	 currentReceiver := frameContents at: 10 .
+	 "We reuse the current description of the gs method here"
+   aStream nextPutAll: (gsMethod _descrForStackPadTo: 0 rcvr: currentReceiver)
+%
+
+category: 'accessing'
+method: GtGemStoneActiveProcessCallFrame
+selfObject
+
+	self error: 'Active process call frames don''t know self'
+%
+
 ! Class implementation for 'GtGemStoneLocalCallStack'
 
 !		Class methods for 'GtGemStoneLocalCallStack'
+
+category: 'instance creation'
+classmethod: GtGemStoneLocalCallStack
+forActiveProcess
+
+	^ self new initializeForActiveProcess
+%
 
 category: 'instance creation'
 classmethod: GtGemStoneLocalCallStack
@@ -3780,6 +4095,18 @@ generateIdentifier
 
 category: 'gt - extensions'
 method: GtGemStoneLocalCallStack
+gtStackFor: aView
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Stack';
+		priority: 1;
+		items: [ self callFrames ];
+		column: 'Method' text: [ :aStackFrame | aStackFrame methodDescription ]
+%
+
+category: 'gt - extensions'
+method: GtGemStoneLocalCallStack
 gtViewStackFramesFor: aView 
 	<gtView>
 	
@@ -3800,6 +4127,20 @@ gtViewStackFramesFor: aView
 			width: 75;
 		column: 'Method' text: [ :aStackFrame |
 			aStackFrame methodDescription ]
+%
+
+category: 'initialization'
+method: GtGemStoneLocalCallStack
+initializeForActiveProcess
+
+	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
+
+	gsProcess := Processor activeProcess.
+	callFrames := OrderedCollection withAll: (GsProcess gtAllFrames 
+		collect: [ :aFrameArray |
+			GtGemStoneActiveProcessCallFrame 
+				forFrameContents: aFrameArray 
+				withIdentifier: self generateIdentifier ]).
 %
 
 category: 'initialization'
@@ -3966,6 +4307,49 @@ updateTopCommonContextAtIndexPair: anIndexPair basedOn: aNewCallStack
 	
 	newContext updateIdentifierBasedOn: existingContext.
 	targetCallStack replaceFrameAt: anIndexPair first with: newContext.
+%
+
+! Class implementation for 'GtGemStoneLocalExceptionWithCallStack'
+
+!		Class methods for 'GtGemStoneLocalExceptionWithCallStack'
+
+category: 'instance creation'
+classmethod: GtGemStoneLocalExceptionWithCallStack
+exception: anError callStack: aCallStack 
+	^ self new 
+			initializeWithException: anError callStack: aCallStack 
+%
+
+!		Instance methods for 'GtGemStoneLocalExceptionWithCallStack'
+
+category: 'accessing'
+method: GtGemStoneLocalExceptionWithCallStack
+callStack
+	^ callStack
+%
+
+category: 'initialization'
+method: GtGemStoneLocalExceptionWithCallStack
+gtStackFor: aView
+	<gtView>
+	^ aView forward 
+			title: 'Stack';
+			priority: 1;
+			object: [ self callStack ];
+			view: #gtStackFor:
+%
+
+category: 'initialization'
+method: GtGemStoneLocalExceptionWithCallStack
+initializeWithException: anError callStack: aCallStack 
+	exception := anError. 
+	callStack := aCallStack.
+%
+
+category: 'accessing'
+method: GtGemStoneLocalExceptionWithCallStack
+messageText
+	^ exception messageText
 %
 
 ! Class implementation for 'GtGemStoneRemotePhlowCollectionPrinter'
@@ -5131,7 +5515,7 @@ coderClassName
 category: 'accessing'
 method: GtGemStoneMethodSpecification
 explicitProviderBehaviourDetails
-	^ explicitProviderBehaviourDetails
+	^ explicitReceiverBehaviourDetails
 %
 
 category: 'gt - extensions'
@@ -5154,7 +5538,7 @@ initializeForBehaviour: aMethodBehaviour ofMethod: aGsMethod
 		isMeta: aMethodBehaviour isMeta  
 		categoryName: aMethodBehaviour category 
 		protocolName: (aMethodBehaviour 
-			categoryOfSelector: aGsMethod selector )
+			categoryOfSelector: aGsMethod homeMethod selector )
 %
 
 category: 'initialization'
@@ -5169,7 +5553,7 @@ initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean cat
 
 category: 'initialization'
 method: GtGemStoneMethodSpecification
-initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitProvider: aProviderDetails
+initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean categoryName: aCategoryName selector: aSelector sourceString: aSourceCode protocolName: aProtocolName explicitReceiver: aReceiverDetails
 	self 
 		initializeForClassName: aClassName 
 		iconName: aClassIconName 
@@ -5179,7 +5563,7 @@ initializeForClassName: aClassName iconName: aClassIconName isMeta: aBoolean cat
 	
 	sourceString := aSourceCode.
 	selector := aSelector.
-	explicitProviderBehaviourDetails := aProviderDetails.
+	explicitReceiverBehaviourDetails := aReceiverDetails.
 %
 
 category: 'initialization'
@@ -5216,7 +5600,7 @@ initializeFromJSONDictionary: aDictionary
 		selector: (aDictionary at: #selector)
 		sourceString: (aDictionary at: #sourceString)
 		protocolName: (aDictionary at: #protocolName)
-		explicitProvider: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
+		explicitReceiver: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
 			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
 				aDictionary at: #explicitProviderBehaviourDetails)]
 			ifFalse: [ nil ])
@@ -5342,7 +5726,7 @@ initializeProviderBehaviorFromFrame: aGsCallFrame
 	| selfObjectClass |
 	selfObjectClass := aGsCallFrame selfObjectClass.
 	aGsCallFrame methodClass ~= selfObjectClass ifTrue: [
-		explicitProviderBehaviourDetails := GtGemStoneClassBasicDetails 
+		explicitReceiverBehaviourDetails := GtGemStoneClassBasicDetails 
 			forClass: selfObjectClass ]
 %
 
@@ -7099,6 +7483,36 @@ key: aKey value: aValue
 	^ self new key: aKey value: aValue
 %
 
+! Class extensions for 'BlockClosure'
+
+!		Instance methods for 'BlockClosure'
+
+category: '*GToolkit-GemStone'
+method: BlockClosure
+on: anExceptionSet withProcessDo: anExceptionBlock
+	"Evaluate the receiver.  If an exception occurs, evaluate anExceptionBlock in a separate process so that the call stack and process can be obtained on error."
+	| unhandledException result |
+	
+	[ result := self value ]
+		on: anExceptionSet
+		do: [ :ex1 | | proc currentProc procDoneSemaphore |
+			procDoneSemaphore := Semaphore new.
+			currentProc := Processor activeProcess.
+			proc := [
+				currentProc suspend.
+				[ result := anExceptionBlock cull: ex1 cull: currentProc ]
+					on: Exception
+					do: [ :ex2 | unhandledException := ex2 ].
+				currentProc resume.
+				procDoneSemaphore signal.
+				] fork.
+			procDoneSemaphore wait. ].
+
+	unhandledException ifNotNil:
+		[ ^ unhandledException signal ].
+	^ result
+%
+
 ! Class extensions for 'ByteArray'
 
 !		Instance methods for 'ByteArray'
@@ -7332,6 +7746,22 @@ timeToRun
 %
 
 ! Class extensions for 'GsProcess'
+
+!		Class methods for 'GsProcess'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: GsProcess
+gtAllFrames
+	| level frame result |
+
+	result := OrderedCollection new.
+	level := 2.
+	[ frame := self _frameContentsAt: level.
+	frame ~~ nil and: [ (frame at: 1) ~~ nil ] ] whileTrue:
+		[ result add: frame.
+		level := level + 1. ].
+	^ result asArray.
+%
 
 !		Instance methods for 'GsProcess'
 
