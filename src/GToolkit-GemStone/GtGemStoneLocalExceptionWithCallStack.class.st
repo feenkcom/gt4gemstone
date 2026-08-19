@@ -34,3 +34,8 @@ GtGemStoneLocalExceptionWithCallStack >> initializeWithException: anError callSt
 	exception := anError. 
 	callStack := aCallStack.
 ]
+
+{ #category : #accessing }
+GtGemStoneLocalExceptionWithCallStack >> messageText [
+	^ exception messageText
+]
