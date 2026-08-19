@@ -108,7 +108,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> createErrorTestObject [
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
 		ifTrue: [ ^ self  ].
 	
-	^ super createErrorTestObject.
+	^ self createProxyObjectFor: [ GtRemotePhlowPictureViewErrorTestObject new ].
 ]
 
 { #category : #utils }
