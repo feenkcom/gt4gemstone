@@ -89,7 +89,7 @@ GtGemStoneMethodSpecification >> initializeForBehaviour: aMethodBehaviour ofMeth
 		isMeta: aMethodBehaviour isMeta  
 		categoryName: aMethodBehaviour category 
 		protocolName: (aMethodBehaviour 
-			categoryOfSelector: aGsMethod selector )
+			categoryOfSelector: aGsMethod homeMethod selector )
 ]
 
 { #category : #initialization }

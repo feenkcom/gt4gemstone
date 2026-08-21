@@ -10,6 +10,12 @@ Class {
 }
 
 { #category : #'instance creation' }
+GtGemStoneLocalCallStack class >> forActiveProcess [
+
+	^ self new initializeForActiveProcess
+]
+
+{ #category : #'instance creation' }
 GtGemStoneLocalCallStack class >> forProcess: aGsProcess [ 
 	^ self new 
 		initializeForProcess: aGsProcess 
@@ -80,6 +86,17 @@ GtGemStoneLocalCallStack >> generateIdentifier [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneLocalCallStack >> gtStackFor: aView [
+	<gtView>
+	
+	^ aView columnedList
+		title: 'Stack';
+		priority: 1;
+		items: [ self callFrames ];
+		column: 'Method' text: [ :aStackFrame | aStackFrame methodDescription ]
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [ 
 	<gtView>
 	
@@ -100,6 +117,19 @@ GtGemStoneLocalCallStack >> gtViewStackFramesFor: aView [
 			width: 75;
 		column: 'Method' text: [ :aStackFrame |
 			aStackFrame methodDescription ]
+]
+
+{ #category : #initialization }
+GtGemStoneLocalCallStack >> initializeForActiveProcess [
+
+	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
+
+	gsProcess := Processor activeProcess.
+	callFrames := OrderedCollection withAll: (GsProcess gtAllFrames 
+		collect: [ :aFrameArray |
+			GtGemStoneActiveProcessCallFrame 
+				forFrameContents: aFrameArray 
+				withIdentifier: self generateIdentifier ]).
 ]
 
 { #category : #initialization }
