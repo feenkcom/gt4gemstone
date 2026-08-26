@@ -85,6 +85,23 @@ GtGemStoneStackFrame >> exception: anException [
 	exception := anException
 ]
 
+{ #category : #private }
+GtGemStoneStackFrame >> filterSelfFrom: anArray [
+	"Filter self out of the supplied variable list if we are in a block and the value for self is nil.
+	Block optimisation means that self is not always supplied.
+	Each variable (element in anArray) consists of:
+		{ variableName. displayString. variableType. iconName. }
+	The variableType is #self, #receiver, #frame, #instVar, etc."
+	| selfVar |
+
+	self inBlock ifFalse: [ ^ anArray ].
+	selfVar := anArray detect: [ :each | each first = #self ]
+		ifNone: [ ^ anArray ].
+	selfVar second = 'nil' ifTrue:
+		[ ^ anArray copyWithout: selfVar ].
+	^ anArray.
+]
+
 { #category : #'private - accessing' }
 GtGemStoneStackFrame >> frameArray [
 	"Only for debugging the debugger"
@@ -384,17 +401,20 @@ GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
 GtGemStoneStackFrame >> variablesAssociations [
 
 	^ variableAssociations ifNil: [ 
-		variableAssociations := self debuggerProxy
-			proxyPerform: #variableInfoAtFrameLevel:
-			withArguments: { ordinal }
-			autoCommit: false ].
+		variableAssociations := self filterSelfFrom:
+			(self debuggerProxy
+				proxyPerform: #variableInfoAtFrameLevel:
+				withArguments: { ordinal }
+				autoCommit: false) ].
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> variablesAssociationsBasedOnIndex [
 
-	^ variableAssociations ifNil: [ variableAssociations := self debuggerProxy
-		proxyPerform: #variableInfoAtFrameIdentifierIndex:
-		withArguments: { self frameIdentifier identityIndex }
-		autoCommit: false ].
+	^ variableAssociations ifNil: 
+		[ variableAssociations := self filterSelfFrom:
+			(self debuggerProxy
+				proxyPerform: #variableInfoAtFrameIdentifierIndex:
+				withArguments: { self frameIdentifier identityIndex }
+				autoCommit: false) ].
 ]
