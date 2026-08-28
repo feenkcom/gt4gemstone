@@ -85,6 +85,7 @@ GtGemStoneExpandableDebuggerToolbar >> newRestartFrameButton [
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons restart;
+		id: #restart;
 		label: 'Restart';
 		action: [ :aButton | dapDebugElement gsRestartFrame ]
 ]
@@ -97,6 +98,7 @@ GtGemStoneExpandableDebuggerToolbar >> newResumeButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons run;
 		label: 'Proceed';
+		id: #resume;
 		action: [ :aButton | dapDebugElement gsResume ]
 ]
 
@@ -107,6 +109,7 @@ GtGemStoneExpandableDebuggerToolbar >> newStepIntoButton [
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons into;
+		id: #stepInto;
 		label: 'Step into';
 		action: [ :aButton | dapDebugElement gsStepInto ]
 ]
@@ -118,6 +121,7 @@ GtGemStoneExpandableDebuggerToolbar >> newStepOutButton [
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons down;
+		id: #stepOut;
 		label: 'Step out';
 		action: [ :aButton | dapDebugElement gsStepOut ]
 ]
@@ -129,6 +133,7 @@ GtGemStoneExpandableDebuggerToolbar >> newStepOverButton [
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons over;
+		id: #stepOver;
 		label: 'Step over';
 		action: [ :aButton | dapDebugElement gsStepOver ]
 ]
@@ -140,6 +145,7 @@ GtGemStoneExpandableDebuggerToolbar >> newStepThroughButton [
 		aptitude: BrGlamorousButtonWithIconAptitude;
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons through;
+		id: #stepThrough;
 		label: 'Step Through';
 		action: [ :aButton | dapDebugElement gsStepThrough ]
 ]
