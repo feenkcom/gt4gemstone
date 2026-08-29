@@ -4,9 +4,8 @@ Exercises explicit views through a live GemStone proxy. The inherited inspection
 Class {
 	#name : #GtRemotePhlowExplicitViewGemStoneInspectionExamples,
 	#superclass : #GtRemotePhlowExplicitViewInspectionExamples,
-	#instVars : [
-		'server'
-	],
+	#traits : 'TGtRemoteGemStoneSesionCreator + TGtRemotePhlowGemStoneInspectionAssertions',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait + TGtRemotePhlowGemStoneInspectionAssertions classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -15,7 +14,7 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemotePhlowExplicitViewGemStoneInspectionExamples
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorViewTabOpensDefinition [
 	<gtExample>
 	
@@ -26,7 +25,7 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorVi
 	^ super altClickOnExplicitErrorViewTabOpensDefinition
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorViewTabOpensDefinition_methodOpenedInSecondPane [
 	<gtExample>
 	| scripter |
@@ -36,28 +35,14 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorVi
 		ifTrue: [ ^ self  ].
 	
 	scripter := self altClickOnExplicitErrorViewTabOpensDefinition.
-		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has method definition';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GsNMethod];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition selector]
-			equals: [#gtExplicitPictureViewWithStencilErrorFor:];
-		play.
+	self 
+		assertSecondPaneHasGemStoneMethodWithSelector: #gtExplicitPictureViewWithStencilErrorFor: 
+		in: scripter.
 		
 	^scripter
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTabOpensDefinition [
 	<gtExample>
 	
@@ -68,7 +53,7 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTab
 	^ super altClickOnExplicitViewTabOpensDefinition
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTabOpensDefinition_methodOpenedInSecondPane [
 	<gtExample>
 	| scripter |
@@ -78,24 +63,10 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTab
 		ifTrue: [ ^ self  ].
 		
 	scripter := self altClickOnExplicitViewTabOpensDefinition.
+	self 
+		assertSecondPaneHasGemStoneMethodWithSelector: #gtExplicitPictureViewWithDirectlySerializableFor: 
+		in: scripter.
 		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has method definition';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GsNMethod];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition selector]
-			equals: [#gtExplicitPictureViewWithDirectlySerializableFor:];
-		play.
-	
 	^scripter
 ]
 
@@ -104,14 +75,14 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> convertToTargetProxy: anO
 	^ anObject
 ]
 
-{ #category : #accessing }
+{ #category : #'examples - setup' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createEditablePersonObject [
 	<gtExample>
 	<after: #stopServer>
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewWithEditableUIPersonObject new ]
 ]
 
-{ #category : #accessing }
+{ #category : #'examples - setup' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createErrorTestObject [
 	<gtExample>
 	<after: #stopServer>
@@ -124,21 +95,21 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createProxyObjectFor: aBl
 		(self runningServer evaluateBlockAndWaitReturnProxy: aBlock)
 ]
 
-{ #category : #accessing }
+{ #category : #'examples - setup' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createSerializationTestObject [
 	<gtExample>
 	<after: #stopServer>
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewWithSerializationTestObject new ]
 ]
 
-{ #category : #accessing }
+{ #category : #'examples - setup' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewTestObject new ]
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilDataErrorView [
 	<gtExample>
 	
@@ -149,8 +120,8 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	^ super errorTestObjectSelectStencilDataErrorView
 ]
 
-{ #category : #examples }
-GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilDataErrorView_inspectButton [
+{ #category : #'examples - scripter' }
+GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilDataErrorView_inspectException [
 	<gtExample>
 	| scripter |
 	
@@ -158,45 +129,15 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
 		ifTrue: [ ^ self ].
 	
-	scripter := self scripterOnErrorTestObjectInPager.
-	
-	scripter 
-		check: 'Inspect exception button present'
-		do: [:aStep |
-			(aStep check)
-				value: [:aButton | aButton label asString ]
-					equals: [ 'Inspect exception' ];
-				// GtPhlowExceptionId;
-				// BrDebuggableElementInspectExceptionButtonId;
-				play].
-				
-	scripter clickStep: [:aStep |
-		aStep 
-			label: 'Inspect exception button present';
-			// GtPhlowExceptionId;
-			// BrDebuggableElementInspectExceptionButtonId ].
-		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'} 
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has exception';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GtGemStoneLocalExceptionWithCallStack];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition messageText]
-			equals: ['Stencil data computation with exception'];
-		play.
+	scripter := self errorTestObjectSelectStencilDataErrorView.
+	self 
+		assertInspectViewExceptionWithErrorMessage: 'Stencil data computation with exception' 
+		in: scripter.
 	
 	^scripter
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilErrorView [
 	<gtExample>
 	
@@ -207,8 +148,8 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	^ super errorTestObjectSelectStencilErrorView
 ]
 
-{ #category : #examples }
-GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilErrorView_inspectButton [
+{ #category : #'examples - scripter' }
+GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilErrorView_inspectException [
 	<gtExample>
 	| scripter |
 	
@@ -216,56 +157,10 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
 		ifTrue: [ ^ self ].
 	
-	scripter := self scripterOnErrorTestObjectInPager.
-	
-	scripter 
-		check: 'Inspect exception button present'
-		do: [:aStep |
-			(aStep check)
-				value: [:aButton | aButton label asString ]
-					equals: [ 'Inspect exception' ];
-				// GtPhlowExceptionId;
-				// BrDebuggableElementInspectExceptionButtonId;
-				play].
-				
-	scripter clickStep: [:aStep |
-		aStep 
-			label: 'Inspect exception button present';
-			// GtPhlowExceptionId;
-			// BrDebuggableElementInspectExceptionButtonId ].
+	scripter := self errorTestObjectSelectStencilErrorView.
+	self 
+		assertInspectViewExceptionWithErrorMessage: 'Stencil data computation with exception' 
+		in: scripter.
 		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'} 
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has exception';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GtGemStoneLocalExceptionWithCallStack];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition messageText]
-			equals: ['Stencil data computation with exception'];
-		play.
-	
 	^scripter
-]
-
-{ #category : #accessing }
-GtRemotePhlowExplicitViewGemStoneInspectionExamples >> runningServer [
-	"Answer a running GemStone server with the explicit-view example classes loaded."
-	<gtExample>
-	<after: #stopServer>
-	server ifNotNil: [ ^ server ].
-	^ server := GtRemoteGemstoneExamplesSessionBuilder createAndStartSession
-]
-
-{ #category : #accessing }
-GtRemotePhlowExplicitViewGemStoneInspectionExamples >> stopServer [
-	server ifNotNil: [
-		server stop.
-		server := nil ]
 ]
