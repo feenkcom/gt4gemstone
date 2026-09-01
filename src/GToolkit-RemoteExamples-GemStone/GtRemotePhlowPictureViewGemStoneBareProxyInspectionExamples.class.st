@@ -1,10 +1,10 @@
 Class {
-	#name : #GtRemotePhlowPictureViewGemStoneBareProxiesInspectionExamples,
+	#name : #GtRemotePhlowPictureViewGemStoneBareProxyInspectionExamples,
 	#superclass : #GtRemotePhlowPictureViewGemStoneInspectionExamples,
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
 { #category : #converting }
-GtRemotePhlowPictureViewGemStoneBareProxiesInspectionExamples >> convertToTargetProxy: anObject [
+GtRemotePhlowPictureViewGemStoneBareProxyInspectionExamples >> convertToTargetProxy: anObject [
 	^ anObject asGtBareProxyObject
 ]

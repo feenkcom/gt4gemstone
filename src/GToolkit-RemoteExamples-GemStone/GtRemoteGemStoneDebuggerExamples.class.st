@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneDebuggerExamples,
 	#superclass : #Object,
-	#traits : 'TGtRemoteGemStoneSesionCreator',
-	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
+	#traits : 'TGtRemoteGemStoneSesionCreator + TGtScripterDebuggerExamples',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait + TGtScripterDebuggerExamples classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -22,6 +22,37 @@ GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
 	 	assert: evaluationContext remoteClass 
 	 	equals: #GtGemStoneEvaluationContext.
 	self assert: evaluationContext rawGtSession isNil.
+]
+
+{ #category : #'examples - scripter' }
+GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCall [
+	<gtExample>
+	| gemstoneSession debuggingSession debuggerElement scripter|
+	 
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+			debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString ' ]
+			withException: GtRsrEvaluationException.
+			
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+	
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+	
+	scripter gemStoneDebugger
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		assertInCodersListVisuallyHighlightedString: 'printString
+
+"Returns a CharacterCollection whose contents are a displayable representation of the
+ receiver."
+
+^ self printStringWithMaxSize: 100000
+' withUnixLineEndings atTopIndex: 1;
+		play.
+
+	^ scripter
 ]
 
 { #category : #tests }

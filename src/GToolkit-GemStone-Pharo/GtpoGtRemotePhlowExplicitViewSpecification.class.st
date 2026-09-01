@@ -29,9 +29,10 @@ GtpoGtRemotePhlowExplicitViewSpecification >> retrievePrimitiveStencilSpecificat
 
 { #category : #accessing }
 GtpoGtRemotePhlowExplicitViewSpecification >> retrieveStencilDataWithSerializerNamed: aDataSerializationStrategyClassName [
-	^ self 
+	^ (self 
 		proxyPerform: #retrieveStencilData 
-		serializationStrategy: aDataSerializationStrategyClassName.
+		serializationStrategy: aDataSerializationStrategyClassName)
+				asGtBareProxyObject
 ]
 
 { #category : #accessing }

@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRemotePhlowPictureViewGemStoneInspectionExamples,
 	#superclass : #GtRemotePhlowPictureViewInspectionExamples,
-	#traits : 'TGtRemoteGemStoneSesionCreator',
-	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
+	#traits : 'TGtRemoteGemStoneSesionCreator + TGtRemotePhlowGemStoneInspectionAssertions',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait + TGtRemotePhlowGemStoneInspectionAssertions classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -11,7 +11,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples class >> isAbstract [
 	^ self name = #GtRemotePhlowPictureViewGemStoneInspectionExamples
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDefinition [
 	<gtExample>
 
@@ -32,28 +32,14 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDef
 		ifTrue: [ ^ self  ].
 	
 	scripter := self altClickOnErrorTabOpensDefinition.
-		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has method definition';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GsNMethod];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition selector]
-			equals: [#gtViewPictureErrorFor:];
-		play.
+	self 
+		assertSecondPaneHasGemStoneMethodWithSelector: #gtViewPictureErrorFor: 
+		in: scripter.
 		
 	^scripter
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnPictureTabOpensDefinition [
 	<gtExample>
 
@@ -74,23 +60,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnPictureTabOpensD
 		ifTrue: [ ^ self  ].
 		
 	scripter := self altClickOnPictureTabOpensDefinition.
-		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'}  
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has method definition';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GsNMethod];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition selector]
-			equals: [#gtViewPictureFor:];
-		play.
+	self 
+		assertSecondPaneHasGemStoneMethodWithSelector: #gtViewPictureFor: 
+		in: scripter.
 	
 	^scripter
 ]
@@ -100,7 +72,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> convertToTargetProxy: anOb
 	^ anObject
 ]
 
-{ #category : #'examples - scripter' }
+{ #category : #'examples - setup' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> createErrorTestObject [
 	<gtExample>
 	
@@ -121,7 +93,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> createProxyObjectFor: code
 				self runningServer evaluateAndWaitReturnProxy: codeStringOrBlockClosure ])
 ]
 
-{ #category : #examples }
+{ #category : #'examples - setup' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
@@ -133,7 +105,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> createTestObject [
 	^ self createProxyObjectFor: [GtRemotePhlowPictureViewTestObject new]
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableElement [
 	<gtExample>
 
@@ -144,8 +116,8 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableEl
 	^ super errorViewShowsDebuggableElement
 ]
 
-{ #category : #examples }
-GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableElement_inspectButton [
+{ #category : #'examples - scripter' }
+GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableElement_inspectException [
 	<gtExample>
 	| scripter |
 	
@@ -153,45 +125,15 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableEl
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
 		ifTrue: [ ^ self ].
 	
-	scripter := self scripterOnErrorTestObjectInPager.
-	
-	scripter 
-		check: 'Inspect exception button present'
-		do: [:aStep |
-			(aStep check)
-				value: [:aButton | aButton label asString ]
-					equals: [ 'Inspect exception' ];
-				// GtPhlowExceptionId;
-				// BrDebuggableElementInspectExceptionButtonId;
-				play].
-				
-	scripter clickStep: [:aStep |
-		aStep 
-			label: 'Inspect exception button present';
-			// GtPhlowExceptionId;
-			// BrDebuggableElementInspectExceptionButtonId ].
-		
-	scripter phlowCompositeToolStep
-		onPagerToolInPaneWithIndex: 2;
-		assertPhlowToolLabels: {'GemStone' . 'Proxy'} 
-			andTypes: {GtGemStoneInspectorTool . GtInspectorTool};
-		assertSelectedToolAtIndex: 1 withTabName: 'GemStone';
-		play.
-		
-	(scripter inspectorStep)
-		label: 'Second pane has exception';
-		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
-			equals: [#GtGemStoneLocalExceptionWithCallStack];
-		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition messageText]
-			equals: ['Test picture computation error'];
-		play.
+	scripter := self errorViewShowsDebuggableElement.
+	self 
+		assertInspectViewExceptionWithErrorMessage: 'Test picture computation error' 
+		in: scripter.
 	
 	^scripter
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebuggableElement [
 	<gtExample>
 
@@ -202,7 +144,24 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebugg
 	^ super heightErrorViewShowsDebuggableElement
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
+GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebuggableElement_inspectException [
+	<gtExample>
+	| scripter |
+	
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
+		ifTrue: [ ^ self ].
+	
+	scripter := self heightErrorViewShowsDebuggableElement.
+	self 
+		assertInspectViewExceptionWithErrorMessage: 'Height computation error' 
+		in: scripter.
+	
+	^scripter
+]
+
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewHasCorrectSize [
 	<gtExample>
 
@@ -213,7 +172,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewHasCorr
 	^ super pictureFullSizeViewHasCorrectSize
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewShowsPictureElement [
 	<gtExample>
 
@@ -224,7 +183,7 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewShowsPi
 	^ super pictureFullSizeViewShowsPictureElement
 ]
 
-{ #category : #examples }
+{ #category : #'examples - scripter' }
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureViewShowsPictureElement [
 	<gtExample>
 
