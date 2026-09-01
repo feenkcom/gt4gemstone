@@ -19,6 +19,8 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 				behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
 			methodDefiningBehaviourIconName := coderSpecification coderClassIconName.
 			methodReceiverBehaviorName := aProviderDetails targetClassName.
+			(methodReceiverBehaviorName = #UndefinedObject and: [ aCoderViewModel coderModel stackFrame inBlock ]) ifTrue:
+				[ methodReceiverBehaviorName := '' ].
 			methodReceiverBehaviourIconName := aProviderDetails targetClassIconName ].
 
 	packageName := coderSpecification categoryName.
