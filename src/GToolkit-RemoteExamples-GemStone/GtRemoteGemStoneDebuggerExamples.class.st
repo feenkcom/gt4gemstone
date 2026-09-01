@@ -49,7 +49,7 @@ GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCa
  receiver."
 
 ^ self printStringWithMaxSize: 100000
-' atTopIndex: 1;
+' withUnixLineEndings atTopIndex: 1;
 		play.
 
 	^ scripter
