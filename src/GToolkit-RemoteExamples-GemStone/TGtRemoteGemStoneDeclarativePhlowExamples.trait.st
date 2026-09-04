@@ -38,9 +38,6 @@ TGtRemoteGemStoneDeclarativePhlowExamples >> runningServer [
 
 	<gtExample>
 	<after: #stopServer>
-	<return: #AssertionFailure>
-	<return: #AssertionFailure>
-	<return: #Error>
 	self basicServer ifNotNil: [ ^ self basicServer ].
 	self basicServer: GtRemoteGemstoneExamplesSessionBuilder createAndStartSession.
 	^ self basicServer
