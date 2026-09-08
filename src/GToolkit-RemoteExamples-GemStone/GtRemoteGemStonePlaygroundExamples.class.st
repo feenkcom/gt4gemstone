@@ -189,10 +189,6 @@ GtRemoteGemStonePlaygroundExamples >> localCoderMethod_runAsyncContentInGemsTone
 	<return: #AssertionFailure>
 	| targetMethod tool scripter | 
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
-	
 	targetMethod := GtRemotePhlowTestDataForExamples class>>#computationForGemStoneSide.
 	tool := GtMethodCoderTool compiledMethod: targetMethod.
 	scripter := self scripterForPageTool: tool.
