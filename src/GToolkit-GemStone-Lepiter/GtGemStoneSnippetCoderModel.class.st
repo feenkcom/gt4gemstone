@@ -93,18 +93,6 @@ GtGemStoneSnippetCoderModel >> asCoderViewModel [
 	^ GtGemStoneSnippetCoderViewModel new coder: self
 ]
 
-{ #category : #utils }
-GtGemStoneSnippetCoderModel >> canRunComputationWithStrategy: anExecutionStrategy inSession: aGemStoneSession [
-	(anExecutionStrategy canRunComputationInSession: aGemStoneSession) ifFalse: [ 
-			GtGemStoneCoderExecutionAlreadyRunningException new 
-				sessionName: aGemStoneSession name;
-				signal.
-		"Allow for now proceeding to still schedule the execution"
-		^ true ].
-		
-	^ true
-]
-
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> gsBehaviourSpecification: aGsBehaviourSpecification [
 	gsBehaviourSpecification := aGsBehaviourSpecification
@@ -220,73 +208,17 @@ GtGemStoneSnippetCoderModel >> newEvaluationContext [
 		instanceVariableNames: slotNames
 ]
 
-{ #category : #'private - notifying' }
-GtGemStoneSnippetCoderModel >> notifyInvalidBinding: anInvalidBinding inContext: aGtSourceCoderEvaluationContext [ 
-	| errorPosition |
-	errorPosition := anInvalidBinding errorDisplayPosition +
-			aGtSourceCoderEvaluationContext evaluatedInterval first.
-	self
-		notifyParseError: anInvalidBinding invalidBindingErrorMessage
-		at: errorPosition
-		requesterObject: aGtSourceCoderEvaluationContext requesterObject.
-]
-
 { #category : #'private - actions' }
 GtGemStoneSnippetCoderModel >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
-	"Evaluate the supplied GemStone script."
-	| gemstoneSession executionBuilder pharoBindings remoteBindings remoteScript  instanceVariableNames |
+	| snippetEvaluator |
 	
-	[ GtGemStoneParser
-		parse: aSourceString
-		startingAt: GtGemStoneParser startingStateForMethodSequence ]
-		on: SmaCCParserError
-		do: [ :ex | 
-			self
-				notifyParseError: ex messageText
-				at: ex tag position
-						+ aGtSourceCoderEvaluationContext evaluatedInterval first - 1
-				requesterObject: aGtSourceCoderEvaluationContext requesterObject.
-			^ anEvaluationFailBlock value ].
+	snippetEvaluator := GtGemStoneSnippetCoderEvaluator new
+		coderModel: self.
 	
-	gemstoneSession := aGtSourceCoderEvaluationContext session 
-		ifNil: [ 
-			^ self error: 'GemStone session not set.  Does the connector exist?' ]
-		ifNotNil: #asGemStoneSession.
-	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
-	
-	"Temporary hack"
-	instanceVariableNames := self 
-		targetClassInstVarNamesInContext: aGtSourceCoderEvaluationContext
-		forGemStoneSession: gemstoneSession.
-	
-	(self 
-		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
-		inSession: gemstoneSession)
-		ifFalse: [ "In case we get a proceed" ^ self ].
-
-	pharoBindings := aGtSourceCoderEvaluationContext pharoBindings.
-	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
-		gemstoneSession: gemstoneSession;
-		instanceVariableNames:  instanceVariableNames;
-		localBindings: pharoBindings;
-		sourceString: aSourceString.
-	executionBuilder withFirstInvalidRemoteBinding: [ :anInvalidBinding |
-		self  
-			notifyInvalidBinding: anInvalidBinding
-			inContext: aGtSourceCoderEvaluationContext.
-		^ anEvaluationFailBlock value ].
-		 
-	remoteBindings := executionBuilder remoteBindingsDictionary.
-	remoteScript := executionBuilder generateRemoteScript.
-
-	^ aGtSourceCoderEvaluationContext executionStrategy
-		evaluate: remoteScript
-		inSession: gemstoneSession
-		context: aGtSourceCoderEvaluationContext
-		remoteBindings: remoteBindings
-		pharoBindings: pharoBindings
-		onFailDo: anEvaluationFailBlock
-		coderModel: self
+	^ snippetEvaluator
+			primitiveEvaluate: aSourceString 
+			inContext: aGtSourceCoderEvaluationContext 
+			onFailDo: anEvaluationFailBlock
 ]
 
 { #category : #utils }
@@ -298,19 +230,4 @@ GtGemStoneSnippetCoderModel >> profilingCodeFor: aSourceString [
 { #category : #accessing }
 GtGemStoneSnippetCoderModel >> startingStateForAstComputation [
 	^ GtGemStoneParser startingStateForMethodSequence
-]
-
-{ #category : #'private - actions' }
-GtGemStoneSnippetCoderModel >> targetClassInstVarNamesInContext: aGtSourceCoderEvaluationContext forGemStoneSession: aGemstoneSession [ 
-	| instanceVariableNames |
-	instanceVariableNames := aGtSourceCoderEvaluationContext instanceVariableNames.
-	(aGtSourceCoderEvaluationContext receiverObject notNil and: [
-		instanceVariableNames isNil ])
-			ifTrue: [
-				instanceVariableNames := aGemstoneSession 
-					evaluateAndWait: 'self class allInstVarNames' 
-					for: aGtSourceCoderEvaluationContext receiverObject
-						asGtProxyObject  
-					bindings: Dictionary new ].
-	^ instanceVariableNames
 ]
