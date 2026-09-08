@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneCoderExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable + TGtRemoteGemStoneSesionCreator',
-	#classTraits : 'TAssertable classTrait + TGtRemoteGemStoneSesionCreator classTrait',
+	#traits : 'TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -20,7 +20,7 @@ GtRemoteGemStoneCoderExamples >> computeRealBehaviour [
 	classProxy := coderNamedBehavior computeRealBehaviour.
 	printString := classProxy proxyPerform: #printString.
 	self assert: (printString includesSubstring: 'Dictionary').
-	self deny: (printString includesSubstring: 'class').
+	self assert: (printString includesSubstring: 'class') not.
 
 	coderNamedBehavior isMeta: true.
 	classProxy := coderNamedBehavior computeRealBehaviour.

@@ -183,6 +183,40 @@ GtRemoteGemStonePlaygroundExamples >> assertSinglePaneAfterInvalidBinding: aBind
 		play
 ]
 
+{ #category : #'examples - execution' }
+GtRemoteGemStonePlaygroundExamples >> localCoderMethod_runAsyncContentInGemsTone [
+	<gtExample>
+	<return: #AssertionFailure>
+	| targetMethod tool scripter | 
+	
+	targetMethod := GtRemotePhlowTestDataForExamples class>>#computationForGemStoneSide.
+	tool := GtMethodCoderTool compiledMethod: targetMethod.
+	scripter := self scripterForPageTool: tool.
+						
+	self
+		withElapsedTimeUpdateDisabled: [ self
+				withDisabledAutomaticReplaceDo: [ 
+					
+					scripter do
+						action: [ :anElement | 
+							| coderViewModel |
+							coderViewModel := anElement textualCoderViewModel.
+							coderViewModel 
+								doItAndGoAsynchronousGemStone: (
+									coderViewModel astSync body startPosition 
+										to: coderViewModel astSync body stopPosition )
+								inSession: self runningServer];
+						// GtSourceCoderEditorId;
+						play.
+
+					self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+					self waitForPromiseCompletionInSecondPaneFor: scripter.
+					self
+						assertResultingPaneAfterAyncExecutionCompletedWithoutReplaceFor: scripter ] ].
+
+	^ scripter
+]
+
 { #category : #'examples - pages' }
 GtRemoteGemStonePlaygroundExamples >> pageToolWithLongRunningSnippetWithTestDefaultSessionAndBasicCode [
 	<gtExample>
