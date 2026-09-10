@@ -334,7 +334,8 @@ GtGemStoneStackFrame >> safeVariablesAssociationsBasedOnIndex [
 			'Error'.
 			anException printString.
 			''.
-			#error}}]
+			#error.
+			0. }}]
 ]
 
 { #category : #accessing }

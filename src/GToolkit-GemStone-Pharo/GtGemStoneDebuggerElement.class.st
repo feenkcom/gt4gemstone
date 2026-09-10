@@ -198,7 +198,7 @@ GtGemStoneDebuggerElement >> buildVariablesTree [
 		addEventHandler: (GtPhlowListToSelectHandler new 
 			transformation: [ :variableNode :index | 
 				(self currentFrameVariable: variableNode value first
-				atIndex: index first) asGtBareProxyObject ]).
+				atIndex: (variableNode value at: 5)) asGtBareProxyObject ]).
 
 	tree column 
 		title: 'Variable';
