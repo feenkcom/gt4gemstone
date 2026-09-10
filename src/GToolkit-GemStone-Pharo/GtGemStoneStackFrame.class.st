@@ -89,17 +89,20 @@ GtGemStoneStackFrame >> exception: anException [
 GtGemStoneStackFrame >> filterSelfFrom: anArray [
 	"Filter self out of the supplied variable list if we are in a block and the value for self is nil.
 	Block optimisation means that self is not always supplied.
+	Because this may change the location of variables, preserve the original index in each variable's array.
 	Each variable (element in anArray) consists of:
-		{ variableName. displayString. variableType. iconName. }
+		{ variableName. displayString. variableType. iconName. originalIndex. }
 	The variableType is #self, #receiver, #frame, #instVar, etc."
-	| selfVar |
+	| selfVar indexedArray |
 
-	self inBlock ifFalse: [ ^ anArray ].
-	selfVar := anArray detect: [ :each | each first = #self ]
-		ifNone: [ ^ anArray ].
+	indexedArray := anArray collectWithIndex: [ :innerArray :index |
+		innerArray copyWith: index ].
+	self inBlock ifFalse: [ ^ indexedArray ].
+	selfVar := indexedArray detect: [ :each | each first = #self ]
+		ifNone: [ ^ indexedArray ].
 	selfVar second = 'nil' ifTrue:
-		[ ^ anArray copyWithout: selfVar ].
-	^ anArray.
+		[ ^ indexedArray copyWithout: selfVar ].
+	^ indexedArray.
 ]
 
 { #category : #'private - accessing' }
