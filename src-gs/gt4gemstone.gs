@@ -20,6 +20,24 @@ removeallmethods GtGemStoneAssertionFailure
 removeallclassmethods GtGemStoneAssertionFailure
 
 doit
+(Notification
+	subclass: 'GtGsDynamicVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGsDynamicVariable
+removeallclassmethods GtGsDynamicVariable
+
+doit
 (Object
 	subclass: 'AkgDebuggerPlay'
 	instVarNames: #(process trace allFrames allFramesString count block)
@@ -1307,6 +1325,41 @@ true.
 removeallmethods GtRsrEvaluatorServiceTest
 removeallclassmethods GtRsrEvaluatorServiceTest
 
+! Class implementation for 'GtGsDynamicVariable'
+
+!		Class methods for 'GtGsDynamicVariable'
+
+category: 'defaults'
+classmethod: GtGsDynamicVariable
+defaultValue
+
+	^ nil
+%
+
+category: 'accessing'
+classmethod: GtGsDynamicVariable
+value
+
+	^ self signal
+%
+
+category: 'accessing'
+classmethod: GtGsDynamicVariable
+value: anObject during: aBlock
+
+	^ aBlock on: self do: [ :notification |
+		notification resume: anObject ]
+%
+
+!		Instance methods for 'GtGsDynamicVariable'
+
+category: 'defaults'
+method: GtGsDynamicVariable
+defaultAction
+
+	^ self class defaultValue
+%
+
 ! Class implementation for 'AkgDebuggerPlay'
 
 !		Class methods for 'AkgDebuggerPlay'
@@ -2566,7 +2619,7 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 	evalServer := anEvaluationServer.
 
 	process := [
-		[ | computationResult |
+		| computationResult |
 		computationResult := block value.
 
 		result := self serializationStrategy
@@ -2584,16 +2637,12 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.
-		semaphore signal ]
-			on: Exception
-			do: (self handlerBlock: nil) ] newProcess.
-
-	"Need to figure out the circumstances when the debugActionBlock: is called"
-	process debugActionBlock: (self handlerBlock: 'debugActionBlock:').
+		semaphore signal ] newProcess.
 
 	process
 		name: 'GT evaluation';
 		priority: anInteger;
+		debugActionBlock: (self handlerBlock: nil);
 		breakpointLevel: 1;
 		resume.
 
@@ -2653,7 +2702,7 @@ frameLevelForIdentifierIndex: aFrameIdentifierIndex
 category: 'private'
 method: GtGemStoneEvaluationContext
 handlerBlock: anObject
-	"Answer the block that will be evaluated if an exception occurs.
+	"Answer the block that will be evaluated if an unhandled exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
@@ -2667,8 +2716,7 @@ handlerBlock: anObject
 			evaluationContext: self.
 	
 		semaphore signal.
-		process suspend.
-		ex resume ]
+		process suspend. ]
 %
 
 category: 'actions - debug'
