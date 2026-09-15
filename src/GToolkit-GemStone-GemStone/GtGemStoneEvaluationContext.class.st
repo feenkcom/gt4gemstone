@@ -111,7 +111,7 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer pr
 	evalServer := anEvaluationServer.
 
 	process := [
-		[ | computationResult |
+		| computationResult |
 		computationResult := block value.
 
 		result := self serializationStrategy
@@ -129,16 +129,12 @@ GtGemStoneEvaluationContext >> evaluateBlock: aBlock from: anEvaluationServer pr
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.
-		semaphore signal ]
-			on: Exception
-			do: (self handlerBlock: nil) ] newProcess.
-
-	"Need to figure out the circumstances when the debugActionBlock: is called"
-	process debugActionBlock: (self handlerBlock: 'debugActionBlock:').
+		semaphore signal ] newProcess.
 
 	process
 		name: 'GT evaluation';
 		priority: anInteger;
+		debugActionBlock: (self handlerBlock: nil);
 		breakpointLevel: 1;
 		resume.
 
@@ -190,7 +186,7 @@ GtGemStoneEvaluationContext >> frameLevelForIdentifierIndex: aFrameIdentifierInd
 
 { #category : 'private' }
 GtGemStoneEvaluationContext >> handlerBlock: anObject [
-	"Answer the block that will be evaluated if an exception occurs.
+	"Answer the block that will be evaluated if an unhandled exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
@@ -204,8 +200,7 @@ GtGemStoneEvaluationContext >> handlerBlock: anObject [
 			evaluationContext: self.
 	
 		semaphore signal.
-		process suspend.
-		ex resume ]
+		process suspend. ]
 ]
 
 { #category : 'actions - debug' }
