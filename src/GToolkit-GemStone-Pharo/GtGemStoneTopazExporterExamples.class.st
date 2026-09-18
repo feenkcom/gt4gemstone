@@ -124,7 +124,7 @@ GtGemStoneTopazExporterExamples >> selectPackageWithInclusionAndExclusion [
 	<return: #GtGemStoneTopazExporter>
 	| exporter classes |
 	exporter := GtGemStoneTopazExporter new
-		packageNames: { 'GToolkit-GemStone' };
+		packageNames: { 'GToolkit-GemStone-Pharo' };
 		additionalClasses: { Collection };
 		excludedClasses: { GtGemStoneTopazExporterExamples };
 		yourself.
