@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'exporter'
 	],
-	#category : #'GToolkit-GemStone-Export'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #private }
