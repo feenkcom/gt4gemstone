@@ -16,7 +16,7 @@ Class {
 		'excludedClasses',
 		'excludedMethods'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Export'
 }
 
 { #category : #'instance creation' }

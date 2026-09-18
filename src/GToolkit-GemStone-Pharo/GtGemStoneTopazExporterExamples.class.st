@@ -4,7 +4,7 @@ I provide executable examples for the GemStone Topaz exporter.
 Class {
 	#name : #GtGemStoneTopazExporterExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #initialization }

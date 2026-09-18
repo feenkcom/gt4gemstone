@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'exporter'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Export'
 }
 
 { #category : #private }
