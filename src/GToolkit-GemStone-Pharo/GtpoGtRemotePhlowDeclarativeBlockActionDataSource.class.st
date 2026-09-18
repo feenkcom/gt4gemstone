@@ -11,7 +11,5 @@ GtpoGtRemotePhlowDeclarativeBlockActionDataSource class >> remoteClassName [
 
 { #category : #accessing }
 GtpoGtRemotePhlowDeclarativeBlockActionDataSource >> executeRemoteActionWithPhlowResult [
-
-	^ self
-		proxyPerform: #executeRemoteActionWithPhlowResult
+	^ self proxyPerform: #executeRemoteActionWithPhlowResult
 ]
