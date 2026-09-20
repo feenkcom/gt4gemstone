@@ -19,7 +19,7 @@ TGlpoGtPhlowTreeViewSpecification >> retrieveSentItemAtPath: aNodePath [
 
 { #category : #accessing }
 TGlpoGtPhlowTreeViewSpecification >> retriveSentItemAtPath: aNodePath [
-	^ self
+	^ (self
 		proxyPerformReturnProxy: #retriveSentItemAtPath:
-		withArguments: { aNodePath }
+		withArguments: { aNodePath }) asGtBareProxyObject
 ]
