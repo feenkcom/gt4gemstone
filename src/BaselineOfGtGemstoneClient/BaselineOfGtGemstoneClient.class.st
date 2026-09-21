@@ -34,9 +34,6 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 		spec
 			baseline: 'Gt4LlmCore'
 			with: [ spec repository: 'github://feenkcom/gt4llm:main/src' ].
-		spec
-			baseline: 'Gt4LlmCore-Examples'
-			with: [ spec repository: 'github://feenkcom/gt4llm:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone-Pharo-BeaconLogging';
 			package: 'GToolkit-GemStone-Pharo-Stubs';
