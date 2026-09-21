@@ -32,7 +32,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			baseline: 'GToolkitWireEncoding'
 			with: [ spec repository: 'github://feenkcom/gtoolkit-wireencoding:main/src' ].
 		spec
-			baseline: 'Gt4LlmCore'
+			baseline: 'Gt4Llm2'
 			with: [ spec repository: 'github://feenkcom/gt4llm:main/src' ].
 		spec 
 			package: 'GToolkit-GemStone-Pharo-BeaconLogging';
@@ -40,7 +40,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			package: 'GToolkit-GemStone' with:
 				[ spec requires: #( 'PharoGemStoneFFI' 'RemoteServiceReplicationForGlamorousToolkit' ) ];
 			package: 'GToolkit-GemStone-Pharo' with:
-				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging' 'GToolkitWireEncoding' 'GToolkit-GemStone-Pharo-Stubs' 'Gt4LlmCore' ) ];
+				[ spec requires: #( 'GToolkit-GemStone' 'GToolkitRemote' 'GToolkit-GemStone-Pharo-BeaconLogging' 'GToolkitWireEncoding' 'GToolkit-GemStone-Pharo-Stubs' 'Gt4Llm2' ) ];
 			package: 'GToolkit-GemStone-BareProxy-Pharo' with:
 				[ spec requires: #( 'GToolkit-GemStone-Pharo') ];
 			package: 'GToolkit-GemStone-Lepiter' with:
