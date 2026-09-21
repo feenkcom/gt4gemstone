@@ -48,7 +48,7 @@ BaselineOfGtGemstoneClient >> baseline: spec [
 			package: 'GToolkit-GemStone-Transcript' with:
 				[  spec requires: #( 'GToolkit-GemStone' ) ];
 			package: 'GToolkit-RemoteExamples-GemStone' with:
-				[  spec requires: #( 'GToolkit-GemStone-Pharo' 'Gt4LlmCore-Examples' ) ] ].
+				[  spec requires: #( 'GToolkit-GemStone-Pharo' ) ] ].
 ]
 
 { #category : #'post load' }
