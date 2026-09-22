@@ -72,6 +72,6 @@ GtGemStoneToolForClassDefinitionChangeExamples >> createExampleClassBlock [
 		classVars: #()
 		classInstVars: #()
 		poolDictionaries: #()
-		inDictionary: UserGlobals
-		category: 'GToolkit-GemStone-Examples' ] ]
+		category: 'GToolkit-GemStone-Examples'
+		inDictionary: UserGlobals ] ]
 ]
