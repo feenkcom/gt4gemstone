@@ -79,15 +79,26 @@ GtGemStoneLlmToolForClassDefinitionChange >> privatePerformToolCall: aToolCall i
 				ifTrue: [ nil ]
 				ifFalse: [
 					pools := poolDictionaryNames collect: [ :each | GsSession currentSession objectNamed: each asSymbol ].
-					updatedClass := superclass
-						subclass: className asSymbol
-						instVarNames: instVarNames
-						classVars: classVarNames
-						classInstVars: classInstVarNames
-						poolDictionaries: pools
-						category: packageName
-						inDictionary: dictionary
-						options: (options collect: #asSymbol).
+					"Rowan doesn't allow the class category to be set, it seems to always be Kernel"
+					(GsSession currentSession objectNamed: #Rowan) notNil ifTrue:
+						[ updatedClass := superclass
+							subclass: className asSymbol
+							instVarNames: instVarNames
+							classVars: classVarNames
+							classInstVars: classInstVarNames
+							poolDictionaries: pools
+							inDictionary: dictionary
+							options: (options collect: #asSymbol) ]
+					ifFalse:
+						[ updatedClass := superclass
+							subclass: className asSymbol
+							instVarNames: instVarNames
+							classVars: classVarNames
+							classInstVars: classInstVarNames
+							poolDictionaries: pools
+							category: packageName
+							inDictionary: dictionary
+							options: (options collect: #asSymbol) ].
 					updatedClass comment: comment.
 					resolution := System myUserProfile symbolResolutionOf: updatedClass name.
 					{
