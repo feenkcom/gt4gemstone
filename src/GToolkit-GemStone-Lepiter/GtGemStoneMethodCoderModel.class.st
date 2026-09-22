@@ -53,6 +53,42 @@ GtGemStoneMethodCoderModel >> addEvaluateAddonsTo: anAst to: coderAddOns from: a
 		to: coderAddOns) ifNotNil: [ :anAction | anAction priority: 800.4 ]
 ]
 
+{ #category : #'menu - navigation' }
+GtGemStoneMethodCoderModel >> addGemStoneImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node |
+			(self
+				addLinkMenuAddOnsTo: coderAddOns
+				group: BrMenuItemGroupConfiguration navigation
+				node: node
+				selector: #browseGemStoneImplementorsAt:requesterObject:
+				label: 'Browse GemStone implementors'
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
+				ifNotNil: [ :anAction | anAction priority: 12 ] ]
+]
+
+{ #category : #menu }
+GtGemStoneMethodCoderModel >> addGemStoneSendersMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
+	<gtCoderContextMenuAddOns>
+	| aDocumentId |
+	aDocumentId := aCoderViewModel documentId.
+	(self nodeFrom: aCoderViewModel)
+		ifNotNil: [ :node |
+			(self
+				addLinkMenuAddOnsTo: coderAddOns
+				group: BrMenuItemGroupConfiguration navigation
+				node: node
+				selector: #browseGemStoneSendersAt:requesterObject:
+				label: 'Browse GemStone senders'
+				requesterObject: aCoderViewModel
+				context: (GtCoderAddOnsBuildContext new documentId: aDocumentId))
+				ifNotNil: [ :anAction | anAction priority: 13 ] ]
+]
+
 { #category : #'add-ons' }
 GtGemStoneMethodCoderModel >> addLocalHierarchyImplementorsMenuAddOnsAst: anAst to: coderAddOns from: aCoderViewModel [
 	<gtCoderContextMenuAddOns>
@@ -92,6 +128,34 @@ GtGemStoneMethodCoderModel >> addLocalHierarchyMessageReferencesMenuAddOnsAst: a
 { #category : #converting }
 GtGemStoneMethodCoderModel >> asCoderViewModel [
 	^ GtGemStoneMethodCoderViewModel new coder: self
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneMethodCoderModel >> browseGemStoneImplementorsAt: aTextPosition requesterObject: aRequester [
+	"Browse implementations of the selector at aTextPosition in the connected GemStone repository."
+	self
+		detectSelectorAt: aTextPosition
+		ifFound: [ :aSelector :anAstNode |
+			self
+				notifyObjectSpawn: (GtGemStoneMethodCodersModel
+					forMethodSpecifications: (self gemStoneImplementorsOf: aSelector)
+					inSession: self session)
+				requesterObject: aRequester ]
+		ifNone: [ ]
+]
+
+{ #category : #navigation }
+GtGemStoneMethodCoderModel >> browseGemStoneSendersAt: aTextPosition requesterObject: aRequester [
+	"Browse methods that send the selector at aTextPosition in the connected GemStone repository."
+	self
+		detectSelectorAt: aTextPosition
+		ifFound: [ :aSelector :anAstNode |
+			self
+				notifyObjectSpawn: (GtGemStoneMethodCodersModel
+					forMethodSpecifications: (self gemStoneSendersOf: aSelector)
+					inSession: self session)
+				requesterObject: aRequester ]
+		ifNone: [ ]
 ]
 
 { #category : #accessing }
@@ -263,6 +327,38 @@ GtGemStoneMethodCoderModel >> formatWithRequesterObject: aRequester [
 			do: [ :ex | ^ self notifyParseError: ex requesterObject: aRequester ].
 
 	self currentSourceString: ast formattedCode
+]
+
+{ #category : #'private - querying' }
+GtGemStoneMethodCoderModel >> gemStoneImplementorsOf: aSelector [
+	"Answer GemStone method specifications implementing aSelector."
+	| remoteSpecifications |
+	self session isRunning ifFalse: [ self session connect ].
+	remoteSpecifications := self session
+		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
+			matches := OrderedCollection new.
+			Object allSubclasses do: [ :aClass |
+				aClass methodsDo: [ :aMethodSelector :aMethod |
+					aMethodSelector = aSymbol ifTrue: [ matches add: aMethod ] ] ].
+			GtGemStoneMethodsSpecification forGsMethods: matches ]
+		withArguments: { aSelector }.
+	^ GtGemStoneMethodsSpecification fromJsonString: (remoteSpecifications proxyPerform: #asJsonForExport)
+]
+
+{ #category : #navigation }
+GtGemStoneMethodCoderModel >> gemStoneSendersOf: aSelector [
+	"Answer GemStone method specifications for methods that send aSelector."
+	| remoteSpecifications |
+	self session isRunning ifFalse: [ self session connect ].
+	remoteSpecifications := self session
+		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
+			matches := OrderedCollection new.
+			Object allSubclasses do: [ :aClass |
+				aClass methodsDo: [ :aMethodSelector :aMethod |
+					(aMethod isSenderOf: aSymbol) ifTrue: [ matches add: aMethod ] ] ].
+			GtGemStoneMethodsSpecification forGsMethods: matches ]
+		withArguments: { aSelector }.
+	^ GtGemStoneMethodsSpecification fromJsonString: (remoteSpecifications proxyPerform: #asJsonForExport)
 ]
 
 { #category : #accessing }
