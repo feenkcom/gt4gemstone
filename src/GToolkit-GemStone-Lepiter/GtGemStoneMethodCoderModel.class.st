@@ -336,7 +336,7 @@ GtGemStoneMethodCoderModel >> gemStoneImplementorsOf: aSelector [
 	self session isRunning ifFalse: [ self session connect ].
 	remoteSpecifications := self session
 		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
-			matches := GtRsrEvaluatorServiceServer classOrganizer
+			matches := ClassOrganizer gtDefault
 				implementorsOf: aSymbol.
 			GtGemStoneMethodsSpecification forGsMethods: matches ]
 		withArguments: { aSelector }.
@@ -350,7 +350,7 @@ GtGemStoneMethodCoderModel >> gemStoneSendersOf: aSelector [
 	self session isRunning ifFalse: [ self session connect ].
 	remoteSpecifications := self session
 		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
-			matches := (GtRsrEvaluatorServiceServer classOrganizer
+			matches := (ClassOrganizer gtDefault
 				sendersOf: aSymbol) first.
 			GtGemStoneMethodsSpecification forGsMethods: matches ]
 		withArguments: { aSelector }.
