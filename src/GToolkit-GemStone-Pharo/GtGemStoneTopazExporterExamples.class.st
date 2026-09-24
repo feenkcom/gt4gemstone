@@ -4,6 +4,16 @@ I provide executable examples for the GemStone Topaz exporter.
 Class {
 	#name : #GtGemStoneTopazExporterExamples,
 	#superclass : #Object,
+	#instVars : [
+		'packageNames',
+		'additionalClasses',
+		'stubClasses',
+		'stubClassesWithoutParents',
+		'excludedClasses',
+		'excludedMethods',
+		'includeGsCodeMethods',
+		'gsCodeClasses'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
@@ -51,49 +61,64 @@ GtGemStoneTopazExporterExamples >> exportExcludingMethods [
 ]
 
 { #category : #examples }
-GtGemStoneTopazExporterExamples >> exportStubClassesWithParentsWithoutMethods [
+GtGemStoneTopazExporterExamples >> exportGsCodeMethod [
 	<gtExample>
 	<return: #GtGemStoneTopazExporter>
-	| exporter output classes collectionPosition requestHistoryPosition |
+	| exporter output gsSource pharoSource |
 	exporter := GtGemStoneTopazExporter new
-		stubClasses: { GtLRequestHistory };
-		excludedClasses: { Collection };
+		includeGsCodeMethods: true;
+		gsCodeClasses: { GtGemStoneTopazExporterExamples };
+		additionalClasses: { GtGemStoneTopazExporterExamples };
 		yourself.
-	classes := exporter classesToDefine.
-	self assert: (classes includes: GtLRequestHistory).
-	self assert: (classes includes: SequenceableCollection) not.
-	self assert: (classes includes: OrderedCollection) not.
-	self assert: (classes includes: Collection) not.
-	self assert: (classes includes: Object) not.
+	output := exporter asTopazString withUnixLineEndings.
+	gsSource := 'method: GtGemStoneTopazExporterExamples
+', 'gsCodeExampleMethod
+	"Provide an example method with the gsCode: pragma"
+	^ self copyFrom: 1 to: 3'.
+	pharoSource := 'method: GtGemStoneTopazExporterExamples
+', 'gsCodeExampleMethod
+	"Provide an example method with the gsCode: pragma"
+	<gsCode: ''^ self copyFrom: 1 to: 3''>
+	^ self first: 3'.
+	self assert: (output includesSubstring: gsSource).
+	self assert: (output includesSubstring: pharoSource) not.
+	^ exporter
+]
+
+{ #category : #Examples }
+GtGemStoneTopazExporterExamples >> exportGsCodeMethodBySearchingAllClasses [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter output |
+	exporter := GtGemStoneTopazExporter new
+		includeGsCodeMethods: true;
+		additionalClasses: { GtGemStoneTopazExporterExamples };
+		yourself.
 	output := exporter asTopazString.
-	requestHistoryPosition := output indexOfSubCollection: 'subclass: ''GtLRequestHistory'''.
-	collectionPosition := output indexOfSubCollection: 'subclass: ''OrderedCollection'''.
-	self assert: requestHistoryPosition > 0.
-	self assert: collectionPosition equals: 0.
-	self assert: (output includesSubstring: ') category: ''GToolkit-Stubs'';').
-	self assert: (output includesSubstring: 'removeallmethods OrderedCollection') not.
-	self assert: (output includesSubstring: 'method: OrderedCollection') not.
+	self assert: (output includesSubstring: 'method: GtGemStoneTopazExporterExamples', String lf, 'exportGsCodeMethod').
 	^ exporter
 ]
 
 { #category : #examples }
-GtGemStoneTopazExporterExamples >> exportStubClassesWithoutParentsWithoutMethods [
+GtGemStoneTopazExporterExamples >> exportStubClassesWithoutMethods [
 	<gtExample>
 	<return: #GtGemStoneTopazExporter>
 	| exporter output classes |
 	exporter := GtGemStoneTopazExporter new
-		stubClassesWithoutParents: { OrderedCollection };
+		stubClasses: { GtLReplyMessage };
 		yourself.
 	classes := exporter classesToDefine.
-	self assert: classes size equals: 1.
-	self assert: classes first equals: OrderedCollection.
-	self assert: (classes includes: SequenceableCollection) not.
+	self assert: classes size equals: 3.
+	self assert: (classes includesAll: { GtLBasicMessage. GtLChatMessage. GtLReplyMessage }).
+	self assert: (classes includes: GtLBasicMessage superclass) not.
 	output := exporter asTopazString.
-	self assert: (output includesSubstring: 'subclass: ''OrderedCollection''').
-	self assert: (output includesSubstring: 'subclass: ''SequenceableCollection''') not.
+	self assert: (output includesSubstring: 'Object subclass: ''GtLBasicMessage''').
+	self assert: (output includesSubstring: 'GtLBasicMessage subclass: ''GtLChatMessage''').
+	self assert: (output includesSubstring: 'GtLChatMessage subclass: ''GtLReplyMessage''').
 	self assert: (output includesSubstring: ') category: ''GToolkit-Stubs'';').
-	self assert: (output includesSubstring: 'removeallmethods OrderedCollection') not.
-	self assert: (output includesSubstring: 'method: OrderedCollection') not.
+	classes do: [ :each |
+		self assert: (output includesSubstring: 'removeallmethods ', each name) not.
+		self assert: (output includesSubstring: 'method: ', each name) not ].
 	^ exporter
 ]
 
@@ -116,6 +141,13 @@ GtGemStoneTopazExporterExamples >> exportSuperclassBeforeSubclass [
 	self assert: (output includesSubstring: 'removeallmethods GtLReplyMessage').
 	self assert: (output includesSubstring: 'removeallclassmethods GtLReplyMessage').
 	^ exporter
+]
+
+{ #category : #Examples }
+GtGemStoneTopazExporterExamples >> gsCodeExampleMethod [
+	"Provide an example method with the gsCode: pragma"
+	<gsCode: '^ self copyFrom: 1 to: 3'>
+	^ self first: 3
 ]
 
 { #category : #examples }

@@ -23,6 +23,11 @@ GtGemStoneLlmCodeExporter >> additionalClasses [
 	^ additionalClasses
 ]
 
+{ #category : #private }
+GtGemStoneLlmCodeExporter >> excludedClassList [
+	^ { GtGemStoneTopazExporterExamples. }
+]
+
 { #category : #accessing }
 GtGemStoneLlmCodeExporter >> excludedMethods [
 
@@ -92,10 +97,11 @@ GtGemStoneLlmCodeExporter >> excludedMethods [
 	GtLCodeChangesToolCallsSummarizerExamples>>#messagesGroupWithExecutedClassCommentChange.
 	GtLCodeChangesToolCallsSummarizerExamples>>#removeClassNamedIfPresent:.
 	MAStringReader>>#visitBlockDescription:.
+	GtLlmRenameFormatComponentRefactoring>>#renameComponentReferences.
 }
 ]
 
-{ #category : #accessing }
+{ #category : #actions }
 GtGemStoneLlmCodeExporter >> export [ 
 	| outputFile |
 
@@ -105,10 +111,11 @@ GtGemStoneLlmCodeExporter >> export [
 		packages: self packageNames
 		additionalClasses: self additionalClasses
 		stubClasses: self stubClasses
-		excluding: { }.
+		excluding: self excludedClassList.
 	exporter 
 		excludedMethods: self excludedMethods;
-		stubClassesWithoutParents: self stubClassesWithoutParents.
+		includeGsCodeMethods: true.
+
 	exporter writeTo: outputFile.
 	exporter
 ]
@@ -132,8 +139,7 @@ GtGemStoneLlmCodeExporter >> packageNames [
 
 { #category : #accessing }
 GtGemStoneLlmCodeExporter >> stubClasses [
-
-	^ self stubClasses1, self stubClasses2
+	^ self stubClasses1, self stubClasses2, self stubClasses3
 ]
 
 { #category : #accessing }
@@ -145,11 +151,10 @@ GtGemStoneLlmCodeExporter >> stubClasses1 [
 { #category : #accessing }
 GtGemStoneLlmCodeExporter >> stubClasses2 [
 
-	^ { OSPlatform . PackageOrganizer . GtPharoDummyEnvironment . BlFrameLayout . BrGlamorousShrinkingLabelAptitude . BrScrollPane . BrScrollPaneAptitude . BrToggleGroup . BrGlamorousToggleGroupAptitude . BrToggle . BrGlamorousToggleWithLabelAptitude . BrToggleActivatedEvent . SkiaImage . GtJsonShapeComparison . GtRenameSelectorEditorAttribute . GtSelectorStyler . GtSelectorInputFilter . BlFontFamilyAttribute . GtCompletionStrategyAttribute . LePageToolContentTreeElement . GtSourceCoderEmbeddedExpanderToggleId . GtPharoDynamicHighlightAttribute . OpalCompiler . XMLHTMLParser . ShiftClassBuilder . GtShellScriptProcess . GtProcessStackOverflowChecker . Float32Array . GtLlmEmbedding . GtLlmEmbeddingsUtilities. RBScanner. SmaCCLineNumberStream. RBPushDownMethodRefactoring. RBRemoveMethodRefactoring. GtWardleyMapModel. GtLlmProvisionalThreadMessage. GtLlmNewThreadMessage. GtLlmNewActionThreadMessage. GtPharoDummiesGenerator. BrTextEditorModel. PBApplication. GtPhlowForwardViewDefiningMethodProvider. GtRrImageSyncEvents. GtRrChangesSync. GtRemoteRunner. GtRrLocalManagerStartupAndShutdown. GtRrExplicitExampleTask. GtRrJobCompletedAnnouncement. OmReference. GtOpenAIObjectMessage. BlMouseOverEvent. BlMouseOutEvent. BrGlamorousListItemAptitude. GtWardleyMapRenameOriginalNameId. GtWardleyMapRenameProposalId. GtABCartoonAddressBookExample. ZnMultiValueDictionary. ZnMultiPartFormDataEntity. ZnMimePart. GtAnthropicModelsGroup. NumberParser. GZipReadStream. LeSnippetChange. LePythonSnippet. LeShellScriptSnippet. LeExampleSnippet. GtCoder. GtSourceCoderId. GtSourceCoderEditorId. BrAnchoredVisualAnalysis. GtRefactoringsPreviewElement. GtSourceCoderEditorInnerId. GtTemporaryDirectory. GtMagritteCompletionStrategyStencilBuilder. GtMagritteMemento. GtMagritteElementBuilder. GtMagritteStringEditorElementStencilBuilder. GtMagrittePasswordEditorElementStencilBuilder. GtOpenAIProvider. GtPlotterDataGroup. GtPlotterLineChart. GtPlotterLinearScale. BrGlamorousButtonRectangularAptitude. BrGlamorousButtonIconDropdownAptitude. BrMenuItems. BrMenuActionItem. RBCondition. RBParseTreeRewriter. PharoLinkTestCaseSkip. LeTextCoderSnippetViewModel. LeAddSnippetChange. GtWorldElement. GtOpenAIMessageForGT. GtLlmCustomSerializationValueHolder. GtRBPullUpInstanceVariableRefactoring. SessionManager. GtLlmToolsGroup. GtMcpResourcesGroup. GtMcpPromptsGroup. GtPhlowChangeTabGroupActionExecutor. BlBorder. BrDebuggableEditorElementStencil. GtLlmAssistantChatReadyStatus. Point. BrStreamItemsProvider. AsyncObservableValue. AsyncOptionalValue. AsyncCachedStream. AsyncChunksStream. AsyncDebounceStream. AsyncEphemerousStream. AsyncErrorHandlingStream. AsyncFilterStream. AsyncMapStream. AsyncMapWithCacheStream. AsyncMapWithIndexStream. AsyncMapFutureStream. AsyncStreamForEachFuture. AsyncStreamCollectFuture. AsyncStreamFoldFuture. AsyncLineReadStream. AsyncStreamForwardFuture. AsyncFuseStream. AsyncStreamHasNextFuture. AsyncStreamNextFuture. AsyncStreamSizeHint. AsyncSplitStream. AsyncTakeStream. AsyncTerminatableStream. AsyncThrottleStream. AsyncWithoutDuplicatesStream. AsyncFlattenStream. AsyncWithTimeoutStream. AsyncWeakStream. AsyncLePageStream. AsyncFutureExecutionAtomicWaker. GtABAddressBook. GtBPEEncoder. GtPretrainedEncoder. AsyncSharedDictionary. GtRBAddMethodRefactoring. GtWardleyMapUpdateMapChange. GtWardleyMapAddInnerNodeChange. GtWardleyMapRemoveEdgeChange. GtWardleyMapRemoveNodeChange. GtWardleyMapUpdateEdgeChange. GtWardleyMapRemoveNoteChange. GtWardleyMapAddNodeChange. GtWardleyMapUpdateNodeChange. GtWardleyMapAddEdgeChange. GtWardleyMapAddNoteChange. GtWardleyMapUpdateNoteChange. GtWardleyMapRemoveInnerNodeChange. . GtMagritteActionElement . GtMagritteFieldViewModel . GtMagritteBasicAction . Socket . BrListRowStencilBuilder . GtMagritteModelStencilBuilder . GtMagritteListElementStencilBuilder . BlDoubleClickEvent . AsyncCounterSink . AsyncPeekSink . BlTextAttributesBuilder . BrGlamorousEditableLabelAptitude . GtFixItMarkerAttribute . BlMouseLeaveEvent }
+	^ { OSPlatform . PackageOrganizer . GtPharoDummyEnvironment . BlFrameLayout . BrGlamorousShrinkingLabelAptitude . BrScrollPane . BrScrollPaneAptitude . BrToggleGroup . BrGlamorousToggleGroupAptitude . BrToggle . BrGlamorousToggleWithLabelAptitude . BrToggleActivatedEvent . SkiaImage . GtJsonShapeComparison . GtRenameSelectorEditorAttribute . GtSelectorStyler . GtSelectorInputFilter . BlFontFamilyAttribute . GtCompletionStrategyAttribute . LePageToolContentTreeElement . GtSourceCoderEmbeddedExpanderToggleId . GtPharoDynamicHighlightAttribute . OpalCompiler . XMLHTMLParser . ShiftClassBuilder . GtShellScriptProcess . GtProcessStackOverflowChecker . Float32Array . GtLlmEmbedding . GtLlmEmbeddingsUtilities. RBScanner. SmaCCLineNumberStream. RBPushDownMethodRefactoring. RBRemoveMethodRefactoring. GtWardleyMapModel. GtLlmProvisionalThreadMessage. GtLlmNewThreadMessage. GtLlmNewActionThreadMessage. GtPharoDummiesGenerator. BrTextEditorModel. PBApplication. GtPhlowForwardViewDefiningMethodProvider. GtRrImageSyncEvents. GtRrChangesSync. GtRemoteRunner. GtRrLocalManagerStartupAndShutdown. GtRrExplicitExampleTask. GtRrJobCompletedAnnouncement. OmReference. GtOpenAIObjectMessage. BlMouseOverEvent. BlMouseOutEvent. BrGlamorousListItemAptitude. GtWardleyMapRenameOriginalNameId. GtWardleyMapRenameProposalId. GtABCartoonAddressBookExample. ZnMultiValueDictionary. ZnMultiPartFormDataEntity. ZnMimePart. GtAnthropicModelsGroup. NumberParser. GZipReadStream. LeSnippetChange. LePythonSnippet. LeShellScriptSnippet. LeExampleSnippet. GtCoder. GtSourceCoderId. GtSourceCoderEditorId. BrAnchoredVisualAnalysis. GtRefactoringsPreviewElement. GtSourceCoderEditorInnerId. GtTemporaryDirectory. GtMagritteCompletionStrategyStencilBuilder. GtMagritteMemento. GtMagritteElementBuilder. GtMagritteStringEditorElementStencilBuilder. GtMagrittePasswordEditorElementStencilBuilder. GtOpenAIProvider. GtPlotterDataGroup. GtPlotterLineChart. GtPlotterLinearScale. BrGlamorousButtonRectangularAptitude. BrGlamorousButtonIconDropdownAptitude. BrMenuItems. BrMenuActionItem. RBCondition. RBParseTreeRewriter. PharoLinkTestCaseSkip. LeTextCoderSnippetViewModel. LeAddSnippetChange. GtWorldElement. GtOpenAIMessageForGT. GtLlmCustomSerializationValueHolder. GtRBPullUpInstanceVariableRefactoring. SessionManager. GtLlmToolsGroup. GtMcpResourcesGroup. GtMcpPromptsGroup. GtPhlowChangeTabGroupActionExecutor. BlBorder. BrDebuggableEditorElementStencil. GtLlmAssistantChatReadyStatus. Point. BrStreamItemsProvider. AsyncObservableValue. AsyncOptionalValue. AsyncCachedStream. AsyncChunksStream. AsyncDebounceStream. AsyncEphemerousStream. AsyncErrorHandlingStream. AsyncFilterStream. AsyncMapStream. AsyncMapWithCacheStream. AsyncMapWithIndexStream. AsyncMapFutureStream. AsyncStreamForEachFuture. AsyncStreamCollectFuture. AsyncStreamFoldFuture. AsyncLineReadStream. AsyncStreamForwardFuture. AsyncFuseStream. AsyncStreamHasNextFuture. AsyncStreamNextFuture. AsyncStreamSizeHint. AsyncSplitStream. AsyncTakeStream. AsyncTerminatableStream. AsyncThrottleStream. AsyncWithoutDuplicatesStream. AsyncFlattenStream. AsyncWithTimeoutStream. AsyncWeakStream. AsyncLePageStream. AsyncFutureExecutionAtomicWaker. GtABAddressBook. GtBPEEncoder. GtPretrainedEncoder. AsyncSharedDictionary. GtRBAddMethodRefactoring. GtWardleyMapUpdateMapChange. GtWardleyMapAddInnerNodeChange. GtWardleyMapRemoveEdgeChange. GtWardleyMapRemoveNodeChange. GtWardleyMapUpdateEdgeChange. GtWardleyMapRemoveNoteChange. GtWardleyMapAddNodeChange. GtWardleyMapUpdateNodeChange. GtWardleyMapAddEdgeChange. GtWardleyMapAddNoteChange. GtWardleyMapUpdateNoteChange. GtWardleyMapRemoveInnerNodeChange. . GtMagritteActionElement . GtMagritteFieldViewModel . GtMagritteBasicAction . Socket . BrListRowStencilBuilder . GtMagritteModelStencilBuilder . GtMagritteListElementStencilBuilder . BlDoubleClickEvent . AsyncCounterSink . AsyncPeekSink . BlTextAttributesBuilder . BrGlamorousEditableLabelAptitude . GtFixItMarkerAttribute . BlMouseLeaveEvent. }
 ]
 
 { #category : #accessing }
-GtGemStoneLlmCodeExporter >> stubClassesWithoutParents [
-
-	^ { WeakIdentityKeyDictionary. NeoJSONArray. NeoJSONObject. ConnectionClosed. BeaconSignal. BrWish. ContextStackSignal. GtLlmThreadMessageRestyleRequested. GtLlmThreadMessageViewModelChanged. GtLlmMessageContentsUpdated. }
+GtGemStoneLlmCodeExporter >> stubClasses3 [
+	^ { WeakIdentityKeyDictionary. NeoJSONArray. NeoJSONObject. ConnectionClosed. BeaconSignal. BrWish. ContextStackSignal. GtLlmThreadMessageRestyleRequested. GtLlmThreadMessageViewModelChanged. GtLlmMessageContentsUpdated. OrderedDictionary. GtRenameController. BrGlamorousWithExplicitTooltipAptitude. GtPhlowView. BrEditorShortcut. ZnEntity. BlElementState. RBParseTreeRewriter. OCParseTreeRewriter. GtGemStoneLlmToolForClassSearch. GtGemStoneLlmToolForClassLookup. GtGemStoneLlmToolForClassSubclasses. GtGemStoneLlmToolForClassReferences. GtGemStoneLlmToolForMethodImplementors. GtGemStoneLlmToolForMethodSenders. GtGemStoneLlmToolForMethodsSource. GtGemStoneLlmToolForMethodCompilation. GtGemStoneLlmToolForMethodRemoval. GtGemStoneLlmToolForClassDefinitionChange. GtGemStoneLlmToolForSmalltalkCodeEvaluation. GtGemStoneSessionRegistry. }
 ]
