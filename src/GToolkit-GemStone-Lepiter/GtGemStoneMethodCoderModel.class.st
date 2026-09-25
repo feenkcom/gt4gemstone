@@ -336,10 +336,8 @@ GtGemStoneMethodCoderModel >> gemStoneImplementorsOf: aSelector [
 	self session isRunning ifFalse: [ self session connect ].
 	remoteSpecifications := self session
 		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
-			matches := OrderedCollection new.
-			Object allSubclasses do: [ :aClass |
-				aClass methodsDo: [ :aMethodSelector :aMethod |
-					aMethodSelector = aSymbol ifTrue: [ matches add: aMethod ] ] ].
+			matches := ClassOrganizer gtDefault
+				implementorsOf: aSymbol.
 			GtGemStoneMethodsSpecification forGsMethods: matches ]
 		withArguments: { aSelector }.
 	^ GtGemStoneMethodsSpecification fromJsonString: (remoteSpecifications proxyPerform: #asJsonForExport)
@@ -352,10 +350,8 @@ GtGemStoneMethodCoderModel >> gemStoneSendersOf: aSelector [
 	self session isRunning ifFalse: [ self session connect ].
 	remoteSpecifications := self session
 		evaluateBlockAndWaitReturnProxy: [ :aSymbol | | matches |
-			matches := OrderedCollection new.
-			Object allSubclasses do: [ :aClass |
-				aClass methodsDo: [ :aMethodSelector :aMethod |
-					(aMethod isSenderOf: aSymbol) ifTrue: [ matches add: aMethod ] ] ].
+			matches := (ClassOrganizer gtDefault
+				sendersOf: aSymbol) first.
 			GtGemStoneMethodsSpecification forGsMethods: matches ]
 		withArguments: { aSelector }.
 	^ GtGemStoneMethodsSpecification fromJsonString: (remoteSpecifications proxyPerform: #asJsonForExport)

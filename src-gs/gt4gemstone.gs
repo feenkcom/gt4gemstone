@@ -7617,6 +7617,30 @@ asGtGsArgument
 	^ self
 %
 
+! Class extensions for 'ClassOrganizer'
+
+!		Class methods for 'ClassOrganizer'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: ClassOrganizer
+cleanUpGtDefault
+
+	^ SessionTemps current
+		removeKey: #GtGs_ClassOrganizer_Cache
+		ifAbsent: [].
+%
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: ClassOrganizer
+gtDefault
+	"Cache a ClassOrganizer in the session temps as in a large database reflection is very slow,
+	so the initial call can take minutes."
+
+	^ SessionTemps current
+		at: #GtGs_ClassOrganizer_Cache
+		ifAbsentPut: [ self new ].
+%
+
 ! Class extensions for 'Collection'
 
 !		Instance methods for 'Collection'
