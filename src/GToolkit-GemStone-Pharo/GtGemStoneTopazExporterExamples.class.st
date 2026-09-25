@@ -80,8 +80,8 @@ GtGemStoneTopazExporterExamples >> exportGsCodeMethod [
 	"Provide an example method with the gsCode: pragma"
 	<gsCode: ''^ self copyFrom: 1 to: 3''>
 	^ self first: 3'.
-	self assert: (output includesSubstring: gsSource).
-	self assert: (output includesSubstring: pharoSource) not.
+	self assert: (output includesSubstring: gsSource withUnixLineEndings).
+	self assert: (output includesSubstring: pharoSource withUnixLineEndings) not.
 	^ exporter
 ]
 
