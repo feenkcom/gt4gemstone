@@ -32,7 +32,15 @@ GtRemoteGemStoneCoderExamples >> computeRealBehaviour [
 GtRemoteGemStoneCoderExamples >> gemStoneImplementors [
 	<gtExample>
 	<return: #GtGemStoneMethodsSpecification>
-	| coder specifications |
+	| coder specifications minimumVersion |
+	
+	"Skip this example if the server version is below v1.1.597"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 597.
+	(self runningServer gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: 
+			[ ^ self ].
+
 	coder := GtGemStoneMethodCoderModel new session: self runningServer.
 	specifications := coder gemStoneImplementorsOf: #printString.
 	self assert: specifications size > 0.
