@@ -76,12 +76,12 @@ GtGemStoneExtensionMethodExamples >> extensionSha256WithLineEndings [
 	extension := GtGemStoneExtensionMethod new.
 	carriageReturn := Character cr asString.
 	lineFeed := Character lf asString.
-	expectedDigest := (SHA256 hashMessage: ('a', lineFeed, 'b', lineFeed, 'c', lineFeed) utf8Encoded) hex.
+	expectedDigest := (SHA256 hashMessage: ('a', lineFeed, 'b', lineFeed, 'c') utf8Encoded) hex.
 	inputs := {
-		'a', lineFeed, 'b', lineFeed, 'c', lineFeed.
-		'a', carriageReturn, 'b', carriageReturn, 'c', carriageReturn.
-		'a', carriageReturn, lineFeed, 'b', carriageReturn, lineFeed, 'c', carriageReturn, lineFeed.
-		'a', carriageReturn, 'b', carriageReturn, lineFeed, 'c', lineFeed }.
+		'a', lineFeed, 'b', lineFeed, 'c'.
+		'a', carriageReturn, 'b', carriageReturn, 'c'.
+		'a', carriageReturn, lineFeed, 'b', carriageReturn, lineFeed, 'c'.
+		'a', carriageReturn, 'b', carriageReturn, lineFeed, 'c' }.
 	inputs do: [ :each |
 		self assert: (extension sha256Of: each) equals: expectedDigest ].
 	^ expectedDigest
