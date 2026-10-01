@@ -51,7 +51,7 @@ GtGemStoneLlmToolForMethodCompilation >> privatePerformToolCall: aToolCall inCon
 	request := aToolCall arguments at: 'methodRequest'.
 	self session ifNil: [ self error: 'No default GemStone session has been set' ].
 	className := request methodClassName asString.
-	source := request sourceCode asString.
+	source := GtGemStoneTopazExporter gemstoneSourceForSource: request sourceCode asString.
 	protocol := request protocol asString.
 	isClassSide := request classSide.
 	environmentId := request environmentId.
