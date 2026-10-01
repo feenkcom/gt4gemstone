@@ -69,6 +69,39 @@ GtGemStoneExtensionMethodExamples >> extensionSha256 [
 ]
 
 { #category : #examples }
+GtGemStoneExtensionMethodExamples >> extensionSha256WithLineEndings [
+	<gtExample>
+	<return: #String>
+	| extension carriageReturn lineFeed expectedDigest inputs |
+	extension := GtGemStoneExtensionMethod new.
+	carriageReturn := Character cr asString.
+	lineFeed := Character lf asString.
+	expectedDigest := (SHA256 hashMessage: ('a', lineFeed, 'b', lineFeed, 'c', lineFeed) utf8Encoded) hex.
+	inputs := {
+		'a', lineFeed, 'b', lineFeed, 'c', lineFeed.
+		'a', carriageReturn, 'b', carriageReturn, 'c', carriageReturn.
+		'a', carriageReturn, lineFeed, 'b', carriageReturn, lineFeed, 'c', carriageReturn, lineFeed.
+		'a', carriageReturn, 'b', carriageReturn, lineFeed, 'c', lineFeed }.
+	inputs do: [ :each |
+		self assert: (extension sha256Of: each) equals: expectedDigest ].
+	^ expectedDigest
+]
+
+{ #category : #examples }
+GtGemStoneExtensionMethodExamples >> rejectsNonExtensionHashUpdate [
+	<gtExample>
+	| method rejected |
+	method := GtGemStoneExtensionMethods class >> #extensions.
+	rejected := false.
+	[ GtGemStoneExtensionMethods updateHashOf: #extensions ]
+		on: Error
+		do: [ :error | rejected := true ].
+	self assert: rejected.
+	self assert: (GtGemStoneExtensionMethods class >> #extensions) == method.
+	^ rejected
+]
+
+{ #category : #examples }
 GtGemStoneExtensionMethodExamples >> setIntersectionExtension [
 	<gtExample>
 	<return: #GtGemStoneExtensionMethod>
@@ -86,5 +119,56 @@ GtGemStoneExtensionMethodExamples >> setIntersectionExtension [
 	self
 		assert: (extension source withLineEndings: String lf)
 		equals: (expectedSource withLineEndings: String lf).
+	^ extension
+]
+
+{ #category : #examples }
+GtGemStoneExtensionMethodExamples >> unixLineEndings [
+	<gtExample>
+	<return: #GtGemStoneExtensionMethod>
+	| extension carriageReturn lineFeed cases |
+	extension := GtGemStoneExtensionMethod new.
+	carriageReturn := Character cr asString.
+	lineFeed := Character lf asString.
+	cases := {
+		{ ''. '' }.
+		{ 'plain text'. 'plain text' }.
+		{ 'a', lineFeed, 'b'. 'a', lineFeed, 'b' }.
+		{ 'a', carriageReturn, 'b'. 'a', lineFeed, 'b' }.
+		{ 'a', carriageReturn, lineFeed, 'b'. 'a', lineFeed, 'b' }.
+		{ carriageReturn, 'a', carriageReturn, lineFeed, 'b', lineFeed, 'c', carriageReturn. lineFeed, 'a', lineFeed, 'b', lineFeed, 'c', lineFeed }.
+		{ carriageReturn, carriageReturn, lineFeed, lineFeed, carriageReturn. lineFeed, lineFeed, lineFeed, lineFeed }.
+		{ 'a\b', carriageReturn, 'c'. 'a\b', lineFeed, 'c' }.
+		{ (Character codePoint: 16r03BB) asString, carriageReturn, lineFeed, (Character codePoint: 16r1F600) asString. (Character codePoint: 16r03BB) asString, lineFeed, (Character codePoint: 16r1F600) asString } }.
+	cases do: [ :each |
+		| original normalized |
+		original := each first copy.
+		normalized := extension withUnixLineEndings: each first.
+		self assert: normalized equals: each second.
+		self assert: each first equals: original.
+		self assert: (extension withUnixLineEndings: normalized) equals: normalized ].
+	^ extension
+]
+
+{ #category : #examples }
+GtGemStoneExtensionMethodExamples >> updatesExtensionHash [
+	<gtExample>
+	<return: #GtGemStoneExtensionMethod>
+	| selector originalMethod originalExtension extension updatedMethod |
+	selector := #ext_TestExecutionEnvironment_registerDefaultServices.
+	originalMethod := GtGemStoneExtensionMethods class >> selector.
+	originalExtension := GtGemStoneExtensionMethods perform: selector.
+	extension := GtGemStoneExtensionMethods updateHashOf: selector.
+	updatedMethod := GtGemStoneExtensionMethods class >> selector.
+	self assert: extension hash equals: extension existingMethodHash.
+	self assert: extension selector equals: originalExtension selector.
+	self assert: extension className equals: originalExtension className.
+	self assert: extension meta equals: originalExtension meta.
+	self assert: extension gtVersions equals: originalExtension gtVersions.
+	self assert: extension protocol equals: originalExtension protocol.
+	self assert: extension source equals: originalExtension source.
+	self assert: updatedMethod protocolName equals: originalMethod protocolName.
+	GtGemStoneExtensionMethods updateHashOf: selector.
+	self assert: (GtGemStoneExtensionMethods class >> selector) == updatedMethod.
 	^ extension
 ]

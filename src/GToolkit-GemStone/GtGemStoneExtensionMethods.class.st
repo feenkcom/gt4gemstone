@@ -83,7 +83,7 @@ GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_instance [
 		meta: true;
 		gtVersions: nil;
 		className: #DefaultExecutionEnvironment;
-		hash: 'ee006edbdf1738a0b555ac2c93913d47379b04ceaa884ae789502a9f3911a696';
+		hash: '3a29aac01eec8949c5860660d69d08e1415f9af6ecdc9e66209c600b3baf4bbc';
 		source: 'instance
 	<gtGsExtension>
 
@@ -98,7 +98,7 @@ GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_runExampleEv
 		meta: false;
 		gtVersions: nil;
 		className: #DefaultExecutionEnvironment;
-		hash: '2da4154fd656dd3f2b652ea216c60be4b2d3ad77ff44ce24590bc9c0eb72e06d';
+		hash: '7a967548d4401a8d779fee8e2a6b59925eaad191775be8cfa80b7490bf45005a';
 		source: 'runExampleEvaluator: anExampleEvaluator
 	<gtGsExtension>
 	| testEnv |
@@ -323,10 +323,10 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_registerDefault
 		meta: false;
 		gtVersions: nil;
 		className: #TestExecutionEnvironment;
-		hash: 'c84b401effacc600b3ba2813377d2a2153356ae7bbfcb201e158217ae3d9b949';
+		hash: 'ef6072b4f84be6b12ecba0308405bd2337b5d72d7f026fa6c7770e85aea932c8';
 		source: 'registerDefaultServices
 	<gtGsExtension>
-	^ self'
+	^ self'.
 ]
 
 { #category : #extensions }
@@ -337,7 +337,7 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleUnder
 		meta: false;
 		gtVersions: nil;
 		className: #TestExecutionEnvironment;
-		hash: 'd909c56fec7a94f6e728df87b9ebcf7f8f18199637e2e9a4ce063e0f10efda32';
+		hash: 'c8790ab4d491856631bdaf3a95c51966656a4fe5f53dc4b419f5dc8b591ec837';
 		source: 'runExampleUnderWatchdogUsingEvaluator: anEvaluator
 	<gtGsExtension>
 	| exampleResult |
@@ -374,7 +374,7 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_watchDogLoop [
 		meta: false;
 		gtVersions: nil;
 		className: #TestExecutionEnvironment;
-		hash: '7782c5f9d02f84a08316dea8714fefa3b38a47a469451dc8a3f82ddded97e7de';
+		hash: '0af9624ddb0d3f9efb1285fa07fea5b07c30f80a909c5c97e8fa2ef5f9897aa2';
 		source: 'watchDogLoop
 	<gtGsExtension>
 	| timeIsGone |
@@ -395,4 +395,31 @@ GtGemStoneExtensionMethods class >> extensionSelectors [
 { #category : #accessing }
 GtGemStoneExtensionMethods class >> extensions [
 	^ self extensionSelectors collect: [ :each | self perform: each ]
+]
+
+{ #category : #updating }
+GtGemStoneExtensionMethods class >> updateHashOf: aSelector [
+	| method extension hashMessages hashArgument source updatedSource |
+	(self extensionSelectors includes: aSelector)
+		ifFalse: [ self error: 'Unknown extension method: ', aSelector asString ].
+	method := self class >> aSelector.
+	method protocolName = #extensions
+		ifFalse: [ self error: 'Method is not in the extensions protocol: ', aSelector asString ].
+	extension := self perform: aSelector.
+	extension existingMethod
+		ifNil: [ self error: 'Cannot update the hash of a missing target method: ', extension className asString, '>>', extension selector asString ].
+	hashMessages := method ast allChildren
+		select: [ :node | node isMessage and: [ node selector = #hash: ] ].
+	hashMessages size = 1
+		ifFalse: [ self error: 'Expected exactly one hash: send in extension method: ', aSelector asString ].
+	hashArgument := hashMessages first arguments first.
+	hashArgument isLiteralNode
+		ifFalse: [ self error: 'Expected a literal hash in extension method: ', aSelector asString ].
+	source := method sourceCode.
+	updatedSource := (source copyFrom: 1 to: hashArgument start - 1),
+		extension existingMethodHash storeString,
+		(source copyFrom: hashArgument stop + 1 to: source size).
+	updatedSource = source
+		ifFalse: [ self class compile: updatedSource classified: method protocolName ].
+	^ self perform: aSelector
 ]

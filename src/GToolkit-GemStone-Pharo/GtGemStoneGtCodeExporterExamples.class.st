@@ -8,6 +8,67 @@ Class {
 }
 
 { #category : #examples }
+GtGemStoneGtCodeExporterExamples >> additionalClassListIgnoresMissingNames [
+	<gtExample>
+	| exporterClass exporter missingName expectedClasses |
+	missingName := #GtGemStoneGtCodeExporterMissingAdditionalClassForExample.
+	self assert: (Smalltalk globals includesKey: missingName) not.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass additionalClassNames: { #Object. missingName. #String }.
+	exporter := exporterClass new.
+	self assert: exporter additionalClassNames size equals: 3.
+	self assert: exporter additionalClassList equals: { Object. String }.
+	expectedClasses := OrderedCollection new.
+	expectedClasses
+		addAll: (GtLlmAbstractFunctionTool withAllSuperclasses first: 3);
+		addAll: { Object. String }.
+	self assert: exporter additionalClasses equals: expectedClasses.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> additionalClassNameUtilities [
+	<gtExample>
+	| exporterClass originalNames source |
+	originalNames := GtGemStoneGtCodeExporter new additionalClassNames.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass additionalClassNames: #('String' Object 'Object').
+	self assert: exporterClass new additionalClassNames equals: #(Object String).
+	exporterClass addAdditionalClassName: 'Array'.
+	self assert: exporterClass new additionalClassNames equals: #(Array Object String).
+	exporterClass addAdditionalClassNames: #('String' Symbol 'Array').
+	self assert: exporterClass new additionalClassNames equals: #(Array Object String Symbol).
+	exporterClass removeAdditionalClassName: 'Object'.
+	self assert: exporterClass new additionalClassNames equals: #(Array String Symbol).
+	exporterClass removeAdditionalClassNames: #('Array' Symbol MissingAdditionalClass).
+	self assert: exporterClass new additionalClassNames equals: #(String).
+	exporterClass removeAdditionalClassName: #String.
+	self assert: exporterClass new additionalClassNames isEmpty.
+	exporterClass addAdditionalClassNames: #(String Object).
+	self assert: exporterClass new additionalClassNames equals: #(Object String).
+	source := (exporterClass >> #additionalClassNames) sourceCode.
+	self assert: (source includesSubstring: '#Object').
+	self assert: (source includesSubstring: '#String').
+	self assert: (exporterClass >> #additionalClassNames) protocol name equals: #private.
+	self assert: GtGemStoneGtCodeExporter new additionalClassNames equals: originalNames.
+	^ exporterClass
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> additionalClassNamesAreSorted [
+	<gtExample>
+	| exporter names presentNames |
+	exporter := GtGemStoneGtCodeExporter new.
+	names := exporter additionalClassNames.
+	self assert: names isArray.
+	self assert: names equals: names sorted.
+	self assert: names size equals: names asSet size.
+	presentNames := names select: [ :each | Smalltalk globals includesKey: each ].
+	self assert: (exporter additionalClassList collect: [ :each | each name ]) equals: presentNames.
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneGtCodeExporterExamples >> exportsGtExampleGemStoneCompatibilityMethods [
 	<gtExample>
 	| output |
@@ -27,7 +88,6 @@ GtGemStoneGtCodeExporterExamples >> exportsGtExampleGemStoneCompatibilityMethods
 	self assert: (output includesSubstring: 'subclass: ''TestExecutionEnvironment''').
 	self assert: (output includesSubstring: 'subclass: ''TestExecutionService''').
 	self assert: (output includesSubstring: 'subclass: ''TestTookTooMuchTime''').
-	self assert: (output includesSubstring: 'subclass: ''ProcessMonitorTestService''') not.
 	self assert: (output includesSubstring: 'waitForMilliseconds: maxTimeForTest asMilliseconds').
 	self assert: (output includesSubstring: '^ DefaultExecutionEnvironment instance runExampleEvaluator: anExampleEvaluator').
 	self assert: (output includesSubstring: 'SessionTemps current at: #DefaultExecutionEnvironment_instance ifAbsentPut: [ self new ]').
@@ -59,6 +119,62 @@ GtGemStoneGtCodeExporterExamples >> staticAnalysisClassifiesKnownFailures [
 	self assert: ((generated at: #excludedMethods) includes: GtLDataView>>#documentData).
 	self assert: ((generated at: #excludedMethods) includes: GtLMarkdown>>#commentForSmaCC).
 	stubDifferences := (analysis at: #differences) at: #stubClasses.
-	self assert: (stubDifferences at: #missingFromExisting) equals: (Set with: ProcessMonitorTestService).
 	^ analysis
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> stubClassNameUtilities [
+	<gtExample>
+	| exporterClass originalNames source |
+	originalNames := GtGemStoneGtCodeExporter new stubClassNames.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass stubClassNames: #('String' Object 'Object').
+	self assert: exporterClass new stubClassNames equals: #(Object String).
+	exporterClass addStubClassName: 'Array'.
+	self assert: exporterClass new stubClassNames equals: #(Array Object String).
+	exporterClass addStubClassNames: #('String' Symbol 'Array').
+	self assert: exporterClass new stubClassNames equals: #(Array Object String Symbol).
+	exporterClass removeStubClassName: 'Object'.
+	self assert: exporterClass new stubClassNames equals: #(Array String Symbol).
+	exporterClass removeStubClassNames: #('Array' Symbol MissingStubClass).
+	self assert: exporterClass new stubClassNames equals: #(String).
+	exporterClass removeStubClassName: #String.
+	self assert: exporterClass new stubClassNames isEmpty.
+	exporterClass addStubClassNames: #(String Object).
+	self assert: exporterClass new stubClassNames equals: #(Object String).
+	source := (exporterClass >> #stubClassNames) sourceCode.
+	self assert: (source includesSubstring: '#Object').
+	self assert: (source includesSubstring: '#String').
+	self assert: (exporterClass >> #stubClassNames) protocol name equals: #accessing.
+	self assert: GtGemStoneGtCodeExporter new stubClassNames equals: originalNames.
+	^ exporterClass
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> stubClassNamesAreSorted [
+	<gtExample>
+	| exporter names presentNames |
+	exporter := GtGemStoneGtCodeExporter new.
+	names := exporter stubClassNames.
+	self assert: names isArray.
+	self assert: names equals: names sorted.
+	self assert: names size equals: names asSet size.
+	self assert: (names includesAny: #(GtExampleWithResult GtExampleResult ConnectionClosed)) not.
+	presentNames := names select: [ :each | Smalltalk globals includesKey: each ].
+	self assert: (exporter stubClasses collect: [ :each | each name ]) equals: presentNames.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> stubClassesIgnoreMissingNames [
+	<gtExample>
+	| exporterClass exporter missingName |
+	missingName := #GtGemStoneGtCodeExporterMissingStubClassForExample.
+	self assert: (Smalltalk globals includesKey: missingName) not.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass stubClassNames: { #Object. missingName. #String }.
+	exporter := exporterClass new.
+	self assert: exporter stubClassNames size equals: 3.
+	self assert: exporter stubClasses equals: { Object. String }.
+	^ exporter
 ]

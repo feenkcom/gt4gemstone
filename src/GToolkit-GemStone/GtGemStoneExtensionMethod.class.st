@@ -64,6 +64,19 @@ GtGemStoneExtensionMethod >> ensureProtocolIn: aBehavior [
 		aBehavior addCategory: protocol ]
 ]
 
+{ #category : #accessing }
+GtGemStoneExtensionMethod >> existingMethod [
+
+	^ self existingMethodIn: self targetBehavior.
+]
+
+{ #category : #accessing }
+GtGemStoneExtensionMethod >> existingMethodHash [
+	"Answer the SHA256 hash of the existing method"
+
+	^ self sha256Of: self existingMethod sourceCode.
+]
+
 { #category : #private }
 GtGemStoneExtensionMethod >> existingMethodIn: aBehavior [
 	
@@ -145,9 +158,11 @@ GtGemStoneExtensionMethod >> selector: aSymbol [
 
 { #category : #private }
 GtGemStoneExtensionMethod >> sha256Of: aString [
+	| normalizedString |
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
 	^ self
-		gtDo: [ (SHA256 hashMessage: aString utf8Encoded) hex ]
-		gemstoneDo: [ aString utf8Encoded asSha256String ]
+		gtDo: [ (SHA256 hashMessage: normalizedString utf8Encoded) hex ]
+		gemstoneDo: [ normalizedString utf8Encoded asSha256String ]
 ]
 
 { #category : #accessing }
@@ -203,14 +218,31 @@ GtGemStoneExtensionMethod >> validate [
 ]
 
 { #category : #private }
+GtGemStoneExtensionMethod >> validateExistingMethod [
+
+	self validateExistingMethod: self existingMethod.
+]
+
+{ #category : #private }
 GtGemStoneExtensionMethod >> validateExistingMethod: aCompiledMethod [
 	aCompiledMethod ifNil: [
 		hash = #new ifFalse: [
-			hash ifNotNil: [ self error: 'Expected an existing method for hash validation' ] ].
+			hash ifNotNil: [ self error: 'Expected an existing method for hash validation: ', aCompiledMethod printString. ] ].
 		^ self ].
 	(self isExtensionMethod: aCompiledMethod) ifTrue: [ ^ self ].
-	hash = #new ifTrue: [ self error: 'Method already exists but extension requires a new method' ].
-	hash ifNil: [ self error: 'Existing method requires an original-source hash' ].
+	hash = #new ifTrue: [ self error: 'Method already exists but extension requires a new method: ', aCompiledMethod printString. ].
+	hash ifNil: [ self error: 'Existing method requires an original-source hash: ', aCompiledMethod printString. ].
 	(self sha256Of: (self sourceOf: aCompiledMethod)) = hash asString
-		ifFalse: [ self error: 'Existing method source does not match the expected hash' ]
+		ifFalse: [ | sourceCode |
+			sourceCode := self
+				gtDo: [ aCompiledMethod sourceCode ]
+				gemstoneDo: [ aCompiledMethod sourceString ].
+			self error: 'Existing method source does not match the expected hash: ', aCompiledMethod printString, Character lf asString, sourceCode asString. ]
+]
+
+{ #category : #utilities }
+GtGemStoneExtensionMethod >> withUnixLineEndings: aString [
+	^ self
+		gtDo: [ aString withUnixLineEndings ]
+		gemstoneDo: [ aString withLineEndings: Character lf asString ]
 ]
