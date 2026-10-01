@@ -15,7 +15,7 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples class >> isAbst
 ]
 
 { #category : #assertions }
-GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspectedMultipleSelectionAtIndices: anArray inSecondPaneOf: aScripter [
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspectedMultipleSelectionAtItems: anArray inSecondPaneOf: aScripter [
 	aScripter phlowCompositeToolStep
 		onPagerToolInPaneWithIndex: 2;
 		assertPhlowToolLabels: {'GemStone' . 'Proxy'}
@@ -72,7 +72,7 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspec
 ]
 
 { #category : #assertions }
-GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspectedSelectionAtIndex: anIndex inSecondPaneOf: aScripter [
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspectedSelectionAtTreePath: aPath atIndex: anIndex inSecondPaneOf: aScripter [
 	aScripter phlowCompositeToolStep
 		onPagerToolInPaneWithIndex: 2;
 		assertPhlowToolLabels: {'GemStone' . 'Proxy'}
@@ -89,8 +89,8 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> assertInspec
 			aSelection selectionItem selectionIndex ]
 			equals: [ anIndex ];
 		assertInspectedObjectValueFor: [ :aSelection |
-			aSelection selectionItem nodeIdentifier nodeIndex ]
-			equals: [ anIndex ];
+			aSelection selectionItem nodeIdentifier nodeIndexPath ]
+			equals: [ aPath ];
 		play.
 ]
 
@@ -110,6 +110,17 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> contextMenuO
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
 		ifTrue: [ ^ self ].
 	^ super contextMenuOnItem13
+]
+
+{ #category : #examples }
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> convertToTargetProxy: anObject [
+	^ anObject
+]
+
+{ #category : #examples }
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> createProxyObjectFor: aBlock [
+	^ self convertToTargetProxy:
+		(self runningServer evaluateBlockAndWaitReturnProxy: aBlock)
 ]
 
 { #category : #examples }
@@ -203,6 +214,11 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> dynamicConte
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
 		ifTrue: [ ^ self ].
 	^ super dynamicContextPhlowActionsMultipleSelectionInspectSelectionOnTwoItems
+]
+
+{ #category : #accessing }
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> expandedChildCellText [
+	^ 'value: 11; index: SmallInteger - 1'
 ]
 
 { #category : #'examples - expanded tree' }

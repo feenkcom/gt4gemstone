@@ -112,6 +112,17 @@ GtRemotePhlowColumnedListViewBasicContextActionsGemStoneExamples >> contextMenuO
 	^ super contextMenuOnItem13
 ]
 
+{ #category : #accessing }
+GtRemotePhlowColumnedListViewBasicContextActionsGemStoneExamples >> convertToTargetProxy: anObject [
+	^ anObject
+]
+
+{ #category : #accessing }
+GtRemotePhlowColumnedListViewBasicContextActionsGemStoneExamples >> createProxyObjectFor: aBlock [
+	^ self convertToTargetProxy:
+		(self runningServer evaluateBlockAndWaitReturnProxy: aBlock)
+]
+
 { #category : #examples }
 GtRemotePhlowColumnedListViewBasicContextActionsGemStoneExamples >> createTestObject [
 	<gtExample>
