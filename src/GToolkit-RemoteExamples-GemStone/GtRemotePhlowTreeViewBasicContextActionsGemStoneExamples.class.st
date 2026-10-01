@@ -216,11 +216,6 @@ GtRemotePhlowTreeViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 	^ super dynamicContextPhlowActionsMultipleSelectionInspectSelectionOnTwoItems
 ]
 
-{ #category : #accessing }
-GtRemotePhlowTreeViewBasicContextActionsGemStoneExamples >> expandedChildCellText [
-	^ 'value: 11; index: SmallInteger - 1'
-]
-
 { #category : #'examples - expanded tree' }
 GtRemotePhlowTreeViewBasicContextActionsGemStoneExamples >> expandedTreeContextMenuOnExpandedChild [
 	<gtExample>
