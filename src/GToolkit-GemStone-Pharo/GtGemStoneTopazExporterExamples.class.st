@@ -61,6 +61,39 @@ GtGemStoneTopazExporterExamples >> exportExcludingMethods [
 ]
 
 { #category : #examples }
+GtGemStoneTopazExporterExamples >> exportExcludingTraitOriginMethod [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter output |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { GtGemStoneTopazExporterTraitedFixture };
+		excludedMethods: { TGtGemStoneTopazExporterFixture >> #traitGreeting };
+		yourself.
+	output := exporter asTopazString.
+	self assert: (output includesSubstring: 'method: GtGemStoneTopazExporterTraitedFixture', String lf, 'traitGreeting') not.
+	self assert: (output includesSubstring: 'method: GtGemStoneTopazExporterTraitedFixture', String lf, 'localGreeting').
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportFlattenedTrait [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter output |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { GtGemStoneTopazExporterTraitedFixture. TGtGemStoneTopazExporterFixture. };
+		yourself.
+	output := exporter asTopazString.
+	self assert: (exporter selectedClasses includes: GtGemStoneTopazExporterTraitedFixture).
+	self assert: (exporter selectedClasses includes: TGtGemStoneTopazExporterFixture) not.
+	self assert: (output includesSubstring: 'method: GtGemStoneTopazExporterTraitedFixture', String lf, 'traitGreeting').
+	self assert: (output includesSubstring: 'TGtGemStoneTopazExporterFixture') not.
+	self assert: (output includesSubstring: 'instVarNames: #( localValue traitValue)').
+	self assert: (output includesSubstring: 'classInstVars: #( localClassValue traitClassSlot)').
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneTopazExporterExamples >> exportGsCodeMethod [
 	<gtExample>
 	<return: #GtGemStoneTopazExporter>
@@ -143,10 +176,72 @@ GtGemStoneTopazExporterExamples >> exportSuperclassBeforeSubclass [
 	^ exporter
 ]
 
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> gemstoneSourceForGsCodeMethod [
+	<gtExample>
+	<return: #String>
+	| method source expected |
+	method := self class >> #gsCodeExampleMethod.
+	source := GtGemStoneTopazExporter gemstoneSourceFor: method.
+	expected := 'gsCodeExampleMethod
+	"Provide an example method with the gsCode: pragma"
+	^ self copyFrom: 1 to: 3'.
+	self
+		assert: source withUnixLineEndings
+		equals: expected withUnixLineEndings.
+	^ source
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> gemstoneSourceForNilGsCodeMethod [
+	<gtExample>
+	<return: #String>
+	| method source |
+	method := self class >> #gsCodeNilExampleMethod.
+	source := GtGemStoneTopazExporter gemstoneSourceFor: method.
+	self assert: source equals: method sourceCode.
+	^ source
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> gemstoneSourceForSourceWithGsCode [
+	<gtExample>
+	<return: #String>
+	| source gemstoneSource expected |
+	source := 'example
+	<gsCode: ''example ^ 42''>
+	^ 1'.
+	gemstoneSource := GtGemStoneTopazExporter gemstoneSourceForSource: source.
+	expected := 'example
+	example ^ 42'.
+	self assert: gemstoneSource equals: expected.
+	^ gemstoneSource
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> gemstoneSourceForSourceWithNilGsCode [
+	<gtExample>
+	<return: #String>
+	| source gemstoneSource |
+	source := 'example
+	<gsCode: nil>
+	^ 1'.
+	gemstoneSource := GtGemStoneTopazExporter gemstoneSourceForSource: source.
+	self assert: gemstoneSource equals: source.
+	^ gemstoneSource
+]
+
 { #category : #Examples }
 GtGemStoneTopazExporterExamples >> gsCodeExampleMethod [
 	"Provide an example method with the gsCode: pragma"
 	<gsCode: '^ self copyFrom: 1 to: 3'>
+	^ self first: 3
+]
+
+{ #category : #'examples - support' }
+GtGemStoneTopazExporterExamples >> gsCodeNilExampleMethod [
+	"Use gsCode: as an export flag while retaining this source"
+	<gsCode: nil>
 	^ self first: 3
 ]
 
