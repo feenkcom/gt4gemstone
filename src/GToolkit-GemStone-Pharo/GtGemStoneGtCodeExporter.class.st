@@ -9,7 +9,7 @@ Class {
 
 { #category : #private }
 GtGemStoneGtCodeExporter >> additionalClassList [
-	^ { NotFound. KeyNotFound. NeoJSONParseError. AssertionFailure. BlDevScripterAssertionFailure. AsyncFutureExecutionError. GtExampleComparisonExceptionWithDebuggingViews. TestSkipped. GtLlmError. GtAnthropicError. NetworkError. SmaCCParserError. RBRefactoringError. AutomaticRewriting. ConnectionClosed. Deprecation. DeprecationPerformedNotification. SystemNotification. GtGemStoneExtensionMethod. GtGemStoneExtensionMethods. ExecutionEnvironment. DefaultExecutionEnvironment. TestExecutionEnvironment. TestExecutionService. TestTookTooMuchTime. }
+	^ { NotFound. KeyNotFound. NeoJSONParseError. AssertionFailure. BlDevScripterAssertionFailure. AsyncFutureExecutionError. GtExampleComparisonExceptionWithDebuggingViews. TestSkipped. GtLlmError. GtAnthropicError. NetworkError. SmaCCParserError. RBRefactoringError. ConnectionClosed. Deprecation. DeprecationPerformedNotification. SystemNotification. GtGemStoneExtensionMethod. GtGemStoneExtensionMethods. ExecutionEnvironment. DefaultExecutionEnvironment. TestExecutionEnvironment. TestExecutionService. TestTookTooMuchTime. }
 ]
 
 { #category : #private }
