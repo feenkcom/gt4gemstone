@@ -4,7 +4,7 @@ I provide executable examples for GT-managed GemStone extension method descripto
 Class {
 	#name : #GtGemStoneExtensionMethodExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Examples'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #examples }

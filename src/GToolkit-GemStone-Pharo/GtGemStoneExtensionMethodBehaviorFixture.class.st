@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'categories'
 	],
-	#category : #'GToolkit-GemStone-Examples'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #accessing }

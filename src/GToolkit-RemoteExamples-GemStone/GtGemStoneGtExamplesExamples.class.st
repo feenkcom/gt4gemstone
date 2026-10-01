@@ -14,8 +14,10 @@ Class {
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> allDummyExamplesRunSuccessfully [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| outcomes |
 	outcomes := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [
@@ -31,8 +33,10 @@ GtGemStoneGtExamplesExamples >> allDummyExamplesRunSuccessfully [
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> corpusExpectedExceptionsAndErrorsAreClassified [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| outcomes |
 	outcomes := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [
@@ -51,8 +55,10 @@ GtGemStoneGtExamplesExamples >> corpusExpectedExceptionsAndErrorsAreClassified [
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> corpusSubjectsAndAfterRunSuccessfully [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| outcomes |
 	outcomes := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [
@@ -74,8 +80,10 @@ GtGemStoneGtExamplesExamples >> corpusSubjectsAndAfterRunSuccessfully [
 
 { #category : #'examples - remote discovery' }
 GtGemStoneGtExamplesExamples >> dummyExamplePragmasAreAvailable [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| pragmas |
 	pragmas := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [
@@ -88,8 +96,10 @@ GtGemStoneGtExamplesExamples >> dummyExamplePragmasAreAvailable [
 
 { #category : #'examples - remote discovery' }
 GtGemStoneGtExamplesExamples >> dummyExamplesAreDiscovered [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| selectors |
 	selectors := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [
@@ -101,8 +111,10 @@ GtGemStoneGtExamplesExamples >> dummyExamplesAreDiscovered [
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> exampleTimeoutsAreEnforced [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| outcome |
 	outcome := self runningServer evaluateBlockAndWaitReturnPrimitive: [
 		| examples slow cleanup fast default slowResult cleanupResult fastResult |
@@ -129,8 +141,10 @@ GtGemStoneGtExamplesExamples >> exampleTimeoutsAreEnforced [
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> firstDummyExampleRunsSuccessfully [
+	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
+	<noTest>
 	| outcome |
 	outcome := self runningServer
 		evaluateBlockAndWaitReturnPrimitive: [

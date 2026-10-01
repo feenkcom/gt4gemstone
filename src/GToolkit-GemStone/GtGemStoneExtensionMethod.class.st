@@ -2,8 +2,8 @@
 I describe and apply one method managed by GT to a GemStone class. I validate version and existing-method safeguards before compiling source carrying the gtGsExtension pragma.
 "
 Class {
-	#name : #GtGemStoneExtensionMethod,
-	#superclass : #Object,
+	#name : 'GtGemStoneExtensionMethod',
+	#superclass : 'Object',
 	#instVars : [
 		'selector',
 		'protocol',
@@ -13,16 +13,16 @@ Class {
 		'className',
 		'hash'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : 'GToolkit-GemStone'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 GtGemStoneExtensionMethod >> appliesToCurrentVersion [
 	^ gtVersions isNil
 		or: [ gtVersions includes: GtGsRelease versionString ]
 ]
 
-{ #category : #applying }
+{ #category : 'applying' }
 GtGemStoneExtensionMethod >> apply [
 	| aBehavior anExistingMethod |
 	self validate.
@@ -33,17 +33,17 @@ GtGemStoneExtensionMethod >> apply [
 	^ self compileIn: aBehavior
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> className [
 	^ className
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> className: aSymbol [
 	className := aSymbol
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> compileIn: aBehavior [
 	self ensureProtocolIn: aBehavior.
 	(aBehavior respondsTo: #compileMethod:dictionaries:category:environmentId:)
@@ -56,7 +56,7 @@ GtGemStoneExtensionMethod >> compileIn: aBehavior [
 	^ aBehavior compile: source classified: protocol
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> ensureProtocolIn: aBehavior [
 	(aBehavior respondsTo: #addCategory:) ifFalse: [ ^ self ].
 	((aBehavior respondsTo: #includesCategory:)
@@ -64,20 +64,20 @@ GtGemStoneExtensionMethod >> ensureProtocolIn: aBehavior [
 		aBehavior addCategory: protocol ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> existingMethod [
 
 	^ self existingMethodIn: self targetBehavior.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> existingMethodHash [
 	"Answer the SHA256 hash of the existing method"
 
 	^ self sha256Of: self existingMethod sourceCode.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> existingMethodIn: aBehavior [
 	
 	^ self gtDo:
@@ -90,33 +90,33 @@ GtGemStoneExtensionMethod >> existingMethodIn: aBehavior [
 			otherwise: nil ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> gtVersions [
 	^ gtVersions
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> gtVersions: anArrayOrNil [
 	gtVersions := anArrayOrNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> hash [
 	^ hash
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> hash: aStringOrSymbolOrNil [
 	hash := aStringOrSymbolOrNil
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 GtGemStoneExtensionMethod >> initialize [
 	super initialize.
 	meta := false
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> isExtensionMethod: aCompiledMethod [
 	^ self
 		gtDo: [ (aCompiledMethod pragmaAt: #gtGsExtension) isNotNil ]
@@ -126,56 +126,47 @@ GtGemStoneExtensionMethod >> isExtensionMethod: aCompiledMethod [
 			ifNone: [ false ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> meta [
 	^ meta
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> meta: aBoolean [
 	meta := aBoolean
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> protocol [
 	^ protocol
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> protocol: aSymbol [
 	protocol := aSymbol
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> selector [
 	^ selector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> selector: aSymbol [
 	selector := aSymbol
 ]
 
-{ #category : #private }
-GtGemStoneExtensionMethod >> sha256Of: aString [
-	| normalizedString |
-	normalizedString := (self withUnixLineEndings: aString) trimRight.
-	^ self
-		gtDo: [ (SHA256 hashMessage: normalizedString utf8Encoded) hex ]
-		gemstoneDo: [ normalizedString utf8Encoded asSha256String ]
-]
-
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> source [
 	^ source
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 GtGemStoneExtensionMethod >> source: aString [
 	source := aString
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> sourceOf: aCompiledMethod [
 	(aCompiledMethod respondsTo: #sourceCode)
 		ifTrue: [ ^ aCompiledMethod sourceCode ].
@@ -184,25 +175,7 @@ GtGemStoneExtensionMethod >> sourceOf: aCompiledMethod [
 	self error: 'Unable to obtain existing method source'
 ]
 
-{ #category : #private }
-GtGemStoneExtensionMethod >> targetBehavior [
-	<gsCode: '| aClass |
-	aClass := GsSession currentSession
-		objectNamed: className.
-	aClass ifNil: [ self error: ''GemStone extension target class not found: '', className asString ].
-	^ meta
-		ifTrue: [ aClass class ]
-		ifFalse: [ aClass ]'>
-	| aClass |
-	aClass := Smalltalk
-		at: className
-		ifAbsent: [ self error: 'GemStone extension target class not found: ', className asString ].
-	^ meta
-		ifTrue: [ aClass class ]
-		ifFalse: [ aClass ]
-]
-
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> validate [
 	| pragmaPresent |
 	
@@ -217,13 +190,13 @@ GtGemStoneExtensionMethod >> validate [
 		[ self error: 'Extension source must contain the <gtGsExtension> pragma' ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> validateExistingMethod [
 
 	self validateExistingMethod: self existingMethod.
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 GtGemStoneExtensionMethod >> validateExistingMethod: aCompiledMethod [
 	aCompiledMethod ifNil: [
 		hash = #new ifFalse: [
@@ -240,7 +213,7 @@ GtGemStoneExtensionMethod >> validateExistingMethod: aCompiledMethod [
 			self error: 'Existing method source does not match the expected hash: ', aCompiledMethod printString, Character lf asString, sourceCode asString. ]
 ]
 
-{ #category : #utilities }
+{ #category : 'utilities' }
 GtGemStoneExtensionMethod >> withUnixLineEndings: aString [
 	^ self
 		gtDo: [ aString withUnixLineEndings ]
