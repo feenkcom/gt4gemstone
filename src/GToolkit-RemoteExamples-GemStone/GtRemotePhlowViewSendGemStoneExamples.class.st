@@ -163,6 +163,16 @@ GtRemotePhlowViewSendGemStoneExamples >> createColumnedTreeTestObject [
 ]
 
 { #category : #'examples - test objects' }
+GtRemotePhlowViewSendGemStoneExamples >> createForwardSendTestObject [
+	<gtExample>
+	<after: #stopServer>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ self createProxyObjectFor: [ GtRemotePhlowViewForwardSendTestObject new ]
+]
+
+{ #category : #'examples - test objects' }
 GtRemotePhlowViewSendGemStoneExamples >> createListTestObject [
 	<gtExample>
 	<after: #stopServer>
@@ -191,6 +201,33 @@ GtRemotePhlowViewSendGemStoneExamples >> createTreeTestObject [
 { #category : #accessing }
 GtRemotePhlowViewSendGemStoneExamples >> expandedChildSendSelectionIndex [
 	^ #(4)
+]
+
+{ #category : #'examples - forward list send' }
+GtRemotePhlowViewSendGemStoneExamples >> forwardListMultipleSelectionSendOnSingleItem [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super forwardListMultipleSelectionSendOnSingleItem
+]
+
+{ #category : #'examples - forward list send' }
+GtRemotePhlowViewSendGemStoneExamples >> forwardListMultipleSelectionSendOnTwoItems [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super forwardListMultipleSelectionSendOnTwoItems
+]
+
+{ #category : #'examples - forward list send' }
+GtRemotePhlowViewSendGemStoneExamples >> forwardListSendOnItem13 [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super forwardListSendOnItem13
 ]
 
 { #category : #'examples - send - list' }
@@ -254,6 +291,24 @@ GtRemotePhlowViewSendGemStoneExamples >> scripterOnColumnedTreeMultipleSelection
 	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
 		ifTrue: [ ^ self ].
 	^ super scripterOnColumnedTreeMultipleSelectionView
+]
+
+{ #category : #'examples - forward list scripter' }
+GtRemotePhlowViewSendGemStoneExamples >> scripterOnForwardListBasicActionsView [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super scripterOnForwardListBasicActionsView
+]
+
+{ #category : #'examples - forward list scripter' }
+GtRemotePhlowViewSendGemStoneExamples >> scripterOnForwardListMultipleSelectionView [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super scripterOnForwardListMultipleSelectionView
 ]
 
 { #category : #'examples - scripter - list' }
