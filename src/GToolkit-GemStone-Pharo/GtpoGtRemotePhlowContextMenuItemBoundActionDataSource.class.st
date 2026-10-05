@@ -1,6 +1,6 @@
 Class {
 	#name : #GtpoGtRemotePhlowContextMenuItemBoundActionDataSource,
-	#superclass : #GtRsrProxyServiceClient,
+	#superclass : #GtpoGtRemotePhlowDeclarativeActionDataSource,
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 

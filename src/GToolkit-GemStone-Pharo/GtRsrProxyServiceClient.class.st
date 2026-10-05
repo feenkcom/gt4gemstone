@@ -119,6 +119,8 @@ GtRsrProxyServiceClient >> becomeProxyRemoteClass [
 
 { #category : #'gt - inspector' }
 GtRsrProxyServiceClient >> configurePhlowAction: aPhlowAction withSpecification: anActionSpecification [
+	aPhlowAction definingMethodProvider: (GtRemotePhlowDefiningMethodProvider new
+		declarativeAction: anActionSpecification).
 ]
 
 { #category : #'gt - inspector' }
