@@ -1,7 +1,7 @@
 Class {
 	#name : #GtGemStoneEvaluationContextTest,
 	#superclass : #TestCase,
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #tests }

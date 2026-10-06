@@ -1,65 +1,65 @@
 Class {
-	#name : 'GtGemstoneHttpClient',
-	#superclass : 'Object',
+	#name : #GtGemstoneHttpClient,
+	#superclass : #Object,
 	#instVars : [
 		'url',
 		'contents',
 		'headers',
 		'query'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient class >> new [
 	^ self basicNew initialize
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> authorization: aString [
 	headers at: 'Authorization' put: aString
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> beOneShot [
 ]
 
-{ #category : 'other' }
-GtGemstoneHttpClient >> contents [
-	^ contents
-]
-
-{ #category : 'other' }
-GtGemstoneHttpClient >> contents: aDict [
-	contents := aDict
-]
-
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> contentType: aString [
 	headers at: 'Content-Type' put: aString
 ]
 
-{ #category : 'other' }
+{ #category : #other }
+GtGemstoneHttpClient >> contents [
+	^ contents
+]
+
+{ #category : #other }
+GtGemstoneHttpClient >> contents: aDict [
+	contents := aDict
+]
+
+{ #category : #other }
 GtGemstoneHttpClient >> defaultContentType [
 	^ 'application/json'
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> entity: aDict [
 	contents := aDict
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> get [
 	^ STONJSON fromString: (self performMethod: 'GET')
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> headerAt: aKey put: aValue [
 	headers at: aKey put: aValue
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> initialize [
 	super initialize.
 	headers := Dictionary new.
@@ -67,7 +67,7 @@ GtGemstoneHttpClient >> initialize [
 	self contentType: self defaultContentType
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> performMethod: aMethod [
 	| callUrl curlArguments dataFile |
 	callUrl := self url , '?'.
@@ -104,27 +104,27 @@ GtGemstoneHttpClient >> performMethod: aMethod [
 			ensure: [ dataFile ifNotNil: [ dataFile ensureDelete ] ].
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> post [
 	^ STONJSON fromString: (self performMethod: 'POST')
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> postStreaming [
 	^ (Character cr split: (self performMethod: 'POST')) collect: [:aLine | STONJSON fromString: aLine]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> queryAt: aKey put: aValue [
 	query at: aKey put: aValue asString
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> url [
 	^ url
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemstoneHttpClient >> url: aString [
 	url := aString
 ]

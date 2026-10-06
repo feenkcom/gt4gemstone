@@ -1,8 +1,8 @@
 Class {
 	#name : #GtRemoteGemStoneCoderExamples,
 	#superclass : #Object,
-	#traits : 'TAssertable + TGtRemoteGemStoneSesionCreator',
-	#classTraits : 'TAssertable classTrait + TGtRemoteGemStoneSesionCreator classTrait',
+	#traits : 'TGtRemoteGemStoneSesionCreator',
+	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
@@ -20,10 +20,29 @@ GtRemoteGemStoneCoderExamples >> computeRealBehaviour [
 	classProxy := coderNamedBehavior computeRealBehaviour.
 	printString := classProxy proxyPerform: #printString.
 	self assert: (printString includesSubstring: 'Dictionary').
-	self deny: (printString includesSubstring: 'class').
+	self assert: (printString includesSubstring: 'class') not.
 
 	coderNamedBehavior isMeta: true.
 	classProxy := coderNamedBehavior computeRealBehaviour.
 	printString := classProxy proxyPerform: #printString.
 	self assert: (printString includesSubstring: 'Dictionary class').
+]
+
+{ #category : #examples }
+GtRemoteGemStoneCoderExamples >> gemStoneImplementors [
+	<gtExample>
+	<return: #GtGemStoneMethodsSpecification>
+	| coder specifications minimumVersion |
+	
+	"Skip this example if the server version is below v1.1.597"
+	minimumVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 1 patch: 597.
+	(self runningServer gt4gemstoneVersion
+		exBetween: GtGemStoneSemanticVersionNumber zero
+		and: minimumVersion) ifTrue: 
+			[ ^ self ].
+
+	coder := GtGemStoneMethodCoderModel new session: self runningServer.
+	specifications := coder gemStoneImplementorsOf: #printString.
+	self assert: specifications size > 0.
+	^ specifications
 ]

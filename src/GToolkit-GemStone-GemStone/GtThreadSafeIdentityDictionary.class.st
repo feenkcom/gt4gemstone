@@ -1,10 +1,10 @@
 Class {
-	#name : 'GtThreadSafeIdentityDictionary',
-	#superclass : 'RsrThreadSafeDictionary',
-	#category : 'GToolkit-GemStone-GemStone'
+	#name : #GtThreadSafeIdentityDictionary,
+	#superclass : #RsrThreadSafeDictionary,
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 GtThreadSafeIdentityDictionary >> at: aKey ifPresent: presentBlock ifAbsent: absentBlock [
 	| isPresent result |
 
@@ -15,7 +15,7 @@ GtThreadSafeIdentityDictionary >> at: aKey ifPresent: presentBlock ifAbsent: abs
 		ifFalse: [ absentBlock value ].
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 GtThreadSafeIdentityDictionary >> initialize [
 
 	super initialize.

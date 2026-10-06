@@ -1,7 +1,7 @@
 Class {
 	#name : #GtRsrEvaluatorFeaturesServiceServer,
 	#superclass : #GtRsrEvaluatorFeaturesService,
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #accessing }

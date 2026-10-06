@@ -1,12 +1,12 @@
-Extension { #name : 'GtWireGemStoneWithRsrEncoder' }
+Extension { #name : #GtWireGemStoneWithRsrEncoder }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtWireGemStoneWithRsrEncoder >> encode: anObject with: aGtWireEncoderContext [
 
 	self error: self class name asString, '>>encode:with: should not be reached'
 ]
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtWireGemStoneWithRsrEncoder >> encode: anObject with: aGtWireEncoderContext objectEncoder: objectEncoder [
 	| rsrService |
 
@@ -28,7 +28,7 @@ GtWireGemStoneWithRsrEncoder >> encode: anObject with: aGtWireEncoderContext obj
 	objectEncoder encode: anObject with: aGtWireEncoderContext.
 ]
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtWireGemStoneWithRsrEncoder >> register: rsrService [
 
 	self connection _ensureRegistered: rsrService.

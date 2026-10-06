@@ -95,6 +95,11 @@ GtRsrEvaluatorAsyncPromise >> gtRsrEvaluatorPromise: anEvaluatorPromise [
 	gtRsrEvaluatorPromise := anEvaluatorPromise
 ]
 
+{ #category : #accessing }
+GtRsrEvaluatorAsyncPromise >> gtSession [
+	^ gemStoneSession
+]
+
 { #category : #testing }
 GtRsrEvaluatorAsyncPromise >> hasEvaluationContext [
 	^ executionContext notNil

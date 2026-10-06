@@ -1,15 +1,15 @@
 Class {
-	#name : 'GtGemStoneExampleRunner',
-	#superclass : 'Object',
-	#category : 'GToolkit-GemStone-GemStone'
+	#name : #GtGemStoneExampleRunner,
+	#superclass : #Object,
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleRunner >> newResultFor: anExample [
 	^ GtGemStoneExampleResult new example: anExample
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleRunner >> runExample: anExample in: aClass [
 	| result |
 	[ 
@@ -22,7 +22,7 @@ GtGemStoneExampleRunner >> runExample: anExample in: aClass [
 	^ result
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleRunner >> runExampleClass: aClass [
 	^ self
 		runExamples:
@@ -31,12 +31,12 @@ GtGemStoneExampleRunner >> runExampleClass: aClass [
 		in: aClass
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleRunner >> runExamples: aListOfExamples in: aClass [
 	^ aListOfExamples collect: [:anExample | self runExample: anExample in: aClass ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleRunner >> signalableExceptions [
 	^ ExceptionSet new ,
 		Halt ,

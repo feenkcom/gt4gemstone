@@ -20,6 +20,24 @@ removeallmethods GtGemStoneAssertionFailure
 removeallclassmethods GtGemStoneAssertionFailure
 
 doit
+(Notification
+	subclass: 'GtGsDynamicVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGsDynamicVariable
+removeallclassmethods GtGsDynamicVariable
+
+doit
 (Object
 	subclass: 'AkgDebuggerPlay'
 	instVarNames: #(process trace allFrames allFramesString count block)
@@ -329,6 +347,44 @@ true.
 
 removeallmethods GtGemStoneExampleRunner
 removeallclassmethods GtGemStoneExampleRunner
+
+doit
+(Object
+	subclass: 'GtGemStoneExtensionMethod'
+	instVarNames: #(selector protocol source meta gtVersions className hash)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'I describe and apply one method managed by GT to a GemStone class. I validate version and existing-method safeguards before compiling source carrying the gtGsExtension pragma.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneExtensionMethod
+removeallclassmethods GtGemStoneExtensionMethod
+
+doit
+(Object
+	subclass: 'GtGemStoneExtensionMethods'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'I am the registry of GT-managed GemStone extension methods. My class-side methods named ext_* answer extension descriptors; apply discovers and applies all of them.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGemStoneExtensionMethods
+removeallclassmethods GtGemStoneExtensionMethods
 
 doit
 (Object
@@ -1306,6 +1362,41 @@ true.
 
 removeallmethods GtRsrEvaluatorServiceTest
 removeallclassmethods GtRsrEvaluatorServiceTest
+
+! Class implementation for 'GtGsDynamicVariable'
+
+!		Class methods for 'GtGsDynamicVariable'
+
+category: 'defaults'
+classmethod: GtGsDynamicVariable
+defaultValue
+
+	^ nil
+%
+
+category: 'accessing'
+classmethod: GtGsDynamicVariable
+value
+
+	^ self signal
+%
+
+category: 'accessing'
+classmethod: GtGsDynamicVariable
+value: anObject during: aBlock
+
+	^ aBlock on: self do: [ :notification |
+		notification resume: anObject ]
+%
+
+!		Instance methods for 'GtGsDynamicVariable'
+
+category: 'defaults'
+method: GtGsDynamicVariable
+defaultAction
+
+	^ self class defaultValue
+%
 
 ! Class implementation for 'AkgDebuggerPlay'
 
@@ -2566,7 +2657,7 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 	evalServer := anEvaluationServer.
 
 	process := [
-		[ | computationResult |
+		| computationResult |
 		computationResult := block value.
 
 		result := self serializationStrategy
@@ -2584,16 +2675,12 @@ evaluateBlock: aBlock from: anEvaluationServer priority: anInteger
 		evaluationResult := GtGemstoneEvaluationComputedResult new 
 			computedResult: result.
 		completed := true.
-		semaphore signal ]
-			on: Exception
-			do: (self handlerBlock: nil) ] newProcess.
-
-	"Need to figure out the circumstances when the debugActionBlock: is called"
-	process debugActionBlock: (self handlerBlock: 'debugActionBlock:').
+		semaphore signal ] newProcess.
 
 	process
 		name: 'GT evaluation';
 		priority: anInteger;
+		debugActionBlock: (self handlerBlock: nil);
 		breakpointLevel: 1;
 		resume.
 
@@ -2653,7 +2740,7 @@ frameLevelForIdentifierIndex: aFrameIdentifierIndex
 category: 'private'
 method: GtGemStoneEvaluationContext
 handlerBlock: anObject
-	"Answer the block that will be evaluated if an exception occurs.
+	"Answer the block that will be evaluated if an unhandled exception occurs.
 	In this case, suspend the evaluation process and answer the receiver.
 	If the user resumes the process it will then resume from where the exception was originally raised."
 
@@ -2667,8 +2754,7 @@ handlerBlock: anObject
 			evaluationContext: self.
 	
 		semaphore signal.
-		process suspend.
-		ex resume ]
+		process suspend. ]
 %
 
 category: 'actions - debug'
@@ -3484,6 +3570,690 @@ signalableExceptions
 		Error ,
 		TestFailure,
 		GtGemStoneAssertionFailure
+%
+
+! Class implementation for 'GtGemStoneExtensionMethod'
+
+!		Instance methods for 'GtGemStoneExtensionMethod'
+
+category: 'testing'
+method: GtGemStoneExtensionMethod
+appliesToCurrentVersion
+	^ gtVersions isNil
+		or: [ gtVersions includes: GtGsRelease versionString ]
+%
+
+category: 'applying'
+method: GtGemStoneExtensionMethod
+apply
+	| aBehavior anExistingMethod |
+	self validate.
+	self appliesToCurrentVersion ifFalse: [ ^ nil ].
+	aBehavior := self targetBehavior.
+	anExistingMethod := self existingMethodIn: aBehavior.
+	self validateExistingMethod: anExistingMethod.
+	^ self compileIn: aBehavior
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+className
+	^ className
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+className: aSymbol
+	className := aSymbol
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+compileIn: aBehavior
+	self ensureProtocolIn: aBehavior.
+	(aBehavior respondsTo: #compileMethod:dictionaries:category:environmentId:)
+		ifTrue: [
+			^ aBehavior
+				compileMethod: source
+				dictionaries: GsCurrentSession currentSession symbolList
+				category: protocol
+				environmentId: 0 ].
+	^ aBehavior compile: source classified: protocol
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+ensureProtocolIn: aBehavior
+	(aBehavior respondsTo: #addCategory:) ifFalse: [ ^ self ].
+	((aBehavior respondsTo: #includesCategory:)
+		and: [ aBehavior includesCategory: protocol ]) ifFalse: [
+		aBehavior addCategory: protocol ]
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+existingMethod
+
+	^ self existingMethodIn: self targetBehavior.
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+existingMethodHash
+	"Answer the SHA256 hash of the existing method"
+
+	^ self sha256Of: self existingMethod sourceCode.
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+existingMethodIn: aBehavior
+	
+	^ self gtDo:
+		[ aBehavior
+			compiledMethodAt: selector
+			ifAbsent: [ nil ] ]
+	gemstoneDo: 
+		[ aBehavior
+			compiledMethodAt: selector
+			otherwise: nil ]
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+gtVersions
+	^ gtVersions
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+gtVersions: anArrayOrNil
+	gtVersions := anArrayOrNil
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+hash
+	^ hash
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+hash: aStringOrSymbolOrNil
+	hash := aStringOrSymbolOrNil
+%
+
+category: 'initialization'
+method: GtGemStoneExtensionMethod
+initialize
+	super initialize.
+	meta := false
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+isExtensionMethod: aCompiledMethod
+	^ self
+		gtDo: [ (aCompiledMethod pragmaAt: #gtGsExtension) isNotNil ]
+		gemstoneDo: [ aCompiledMethod pragmas
+			detect: [ :aPragma | aPragma keyword == #gtGsExtension ]
+			ifFound: [ true ]
+			ifNone: [ false ] ]
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+meta
+	^ meta
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+meta: aBoolean
+	meta := aBoolean
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+protocol
+	^ protocol
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+protocol: aSymbol
+	protocol := aSymbol
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+selector
+	^ selector
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+selector: aSymbol
+	selector := aSymbol
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+source
+	^ source
+%
+
+category: 'accessing'
+method: GtGemStoneExtensionMethod
+source: aString
+	source := aString
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+sourceOf: aCompiledMethod
+	(aCompiledMethod respondsTo: #sourceCode)
+		ifTrue: [ ^ aCompiledMethod sourceCode ].
+	(aCompiledMethod respondsTo: #sourceString)
+		ifTrue: [ ^ aCompiledMethod sourceString ].
+	self error: 'Unable to obtain existing method source'
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+validate
+	| pragmaPresent |
+	
+	selector ifNil: [ self error: 'Selector is required' ].
+	protocol ifNil: [ self error: 'Protocol is required' ].
+	source ifNil: [ self error: 'Source is required' ].
+	className ifNil: [ self error: 'Class name is required' ].
+	pragmaPresent := self
+		gtDo: [ source includesSubstring: '<gtGsExtension>' ]
+		gemstoneDo: [ (source findPattern: { '<gtGsExtension>' } startingAt: 1) > 0 ].
+	pragmaPresent ifFalse: 
+		[ self error: 'Extension source must contain the <gtGsExtension> pragma' ]
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+validateExistingMethod
+
+	self validateExistingMethod: self existingMethod.
+%
+
+category: 'private'
+method: GtGemStoneExtensionMethod
+validateExistingMethod: aCompiledMethod
+	aCompiledMethod ifNil: [
+		hash = #new ifFalse: [
+			hash ifNotNil: [ self error: 'Expected an existing method for hash validation: ', aCompiledMethod printString. ] ].
+		^ self ].
+	(self isExtensionMethod: aCompiledMethod) ifTrue: [ ^ self ].
+	hash = #new ifTrue: [ self error: 'Method already exists but extension requires a new method: ', aCompiledMethod printString. ].
+	hash ifNil: [ self error: 'Existing method requires an original-source hash: ', aCompiledMethod printString. ].
+	(self sha256Of: (self sourceOf: aCompiledMethod)) = hash asString
+		ifFalse: [ | sourceCode |
+			sourceCode := self
+				gtDo: [ aCompiledMethod sourceCode ]
+				gemstoneDo: [ aCompiledMethod sourceString ].
+			self error: 'Existing method source does not match the expected hash: ', aCompiledMethod printString, Character lf asString, sourceCode asString. ]
+%
+
+category: 'utilities'
+method: GtGemStoneExtensionMethod
+withUnixLineEndings: aString
+	^ self
+		gtDo: [ aString withUnixLineEndings ]
+		gemstoneDo: [ aString withLineEndings: Character lf asString ]
+%
+
+! Class implementation for 'GtGemStoneExtensionMethods'
+
+!		Class methods for 'GtGemStoneExtensionMethods'
+
+category: 'applying'
+classmethod: GtGemStoneExtensionMethods
+apply
+	^ self extensions collect: [ :each | each apply ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+extensions
+	^ self extensionSelectors collect: [ :each | self perform: each ]
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+extensionSelectors
+	^ ((self class selectors select: [ :each | each asString beginsWith: 'ext_' ])
+		asSortedCollection: [ :left :right | left asString < right asString ]) asArray
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Behavior___
+	^ GtGemStoneExtensionMethod new
+		selector: #>>;
+		protocol: #'*GToolkit-Examples-GemStone';
+		meta: false;
+		gtVersions: nil;
+		className: #Behavior;
+		hash: #new;
+		source: '>> aSelector
+	<gtGsExtension>
+
+	^ self compiledMethodAt: aSelector'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Boolean_isBoolean
+	^ GtGemStoneExtensionMethod new
+		selector: #isBoolean;
+		protocol: #'*PharoLink';
+		meta: false;
+		gtVersions: nil;
+		className: #Boolean;
+		hash: #new;
+		source: 'isBoolean
+	<gtGsExtension>
+
+	"Answer a boolean indicating whether the receiver is a boolean"
+
+	^ true'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Collection_intersection_
+	^ GtGemStoneExtensionMethod new
+		selector: #intersection:;
+		protocol: #enumerating;
+		meta: false;
+		gtVersions: nil;
+		className: #Collection;
+		hash: #new;
+		source: 'intersection: aCollection
+	<gtGsExtension>
+
+	^ self species withAll: (self asSet intersection: aCollection) asArray'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_CurrentExecutionEnvironment_runUnmanagedExampleEvaluator_
+	^ GtGemStoneExtensionMethod new
+		selector: #runUnmanagedExampleEvaluator:;
+		protocol: #'*GToolkit-Examples-GemStone';
+		meta: true;
+		gtVersions: nil;
+		className: #CurrentExecutionEnvironment;
+		hash: #new;
+		source: 'runUnmanagedExampleEvaluator: anExampleEvaluator
+	<gtGsExtension>
+
+	"GemStone evaluates unmanaged examples synchronously in the current process."
+	^ anExampleEvaluator value'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_DefaultExecutionEnvironment_instance
+	^ GtGemStoneExtensionMethod new
+		selector: #instance;
+		protocol: #accessing;
+		meta: true;
+		gtVersions: nil;
+		className: #DefaultExecutionEnvironment;
+		hash: '3a29aac01eec8949c5860660d69d08e1415f9af6ecdc9e66209c600b3baf4bbc';
+		source: 'instance
+	<gtGsExtension>
+
+	^ SessionTemps current at: #DefaultExecutionEnvironment_instance ifAbsentPut: [ self new ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_DefaultExecutionEnvironment_runExampleEvaluator_
+	^ GtGemStoneExtensionMethod new
+		selector: #runExampleEvaluator:;
+		protocol: #'*GToolkit-Examples-Core';
+		meta: false;
+		gtVersions: nil;
+		className: #DefaultExecutionEnvironment;
+		hash: '7a967548d4401a8d779fee8e2a6b59925eaad191775be8cfa80b7490bf45005a';
+		source: 'runExampleEvaluator: anExampleEvaluator
+	<gtGsExtension>
+	| testEnv |
+	testEnv := TestExecutionEnvironment new initialize.
+	^ testEnv beActiveDuring: [ testEnv runExampleEvaluator: anExampleEvaluator ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtDummyExamplesWithAfterInstanceSide_new
+	^ GtGemStoneExtensionMethod new
+		selector: #new;
+		protocol: #'instance creation';
+		meta: true;
+		gtVersions: nil;
+		className: #GtDummyExamplesWithAfterInstanceSide;
+		hash: #new;
+		source: 'new
+	<gtGsExtension>
+	^ super new initialize'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtExampleDependenciesProcessor_new
+	^ GtGemStoneExtensionMethod new
+		selector: #new;
+		protocol: #'instance creation';
+		meta: true;
+		gtVersions: nil;
+		className: #GtExampleDependenciesProcessor;
+		hash: #new;
+		source: 'new
+	<gtGsExtension>
+
+	^ self basicNew initialize'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtExampleEvaluator_new
+	^ GtGemStoneExtensionMethod new
+		selector: #new;
+		protocol: #'instance creation';
+		meta: true;
+		gtVersions: nil;
+		className: #GtExampleEvaluator;
+		hash: #new;
+		source: 'new
+	<gtGsExtension>
+
+	^ super new initialize'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtExample_new
+	^ GtGemStoneExtensionMethod new
+		selector: #new;
+		protocol: #'instance creation';
+		meta: true;
+		gtVersions: nil;
+		className: #GtExample;
+		hash: #new;
+		source: 'new
+	<gtGsExtension>
+
+	^ super new initialize'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_assert_
+	^ GtGemStoneExtensionMethod new
+		selector: #assert:;
+		protocol: #asserting;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'assert: aBlock
+	<gtGsExtension>
+
+	"Throw an assertion error if aBlock does not evaluates to true.
+	We check for true explicitly to make the assertion fail for non booleans"
+
+	self assert: aBlock description: ''Assertion failed'''
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_assert_description_
+	^ GtGemStoneExtensionMethod new
+		selector: #assert:description:;
+		protocol: #asserting;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'assert: aBlock description: aStringOrBlock
+	<gtGsExtension>
+
+	"Throw an assertion error if aBlock does not evaluates to true."
+
+	"we do the == true check to avoid NonBooleanReceiver error for nonBoolean aBlock values"
+	aBlock value == true ifFalse: [
+		AssertionFailure signal: aStringOrBlock value ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_assert_equals_
+	^ GtGemStoneExtensionMethod new
+		selector: #assert:equals:;
+		protocol: #asserting;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'assert: actual equals: expected
+	<gtGsExtension>
+	^ self assert: expected = actual description: [ ''Got '', actual printString, '' instead of '', expected printString ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_class_gtExampleRuntimeContext
+	^ GtGemStoneExtensionMethod new
+		selector: #gtExampleRuntimeContext;
+		protocol: #accessing;
+		meta: true;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'gtExampleRuntimeContext
+	<gtGsExtension>
+	^ self gtExamplesFactoryClass gtExampleRuntimeContext'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_fullPrintString
+	^ GtGemStoneExtensionMethod new
+		selector: #fullPrintString;
+		protocol: #printing;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'fullPrintString
+	<gtGsExtension>
+	^ self printString'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_gtExampleRuntimeContext
+	^ GtGemStoneExtensionMethod new
+		selector: #gtExampleRuntimeContext;
+		protocol: #accessing;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'gtExampleRuntimeContext
+	<gtGsExtension>
+	^ self class gtExampleRuntimeContext'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_isBoolean
+	^ GtGemStoneExtensionMethod new
+		selector: #isBoolean;
+		protocol: #'*PharoLink';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'isBoolean
+	<gtGsExtension>
+
+	"Answer a boolean indicating whether the receiver is a boolean"
+
+	^ false'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Set_intersection_
+	^ GtGemStoneExtensionMethod new
+		selector: #intersection:;
+		protocol: #enumerating;
+		meta: false;
+		gtVersions: nil;
+		className: #Set;
+		hash: #new;
+		source: 'intersection: aCollection
+	<gtGsExtension>
+	"Answer the set theoretic intersection of two collections.
+	Optimized version for Sets where no intermediate Set is necessary"
+
+	"(#(1 2 3 4) asSet intersection: #(3 4 5) asSet) >>> #(3 4) asSet"
+
+	"(#(1 2 3 4) asSet intersection: #() asSet) >>> Set new"
+
+	"( #() asSet intersection: #(1 2 3 4) asSet) >>> Set new"
+
+	| outputSet |
+	outputSet := self class new.
+	aCollection do: [ :each | (self includes: each) ifTrue: [ outputSet add: each ] ].
+	^ outputSet'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_TestExecutionEnvironment_processMonitor
+	^ GtGemStoneExtensionMethod new
+		selector: #processMonitor;
+		protocol: #'accessing';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: #new;
+		source: 'processMonitor
+	<gtGsExtension>
+	^ nil'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_TestExecutionEnvironment_registerDefaultServices
+	^ GtGemStoneExtensionMethod new
+		selector: #registerDefaultServices;
+		protocol: #'controlling';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: 'ef6072b4f84be6b12ecba0308405bd2337b5d72d7f026fa6c7770e85aea932c8';
+		source: 'registerDefaultServices
+	<gtGsExtension>
+	^ self'.
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_TestExecutionEnvironment_runExampleUnderWatchdogUsingEvaluator_
+	^ GtGemStoneExtensionMethod new
+		selector: #runExampleUnderWatchdogUsingEvaluator:;
+		protocol: #'*GToolkit-Examples-Core';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: 'c8790ab4d491856631bdaf3a95c51966656a4fe5f53dc4b419f5dc8b591ec837';
+		source: 'runExampleUnderWatchdogUsingEvaluator: anEvaluator
+	<gtGsExtension>
+	| exampleResult |
+	exampleResult := nil.
+	[ [ exampleResult := anEvaluator runUnmanaged ] ensure: [ self handleCompletedTest ] ]
+		on: Exception
+		do: [ :err | self handleException: err ].
+	^ exampleResult'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_TestExecutionEnvironment_runUnmanagedExampleEvaluator_
+	^ GtGemStoneExtensionMethod new
+		selector: #runUnmanagedExampleEvaluator:;
+		protocol: #'*GToolkit-Examples-Core';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: #new;
+		source: 'runUnmanagedExampleEvaluator: anExampleEvaluator
+	<gtGsExtension>
+	| exampleResult |
+	testCase := anExampleEvaluator.
+	testCompleted := false.
+	[ exampleResult := anExampleEvaluator value ] ensure: [ testCompleted := true ].
+	^ exampleResult'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_TestExecutionEnvironment_watchDogLoop
+	^ GtGemStoneExtensionMethod new
+		selector: #watchDogLoop;
+		protocol: #'controlling';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: '0af9624ddb0d3f9efb1285fa07fea5b07c30f80a909c5c97e8fa2ef5f9897aa2';
+		source: 'watchDogLoop
+	<gtGsExtension>
+	| timeIsGone |
+	[ watchDogSemaphore wait.
+	  [ timeIsGone := (watchDogSemaphore waitForMilliseconds: maxTimeForTest asMilliseconds) not.
+	    testCompleted ] whileFalse: [
+	      timeIsGone ifTrue: [
+	        mainTestProcess _isSuspended ifFalse: [
+	          mainTestProcess signalException: TestTookTooMuchTime new ] ] ] ] repeat'
+%
+
+category: 'updating'
+classmethod: GtGemStoneExtensionMethods
+updateHashOf: aSelector
+	| method extension hashMessages hashArgument source updatedSource |
+	(self extensionSelectors includes: aSelector)
+		ifFalse: [ self error: 'Unknown extension method: ', aSelector asString ].
+	method := self class >> aSelector.
+	method protocolName = #extensions
+		ifFalse: [ self error: 'Method is not in the extensions protocol: ', aSelector asString ].
+	extension := self perform: aSelector.
+	extension existingMethod
+		ifNil: [ self error: 'Cannot update the hash of a missing target method: ', extension className asString, '>>', extension selector asString ].
+	hashMessages := method ast allChildren
+		select: [ :node | node isMessage and: [ node selector = #hash: ] ].
+	hashMessages size = 1
+		ifFalse: [ self error: 'Expected exactly one hash: send in extension method: ', aSelector asString ].
+	hashArgument := hashMessages first arguments first.
+	hashArgument isLiteralNode
+		ifFalse: [ self error: 'Expected a literal hash in extension method: ', aSelector asString ].
+	source := method sourceCode.
+	updatedSource := (source copyFrom: 1 to: hashArgument start - 1),
+		extension existingMethodHash storeString,
+		(source copyFrom: hashArgument stop + 1 to: source size).
+	updatedSource = source
+		ifFalse: [ self class compile: updatedSource classified: method protocolName ].
+	^ self perform: aSelector
 %
 
 ! Class implementation for 'GtGemstoneHttpClient'
@@ -7569,6 +8339,30 @@ asGtGsArgument
 	^ self
 %
 
+! Class extensions for 'ClassOrganizer'
+
+!		Class methods for 'ClassOrganizer'
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: ClassOrganizer
+cleanUpGtDefault
+
+	^ SessionTemps current
+		removeKey: #GtGs_ClassOrganizer_Cache
+		ifAbsent: [].
+%
+
+category: '*GToolkit-GemStone-GemStone'
+classmethod: ClassOrganizer
+gtDefault
+	"Cache a ClassOrganizer in the session temps as in a large database reflection is very slow,
+	so the initial call can take minutes."
+
+	^ SessionTemps current
+		at: #GtGs_ClassOrganizer_Cache
+		ifAbsentPut: [ self new ].
+%
+
 ! Class extensions for 'Collection'
 
 !		Instance methods for 'Collection'
@@ -7837,6 +8631,32 @@ asDictionaryForExport
 	^ Dictionary new 
 			at: '__typeName' put: self class name;
 			yourself.
+%
+
+! Class extensions for 'GtGemStoneExtensionMethod'
+
+!		Instance methods for 'GtGemStoneExtensionMethod'
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtGemStoneExtensionMethod
+sha256Of: aString
+	| normalizedString |
+
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
+	^ normalizedString utf8Encoded asSha256String
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: GtGemStoneExtensionMethod
+targetBehavior
+	| aClass |
+
+	aClass := GsSession currentSession
+		objectNamed: className.
+	aClass ifNil: [ self error: ''GemStone extension target class not found: '', className asString ].
+	^ meta
+		ifTrue: [ aClass class ]
+		ifFalse: [ aClass ]
 %
 
 ! Class extensions for 'GtGemStoneSerializationExamples'

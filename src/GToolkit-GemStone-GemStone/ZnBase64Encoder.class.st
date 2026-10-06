@@ -1,6 +1,6 @@
 Class {
-	#name : 'ZnBase64Encoder',
-	#superclass : 'Object',
+	#name : #ZnBase64Encoder,
+	#superclass : #Object,
 	#instVars : [
 		'alphabet',
 		'inverse',
@@ -10,22 +10,22 @@ Class {
 		'padding',
 		'strict'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder class >> new [
 	^ self basicNew initialize
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> beStrict [
 	"Configure me to enforce padding when decoding"
 
 	strict := true
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> characterCountFor: bytes [
 	| n characterCount |
 	"This assumes that padding is used"
@@ -36,17 +36,17 @@ ZnBase64Encoder >> characterCountFor: bytes [
 		ifNotNil: [ characterCount + (characterCount // lineLength * lineEnd size) ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> characterForValue: value [
 	^ alphabet at: value + 1
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> defaultAlphabet [
 	^ 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> defaultInverse [
 	| defaultInverse |
 	defaultInverse := Array new: 128.
@@ -57,7 +57,7 @@ ZnBase64Encoder >> defaultInverse [
 	^ defaultInverse
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> encode: byteArray [
 	"Encode byteArray using Base64 encoding and return the resulting string"
 
@@ -67,7 +67,7 @@ ZnBase64Encoder >> encode: byteArray [
 			self encode: byteArray readStream to: stringStream ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> encode: byte1 and: byte2 and: byte3 to: stream [
 	stream nextPut: (self characterForValue: (byte1 bitShift: -2)).
 	byte2
@@ -85,7 +85,7 @@ ZnBase64Encoder >> encode: byte1 and: byte2 and: byte3 to: stream [
 					stream nextPut: (self characterForValue: (byte3 bitAnd: 2r111111)) ] ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> encode: byteStream to: stringStream [
 	| byte1 byte2 byte3 count |
 	lineLength
@@ -108,7 +108,7 @@ ZnBase64Encoder >> encode: byteStream to: stringStream [
 						count := 0 ] ] ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> initialize [
 	super initialize.
 	alphabet := self defaultAlphabet.
@@ -118,7 +118,7 @@ ZnBase64Encoder >> initialize [
 	self beStrict
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> padding: character [
 	"Configure me to use character as padding.
 	One or two padding character might be needed to complete each quad.
@@ -127,7 +127,7 @@ ZnBase64Encoder >> padding: character [
 	padding := character
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 ZnBase64Encoder >> whitespace: mode [
 	"Set the whitespace mode:
 	nil is no whitespace allowed,

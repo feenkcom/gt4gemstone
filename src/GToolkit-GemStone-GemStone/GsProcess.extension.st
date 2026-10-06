@@ -1,7 +1,7 @@
-Extension { #name : 'GsProcess' }
+Extension { #name : #GsProcess }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
-GsProcess class >> gtAllFrames [
+{ #category : #'*GToolkit-GemStone-GemStone' }
+GsProcess classSide >> gtAllFrames [
 	| level frame result |
 
 	result := OrderedCollection new.
@@ -13,7 +13,7 @@ GsProcess class >> gtAllFrames [
 	^ result asArray.
 ]
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GsProcess >> gtAllFrames [
 
 	^ (1 to: self stackDepth) collect: [ :i |

@@ -1,6 +1,6 @@
-Extension { #name : 'GtRsrSerializationStrategy' }
+Extension { #name : #GtRsrSerializationStrategy }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtRsrSerializationStrategy class >> serializationStrategies [
 	"Answer the session specific dictionary of serialisation strategies"
 
@@ -9,7 +9,7 @@ GtRsrSerializationStrategy class >> serializationStrategies [
 		ifAbsentPut: [ Dictionary new ].
 ]
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtRsrSerializationStrategy class >> serializationStrategyNamed: aSymbol [
 	"Answer the session specific strategy, creating it if required"
 

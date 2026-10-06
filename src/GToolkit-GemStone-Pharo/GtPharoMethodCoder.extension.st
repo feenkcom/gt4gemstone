@@ -56,31 +56,10 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodToFor: anAST into: coderAddOns [
 		hover: nil
 		leave: nil
 		action: [ :aCoderUIModel :anEvent | 
-			| clsName source session category cmd |
-			clsName := self compiledMethod methodClass name.	"Big method handling is a hack at the moment...
-			The source is truncated for display purposes, but since it is read-only, we can assume that the source from the compiled method is up-to-date."
-			source := self compiledMethod isBigMethod
-					ifTrue: [ self compiledMethod sourceCode ]
-					ifFalse: [ anAST source ].
+			| session |
 			session := GtGemStoneSessionRegistry default defaultSession.
 			session ifNil: [ self error: 'No default GemStone session available' ].
-			session connect.
-			category := self compiledMethod protocolName.
-			cmd := String
-					streamContents: [ :stream | 
-						stream
-							<< clsName;
-							<< ' compileMethod: ';
-							print: source;
-							cr;
-							<< 'dictionaries: GsCurrentSession currentSession symbolList';
-							cr;
-							<< 'category: #''';
-							<< category;
-							<< '''';
-							cr;
-							<< 'environmentId: 0' ].
-			session evaluateAndWait: cmd ]
+			GtGemStoneTopazExporter compileMethod: self compiledMethod in: session ]
 		id: nil) ifNotNil: [ :anAction | anAction priority: 302 ]
 ]
 

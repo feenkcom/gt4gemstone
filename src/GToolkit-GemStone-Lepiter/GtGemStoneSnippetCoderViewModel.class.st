@@ -26,7 +26,7 @@ GtGemStoneSnippetCoderViewModel >> asynchronusExecutionStrategy [
 GtGemStoneSnippetCoderViewModel >> disableExecutionAction [
 	self mainActions
 		select: [ :each | each isGemStoneExecutionAction ]
-		thenDo: [ :each |each disableAction ].
+		thenDo: [ :each | each disableAction ].
 	
 	self announce: GtTextualCoderViewModelMainActionsChanged new.
 ]

@@ -31,7 +31,8 @@ Class {
 		'isBookmarked',
 		'lifecycleHandlers',
 		'sessionNrsString',
-		'sessionParameters'
+		'sessionParameters',
+		'gemstoneVersion'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -1114,6 +1115,18 @@ GtGemStoneSession >> gemLogFileReference [
 	^ (self scriptEvaluation
 		script: 'System gemLogFileName';
 		returnPrimitiveOnly) evaluateAndWait asFileReference
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> gemstoneVersionString [
+	"Answer the gemstone version string for this session"
+	<return: #String>
+
+	^ gemstoneVersion ifNil: 
+			[ gemstoneVersion := self 
+				evaluateBlockAndWaitReturnPrimitive: [
+					System gemVersionAt: 'gsVersion'. ]
+				autoCommit: false ]
 ]
 
 { #category : #accessing }

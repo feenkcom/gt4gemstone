@@ -1,35 +1,35 @@
 Class {
-	#name : 'GtGemStoneExampleResult',
-	#superclass : 'Object',
+	#name : #GtGemStoneExampleResult,
+	#superclass : #Object,
 	#instVars : [
 		'example',
 		'result',
 		'exception'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> example [
 	^ example
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> example: anExample [
 	example := anExample
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> exception [
 	^ exception
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> exception: anException [
 	exception := anException
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> gtSourceFor: aView [
 	<gtView>
 	^ aView textEditor
@@ -38,28 +38,28 @@ GtGemStoneExampleResult >> gtSourceFor: aView [
 		text: [ self example fullSource ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> isError [
 	^ exception isNotNil
 		and: [ (exception isKindOf: GtGemStoneAssertionFailure) not ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> isFailure [
 	^ exception isNotNil and: [ exception isKindOf: GtGemStoneAssertionFailure ]
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> isSuccess [
 	^ result isNotNil
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> result [
 	^ result
 ]
 
-{ #category : 'other' }
+{ #category : #other }
 GtGemStoneExampleResult >> result: aValue [
 	result := aValue
 ]

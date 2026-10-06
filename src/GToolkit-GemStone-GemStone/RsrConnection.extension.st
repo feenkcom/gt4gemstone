@@ -1,6 +1,6 @@
-Extension { #name : 'RsrConnection' }
+Extension { #name : #RsrConnection }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 RsrConnection >> mournActionForServerSID: aSID [
 
 	^[ | object |

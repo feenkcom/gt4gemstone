@@ -1,6 +1,6 @@
-Extension { #name : 'GtWireGemStoneRsrEncoder' }
+Extension { #name : #GtWireGemStoneRsrEncoder }
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtWireGemStoneRsrEncoder >> encode: anObject with: aGtWireEncoderContext [
 	"It is up to the user to ensure that anObject isn't GCd during transfer and decoding
 	(which would allow the oop to be reused and the wrong object returned), or that the
@@ -19,7 +19,7 @@ GtWireGemStoneRsrEncoder >> encode: anObject with: aGtWireEncoderContext [
 		nextPut: rsrService _id
 ]
 
-{ #category : '*GToolkit-GemStone-GemStone' }
+{ #category : #'*GToolkit-GemStone-GemStone' }
 GtWireGemStoneRsrEncoder >> register: aRsrService [
 
 	self connection _ensureRegistered: aRsrService.

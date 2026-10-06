@@ -9,7 +9,7 @@ Class {
 		'count',
 		'block'
 	],
-	#category : 'GToolkit-GemStone-GemStone'
+	#category : #'GToolkit-GemStone-GemStone'
 }
 
 { #category : #playing }
