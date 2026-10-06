@@ -117,7 +117,7 @@ GtpoGsNMethod >> gtSourceFor: aView [
 
 	^ aView textEditor 
 		title: 'Source string';
-		priority: 10;
+		priority: 50;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		styler: BrRBTextStyler new;
 		text: [ self sourceString ];
@@ -144,7 +144,7 @@ GtpoGsNMethod >> gtTwoPanesDiffFor: aView [
 
 	^ aView explicit
 		title: 'Diff';
-		priority: 19;
+		priority: 55;
 		stencil: [ | gsSource gtSource |
 			gsSource := self sourceCode.
 			gtSource := ((self class environment at: self inClassName) >> self selector) sourceCode.
@@ -168,8 +168,25 @@ GtpoGsNMethod >> gtViewCoderFor: aView [
 	^ aView explicit
 		title: 'Source';
 		priority: 5;
-		stencil: [ self asGtMethodCoderModel ];
+		stencil: [ self asGtMethodCoderModel asExpandedOnlyElement vFitContentLimited ];
 		actionUpdateButton
+]
+
+{ #category : #ui }
+GtpoGsNMethod >> gtViewLocalCoderFor: aView [
+	<gtView>
+	| targetClass |
+
+	targetClass :=(self class environment classOrTraitNamed: self inClassName) 
+		ifNil:[ ^ aView empty ].
+	(targetClass includesSelector: self selector)
+		ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+			title: 'Local source';
+			priority: 20;
+			object: [ (targetClass >> self selector) methodReference ];
+			view: #gtSourceFor:
 ]
 
 { #category : #accessing }
