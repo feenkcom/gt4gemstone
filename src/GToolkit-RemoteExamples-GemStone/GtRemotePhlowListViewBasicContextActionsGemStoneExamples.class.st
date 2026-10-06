@@ -479,3 +479,25 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnMultipleSe
 
 	^ super scripterOnMultipleSelectionViewInPager
 ]
+
+{ #category : #'examples - multiple selection' }
+GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnVariousOptionsViewInPager [
+	<gtExample>
+
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+
+	^ super scripterOnVariousOptionsViewInPager
+]
+
+{ #category : #'examples - multiple selection' }
+GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> variousOptionsContextMenuOnItem13 [
+	<gtExample>
+
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+
+	^ super variousOptionsContextMenuOnItem13
+]

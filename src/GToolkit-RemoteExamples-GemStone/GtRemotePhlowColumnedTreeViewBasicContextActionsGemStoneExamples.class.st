@@ -359,3 +359,12 @@ GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> scripterWith
 		ifTrue: [ ^ self ].
 	^ super scripterWithExpandedTreeOnBasicActionsViewInPager
 ]
+
+{ #category : #examples }
+GtRemotePhlowColumnedTreeViewBasicContextActionsGemStoneExamples >> scripterWithExpandedTreeOnMultipleSelectionViewInPager [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super scripterWithExpandedTreeOnMultipleSelectionViewInPager
+]

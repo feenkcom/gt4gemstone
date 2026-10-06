@@ -14,6 +14,15 @@ GtRemotePhlowViewRemoveActionGemStoneExamples class >> isAbstract [
 	^ self name = #GtRemotePhlowViewRemoveActionGemStoneExamples
 ]
 
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> columnedListInspectItemOnDelta [
+	<gtExample>
+	(self runningServer gt4gemstoneVersion isZero not and:
+	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
+		ifTrue: [ ^ self ].
+	^ super columnedListInspectItemOnDelta
+]
+
 { #category : #private }
 GtRemotePhlowViewRemoveActionGemStoneExamples >> createProxyObjectFor: aBlock [
 	^ self convertToTargetProxy:
@@ -30,6 +39,61 @@ GtRemotePhlowViewRemoveActionGemStoneExamples >> createTestCollection [
 { #category : #private }
 GtRemotePhlowViewRemoveActionGemStoneExamples >> orderedCollectionDisplayName [
 	^ 'anOrderedCollection'
+]
+
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> removeAllElements [
+	<gtExample>
+	
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
+	
+	^ super removeAllElements
+]
+
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> removeConsecutiveElements [
+	<gtExample>
+	
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
+	
+	^ super removeConsecutiveElements
+]
+
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> removeDuplicateByIndex [
+	<gtExample>
+	
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
+	
+	^ super removeDuplicateByIndex
+]
+
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> removeNonConsecutiveElements [
+	<gtExample>
+	
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
+	
+	^ super removeNonConsecutiveElements
+]
+
+{ #category : #'examples - remove' }
+GtRemotePhlowViewRemoveActionGemStoneExamples >> removeSingleElement [
+	<gtExample>
+	
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
+	
+	^ super removeSingleElement
 ]
 
 { #category : #'examples - setup' }
