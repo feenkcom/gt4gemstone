@@ -14,15 +14,6 @@ GtRemotePhlowViewRemoveActionGemStoneExamples class >> isAbstract [
 	^ self name = #GtRemotePhlowViewRemoveActionGemStoneExamples
 ]
 
-{ #category : #'examples - remove' }
-GtRemotePhlowViewRemoveActionGemStoneExamples >> columnedListInspectItemOnDelta [
-	<gtExample>
-	self runningServer
-		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
-		do: [ ^ self ].
-	^ super columnedListInspectItemOnDelta
-]
-
 { #category : #private }
 GtRemotePhlowViewRemoveActionGemStoneExamples >> createProxyObjectFor: aBlock [
 	^ self convertToTargetProxy:
