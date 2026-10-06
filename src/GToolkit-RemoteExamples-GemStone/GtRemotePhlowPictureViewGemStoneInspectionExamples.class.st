@@ -15,9 +15,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples class >> isAbstract [
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDefinition [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super altClickOnErrorTabOpensDefinition
 ]
@@ -27,9 +27,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDef
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self altClickOnErrorTabOpensDefinition.
 	self 
@@ -43,9 +43,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDef
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnPictureTabOpensDefinition [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super altClickOnPictureTabOpensDefinition
 ]
@@ -55,9 +55,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> altClickOnPictureTabOpensD
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	scripter := self altClickOnPictureTabOpensDefinition.
 	self 
@@ -76,9 +76,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> convertToTargetProxy: anOb
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> createErrorTestObject [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ self createProxyObjectFor: [ GtRemotePhlowPictureViewErrorTestObject new ].
 ]
@@ -98,9 +98,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ self createProxyObjectFor: [GtRemotePhlowPictureViewTestObject new]
 ]
@@ -109,9 +109,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> createTestObject [
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super errorViewShowsDebuggableElement
 ]
@@ -121,9 +121,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableEl
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self errorViewShowsDebuggableElement.
 	self 
@@ -137,9 +137,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> errorViewShowsDebuggableEl
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebuggableElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super heightErrorViewShowsDebuggableElement
 ]
@@ -149,9 +149,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebugg
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self heightErrorViewShowsDebuggableElement.
 	self 
@@ -165,9 +165,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> heightErrorViewShowsDebugg
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewHasCorrectSize [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super pictureFullSizeViewHasCorrectSize
 ]
@@ -176,9 +176,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewHasCorr
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewShowsPictureElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super pictureFullSizeViewShowsPictureElement
 ]
@@ -187,9 +187,9 @@ GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureFullSizeViewShowsPi
 GtRemotePhlowPictureViewGemStoneInspectionExamples >> pictureViewShowsPictureElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super pictureViewShowsPictureElement
 ]

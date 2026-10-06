@@ -17,9 +17,9 @@ GtRemotePhlowViewRemoveActionGemStoneExamples class >> isAbstract [
 { #category : #'examples - remove' }
 GtRemotePhlowViewRemoveActionGemStoneExamples >> columnedListInspectItemOnDelta [
 	<gtExample>
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 	^ super columnedListInspectItemOnDelta
 ]
 

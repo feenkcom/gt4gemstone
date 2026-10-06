@@ -98,9 +98,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> assertInspectedSelec
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> contextMenuOnItem11 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super contextMenuOnItem11
 ]
@@ -109,9 +109,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> contextMenuOnItem11 
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> contextMenuOnItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super contextMenuOnItem13
 ]
@@ -132,9 +132,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowListViewContextActionsBasicTestObject new ]
 ]
@@ -143,9 +143,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> createTestObject [
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsContextMenuOnItem11 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsContextMenuOnItem11
 ]
@@ -154,9 +154,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsContextMenuOnItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsContextMenuOnItem13
 ]
@@ -165,9 +165,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsInspectObjectOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsInspectObjectOnItem13OpensNewPane
 ]
@@ -176,9 +176,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsInspectSelectionOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsInspectSelectionOnItem13OpensNewPane
 ]
@@ -187,9 +187,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsMultipleSelectionContextMenuOnSingleItem [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsMultipleSelectionContextMenuOnSingleItem
 ]
@@ -198,9 +198,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsMultipleSelectionContextMenuOnThreeItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsMultipleSelectionContextMenuOnThreeItemsIncluding14
 ]
@@ -209,9 +209,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsMultipleSelectionContextMenuOnTwoItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsMultipleSelectionContextMenuOnTwoItemsIncluding14
 ]
@@ -220,9 +220,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsMultipleSelectionInspectObjectOnSingleItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsMultipleSelectionInspectObjectOnSingleItem13
 ]
@@ -231,9 +231,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowActionsMultipleSelectionInspectSelectionOnTwoItems [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicContextPhlowActionsMultipleSelectionInspectSelectionOnTwoItems
 ]
@@ -242,9 +242,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicContextPhlowA
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsContextMenuOnItem11 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsContextMenuOnItem11
 ]
@@ -253,9 +253,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsC
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsContextMenuOnItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsContextMenuOnItem13
 ]
@@ -264,9 +264,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsC
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsInspectObjectOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsInspectObjectOnItem13OpensNewPane
 ]
@@ -275,9 +275,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsI
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsInspectSelectionOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsInspectSelectionOnItem13OpensNewPane
 ]
@@ -286,9 +286,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsI
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsMultipleSelectionContextMenuOnSingleItem [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsMultipleSelectionContextMenuOnSingleItem
 ]
@@ -297,9 +297,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsM
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsMultipleSelectionContextMenuOnThreeItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsMultipleSelectionContextMenuOnThreeItemsIncluding14
 ]
@@ -308,9 +308,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsM
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsMultipleSelectionContextMenuOnTwoItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsMultipleSelectionContextMenuOnTwoItemsIncluding14
 ]
@@ -319,9 +319,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsM
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsMultipleSelectionInspectObjectOnSingleItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsMultipleSelectionInspectObjectOnSingleItem13
 ]
@@ -330,9 +330,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsM
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsMultipleSelectionInspectSelectionOnTwoItems [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super dynamicPhlowActionsMultipleSelectionInspectSelectionOnTwoItems
 ]
@@ -341,9 +341,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> dynamicPhlowActionsM
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> inspectObjectOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super inspectObjectOnItem13OpensNewPane
 ]
@@ -352,9 +352,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> inspectObjectOnItem1
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> inspectSelectionOnItem13OpensNewPane [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super inspectSelectionOnItem13OpensNewPane
 ]
@@ -363,9 +363,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> inspectSelectionOnIt
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionContextMenuOnSingleItem [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super multipleSelectionContextMenuOnSingleItem
 ]
@@ -374,9 +374,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionCon
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionContextMenuOnThreeItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super multipleSelectionContextMenuOnThreeItemsIncluding14
 ]
@@ -385,9 +385,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionCon
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionContextMenuOnTwoItemsIncluding14 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super multipleSelectionContextMenuOnTwoItemsIncluding14
 ]
@@ -396,9 +396,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionCon
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionInspectObjectOnSingleItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super multipleSelectionInspectObjectOnSingleItem13
 ]
@@ -407,9 +407,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionIns
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionInspectSelectionOnTwoItems [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super multipleSelectionInspectSelectionOnTwoItems
 ]
@@ -418,9 +418,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> multipleSelectionIns
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnBasicActionsViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnBasicActionsViewInPager
 ]
@@ -429,9 +429,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnBasicActio
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicContextPhlowActionsMultipleSelectionViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnDynamicContextPhlowActionsMultipleSelectionViewInPager
 ]
@@ -440,9 +440,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicCon
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicContextPhlowActionsViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnDynamicContextPhlowActionsViewInPager
 ]
@@ -451,9 +451,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicCon
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicPhlowActionsMultipleSelectionViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnDynamicPhlowActionsMultipleSelectionViewInPager
 ]
@@ -462,9 +462,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicPhl
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicPhlowActionsViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnDynamicPhlowActionsViewInPager
 ]
@@ -473,9 +473,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnDynamicPhl
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnMultipleSelectionViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnMultipleSelectionViewInPager
 ]
@@ -484,9 +484,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnMultipleSe
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnVariousOptionsViewInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnVariousOptionsViewInPager
 ]
@@ -495,9 +495,9 @@ GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> scripterOnVariousOpt
 GtRemotePhlowListViewBasicContextActionsGemStoneExamples >> variousOptionsContextMenuOnItem13 [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super variousOptionsContextMenuOnItem13
 ]
