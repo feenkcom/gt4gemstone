@@ -10,7 +10,7 @@ Class {
 GtGemStoneEvaluationExceptionExamples >> exceptionKeepsDebuggerStateAfterSessionStops [
 	<gtExample>
 	| exception debuggerState |
-	[ self runningServer evaluateBlockAndWait: [ true isBoolean ] ]
+	[ self runningServer evaluateBlockAndWait: [ nil error: 'an-error-message' ] ]
 		on: GtRsrEvaluationException
 		do: [ :anException | exception := anException ].
 	self assert: exception notNil.
@@ -18,6 +18,6 @@ GtGemStoneEvaluationExceptionExamples >> exceptionKeepsDebuggerStateAfterSession
 	self assert: debuggerState notNil.
 	self stopServer.
 	self assert: exception debuggerState == debuggerState.
-	self assert: (exception messageText includesSubstring: 'isBoolean').
+	self assert: (exception messageText includesSubstring: 'an-error-message').
 	^ exception
 ]

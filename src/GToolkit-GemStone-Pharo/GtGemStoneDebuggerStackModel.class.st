@@ -19,20 +19,15 @@ GtGemStoneDebuggerStackModel >> createCoderFor: aContext in: aSession [
 	^ coder
 ]
 
-{ #category : #accessing }
+{ #category : #updating }
 GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
-	"Changes the Context to a given one trying to preserve
-	cached coders for each stack frame.
-	Return true if the context changed"
-	<return: #Boolean>
-	currentContext = aContext
-		ifTrue: [ ^ false ].
-
-	"(currentContext notNil and: [ currentContext isDead ])
-		ifTrue: [ self resetCoderViewModelCache ]."
-
+	"Preserve logical frame identity, but always retain the latest frame instance
+	and rebind cached coders before exposing the refreshed stack."
+	| contextChanged |
+	contextChanged := currentContext ~= aContext.
 	currentContext := aContext.
-	^ true
+	self updateFrameContextsInCoderModels.
+	^ contextChanged
 ]
 
 { #category : #accessing }
@@ -50,27 +45,35 @@ GtGemStoneDebuggerStackModel >> updateBasedOnCurentSession [
 	self updateBasedOnCurentContext: session remoteContext
 ]
 
-{ #category : #accessing }
+{ #category : #updating }
 GtGemStoneDebuggerStackModel >> updateFrameContextsInCoderModels [
-	"Currently the stack frame objects created locally for remote stack frames are
-	recreated after every debugging operation. Because of that, whenever updating
-	the stack we update the stack frame objects in the cache and in the coder models.
-	
-	Ideally we should not have this step."
+	"Retain cached view models and editor documents while rebinding fresh frames.
+	A suspended caller's PC is a continuation position, so keep its last call-site
+	markers until it becomes the active frame again."
 	| currentStackFrames |
+	session ifNil: [ ^ self ].
 	currentStackFrames := session remoteStackFrames.
-	
-	coderViewModelCache associations do: [ :assoc |
-		| frameIndex |
-		coderViewModelCache removeKey: assoc key ifAbsent: [ ].
-		
-		(frameIndex := currentStackFrames indexOf: assoc key) > 0
-			ifTrue: [
-				assoc value first coderModel
-					initializeFromStackFrame: (currentStackFrames at: frameIndex).
-				 coderViewModelCache 
-				 	at: (currentStackFrames at: frameIndex)
-				 	put: assoc value ] ].
+	coderViewModelCache associations do: [ :association |
+		| frameIndex freshFrame viewModel coder oldFrame oldSource oldMarkers |
+		coderViewModelCache removeKey: association key ifAbsent: [ ].
+		frameIndex := currentStackFrames indexOf: association key.
+		frameIndex > 0 ifTrue: [
+			freshFrame := currentStackFrames at: frameIndex.
+			viewModel := association value.
+			coder := viewModel coderModel.
+			oldFrame := coder stackFrame.
+			oldFrame == freshFrame ifFalse: [
+				oldSource := coder sourceCode.
+				oldMarkers := oldFrame programCounterMarkers.
+				coder updateFromStackFrame: freshFrame.
+				coder sourceCode == oldSource ifTrue: [
+					freshFrame = session remoteContext
+						ifTrue: [
+							(oldMarkers ~= freshFrame programCounterMarkers and: [
+								oldFrame programCounterRange ~= freshFrame programCounterRange ])
+								ifTrue: [ viewModel updateProgramCounterRange ] ]
+						ifFalse: [ freshFrame updateProgramCounterMarkers: oldMarkers ] ] ].
+			coderViewModelCache at: freshFrame put: viewModel ] ]
 ]
 
 { #category : #accessing }

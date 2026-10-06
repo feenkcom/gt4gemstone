@@ -42,8 +42,9 @@ GtGemStoneClassDefinitionTool class >> compileScriptForSource: sourceString prot
             cr;
             << 'dictionaries: GsCurrentSession currentSession symbolList';
             cr;
-            nextPutAll: ' category: #';
+            nextPutAll: ' category: #''';
             nextPutAll: protocolString;
+            nextPut: $';
             cr;
             nextPutAll: 'environmentId: ';
             print: environmentId;
