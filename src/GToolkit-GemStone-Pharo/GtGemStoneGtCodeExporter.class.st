@@ -278,7 +278,6 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Deprecation>>#freeze.
 	GtExamplesCommandLineHandler>>#runPackages.
 	GtExampleExternalDependencyResolver>>#posibleExampleForNode:fromMethod:forOriginalExample:.
-	GtLModelUserMessage >> #addKnowlingContextPages.
 	}
 ]
 
