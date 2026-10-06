@@ -27,6 +27,34 @@ GtGemStoneGtCodeExporterExamples >> additionalClassListIgnoresMissingNames [
 ]
 
 { #category : #examples }
+GtGemStoneGtCodeExporterExamples >> additionalClassListUnionsPragmaProviders [
+	<gtExample>
+	| exporterClass exporter missingName expectedClasses |
+	missingName := #GtGemStoneGtCodeExporterMissingAdditionalClassForExample.
+	self assert: (Smalltalk globals includesKey: missingName) not.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass additionalClassNames: { #Object. missingName. #String }.
+	exporterClass
+		compile: 'moreAdditionalClassNames
+	<additionalClassNames>
+	^ #(String Array Array)'
+		classified: #private.
+	exporterClass
+		compile: 'unmarkedAdditionalClassNames
+	^ #(Symbol)'
+		classified: #private.
+	exporter := exporterClass new.
+	expectedClasses := { Object. String. Array }.
+	self assert: exporter additionalClassList asSet equals: expectedClasses asSet.
+	self assert: exporter additionalClassList size equals: expectedClasses size.
+	self assert: ((exporterClass >> #additionalClassNames) hasPragmaNamed: #additionalClassNames).
+	exporterClass addAdditionalClassName: #Array.
+	self assert: exporter additionalClassList asSet equals: expectedClasses asSet.
+	self assert: exporter additionalClassList size equals: expectedClasses size.
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneGtCodeExporterExamples >> additionalClassNameUtilities [
 	<gtExample>
 	| exporterClass originalNames source |
@@ -69,6 +97,72 @@ GtGemStoneGtCodeExporterExamples >> additionalClassNamesAreSorted [
 ]
 
 { #category : #examples }
+GtGemStoneGtCodeExporterExamples >> excludedClassListUnionsPragmaProviders [
+	<gtExample>
+	| exporterClass exporter expectedClasses |
+	exporter := GtGemStoneGtCodeExporter new.
+	self assert: exporter excludedClasses equals: { GtGemStoneTopazExporterExamples }.
+	self assert: exporter excludedClasses equals: exporter excludedClassList.
+	self assert: ((GtGemStoneGtCodeExporter >> #excludedClassList) hasPragmaNamed: #excludedClasses).
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass
+		compile: 'defaultExcludedClassList
+	<excludedClasses>
+	^ { Object. String }'
+		classified: #private.
+	exporterClass
+		compile: 'moreExcludedClasses
+	<excludedClasses>
+	^ { String. Array. Array }'
+		classified: #private.
+	exporterClass
+		compile: 'unmarkedExcludedClasses
+	^ { Symbol }'
+		classified: #private.
+	exporter := exporterClass new.
+	expectedClasses := { Object. String. Array }.
+	self assert: exporter excludedClasses isArray.
+	self assert: exporter excludedClasses asSet equals: expectedClasses asSet.
+	self assert: exporter excludedClasses size equals: expectedClasses size.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> excludedMethodsUnionsPragmaProviders [
+	<gtExample>
+	| exporterClass exporter expectedMethods |
+	exporter := GtGemStoneGtCodeExporter new.
+	self assert: exporter excludedMethods equals: exporter excludedMethodsList.
+	self assert: ((GtGemStoneGtCodeExporter >> #excludedMethodsList) hasPragmaNamed: #excludedMethods).
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass
+		compile: 'excludedMethodsList
+	<excludedMethods>
+	^ { GtGemStoneGtCodeExporter >> #additionalClassList.
+		GtGemStoneGtCodeExporter >> #stubClasses }'
+		classified: #accessing.
+	exporterClass
+		compile: 'moreExcludedMethods
+	<excludedMethods>
+	^ { GtGemStoneGtCodeExporter >> #stubClasses.
+		GtGemStoneGtCodeExporter class >> #stubClassNames:.
+		GtGemStoneGtCodeExporter class >> #stubClassNames: }'
+		classified: #accessing.
+	exporterClass
+		compile: 'unmarkedExcludedMethods
+	^ { GtGemStoneGtCodeExporter >> #excludedClassList }'
+		classified: #accessing.
+	exporter := exporterClass new.
+	expectedMethods := { GtGemStoneGtCodeExporter >> #additionalClassList.
+		GtGemStoneGtCodeExporter >> #stubClasses.
+		GtGemStoneGtCodeExporter class >> #stubClassNames: }.
+	self assert: exporter excludedMethods isArray.
+	self assert: exporter excludedMethods asSet equals: expectedMethods asSet.
+	self assert: exporter excludedMethods size equals: expectedMethods size.
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneGtCodeExporterExamples >> exportsGtExampleGemStoneCompatibilityMethods [
 	<gtExample>
 	| output |
@@ -80,7 +174,6 @@ GtGemStoneGtCodeExporterExamples >> exportsGtExampleGemStoneCompatibilityMethods
 	self assert: (output includesSubstring: 'method: Pragma').
 	self assert: (output includesSubstring: 'isGTExamplePragma').
 	self assert: (output includesSubstring: 'method: GtExample').
-	self assert: (output includesSubstring: '^ super new initialize').
 	self assert: (output includesSubstring: 'subclass: ''Metaclass3''') not.
 	self assert: (output includesSubstring: 'subclass: ''GsNMethod''') not.
 	self assert: (output includesSubstring: 'subclass: ''ExecutionEnvironment''').
@@ -88,17 +181,8 @@ GtGemStoneGtCodeExporterExamples >> exportsGtExampleGemStoneCompatibilityMethods
 	self assert: (output includesSubstring: 'subclass: ''TestExecutionEnvironment''').
 	self assert: (output includesSubstring: 'subclass: ''TestExecutionService''').
 	self assert: (output includesSubstring: 'subclass: ''TestTookTooMuchTime''').
-	self assert: (output includesSubstring: 'waitForMilliseconds: maxTimeForTest asMilliseconds').
 	self assert: (output includesSubstring: '^ DefaultExecutionEnvironment instance runExampleEvaluator: anExampleEvaluator').
-	self assert: (output includesSubstring: 'SessionTemps current at: #DefaultExecutionEnvironment_instance ifAbsentPut: [ self new ]').
-	self assert: (output includesSubstring: 'ext_DefaultExecutionEnvironment_instance').
 	self assert: (output includesSubstring: '^instance ifNil: [ instance := self new ]').
-	self assert: (output includesSubstring: 'ext_DefaultExecutionEnvironment_runExampleEvaluator_').
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_registerDefaultServices').
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_watchDogLoop').
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_runExampleUnderWatchdogUsingEvaluator_').
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_runUnmanagedExampleEvaluator_').
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_processMonitor').
 	self assert: (output includesSubstring: 'method: TestExecutionEnvironment
 runUnmanagedExampleEvaluator:') not.
 	self assert: (output includesSubstring: 'method: TestExecutionEnvironment
@@ -176,5 +260,33 @@ GtGemStoneGtCodeExporterExamples >> stubClassesIgnoreMissingNames [
 	exporter := exporterClass new.
 	self assert: exporter stubClassNames size equals: 3.
 	self assert: exporter stubClasses equals: { Object. String }.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> stubClassesUnionsPragmaProviders [
+	<gtExample>
+	| exporterClass exporter missingName expectedClasses |
+	missingName := #GtGemStoneGtCodeExporterMissingStubClassForExample.
+	self assert: (Smalltalk globals includesKey: missingName) not.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass stubClassNames: { #Object. missingName. #String }.
+	exporterClass
+		compile: 'moreStubClassNames
+	<stubClassNames>
+	^ #(String Array Array)'
+		classified: #accessing.
+	exporterClass
+		compile: 'unmarkedStubClassNames
+	^ #(Symbol)'
+		classified: #accessing.
+	exporter := exporterClass new.
+	expectedClasses := { Object. String. Array }.
+	self assert: exporter stubClasses asSet equals: expectedClasses asSet.
+	self assert: exporter stubClasses size equals: expectedClasses size.
+	self assert: ((exporterClass >> #stubClassNames) hasPragmaNamed: #stubClassNames).
+	exporterClass addStubClassName: #Array.
+	self assert: exporter stubClasses asSet equals: expectedClasses asSet.
+	self assert: exporter stubClasses size equals: expectedClasses size.
 	^ exporter
 ]

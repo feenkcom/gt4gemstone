@@ -36,6 +36,9 @@ GtGemStoneGtCodeExporter class >> additionalClassNames: aCollection [
 			nextPutAll: 'additionalClassNames';
 			cr;
 			tab;
+			nextPutAll: '<additionalClassNames>';
+			cr;
+			tab;
 			nextPutAll: '^ #('.
 		names do: [ :each |
 			stream cr; tab; tab.
@@ -80,6 +83,9 @@ GtGemStoneGtCodeExporter class >> stubClassNames: aCollection [
 			nextPutAll: 'stubClassNames';
 			cr;
 			tab;
+			nextPutAll: '<stubClassNames>';
+			cr;
+			tab;
 			nextPutAll: '^ #('.
 		names do: [ :each |
 			stream cr; tab; tab.
@@ -91,13 +97,20 @@ GtGemStoneGtCodeExporter class >> stubClassNames: aCollection [
 
 { #category : #private }
 GtGemStoneGtCodeExporter >> additionalClassList [
-	^ self additionalClassNames
+	| names |
+	names := OrderedCollection new.
+	(Pragma allNamed: #additionalClassNames in: self class)
+		do: [ :pragma |
+			(self perform: pragma methodSelector)
+				do: [ :name | names addIfNotPresent: name ] ].
+	^ names asArray
 		collect: [ :each | Smalltalk globals at: each ifAbsent: [ nil ] ]
 		thenReject: [ :each | each isNil ]
 ]
 
 { #category : #private }
 GtGemStoneGtCodeExporter >> additionalClassNames [
+	<additionalClassNames>
 	^ #(
 		#AssertionFailure
 		#AsyncFutureExecutionError
@@ -110,8 +123,6 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#ExecutionEnvironment
 		#GtAnthropicError
 		#GtExampleComparisonExceptionWithDebuggingViews
-		#GtGemStoneExtensionMethod
-		#GtGemStoneExtensionMethods
 		#GtLlmError
 		#KeyNotFound
 		#NeoJSONParseError
@@ -145,7 +156,7 @@ GtGemStoneGtCodeExporter >> configuredExporter [
 		packages: self packageNames
 		additionalClasses: self additionalClasses
 		stubClasses: self stubClasses
-		excluding: self excludedClassList.
+		excluding: self excludedClasses.
 	configuredExporter
 		excludedMethods: self excludedMethods;
 		includeGsCodeMethods: true;
@@ -155,11 +166,35 @@ GtGemStoneGtCodeExporter >> configuredExporter [
 
 { #category : #private }
 GtGemStoneGtCodeExporter >> excludedClassList [
+	<excludedClasses>
 	^ { GtGemStoneTopazExporterExamples. }
+]
+
+{ #category : #private }
+GtGemStoneGtCodeExporter >> excludedClasses [
+	| classes |
+	classes := OrderedCollection new.
+	(Pragma allNamed: #excludedClasses in: self class)
+		do: [ :pragma |
+			(self perform: pragma methodSelector)
+				do: [ :class | classes addIfNotPresent: class ] ].
+	^ classes asArray
 ]
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> excludedMethods [
+	| methods |
+	methods := OrderedCollection new.
+	(Pragma allNamed: #excludedMethods in: self class)
+		do: [ :pragma |
+			(self perform: pragma methodSelector)
+				do: [ :method | methods addIfNotPresent: method ] ].
+	^ methods asArray
+]
+
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> excludedMethodsList [
+	<excludedMethods>
 
 	^ {
 	GtLMarkdown>>#commentForSmaCC.
@@ -250,7 +285,9 @@ GtGemStoneGtCodeExporter >> excludedMethods [
 GtGemStoneGtCodeExporter >> export [ 
 	| outputFile |
 
-	outputFile := 'GT.gs' asFileReference.
+	outputFile := 'gt4gemstone/src-gs/GT.gs' asFileReference.
+	outputFile parent exists ifFalse:
+		[ self error: 'Export directory doesn''t exist: ', outputFile parent fullName ].
 	outputFile ensureDelete.
 	exporter := self configuredExporter.
 	exporter writeTo: outputFile.
@@ -311,7 +348,7 @@ GtGemStoneGtCodeExporter >> packageNames [
 GtGemStoneGtCodeExporter >> staticExportAnalysisForPackageNames: aCollection [
 	| gemstoneNames excludedClasses selected classesToScan scanned additional stubs excluded methods references missingClass generated actual difference |
 	gemstoneNames := GtGemStoneTopazExporter gemstoneClassNames asSet.
-	excludedClasses := self excludedClassList asSet.
+	excludedClasses := self excludedClasses asSet.
 	selected := Set new.
 	aCollection do: [ :packageName |
 		selected addAll: ((PackageOrganizer default
@@ -377,6 +414,7 @@ GtGemStoneGtCodeExporter >> staticExportAnalysisForPackageNames: aCollection [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> stubClassNames [
+	<stubClassNames>
 	^ #(
 		#AsyncCachedStream
 		#AsyncChunksStream
@@ -971,7 +1009,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> stubClasses [
-	^ self stubClassNames
+	| names |
+	names := OrderedCollection new.
+	(Pragma allNamed: #stubClassNames in: self class)
+		do: [ :pragma |
+			(self perform: pragma methodSelector)
+				do: [ :name | names addIfNotPresent: name ] ].
+	^ names asArray
 		collect: [ :each | Smalltalk globals at: each ifAbsent: [ nil ] ]
 		thenReject: [ :each | each isNil ]
 ]
