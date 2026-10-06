@@ -309,7 +309,7 @@ GtRemoteGemStoneSessionExamples >> testEvaluateReturnProxyInspector [
 	self assert: result remoteClass equals: #GtRemotePhlowViewedObject.
 	self assert: result hasCachedViewSpecifications.
 	self assert: result rawViewSpecificationsBySelector size equals: 2.
-	self assert: result rawActionSpecificationsBySelector size equals: 2.
+	self assert: result rawActionSpecificationsBySelector size equals: 4.
 
 	^ result
 ]
