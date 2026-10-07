@@ -21,9 +21,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples class >> isAbstract [
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> altClickOnErrorTabOpensDefinition [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 	
 	^ super altClickOnErrorTabOpensDefinition
 ]
@@ -33,9 +33,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> altClickOnErrorTabOpens
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 		
 	scripter := self altClickOnErrorTabOpensDefinition.
 	self 
@@ -49,9 +49,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> altClickOnErrorTabOpens
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> altClickOnWebBrowserTabOpensDefinition [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super altClickOnWebBrowserTabOpensDefinition
 ]
@@ -61,9 +61,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> altClickOnWebBrowserTab
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 		
 	scripter := self altClickOnWebBrowserTabOpensDefinition.
 	self 
@@ -83,9 +83,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> createErrorTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowWebBrowserViewErrorTestObject new ]
 ]
@@ -101,9 +101,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowWebBrowserViewTestObject new ]
 ]
@@ -112,9 +112,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> createTestObject [
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> dynamicHeadersErrorViewShowsDebuggableElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super dynamicHeadersErrorViewShowsDebuggableElement
 ]
@@ -124,9 +124,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> dynamicHeadersErrorView
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 	
 	scripter := self dynamicHeadersErrorViewShowsDebuggableElement.
 	self 
@@ -140,9 +140,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> dynamicHeadersErrorView
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> errorViewShowsDebuggableElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super errorViewShowsDebuggableElement
 ]
@@ -152,9 +152,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> errorViewShowsDebuggabl
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 	
 	scripter := self errorViewShowsDebuggableElement.
 	self 
@@ -168,9 +168,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> errorViewShowsDebuggabl
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> objectViewsRenderWithoutErrors [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super objectViewsRenderWithoutErrors
 ]
@@ -179,9 +179,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> objectViewsRenderWithou
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> scripterOnErrorTestObjectInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super scripterOnErrorTestObjectInPager
 ]
@@ -190,9 +190,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> scripterOnErrorTestObje
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> scripterOnTestObject [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super scripterOnTestObject
 ]
@@ -201,9 +201,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> scripterOnTestObject [
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> updateActionRefreshesBrowserContent [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super updateActionRefreshesBrowserContent
 ]
@@ -212,9 +212,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> updateActionRefreshesBr
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserHeadersViewShowsWebViewElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super webBrowserHeadersViewShowsWebViewElement
 ]
@@ -223,9 +223,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserHeadersViewSh
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserLocalDataViewShowsWebViewElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super webBrowserLocalDataViewShowsWebViewElement
 ]
@@ -234,9 +234,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserLocalDataView
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserPngViewShowsWebViewElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super webBrowserPngViewShowsWebViewElement
 ]
@@ -245,9 +245,9 @@ GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserPngViewShowsW
 GtRemotePhlowWebBrowserViewGemStoneInspectionExamples >> webBrowserViewShowsWebViewElement [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ ^ self ].
 
 	^ super webBrowserViewShowsWebViewElement
 ]

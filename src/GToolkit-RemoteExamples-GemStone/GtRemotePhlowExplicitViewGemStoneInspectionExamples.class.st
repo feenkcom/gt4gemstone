@@ -18,9 +18,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples class >> isAbstract [
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorViewTabOpensDefinition [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ super altClickOnExplicitErrorViewTabOpensDefinition
 ]
@@ -30,9 +30,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorVi
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self altClickOnExplicitErrorViewTabOpensDefinition.
 	self 
@@ -46,9 +46,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitErrorVi
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTabOpensDefinition [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ super altClickOnExplicitViewTabOpensDefinition
 ]
@@ -58,9 +58,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> altClickOnExplicitViewTab
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	scripter := self altClickOnExplicitViewTabOpensDefinition.
 	self 
@@ -80,9 +80,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createEditablePersonObjec
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewWithEditableUIPersonObject new ]
 ]
@@ -92,9 +92,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createErrorTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewErrorTestObject new ]
 ]
@@ -110,9 +110,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createSerializationTestOb
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewWithSerializationTestObject new ]
 ]
@@ -122,9 +122,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createTestObject [
 	<gtExample>
 	<after: #stopServer>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 		
 	^ self createProxyObjectFor: [ GtRemotePhlowExplicitViewTestObject new ]
 ]
@@ -133,9 +133,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> createTestObject [
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectSelectBasicEditView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super editablePersonObjectSelectBasicEditView
 ]
@@ -144,9 +144,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectSelec
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectSelectEditView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super editablePersonObjectSelectEditView
 ]
@@ -155,9 +155,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectSelec
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectViewsRenderWithoutErrors [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super editablePersonObjectViewsRenderWithoutErrors
 ]
@@ -166,9 +166,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> editablePersonObjectViews
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilDataErrorView [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ super errorTestObjectSelectStencilDataErrorView
 ]
@@ -178,9 +178,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self errorTestObjectSelectStencilDataErrorView.
 	self 
@@ -194,9 +194,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectStencilErrorView [
 	<gtExample>
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self  ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	^ super errorTestObjectSelectStencilErrorView
 ]
@@ -206,9 +206,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 	<gtExample>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ]) 
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 	
 	scripter := self errorTestObjectSelectStencilErrorView.
 	self 
@@ -222,9 +222,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> errorTestObjectSelectSten
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnEditablePersonObject [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnEditablePersonObject
 ]
@@ -233,9 +233,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnEditablePersonO
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnErrorTestObjectInPager [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnErrorTestObjectInPager
 ]
@@ -244,9 +244,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnErrorTestObject
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnSerializationTestObject [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnSerializationTestObject
 ]
@@ -255,9 +255,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnSerializationTe
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnTestObject [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super scripterOnTestObject
 ]
@@ -266,9 +266,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> scripterOnTestObject [
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSelectDirectProxyExplicitComputationView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super serializationTestObjectSelectDirectProxyExplicitComputationView
 ]
@@ -277,9 +277,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSe
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSelectDirectProxyView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super serializationTestObjectSelectDirectProxyView
 ]
@@ -288,9 +288,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSe
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSelectManualDictionaryView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super serializationTestObjectSelectManualDictionaryView
 ]
@@ -299,9 +299,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSe
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSelectWireEncodingView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super serializationTestObjectSelectWireEncodingView
 ]
@@ -310,9 +310,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectSe
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectViewsRenderWithoutErrors [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super serializationTestObjectViewsRenderWithoutErrors
 ]
@@ -321,9 +321,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> serializationTestObjectVi
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectGtSideStencilV1View [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super testObjectSelectGtSideStencilV1View
 ]
@@ -332,9 +332,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectGtSideSte
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectGtSideStencilV2View [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super testObjectSelectGtSideStencilV2View
 ]
@@ -343,9 +343,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectGtSideSte
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectRemoteLocalStencilView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super testObjectSelectRemoteLocalStencilView
 ]
@@ -354,9 +354,9 @@ GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectRemoteLoc
 GtRemotePhlowExplicitViewGemStoneInspectionExamples >> testObjectSelectRemoteOnlyStencilView [
 	<gtExample>
 
-	(self runningServer gt4gemstoneVersion isZero not and:
-	[ self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_533 ])
-		ifTrue: [ ^ self ].
+	self runningServer 
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ ^ self ].
 
 	^ super testObjectSelectRemoteOnlyStencilView
 ]

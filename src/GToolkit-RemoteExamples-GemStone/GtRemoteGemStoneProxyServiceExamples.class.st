@@ -43,7 +43,7 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxy [
 GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxyInspector [
 	<gtExample>
 	<after: #stopServer>
-	| session proxy result |
+	| session proxy result expectedNumberOfActions |
 	session := self runningServer.
 	proxy := session evaluateAndWaitReturnProxy: 'Object new'.
 
@@ -52,7 +52,13 @@ GtRemoteGemStoneProxyServiceExamples >> testEvaluateReturnProxyInspector [
 	self assert: result remoteClass equals: #GtRemotePhlowViewedObject.
 	self assert: result hasCachedViewSpecifications.
 	self assert: result rawViewSpecificationsBySelector size equals: 2.
-	self assert: result rawActionSpecificationsBySelector size equals: 2
+	
+	expectedNumberOfActions := self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533 
+		do: [ 2 ] 
+		after: [ 4 ].
+		
+	self assert: result rawActionSpecificationsBySelector size equals: expectedNumberOfActions
 ]
 
 { #category : #tests }

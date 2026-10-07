@@ -1,6 +1,6 @@
 Class {
 	#name : #GtpoGtRemotePhlowDeclarativeBlockActionDataSource,
-	#superclass : #GtRsrProxyServiceClient,
+	#superclass : #GtpoGtRemotePhlowDeclarativeActionDataSource,
 	#category : #'GToolkit-GemStone-Pharo-Proxies'
 }
 
@@ -11,7 +11,5 @@ GtpoGtRemotePhlowDeclarativeBlockActionDataSource class >> remoteClassName [
 
 { #category : #accessing }
 GtpoGtRemotePhlowDeclarativeBlockActionDataSource >> executeRemoteActionWithPhlowResult [
-
-	^ self
-		proxyPerform: #executeRemoteActionWithPhlowResult
+	^ self proxyPerform: #executeRemoteActionWithPhlowResult
 ]

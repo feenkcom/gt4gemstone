@@ -49,7 +49,7 @@ TGtRemotePhlowGemStoneInspectionAssertions >> assertSecondPaneHasGemStoneMethodW
 	(aScripter inspectorStep)
 		label: 'Second pane has method definition';
 		onPagerPaneWithIndex: 2;
-		assertInspectedObjectOfType: GtGsBareProxy;
+		assertInspectedObjectOfType: GtGspoGsNMethod;
 		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition remoteClass]
 			equals: [#GsNMethod];
 		assertInspectedObjectValueFor: [:aMethodDefinition | aMethodDefinition selector]

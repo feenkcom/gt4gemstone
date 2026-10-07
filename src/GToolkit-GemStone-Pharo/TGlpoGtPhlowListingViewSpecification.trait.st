@@ -4,6 +4,22 @@ Trait {
 }
 
 { #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> bareRetrieveSentItemAtPhlowSelectionData: aPhlowSelectionData [
+
+	^ (self 
+		proxyPerformReturnProxy: #bareRetrieveSentItemAtPhlowSelectionData:
+		withArguments: { aPhlowSelectionData }) asGtBareProxyObject
+]
+
+{ #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> bareRetriveContextActionSpecificationsForPhlowSelectionData: aPhlowSelectionData [
+
+	^ (self 
+		proxyPerform: #bareRetriveContextActionSpecificationsForPhlowSelectionData:
+		withArguments: { aPhlowSelectionData })
+]
+
+{ #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> flushItemsIterator [
 	^ self proxyPerform: #flushItemsIterator
 ]
@@ -34,9 +50,23 @@ TGlpoGtPhlowListingViewSpecification >> retrieveSentItemAt: aSelectionIndex [
 ]
 
 { #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> retrieveSentItemAtPhlowSelection: aPhlowSelection [
+
+	^ self bareRetrieveSentItemAtPhlowSelectionData: aPhlowSelection asDictionaryForExport
+]
+
+{ #category : #accessing }
 TGlpoGtPhlowListingViewSpecification >> retrieveTotalItemsCount [
 	^ self
 		proxyPerform: #retrieveTotalItemsCount
+]
+
+{ #category : #accessing }
+TGlpoGtPhlowListingViewSpecification >> retriveContextActionSpecificationsForPhlowSelection: aPhlowSelection [
+
+	^ (self bareRetriveContextActionSpecificationsForPhlowSelectionData: aPhlowSelection asDictionaryForExport) 
+		collect: [ :eachData |
+			GtPhlowActionSpecification phlowActionFromDictionary: eachData ]
 ]
 
 { #category : #accessing }
@@ -45,5 +75,5 @@ TGlpoGtPhlowListingViewSpecification >> retriveSentItemAt: aSelectionIndex [
 	^ (self performEvaluation
 		selector: #retriveSentItemAt:;
 		arguments: { aSelectionIndex };
-		returnProxy) evaluateAndWait
+		returnProxy) evaluateAndWait asGtBareProxyObject
 ]

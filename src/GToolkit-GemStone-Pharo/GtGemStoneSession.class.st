@@ -1130,6 +1130,52 @@ GtGemStoneSession >> gemstoneVersionString [
 ]
 
 { #category : #accessing }
+GtGemStoneSession >> gt4GemStoneUpToVersion: aVersion currentVersion: aCurrentVersion do: upToBlock after: afterBlock [
+	"Evaluate upToBlock if aVersion <= aCurrentVersion, otherwise afterBlock.
+	aVersion and currentVersion are semantic versions or version numbers with 
+	an optional leading $v.
+	This is used to help with migration where a GemStone installation may not 
+	be synchronised with all local changes."
+	| currentVersion version |
+
+	currentVersion := aCurrentVersion isString 
+		ifTrue: [ GtRlSemanticVersionNumber readFromString: aCurrentVersion ]
+		ifFalse: [ aCurrentVersion ].
+	version := aVersion isString 
+		ifTrue: [ GtRlSemanticVersionNumber readFromString: aVersion ]
+		ifFalse: [ aVersion ].
+		
+	currentVersion isZero ifTrue: [ 
+		"If a version is not set we consider that the build id loaded from sources
+		and is the lates version"
+		^ afterBlock value ].
+		
+	^ (currentVersion <= version)
+		ifTrue: [ upToBlock value ]
+		ifFalse: [ afterBlock value ].
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> gt4GemStoneUpToVersion: aVersion do: upToBlock [
+
+	^ self
+		gt4GemStoneUpToVersion: aVersion 
+		currentVersion: self gt4gemstoneVersion
+		do: upToBlock 
+		after: [].
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> gt4GemStoneUpToVersion: aVersion do: upToBlock after: afterBlock [
+
+	^ self
+		gt4GemStoneUpToVersion: aVersion 
+		currentVersion: self gt4gemstoneVersion
+		do: upToBlock 
+		after: afterBlock.
+]
+
+{ #category : #accessing }
 GtGemStoneSession >> gt4gemstoneVersion [
 	"Answer the gt4gemstone libary version installed on the server"
 	<return: #GtGemStoneSemanticVersionNumber>

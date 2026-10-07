@@ -132,7 +132,7 @@ GtGemStoneGtCodeExporterExamples >> excludedMethodsUnionsPragmaProviders [
 	<gtExample>
 	| exporterClass exporter expectedMethods |
 	exporter := GtGemStoneGtCodeExporter new.
-	self assert: exporter excludedMethods equals: exporter excludedMethodsList.
+	self assert: (exporter excludedMethodsList asSet difference: exporter excludedMethods) isEmpty.
 	self assert: ((GtGemStoneGtCodeExporter >> #excludedMethodsList) hasPragmaNamed: #excludedMethods).
 	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
 	exporterClass

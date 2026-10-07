@@ -12,14 +12,14 @@ TGlpoGtPhlowTreeViewSpecification >> retrieveChildrenForNodeAtPath: aNodePath [
 
 { #category : #accessing }
 TGlpoGtPhlowTreeViewSpecification >> retrieveSentItemAtPath: aNodePath [
-	^ self
-		proxyPerform: #retrieveSentItemAtPath:
-		withArguments: { aNodePath }
+	^ (self
+		proxyPerformReturnProxy: #retrieveSentItemAtPath:
+		withArguments: { aNodePath }) asGtBareProxyObject
 ]
 
 { #category : #accessing }
 TGlpoGtPhlowTreeViewSpecification >> retriveSentItemAtPath: aNodePath [
-	^ self
+	^ (self
 		proxyPerformReturnProxy: #retriveSentItemAtPath:
-		withArguments: { aNodePath }
+		withArguments: { aNodePath }) asGtBareProxyObject
 ]
