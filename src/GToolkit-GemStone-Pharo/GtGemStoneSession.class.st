@@ -255,6 +255,8 @@ GtGemStoneSession >> connect [
 	| session |
 
 	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
+	
+	self resetSessionData.
 
 	"The GCI session is established as part of creating the RSR session and then discarded"
 	session := connector newSession.
@@ -1673,6 +1675,23 @@ GtGemStoneSession >> resetRunningExecutions [
 	"Drops memory of any running executions"
 	
 	activeAsyncExecutions removeAll.
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneSession >> resetSessionData [
+	self assert: self isRunning not.
+	
+	self resetSessionVersionData.
+	
+	connectionTime := nil.
+	sessionParameters := nil.
+	sessionNrsString := nil.
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneSession >> resetSessionVersionData [
+	gemstoneVersion := nil.
+	gt4gemstoneVersion := nil.
 ]
 
 { #category : #private }
