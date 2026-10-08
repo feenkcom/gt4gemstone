@@ -48,10 +48,8 @@ GtGemStoneCodeSyncExamples >> addMethod [
 	self exampleClass
 		compile: 'method1 ^ 1'
 		classified: 'category 1'.
-	self forPharo12AndNewer: 
-		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
-		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
-	forPharo11: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ].
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
@@ -68,10 +66,7 @@ GtGemStoneCodeSyncExamples >> changeClassCategory [
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassCategoryChangeCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
-	self 
-		forPharo12AndNewer: [self assert: signal change isEpBehaviorRepackagedChange] 
-		forPharo11: [
-			self assert: signal change isEpBehaviorCategoryChange ]
+	self assert: signal change isEpBehaviorRepackagedChange.
 ]
 
 { #category : #helper }
@@ -247,11 +242,7 @@ GtGemStoneCodeSyncExamples >> removeClassMethod [
 
 	self renamedExampleClass class removeSelector: #classMethod1.
 	"Removing a selector generates a method modified event followed by the removed event"
-	self
-		forPharo12AndNewer: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ] 
-		forPharo11: 
-			[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
-			self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ].
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. 
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneMethodCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
