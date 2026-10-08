@@ -8,14 +8,6 @@ SequenceableCollection >> allButFirstDo: block [
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
-SequenceableCollection >> asGtGsArgument [
-	"Answer the the local object of the receiver"
-
-	1 to: self size do: [ :i |
-		self at: i put: (self at: i) asGtGsArgument ]
-]
-
-{ #category : #'*GToolkit-GemStone-GemStone' }
 SequenceableCollection >> flatCollect: aBlock [
 	"Evaluate aBlock for each of the receiver's elements and answer the
 	list of all resulting values flatten one level. Assumes that aBlock returns some kind
