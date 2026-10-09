@@ -172,10 +172,8 @@ GtGemStoneCodeSyncExamples >> modifyClass [
 	((Object << self exampleClassName)
 		slots: { #iVar1 };
 		package: 'GtGemStoneExamples') install.
-	self forPharo12AndNewer: 
-		[ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
-		self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'. ] 
-	forPharo11: [ self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal'. ].
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 1'.
+	self waitOn: semaphore for: 10 description: 'Didn''t receive code change signal 2'.
 	signal := logger recordings last.
 	self assert: signal class equals: GtGemStoneClassDefinitionCodeSyncSignal.
 	self assert: signal session identicalTo: codeSync registry defaultSession.
