@@ -18,6 +18,66 @@ GtRemoteGemStoneSessionExamples >> buildDebuggingSessionWithBrokenPromiseFor: aP
 ]
 
 { #category : #tests }
+GtRemoteGemStoneSessionExamples >> testClearingSessionDataOnReconnectRecomputesGt4gemstoneVersion [
+	<gtExample>
+	<return: #AssertionFailure>
+	| session  gt4gemstoneVersion |
+	session := self runningServer.
+	
+	gt4gemstoneVersion := session gt4gemstoneVersion.
+	session stop.
+	
+	session connect. 
+	
+	self assert: session gt4gemstoneVersion ~~ gt4gemstoneVersion.
+	self assert: session gt4gemstoneVersion equals: gt4gemstoneVersion.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testClearingSessionDataWhileConnectedShouldNotWork [
+	<gtExample>
+	<return: #AssertionFailure>
+	| session  wasCleared|
+	session := self runningServer.
+	
+	wasCleared := false.
+	self
+		should: [ 
+			session resetSessionData.
+			wasCleared := true. ]
+		raise: AssertionFailure.
+	
+	self assert: wasCleared not.
+]
+
+{ #category : #tests }
+GtRemoteGemStoneSessionExamples >> testComputingTheGt4gemstoneVersion [
+	<gtExample>
+	<return: #AssertionFailure>
+	| session  expecteVersion |
+	session := self runningServer.
+	
+	session resetSessionVersionData.
+	session evaluateBlockAndWaitReturnProxy: [ 
+		GtGsRelease versionString: 'v1.0.101' ].
+		
+	expecteVersion := GtGemStoneSemanticVersionNumber major: 1 minor: 0 patch: 101.
+	self assert: session gt4gemstoneVersion equals: expecteVersion.
+	
+	session resetSessionVersionData.
+	self assert: session gt4gemstoneVersion equals: expecteVersion.
+	
+	session evaluateBlockAndWaitReturnProxy: [ 
+		GtGsRelease versionString: 'v1.0.103' ].
+	self assert: session gt4gemstoneVersion equals: expecteVersion.
+	
+	session resetSessionVersionData.
+	self 
+		assert: session gt4gemstoneVersion 
+		equals: (GtGemStoneSemanticVersionNumber major: 1 minor: 0 patch: 103).
+]
+
+{ #category : #tests }
 GtRemoteGemStoneSessionExamples >> testDisconnectWhileExecutingCode [
 	<gtExample>
 	<return: #AssertionFailure>
