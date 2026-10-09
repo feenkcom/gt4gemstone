@@ -4,7 +4,7 @@ Examples validating the GT-managed synchronous GemStone example execution extens
 Class {
 	#name : #GtGemStoneExecutionExtensionMethodsExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Examploes'
 }
 
 { #category : #examples }
