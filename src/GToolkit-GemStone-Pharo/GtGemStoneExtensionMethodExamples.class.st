@@ -24,6 +24,37 @@ GtGemStoneExtensionMethodExamples >> collectionIntersectionExtension [
 ]
 
 { #category : #examples }
+GtGemStoneExtensionMethodExamples >> compileAllOnGemStone [
+	<gtExample>
+	"Requires a connected default GemStone session. Verify every descriptor's source and protocol after recompiling twice."
+	| session script result |
+	session := GtGemStoneSessionRegistry defaultSession.
+	GtGemStoneExtensionMethods compileAllOnGemStone.
+	GtGemStoneExtensionMethods compileAllOnGemStone.
+	script := String streamContents: [ :stream |
+		stream nextPutAll: '{'; cr.
+		GtGemStoneExtensionMethods extensionSelectors
+			do: [ :selector |
+				| method |
+				method := GtGemStoneExtensionMethods class >> selector.
+				stream
+					nextPutAll: '((GtGemStoneExtensionMethods class compiledMethodAt: ';
+					print: selector;
+					nextPutAll: ') sourceString = ';
+					print: method sourceCode;
+					nextPutAll: ') & ((GtGemStoneExtensionMethods class categoryOfSelector: ';
+					print: selector;
+					nextPutAll: ') asString = ';
+					print: method protocolName asString;
+					nextPutAll: ')' ]
+			separatedBy: [ stream nextPutAll: '.'; cr ].
+		stream cr; nextPutAll: '} allSatisfy: [ :each | each ]' ].
+	result := session evaluateAndWait: script.
+	self assert: result equals: true.
+	^ GtGemStoneExtensionMethods extensions
+]
+
+{ #category : #examples }
 GtGemStoneExtensionMethodExamples >> createsProtocolBeforeCompiling [
 	<gtExample>
 	<return: #GtGemStoneExtensionMethodBehaviorFixture>
