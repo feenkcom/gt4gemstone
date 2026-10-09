@@ -68,9 +68,7 @@ GtRemoteGemStoneMethodLocalViewExamples >> convertToTargetProxy: anObject [
 GtRemoteGemStoneMethodLocalViewExamples >> createCollectionAddMethod [
 	<gtExample>
 	<after: #stopServer>
-	self runningServer
-		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
-		do: [ ^ self ].
+
 	^ self createProxyObjectFor: [ (Collection methodDictForEnv: 0) at: #add: ]
 ]
 
@@ -78,9 +76,7 @@ GtRemoteGemStoneMethodLocalViewExamples >> createCollectionAddMethod [
 GtRemoteGemStoneMethodLocalViewExamples >> createCollectionClassWithAllMethod [
 	<gtExample>
 	<after: #stopServer>
-	self runningServer
-		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
-		do: [ ^ self ].
+
 	^ self createProxyObjectFor: [ (Collection class methodDictForEnv: 0) at: #withAll: ]
 ]
 
@@ -94,10 +90,8 @@ GtRemoteGemStoneMethodLocalViewExamples >> createProxyObjectFor: aBlock [
 GtRemoteGemStoneMethodLocalViewExamples >> createRemoteOnlyMethod [
 	<gtExample>
 	<after: #stopServer>
-	self runningServer
-		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
-		do: [ ^ self ].
-	^ self createProxyObjectFor: [ (GtRsrProxyServiceServer methodDictForEnv: 0) at: #object ]
+
+	^ self createProxyObjectFor: [ ((GsSession currentSession objectNamed: #GtRsrProxyServiceServer) methodDictForEnv: 0) at: #object ]
 ]
 
 { #category : #'examples - views' }

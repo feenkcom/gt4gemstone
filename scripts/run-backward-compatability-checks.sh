@@ -102,9 +102,10 @@ check_git_version() {
 versionsList=$(extract_versions $versionsFile)
 echo "Checking GT versions: $versionsList"
 
-check_git_version
+export USE_ROWAN=no
 for version in $versionsList
 do
   check_gt_version $version
 done
+check_git_version
 clean_up

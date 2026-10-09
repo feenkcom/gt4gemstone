@@ -111,11 +111,11 @@ GtGemStoneGtExamplesExamples >> dummyExamplesAreDiscovered [
 
 { #category : #'examples - remote execution' }
 GtGemStoneGtExamplesExamples >> exampleTimeoutsAreEnforced [
-	"Requires GtGemStoneGtCodeExporter to have been run"
 	<gtExample>
 	<after: #stopServer>
 	<noTest>
 	| outcome |
+
 	outcome := self runningServer evaluateBlockAndWaitReturnPrimitive: [
 		| examples slow cleanup fast default slowResult cleanupResult fastResult |
 		examples := GtDummyExampleWithTimeout gtExamples.

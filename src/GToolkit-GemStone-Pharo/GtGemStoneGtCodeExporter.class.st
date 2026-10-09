@@ -123,6 +123,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#ExecutionEnvironment
 		#GtAnthropicError
 		#GtExampleComparisonExceptionWithDebuggingViews
+		#GtGemStoneExtensionMethods
 		#GtLlmError
 		#KeyNotFound
 		#NeoJSONParseError
