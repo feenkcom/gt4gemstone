@@ -4,7 +4,7 @@ Examples validating the GT-managed synchronous GemStone example execution extens
 Class {
 	#name : #GtGemStoneExecutionExtensionMethodsExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-GemStone-Pharo-Examploes'
+	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
 { #category : #examples }
@@ -30,7 +30,17 @@ GtGemStoneExecutionExtensionMethodsExamples >> executionExtensions [
 				and: [ registered meta = each meta and: [ registered selector = each selector ] ] ]) ].
 	self assert: (extensions first source includesSubstring: 'beActiveDuring:') not.
 	self assert: (extensions second source includesSubstring: 'beActiveDuring:') not.
-	self assert: (extensions third source includesSubstring: 'watchDogSemaphore signal') not.
+	"Managed execution is synchronous, but uses a separate watchdog to enforce time limits."
+	self assert: (extensions first source includesSubstring: 'testEnv activated').
+	self assert: (extensions first source includesSubstring: 'ensure: [ testEnv deactivated ]').
+	self assert: (extensions third source includesSubstring: 'maxTimeForTest := anExampleEvaluator timeLimit').
+	self assert: (extensions third source includesSubstring: 'testCompleted := false').
+	self assert: (extensions third source includesSubstring: 'watchDogSemaphore signal').
+	self assert: (extensions third source includesSubstring: 'self runExampleUnderWatchdogUsingEvaluator: anExampleEvaluator').
+	self assert: (extensions third source includesSubstring: 'ensure: [').
+	self assert: (extensions third source includesSubstring: 'testCompleted := true.').
+	self assert: (extensions third source includesSubstring: 'testCompleted := true.' , String cr , String tab , String tab , String tab , 'watchDogSemaphore signal.').
+	self assert: (extensions third source includesSubstring: 'self cleanUpAfterTest').
 	self assert: extensions third hash equals: (GtGemStoneExtensionMethod new
 		sha256Of: (TestExecutionEnvironment >> #runExampleEvaluator:) sourceCode).
 	self assert: extensions second hash equals: (GtGemStoneExtensionMethod new
