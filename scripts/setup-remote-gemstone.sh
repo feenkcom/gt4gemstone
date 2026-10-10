@@ -8,13 +8,25 @@
 #
 set -e
 set -x
-trap stop_servers EXIT
+trap on_exit EXIT
 
 function stop_servers()
 {
         # Shutdown the GemStone servers
         stopstone -i gs64stone DataCurator swordfish
         stopnetldi
+}
+
+function on_exit()
+{
+        local exit_status=$?
+        if [ "$exit_status" -ne 0 ]; then
+                printf 'ERROR: %s is exiting with status %s\n' "$0" "$exit_status" >&2
+        fi
+        # Attempt both shutdown commands and preserve the original exit status.
+        set +e
+        stop_servers
+        exit "$exit_status"
 }
 
 export STONE=gs64stone
@@ -79,6 +91,7 @@ then
     ./gt4gemstone-3.7/inputRelease.sh -s "${STONE}"
   fi
 else
+  echo "Stop GemStone, configure rowan extent, restart and load."
   stop_servers
   pushd $GEMSTONE/data
   rm *.log tranlog1.dbf 

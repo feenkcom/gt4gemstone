@@ -103,7 +103,25 @@ GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_runExampleEv
 	<gtGsExtension>
 	| testEnv |
 	testEnv := TestExecutionEnvironment new initialize.
-	^ testEnv beActiveDuring: [ testEnv runExampleEvaluator: anExampleEvaluator ]'
+	"GemStone does not provide Pharo process-local environment activation."
+	[ testEnv activated.
+	  ^ testEnv runExampleEvaluator: anExampleEvaluator ]
+		ensure: [ testEnv deactivated ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_runUnmanagedExampleEvaluator_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #runUnmanagedExampleEvaluator:;
+		protocol: #'*GToolkit-Examples-Core';
+		meta: false;
+		gtVersions: nil;
+		className: #DefaultExecutionEnvironment;
+		hash: '010d9099dc737f4aeed515bac7b8698d826aeb51514dcdeb7a5f155151602cac';
+		source: 'runUnmanagedExampleEvaluator: anExampleEvaluator
+	<gtGsExtension>
+	^ TestExecutionEnvironment new initialize
+		runUnmanagedExampleEvaluator: anExampleEvaluator'
 ]
 
 { #category : #extensions }
@@ -163,6 +181,50 @@ GtGemStoneExtensionMethods class >> ext_GtExample_new [
 	<gtGsExtension>
 
 	^ super new initialize'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GtProcessStackOverflowChecker_checkDuring_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #checkDuring:;
+		protocol: #'*GToolkit-Examples-GemStone';
+		meta: true;
+		gtVersions: nil;
+		className: #GtProcessStackOverflowChecker;
+		hash: #new;
+		source: 'checkDuring: aBlock
+	<gtGsExtension>
+	^ aBlock value'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GtProcessStackOverflowChecker_currentCheckerClass [
+	^ GtGemStoneExtensionMethod new
+		selector: #currentCheckerClass;
+		protocol: #'*GToolkit-Examples-GemStone';
+		meta: true;
+		gtVersions: nil;
+		className: #GtProcessStackOverflowChecker;
+		hash: #new;
+		source: 'currentCheckerClass
+	<gtGsExtension>
+	"GemStone uses its VM stack limit rather than a Pharo watcher process."
+	^ self'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GtSystemUtility_freeze_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #freeze:;
+		protocol: #'*GToolkit-Examples-GemStone';
+		meta: true;
+		gtVersions: nil;
+		className: #GtSystemUtility;
+		hash: #new;
+		source: 'freeze: anException
+	<gtGsExtension>
+	"GemStone exceptions capture their stack; do not use Pharo context freezing."
+	^ anException copy'
 ]
 
 { #category : #extensions }
@@ -330,6 +392,30 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_registerDefault
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleEvaluator_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #runExampleEvaluator:;
+		protocol: #'*GToolkit-Examples-Core';
+		meta: false;
+		gtVersions: nil;
+		className: #TestExecutionEnvironment;
+		hash: 'f15ae466e754ac59f38532348d1b7d6345af896c5939a6f0fc5ddb4e264859f2';
+		source: 'runExampleEvaluator: anExampleEvaluator
+	<gtGsExtension>
+	| exampleResult |
+	testCase := anExampleEvaluator.
+	maxTimeForTest := anExampleEvaluator timeLimit.
+	testCompleted := false.
+	watchDogSemaphore signal.
+	[ exampleResult := self runExampleUnderWatchdogUsingEvaluator: anExampleEvaluator ]
+		ensure: [
+			testCompleted := true.
+			watchDogSemaphore signal.
+			self cleanUpAfterTest ].
+	^ exampleResult'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleUnderWatchdogUsingEvaluator_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #runExampleUnderWatchdogUsingEvaluator:;
@@ -382,8 +468,8 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_watchDogLoop [
 	  [ timeIsGone := (watchDogSemaphore waitForMilliseconds: maxTimeForTest asMilliseconds) not.
 	    testCompleted ] whileFalse: [
 	      timeIsGone ifTrue: [
-	        mainTestProcess _isSuspended ifFalse: [
-	          mainTestProcess signalException: TestTookTooMuchTime new ] ] ] ] repeat'
+	        "signalException: resumes a process waiting in Delay as well."
+	        mainTestProcess signalException: TestTookTooMuchTime new ] ] ] repeat'
 ]
 
 { #category : #accessing }

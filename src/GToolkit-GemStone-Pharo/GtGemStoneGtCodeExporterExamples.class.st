@@ -101,7 +101,8 @@ GtGemStoneGtCodeExporterExamples >> excludedClassListUnionsPragmaProviders [
 	<gtExample>
 	| exporterClass exporter expectedClasses |
 	exporter := GtGemStoneGtCodeExporter new.
-	self assert: exporter excludedClasses equals: { GtGemStoneTopazExporterExamples }.
+	self assert: (exporter excludedClasses includes: GtGemStoneTopazExporterExamples)
+		description: 'excludedClasses is expected to include GtGemStoneTopazExporterExamples'.
 	self assert: exporter excludedClasses equals: exporter excludedClassList.
 	self assert: ((GtGemStoneGtCodeExporter >> #excludedClassList) hasPragmaNamed: #excludedClasses).
 	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
@@ -188,6 +189,25 @@ runUnmanagedExampleEvaluator:') not.
 	self assert: (output includesSubstring: 'method: TestExecutionEnvironment
 processMonitor') not.
 	^ output
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> exportsTimeoutExecutionExtensions [
+	<gtExample>
+	| output descriptors |
+	output := GtGemStoneGtCodeExporter new configuredExporter asTopazString.
+	descriptors := {
+		GtGemStoneExtensionMethods ext_DefaultExecutionEnvironment_runExampleEvaluator_.
+		GtGemStoneExtensionMethods ext_TestExecutionEnvironment_runExampleEvaluator_.
+		GtGemStoneExtensionMethods ext_TestExecutionEnvironment_watchDogLoop }.
+	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_runExampleEvaluator_').
+	self assert: (output includesSubstring: 'testEnv activated.').
+	self assert: (output includesSubstring: 'ensure: [ testEnv deactivated ]').
+	descriptors do: [ :each |
+		self assert: (each source includesSubstring: 'beActiveDuring:') not ].
+	self assert: (descriptors second source includesSubstring: 'watchDogSemaphore signal').
+	self assert: (descriptors third source includesSubstring: '_isSuspended') not.
+	^ descriptors
 ]
 
 { #category : #examples }

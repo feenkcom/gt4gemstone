@@ -122,11 +122,8 @@ GtGemStoneCodeSync >> onEntryAdded: anEntryAddedEvent [
 	Category changes aren't yet implemented."
 	(content isCodeChange not or: 
 	[ content isEpTraitChange or:
-	[ (self 
-		forPharo12AndNewer: [
-			content isEpPackageChange or: [
-				content isEpPackageTagChange ] ] 
-		forPharo11: [ content isEpCategoryChange ]) ] ]) ifTrue: 
+	[ (content isEpPackageChange or: [
+				content isEpPackageTagChange ] ) ] ]) ifTrue: 
 		[ ^ self ].
 	events nextPut: anEntryAddedEvent entry content.
 	self scheduleFlush.

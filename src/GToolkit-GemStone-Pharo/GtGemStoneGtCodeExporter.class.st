@@ -123,6 +123,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#ExecutionEnvironment
 		#GtAnthropicError
 		#GtExampleComparisonExceptionWithDebuggingViews
+		#GtGemStoneExtensionMethods
 		#GtLlmError
 		#KeyNotFound
 		#NeoJSONParseError
@@ -167,7 +168,8 @@ GtGemStoneGtCodeExporter >> configuredExporter [
 { #category : #private }
 GtGemStoneGtCodeExporter >> excludedClassList [
 	<excludedClasses>
-	^ { GtGemStoneTopazExporterExamples. }
+	^ { GtGemStoneTopazExporterExamples.
+		GtExamplesCommandLineHandler. }
 ]
 
 { #category : #private }
@@ -278,6 +280,7 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Deprecation>>#freeze.
 	GtExamplesCommandLineHandler>>#runPackages.
 	GtExampleExternalDependencyResolver>>#posibleExampleForNode:fromMethod:forOriginalExample:.
+	GtGemStoneExtensionMethods class>>#compileAllOnGemStone.
 	}
 ]
 
@@ -610,6 +613,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#CompiledMethod
 		#ContextStackSignal
 		#CurrentExecutionEnvironment
+		#DebugAction
 		#DiffPatchVisitor
 		#DiffVisitor
 		#EpClassAddition
@@ -907,6 +911,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LePasteSnippetCommandItem
 		#LePharoRewriteSnippet
 		#LePharoSnippet
+		#LePictureSnippet
 		#LePythonSnippet
 		#LeShellScriptSnippet
 		#LeSnippetChange
