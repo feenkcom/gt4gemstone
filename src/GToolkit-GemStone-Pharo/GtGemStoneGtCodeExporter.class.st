@@ -145,7 +145,7 @@ GtGemStoneGtCodeExporter >> additionalClasses [
 	
 	additionalClasses := OrderedCollection new.
 	additionalClasses
-		addAll: (GtLlmAbstractFunctionTool withAllSuperclasses first: 3);
+		addAll: (GtLAbstractFunctionTool withAllSuperclasses first: 3);
 		addAll: self additionalClassList.
 	^ additionalClasses
 ]
