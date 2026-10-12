@@ -18,10 +18,7 @@ GtGemStoneGtCodeExporterExamples >> additionalClassListIgnoresMissingNames [
 	exporter := exporterClass new.
 	self assert: exporter additionalClassNames size equals: 3.
 	self assert: exporter additionalClassList equals: { Object. String }.
-	expectedClasses := OrderedCollection new.
-	expectedClasses
-		addAll: (GtLlmAbstractFunctionTool withAllSuperclasses first: 3);
-		addAll: { Object. String }.
+	expectedClasses := OrderedCollection withAll: { Object. String }.
 	self assert: exporter additionalClasses equals: expectedClasses.
 	^ exporter
 ]
@@ -217,7 +214,7 @@ GtGemStoneGtCodeExporterExamples >> staticAnalysisClassifiesKnownFailures [
 	exporter := GtGemStoneGtCodeExporter new.
 	analysis := exporter staticExportAnalysisForPackageNames: exporter packageNames.
 	generated := analysis at: #generated.
-	self assert: ((generated at: #additionalClasses) includes: GtLlmError).
+	self assert: ((generated at: #additionalClasses) includes: AssertionFailure).
 	self assert: ((generated at: #stubClasses) includes: GtRBNamespace).
 	self assert: ((generated at: #excludedMethods) includes: GtLClassCreationDataExtractor>>#extractSuperclassIfError:).
 	self assert: ((generated at: #excludedMethods) includes: GtLDataView>>#documentData).

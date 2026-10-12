@@ -156,6 +156,82 @@ GtGemStoneTopazExporter >> gsCodePragmaOf: aMethod [
 		ifNone: [ nil ]
 ]
 
+{ #category : #views }
+GtGemStoneTopazExporter >> gtAdditionalClassesFor: aView [
+	<gtView>
+	additionalClasses ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'AdditionalClasses';
+		priority: 20;
+		items: [ additionalClasses sorted: #name ascending ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtGemStoneTopazExporter >> gtExcludedClassesFor: aView [
+	<gtView>
+	excludedClasses ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'ExcludedClasses';
+		priority: 30;
+		items: [ excludedClasses sorted: #name ascending ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtGemStoneTopazExporter >> gtExcludedMethodsFor: aView [
+	<gtView>
+	excludedMethods ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'ExcludedMethods';
+		priority: 40;
+		items: [ excludedMethods sorted: #name ascending ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtGemStoneTopazExporter >> gtGemstoneClassNamesFor: aView [
+	<gtView>
+	gemstoneClassNames ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'GemstoneClassNames';
+		priority: 50;
+		items: [ gemstoneClassNames sorted ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtGemStoneTopazExporter >> gtGsCodeClassesFor: aView [
+	<gtView>
+	gsCodeClasses ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'gsCode: Classes';
+		priority: 25;
+		items: [ gsCodeClasses sorted: #name ascending ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #views }
+GtGemStoneTopazExporter >> gtPackageNamesFor: aView [
+	<gtView>
+	packageNames ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Package Names';
+		priority: 5;
+		items: [ packageNames sorted ];
+		column: 'Value' text: [ :each | each gtDisplayString ]
+]
+
+{ #category : #ui }
+GtGemStoneTopazExporter >> gtSelectedClassesFor: aView [
+	<gtView>
+	
+	^ aView list
+		title: 'Selected Classes';
+		priority: 10;
+		items: [ self selectedClasses sorted: #name ascending ]
+]
+
 { #category : #accessing }
 GtGemStoneTopazExporter >> includeGsCodeMethods [
 	^ includeGsCodeMethods
