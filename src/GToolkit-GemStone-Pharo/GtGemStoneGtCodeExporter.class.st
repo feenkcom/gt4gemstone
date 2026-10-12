@@ -124,6 +124,8 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#GtAnthropicError
 		#GtExampleComparisonExceptionWithDebuggingViews
 		#GtGemStoneExtensionMethods
+		#GtLAbstractFunctionTool
+		#GtLTool
 		#GtLlmError
 		#KeyNotFound
 		#NeoJSONParseError
@@ -141,12 +143,11 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 
 { #category : #private }
 GtGemStoneGtCodeExporter >> additionalClasses [
+	"Programatically add to the #additionalClassList.
+	But nothing to add at the moment."
 	| additionalClasses |
 	
-	additionalClasses := OrderedCollection new.
-	additionalClasses
-		addAll: (GtLAbstractFunctionTool withAllSuperclasses first: 3);
-		addAll: self additionalClassList.
+	additionalClasses := OrderedCollection withAll: self additionalClassList.
 	^ additionalClasses
 ]
 
@@ -305,6 +306,16 @@ GtGemStoneGtCodeExporter >> exporter [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClasses [
 	^ { Metaclass3. GsNMethod. Pragma. GtGemStoneExtensionMethod. Exception. GtSystemUtility. GtExampleClassResolver. GtExampleMethodResolver. GtExampleDependenciesResolver. GtExample. GtExampleEvaluator. ExecutionEnvironment. CurrentExecutionEnvironment. }
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
+	<gtView>
+	
+	^ aView list
+		title: 'Additional Classes';
+		priority: 20;
+		items: [ self additionalClasses sorted: #name ascending ]
 ]
 
 { #category : #'analysis - private' }

@@ -217,7 +217,7 @@ GtGemStoneGtCodeExporterExamples >> staticAnalysisClassifiesKnownFailures [
 	exporter := GtGemStoneGtCodeExporter new.
 	analysis := exporter staticExportAnalysisForPackageNames: exporter packageNames.
 	generated := analysis at: #generated.
-	self assert: ((generated at: #additionalClasses) includes: GtLlmError).
+	self assert: ((generated at: #additionalClasses) includes: AssertionFailure).
 	self assert: ((generated at: #stubClasses) includes: GtRBNamespace).
 	self assert: ((generated at: #excludedMethods) includes: GtLClassCreationDataExtractor>>#extractSuperclassIfError:).
 	self assert: ((generated at: #excludedMethods) includes: GtLDataView>>#documentData).
