@@ -18,10 +18,7 @@ GtGemStoneGtCodeExporterExamples >> additionalClassListIgnoresMissingNames [
 	exporter := exporterClass new.
 	self assert: exporter additionalClassNames size equals: 3.
 	self assert: exporter additionalClassList equals: { Object. String }.
-	expectedClasses := OrderedCollection new.
-	expectedClasses
-		addAll: (GtLAbstractFunctionTool withAllSuperclasses first: 3);
-		addAll: { Object. String }.
+	expectedClasses := OrderedCollection withAll: { Object. String }.
 	self assert: exporter additionalClasses equals: expectedClasses.
 	^ exporter
 ]
