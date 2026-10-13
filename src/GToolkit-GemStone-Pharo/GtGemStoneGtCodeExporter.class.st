@@ -121,12 +121,10 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#Deprecation
 		#DeprecationPerformedNotification
 		#ExecutionEnvironment
-		#GtAnthropicError
 		#GtExampleComparisonExceptionWithDebuggingViews
 		#GtGemStoneExtensionMethods
 		#GtLAbstractFunctionTool
 		#GtLTool
-		#GtLlmError
 		#KeyNotFound
 		#NeoJSONParseError
 		#NetworkError
@@ -216,14 +214,9 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	GRPlatform>>#bindingOf:.
 	GtLFunctionToolCallExecutionDetails>>#startTelemetryPing.
 	GtLDataSourceEncoderDecoder class>>#writeClientHistory:to:selector:.
-	GtLlmInspectorSummarizer>>#summarizeMethods:.
 	GtLValueSerializerExamples>>#serializeProtoObjectClass.
 	GtLPackageChangeHistory>>#gtViewChangeIcon.
 	GtLPackageTagChangeHistory>>#gtViewChangeIcon.
-	GtLlmReificationForm>>#assistantNameDescription.
-	GtLlmReificationForm>>#assistantSuperclassDescription.
-	GtLlmReificationForm>>#messageNameDescription.
-	GtLlmReificationForm>>#messageSuperclassDescription.
 	GtLClassChangeDataExtractor>>#extractTargetClassIfError:.
 	GtLSmaCCModel>>#grammarFor:.
 	GtLMagritteToolForClassDefinitionChangeExamples>>#removeClassNamedIfPresent:.
@@ -241,21 +234,16 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	GtLToolForTestClassesRun>>#privatePerformToolCall:inContext:.
 	GtLOllamaMigrationExamples>>#gemma4Image.
 	GtLMagritteToolForClassCommentChangeExamples>>#changeCommentSuccessful.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromClassesFrom:in:reportingNotFoundIn:.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
 	GtLClassDefinitionChangeHistory>>#gtViewChangeIcon.
 	GtLClassCommentChangeDescriptionElement>>#initialize.
 	GtLMethodChangeDescriptionElement>>#initialize.
 	GtLSmaCCParserTest>>#testParse.
-	GtLlmRenameFormatComponentRefactoringExamples>>#destroyClass.
 	MARelationDescription>>#descriptionClasses.
-	GtLlmAssistantLibraryForGt class>>#textFormatWithSmalltalkBlocks.
 	GtLMagritteToolForClassRemovalExamples>>#removeExistingClass.
 	GtLClassDefinitionChangeDescriptionElement>>#updateForClassDefinitionChangeHistory:.
 	GtLMagritteToolForClassRemovalExamples>>#removeClassNamedIfPresent:.
 	GtLMagritteToolForMethodRemovalExamples>>#removeClassNamedIfPresent:.
 	GtLPrimitiveDocumentDataBlockExamples>>#samplePdfBytes.
-	GtLlmToolForSUnitClassesRun>>#privatePerformToolCall:.
 	GtLClassDefinitionDescriptionExamples>>#fromClassWithTraits.
 	GtLPdfFileExamples>>#samplePdfContent.
 	GtLMagritteToolForClassCreationExamples>>#createClassWithComment.
@@ -265,7 +253,6 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	GtLCodeChangesToolCallsSummarizerExamples>>#messagesGroupWithExecutedClassCommentChange.
 	GtLCodeChangesToolCallsSummarizerExamples>>#removeClassNamedIfPresent:.
 	MAStringReader>>#visitBlockDescription:.
-	GtLlmRenameFormatComponentRefactoring>>#renameComponentReferences.
 	GtExamplesHudsonReport>>#runExample:.
 	TestExecutionEnvironment>>#runUnmanagedExampleEvaluator:.
 	TestExecutionEnvironment>>#processMonitor.
