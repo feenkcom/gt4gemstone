@@ -72,3 +72,18 @@ GtGemStoneToolForSmalltalkCodeEvaluationExamples >> executeSimpleScript [
 	self assert: (objectStorage objectAt: targetObject objectId) == targetObject object.
 	^ call
 ]
+
+{ #category : #examples }
+GtGemStoneToolForSmalltalkCodeEvaluationExamples >> notConnectedSession [
+	<gtExample>
+	| tool call |
+	tool := GtGemStoneLlmToolForSmalltalkCodeEvaluation new session: GtGemStoneSession new.
+	call := self
+		executeTool: tool
+		withArguments: { 'code' -> '1 + 2'. 'bindings' -> #() } asDictionary.
+	self
+		assertMissingInformation: call result targetObject
+		withModelName: 'GemStone session'
+		errorMessage: 'The GemStone session is not connected'.
+	^ call
+]

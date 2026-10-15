@@ -72,7 +72,7 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> name [
 
 { #category : #private }
 GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall inContext: anExecutionContext [
-	| arguments code bindings bindingsDictionary object |
+	| arguments code bindings bindingsDictionary object currentSession |
 	arguments := aToolCall arguments ifNil: [ Dictionary new ].
 	code := arguments at: 'code' ifAbsent: [ nil ].
 	(code isNil or: [ code isString and: [ code trimBoth isEmpty ] ])
@@ -97,8 +97,14 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall
 			bindingsDictionary
 				at: (bindingName ifNil: [ '' ]) asSymbol
 				put: bindingObject ] ].
-	self session ifNil: [ self error: 'No default GemStone session has been set' ].
-	object := [ self session
+	currentSession := self session.
+	currentSession ifNil: [ ^ GtLMissingInformationDomainObject new
+		missingModelName: 'GemStone session';
+		errorMessage: 'No default GemStone session has been set' ].
+	currentSession isRunning ifFalse: [ ^ GtLMissingInformationDomainObject new
+		missingModelName: 'GemStone session';
+		errorMessage: 'The GemStone session is not connected' ].
+	object := [ currentSession
 		evaluateAndWaitReturnProxy: code
 		for: nil
 		bindings: bindingsDictionary ]
