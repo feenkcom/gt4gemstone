@@ -67,6 +67,58 @@ Example JSON error response:
 }'
 ]
 
+{ #category : #private }
+GtGemStoneLlmToolForSmalltalkCodeEvaluation >> extractBindingsDictionaryFrom: arguments inContext: anExecutionContext ifError: errorBlock [
+	| bindings bindingsDictionary |
+	bindings := arguments at: 'bindings' ifAbsent: [ #() ].
+	bindingsDictionary := Dictionary new.
+	bindings ifNotEmpty: [
+		anExecutionContext objectStorage ifNil: [
+			^ errorBlock value: (GtLMissingInformationDomainObject new missingModelName: 'objectStorage') ].
+		bindings do: [ :each |
+			| bindingName bindingObjectId bindingObject |
+			bindingName := each name.
+			bindingObjectId := each objectId.
+			(bindingObjectId isNil or: [ bindingObjectId isEmpty ]) ifTrue: [
+				^ errorBlock value: (GtLMissingDomainObject new objectName: (bindingObjectId ifNil: [ 'nil' ])) ].
+			bindingObject := anExecutionContext objectStorage
+				objectAt: bindingObjectId
+				ifPresent: [ :storedObject | storedObject ]
+				ifAbsent: [ ^ errorBlock value: (GtLMissingDomainObject new objectName: bindingObjectId) ].
+			bindingsDictionary
+				at: (bindingName ifNil: [ '' ]) asSymbol
+				put: bindingObject ] ].
+	^ bindingsDictionary
+]
+
+{ #category : #private }
+GtGemStoneLlmToolForSmalltalkCodeEvaluation >> extractSerializationStrategyFrom: arguments ifError: errorBlock [
+	| serializationStrategy serializationStrategyMap |
+	serializationStrategy := arguments at: 'serializationStrategy' ifAbsent: [ 'proxy' ].
+	serializationStrategyMap := Dictionary new
+		at: 'proxy' put: #GtRsrProxyOnlySerializationStrategy;
+		at: 'wireEncoding' put: #GtRsrWireSerializationStrategy;
+		yourself.
+	^ serializationStrategyMap
+		at: serializationStrategy
+		ifAbsent: [ errorBlock value: (GtLMissingInformationDomainObject new
+			missingModelName: 'serializationStrategy';
+			errorMessage: 'Invalid serialization strategy: ', serializationStrategy asString, '. Allowed values are: proxy, wireEncoding') ]
+]
+
+{ #category : #private }
+GtGemStoneLlmToolForSmalltalkCodeEvaluation >> extractSessionIfError: errorBlock [
+	| currentSession |
+	currentSession := self session.
+	currentSession ifNil: [ ^ errorBlock value: (GtLMissingInformationDomainObject new
+		missingModelName: 'GemStone session';
+		errorMessage: 'No default GemStone session has been set') ].
+	currentSession isRunning ifFalse: [ ^ errorBlock value: (GtLMissingInformationDomainObject new
+		missingModelName: 'GemStone session';
+		errorMessage: 'The GemStone session is not connected') ].
+	^ currentSession
+]
+
 { #category : #accessing }
 GtGemStoneLlmToolForSmalltalkCodeEvaluation >> name [
 	^ 'gemstoneSmalltalkCodeEvaluation'
@@ -74,54 +126,29 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> name [
 
 { #category : #private }
 GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall inContext: anExecutionContext [
-	| arguments code bindings bindingsDictionary object currentSession serializationStrategy serializationStrategySymbol serializationStrategyMap |
+	| arguments code bindingsDictionary object currentSession serializationStrategySymbol |
+	
 	arguments := aToolCall arguments ifNil: [ Dictionary new ].
 	code := arguments at: 'code' ifAbsent: [ nil ].
 	(code isNil or: [ code isString and: [ code trimBoth isEmpty ] ])
 		ifTrue: [ ^ GtLMissingArgumentDomainObject new
 			arguments: arguments;
 			missingArgument: 'code' ].
-	serializationStrategy := arguments at: 'serializationStrategy' ifAbsent: [ 'proxy' ].
-	serializationStrategyMap := Dictionary new
-		at: 'proxy' put: #GtRsrProxyOnlySerializationStrategy;
-		at: 'wireEncoding' put: #GtRsrWireSerializationStrategy;
-		yourself.
-	serializationStrategySymbol := serializationStrategyMap
-		at: serializationStrategy
-		ifAbsent: [ ^ GtLMissingInformationDomainObject new
-			missingModelName: 'serializationStrategy';
-			errorMessage: 'Invalid serialization strategy: ', serializationStrategy asString, '. Allowed values are: proxy, wireEncoding' ].
-	bindings := arguments at: 'bindings' ifAbsent: [ #() ].
-	bindingsDictionary := Dictionary new.
-	bindings ifNotEmpty: [
-		anExecutionContext objectStorage ifNil: [
-			^ GtLMissingInformationDomainObject new missingModelName: 'objectStorage' ].
-		bindings do: [ :each |
-			| bindingName bindingObjectId bindingObject |
-			bindingName := each name.
-			bindingObjectId := each objectId.
-			(bindingObjectId isNil or: [ bindingObjectId isEmpty ]) ifTrue: [
-				^ GtLMissingDomainObject new objectName: (bindingObjectId ifNil: [ 'nil' ]) ].
-			bindingObject := anExecutionContext objectStorage
-				objectAt: bindingObjectId
-				ifPresent: [ :storedObject | storedObject ]
-				ifAbsent: [ ^ GtLMissingDomainObject new objectName: bindingObjectId ].
-			bindingsDictionary
-				at: (bindingName ifNil: [ '' ]) asSymbol
-				put: bindingObject ] ].
-	currentSession := self session.
-	currentSession ifNil: [ ^ GtLMissingInformationDomainObject new
-		missingModelName: 'GemStone session';
-		errorMessage: 'No default GemStone session has been set' ].
-	currentSession isRunning ifFalse: [ ^ GtLMissingInformationDomainObject new
-		missingModelName: 'GemStone session';
-		errorMessage: 'The GemStone session is not connected' ].
-	object := [ 
-			currentSession
-				evaluateAndWait: code
-				for: nil
-				bindings: bindingsDictionary
-				serializationStrategy: serializationStrategySymbol ]
+			
+	serializationStrategySymbol := self
+		extractSerializationStrategyFrom: arguments
+		ifError: [ :error | ^ error ].
+	bindingsDictionary := self
+		extractBindingsDictionaryFrom: arguments
+		inContext: anExecutionContext
+		ifError: [ :error | ^ error ].
+	currentSession := self extractSessionIfError: [ :error | ^ error ].
+	
+	object := [ currentSession
+		evaluateAndWait: code
+		for: nil
+		bindings: bindingsDictionary
+		serializationStrategy: serializationStrategySymbol ]
 		on: Error
 		do: [ :ex |
 			^ (GtLSmalltalkCodeEvaluationExceptionDomainObject freeze: ex)
@@ -129,6 +156,7 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall
 				code: code;
 				updateForToolCall: aToolCall withExecutionContext: anExecutionContext;
 				yourself ].
+				
 	^ (GtLSmalltalkCodeEvaluationResult forObject: object)
 		code: code;
 		updateForToolCall: aToolCall withExecutionContext: anExecutionContext;
