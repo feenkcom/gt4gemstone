@@ -51,17 +51,17 @@ GtGemStoneExtensionMethod >> compileIn: aBehavior [
 			^ aBehavior
 				compileMethod: source
 				dictionaries: GsCurrentSession currentSession symbolList
-				category: protocol
+				category: self protocol
 				environmentId: 0 ].
-	^ aBehavior compile: source classified: protocol
+	^ aBehavior compile: source classified: self protocol
 ]
 
 { #category : #private }
 GtGemStoneExtensionMethod >> ensureProtocolIn: aBehavior [
 	(aBehavior respondsTo: #addCategory:) ifFalse: [ ^ self ].
 	((aBehavior respondsTo: #includesCategory:)
-		and: [ aBehavior includesCategory: protocol ]) ifFalse: [
-		aBehavior addCategory: protocol ]
+		and: [ aBehavior includesCategory: self protocol ]) ifFalse: [
+		aBehavior addCategory: self protocol ]
 ]
 
 { #category : #accessing }
@@ -88,6 +88,36 @@ GtGemStoneExtensionMethod >> existingMethodIn: aBehavior [
 		[ aBehavior
 			compiledMethodAt: selector
 			otherwise: nil ]
+]
+
+{ #category : #utilities }
+GtGemStoneExtensionMethod >> gemstoneHash [
+	"Answer the has of the current gemstone source"
+	| gsSource |
+	
+	gsSource := GtGemStoneSessionRegistry defaultSession evaluateBlockAndWait:
+		[ :clsName :sel |
+			((GsSession currentSession objectNamed: clsName) compiledMethodAt: sel) sourceString ]
+		withArguments: { self className. self selector. }.
+	^ self sha256Of: gsSource.
+]
+
+{ #category : #utilities }
+GtGemStoneExtensionMethod >> gtHash [
+	"Answer the has of the current GT source"
+	| gtSource |
+	
+	gtSource := (self className asClass >> self selector) sourceCode.
+	^ self sha256Of: gtSource.
+]
+
+{ #category : #views }
+GtGemStoneExtensionMethod >> gtSourceFor: aView [
+	<gtView>
+	source ifNil: [ ^ aView empty ].
+	^ aView textEditor
+		title: 'Source';
+		text: [ source ]
 ]
 
 { #category : #accessing }
@@ -136,9 +166,23 @@ GtGemStoneExtensionMethod >> meta: aBoolean [
 	meta := aBoolean
 ]
 
+{ #category : #'as yet unclassified' }
+GtGemStoneExtensionMethod >> printOn: aStream [
+
+	super printOn: aStream.
+	(className isNotNil and: [ selector isNotNil ]) ifTrue:
+	[ aStream parenthesize:
+		[ aStream << className.
+		meta ifTrue:
+			[ aStream << ' class' ].
+		aStream
+			<< '>>';
+			<< selector ] ]
+]
+
 { #category : #accessing }
 GtGemStoneExtensionMethod >> protocol [
-	^ protocol
+	^ protocol ifNil: [ #'gt-extension-method' ]
 ]
 
 { #category : #accessing }
@@ -154,6 +198,18 @@ GtGemStoneExtensionMethod >> selector [
 { #category : #accessing }
 GtGemStoneExtensionMethod >> selector: aSymbol [
 	selector := aSymbol
+]
+
+{ #category : #private }
+GtGemStoneExtensionMethod >> sha256Of: aString [
+	<gsCode: '| normalizedString |
+
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
+	^ normalizedString utf8Encoded asSha256String'>
+	| normalizedString |
+	
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
+	^ (SHA256 hashMessage: normalizedString utf8Encoded) hex.
 ]
 
 { #category : #accessing }
@@ -175,12 +231,31 @@ GtGemStoneExtensionMethod >> sourceOf: aCompiledMethod [
 	self error: 'Unable to obtain existing method source'
 ]
 
+{ #category : #accessing }
+GtGemStoneExtensionMethod >> targetBehavior [
+	<gsCode: '| aClass |
+
+	aClass := GsSession currentSession
+		objectNamed: className.
+	aClass ifNil: [ self error: ''GemStone extension target class not found: '', className asString ].
+	^ meta
+		ifTrue: [ aClass class ]
+		ifFalse: [ aClass ]'>
+	| aClass |
+	
+	aClass := Smalltalk
+		at: className
+		ifAbsent: [ self error: 'GemStone extension target class not found: ', className asString ].
+	^ meta
+		ifTrue: [ aClass class ]
+		ifFalse: [ aClass ]
+]
+
 { #category : #private }
 GtGemStoneExtensionMethod >> validate [
 	| pragmaPresent |
 	
 	selector ifNil: [ self error: 'Selector is required' ].
-	protocol ifNil: [ self error: 'Protocol is required' ].
 	source ifNil: [ self error: 'Source is required' ].
 	className ifNil: [ self error: 'Class name is required' ].
 	pragmaPresent := self

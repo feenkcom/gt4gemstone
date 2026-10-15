@@ -23,6 +23,59 @@ GtGemStoneTopazExporterExamples class >> initialize [
 ]
 
 { #category : #examples }
+GtGemStoneTopazExporterExamples >> cacheSelectedClassesAndInvalidateOnConfigurationChanges [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter classes |
+	exporter := GtGemStoneTopazExporter new.
+	classes := exporter selectedClasses.
+	self assert: classes isEmpty.
+	self assert: exporter selectedClasses == classes.
+	exporter packages: { 'GToolkit-GemStone-Pharo' }.
+	classes := exporter selectedClasses.
+	self assert: (classes includes: GtGemStoneTopazExporter).
+	self assert: exporter selectedClasses == classes.
+	exporter packageNames: #().
+	classes := exporter selectedClasses.
+	self assert: classes isEmpty.
+	exporter additionalClasses: { Collection }.
+	classes := exporter selectedClasses.
+	self assert: classes asArray equals: { Collection }.
+	self assert: exporter selectedClasses == classes.
+	exporter excludedClasses: { Collection }.
+	classes := exporter selectedClasses.
+	self assert: classes isEmpty.
+	self assert: exporter selectedClasses == classes.
+	exporter excludedClasses: #().
+	self assert: exporter selectedClasses asArray equals: { Collection }.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportAlternateClassDefinition [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter original definition output |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { ZnDefaultCharacterEncoder };
+		yourself.
+	original := exporter asTopazString.
+	definition := 'GtGsDynamicVariable subclass: ''ZnDefaultCharacterEncoder''
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+'.
+	exporter alternateClassDefinitions: { 'ZnDefaultCharacterEncoder' -> definition } asDictionary.
+	output := exporter asTopazString.
+	self assert: output equals: (original copyReplaceAll: 'DynamicVariable subclass:' with: 'GtGsDynamicVariable subclass:').
+	self assert: ZnDefaultCharacterEncoder superclass equals: DynamicVariable.
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneTopazExporterExamples >> exportClassInitializationsAtEnd [
 	"Check the class initialisation code.
 	Disabled for now while class initialisation is disabled."
@@ -133,6 +186,74 @@ GtGemStoneTopazExporterExamples >> exportGsCodeMethodBySearchingAllClasses [
 ]
 
 { #category : #examples }
+GtGemStoneTopazExporterExamples >> exportNewMethods [
+	<gtExample>
+	| exporter output script |
+	exporter := GtGemStoneTopazExporter new
+		newMethodClassNames: #('GtGemStoneTopazExporter' 'GtGemStoneTopazExporter');
+		yourself.
+	self assert: exporter newMethodClasses asArray equals: { GtGemStoneTopazExporter }.
+	output := exporter asTopazString.
+	self assert: (output includesSubstring: 'className: #''GtGemStoneTopazExporter'';').
+	self assert: (output includesSubstring: 'meta: true;').
+	self assert: (output includesSubstring: 'selector: #new;').
+	self assert: (output includesSubstring: 'hash: #new;').
+	self assert: (output includesSubstring: '<gtGsExtension>').
+	self assert: (output includesSubstring: '^ self basicNew initialize').
+	self assert: (output indexOfSubCollection: 'GtGemStoneExtensionMethod new')
+		> (output indexOfSubCollection: 'GtGemStoneExtensionMethods apply.').
+	script := String streamContents: [ :stream | exporter writeNewMethodsOn: stream ].
+	self assert: (output endsWith: script).
+	RBParser parseExpression: (script copyFrom: 5 to: (script lastIndexOf: $%) - 1).
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportPreservingInheritedNew [
+	<gtExample>
+	| exporter script |
+	self assert: (NeoJSONObject classSide methodDict includesKey: #new) not.
+	self assert: (NeoJSONObject classSide lookupSelector: #new) methodClass equals: OrderedDictionary classSide.
+	exporter := GtGemStoneTopazExporter new
+		newMethodClassNames: #('NeoJSONObject' 'GtGemStoneTopazExporter');
+		yourself.
+	self assert: exporter newMethodClasses asArray equals: { GtGemStoneTopazExporter }.
+	script := String streamContents: [ :stream | exporter writeNewMethodsOn: stream ].
+	self assert: (script includesSubstring: 'className: #''NeoJSONObject'';') not.
+	self assert: (script includesSubstring: 'className: #''GtGemStoneTopazExporter'';').
+	exporter newMethodPackageNames: #('Neo-JSON-Core'); newMethodClassNames: #().
+	self assert: (exporter newMethodClasses includes: NeoJSONObject) not.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportSelectedClassOverStubAncestor [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter packageExporter output |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { OrderedDictionary };
+		stubClasses: { ZnMultiValueDictionary };
+		yourself.
+	self assert: (exporter stubClasses includes: OrderedDictionary).
+	output := exporter asTopazString.
+	self assert: (output includesSubstring: 'Collection subclass: ''OrderedDictionary''').
+	self assert: (output includesSubstring: ') category: ''Collections-Sequenceable'';').
+	self assert: (output includesSubstring: 'OrderedDictionary subclass: ''ZnMultiValueDictionary''').
+	self assert: (output includesSubstring: 'method: OrderedDictionary').
+	self assert: (output includesSubstring: 'method: ZnMultiValueDictionary') not.
+	packageExporter := GtGemStoneTopazExporter new
+		packages: { OrderedDictionary package name };
+		stubClasses: { ZnMultiValueDictionary };
+		yourself.
+	output := String streamContents: [ :stream |
+		packageExporter writeDefinitionOf: OrderedDictionary on: stream ].
+	self assert: (output includesSubstring: 'Collection subclass: ''OrderedDictionary''').
+	self assert: (output includesSubstring: ') category: ''Collections-Sequenceable'';').
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneTopazExporterExamples >> exportStubClassesWithoutMethods [
 	<gtExample>
 	<return: #GtGemStoneTopazExporter>
@@ -173,6 +294,38 @@ GtGemStoneTopazExporterExamples >> exportSuperclassBeforeSubclass [
 	self assert: lastDefinitionPosition < firstMethodPosition.
 	self assert: (output includesSubstring: 'removeallmethods GtLReplyMessage').
 	self assert: (output includesSubstring: 'removeallclassmethods GtLReplyMessage').
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportUnusedAlternateClassDefinition [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter original definitions |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { ZnDefaultCharacterEncoder };
+		yourself.
+	original := exporter asTopazString.
+	definitions := { ZnUrl -> 'Object subclass: ''ZnUrl''' } asDictionary.
+	exporter alternateClassDefinitions: definitions.
+	definitions at: ZnUrl put: 'Changed caller dictionary'.
+	self assert: (exporter alternateClassDefinitions at: #ZnUrl) equals: 'Object subclass: ''ZnUrl'''.
+	self assert: exporter asTopazString equals: original.
+	exporter alternateClassDefinitions: Dictionary new.
+	self assert: exporter asTopazString equals: original.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportWithoutNewMethodsByDefault [
+	<gtExample>
+	| exporter output |
+	exporter := GtGemStoneTopazExporter new.
+	self assert: exporter newMethodPackageNames isEmpty.
+	self assert: exporter newMethodClassNames isEmpty.
+	output := exporter asTopazString.
+	self assert: (output includesSubstring: 'GtGemStoneExtensionMethod new') not.
+	self assert: (output includesSubstring: 'GtGemStoneExtensionMethods apply.').
 	^ exporter
 ]
 
@@ -243,6 +396,64 @@ GtGemStoneTopazExporterExamples >> gsCodeNilExampleMethod [
 	"Use gsCode: as an export flag while retaining this source"
 	<gsCode: nil>
 	^ self first: 3
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> refreshSelectedClassesForEachExport [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter classes output |
+	exporter := GtGemStoneTopazExporter new
+		additionalClasses: { GtLBasicMessage };
+		yourself.
+	classes := exporter selectedClasses.
+	output := exporter asTopazString.
+	self assert: (output includesSubstring: 'subclass: ''GtLBasicMessage''').
+	self assert: exporter selectedClasses ~~ classes.
+	classes := exporter selectedClasses.
+	self assert: exporter selectedClasses == classes.
+	self assert: exporter asTopazString equals: output.
+	self assert: exporter selectedClasses ~~ classes.
+	self assert: exporter selectedClasses asArray equals: classes asArray.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> rejectInvalidAlternateClassDefinitions [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter |
+	exporter := GtGemStoneTopazExporter new.
+	self assert: exporter alternateClassDefinitions isEmpty.
+	{ ZnUrl -> ''. ZnUrl -> '  '. ZnUrl -> 42. #GtNonexistentAlternateDefinitionClass -> 'Object subclass: ''Missing''' }
+		do: [ :association |
+			self assert: ([ exporter alternateClassDefinitions: { association } asDictionary. false ]
+				on: Error do: [ :error | true ]) ].
+	self assert: exporter alternateClassDefinitions isEmpty.
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> selectNewMethodPackagesAndClasses [
+	<gtExample>
+	| exporter expected excluded explicitNewClass |
+	excluded := GtGemStoneTopazExporterExamples.
+	explicitNewClass := Smalltalk globals allClasses detect: [ :each | each classSide methodDict includesKey: #new ].
+	exporter := GtGemStoneTopazExporter new
+		newMethodPackageNames: { GtGemStoneTopazExporter package name };
+		newMethodClassNames: { 'GtGemStoneTopazExporter'. explicitNewClass name };
+		excludedClasses: { excluded };
+		yourself.
+	expected := GtGemStoneTopazExporter package definedClasses reject: [ :each |
+		each isTrait
+			or: [ each == excluded
+			or: [ each superclass == PackageManifest
+			or: [ (each classSide methodDict includesKey: #new)
+			or: [ (each classSide lookupSelector: #new) methodClass ~= Behavior ] ] ] ] ].
+	self assert: exporter newMethodClasses asSet equals: expected asSet.
+	self assert: (exporter newMethodClasses includes: explicitNewClass) not.
+	self assert: (exporter newMethodClasses includes: excluded) not.
+	^ exporter
 ]
 
 { #category : #examples }
