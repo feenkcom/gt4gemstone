@@ -6,6 +6,8 @@ Traits are flattened into each exported consumer. Effective instance-side and cl
 Methods to omit are supplied as compiled method objects through #excludedMethods:. Optionally, methods annotated with #gsCode: can be exported using their pragma-supplied GemStone source; this search can be limited to #gsCodeClasses: or searches all classes by default.
 
 Stub classes supplied through #stubClasses: contribute only class definitions and do not have methods removed or loaded. Their Pharo parent classes are included up to, but excluding, classes already present in GemStone according to #gemstoneClassNames.  The topmost included stub is exported as an Object subclass; descendants retain their hierarchy. Stub classes are filtered by the same class exclusions as regular exported classes.
+
+Optional #newMethodPackageNames: and #newMethodClassNames: collections select constructor-extension targets independently of class export selection. Targets are deduplicated and filtered by class exclusions; traits, package manifests, classes with an explicit class-side #new in GT and classes inheriting a custom #new (rather than Behavior>>new) are omitted. This preserves inherited construction such as OrderedDictionary>>new, which initializes storage through #new: and #initialize:. After the other export commands, I append a script applying one GtGemStoneExtensionMethod per target, with meta: true, selector: #new, hash: #new and source containing <gtGsExtension> and ^ self basicNew initialize. Existing non-extension #new methods in GemStone are protected by extension validation. Both collections default to empty.
 "
 Class {
 	#name : #GtGemStoneTopazExporter,
@@ -18,7 +20,11 @@ Class {
 		'excludedMethods',
 		'includeGsCodeMethods',
 		'gsCodeClasses',
-		'gemstoneClassNames'
+		'gemstoneClassNames',
+		'newMethodPackageNames',
+		'newMethodClassNames',
+		'selectedClasses',
+		'alternateClassDefinitions'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Export'
 }
@@ -80,7 +86,28 @@ GtGemStoneTopazExporter class >> packages: packageNames additionalClasses: addit
 
 { #category : #accessing }
 GtGemStoneTopazExporter >> additionalClasses: aCollection [
-	additionalClasses := aCollection collect: [ :each | self resolveClass: each ]
+	additionalClasses := aCollection collect: [ :each | self resolveClass: each ].
+	selectedClasses := nil
+]
+
+{ #category : #accessing }
+GtGemStoneTopazExporter >> alternateClassDefinitions [
+	"Map GT class names to GemStone class-creation expressions, without Topaz or category wrappers. Class selection, methods and Pharo superclass ordering are unchanged; alternate superclasses must already exist or be defined earlier."
+	^ alternateClassDefinitions ifNil: [ Dictionary new ]
+]
+
+{ #category : #accessing }
+GtGemStoneTopazExporter >> alternateClassDefinitions: aDictionary [
+	| definitions |
+	definitions := Dictionary new.
+	aDictionary keysAndValuesDo: [ :classOrName :source |
+		| targetClass |
+		targetClass := self resolveClass: classOrName.
+		targetClass isTrait ifTrue: [ self error: 'Alternate definitions require classes, not traits' ].
+		(source isString and: [ source trimBoth isNotEmpty ])
+			ifFalse: [ self error: 'Alternate class definition must be a non-empty String' ].
+		definitions at: targetClass name put: source copy ].
+	alternateClassDefinitions := definitions
 ]
 
 { #category : #exporting }
@@ -110,7 +137,8 @@ GtGemStoneTopazExporter >> effectiveMethodsOf: aBehavior [
 
 { #category : #accessing }
 GtGemStoneTopazExporter >> excludedClasses: aCollection [
-	excludedClasses := aCollection collect: [ :each | self resolveClass: each ]
+	excludedClasses := aCollection collect: [ :each | self resolveClass: each ].
+	selectedClasses := nil
 ]
 
 { #category : #accessing }
@@ -252,7 +280,9 @@ GtGemStoneTopazExporter >> initialize [
 	excludedClasses := #().
 	excludedMethods := #().
 	includeGsCodeMethods := false.
-	gsCodeClasses := nil
+	gsCodeClasses := nil.
+	newMethodPackageNames := #().
+	newMethodClassNames := #()
 ]
 
 { #category : #'private - traits' }
@@ -283,6 +313,45 @@ GtGemStoneTopazExporter >> mergedSlotNames: localSlotNames withTraitsOf: aBehavi
 	^ result asArray
 ]
 
+{ #category : #accessing }
+GtGemStoneTopazExporter >> newMethodClassNames [
+	^ newMethodClassNames ifNil: [ #() ]
+]
+
+{ #category : #accessing }
+GtGemStoneTopazExporter >> newMethodClassNames: aCollection [
+	newMethodClassNames := aCollection collect: [ :each | each asString ]
+]
+
+{ #category : #private }
+GtGemStoneTopazExporter >> newMethodClasses [
+	| classes |
+	classes := Set new.
+	self newMethodPackageNames do: [ :packageName |
+		classes addAll: ((PackageOrganizer default
+			packageNamed: packageName
+			ifAbsent: [ self error: 'Unknown package: ', packageName ]) definedClasses) ].
+	self newMethodClassNames do: [ :className |
+		classes add: (self resolveClass: className) ].
+	classes := classes reject: [ :each |
+		each isTrait
+			or: [ (excludedClasses includes: each)
+			or: [ each superclass == PackageManifest
+			or: [ (each classSide methodDict includesKey: #new)
+			or: [ (each classSide lookupSelector: #new) methodClass ~= Behavior ] ] ] ] ].
+	^ Class superclassOrder: classes
+]
+
+{ #category : #accessing }
+GtGemStoneTopazExporter >> newMethodPackageNames [
+	^ newMethodPackageNames ifNil: [ #() ]
+]
+
+{ #category : #accessing }
+GtGemStoneTopazExporter >> newMethodPackageNames: aCollection [
+	newMethodPackageNames := aCollection collect: [ :each | each asString ]
+]
+
 { #category : #'private - traits' }
 GtGemStoneTopazExporter >> originMethodOf: aMethod in: aBehavior [
 	^ (aBehavior respondsTo: #findOriginMethodOf:)
@@ -295,7 +364,8 @@ GtGemStoneTopazExporter >> packageNames: aCollection [
 	packageNames := aCollection collect: [ :each |
 		(each respondsTo: #name)
 			ifTrue: [ each name asString ]
-			ifFalse: [ each asString ] ]
+			ifFalse: [ each asString ] ].
+	selectedClasses := nil
 ]
 
 { #category : #accessing }
@@ -313,6 +383,7 @@ GtGemStoneTopazExporter >> resolveClass: aClassOrName [
 { #category : #'private - selection' }
 GtGemStoneTopazExporter >> selectedClasses [
 	| selected |
+	selectedClasses ifNotNil: [ ^ selectedClasses ].
 	selected := Set new.
 	packageNames do: [ :packageName |
 		selected addAll: ((PackageOrganizer default
@@ -322,7 +393,7 @@ GtGemStoneTopazExporter >> selectedClasses [
 	selected := selected reject: [ :each |
 		(each isTrait) or: [ excludedClasses includes: each ] ].
 	selected := selected reject: [ :each | each superclass == PackageManifest ].
-	^ Class superclassOrder: selected
+	^ selectedClasses := Class superclassOrder: selected
 ]
 
 { #category : #'private - exporting' }
@@ -424,7 +495,8 @@ GtGemStoneTopazExporter >> writeDefinitionOf: aClass on: aStream [
 	| packageName superclass instanceVariables classInstanceVariables arrayFormatter definition |
 	(self gemstoneClassNames includes: aClass name) ifTrue: [
 		self error: aClass printString, ' must not be defined.' ].
-	(stubClasses includes: aClass)
+	((stubClasses includes: aClass)
+		and: [ (self selectedClasses includes: aClass) not ])
 		ifTrue: [
 			packageName := 'GToolkit-Stubs'.
 			superclass := ((stubClasses includes: aClass superclass)
@@ -456,6 +528,7 @@ GtGemStoneTopazExporter >> writeDefinitionOf: aClass on: aStream [
 			<< '  inDictionary: ';
 			<< (GtpoMetaclass3 defaultDictionary value: aClass); lf;
 			<< '  options: #()'; lf ].
+	definition := self alternateClassDefinitions at: aClass name ifAbsent: [ definition ].
 	aStream
 		<< 'doit'; lf;
 		<< '('; << definition; << ') category: ''';
@@ -575,6 +648,27 @@ GtGemStoneTopazExporter >> writeMethodsOf: aBehavior topazClassName: aClassName 
 			<< '%'; lf; lf ]
 ]
 
+{ #category : #'private-writing' }
+GtGemStoneTopazExporter >> writeNewMethodsOn: aStream [
+	| classes source |
+	classes := self newMethodClasses.
+	classes ifEmpty: [ ^ self ].
+	source := 'new', String lf,
+		'	<gtGsExtension>', String lf,
+		'	^ self basicNew initialize'.
+	aStream << 'run'; lf.
+	classes do: [ :each |
+		aStream
+			<< 'GtGemStoneExtensionMethod new'; lf;
+			<< '	className: #'''; << (self topazQuoted: each name); << ''';'; lf;
+			<< '	meta: true;'; lf;
+			<< '	selector: #new;'; lf;
+			<< '	source: '''; << (self topazQuoted: source); << ''';'; lf;
+			<< '	hash: #new;'; lf;
+			<< '	apply.'; lf ].
+	aStream << 'true'; lf; << '%'; lf; lf
+]
+
 { #category : #exporting }
 GtGemStoneTopazExporter >> writeTo: aFileReference [
 	aFileReference ensureDelete.
@@ -587,6 +681,7 @@ GtGemStoneTopazExporter >> writeTo: aFileReference [
 GtGemStoneTopazExporter >> writeTopazOn: aStream [
 	| classes |
 	
+	selectedClasses := nil.
 	classes := self selectedClasses.
 	self writeHeaderOn: aStream.
 	self classesToDefine do: [ :each | self writeDefinitionOf: each on: aStream ].
@@ -595,4 +690,5 @@ GtGemStoneTopazExporter >> writeTopazOn: aStream [
 	includeGsCodeMethods ifTrue: [ self writeGsCodeMethodsOn: aStream ].
 	"self writeClassInitializationsFor: classes on: aStream."
 	self writeApplyExtensionMethodsOn: aStream.
+	self writeNewMethodsOn: aStream.
 ]

@@ -48,6 +48,16 @@ GtpoGsNMethod >> compileFromTab: aTab [
 	aTab phlow spawnObject: result.
 ]
 
+{ #category : #utils }
+GtpoGsNMethod >> ensureGtGemStoneExtensionMethod [
+
+	GtGemStoneExtensionMethods
+		newFromClass: self inClassName
+		selector: self selector 
+		meta: self inClassIsMeta
+		session: self gtSession
+]
+
 { #category : #ui }
 GtpoGsNMethod >> gtAbortActionFor: anAction [
 	<gtAction>
@@ -187,6 +197,13 @@ GtpoGsNMethod >> gtViewLocalCoderFor: aView [
 			priority: 20;
 			object: [ (targetClass >> self selector) methodReference ];
 			view: #gtSourceFor:
+]
+
+{ #category : #accessing }
+GtpoGsNMethod >> inClassIsMeta [
+	"Answer a boolean indicating whether the receiver is on the class side"
+
+	^ self evaluateAndWait: 'self inClass ifNil: [ #false ] ifNotNil: [ :cls | cls isMeta ]'
 ]
 
 { #category : #accessing }
