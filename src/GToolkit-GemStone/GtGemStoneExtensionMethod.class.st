@@ -200,18 +200,6 @@ GtGemStoneExtensionMethod >> selector: aSymbol [
 	selector := aSymbol
 ]
 
-{ #category : #private }
-GtGemStoneExtensionMethod >> sha256Of: aString [
-	<gsCode: '| normalizedString |
-
-	normalizedString := (self withUnixLineEndings: aString) trimRight.
-	^ normalizedString utf8Encoded asSha256String'>
-	| normalizedString |
-	
-	normalizedString := (self withUnixLineEndings: aString) trimRight.
-	^ (SHA256 hashMessage: normalizedString utf8Encoded) hex.
-]
-
 { #category : #accessing }
 GtGemStoneExtensionMethod >> source [
 	^ source
@@ -229,26 +217,6 @@ GtGemStoneExtensionMethod >> sourceOf: aCompiledMethod [
 	(aCompiledMethod respondsTo: #sourceString)
 		ifTrue: [ ^ aCompiledMethod sourceString ].
 	self error: 'Unable to obtain existing method source'
-]
-
-{ #category : #accessing }
-GtGemStoneExtensionMethod >> targetBehavior [
-	<gsCode: '| aClass |
-
-	aClass := GsSession currentSession
-		objectNamed: className.
-	aClass ifNil: [ self error: ''GemStone extension target class not found: '', className asString ].
-	^ meta
-		ifTrue: [ aClass class ]
-		ifFalse: [ aClass ]'>
-	| aClass |
-	
-	aClass := Smalltalk
-		at: className
-		ifAbsent: [ self error: 'GemStone extension target class not found: ', className asString ].
-	^ meta
-		ifTrue: [ aClass class ]
-		ifFalse: [ aClass ]
 ]
 
 { #category : #private }

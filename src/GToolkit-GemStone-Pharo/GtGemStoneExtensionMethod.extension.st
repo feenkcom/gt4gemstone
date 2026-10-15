@@ -140,3 +140,35 @@ GtGemStoneExtensionMethod class >> overwriteFromLocalClass: className selector: 
 		hash: hash;
 		source: methodSource
 ]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+GtGemStoneExtensionMethod >> sha256Of: aString [
+	<gsCode: '| normalizedString |
+
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
+	^ normalizedString utf8Encoded asSha256String'>
+	| normalizedString |
+	
+	normalizedString := (self withUnixLineEndings: aString) trimRight.
+	^ (SHA256 hashMessage: normalizedString utf8Encoded) hex.
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
+GtGemStoneExtensionMethod >> targetBehavior [
+	<gsCode: '| aClass |
+
+	aClass := GsSession currentSession
+		objectNamed: className.
+	aClass ifNil: [ self error: ''GemStone extension target class not found: '', className asString ].
+	^ meta
+		ifTrue: [ aClass class ]
+		ifFalse: [ aClass ]'>
+	| aClass |
+	
+	aClass := Smalltalk
+		at: className
+		ifAbsent: [ self error: 'GemStone extension target class not found: ', className asString ].
+	^ meta
+		ifTrue: [ aClass class ]
+		ifFalse: [ aClass ]
+]
