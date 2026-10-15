@@ -14,12 +14,44 @@ GtGemStoneExtensionMethodExamples >> collectionIntersectionExtension [
 	| extension |
 	extension := GtGemStoneExtensionMethods ext_Collection_intersection_.
 	self assert: extension selector equals: #intersection:.
-	self assert: extension protocol equals: #enumerating.
+	self assert: extension protocol equals: #'gt-extension-method'.
 	self assert: extension className equals: #Collection.
 	self assert: extension meta not.
 	self assert: extension gtVersions isNil.
 	self assert: extension hash equals: #new.
 	self assert: (extension source includesSubstring: '<gtGsExtension>').
+	^ extension
+]
+
+{ #category : #examples }
+GtGemStoneExtensionMethodExamples >> compilesDescriptorOnSpecifiedBehavior [
+	<gtExample>
+	| extension target method reconstructed |
+	extension := GtGemStoneExtensionMethod new
+		selector: #example:;
+		protocol: #testing;
+		meta: true;
+		gtVersions: #('v1' 'v2');
+		className: #Object;
+		hash: 'original hash';
+		source: 'example: anObject
+	<gtGsExtension>
+	^ ''quoted source'''.
+	target := GtGemStoneExtensionMethodBehaviorFixture class.
+	[
+		method := extension compileExtensionIn: target.
+		self assert: method methodClass equals: target.
+		self assert: method selector equals: #ext_Object_class_example_.
+		self assert: method protocolName equals: #extensions.
+		reconstructed := target soleInstance perform: method selector.
+		self assert: reconstructed selector equals: extension selector.
+		self assert: reconstructed protocol equals: extension protocol.
+		self assert: reconstructed meta equals: extension meta.
+		self assert: reconstructed gtVersions equals: extension gtVersions.
+		self assert: reconstructed className equals: extension className.
+		self assert: reconstructed hash equals: extension hash.
+		self assert: reconstructed source equals: extension source
+	] ensure: [ target removeSelector: extension extensionSelector ].
 	^ extension
 ]
 
@@ -88,6 +120,24 @@ GtGemStoneExtensionMethodExamples >> extensionSha256WithLineEndings [
 ]
 
 { #category : #examples }
+GtGemStoneExtensionMethodExamples >> registryDelegatesDescriptorCompilation [
+	<gtExample>
+	| method extension |
+	[
+		method := GtGemStoneExtensionMethods
+			newFromLocalClass: #GtGemStoneExtensionMethodBehaviorFixture
+			selector: #initialize meta: false.
+		self assert: method methodClass equals: GtGemStoneExtensionMethods class.
+		extension := GtGemStoneExtensionMethods perform: method selector.
+		self assert: extension className equals: #GtGemStoneExtensionMethodBehaviorFixture.
+		self assert: extension selector equals: #initialize.
+		self assert: extension hash equals: #new
+	] ensure: [
+		GtGemStoneExtensionMethods class removeSelector: #ext_GtGemStoneExtensionMethodBehaviorFixture_initialize ].
+	^ extension
+]
+
+{ #category : #examples }
 GtGemStoneExtensionMethodExamples >> rejectsNonExtensionHashUpdate [
 	<gtExample>
 	| method rejected |
@@ -108,7 +158,7 @@ GtGemStoneExtensionMethodExamples >> setIntersectionExtension [
 	| extension gtSource expectedSource |
 	extension := GtGemStoneExtensionMethods ext_Set_intersection_.
 	self assert: extension selector equals: #intersection:.
-	self assert: extension protocol equals: #enumerating.
+	self assert: extension protocol equals: #'gt-extension-method'.
 	self assert: extension className equals: #Set.
 	self assert: extension meta not.
 	self assert: extension gtVersions isNil.

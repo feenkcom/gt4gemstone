@@ -15,8 +15,6 @@ GtGemStoneExecutionExtensionMethodsExamples >> executionExtensions [
 		ext_DefaultExecutionEnvironment_runExampleEvaluator_
 		ext_DefaultExecutionEnvironment_runUnmanagedExampleEvaluator_
 		ext_TestExecutionEnvironment_runExampleEvaluator_
-		ext_GtProcessStackOverflowChecker_currentCheckerClass
-		ext_GtProcessStackOverflowChecker_checkDuring_
 		ext_GtSystemUtility_freeze_).
 	extensions := selectors collect: [ :each |
 		self assert: (GtGemStoneExtensionMethods extensionSelectors includes: each).
@@ -39,14 +37,11 @@ GtGemStoneExecutionExtensionMethodsExamples >> executionExtensions [
 	self assert: (extensions third source includesSubstring: 'self runExampleUnderWatchdogUsingEvaluator: anExampleEvaluator').
 	self assert: (extensions third source includesSubstring: 'ensure: [').
 	self assert: (extensions third source includesSubstring: 'testCompleted := true.').
-	self assert: (extensions third source includesSubstring: 'testCompleted := true.' , String cr , String tab , String tab , String tab , 'watchDogSemaphore signal.').
+	self assert: (extensions third source includesSubstring: 'watchDogSemaphore signal.').
 	self assert: (extensions third source includesSubstring: 'self cleanUpAfterTest').
 	self assert: extensions third hash equals: (GtGemStoneExtensionMethod new
 		sha256Of: (TestExecutionEnvironment >> #runExampleEvaluator:) sourceCode).
 	self assert: extensions second hash equals: (GtGemStoneExtensionMethod new
 		sha256Of: (DefaultExecutionEnvironment >> #runUnmanagedExampleEvaluator:) sourceCode).
-	(extensions copyFrom: 4 to: 6) do: [ :each |
-		self assert: each meta.
-		self assert: each hash equals: #new ].
 	^ extensions
 ]

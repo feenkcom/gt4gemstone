@@ -208,6 +208,64 @@ GtGemStoneGtCodeExporterExamples >> exportsTimeoutExecutionExtensions [
 ]
 
 { #category : #examples }
+GtGemStoneGtCodeExporterExamples >> gsCodeClassNameUtilities [
+	<gtExample>
+	| exporterClass originalNames names source |
+	originalNames := GtGemStoneGtCodeExporter new gsCodeClassList.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	names := exporterClass addGsCodeClassName: 'Object'.
+	self assert: names equals: (originalNames, #(Object)) asSet asArray sorted.
+	self assert: exporterClass new gsCodeClassList equals: names.
+	exporterClass addGsCodeClassName: #Object.
+	self assert: exporterClass new gsCodeClassList equals: names.
+	exporterClass addGsCodeClassNames: #('String' Array 'Array').
+	self assert: exporterClass new gsCodeClassList equals: (names, #(String Array)) asSet asArray sorted.
+	self assert: (exporterClass new gsCodeClasses includes: Object).
+	self assert: (exporterClass new gsCodeClasses includes: String).
+	self assert: (exporterClass new gsCodeClasses includes: Array).
+	self assert: ((exporterClass >> #gsCodeClassList) hasPragmaNamed: #gsCodeClasses).
+	self assert: (exporterClass >> #gsCodeClassList) protocol name equals: #accessing.
+	source := (exporterClass >> #gsCodeClassList) sourceCode.
+	self assert: (source includesSubstring: '#Object').
+	self assert: GtGemStoneGtCodeExporter new gsCodeClassList equals: originalNames.
+	^ exporterClass
+]
+
+{ #category : #examples }
+GtGemStoneGtCodeExporterExamples >> gsCodeClassesUnionsPragmaProviders [
+	<gtExample>
+	| exporterClass exporter missingName expectedClasses |
+	exporter := GtGemStoneGtCodeExporter new.
+	self assert: ((GtGemStoneGtCodeExporter >> #gsCodeClassList) hasPragmaNamed: #gsCodeClasses).
+	self assert: exporter gsCodeClassList equals: #(Class CurrentExecutionEnvironment class Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleDependenciesResolver class GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue class GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker class Metaclass3 Object Pragma Symbol).
+	"Resolution removes duplicate names and ignores unbound names such as #class."
+	self assert: (exporter gsCodeClasses collect: #name) equals: #(Class CurrentExecutionEnvironment Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker Metaclass3 Object Pragma Symbol).
+	missingName := #GtGemStoneGtCodeExporterMissingGsCodeClassForExample.
+	self assert: (Smalltalk globals includesKey: missingName) not.
+	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
+	exporterClass
+		compile: 'gsCodeClassList
+	<gsCodeClasses>
+	^ #(Object GtGemStoneGtCodeExporterMissingGsCodeClassForExample String)'
+		classified: #accessing.
+	exporterClass
+		compile: 'moreGsCodeClassNames
+	<gsCodeClasses>
+	^ #(String Array Array)'
+		classified: #accessing.
+	exporterClass
+		compile: 'unmarkedGsCodeClassNames
+	^ #(Symbol)'
+		classified: #accessing.
+	exporter := exporterClass new.
+	expectedClasses := { Object. String. Array }.
+	self assert: exporter gsCodeClasses isArray.
+	self assert: exporter gsCodeClasses asSet equals: expectedClasses asSet.
+	self assert: exporter gsCodeClasses size equals: expectedClasses size.
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneGtCodeExporterExamples >> staticAnalysisClassifiesKnownFailures [
 	<gtExample>
 	| exporter analysis generated stubDifferences |

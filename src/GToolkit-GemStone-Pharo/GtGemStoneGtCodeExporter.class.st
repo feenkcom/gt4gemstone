@@ -17,6 +17,16 @@ GtGemStoneGtCodeExporter class >> addAdditionalClassNames: aCollection [
 	^ self additionalClassNames: self new additionalClassNames, aCollection
 ]
 
+{ #category : #'gs code class management' }
+GtGemStoneGtCodeExporter class >> addGsCodeClassName: aClassName [
+	^ self addGsCodeClassNames: { aClassName }
+]
+
+{ #category : #'gs code class management' }
+GtGemStoneGtCodeExporter class >> addGsCodeClassNames: aCollection [
+	^ self gsCodeClassNames: self new gsCodeClassList, aCollection
+]
+
 { #category : #'stub class management' }
 GtGemStoneGtCodeExporter class >> addStubClassName: aClassName [
 	^ self addStubClassNames: { aClassName }
@@ -46,6 +56,71 @@ GtGemStoneGtCodeExporter class >> additionalClassNames: aCollection [
 		stream cr; tab; nextPut: $) ].
 	self compile: source classified: (self lookupSelector: #additionalClassNames) protocol name.
 	^ names
+]
+
+{ #category : #maintenance }
+GtGemStoneGtCodeExporter class >> cleanLists [
+	"Remove entries from stubClasses and additionalClasses that are now covered by packageNames"
+	| instance packageClassNames stubsToRemove additionalToRemove |
+	
+	instance := self new.
+	packageClassNames := instance packageClassNames asSet.
+	stubsToRemove := packageClassNames intersection: instance stubClassNames.
+	additionalToRemove := packageClassNames intersection: instance additionalClassNames.
+	(instance additionalClassNames intersection: instance stubClassNames) ifNotEmpty: [ :toRemove |
+		stubsToRemove addAll: toRemove ].
+	self removeStubClassNames: stubsToRemove.
+	self removeAdditionalClassNames: additionalToRemove.
+	^ { stubsToRemove. additionalToRemove. }
+]
+
+{ #category : #'gs code class management' }
+GtGemStoneGtCodeExporter class >> gsCodeClassNames: aCollection [
+	| names source |
+	names := (aCollection collect: [ :each | each asSymbol ]) asSet asArray sorted.
+	source := String streamContents: [ :stream |
+		stream
+			nextPutAll: 'gsCodeClassList';
+			cr;
+			tab;
+			nextPutAll: '<gsCodeClasses>';
+			cr;
+			tab;
+			nextPutAll: '^ #('.
+		names do: [ :each |
+			stream cr; tab; tab.
+			each storeOn: stream ].
+		stream cr; tab; nextPut: $) ].
+	self compile: source classified: (self lookupSelector: #gsCodeClassList) protocol name.
+	^ names
+]
+
+{ #category : #maintenance }
+GtGemStoneGtCodeExporter class >> rebuildGsCodeClassList [
+	| gsCodeClasses gsCodeClassNames source |
+
+	gsCodeClasses := #gsCode: gtPragmas result toArray wait
+		collect: [ :method | method methodClass ]
+		as: Set.
+	gsCodeClassNames := (gsCodeClasses collect: #name) sorted.
+
+	source := String streamContents: [ :stream |
+		stream
+			nextPutAll: 'gsCodeClassList'; cr;
+			tab; nextPutAll: '<gsCodeClasses>'; cr;
+			cr;
+			nextPutAll: '^ #('; cr.
+		gsCodeClassNames do: [ :clsName |
+			stream
+				tab; tab; 
+				nextPut: $#;
+				nextPutAll: clsName;
+				cr ].
+		stream
+			tab; nextPutAll: ')'; cr. ].
+			
+	self compile: source classified: (self lookupSelector: #gsCodeClassList) protocol name.
+	^ gsCodeClassNames
 ]
 
 { #category : #'additional class management' }
@@ -112,6 +187,7 @@ GtGemStoneGtCodeExporter >> additionalClassList [
 GtGemStoneGtCodeExporter >> additionalClassNames [
 	<additionalClassNames>
 	^ #(
+		#ArithmeticError
 		#AssertionFailure
 		#AsyncFutureExecutionError
 		#AutomaticRewriting
@@ -120,22 +196,39 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#DefaultExecutionEnvironment
 		#Deprecation
 		#DeprecationPerformedNotification
+		#DomainError
 		#ExecutionEnvironment
 		#GtExampleComparisonExceptionWithDebuggingViews
+		#GtGemStoneExtensionMethod
 		#GtGemStoneExtensionMethods
 		#GtLAbstractFunctionTool
 		#GtLTool
 		#KeyNotFound
-		#NeoJSONParseError
 		#NetworkError
 		#NotFound
+		#OrderedDictionary
+		#OrderedDictionaryTest
+		#Point
 		#RBRefactoringError
+		#Rectangle
+		#RectangleTest
 		#SmaCCParserError
+		#SubscriptOutOfBounds
 		#SystemNotification
 		#TestExecutionEnvironment
 		#TestExecutionService
 		#TestSkipped
 		#TestTookTooMuchTime
+		#ZnDefaultCharacterEncoder
+		#ZnMaximumNumberOfDictionaryEntries
+		#ZnMultiValueDictionary
+		#ZnPercentEncoder
+		#ZnPortNotANumber
+		#ZnResourceMetaUtils
+		#ZnTooManyDictionaryEntries
+		#ZnUnknownScheme
+		#ZnUrl
+		#ZnUrlTest
 	)
 ]
 
@@ -149,6 +242,15 @@ GtGemStoneGtCodeExporter >> additionalClasses [
 	^ additionalClasses
 ]
 
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> alternateClassDefinitions [
+	"Use GemStone dynamic variables for the Zinc URL configuration."
+	^ Dictionary new
+		at: #ZnDefaultCharacterEncoder put: 'GtGsDynamicVariable subclass: ''ZnDefaultCharacterEncoder'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #ZnMaximumNumberOfDictionaryEntries put: 'GtGsDynamicVariable subclass: ''ZnMaximumNumberOfDictionaryEntries'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		yourself
+]
+
 { #category : #private }
 GtGemStoneGtCodeExporter >> configuredExporter [
 	| configuredExporter |
@@ -158,9 +260,12 @@ GtGemStoneGtCodeExporter >> configuredExporter [
 		stubClasses: self stubClasses
 		excluding: self excludedClasses.
 	configuredExporter
+		alternateClassDefinitions: self alternateClassDefinitions;
 		excludedMethods: self excludedMethods;
 		includeGsCodeMethods: true;
-		gsCodeClasses: self gsCodeClasses.
+		gsCodeClasses: self gsCodeClasses;
+		newMethodPackageNames: self packageNames;
+		newMethodClassNames: (self additionalClassList collect: #name).
 	^ configuredExporter
 ]
 
@@ -269,6 +374,23 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	GtExamplesCommandLineHandler>>#runPackages.
 	GtExampleExternalDependencyResolver>>#posibleExampleForNode:fromMethod:forOriginalExample:.
 	GtGemStoneExtensionMethods class>>#compileAllOnGemStone.
+	GtGemStoneExtensionMethods class>>#newFromClass:selector:meta:.
+	GtGemStoneExtensionMethods class>>#newFromClass:selector:meta:session:.
+	GtMagritteModelExamples>>#simpleBaselineDescription.
+	GtMagritteMemento>>#debugValidateValue:.
+		NeoJSONReaderTests>>#testSmallDictionary.
+		NeoJSONWriterTests>>#testListsExtra.
+		NeoJSONWriterTests>>#testMapsExtra.
+	OrderedDictionary>>#gtDebuggerPrintForComparisonOn:.
+	OrderedDictionaryTest>>#testDictionaryPublicProtocolCompatibility.
+	Point>>#@.
+	Point >> #asBlocVector.
+	Point>>#asScale3D.
+	Point>>#asTranslate3D.
+	Point>>#scalarMultiplicate2D:.
+	Point>>#asBrAnchoredAnchorBounds.
+	Point>>#asGVector.
+	Point>>#asMargin.
 	}
 ]
 
@@ -291,8 +413,43 @@ GtGemStoneGtCodeExporter >> exporter [
 ]
 
 { #category : #accessing }
+GtGemStoneGtCodeExporter >> gsCodeClassList [
+	<gsCodeClasses>
+
+^ #(
+		#Class
+		#CurrentExecutionEnvironment class
+		#Exception
+		#GsNMethod
+		#GtExample
+		#GtExampleClassResolver
+		#GtExampleDependenciesResolver
+		#GtExampleDependenciesResolver class
+		#GtExampleEvaluator
+		#GtExampleMethodResolver
+		#GtExampleResultNoValue class
+		#GtGemStoneExtensionMethod
+		#GtGemStoneTopazExporterExamples
+		#GtProcessStackOverflowChecker class
+		#Metaclass3
+		#Object
+		#Pragma
+		#Symbol
+	)
+
+]
+
+{ #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClasses [
-	^ { Metaclass3. GsNMethod. Pragma. GtGemStoneExtensionMethod. Exception. GtSystemUtility. GtExampleClassResolver. GtExampleMethodResolver. GtExampleDependenciesResolver. GtExample. GtExampleEvaluator. ExecutionEnvironment. CurrentExecutionEnvironment. }
+	| names |
+	names := OrderedCollection new.
+	(Pragma allNamed: #gsCodeClasses in: self class)
+		do: [ :pragma |
+			(self perform: pragma methodSelector)
+				do: [ :name | names addIfNotPresent: name ] ].
+	^ names asArray
+		collect: [ :each | Smalltalk globals at: each ifAbsent: [ nil ] ]
+		thenReject: [ :each | each isNil ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -303,6 +460,93 @@ GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
 		title: 'Additional Classes';
 		priority: 20;
 		items: [ self additionalClasses sorted: #name ascending ]
+]
+
+{ #category : #exporting }
+GtGemStoneGtCodeExporter >> loadZnUrlPortOnGemStone [
+	"Reload only the URL port in the default session, using the configured exporter.
+	All class methods are replaced just as in a full export. Do not commit."
+	| focused session evaluateTopazBlock newScript |
+	focused := self znUrlPortExporter.
+	session := GtGemStoneSessionRegistry defaultSession.
+	evaluateTopazBlock := [ :topaz | | lines end |
+		lines := topaz lines.
+		end := lines indexOf: '%'.
+		end > 0 ifTrue: [
+			session evaluateAndWait: (String lf join: (lines copyFrom: 2 to: end - 1)) ] ].
+	focused classesToDefine do: [ :class |
+		evaluateTopazBlock value: (String streamContents: [ :stream |
+			focused writeDefinitionOf: class on: stream ]) ].
+	focused selectedClasses do: [ :class |
+		session evaluateBlockAndWait: [ :name | | behavior |
+			behavior := GsSession currentSession objectNamed: name.
+			behavior selectors do: [ :selector | behavior removeSelector: selector ].
+			behavior class selectors do: [ :selector | behavior class removeSelector: selector ].
+			true ] withArguments: { class name } ].
+	focused selectedClasses do: [ :class |
+		{ class. class class } do: [ :behavior |
+			(focused effectiveMethodsOf: behavior) do: [ :method |
+				(focused shouldExportPharoSourceOf: method in: behavior) ifTrue: [
+					GtGemStoneTopazExporter compileMethod: method in: session ] ] ] ].
+	self znUrlPortExtensionSelectors do: [ :selector |
+		GtGemStoneTopazExporter
+			compileMethod: (GtGemStoneExtensionMethods class >> selector)
+			in: session ].
+	session evaluateBlockAndWait: [ :selectors |
+		selectors do: [ :selector | (GtGemStoneExtensionMethods perform: selector) apply ].
+		true ] withArguments: { self znUrlPortExtensionSelectors }.
+	newScript := String streamContents: [ :stream | focused writeNewMethodsOn: stream ].
+	newScript ifNotEmpty: [ evaluateTopazBlock value: newScript ].
+	^ focused
+]
+
+{ #category : #'as yet unclassified' }
+GtGemStoneGtCodeExporter >> magritteExcludedExampleMethods [
+	<excludedMethods>
+	
+	^ {
+GtMagritteByScripterExamples >> #address.
+GtMagritteByScripterExamples >> #scripter.
+GtMagritteByScripterExamples >> #serverObjectInStoppedStateAndChangedPort.
+GtMagritteByScripterExamples >> #serverObjectInStartedStateAndReadOnlyPort.
+GtMagritteByScripterExamples >> #serverObjectInStartedStateAndAutoAcceptWidget.
+GtMagritteByScripterExamples >> #serverObjectInStartedState.
+GtMagritteByScripterExamples >> #serverObject.
+GtMagritteByScripterExamples >> #addressWithoutCancel.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndChangedFavorite.
+GtMagritteByScripterExamples >> #addressWithErrorAcceptCallbacks.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndDefectiveCancelAction.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndDefectiveAcceptAction.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndCanceledChangedStreet.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndAcceptChangedStreet.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndChangedStreet.
+GtMagritteByScripterExamples >> #addressWithCallbacksAndAcceptActionWithDefectiveCallbacks.
+GtMagritteByScripterExamples >> #addressEmptyStreet.
+GtMagritteByScripterExamples >> #addressCancelChangedStreet.
+GtMagritteByScripterExamples >> #addressChangedStreet.
+GtMagritteByScripterExamples >> #addressAcceptChangedStreet.
+GtMagritteByScripterExamples >> #addressObjectWithCallbacks.
+GtMagritteModelExamples >> #simpleDirectoryObject.
+GtMagritteModelExamples >> #simpleBaselinesDescription.
+GtMagritteViewModelExamples >> #basicAsyncViewModel.
+GtMagritteViewModelExamples >> #viewModelWithPassword.
+GtMagritteViewModelExamples >> #viewModelWithDirectory.
+GtMagritteViewModelExamples >> #elementWithPrimaryAddress_TwiceAsElement.
+GtMagritteViewModelExamples >> #elementWithPrimaryAddress.
+GtMagritteViewModelExamples >> #asyncViewModelWithPrimaryAddress.
+GtMagritteViewModelExamples >> #elementWithPersonObjectWithTwoAddresses_TwiceAsElement.
+GtMagritteViewModelExamples >> #elementWithPersonObjectWithTwoAddresses.
+GtMagritteViewModelExamples >> #asyncViewModelWithPersonObjectWithTwoAddresses_WithAddressesDescriptionOnly.
+GtMagritteViewModelExamples >> #asyncViewModelWithPersonObjectWithTwoAddresses.
+GtMagritteViewModelExamples >> #dynamicPersonViewModel.
+GtMagritteViewModelExamples >> #viewModelWithBaselinesWithoutSaveOrCancelButton.
+GtMagritteViewModelExamples >> #viewModelWithBaselines.
+GtMagritteViewModelExamples >> #elementWithSimpleBaseline.
+GtMagritteViewModelExamples >> #asyncViewModelWithSimpleBaselines.
+GtMagritteViewModelExamples >> #asyncViewModelWithSimpleBaseline.
+GtMagritteViewModelExamples >> #simpleBaselineDescription.
+}
+
 ]
 
 { #category : #'analysis - private' }
@@ -323,25 +567,36 @@ GtGemStoneGtCodeExporter >> methodReferencesSmalltalk: aCompiledMethod [
 	^ found
 ]
 
+{ #category : #'private - accessing' }
+GtGemStoneGtCodeExporter >> packageClassNames [
+	"Answer the class names that are part of packageNames"
+	
+	^ self packageNames flatCollect: [ :pkgName |
+		(PackageOrganizer default packageNamed: pkgName) definedClasses
+			collect: #name ].
+]
+
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> packageNames [
-	| packageNames |
+	| packagePrefixes packageNames |
 
-	packageNames := PackageOrganizer default packageNames asOrderedCollection
-		select: [ :name | name beginsWith: 'Gt4Llm' ].
+	packagePrefixes := { 
+		'Gt4Llm'. 
+		'GToolkit-Examples-Dummies'.
+		'GToolkit4Magritte'.
+		'Neo-JSON'.
+		'GToolkit4NeoJSON'.
+		}.
+	packageNames := packagePrefixes flatCollect: [ :prefix |
+		PackageOrganizer default packageNames asOrderedCollection
+			select: [ :name | name beginsWith: prefix ] ]
+				as: OrderedCollection.
 	packageNames removeAll: { 'Gt4Llm' }.
 	packageNames addAll: {
 		'Grease-Core'.
 		'Magritte-Model'.
 		'GToolkit-Examples'.
-		'GToolkit-Examples-Dummies-Package2'.
-		'GToolkit-Examples-Dummies-Package4'.
-		'GToolkit-Examples-Dummies-Package6'.
-		'GToolkit-Examples-Dummies'.
-		'GToolkit-Examples-Dummies-Package1'.
-		'GToolkit-Examples-Dummies-Package3'.
-		'GToolkit-Examples-Dummies-Package5'.
-		'GToolkit-Examples-Dummies-Package7' }.
+		}.
 	^ packageNames
 ]
 
@@ -417,6 +672,7 @@ GtGemStoneGtCodeExporter >> staticExportAnalysisForPackageNames: aCollection [
 GtGemStoneGtCodeExporter >> stubClassNames [
 	<stubClassNames>
 	^ #(
+		#AsyncCachedFuture
 		#AsyncCachedStream
 		#AsyncChunksStream
 		#AsyncCounterSink
@@ -429,6 +685,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncFlattenFuture
 		#AsyncFlattenStream
 		#AsyncFuseStream
+		#AsyncFutureCache
 		#AsyncFutureDummyWaker
 		#AsyncFutureExecutionAtomicWaker
 		#AsyncFutureExecutionConfiguration
@@ -452,6 +709,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncProcessStackOverflowCheckerFuture
 		#AsyncSequenceStream
 		#AsyncSharedDictionary
+		#AsyncSharedOrderedCollection
 		#AsyncSplitStream
 		#AsyncStreamCollectFuture
 		#AsyncStreamFoldFuture
@@ -467,7 +725,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncWithTimeoutStream
 		#AsyncWithoutDuplicatesStream
 		#Author
-		#AutomaticRewriting
 		#Base64MimeConverter
 		#Base64UrlEncoder
 		#BeaconSignal
@@ -475,6 +732,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlArrowheadSimpleArrow
 		#BlAttributedTextElement
 		#BlBorder
+		#BlCircleGeometry
 		#BlClickEvent
 		#BlCompositeStyler
 		#BlCopyCursor
@@ -482,11 +740,19 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlDoubleClickEvent
 		#BlElement
 		#BlElementAddedToSceneGraphEvent
+		#BlElementSelectedStateWish
 		#BlElementState
 		#BlElementUniqueId
 		#BlElementUniqueState
 		#BlEllipseGeometry
+		#BlEventHandler
 		#BlExporter
+		#BlFlowLayout
+		#BlFocusFinder
+		#BlFocusInEvent
+		#BlFocusOutEvent
+		#BlFocusSearchDirectionBackward
+		#BlFocusSearchDirectionForward
 		#BlFontFamilyAttribute
 		#BlFontWeightAttribute
 		#BlFrameLayout
@@ -500,14 +766,18 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlMouseOutEvent
 		#BlMouseOverEvent
 		#BlParabollaArcElement
+		#BlPromiseTask
+		#BlRepeatedTaskAction
 		#BlResizerBottomListener
 		#BlResizerResizedEvent
 		#BlResizerRightListener
 		#BlRoundedRectangleGeometry
 		#BlScripter
+		#BlShortcutWithAction
 		#BlSpace
 		#BlStencil
 		#BlTaskAction
+		#BlText
 		#BlTextAttributesBuilder
 		#BlTextForegroundAttribute
 		#BlTextStyler
@@ -517,6 +787,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrAnchoredVisualAnalysis
 		#BrAsyncFileWidget
 		#BrButton
+		#BrCheckbox
 		#BrColumnedList
 		#BrColumnedMultiListAptitude
 		#BrDebuggableEditorElementStencil
@@ -525,10 +796,12 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrEditableLabel
 		#BrEditor
 		#BrEditorElement
+		#BrEditorModeState
 		#BrEditorShortcut
 		#BrElementUpdater
 		#BrExpander
 		#BrFileSelector
+		#BrFlowList
 		#BrFrame
 		#BrGlamorousButtonExteriorAptitude
 		#BrGlamorousButtonIconDropdownAptitude
@@ -537,8 +810,10 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrGlamorousButtonRectangularAptitude
 		#BrGlamorousButtonWithIconAndLabelAptitude
 		#BrGlamorousButtonWithIconAptitude
+		#BrGlamorousButtonWithIconCircularAptitude
 		#BrGlamorousButtonWithLabelAptitude
 		#BrGlamorousButtonWithLabelTooltipAptitude2
+		#BrGlamorousCheckboxAptitude
 		#BrGlamorousCodeEditorAptitude
 		#BrGlamorousColors
 		#BrGlamorousColumnedListItemElementWithContextMenuDecorator
@@ -558,17 +833,21 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrGlamorousTabAptitude
 		#BrGlamorousTabGroupAptitude
 		#BrGlamorousTabSwitcherWithIconAptitude
+		#BrGlamorousTaggerEditableAptitude
 		#BrGlamorousToggleGroupAptitude
 		#BrGlamorousToggleWithLabelAptitude
 		#BrGlamorousToolbarAptitude
 		#BrGlamorousVectorIcons
+		#BrGlamorousWithExplicitContextMenuAptitude
 		#BrGlamorousWithExplicitDropdownAptitude
 		#BrGlamorousWithExplicitTooltipAptitude
 		#BrGlamorousWithHorizontalResizerAptitude
 		#BrGlamorousWithVerticalResizerAptitude
 		#BrHorizontalFlow
+		#BrHorizontalGrid
 		#BrHorizontalPane
 		#BrLabel
+		#BrLayoutAlignmentAptitude
 		#BrLayoutHorizontalResizerState
 		#BrLayoutResizerAptitude
 		#BrLayoutVerticalResizerState
@@ -577,6 +856,8 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrMenuActionItem
 		#BrMenuItemGroupConfiguration
 		#BrMenuItems
+		#BrPackageNameInputFilter
+		#BrPackageTagNameInputFilter
 		#BrRBTextStyler
 		#BrResizerElementLength
 		#BrScrollPane
@@ -591,13 +872,18 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrStyleCommonAptitude
 		#BrTab
 		#BrTabGroup
+		#BrTagger
+		#BrTaggerAddTagRequest
+		#BrTaggerRemoveTagRequest
 		#BrTextAdornmentAttribute
 		#BrTextAdornmentDynamicAttribute
 		#BrTextCursorDynamicAttribute
 		#BrTextEditorModel
 		#BrTextEditorModifiedEvent
+		#BrTextEditorNoLineBreakInputFilter
 		#BrTextHideAttribute
 		#BrTextInvisibleMarkerAttribute
+		#BrTextReplacingAttribute
 		#BrToggle
 		#BrToggleActivatedEvent
 		#BrToggleGroup
@@ -612,6 +898,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#ContextStackSignal
 		#CurrentExecutionEnvironment
 		#DebugAction
+		#DictionaryValueHolder
 		#DiffPatchVisitor
 		#DiffVisitor
 		#EpClassAddition
@@ -635,11 +922,14 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtCachedTextExpandButtonAttribute
 		#GtCharacterGroupDiffSplitter
 		#GtClassCoderTool
+		#GtClassesCompletionStrategy
 		#GtClipboard
 		#GtCodeDiffRBTextStyler
 		#GtCoder
 		#GtCoderElement
 		#GtCoderExpanderAptitude
+		#GtCoderPackageTagTarget
+		#GtCoderPackageTarget
 		#GtCoderRenameMethodRefactoring
 		#GtCoderShortcutIds
 		#GtCoderViewModelRenameAction
@@ -687,11 +977,11 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtInspectorRoundButtonStencil
 		#GtInspectorSampleWithExceptionsInExtensions
 		#GtInspectorTool
+		#GtJson
 		#GtJsonShapeComparison
 		#GtLlmAbstractFunctionTool
 		#GtLlmActionCall
 		#GtLlmActionMessage
-		#GtLlmApiKeyCardElement
 		#GtLlmAssistant
 		#GtLlmAssistantAction
 		#GtLlmAssistantActionExample
@@ -739,23 +1029,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtLlmToolsGroup
 		#GtLlmUserMessage
 		#GtLlmValueSerializer
-		#GtMATextDescription
-		#GtMagritteActionElement
-		#GtMagritteActionUtility
-		#GtMagritteBasicAction
-		#GtMagritteBuilderUtility
-		#GtMagritteCompletionStrategyStencilBuilder
-		#GtMagritteDescriptionElementStencilBuilder
-		#GtMagritteDescriptionFromModelUpdateSpecification
-		#GtMagritteDescriptionValueFromModelUpdateSpecification
-		#GtMagritteElementBuilder
-		#GtMagritteFieldViewModel
-		#GtMagritteFormStencilBuilder
-		#GtMagritteListElementStencilBuilder
-		#GtMagritteMemento
-		#GtMagritteModelStencilBuilder
-		#GtMagrittePasswordEditorElementStencilBuilder
-		#GtMagritteStringEditorElementStencilBuilder
 		#GtMcpClient
 		#GtMcpPrompt
 		#GtMcpPromptsGroup
@@ -816,6 +1089,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPlotterLineChart
 		#GtPlotterLinearScale
 		#GtPragmaType
+		#GtPrefixTree
 		#GtPretrainedEncoder
 		#GtProcessStackOverflowChecker
 		#GtPushUpMethodRefactoring
@@ -855,6 +1129,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtSpotterContext
 		#GtSpotterSubstringsFilter
 		#GtStreamedCompletionStrategy
+		#GtStringsCompletionStrategy
 		#GtSystemUtility
 		#GtTCurrency
 		#GtTCurrencyMoney
@@ -886,8 +1161,10 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtWardleyMapUtility
 		#GtWorld
 		#GtWorldElement
+		#HSVAColorSelectorMorph
 		#IceRepository
 		#JSONParser
+		#LayoutFrame
 		#LeAddSnippetChange
 		#LeCompletionStrategy
 		#LeContentExamples
@@ -921,16 +1198,12 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LeUID
 		#LepiterConstants
 		#LinkedList
+		#Margin
 		#MessageTally
 		#MetaLink
 		#MethodAdded
 		#MethodRemoved
 		#Mutex
-		#NeoJSONArray
-		#NeoJSONObject
-		#NeoJSONReader
-		#NeoJSONSchema
-		#NeoJSONWriter
 		#NetNameResolver
 		#NonInteractiveTranscript
 		#NumberParser
@@ -938,7 +1211,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#OSPlatform
 		#OmReference
 		#OpalCompiler
-		#OrderedDictionary
 		#PBApplication
 		#PBProxyObject
 		#PNGReadWriter
@@ -948,7 +1220,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#PharoLinkTestCasePass
 		#PharoLinkTestCaseSkip
 		#PharoLinkTestCaseWarning
-		#Point
 		#ProcessMonitorTestService
 		#ProtoObject
 		#RBCondition
@@ -960,6 +1231,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#RBRenameMethodRefactoring
 		#RBScanner
 		#RecursionStopper
+		#SDL_Rect
 		#SHA256
 		#SessionManager
 		#ShiftClassBuilder
@@ -971,7 +1243,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#Socket
 		#SourceFileArray
 		#SourceFileBufferedReadWriteStream
+		#SpLayoutFrame
 		#SpStringTableColumn
+		#StInspectorAssociationNode
 		#StObjectPrinter
 		#Stack
 		#Stdio
@@ -982,6 +1256,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#ThemeIcons
 		#TraitChange
 		#TraitedClass
+		#UIManager
 		#UUID
 		#WeakIdentityKeyDictionary
 		#WebBrowser
@@ -990,6 +1265,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#ZnByteArrayEntity
 		#ZnClient
 		#ZnDispatcherDelegate
+		#ZnEasy
 		#ZnEntity
 		#ZnHeaders
 		#ZnHttpUnsuccessful
@@ -998,15 +1274,12 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#ZnMimeType
 		#ZnMultiPartFormDataEntity
 		#ZnMultiThreadedServer
-		#ZnMultiValueDictionary
-		#ZnPercentEncoder
 		#ZnRequest
 		#ZnRequestLine
 		#ZnResponse
 		#ZnServer
 		#ZnStatusLine
 		#ZnStringEntity
-		#ZnUrl
 	)
 ]
 
@@ -1021,4 +1294,37 @@ GtGemStoneGtCodeExporter >> stubClasses [
 	^ names asArray
 		collect: [ :each | Smalltalk globals at: each ifAbsent: [ nil ] ]
 		thenReject: [ :each | each isNil ]
+]
+
+{ #category : #private }
+GtGemStoneGtCodeExporter >> znUrlExcludedMethods [
+	<excludedMethods>
+	"Keep the URL model and its focused tests; omit integrations and the options-dependent source."
+	^ ((ZnUrl methods , ZnUrl class methods) select: [ :method |
+		method protocol name first = $*
+			or: [ #(performOperation: performOperation:with: asFileReference image) includes: method selector ] ]),
+		{ ZnResourceMetaUtils class >> #queryKeyValueSafeSet.
+		ZnUrlTest >> #testImage.
+		ZnUrlTest >> #testRetrieveContents.
+		ZnUrlTest >> #testSaveContentsToFile.
+		ZnUrlTest >> #testPrintingConsidersDefaultCharacterConverter }
+]
+
+{ #category : #exporting }
+GtGemStoneGtCodeExporter >> znUrlPortExporter [
+	"Answer a focused exporter using the same definitions, exclusions and automatic method selection as the complete export."
+	| configured classes |
+	configured := self configuredExporter.
+	classes := #(ZnUrl ZnResourceMetaUtils ZnPercentEncoder ZnMultiValueDictionary ZnDefaultCharacterEncoder ZnMaximumNumberOfDictionaryEntries ZnPortNotANumber ZnUnknownScheme ZnTooManyDictionaryEntries ArithmeticError DomainError ZnUrlTest) collect: [ :name | name asClass ].
+	^ (GtGemStoneTopazExporter packages: #() additionalClasses: classes excluding: #())
+		excludedMethods: configured excludedMethods;
+		alternateClassDefinitions: self alternateClassDefinitions;
+		newMethodClassNames: (classes collect: #name);
+		yourself
+]
+
+{ #category : #exporting }
+GtGemStoneGtCodeExporter >> znUrlPortExtensionSelectors [
+	"Only the GT-managed adapters needed by the focused URL port."
+	^ #(ext_ZnPercentEncoder_decode_to_ ext_ZnUrl_parseHostPort_ ext_ZnResourceMetaUtils_class_writeQueryFields_on_ ext_ZnDefaultCharacterEncoder_default ext_ZnDefaultCharacterEncoder_class_defaultValue ext_ZnMaximumNumberOfDictionaryEntries_class_defaultValue ext_ZnResourceMetaUtils_class_queryKeyValueSafeSet ext_String_asZnUrl ext_Collection_addedToZnUrl_ ext_ZnPercentEncoder_decode_ ext_ZnUrl_asString ext_String_addedToZnUrl_ ext_ZnUrlTest_testReferenceResolution ext_ZnPercentEncoder_readHexFrom_ ext_ZnUrl_portIfAbsent_ ext_String_asUrl ext_DomainError_class_signalFrom_to_ ext_ZnPercentEncoder_encode_to_)
 ]
