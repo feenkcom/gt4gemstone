@@ -389,7 +389,6 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Point>>#asTranslate3D.
 	Point>>#scalarMultiplicate2D:.
 	Point>>#asBrAnchoredAnchorBounds.
-	Point>>#asGSCoordinates.
 	Point>>#asGVector.
 	Point>>#asMargin.
 	}
