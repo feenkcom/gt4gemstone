@@ -28,15 +28,17 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> codeDescription [
 
 { #category : #accessing }
 GtGemStoneLlmToolForSmalltalkCodeEvaluation >> description [
-	^ 'Executes the provided Smalltalk script in the default GemStone session. The result is always returned as a remote proxy.
+	^ 'Executes the provided Smalltalk script in the default GemStone session.
 
 Arguments:
-- code: string
+- code: string (required) - The Smalltalk code to evaluate.
+- serializationStrategy: string (required, default: "proxy") - The serialization strategy for the result. Allowed values: "proxy" (returns a remote proxy object, use for most cases when working with remote objects) and "wireEncoding" (serializes the remote object and deserializes it locally; can be used for primitive data or when the same classes are present both locally and remotely; the returned object will be a local instance).
 - bindings: array of binding objects with name and objectId (pass an empty array if not needed). Each objectId identifies an object in the execution context object storage.
 
 Example JSON arguments:
 {
   "code": "a + b",
+  "serializationStrategy": "proxy",
   "bindings": [
     {"name": "a", "objectId": "uuid-for-a"},
     {"name": "b", "objectId": "uuid-for-b"}
@@ -72,13 +74,23 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> name [
 
 { #category : #private }
 GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall inContext: anExecutionContext [
-	| arguments code bindings bindingsDictionary object currentSession |
+	| arguments code bindings bindingsDictionary object currentSession serializationStrategy serializationStrategySymbol serializationStrategyMap |
 	arguments := aToolCall arguments ifNil: [ Dictionary new ].
 	code := arguments at: 'code' ifAbsent: [ nil ].
 	(code isNil or: [ code isString and: [ code trimBoth isEmpty ] ])
 		ifTrue: [ ^ GtLMissingArgumentDomainObject new
 			arguments: arguments;
 			missingArgument: 'code' ].
+	serializationStrategy := arguments at: 'serializationStrategy' ifAbsent: [ 'proxy' ].
+	serializationStrategyMap := Dictionary new
+		at: 'proxy' put: #GtRsrProxyOnlySerializationStrategy;
+		at: 'wireEncoding' put: #GtRsrWireSerializationStrategy;
+		yourself.
+	serializationStrategySymbol := serializationStrategyMap
+		at: serializationStrategy
+		ifAbsent: [ ^ GtLMissingInformationDomainObject new
+			missingModelName: 'serializationStrategy';
+			errorMessage: 'Invalid serialization strategy: ', serializationStrategy asString, '. Allowed values are: proxy, wireEncoding' ].
 	bindings := arguments at: 'bindings' ifAbsent: [ #() ].
 	bindingsDictionary := Dictionary new.
 	bindings ifNotEmpty: [
@@ -104,10 +116,12 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall
 	currentSession isRunning ifFalse: [ ^ GtLMissingInformationDomainObject new
 		missingModelName: 'GemStone session';
 		errorMessage: 'The GemStone session is not connected' ].
-	object := [ currentSession
-		evaluateAndWaitReturnProxy: code
-		for: nil
-		bindings: bindingsDictionary ]
+	object := [ 
+			currentSession
+				evaluateAndWait: code
+				for: nil
+				bindings: bindingsDictionary
+				serializationStrategy: serializationStrategySymbol ]
 		on: Error
 		do: [ :ex |
 			^ (GtLSmalltalkCodeEvaluationExceptionDomainObject freeze: ex)
@@ -119,4 +133,14 @@ GtGemStoneLlmToolForSmalltalkCodeEvaluation >> privatePerformToolCall: aToolCall
 		code: code;
 		updateForToolCall: aToolCall withExecutionContext: anExecutionContext;
 		yourself
+]
+
+{ #category : #descriptions }
+GtGemStoneLlmToolForSmalltalkCodeEvaluation >> serializationStrategyDescription [
+	<magritteDescription>
+	^ MAStringDescription new
+		label: 'Serialization Strategy';
+		accessor: #serializationStrategy;
+		default: 'proxy';
+		beRequired
 ]
