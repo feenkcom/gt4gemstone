@@ -34,6 +34,18 @@ GtGemStoneExtensionMethod >> extensionSource [
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
+GtGemStoneExtensionMethod >> gemstoneHash [
+	"Answer the has of the current gemstone source"
+	| gsSource |
+	
+	gsSource := GtGemStoneSessionRegistry defaultSession evaluateBlockAndWait:
+		[ :clsName :sel |
+			((GsSession currentSession objectNamed: clsName) compiledMethodAt: sel) sourceString ]
+		withArguments: { self className. self selector. }.
+	^ self sha256Of: gsSource.
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
 GtGemStoneExtensionMethod class >> newFromClass: className selector: selector meta: aBoolean session: aGtGemStoneSession [
 	"Generate a new extension method based on the existing method in the current session."
 	<gsCode: ''>

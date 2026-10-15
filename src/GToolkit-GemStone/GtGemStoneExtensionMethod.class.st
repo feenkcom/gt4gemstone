@@ -91,18 +91,6 @@ GtGemStoneExtensionMethod >> existingMethodIn: aBehavior [
 ]
 
 { #category : #utilities }
-GtGemStoneExtensionMethod >> gemstoneHash [
-	"Answer the has of the current gemstone source"
-	| gsSource |
-	
-	gsSource := GtGemStoneSessionRegistry defaultSession evaluateBlockAndWait:
-		[ :clsName :sel |
-			((GsSession currentSession objectNamed: clsName) compiledMethodAt: sel) sourceString ]
-		withArguments: { self className. self selector. }.
-	^ self sha256Of: gsSource.
-]
-
-{ #category : #utilities }
 GtGemStoneExtensionMethod >> gtHash [
 	"Answer the has of the current GT source"
 	| gtSource |
