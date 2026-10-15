@@ -70,7 +70,7 @@ GtGemStoneTopazExporterExamples >> exportAlternateClassDefinition [
 '.
 	exporter alternateClassDefinitions: { 'ZnDefaultCharacterEncoder' -> definition } asDictionary.
 	output := exporter asTopazString.
-	self assert: output equals: (original copyReplaceAll: 'DynamicVariable subclass:' with: 'GtGsDynamicVariable subclass:').
+	self assert: output withUnixLineEndings equals: (original copyReplaceAll: 'DynamicVariable subclass:' with: 'GtGsDynamicVariable subclass:') withUnixLineEndings.
 	self assert: ZnDefaultCharacterEncoder superclass equals: DynamicVariable.
 	^ exporter
 ]

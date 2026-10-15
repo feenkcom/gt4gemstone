@@ -453,6 +453,16 @@ GtGemStoneGtCodeExporter >> gsCodeClasses [
 		thenReject: [ :each | each isNil ]
 ]
 
+{ #category : #'as yet unclassified' }
+GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
+	<gtView>
+	
+	^ aView list
+		title: 'Additional Classes';
+		priority: 20;
+		items: [ self additionalClasses sorted: #name ascending ]
+]
+
 { #category : #exporting }
 GtGemStoneGtCodeExporter >> loadZnUrlPortOnGemStone [
 	"Reload only the URL port in the default session, using the configured exporter.
@@ -538,16 +548,6 @@ GtMagritteViewModelExamples >> #asyncViewModelWithSimpleBaseline.
 GtMagritteViewModelExamples >> #simpleBaselineDescription.
 }
 
-]
-
-{ #category : #'as yet unclassified' }
-GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
-	<gtView>
-	
-	^ aView list
-		title: 'Additional Classes';
-		priority: 20;
-		items: [ self additionalClasses sorted: #name ascending ]
 ]
 
 { #category : #'analysis - private' }
