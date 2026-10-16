@@ -201,9 +201,9 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#GtExampleComparisonExceptionWithDebuggingViews
 		#GtGemStoneExtensionMethod
 		#GtGemStoneExtensionMethods
-		#GtLAbstractFunctionTool
-		#GtLTool
 		#KeyNotFound
+		#Mutex
+		#MutexTest
 		#NetworkError
 		#NotFound
 		#OrderedDictionary
@@ -317,7 +317,6 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	GtLDataView>>#magritteObject.
 	GtLDataView>>#basicOn:perform:withArguments:.
 	GRPlatform>>#bindingOf:.
-	GtLFunctionToolCallExecutionDetails>>#startTelemetryPing.
 	GtLDataSourceEncoderDecoder class>>#writeClientHistory:to:selector:.
 	GtLValueSerializerExamples>>#serializeProtoObjectClass.
 	GtLPackageChangeHistory>>#gtViewChangeIcon.
@@ -391,6 +390,18 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Point>>#asBrAnchoredAnchorBounds.
 	Point>>#asGVector.
 	Point>>#asMargin.
+	GtLlmToolForSUnitClassesRun>>#privatePerformToolCall:.
+	MemoryTelemetry>>#startSync:.
+	GtLlmToolForExampleClassesRun>>#extractExamplesFromClassesFrom:in:reportingNotFoundIn:.
+	GtLlmToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
+	TelemetryPing>>#totalFullGCTimeMicroseconds.
+	TelemetryPing>>#totalScavengeGCTimeMicroseconds.
+	GtLlmRenameFormatComponentRefactoringExamples>>#destroyClass.
+	GtLlmReificationForm>>#assistantNameDescription.
+	GtLlmReificationForm>>#assistantSuperclassDescription.
+	GtLlmReificationForm>>#messageNameDescription.
+	GtLlmReificationForm>>#messageSuperclassDescription.
+	GtLlmAssistantLibraryForGt class>>#textFormatWithSmalltalkBlocks.
 	}
 ]
 
@@ -584,8 +595,9 @@ GtGemStoneGtCodeExporter >> packageNames [
 		'Gt4Llm'. 
 		'GToolkit-Examples-Dummies'.
 		'GToolkit4Magritte'.
-		'Neo-JSON'.
 		'GToolkit4NeoJSON'.
+		'Neo-JSON'.
+		'SortFunctions-'.
 		}.
 	packageNames := packagePrefixes flatCollect: [ :prefix |
 		PackageOrganizer default packageNames asOrderedCollection
@@ -594,8 +606,9 @@ GtGemStoneGtCodeExporter >> packageNames [
 	packageNames removeAll: { 'Gt4Llm' }.
 	packageNames addAll: {
 		'Grease-Core'.
-		'Magritte-Model'.
 		'GToolkit-Examples'.
+		'Magritte-Model'.
+		'Telemetry'.
 		}.
 	^ packageNames
 ]
@@ -706,7 +719,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncPassExceptionHandler
 		#AsyncPeekSink
 		#AsyncPoll
+		#AsyncProcessProperties
 		#AsyncProcessStackOverflowCheckerFuture
+		#AsyncSemaphoreForMutualExclusion
 		#AsyncSequenceStream
 		#AsyncSharedDictionary
 		#AsyncSharedOrderedCollection
@@ -734,6 +749,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlBorder
 		#BlCircleGeometry
 		#BlClickEvent
+		#BlColorTransition
 		#BlCompositeStyler
 		#BlCopyCursor
 		#BlDevScripterToolActionStep
@@ -760,14 +776,20 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlInsets
 		#BlKeyCombination
 		#BlKeyModifiers
+		#BlLinearGradientPaint
 		#BlLinearLayout
+		#BlMarkElementNeedsPaintSignal
 		#BlMouseEnterEvent
 		#BlMouseLeaveEvent
 		#BlMouseOutEvent
 		#BlMouseOverEvent
+		#BlOutskirts
 		#BlParabollaArcElement
 		#BlPromiseTask
+		#BlRectangleGeometry
+		#BlRelativeElevation
 		#BlRepeatedTaskAction
+		#BlRequestLayoutSignal
 		#BlResizerBottomListener
 		#BlResizerResizedEvent
 		#BlResizerRightListener
@@ -953,6 +975,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtExampleResultSimplifiedSuccessValue
 		#GtExplainerExplanationAptitude
 		#GtFixItMarkerAttribute
+		#GtGatherMessageTallyFilter
 		#GtGemStoneLlmToolForClassDefinitionChange
 		#GtGemStoneLlmToolForClassLookup
 		#GtGemStoneLlmToolForClassReferences
@@ -1038,6 +1061,8 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtMethodCoderTool
 		#GtMethodsSortFunction
 		#GtMultiSplitterDiffElement
+		#GtNestedTreeItemLeaf
+		#GtNestedTreeNode
 		#GtOpenAIClient
 		#GtOpenAIMessage
 		#GtOpenAIMessageForGT
@@ -1085,7 +1110,10 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPhlowView
 		#GtPhlowViewsCollector
 		#GtPlaygroundEvaluatedCodeButtonAttribute
+		#GtPlotter
+		#GtPlotterConstantScale
 		#GtPlotterDataGroup
+		#GtPlotterHorizontalCompositeBarChartStencil
 		#GtPlotterLineChart
 		#GtPlotterLinearScale
 		#GtPragmaType
@@ -1199,11 +1227,12 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LepiterConstants
 		#LinkedList
 		#Margin
+		#MemoryLogger
 		#MessageTally
 		#MetaLink
 		#MethodAdded
 		#MethodRemoved
-		#Mutex
+		#Monitor
 		#NetNameResolver
 		#NonInteractiveTranscript
 		#NumberParser
@@ -1220,11 +1249,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#PharoLinkTestCasePass
 		#PharoLinkTestCaseSkip
 		#PharoLinkTestCaseWarning
+		#Process
 		#ProcessMonitorTestService
 		#ProtoObject
 		#RBCondition
 		#RBMethodRefactoring
 		#RBNamespace
+		#RBParseTreeRewriter
 		#RBParser
 		#RBPushDownMethodRefactoring
 		#RBRemoveMethodRefactoring
@@ -1252,6 +1283,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#StringSignal
 		#SystemAnnouncer
 		#SystemNavigation
+		#TAsyncFuture
 		#TaskAtQueue
 		#ThemeIcons
 		#TraitChange
