@@ -741,6 +741,12 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interru
 			self assertPromiseResolutionRunning: promiseResolution.
 			self assert: session activeAsyncExecutions size equals: 1.
 
+			scripter assert
+				label: 'Async DoIt button is disabled during execution';
+				satisfies: [ :aButton | aButton isEnabled not ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play.
+
 			promiseResolution debuggerHandler: [ :anException |
 				| debugSession |
 				debugSession := (OupsDebugRequest newForException: anException)
@@ -760,10 +766,37 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interru
 			self assert: targetProcess isSuspended.
 			self assert: session activeAsyncExecutions size equals: 1.
 
+			scripter assert
+				label: 'Async DoIt button is still disabled while interrupted';
+				satisfies: [ :aButton | aButton isEnabled not ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play.
+
 			capturedDebugSession terminate.
 			self assert: targetProcess isTerminated.
 			self assert: session activeAsyncExecutions size equals: 0.
-			self assert: session isRunning ].
+			self assert: session isRunning.
+
+			scripter wait forEmptySpaceTaskQueue; play.
+
+			self assertExecutionPaneWithAyncExecutionToolFor: scripter.
+			promiseResolution := self
+				promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+			self assert: promiseResolution state equals: #Terminated.
+			self assert: promiseResolution isResolutionProcessDone.
+
+			scripter assert
+				label: 'Execution status label shows Terminated';
+				value: [ :aLabel | aLabel text asString ]
+				equals: 'Terminated';
+				// GtGemStoneAsyncExecutionStatusLabelId;
+				play.
+
+			scripter assert
+				label: 'Async DoIt button is re-enabled after termination';
+				satisfies: [ :aButton | aButton isEnabled ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play ].
 
 	^ scripter
 ]
@@ -789,6 +822,12 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interru
 			self assertPromiseResolutionRunning: promiseResolution.
 			self assert: session activeAsyncExecutions size equals: 1.
 
+			scripter assert
+				label: 'Async DoIt button is disabled during execution';
+				satisfies: [ :aButton | aButton isEnabled not ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play.
+
 			promiseResolution debuggerHandler: [ :anException |
 				| debugSession |
 				debugSession := (OupsDebugRequest newForException: anException)
@@ -808,10 +847,37 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interru
 			self assert: targetProcess isSuspended.
 			self assert: session activeAsyncExecutions size equals: 1.
 
+			scripter assert
+				label: 'Async DoIt button is still disabled while interrupted';
+				satisfies: [ :aButton | aButton isEnabled not ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play.
+
 			session connection close.
 			capturedDebugSession terminate.
 			self assert: targetProcess isTerminated.
-			self assert: session activeAsyncExecutions size equals: 0 ].
+			self assert: session activeAsyncExecutions size equals: 0.
+
+			scripter wait forEmptySpaceTaskQueue; play.
+
+			self assertExecutionPaneWithAyncExecutionToolFor: scripter.
+			promiseResolution := self
+				promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+			self assert: promiseResolution state equals: #Terminated.
+			self assert: promiseResolution isResolutionProcessDone.
+
+			scripter assert
+				label: 'Execution status label shows Terminated';
+				value: [ :aLabel | aLabel text asString ]
+				equals: 'Terminated';
+				// GtGemStoneAsyncExecutionStatusLabelId;
+				play.
+
+			scripter assert
+				label: 'Async DoIt button is re-enabled after termination';
+				satisfies: [ :aButton | aButton isEnabled ];
+				// GtSourceCoderDoItAndGoAsynchronousActionId;
+				play ].
 
 	^ scripter
 ]
