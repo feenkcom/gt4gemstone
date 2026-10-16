@@ -1,0 +1,74 @@
+[
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "private",
+		"originalSHA256" : "e0ae6ea9241de4c5fc20574140809e285add04bfbd9882230407fcd782e1777c",
+		"originalSource" : "objectQueue\n\n\tObjectQueue == nil ifTrue: [ ObjectQueue := RcQueue new: 100 ].\n\t^ObjectQueue\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "objectQueue"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "accessing",
+		"originalSHA256" : "2543505907618da659ee504217035f808a7de64ae4911814a7b8fe9228687db2",
+		"originalSource" : "_objectLog\n\t\"direct access to ObjectLog - should have acquired ObjectLogLock if removing entries from ObjectLog\"\n\n\tObjectLog == nil ifTrue: [ ObjectLog := OrderedCollection new ].\n\t^ObjectLog\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "_objectLog"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "accessing",
+		"originalSHA256" : "4bd15e6121439620270922158d83ed24d61c5a90bd2cbf2f460d075563be8d03",
+		"originalSource" : "objectLog\n\t\"expect the caller to abort, acquire lock, and commit if necessary\"\n\n\tObjectLog == nil ifTrue: [ ObjectLog := OrderedCollection new ].\n\tObjectLog addAll: (self objectQueue _timeSortedComponents collect: [:ea | ea value]).\n\tself objectQueue removeAll.\n\t^ObjectLog\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "objectLog"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "actions",
+		"originalSHA256" : "554a2ab44bd0f8415afcf0a5ae2537298807076fc6192ea90562ff12421946b8",
+		"originalSource" : "emptyLog\n\t\"expect the caller to abort, acquire lock, and commit if necessary\"\n\n    self objectQueue removeAll.\n    ObjectLog := nil.\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "emptyLog"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "initialization",
+		"originalSHA256" : "a3a1d6f4d758de3e37c7c11e57a0e6981d92e6963d70f919deccaa47f9ececbc",
+		"originalSource" : "initialize\n  \"self initialize\"\n\n  ObjectQueue := RcQueue new: 100.\n  ObjectLog := OrderedCollection new\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "initialize"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "initialization",
+		"originalSHA256" : "eca3af4f9e143d996a371ce76a05c0ffd77a9a631478e2121704f6f85d73e9ce",
+		"originalSource" : "initalize\n\t\"self initialize\"\n\t\n\tObjectQueue := RcQueue new: 100.\n\tObjectLog := OrderedCollection new.\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "initalize"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "private",
+		"originalSHA256" : "2d542e29f3c791e69e873b29abcbe294a352c8f051b8ad70b32828addd262603",
+		"originalSource" : "objectLogEntries: shouldLock\n  shouldLock\n    ifTrue: [ \n      System\n        writeLock: ObjectLogEntry objectQueue\n        ifDenied: [ \n          Transcript show: 'ObjectLogEntry objectQueue lock denied'.\n          ^ nil ]\n        ifChanged: [ \n          System addToCommitOrAbortReleaseLocksSet: ObjectLogEntry objectQueue.\n          Transcript show: 'ObjectLogEntry objectQueue lock dirty'.\n          ^ nil ].\n      System addToCommitOrAbortReleaseLocksSet: ObjectLogEntry objectQueue ].\n  ^ ObjectLogEntry objectLog\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "objectLogEntries:"
+	},
+	{
+		"classSide" : true,
+		"className" : "ObjectLogEntry",
+		"originalProtocol" : "accessing",
+		"originalSHA256" : "c126bc5f49585420360337f8c7776a322320e508f65bdade24115b07ef0262f5",
+		"originalSource" : "acquireObjectLogLock\n\n\t| queue |\n\tqueue := self objectQueue.\n\tSystem writeLock: queue\n\t\tifDenied: [ ^false ]\n\t\tifChanged: [\n\t\t\tSystem addToCommitOrAbortReleaseLocksSet: queue. \n\t\t\t^false ].\n\tSystem addToCommitOrAbortReleaseLocksSet: queue.\n\t^true\n",
+		"reason" : "Private runtime logging is session-local; queues/log collections remain in SessionTemps and do not require repository locks or persist across sessions.",
+		"selector" : "acquireObjectLogLock"
+	}
+]

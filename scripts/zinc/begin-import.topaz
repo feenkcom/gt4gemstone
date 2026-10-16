@@ -1,0 +1,15 @@
+expectvalue true
+run
+| persistent zinc compiling |
+persistent := System myUserProfile symbolList.
+(persistent anySatisfy: [ :dictionary | dictionary name = #ZincGlobals ])
+  ifTrue: [ self error: 'Zinc import requires a fresh install' ].
+persistent createDictionaryNamed: #ZincGlobals at: persistent size + 1.
+zinc := persistent last.
+Globals at: #ZincGlobals put: zinc.
+compiling := persistent copy.
+compiling remove: zinc.
+compiling insertObject: zinc at: 1.
+GsSession currentSession transientSymbolList: compiling.
+true
+%

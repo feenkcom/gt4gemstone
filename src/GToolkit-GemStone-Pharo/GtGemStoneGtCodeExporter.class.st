@@ -1318,6 +1318,20 @@ GtGemStoneGtCodeExporter >> stubClasses [
 		thenReject: [ :each | each isNil ]
 ]
 
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> unsupportedGeoSpherePointMethods [
+	<excludedMethods>
+	"Point is exported for core arithmetic; GeoSphere is outside the GemStone runtime selection."
+	^ { Point >> #asGSCoordinates }
+]
+
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> unsupportedPersonalRagMethods [
+	<excludedMethods>
+	"Personal Knowling integration is outside the release selection and requires AkgLlmKnowlingRag."
+	^ { GtLModelUserMessage >> #addKnowlingContextPages }
+]
+
 { #category : #private }
 GtGemStoneGtCodeExporter >> znUrlExcludedMethods [
 	<excludedMethods>

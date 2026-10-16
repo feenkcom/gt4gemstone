@@ -1,0 +1,31 @@
+Frozen Zinc runtime dictionary and load contract
+
+This importer is for a fresh non-Rowan default extent after the original GT release has loaded.
+It creates ZincGlobals and compiles exported runtime definitions and methods with ZincGlobals first in a transient symbol list.
+It then restores the original symbol list and appends the identical ZincGlobals dictionary last for SystemUser and DataCurator.
+The original GT classes remain in Globals. Globals precedes ZincGlobals after import and after ordinary GT code reload.
+When a name occurs in both dictionaries, ordinary name lookup therefore selects the GT class.
+Native Zinc methods retain their explicitly compiled bindings to ZincGlobals classes.
+Application code should select native classes explicitly, for example ZincGlobals at: #ZnResponse and ZincGlobals at: #ZnTransactionSafeManagingMultiThreadedServer.
+Do not assume that an unqualified ZnServer or another overlapping name selects this frozen runtime.
+Native copies of streams, announcements, encoders, and other overlapping classes remain independent of their Globals counterparts.
+
+The normal installer consumes artifacts belonging to the selected release. It does not use compatibility patches from a different checkout.
+LOAD_ZINC=no preserves the original plain-extent GT loading path. The existing Rowan path does not implement this Zinc importer.
+This importer is fresh-install-only and makes no upgrade or arbitrary release-reimport guarantee.
+Runtime listeners, default servers, networking defaults and managed-server registries are session-local state through reviewed compatibility methods.
+No listener is automatically constructed or started during installation.
+Pure constants and lookup tables are eagerly initialized by SystemUser before commit so ordinary DataCurator sessions do not need write access to installed classes. eager-initialization-provenance.json records the reviewed statements and source hashes. SocketStreamSocket wraps native GsSocket in TransientStackValue; accepted and outbound sockets remain session-local. Native connect and accept timeout arguments are milliseconds; stream timeouts are seconds. The runtime contains no Sport-owned classes or compiled Sport references.
+The exported ObjectLogEntry diagnostic queue, drained log and lock behavior are session-local through reviewed overlays. Entries can be enqueued, drained and cleared in the current session and are discarded when it ends; they are not a durable cross-session GLASS diagnostic log. object-log-provenance.json records this deliberate boundary. Persistent ObjectLog class variables remain nil.
+
+The source and protocol inventory records the isolated managed source environment before compatibility overlays. The upstream GLASS reference remains intact. Historical Sport package inventory is retained as provenance, without installing Sport. LICENSE-Sport.txt, introduced by the exporter for the removed dependency, is omitted from the active release with the Sport dependency. Rollback uses the complete frozen artifacts and checksums preserved before this migration. Class hierarchy changes require a fresh extent; persisted-instance upgrades are outside this contract.
+compatibility-provenance.json records runtime method replacements; constructor-provenance.json records the explicit own new methods needed for native initialization.
+shared-kernel-provenance.json records the twelve reviewed shared kernel methods whose native bodies and protocols are retained with a managed-extension marker during initial import. Standard GT reload may subsequently apply its original managed adapters through their normal guards.
+full-gt-integration-provenance.json records the private ArrayedCollection class-side conversion bridge needed when the GT Object>>as: adapter is restored.
+exception-identity-provenance.json records the source, protocol and hashes for the scoped server exception lookup bridge.
+Private server exception sets resolve exported native exception classes before ordinary lookup, preserving termination handlers when the GT reload installs classes with overlapping names.
+The current full GT export also contains two scoped String bridges: asZnUrl selects private ZincGlobals ZnUrl when installed, and addedToZnUrl: preserves native delimiter handling when its argument is a private ZnUrl. Other arguments retain the original GT behavior.
+unicode-dictionary-provenance.json records the scoped key comparison and dictionary-internal source changes, with checks for String/Unicode hash agreement and distinct Symbol keys.
+Private ZnMultiValueDictionary normalizes equality only for string keys through reviewed local dictionary internals. Ordinary keys retain their native comparison behavior. This does not enable or emulate GLASS string comparison globally.
+Initial validation compares selected source layouts, protocols and compiled global bindings with the reference inventory while accounting for explicit managed overlays. After full GT reload it checks the private runtime layouts, protocols and bindings, original GT bindings, shared adapter behavior, URI conversion, query lookup and mutation, serialization, gzip, static files and session-local runtime state.
+The supported reload workflow is the current generated full GT export used by llm/loadGsGt.sh. Reimporting arbitrary historical bootstrap files is outside this fresh-install contract.

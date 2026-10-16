@@ -1,0 +1,3365 @@
+fileformat utf8
+set compile_env: 0
+! ------------------- Class definition for Stream
+expectvalue /Class
+doit
+Object subclass: 'Stream'
+	instVarNames: #()
+	classVars: #( Lf Tab)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Stream comment: 
+'Stream is an abstract superclass that represents the ability to maintain a
+ position reference into a linear sequence of objects.  Concrete subclasses are
+ ReadStream and WriteStream.'
+%
+expectvalue /Class
+doit
+Stream category: 'Collections-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for PositionableStream
+expectvalue /Class
+doit
+Stream subclass: 'PositionableStream'
+	instVarNames: #( itsCollection position)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+PositionableStream comment: 
+'PositionableStreamLegacy is an abstract superclass 
+ that provides additional protocol appropriate to Streams whose objects 
+ are externally named by indices.
+
+--- instVar itsCollection
+A SequenceableCollection; the sequence of objects that the receiver may
+ access.
+--- instVar position
+A SmallInteger; the current position reference for accessing the collection.
+'
+%
+set compile_env: 0
+! ------------------- Class definition for ReadStream
+expectvalue /Class
+doit
+PositionableStream subclass: 'ReadStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ReadStream comment: 
+'ReadStream / ReadStreamLegacy is a PositionableStream that allows its objects to 
+ be read but not written.'
+%
+set compile_env: 0
+! ------------------- Class definition for WriteStream
+expectvalue /Class
+doit
+PositionableStream subclass: 'WriteStream'
+	instVarNames: #()
+	classVars: #( Cr CrLf CrTab)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+WriteStream comment: 
+'WriteStreamLegacy is a PositionableStream that allows its 
+ objects to be written, but not read.'
+%
+set compile_env: 0
+! ------------------- Class definition for ActionSequence
+expectvalue /Class
+doit
+Array subclass: 'ActionSequence'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ActionSequence category: 'Bootstrap-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for Announcement
+expectvalue /Class
+doit
+Object subclass: 'Announcement'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Announcements-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Announcement category: 'Announcements-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for AnnouncementSet
+expectvalue /Class
+doit
+Set subclass: 'AnnouncementSet'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Announcements-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AnnouncementSet category: 'Announcements-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for Announcer
+expectvalue /Class
+doit
+Object subclass: 'Announcer'
+	instVarNames: #( subscriptions)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Announcements-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Announcer category: 'Announcements-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for AnnouncerSubscription
+expectvalue /Class
+doit
+Object subclass: 'AnnouncerSubscription'
+	instVarNames: #( valuable subscriber)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Announcements-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AnnouncerSubscription category: 'Announcements-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for AnsiReadStream
+expectvalue /Class
+doit
+ReadStream subclass: 'AnsiReadStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-ANSI-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AnsiReadStream category: 'GemStone-ANSI-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for AnsiWriteStream
+expectvalue /Class
+doit
+WriteStream subclass: 'AnsiWriteStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-ANSI-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AnsiWriteStream category: 'GemStone-ANSI-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for Archive
+expectvalue /Class
+doit
+Object subclass: 'Archive'
+	instVarNames: #( members)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Archive category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ArchiveMember
+expectvalue /Class
+doit
+Object subclass: 'ArchiveMember'
+	instVarNames: #( fileName isCorrupt)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ArchiveMember category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ArrayedCollection
+expectvalue /Class
+doit
+SequenceableCollection subclass: 'ArrayedCollection'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ArrayedCollection comment: 
+'I am an abstract collection of elements with a fixed range of integers (from 1 to n>=0) as external keys.'
+%
+expectvalue /Class
+doit
+ArrayedCollection category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for AssertionFailure
+expectvalue /Class
+doit
+Halt subclass: 'AssertionFailure'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AssertionFailure category: 'Core-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for Authorizer
+expectvalue /Class
+doit
+Object subclass: 'Authorizer'
+	instVarNames: #( users realm)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Authorizer comment: 
+'The Authorizer does user authorization checking. Each instance of authorizer keeps track of the realm that it is authorizing for, and the table of authorized users. An authorizer can be asked to return the user name/symbol associated with a userID (which concatenates the username and password from the HTTP request) with the user: method.'
+%
+expectvalue /Class
+doit
+Authorizer category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for BinaryOrTextFile
+expectvalue /Class
+doit
+GsFile subclass: 'BinaryOrTextFile'
+	instVarNames: #( isBinary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+BinaryOrTextFile category: 'Bootstrap-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for CRCError
+expectvalue /Class
+doit
+Error subclass: 'CRCError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+CRCError category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for DirectoryEntry
+expectvalue /Class
+doit
+Object subclass: 'DirectoryEntry'
+	instVarNames: #( sourceDirectory name creationTime
+	                  modificationTime dirFlag fileSize)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+DirectoryEntry category: 'Bootstrap-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for FastUUIDGenerator
+expectvalue /Class
+doit
+Object subclass: 'FastUUIDGenerator'
+	instVarNames: #( bits1 bits2 bits3
+	                  bits4 random semaphoreForGenerator)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FastUUIDGenerator category: 'Core-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for FileDirectory
+expectvalue /Class
+doit
+Object subclass: 'FileDirectory'
+	instVarNames: #( pathName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FileDirectory category: 'Bootstrap-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for ClientFileDirectory
+expectvalue /Class
+doit
+FileDirectory subclass: 'ClientFileDirectory'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ClientFileDirectory category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for GRError
+expectvalue /Class
+doit
+Error subclass: 'GRError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRError comment: 
+'This class provides consistent initialization and exception signaling behaviour across platforms. All platforms must provide the ANSI-standard signaling protocol on this class. #signal: can therefore be safely called on any subclass.Packages that are using Seaside-Platform should usually subclass GRError instead of Error.'
+%
+expectvalue /Class
+doit
+GRError category: 'Grease-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for GRInvalidArgumentCount
+expectvalue /Class
+doit
+GRError subclass: 'GRInvalidArgumentCount'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRInvalidArgumentCount comment: 
+'Signaled whenever a message is sent with the incorrect number of arguments.'
+%
+expectvalue /Class
+doit
+GRInvalidArgumentCount category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRInvalidUtf8Error
+expectvalue /Class
+doit
+GRError subclass: 'GRInvalidUtf8Error'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRInvalidUtf8Error comment: 
+'A WAInvalidUtf8Error signals that the input is not valid UTF-8.'
+%
+expectvalue /Class
+doit
+GRInvalidUtf8Error category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRNotification
+expectvalue /Class
+doit
+Notification subclass: 'GRNotification'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRNotification comment: 
+'This class provides consistent initialization and exception signaling behaviour across platforms. All platforms must provide the ANSI-standard signaling protocol on this class. #signal: can therefore be safely called on any subclass.Packages that are using Seaside-Platform should usually subclass GRNotification instead of Notification.'
+%
+expectvalue /Class
+doit
+GRNotification category: 'Grease-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for GRDeprecatedApiNotification
+expectvalue /Class
+doit
+GRNotification subclass: 'GRDeprecatedApiNotification'
+	instVarNames: #( details)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRDeprecatedApiNotification comment: 
+'This notification is signaled whenever a deprecated message is sent.see WAObject>>#greaseDeprecatedApi:details: '
+%
+expectvalue /Class
+doit
+GRDeprecatedApiNotification category: 'Grease-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for GRNotificationBasedDynamicVariable
+expectvalue /Class
+doit
+GRNotification subclass: 'GRNotificationBasedDynamicVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRNotificationBasedDynamicVariable comment: 
+'An implementation of a dynamic varaible based on notifications. Dialects that do not support dynamic variables or thread/process local variables can create an empty subclass of this class called GRDynamicVariable.'
+%
+expectvalue /Class
+doit
+GRNotificationBasedDynamicVariable category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRObject
+expectvalue /Class
+doit
+Object subclass: 'GRObject'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRObject comment: 
+'A common superclass that ensures consistent initialization behaviour on all platforms and provides #error: methods that signal an instance of WAPlatformError.Packages that are using Seaside-Platform should normally subclass GRObject instead of Object.'
+%
+expectvalue /Class
+doit
+GRObject category: 'Grease-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRCodec
+expectvalue /Class
+doit
+GRObject subclass: 'GRCodec'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRCodec comment: 
+'A codec defines how Seaside communicates without the outside world and how outside data is converted into the image (decoding) and back outside the image (encoding). The codec is essentially a stream factory that provides wrappers around standard streams. All streams do support binary mode for non-converted transfer.'
+%
+expectvalue /Class
+doit
+GRCodec category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRDelayedSend
+expectvalue /Class
+doit
+GRObject subclass: 'GRDelayedSend'
+	instVarNames: #( receiver message)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRDelayedSend comment: 
+'A GRDelayedSend is a future message send of a message to an object. Some of the arguments can be predefined. Instances are intended to be interchangeable with blocks.This class should conform the ANSI (block) valuable protocol. Unlike a block, a GRDelayedSend is not a closure so doesn''t hold onto the method context. GRDelayedSend provides similar, but portable, functionality to Pharo''s MessageSend.This is an abstract class. Use the methods in the ''instance-creation'' protocol on the class side to create intances.Instance Variables	receiver:		<Object>	selector:		<Symbol>receiver	- the object receiving the messageselector	- the message selector sent to the receiver'
+%
+expectvalue /Class
+doit
+GRDelayedSend category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRDelayedSendMessage
+expectvalue /Class
+doit
+GRObject subclass: 'GRDelayedSendMessage'
+	instVarNames: #( selector)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRDelayedSendMessage comment: 
+'GRDelayedSendMessage is an abstract base for objects that provide currying functionality for GRDelayedSend'
+%
+expectvalue /Class
+doit
+GRDelayedSendMessage category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRBoundMessage
+expectvalue /Class
+doit
+GRDelayedSendMessage subclass: 'GRBoundMessage'
+	instVarNames: #( arguments)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRBoundMessage comment: 
+'A delayed send that has some or all of the arguments defined in advance. Additionally supplied arguments will be added, if possible, to these when the object is evaluate.Instance Variables	arguments:		<Array>arguments	- the predefined arguments'
+%
+expectvalue /Class
+doit
+GRBoundMessage category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRDelegatingStream
+expectvalue /Class
+doit
+GRObject subclass: 'GRDelegatingStream'
+	instVarNames: #( stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRDelegatingStream comment: 
+'A GRDelegatingStream is a wrapper around a write stream and defines common behavior.Instance Variables	stream:		<WriteStream>stream	- a WriteStream'
+%
+expectvalue /Class
+doit
+GRDelegatingStream category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRCodecStream
+expectvalue /Class
+doit
+GRDelegatingStream subclass: 'GRCodecStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRCodecStream comment: 
+'GRCodecStream is the abstract base class for codec streams'
+%
+expectvalue /Class
+doit
+GRCodecStream category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRCountingStream
+expectvalue /Class
+doit
+GRDelegatingStream subclass: 'GRCountingStream'
+	instVarNames: #( count)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRCountingStream comment: 
+'A GRCountingStream counts how many elements have been added to it. This is necessary because the underlying stream may inflate the number of elements in the stream.Instance Variables:	count	<Integer>		count  - number of elements added to this stream'
+%
+expectvalue /Class
+doit
+GRCountingStream category: 'Grease-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRGemStoneRandomProvider
+expectvalue /Class
+doit
+GRObject subclass: 'GRGemStoneRandomProvider'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRGemStoneRandomProvider category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRInflector
+expectvalue /Class
+doit
+GRObject subclass: 'GRInflector'
+	instVarNames: #()
+	classVars: #( InflectionRules Uninflected)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRInflector comment: 
+'The Inflector transforms words from singular to plural.'
+%
+expectvalue /Class
+doit
+GRInflector category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRLatin1GemStoneCodec
+expectvalue /Class
+doit
+GRCodec subclass: 'GRLatin1GemStoneCodec'
+	instVarNames: #( name)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRLatin1GemStoneCodec category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRNullCodec
+expectvalue /Class
+doit
+GRCodec subclass: 'GRNullCodec'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRNullCodec comment: 
+'The null codec always returns the original streams. It assumes that the outside world uses the same encoding as the inside world. This is highly efficient as no transformation is applied to the data, but has its drawbacks.'
+%
+expectvalue /Class
+doit
+GRNullCodec category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRNullCodecStream
+expectvalue /Class
+doit
+GRCodecStream subclass: 'GRNullCodecStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRNullCodecStream comment: 
+'A WANullCodecStream is a WriteStream on a String on which you can both put binary and character data without encoding happening.Instance Variables	stream:		<WriteStream>stream	- a WriteStream on a String'
+%
+expectvalue /Class
+doit
+GRNullCodecStream category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRPackage
+expectvalue /Class
+doit
+GRObject subclass: 'GRPackage'
+	instVarNames: #( name description dependencies
+	                  license url)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRPackage comment: 
+'I am a platform independent package representation. I know my name, description, my dependencies, the license and the repository URL. Packages are declared by creating a class side extension method that answers a configured package instance. The expression    GRPackage packagesanswers the collection of the complete package graph.'
+%
+expectvalue /Class
+doit
+GRPackage category: 'Grease-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRPlatform
+expectvalue /Class
+doit
+GRObject subclass: 'GRPlatform'
+	instVarNames: #()
+	classVars: #( Current)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRPlatform comment: 
+'The abstract platform implementation. Each platform should provide a subclass implementing any abstract methods and overriding any other methods as necessary.Default implementations should be provided here when possible/useful but default implementations MUST be valid on ALL PLATFORMS so it is rarely practical. VA Smalltalk flags sends of uknown messages so even these must be known to exist on all platforms.Common cases where default implementations *are* appropriate are where there is a standard implementation that is valid on all platforms but one or more platforms have an additional, optimized implementation that should be used instead.All classes and methods used by methods of this class should be either:  + included in the Seaside-Platform package;  + defined by the ANSI Smalltalk standard; or  + (not ideal) referenced via ''Smalltalk at: #ClassName''.'
+%
+expectvalue /Class
+doit
+GRPlatform category: 'Grease-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRGemStonePlatform
+expectvalue /Class
+doit
+GRPlatform subclass: 'GRGemStonePlatform'
+	instVarNames: #()
+	classVars: #( TransactionMutex)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRGemStonePlatform category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRPrinter
+expectvalue /Class
+doit
+GRObject subclass: 'GRPrinter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRMappedPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRMappedPrinter'
+	instVarNames: #( next block)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRMappedPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRNumberPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRNumberPrinter'
+	instVarNames: #( characters base delimiter
+	                  digits infinite nan padding
+	                  accuracy precision separator)
+	classVars: #( NumbersToCharactersLowercase NumbersToCharactersUppercase)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRNumberPrinter comment: 
+'A GRNumberPrinter prints numbers (integers and floats) in various formats in a platform independent way.Instance Variables	accuracy:	<UndefinedObject|Float>	base:		<Integer>	delimiter:	<UndefinedObject|Character>	digits:		<UndefinedObject|Integer>	infinite:		<UndefinedObject|String>	nan:			<UndefinedObject|String>	padding:	<UndefinedObject|Character>	precision:	<Integer>	separator:	<UndefinedObject|Character>'
+%
+expectvalue /Class
+doit
+GRNumberPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GROrdinalizePrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GROrdinalizePrinter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GROrdinalizePrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRPluggablePrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRPluggablePrinter'
+	instVarNames: #( block)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRPluggablePrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRSequentialPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRSequentialPrinter'
+	instVarNames: #( parts)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRSequentialPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRSignPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRSignPrinter'
+	instVarNames: #( negativePrinter positivePrinter)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRSignPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRSmallDictionary
+expectvalue /Class
+doit
+GRObject subclass: 'GRSmallDictionary'
+	instVarNames: #( size keys values)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Collections'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRSmallDictionary comment: 
+'I am an implementation of a dictionary. Compared to other dictionaries I am very efficient for small sizes, speed- and space-wise. I also mantain the order in which elements are added when iterating. My implementation features some ideas from the RefactoringBrowser.'
+%
+expectvalue /Class
+doit
+GRSmallDictionary category: 'Grease-Core-Collections'
+%
+set compile_env: 0
+! ------------------- Class definition for GROrderedMultiMap
+expectvalue /Class
+doit
+GRSmallDictionary subclass: 'GROrderedMultiMap'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Collections'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GROrderedMultiMap comment: 
+'I am an implementation of an ordered multi-map. I allow multiple values to be associated with the same key and maintain the order of addition. #at: and its derivatives all operate on the first matching key, while #allAt: returns the complete list of values for a key in the order they were added.'
+%
+expectvalue /Class
+doit
+GROrderedMultiMap category: 'Grease-Core-Collections'
+%
+set compile_env: 0
+! ------------------- Class definition for GRSmallDictionary2
+expectvalue /Class
+doit
+GRObject subclass: 'GRSmallDictionary2'
+	instVarNames: #( size table)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Collections'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRSmallDictionary2 comment: 
+'I am an implementation of a dictionary. Compared to other dictionaries I am very efficient for small sizes, speed- and space-wise. I also mantain the order in which elements are added when iterating. My implementation features some ideas from the RefactoringBrowser and others from Eclipse Collections.'
+%
+expectvalue /Class
+doit
+GRSmallDictionary2 category: 'Grease-Core-Collections'
+%
+set compile_env: 0
+! ------------------- Class definition for GROrderedMultiMap2
+expectvalue /Class
+doit
+GRSmallDictionary2 subclass: 'GROrderedMultiMap2'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Collections'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GROrderedMultiMap2 comment: 
+'I am an implementation of an ordered multi-map. I allow multiple values to be associated with the same key and maintain the order of addition. #at: and its derivatives all operate on the first matching key, while #allAt: returns the complete list of values for a key in the order they were added.'
+%
+expectvalue /Class
+doit
+GROrderedMultiMap2 category: 'Grease-Core-Collections'
+%
+set compile_env: 0
+! ------------------- Class definition for GRSmallOrderedSet
+expectvalue /Class
+doit
+GRObject subclass: 'GRSmallOrderedSet'
+	instVarNames: #( size table)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Collections'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRSmallOrderedSet comment: 
+'I am an implementation of a dictionary. Compared to other dictionaries I am very efficient for small sizes, speed- and space-wise. I also mantain the order in which elements are added when iterating.'
+%
+expectvalue /Class
+doit
+GRSmallOrderedSet category: 'Grease-Core-Collections'
+%
+set compile_env: 0
+! ------------------- Class definition for GRStringPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRStringPrinter'
+	instVarNames: #( trim length pad
+	                  character)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRStringPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRTextOrBinaryCodecStream
+expectvalue /Class
+doit
+GRCodecStream subclass: 'GRTextOrBinaryCodecStream'
+	instVarNames: #( binary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRTextOrBinaryCodecStream category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRUnboundMessage
+expectvalue /Class
+doit
+GRDelayedSendMessage subclass: 'GRUnboundMessage'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Utilities'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRUnboundMessage comment: 
+'A delayed send that has none of the arguments defined in advance.'
+%
+expectvalue /Class
+doit
+GRUnboundMessage category: 'Grease-Core-Utilities'
+%
+set compile_env: 0
+! ------------------- Class definition for GRUnitPrinter
+expectvalue /Class
+doit
+GRPrinter subclass: 'GRUnitPrinter'
+	instVarNames: #( integerPrinter fractionPrinter units
+	                  base)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRUnitPrinter category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRUnsupportedEncodingError
+expectvalue /Class
+doit
+GRError subclass: 'GRUnsupportedEncodingError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core-Text'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRUnsupportedEncodingError category: 'Grease-Core-Text'
+%
+set compile_env: 0
+! ------------------- Class definition for GRUtf8CodecStream
+expectvalue /Class
+doit
+GRTextOrBinaryCodecStream subclass: 'GRUtf8CodecStream'
+	instVarNames: #()
+	classVars: #( Latin1ToUtf8Encodings)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone330-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRUtf8CodecStream category: 'Grease-GemStone330-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRUtf8GemStoneCodec
+expectvalue /Class
+doit
+GRCodec subclass: 'GRUtf8GemStoneCodec'
+	instVarNames: #( implementation)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRUtf8GemStoneCodec category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GRVersion
+expectvalue /Class
+doit
+GRObject subclass: 'GRVersion'
+	instVarNames: #( major minor revision
+	                  stageLabel stageNumber)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRVersion comment: 
+'I model version numbers. I am comparable and I define a natural order.'
+%
+expectvalue /Class
+doit
+GRVersion category: 'Grease-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for GsContext
+expectvalue /Class
+doit
+Object subclass: 'GsContext'
+	instVarNames: #( continuation level method
+	                  source mySelf receiver)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GsContext category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for InflateStream
+expectvalue /Class
+doit
+ReadStream subclass: 'InflateStream'
+	instVarNames: #( readLimit state bitBuf
+	                  bitPos source sourcePos sourceLimit
+	                  litTable distTable sourceStream crc)
+	classVars: #( BlockProceedBit BlockTypes FixedDistCodes FixedLitCodes MaxBits StateNewBlock StateNoMoreData)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+InflateStream comment: 
+'ReadStream / ReadStreamLegacy is a PositionableStream that allows its objects to  be read but not written.'
+%
+expectvalue /Class
+doit
+InflateStream category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for FastInflateStream
+expectvalue /Class
+doit
+InflateStream subclass: 'FastInflateStream'
+	instVarNames: #()
+	classVars: #( DistanceMap FixedDistTable FixedLitTable LiteralLengthMap)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FastInflateStream comment: 
+'ReadStream / ReadStreamLegacy is a PositionableStream that allows its objects to  be read but not written.'
+%
+expectvalue /Class
+doit
+FastInflateStream category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for InvalidDirectoryError
+expectvalue /Class
+doit
+Error subclass: 'InvalidDirectoryError'
+	instVarNames: #( pathName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+InvalidDirectoryError category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for InvalidUtf8Error
+expectvalue /Class
+doit
+Error subclass: 'InvalidUtf8Error'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Utf8Encoding'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+InvalidUtf8Error category: 'Utf8Encoding'
+%
+set compile_env: 0
+! ------------------- Class definition for LimitedWriteStream
+expectvalue /Class
+doit
+WriteStreamPortable subclass: 'LimitedWriteStream'
+	instVarNames: #( limit limitBlock)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GsSqueakCommon-CoreV30'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+LimitedWriteStream category: 'GsSqueakCommon-CoreV30'
+%
+set compile_env: 0
+! ------------------- Class definition for MIMEDocument
+expectvalue /Class
+doit
+Object subclass: 'MIMEDocument'
+	instVarNames: #( mainType subType content
+	                  url)
+	classVars: #( MIMEdatabase)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+MIMEDocument category: 'Squeak-Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for MessageSend
+expectvalue /Class
+doit
+Object subclass: 'MessageSend'
+	instVarNames: #( receiver selector arguments)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+MessageSend category: 'Bootstrap-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for MimeConverter
+expectvalue /Class
+doit
+Object subclass: 'MimeConverter'
+	instVarNames: #( dataStream mimeStream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+MimeConverter category: 'Squeak-Collections-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for Base64MimeConverter
+expectvalue /Class
+doit
+MimeConverter subclass: 'Base64MimeConverter'
+	instVarNames: #( data)
+	classVars: #( FromCharTable ToCharTable)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Collections-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Base64MimeConverter category: 'Squeak-Collections-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for NumberParser
+expectvalue /Class
+doit
+Object subclass: 'NumberParser'
+	instVarNames: #( sourceStream base neg
+	                  integerPart fractionPart exponent scale
+	                  nDigits lastNonZero requestor failBlock
+	                  decimalPoint)
+	classVars: #( DefaultParserClass)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Numbers'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+NumberParser comment: 
+'NumberParser is an abstract class for parsing and building numbers from string/stream.It offers a framework with utility methods and exception handling.Number syntax is not defined and should be subclassResponsibility.Instance variables:sourceStream <Stream> the stream of characters from which the number is readbase <Integer> the radix in which to interpret digitsneg <Boolean> true in case of minus signintegerPart <Integer> the integer part of the numberfractionPart <Integer> the fraction part of the number if anyexponent <Integer> the exponent used in scientific notation if anyscale <Integer> the scale used in case of ScaledDecimal number if anynDigits <Integer> number of digits read to form an IntegerlasNonZero <Integer> position of last non zero digit, starting at 1 from left, 0 if all digits are zerorequestor <?> could eventually be used to insert an error message in a text editorfailBlock <BlockClosure> Block to execute whenever an error occurs'
+%
+expectvalue /Class
+doit
+NumberParser category: 'Squeak-Kernel-Numbers'
+%
+set compile_env: 0
+! ------------------- Class definition for ObjectLogEntry
+expectvalue /Class
+doit
+Object subclass: 'ObjectLogEntry'
+	instVarNames: #( pid stamp label
+	                  priority object tag)
+	classVars: #( ObjectLog ObjectQueue)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ObjectLogEntry category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for ProcessSpecificVariable
+expectvalue /Class
+doit
+Object subclass: 'ProcessSpecificVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #( hash)
+	poolDictionaries: #()
+	category: 'GsSqueakCommon-Core-Processes'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ProcessSpecificVariable comment: 
+'My subclasses (not instances of them) keep state specific to the current process.There are two kinds of process-specific variables: process-local (state availablefor read and write in all methods inside the process), and dynamic variables(implementing dynamic scope).'
+%
+expectvalue /Class
+doit
+ProcessSpecificVariable category: 'GsSqueakCommon-Core-Processes'
+%
+set compile_env: 0
+! ------------------- Class definition for DynamicVariable
+expectvalue /Class
+doit
+ProcessSpecificVariable subclass: 'DynamicVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GsSqueakCommon-Core-Processes'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+DynamicVariable comment: 
+'My subclasses are dynamic variables: each subclass represents a variablewhose value persists inside the block passed to #value:during:. There isno way to change the value inside such a block, but it is possible totemporarirly rebind it in a nested manner.'
+%
+expectvalue /Class
+doit
+DynamicVariable category: 'GsSqueakCommon-Core-Processes'
+%
+set compile_env: 0
+! ------------------- Class definition for GRDynamicVariable
+expectvalue /Class
+doit
+DynamicVariable subclass: 'GRDynamicVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GRDynamicVariable category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ProcessLocalVariable
+expectvalue /Class
+doit
+ProcessSpecificVariable subclass: 'ProcessLocalVariable'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GsSqueakCommon-Core-Processes'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ProcessLocalVariable comment: 
+'My subclasses have values specific to the active process. They can be read with #value and set with #value:'
+%
+expectvalue /Class
+doit
+ProcessLocalVariable category: 'GsSqueakCommon-Core-Processes'
+%
+set compile_env: 0
+! ------------------- Class definition for ReadWriteStream
+expectvalue /Class
+doit
+WriteStream subclass: 'ReadWriteStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ReadWriteStream comment: 
+'WriteStream / WriteStreamLegacy is a PositionableStream that allows its  objects to be written, but not read.'
+%
+expectvalue /Class
+doit
+ReadWriteStream category: 'Core-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for AnsiReadWriteStream
+expectvalue /Class
+doit
+ReadWriteStream subclass: 'AnsiReadWriteStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-ANSI-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+AnsiReadWriteStream category: 'GemStone-ANSI-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for FileStream
+expectvalue /Class
+doit
+ReadWriteStream subclass: 'FileStream'
+	instVarNames: #( gsfile streamType)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-ANSI-Streams'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FileStream category: 'GemStone-ANSI-Streams'
+%
+set compile_env: 0
+! ------------------- Class definition for RWBinaryOrTextStream
+expectvalue /Class
+doit
+ReadWriteStream subclass: 'RWBinaryOrTextStream'
+	instVarNames: #( isBinary name)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RWBinaryOrTextStream comment: 
+'WriteStream / WriteStreamLegacy is a PositionableStream that allows its  objects to be written, but not read.'
+%
+expectvalue /Class
+doit
+RWBinaryOrTextStream category: 'Core-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for RegexError
+expectvalue /Class
+doit
+Error subclass: 'RegexError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RegexError comment: 
+'This is a common superclass for errors in regular expressions.'
+%
+expectvalue /Class
+doit
+RegexError category: 'Regex-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for RegexCompilationError
+expectvalue /Class
+doit
+RegexError subclass: 'RegexCompilationError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RegexCompilationError comment: 
+'This class represents compilation errors in regular expressions.'
+%
+expectvalue /Class
+doit
+RegexCompilationError category: 'Regex-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for RegexMatchingError
+expectvalue /Class
+doit
+RegexError subclass: 'RegexMatchingError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RegexMatchingError comment: 
+'This class represents matching errors in regular expressions.'
+%
+expectvalue /Class
+doit
+RegexMatchingError category: 'Regex-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for RegexSyntaxError
+expectvalue /Class
+doit
+RegexError subclass: 'RegexSyntaxError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RegexSyntaxError comment: 
+'This class represents syntax errors in regular expressions.'
+%
+expectvalue /Class
+doit
+RegexSyntaxError category: 'Regex-Core-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for RxCharSetParser
+expectvalue /Class
+doit
+Object subclass: 'RxCharSetParser'
+	instVarNames: #( source lookahead elements)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxCharSetParser comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--I am a parser created to parse the insides of a character set ([...]) construct. I create and answer a collection of "elements", each being an instance of one of: RxsCharacter, RxsRange, or RxsPredicate.Instance Variables:	source	<Stream>	open on whatever is inside the square brackets we have to parse.	lookahead	<Character>	The current lookahead character	elements	<Collection of: <RxsCharacter|RxsRange|RxsPredicate>> Parsing result'
+%
+expectvalue /Class
+doit
+RxCharSetParser category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxMatchOptimizer
+expectvalue /Class
+doit
+Object subclass: 'RxMatchOptimizer'
+	instVarNames: #( ignoreCase prefixes nonPrefixes
+	                  conditions testBlock methodPredicates nonMethodPredicates
+	                  predicates nonPredicates)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxMatchOptimizer comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A match start optimizer, handy for searching a string. Takes a regex syntax tree and sets itself up so that prefix characters or matcher states that cannot start a match are later recognized with #canStartMatch:in: method.Used by RxMatcher, but can be used by other matchers (if implemented) as well.'
+%
+expectvalue /Class
+doit
+RxMatchOptimizer category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxMatcher
+expectvalue /Class
+doit
+Object subclass: 'RxMatcher'
+	instVarNames: #( matcher ignoreCase startOptimizer
+	                  stream markerPositions markerCount lastResult)
+	classVars: #( Cr Lf)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxMatcher comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--This is a recursive regex matcher. Not strikingly efficient, but simple. Also, keeps track of matched subexpressions.  The life cycle goes as follows:1. Initialization. Accepts a syntax tree (presumably produced by RxParser) and compiles it into a matcher built of other classes in this category.2. Matching. Accepts a stream or a string and returns a boolean indicating whether the whole stream or its prefix -- depending on the message sent -- matches the regex.3. Subexpression query. After a successful match, and before any other match, the matcher may be queried about the range of specific stream (string) positions that matched to certain parenthesized subexpressions of the original expression.Any number of queries may follow a successful match, and any number or matches may follow a successful initialization.Note that `matcher'' is actually a sort of a misnomer. The actual matcher is a web of Rxm* instances built by RxMatcher during initialization. RxMatcher is just the interface facade of this network.  It is also a builder of it, and also provides a stream-like protocol to easily access the stream being matched.Instance variables:	matcher				<RxmLink> The entry point into the actual matcher.	stream				<Stream> The stream currently being matched against.	markerPositions		<Array of: Integer> Positions of markers'' matches.	markerCount		<Integer> Number of markers.	lastResult 			<Boolean> Whether the latest match attempt succeeded or not.	lastChar			<Character | nil> character last seen in the matcher stream'
+%
+expectvalue /Class
+doit
+RxMatcher category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxParser
+expectvalue /Class
+doit
+Object subclass: 'RxParser'
+	instVarNames: #( input lookahead)
+	classVars: #( BackslashConstants BackslashSpecials)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxParser comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--The regular expression parser. Translates a regular expression read from a stream into a parse tree. (''accessing'' protocol). The tree can later be passed to a matcher initialization method.  All other classes in this category implement the tree. Refer to their comments for any details.Instance variables:	input		<Stream> A stream with the regular expression being parsed.	lookahead	<Character>'
+%
+expectvalue /Class
+doit
+RxParser category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmLink
+expectvalue /Class
+doit
+Object subclass: 'RxmLink'
+	instVarNames: #( next)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmLink comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A matcher is built of a number of links interconnected into some intricate structure. Regardless of fancy stuff, any link (except for the terminator) has the next one. Any link can match against a stream of characters, recursively propagating the match to the next link. Any link supports a number of matcher-building messages. This superclass does all of the above. The class is not necessarily abstract. It may double as an empty string matcher: it recursively propagates the match to the next link, thus always matching nothing successfully.Principal method:	matchAgainst: aMatcher		Any subclass will reimplement this to test the state of the matcher, most		probably reading one or more characters from the matcher''s stream, and		either decide it has matched and answer true, leaving matcher stream		positioned at the end of match, or answer false and restore the matcher		stream position to whatever it was before the matching attempt.Instance variables:	next		<RxmLink | RxmTerminator> The next link in the structure.'
+%
+expectvalue /Class
+doit
+RxmLink category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmBranch
+expectvalue /Class
+doit
+RxmLink subclass: 'RxmBranch'
+	instVarNames: #( loopback alternative)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmBranch comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--This is a branch of a matching process. Either `next'' chain should match, or `alternative'', if not nil, should match. Since this is also used to build loopbacks to match repetitions, `loopback'' variable indicates whether the instance is a loopback: it affects the matcher-building operations (which of the paths through the branch is to consider as the primary when we have to find the "tail" of a matcher construct).Instance variables	alternative		<RxmLink> to match if `next'' fails to match.	loopback		<Boolean>'
+%
+expectvalue /Class
+doit
+RxmBranch category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmMarker
+expectvalue /Class
+doit
+RxmLink subclass: 'RxmMarker'
+	instVarNames: #( index)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmMarker comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A marker is used to remember positions of match of certain points of a regular expression. The marker receives an identifying key from the Matcher and uses that key to report positions of successful matches to the Matcher.Instance variables:	index	<Object> Something that makes sense for the Matcher. Received from the latter during initalization and later passed to it to identify the receiver.'
+%
+expectvalue /Class
+doit
+RxmMarker category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmPredicate
+expectvalue /Class
+doit
+RxmLink subclass: 'RxmPredicate'
+	instVarNames: #( predicate)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmPredicate comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--Instance holds onto a one-argument block and matches exactly one character if the block evaluates to true when passed the character as the argument.Instance variables:	predicate		<BlockClosure>'
+%
+expectvalue /Class
+doit
+RxmPredicate category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmSpecial
+expectvalue /Class
+doit
+RxmLink subclass: 'RxmSpecial'
+	instVarNames: #( matchSelector)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmSpecial comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A special node that matches a specific matcher state rather than any input character.The state is either at-beginning-of-line or at-end-of-line.'
+%
+expectvalue /Class
+doit
+RxmSpecial category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmSubstring
+expectvalue /Class
+doit
+RxmLink subclass: 'RxmSubstring'
+	instVarNames: #( sample compare)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmSubstring comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--Instance holds onto a string and matches exactly this string, and exactly once.Instance variables:	string 	<String>'
+%
+expectvalue /Class
+doit
+RxmSubstring category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxmTerminator
+expectvalue /Class
+doit
+Object subclass: 'RxmTerminator'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxmTerminator comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--Instances of this class are used to terminate matcher''s chains. When a match reaches this (an instance receives #matchAgainst: message), the match is considered to succeed. Instances also support building protocol of RxmLinks, with some restrictions.'
+%
+expectvalue /Class
+doit
+RxmTerminator category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsNode
+expectvalue /Class
+doit
+Object subclass: 'RxsNode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsNode comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A generic syntax tree node, provides some common responses to the standard tests, as well as tree structure printing -- handy for debugging.'
+%
+expectvalue /Class
+doit
+RxsNode category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsBranch
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsBranch'
+	instVarNames: #( piece branch)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsBranch comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A Branch is a Piece followed by a Branch or an empty string.Instance variables:	piece		<RxsPiece>	branch		<RxsBranch|RxsEpsilon>'
+%
+expectvalue /Class
+doit
+RxsBranch category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsCharSet
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsCharSet'
+	instVarNames: #( negated elements)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsCharSet comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A character set corresponds to a [...] construct in the regular expression.Instance variables:	elements	<OrderedCollection> An element can be one of: RxsCharacter, RxsRange, or RxsPredicate.	negated		<Boolean>'
+%
+expectvalue /Class
+doit
+RxsCharSet category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsCharacter
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsCharacter'
+	instVarNames: #( character)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsCharacter comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A character is a literal character that appears either in the expression itself or in a character set within an expression.Instance variables:	character		<Character>'
+%
+expectvalue /Class
+doit
+RxsCharacter category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsContextCondition
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsContextCondition'
+	instVarNames: #( kind)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsContextCondition comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--One of a few special nodes more often representing special state of the match rather than a predicate on a character.  The ugly exception is the #any condition which *is* a predicate on a character.Instance variables:	kind		<Selector>'
+%
+expectvalue /Class
+doit
+RxsContextCondition category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsEpsilon
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsEpsilon'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsEpsilon comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--This is an empty string.  It terminates some of the recursive constructs.'
+%
+expectvalue /Class
+doit
+RxsEpsilon category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsMessagePredicate
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsMessagePredicate'
+	instVarNames: #( selector negated)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsMessagePredicate comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A message predicate represents a condition on a character that is tested (at the match time) by sending a unary message to the character expecting a Boolean answer.Instance variables:	selector		<Symbol>'
+%
+expectvalue /Class
+doit
+RxsMessagePredicate category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsPiece
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsPiece'
+	instVarNames: #( atom min max)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsPiece comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--A piece is an atom, possibly optional or repeated a number of times.Instance variables:	atom	<RxsCharacter|RxsCharSet|RxsPredicate|RxsRegex|RxsSpecial>	min		<Integer>	max	<Integer|nil> nil means infinity'
+%
+expectvalue /Class
+doit
+RxsPiece category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsPredicate
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsPredicate'
+	instVarNames: #( predicate negation)
+	classVars: #( EscapedLetterSelectors NamedClassSelectors)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsPredicate comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--This represents a character that satisfies a certain predicate.Instance Variables:	predicate	<BlockClosure>	A one-argument block. If it evaluates to the value defined by <negated> when it is passed a character, the predicate is considered to match.	negation	<BlockClosure>	A one-argument block that is a negation of <predicate>.'
+%
+expectvalue /Class
+doit
+RxsPredicate category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsRange
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsRange'
+	instVarNames: #( first last)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsRange comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--I represent a range of characters as appear in character classes such as	[a-ZA-Z0-9].I appear in a syntax tree only as an element of RxsCharSet.Instance Variables:	first	<Character>	last	<Character>'
+%
+expectvalue /Class
+doit
+RxsRange category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for RxsRegex
+expectvalue /Class
+doit
+RxsNode subclass: 'RxsRegex'
+	instVarNames: #( branch regex)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Regex-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+RxsRegex comment: 
+'-- Regular Expression Matcher v 1.1 (C) 1996, 1999 Vassili Bykov--The body of a parenthesized thing, or a top-level expression, also an atom.  Instance variables:	branch		<RxsBranch>	regex		<RxsRegex | RxsEpsilon>'
+%
+expectvalue /Class
+doit
+RxsRegex category: 'Regex-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for SecureHashAlgorithm
+expectvalue /Class
+doit
+Object subclass: 'SecureHashAlgorithm'
+	instVarNames: #( totalA totalB totalC
+	                  totalD totalE totals)
+	classVars: #( K1 K2 K3 K4)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'System-Digital-Signatures'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SecureHashAlgorithm comment: 
+'This class implements the Secure Hash Algorithm (SHA) described in the U.S. government''s Secure Hash Standard (SHS). This standard is described in FIPS PUB 180-1, "SECURE HASH STANDARD", April 17, 1995.The Secure Hash Algorithm is also described on p. 442 of ''Applied Cryptography: Protocols, Algorithms, and Source Code in C'' by Bruce Scheier, Wiley, 1996.See the comment in class DigitalSignatureAlgorithm for details on its use.Implementation notes:The secure hash standard was created with 32-bit hardware in mind. All arithmetic in the hash computation must be done modulo 2^32. This implementation uses ThirtyTwoBitRegister objects to simulate hardware registers; this implementation is about six times faster than using LargePositiveIntegers (measured on a Macintosh G3 Powerbook). Implementing a primitive to process each 64-byte buffer would probably speed up the computation by a factor of 20 or more.'
+%
+expectvalue /Class
+doit
+SecureHashAlgorithm category: 'System-Digital-Signatures'
+%
+set compile_env: 0
+! ------------------- Class definition for ServerFileDirectory
+expectvalue /Class
+doit
+FileDirectory subclass: 'ServerFileDirectory'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ServerFileDirectory category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for SharedPool
+expectvalue /Class
+doit
+Object subclass: 'SharedPool'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SharedPool category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for ChronologyConstants
+expectvalue /Class
+doit
+SharedPool subclass: 'ChronologyConstants'
+	instVarNames: #( seconds offset jdn
+	                  nanos)
+	classVars: #( DayNames DaysInMonth MonthNames NanosInMillisecond NanosInSecond SecondsInDay SecondsInHour SecondsInMinute SqueakEpoch)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Chronology'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ChronologyConstants comment: 
+'ChronologyConstants is a SharedPool for the constants used by the Kernel-Chronology classes.'
+%
+expectvalue /Class
+doit
+ChronologyConstants category: 'Squeak-Kernel-Chronology'
+%
+set compile_env: 0
+! ------------------- Class definition for GZipConstants
+expectvalue /Class
+doit
+SharedPool subclass: 'GZipConstants'
+	instVarNames: #()
+	classVars: #( GZipAsciiFlag GZipCommentFlag GZipContinueFlag GZipDeflated GZipEncryptFlag GZipExtraField GZipMagic GZipNameFlag GZipReservedFlags)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GZipConstants category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for GZipReadStream
+expectvalue /Class
+doit
+FastInflateStream subclass: 'GZipReadStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {GZipConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GZipReadStream comment: 
+'ReadStream / ReadStreamLegacy is a PositionableStream that allows its objects to  be read but not written.'
+%
+expectvalue /Class
+doit
+GZipReadStream category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for SmalltalkProxy
+expectvalue /Class
+doit
+Object subclass: 'SmalltalkProxy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SmalltalkProxy category: 'Core-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for SocketStreamSocket
+expectvalue /Class
+doit
+Object subclass: 'SocketStreamSocket'
+	instVarNames: #( underlyingSocket)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'SocketStream'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SocketStreamSocket category: 'SocketStream'
+%
+set compile_env: 0
+! ------------------- Class definition for HTTPSocket
+expectvalue /Class
+doit
+SocketStreamSocket subclass: 'HTTPSocket'
+	instVarNames: #( headerTokens headers responseCode)
+	classVars: #( CR CrLf HTTPBlabEmail HTTPProxyCredentials HTTPProxyExceptions HTTPProxyPassword HTTPProxyPort HTTPProxyServer HTTPProxyUser LF)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+HTTPSocket category: 'Squeak-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for SqNumberParser
+expectvalue /Class
+doit
+NumberParser subclass: 'SqNumberParser'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Numbers'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SqNumberParser comment: 
+'SqNumberParser is a NumberParser specialized in reading Number with Squeak syntax.Squeak syntax follows general Smalltalk-80 conventions for integer and floats, extended with scaled decimals.Noticeable differences with st-80 and other Smalltalks are:- allow both 2r-10 and -2r10 and even -2r-10- allow floating point with radix 2r10.011- do not allow single s without following digits as ScaledDecimal- handle special case of Float (NaN Infinity and -0.0 as negative zero)'
+%
+expectvalue /Class
+doit
+SqNumberParser category: 'Squeak-Kernel-Numbers'
+%
+set compile_env: 0
+! ------------------- Class definition for Stack
+expectvalue /Class
+doit
+OrderedCollection indexableSubclass: 'Stack'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GsSqueakCommon-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Stack category: 'GsSqueakCommon-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for SystemTransactionNotification
+expectvalue /Class
+doit
+Notification subclass: 'SystemTransactionNotification'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SystemTransactionNotification category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for SystemAbortTransaction
+expectvalue /Class
+doit
+SystemTransactionNotification subclass: 'SystemAbortTransaction'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SystemAbortTransaction category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for SystemBeginTransaction
+expectvalue /Class
+doit
+SystemTransactionNotification subclass: 'SystemBeginTransaction'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SystemBeginTransaction category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for SystemCommitTransaction
+expectvalue /Class
+doit
+SystemTransactionNotification subclass: 'SystemCommitTransaction'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Grease-GemStone-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SystemCommitTransaction category: 'Grease-GemStone-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ThirtyTwoBitRegister
+expectvalue /Class
+doit
+Object subclass: 'ThirtyTwoBitRegister'
+	instVarNames: #( hi low)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'System-Digital-Signatures'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ThirtyTwoBitRegister comment: 
+'I represent a 32-bit register. An instance of me can hold any non-negative integer in the range [0..(2^32 - 1)]. Operations are performed on my contents in place, like a hardware register, and results are always modulo 2^32.This class is primarily meant for use by the SecureHashAlgorithm class.'
+%
+expectvalue /Class
+doit
+ThirtyTwoBitRegister category: 'System-Digital-Signatures'
+%
+set compile_env: 0
+! ------------------- Class definition for TimeStamp
+expectvalue /Class
+doit
+DateAndTime subclass: 'TimeStamp'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Chronology'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+TimeStamp category: 'Squeak-Kernel-Chronology'
+%
+set compile_env: 0
+! ------------------- Class definition for Timespan
+expectvalue /Class
+doit
+Magnitude subclass: 'Timespan'
+	instVarNames: #( start duration)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Chronology'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Timespan category: 'Squeak-Kernel-Chronology'
+%
+set compile_env: 0
+! ------------------- Class definition for Month
+expectvalue /Class
+doit
+Timespan subclass: 'Month'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ChronologyConstants _classVars }
+	category: 'Squeak-Kernel-Chronology'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Month category: 'Squeak-Kernel-Chronology'
+%
+set compile_env: 0
+! ------------------- Class definition for TranscriptProxy
+expectvalue /Class
+doit
+Object subclass: 'TranscriptProxy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+TranscriptProxy category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for TransientSemaphore
+expectvalue /Class
+doit
+Object subclass: 'TransientSemaphore'
+	instVarNames: #( semaphore)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #( dbTransient)
+
+%
+expectvalue /Class
+doit
+TransientSemaphore category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for TransientMutex
+expectvalue /Class
+doit
+TransientSemaphore subclass: 'TransientMutex'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+TransientMutex category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for TransientRecursionLock
+expectvalue /Class
+doit
+TransientMutex subclass: 'TransientRecursionLock'
+	instVarNames: #( lockingProcess)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+TransientRecursionLock category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for TransientStackValue
+expectvalue /Class
+doit
+Object subclass: 'TransientStackValue'
+	instVarNames: #( value)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Bootstrap-Gemstone'
+	inDictionary: ZincGlobals
+	options: #( dbTransient)
+
+%
+expectvalue /Class
+doit
+TransientStackValue comment: 
+'I keep my references alive as long as I am referenced from the stack (or other temp object). Being dbTransient means that I may be committed, but my value will not be committed.I am useful for wrapping instances of Semaphore, GsSocket, etc. from objects that pretty much only live on the stack, but may be persisted in continuation that are saved for debugging purposes.If I or my value are not directly referenced from SessionTemps in some way, then I and my value is subject to garbage collection ...If you cannot guaranteed that I am reachable from SessionTemps, then use TransientValue. TransientValue guarantees a SessionTemps reference.'
+%
+expectvalue /Class
+doit
+TransientStackValue category: 'Bootstrap-Gemstone'
+%
+set compile_env: 0
+! ------------------- Class definition for UTF8Encoding
+expectvalue /Class
+doit
+Object subclass: 'UTF8Encoding'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Utf8Encoding'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+UTF8Encoding category: 'Utf8Encoding'
+%
+set compile_env: 0
+! ------------------- Class definition for UTF8PrimitiveEncoding
+expectvalue /Class
+doit
+UTF8Encoding subclass: 'UTF8PrimitiveEncoding'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Utf8Encoding'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+UTF8PrimitiveEncoding category: 'Utf8Encoding'
+%
+set compile_env: 0
+! ------------------- Class definition for UUID
+expectvalue /Class
+doit
+ByteArray subclass: 'UUID'
+	instVarNames: #()
+	classVars: #( GeneratorClass)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-Squeak'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+UUID category: 'Core-Squeak'
+%
+set compile_env: 0
+! ------------------- Class definition for Url
+expectvalue /Class
+doit
+Object subclass: 'Url'
+	instVarNames: #( fragment)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Url comment: 
+'A Uniform Resource Locator.  It specifies the location of a document on the Internet.  The base class is abstract; child classes break different types of URLs down in ways appropriate for that type.'
+%
+expectvalue /Class
+doit
+Url category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for FileUrl
+expectvalue /Class
+doit
+Url subclass: 'FileUrl'
+	instVarNames: #( host path isAbsolute)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FileUrl comment: 
+'This class models a file URL according to (somewhat) RFC1738, see http://www.w3.org/Addressing/rfc1738.txtHere is the relevant part of the RFC:3.10 FILES   The file URL scheme is used to designate files accessible on a   particular host computer. This scheme, unlike most other URL schemes,   does not designate a resource that is universally accessible over the   Internet.   A file URL takes the form:       file://<host>/<path>   where <host> is the fully qualified domain name of the system on   which the <path> is accessible, and <path> is a hierarchical   directory path of the form <directory>/<directory>/.../<name>.   For example, a VMS file     DISK$USER:[MY.NOTES]NOTE123456.TXT   might become     <URL:file://vms.host.edu/disk$user/my/notes/note12345.txt>   As a special case, <host> can be the string "localhost" or the empty   string; this is interpreted as `the machine from which the URL is   being interpreted''.   The file URL scheme is unusual in that it does not specify an   Internet protocol or access method for such files; as such, its   utility in network protocols between hosts is limited.From the above we can conclude that the RFC says that the <path> part never starts or ends with a slash and is always absolute. If the last name can be a directory instead of a file is not specified clearly.The path is stored as a SequenceableCollection of path parts.Notes regarding non RFC features in this class:- If the last path part is the empty string, then the FileUrl is referring to a directory. This is also shown with a trailing slash when converted to a String.- The FileUrl has an attribute isAbsolute which signals if the path should be considered absolute or relative to the current directory. This distinction is not visible in the String representation of FileUrl, since the RFC does not have that.- Fragment is supported (kept for historical reasons)'
+%
+expectvalue /Class
+doit
+FileUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for GenericUrl
+expectvalue /Class
+doit
+Url subclass: 'GenericUrl'
+	instVarNames: #( schemeName locator)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GenericUrl comment: 
+'a URL type that can''t be broken down in any systematic way.  For example, mailto: and telnet: URLs.  The part after the scheme name is stored available via the #locator message.'
+%
+expectvalue /Class
+doit
+GenericUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for BrowserUrl
+expectvalue /Class
+doit
+GenericUrl subclass: 'BrowserUrl'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+BrowserUrl comment: 
+'URLs that instruct a browser to do something.'
+%
+expectvalue /Class
+doit
+BrowserUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for HierarchicalUrl
+expectvalue /Class
+doit
+Url subclass: 'HierarchicalUrl'
+	instVarNames: #( schemeName authority path
+	                  query port username password)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+HierarchicalUrl comment: 
+'A URL which has a hierarchical encoding.  For instance, http and ftp URLs are hierarchical.'
+%
+expectvalue /Class
+doit
+HierarchicalUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for FtpUrl
+expectvalue /Class
+doit
+HierarchicalUrl subclass: 'FtpUrl'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+FtpUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for HttpUrl
+expectvalue /Class
+doit
+HierarchicalUrl subclass: 'HttpUrl'
+	instVarNames: #( realm)
+	classVars: #( Passwords)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+HttpUrl comment: 
+'A URL that can be accessed via the Hypertext Transfer Protocol (HTTP), ie, a standard Web URLrealm = the name of the security realm that has been discovered for this URL.   Look it up in Passwords.Passwords = a Dictionary of (realm -> encoded user&password)TODO: use the username and password, if specified'
+%
+expectvalue /Class
+doit
+HttpUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for HttpsUrl
+expectvalue /Class
+doit
+HttpUrl subclass: 'HttpsUrl'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+HttpsUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for MailtoUrl
+expectvalue /Class
+doit
+GenericUrl subclass: 'MailtoUrl'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Network-Url'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+MailtoUrl comment: 
+'a URL specifying a mailing address; activating it triggers a mail-sender to start up, if one is present.'
+%
+expectvalue /Class
+doit
+MailtoUrl category: 'Network-Url'
+%
+set compile_env: 0
+! ------------------- Class definition for WordArray
+expectvalue /Class
+doit
+ArrayedCollection subclass: 'WordArray'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+WordArray comment: 
+'WordArrays store 32-bit unsigned Integer values.'
+%
+expectvalue /Class
+doit
+WordArray category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for Year
+expectvalue /Class
+doit
+Timespan subclass: 'Year'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Squeak-Kernel-Chronology'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+Year category: 'Squeak-Kernel-Chronology'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipConstants
+expectvalue /Class
+doit
+SharedPool subclass: 'ZipConstants'
+	instVarNames: #()
+	classVars: #( BaseDistance BaseLength BitLengthOrder DistanceCodes DynamicBlock EndBlock ExtraBitLengthBits ExtraDistanceBits ExtraLengthBits FixedBlock FixedDistanceTree FixedLiteralTree HashBits HashMask HashShift MatchLengthCodes MaxBitLengthBits MaxBitLengthCodes MaxBits MaxDistance MaxDistCodes MaxLengthCodes MaxLiteralCodes MaxMatch MinMatch NumLiterals Repeat11To138 Repeat3To10 Repeat3To6 StoredBlock WindowMask WindowSize)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipConstants category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipEncoder
+expectvalue /Class
+doit
+WriteStream subclass: 'ZipEncoder'
+	instVarNames: #( bitBuffer bitPosition encodedStream
+	                  isBinary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipEncoder comment: 
+'WriteStream / WriteStreamLegacy is a PositionableStream that allows its  objects to be written, but not read.'
+%
+expectvalue /Class
+doit
+ZipEncoder category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipEncoderNode
+expectvalue /Class
+doit
+Object subclass: 'ZipEncoderNode'
+	instVarNames: #( value frequency height
+	                  bitLength code parent left
+	                  right)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipEncoderNode category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipEncoderTree
+expectvalue /Class
+doit
+Object subclass: 'ZipEncoderTree'
+	instVarNames: #( bitLengths codes maxCode)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipEncoderTree category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipFileConstants
+expectvalue /Class
+doit
+SharedPool subclass: 'ZipFileConstants'
+	instVarNames: #()
+	classVars: #( CentralDirectoryFileHeaderSignature CompressionDeflated CompressionLevelDefault CompressionLevelNone CompressionStored DataDescriptorLength DefaultDirectoryPermissions DefaultFilePermissions DeflatingCompressionFast DeflatingCompressionMaximum DeflatingCompressionNormal DeflatingCompressionSuperFast DirectoryAttrib EndOfCentralDirectorySignature FaMsdos FaUnix FileAttrib IfaBinaryFile IfaTextFile LocalFileHeaderSignature)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Core-SharedPool'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipFileConstants category: 'Core-SharedPool'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipArchive
+expectvalue /Class
+doit
+Archive subclass: 'ZipArchive'
+	instVarNames: #( centralDirectorySize centralDirectoryOffsetWRTStartingDiskNumber zipFileComment
+	                  writeCentralDirectoryOffset writeEOCDOffset)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipFileConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipArchive category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipArchiveMember
+expectvalue /Class
+doit
+ArchiveMember subclass: 'ZipArchiveMember'
+	instVarNames: #( lastModFileDateTime fileAttributeFormat versionMadeBy
+	                  versionNeededToExtract bitFlag compressionMethod desiredCompressionMethod
+	                  desiredCompressionLevel internalFileAttributes externalFileAttributes cdExtraField
+	                  localExtraField fileComment crc32 compressedSize
+	                  uncompressedSize writeLocalHeaderRelativeOffset readDataRemaining)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipFileConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipArchiveMember category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipFileMember
+expectvalue /Class
+doit
+ZipArchiveMember subclass: 'ZipFileMember'
+	instVarNames: #( externalFileName stream localHeaderRelativeOffset
+	                  dataOffset)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipFileConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipFileMember category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipNewFileMember
+expectvalue /Class
+doit
+ZipArchiveMember subclass: 'ZipNewFileMember'
+	instVarNames: #( externalFileName stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipFileConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipNewFileMember comment: 
+'ZipNewFileMember instances are used to represent files that are going to be written to a ZipArchive.Their data comes from external file streams.'
+%
+expectvalue /Class
+doit
+ZipNewFileMember category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipReadStream
+expectvalue /Class
+doit
+FastInflateStream subclass: 'ZipReadStream'
+	instVarNames: #( expectedCrc)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipReadStream comment: 
+'ReadStream / ReadStreamLegacy is a PositionableStream that allows its objects to  be read but not written.'
+%
+expectvalue /Class
+doit
+ZipReadStream category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipStringMember
+expectvalue /Class
+doit
+ZipArchiveMember subclass: 'ZipStringMember'
+	instVarNames: #( contents stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {ZipFileConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipStringMember category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for ZipWriteStream
+expectvalue /Class
+doit
+WriteStream subclass: 'ZipWriteStream'
+	instVarNames: #( writeLimit hashHead hashTail
+	                  hashValue blockPosition blockStart literals
+	                  distances literalFreq distanceFreq litCount
+	                  matchCount encoder crc crcPosition
+	                  bytesWritten)
+	classVars: #( CrcTable VerboseLevel)
+	classInstVars: #()
+	poolDictionaries:  {ZipConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZipWriteStream comment: 
+'WriteStream / WriteStreamLegacy is a PositionableStream that allows its  objects to be written, but not read.'
+%
+expectvalue /Class
+doit
+ZipWriteStream category: 'GemStone-Compression'
+%
+set compile_env: 0
+! ------------------- Class definition for GZipWriteStream
+expectvalue /Class
+doit
+ZipWriteStream subclass: 'GZipWriteStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries:  {GZipConstants _classVars }
+	category: 'GemStone-Compression'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+GZipWriteStream comment: 
+'WriteStream / WriteStreamLegacy is a PositionableStream that allows its  objects to be written, but not read.'
+%
+expectvalue /Class
+doit
+GZipWriteStream category: 'GemStone-Compression'
+%

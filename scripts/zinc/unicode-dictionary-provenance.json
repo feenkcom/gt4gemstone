@@ -1,0 +1,29 @@
+[
+	{
+		"inheritedSource" : "associationAt: aKey otherwise: defaultValue\n\n\"Returns the Association with key aKey.  If no such Association\n exists, returns the given default value.\"\n\n| index anAssoc |\n\naKey == nil ifTrue:[ ^ defaultValue ] .\n\nindex := self hashFunction: aKey.\nanAssoc := self _at: index.\n\n(anAssoc == nil) ifTrue:[^ defaultValue ].\n\n(anAssoc _isSmallInteger)\n  \"There is a collision. Follow the chain.\"\n  ifTrue: [\n    index := anAssoc.\n    [index ~~ nil]\n    whileTrue: [\n      anAssoc := self _at: index.\n      (anAssoc key = aKey)\n        ifTrue: [^ anAssoc]\n        ifFalse: [index := self _at: (index + 1)].\n      ].\n    ^ defaultValue\n    ].\n\n(anAssoc key = aKey)\n  ifTrue: [ ^ anAssoc ].\n\n^ defaultValue\n",
+		"reason" : "Reference Unicode16 String equality preserved locally for string keys; nonstring equality and native hash/bucket logic unchanged.",
+		"inheritedSHA256" : "b7199e037f49673f1e6df2345be38ec4fc3a9e8477696f4a3b1ac9a10d839065",
+		"sourceClass" : "Dictionary",
+		"selector" : "associationAt:otherwise:",
+		"targetClass" : "ZnMultiValueDictionary",
+		"protocol" : "Accessing"
+	},
+	{
+		"inheritedSource" : "associationAtOrNil: aKey hash: aHashVal\n\n\"Returns the Association with key aKey.  If no such Association exists, returns\n nil.  The search is only done in the hash chain that corresponds to aHashVal.\"\n\n| index anAssoc |\n\nanAssoc := self _at: aHashVal.\n\n(anAssoc == nil) ifTrue: [ ^ nil ].\n\n(anAssoc _isSmallInteger)\n  \"There is a collision. Follow the chain.\"\n  ifTrue: [\n    index := anAssoc.\n    [nil ~~ index]\n    whileTrue: [\n      anAssoc := self _at: index.\n      (anAssoc key = aKey)\n        ifTrue: [^ anAssoc]\n        ifFalse: [index := self _at: (index + 1)].\n      ].\n    ^ nil.\n    ].\n\n(anAssoc key = aKey)\n  ifTrue: [ ^ anAssoc ].\n\n^ nil.\n",
+		"reason" : "Reference Unicode16 String equality preserved locally for string keys; nonstring equality and native hash/bucket logic unchanged.",
+		"inheritedSHA256" : "86931c65303b6cb9493948deaff91dc1aba2da7d7d7244af02de54d21e56b218",
+		"sourceClass" : "Dictionary",
+		"selector" : "associationAtOrNil:hash:",
+		"targetClass" : "ZnMultiValueDictionary",
+		"protocol" : "Private"
+	},
+	{
+		"inheritedSource" : "removeKey: aKey otherwise: defaultValue\n\n\"Removes an element from the receiver with key aKey and returns an Association.\n If an element with key aKey is not present, returns defaultValue.\"\n\n| prevIndex index anAssociation |\n\naKey ifNil:[ self _error: #rtErrNilKey ].\nindex := self hashFunction: aKey .\nanAssociation := self _at: index.\n\n(anAssociation == nil) ifTrue: [^ defaultValue ].\n\n(anAssociation _isSmallInteger)\n  ifTrue: [\n    \"Need to follow the collision chains.\"\n    prevIndex := index.\n    index := anAssociation.\n    [index ~~ nil]\n    whileTrue: [\n      anAssociation := self _at: index.\n      (anAssociation key = aKey)\n        ifTrue: [\n           self basicAt: prevIndex put: (self _at: (index + 1)).\n           self basicAt: index put: nil.\n           self basicAt: (index + 1) put: nil.\n           count := count - 1.\n           ^ anAssociation.\n           ]\n        ifFalse: [\n          \"Go to the next one.\"\n          prevIndex := index + 1.\n          index := self _at: (index + 1)\n          ].\n      ].\n    ^ defaultValue\n    ].\n\n(anAssociation key = aKey) ifTrue:[\n  self basicAt: index put: nil.\n  count := count - 1.\n  ^ anAssociation.\n  ].\n^ defaultValue\n",
+		"reason" : "Reference Unicode16 String equality preserved locally for string keys; nonstring equality and native hash/bucket logic unchanged.",
+		"inheritedSHA256" : "78c7a92b11f00695138f1ffe279e1ee6b770d8457fbc32e9b9c00fc5e12f77ac",
+		"sourceClass" : "Dictionary",
+		"selector" : "removeKey:otherwise:",
+		"targetClass" : "ZnMultiValueDictionary",
+		"protocol" : "Removing"
+	}
+]
