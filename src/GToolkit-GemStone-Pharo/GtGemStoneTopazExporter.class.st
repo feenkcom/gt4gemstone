@@ -669,6 +669,27 @@ GtGemStoneTopazExporter >> writeNewMethodsOn: aStream [
 	aStream << 'true'; lf; << '%'; lf; lf
 ]
 
+{ #category : #writing }
+GtGemStoneTopazExporter >> writeRbAliasStubsOn: aStream [
+	"Keep legacy RB names available alongside their OC stub classes."
+	| aliases |
+	aliases := self class environment associations select: [ :association |
+		(association key beginsWith: 'RB')
+			and: [ association value isBehavior
+				and: [ (association value name beginsWith: 'OC')
+					and: [ (stubClasses includes: association value)
+						and: [ (excludedClasses includes: association value) not
+							and: [ (self gemstoneClassNames includes: association key) not ] ] ] ] ] ].
+	(aliases sorted: [ :left :right | left key < right key ]) do: [ :association |
+		aStream
+			<< 'doit'; lf;
+			<< '('; << association value name;
+			<< ' subclass: '''; << association key;
+			<< ''' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()) category: ''GToolkit-Stubs'';'; lf;
+			<< '  immediateInvariant.'; lf;
+			<< '%'; lf; lf ]
+]
+
 { #category : #exporting }
 GtGemStoneTopazExporter >> writeTo: aFileReference [
 	aFileReference ensureDelete.
@@ -685,6 +706,7 @@ GtGemStoneTopazExporter >> writeTopazOn: aStream [
 	classes := self selectedClasses.
 	self writeHeaderOn: aStream.
 	self classesToDefine do: [ :each | self writeDefinitionOf: each on: aStream ].
+	self writeRbAliasStubsOn: aStream.
 	classes do: [ :each | self writeMethodRemovalsFor: each on: aStream ].
 	classes do: [ :each | self writeMethodsOf: each on: aStream ].
 	includeGsCodeMethods ifTrue: [ self writeGsCodeMethodsOn: aStream ].

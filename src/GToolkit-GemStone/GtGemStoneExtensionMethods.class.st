@@ -120,6 +120,27 @@ GtGemStoneExtensionMethods class >> ext_Behavior_compiler [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Behavior_lookupSelector_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #lookupSelector:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Behavior;
+		hash: #new;
+		source: 'lookupSelector: aSelector
+	<gtGsExtension>
+	"Answer the method, including inherited methods, or nil if absent."
+	| behavior method |
+	behavior := self.
+	[ behavior notNil ] whileTrue: [
+		method := behavior compiledMethodAt: aSelector environmentId: 0 otherwise: nil.
+		method ifNotNil: [ ^ method ].
+		behavior := behavior superclass ].
+	^ nil'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Behavior_protocolNames [
  ^ GtGemStoneExtensionMethod new
   selector: #protocolNames;
@@ -145,6 +166,74 @@ GtGemStoneExtensionMethods class >> ext_Behavior_selectorsInProtocol_ [
   source: 'selectorsInProtocol: aProtocol
  <gtGsExtension>
  ^ self selectorsIn: aProtocol'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_BlockClosure_asSortFunction [
+	^ GtGemStoneExtensionMethod new
+		selector: #asSortFunction;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #BlockClosure;
+		hash: #new;
+		source: 'asSortFunction
+	<gtGsExtension>
+	"Return a SortFunction around the receiver. If the receiver is a 2 arg block, it is assumed it will do the collation directly itself, returning -1, 0, or 1. If the receiver is a one arg block, it will be evaluated for each a and b and of the sort input, and the result of sending <=> to those will be used"
+
+	self numArgs = 1 ifTrue: [^PropertySortFunction property: self].
+	self numArgs = 2 ifTrue: [^CollatorBlockFunction usingBlock: self].
+
+	self error: ''Can not be converted to sort function. It should have one or two args'''
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_BlockClosure_ascending [
+	^ GtGemStoneExtensionMethod new
+		selector: #ascending;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #BlockClosure;
+		hash: #new;
+		source: 'ascending
+	<gtGsExtension>
+	"Return a SortFunction around the receiver. If the receiver is a 2 arg block, it is assumed it will do the collation directly itself, returning -1, 0, or 1. If the receiver is a one arg block, it will be evaluated for each a and b and of the sort input, and the result of sending <=> to those will be used."
+
+	^self asSortFunction'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_BlockClosure_collatedBy_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #collatedBy:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #BlockClosure;
+		hash: #new;
+		source: 'collatedBy: aSortFunction
+	<gtGsExtension>
+	"Return a SortFunction around the receiver. If the receiver is a 2 arg block, it is assumed it will do the collation directly itself, returning -1, 0, or 1. If the receiver is a one arg block, it will be evaluated for each a and b and of the sort input, and the result of using aSortFunction on those will be used"
+
+	self numArgs = 1 ifTrue: [^PropertySortFunction property: self collatedWith: aSortFunction asSortFunction].
+	self error: ''Can not be converted to sort function. It should have one arg'''
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_BlockClosure_descending [
+	^ GtGemStoneExtensionMethod new
+		selector: #descending;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #BlockClosure;
+		hash: #new;
+		source: 'descending
+	<gtGsExtension>
+	"Opposite direction as ascending."
+
+	^self asSortFunction reversed'
 ]
 
 { #category : #extensions }
@@ -175,6 +264,20 @@ GtGemStoneExtensionMethods class >> ext_Boolean_neoJsonOn_ [
  source: 'neoJsonOn: neoJSONWriter
  <gtGsExtension>
 	neoJSONWriter writeBoolean: self'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Boolean_threeWayCompareTo_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #threeWayCompareTo:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Boolean;
+		hash: #new;
+		source: 'threeWayCompareTo: anotherObject
+	<gtGsExtension>
+	^ self asBit threeWayCompareTo: anotherObject asBit'
 ]
 
 { #category : #extensions }
@@ -233,6 +336,20 @@ GtGemStoneExtensionMethods class >> ext_ByteArray_neoJsonOn_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Class_isClassSide [
+	^ GtGemStoneExtensionMethod new
+		selector: #isClassSide;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Class;
+		hash: #new;
+		source: 'isClassSide
+	<gtGsExtension>
+	^ self isMeta'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Class_withAllSubclasses [
  ^ GtGemStoneExtensionMethod new
   selector: #withAllSubclasses;
@@ -283,6 +400,22 @@ GtGemStoneExtensionMethods class >> ext_Collection_asOrderedDictionary [
 	<gtGsExtension>
 ^ self as: OrderedDictionary'
 
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Collection_asStringOn_delimiter_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #asStringOn:delimiter:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Collection;
+		hash: #new;
+		source: 'asStringOn: aStream delimiter: delimString
+	<gtGsExtension>
+	self
+		do: [ :elem | aStream nextPutAll: elem asString ]
+		separatedBy: [ aStream nextPutAll: delimString ]'
 ]
 
 { #category : #extensions }
@@ -421,6 +554,21 @@ GtGemStoneExtensionMethods class >> ext_Collection_count_ [
 	sum := 0.
 	self do: [ :each | (aBlock value: each) ifTrue: [ sum := sum + 1 ] ].
 	^ sum'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Collection_do_displayingProgress_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #do:displayingProgress:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Collection;
+		hash: #new;
+		source: 'do: aBlock displayingProgress: aStringOrBlock
+	<gtGsExtension>
+
+	^ self do: aBlock'
 ]
 
 { #category : #extensions }
@@ -1071,6 +1219,55 @@ GtGemStoneExtensionMethods class >> ext_Duration_class_hours_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ExecBlock_forkAt_named_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #forkAt:named:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ExecBlock;
+		hash: #new;
+		source: 'forkAt: priority named: aString
+	<gtGsExtension>
+	"Create and schedule a process with the given priority and name."
+	| forkedProcess |
+	forkedProcess := self newProcess.
+	forkedProcess priority: priority.
+	forkedProcess name: aString.
+	^ forkedProcess resume'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ExecBlock_forkNamed_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #forkNamed:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ExecBlock;
+		hash: #new;
+		source: 'forkNamed: aString
+	<gtGsExtension>
+	"Create and schedule a process with the given name."
+	^ self newProcess name: aString; resume'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ExecBlock_onErrorDo_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #onErrorDo:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ExecBlock;
+		hash: #new;
+		source: 'onErrorDo: errorHandlerBlock
+	<gtGsExtension>
+	"Evaluate the receiver and return its value. On Error, return the value of the zero- or one-argument handler."
+	^ self on: Error do: [ :ex | errorHandlerBlock cull: ex ]'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Float_class_infinity [
  ^ GtGemStoneExtensionMethod new
  selector: #infinity;
@@ -1207,6 +1404,35 @@ GtGemStoneExtensionMethods class >> ext_Fraction_neoJsonOn_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GsNMethod_isSourceSearchable [
+	^ GtGemStoneExtensionMethod new
+		selector: #isSourceSearchable;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GsNMethod;
+		hash: #new;
+		source: 'isSourceSearchable
+	<gtGsExtension>
+	"Other projects may override this to exclude methods from source searches."
+	^ true'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GsNMethod_sourceCode [
+	^ GtGemStoneExtensionMethod new
+		selector: #sourceCode;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GsNMethod;
+		hash: #new;
+		source: 'sourceCode
+	<gtGsExtension>
+	^ self sourceString'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_GtDummyExamplesWithAfterInstanceSide_new [
 	^ GtGemStoneExtensionMethod new
 		selector: #new;
@@ -1332,6 +1558,21 @@ GtGemStoneExtensionMethods class >> ext_Integer_digitAt_base_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Integer_hashMultiply [
+	^ GtGemStoneExtensionMethod new
+		selector: #hashMultiply;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Integer;
+		hash: #new;
+		source: 'hashMultiply
+	<gtGsExtension>
+	"Multiply hashes by 1664525 modulo 2 raised to 28, without VM-specific primitives."
+	^ (self * 1664525) bitAnd: 16r0FFFFFFF'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Integer_isPowerOfTwo [
  ^ GtGemStoneExtensionMethod new
  selector: #isPowerOfTwo;
@@ -1427,6 +1668,50 @@ GtGemStoneExtensionMethods class >> ext_Integer_printLowercaseHexByteOn_ [
 				nextPut: (hexDigits at: lowNibble + 1) ]
 		ifFalse: [
 			self error: ''byte value between 0 and 255 expected'' ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Integer_printStringLength_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #printStringLength:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Integer;
+		hash: #new;
+		source: 'printStringLength: minimal
+	<gtGsExtension>
+	"Answer the decimal representation padded on the left with spaces to at least minimal characters."
+	| decimal |
+	decimal := self printString.
+	^ String streamContents: [ :stream |
+		1 to: minimal - decimal size do: [ :index | stream space ].
+		stream nextPutAll: decimal ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Magnitude_threeWayCompareTo_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #threeWayCompareTo:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Magnitude;
+		hash: #new;
+		source: 'threeWayCompareTo: anotherObject
+	<gtGsExtension>
+	"Do a three-way comparison between the receiver and anotherObject, returning
+	-1 if self < anotherObject
+	0 if self = anotherObject
+	1 if self > anotherObject
+	This assumes a total order in accordance with the mathematical law of trichotomy.
+	See also:  http://en.wikipedia.org/wiki/Three-way_comparison"
+
+	^ self = anotherObject
+		ifTrue: [ 0 ]
+		ifFalse: [ self < anotherObject
+				ifTrue: [ -1 ]
+				ifFalse: [ 1 ] ]'
 ]
 
 { #category : #extensions }
@@ -1629,6 +1914,20 @@ GtGemStoneExtensionMethods class >> ext_Margin_top [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Metaclass3_isClassSide [
+	^ GtGemStoneExtensionMethod new
+		selector: #isClassSide;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Metaclass3;
+		hash: #new;
+		source: 'isClassSide
+	<gtGsExtension>
+	^ self isMeta'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_MultiByteString_neoJsonOn_ [
  ^ GtGemStoneExtensionMethod new
  selector: #neoJsonOn:;
@@ -1640,6 +1939,104 @@ GtGemStoneExtensionMethods class >> ext_MultiByteString_neoJsonOn_ [
  source: 'neoJsonOn: neoJSONWriter
  <gtGsExtension>
 	neoJSONWriter writeString: self'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_MutexTest_waitFor_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitFor:;
+		protocol: #helpers;
+		meta: false;
+		gtVersions: nil;
+		className: #MutexTest;
+		hash: '02d4891dfc39497b992bc29d96ffba251db0cc4dba68914c6872aee640ab2d4b';
+		source: 'waitFor: aBlock
+	<gtGsExtension>
+	500 timesRepeat: [
+		(Delay forMilliseconds: 10) wait.
+		aBlock value ifTrue: [ ^ self ] ].
+	self fail: ''Timed out waiting for process state'''
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_MutexTest_waitProcessLock_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitProcessLock:;
+		protocol: #helpers;
+		meta: false;
+		gtVersions: nil;
+		className: #MutexTest;
+		hash: '6675e6aded867518dfa9a4f70f40b19f5a291ebf2024f66b9816c191b8704afa';
+		source: 'waitProcessLock: aProcess
+	<gtGsExtension>
+	self waitFor: [ aProcess waitingOn isNil not ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_MutexTest_waitProcessSuspend_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitProcessSuspend:;
+		protocol: #helpers;
+		meta: false;
+		gtVersions: nil;
+		className: #MutexTest;
+		hash: 'f676b9f0a3335120a0f714ec43bfefef704e8212b09a33fc5a2ee32e5c3964d7';
+		source: 'waitProcessSuspend: aProcess
+	<gtGsExtension>
+	self waitFor: [ aProcess _isSuspended ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_MutexTest_waitProcessTermination_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitProcessTermination:;
+		protocol: #helpers;
+		meta: false;
+		gtVersions: nil;
+		className: #MutexTest;
+		hash: 'a1b232330d7e7319e5684e0d65ee534c18cf531ce336ad9db8bb5bb245c2fcbd';
+		source: 'waitProcessTermination: aProcess
+	<gtGsExtension>
+	self waitFor: [ aProcess _isTerminated ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Mutex_critical_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #critical:;
+		protocol: #'mutual exclusion';
+		meta: false;
+		gtVersions: nil;
+		className: #Mutex;
+		hash: 'cb0ba924ab6fb36c90bb2b16f591b141449bd386c3dcbca9241c5e1ccf1f1dde';
+		source: 'critical: aBlock
+	<gtGsExtension>
+	"Keep cleanup installed while waiting, including after a signal but before resumption."
+	| activeProcess scheduler acquisitionCritical cleanupCritical waiting |
+	activeProcess := Processor activeProcess.
+	activeProcess == owner ifTrue: [ ^ aBlock value ].
+	scheduler := semaphore _scheduler.
+	waiting := false.
+	^ [
+		acquisitionCritical := scheduler _enterCritical.
+		[
+			waiting := true.
+			semaphore wait.
+			owner := activeProcess.
+			waiting := false
+		] ensure: [ acquisitionCritical == 0 ifTrue: [ scheduler _enterCritical. scheduler _exitCritical ] ].
+		aBlock value
+	] ensure: [
+		cleanupCritical := scheduler _enterCritical.
+		[
+			owner == activeProcess
+				ifTrue: [ owner := nil. semaphore signal ]
+				ifFalse: [
+					waiting ifTrue: [
+						(semaphore includesIdentical: activeProcess)
+							ifTrue: [ semaphore removeIdentical: activeProcess otherwise: nil ]
+							ifFalse: [ semaphore signal ] ] ]
+		] ensure: [ cleanupCritical == 0 ifTrue: [ scheduler _enterCritical. scheduler _exitCritical ] ] ]'
 ]
 
 { #category : #extensions }
@@ -1811,6 +2208,24 @@ GtGemStoneExtensionMethods class >> ext_NeoJSONObject_add_ [
 		source: 'add: anAssociation
 	<gtGsExtension>
 	^ super add: ((self normalizedJsonKey: anAssociation key) -> anAssociation value)'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_NeoJSONObject_asOrderedDictionary [
+	^ GtGemStoneExtensionMethod new
+		selector: #asOrderedDictionary;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #NeoJSONObject;
+		hash: #new;
+		source: 'asOrderedDictionary
+	<gtGsExtension>
+	"Copy properties without invoking dynamic JSON property setters."
+	| result |
+	result := OrderedDictionary new.
+	self keysAndValuesDo: [ :key :value | result at: key put: value ].
+	^ result'
 ]
 
 { #category : #extensions }
@@ -2584,6 +2999,34 @@ GtGemStoneExtensionMethods class >> ext_SequenceableCollection_first_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_SequenceableCollection_isSortedBy_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #isSortedBy:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #SequenceableCollection;
+		hash: #new;
+		source: 'isSortedBy: aBlock
+	<gtGsExtension>
+	"Return true if the receiver is sorted by the given criterion."
+	"(#(1 2 3) isSortedBy: [:a :b | a <= b ]) >>> true"
+	"(#(1 2 3) isSortedBy: [:a :b | a >= b ]) >>> false"
+	"(#(xa xc xz xb xy) isSortedBy: #last ascending) >>> false"
+	"(#(xa xb xc xy xz) isSortedBy: #last ascending) >>> true"
+
+	| lastElm elm |
+	self isEmpty ifTrue: [^ true].
+	lastElm := self first.
+	2 to: self size do:
+		[:index |
+		elm := self at: index.
+		(aBlock value: lastElm value: elm) ifFalse: [^ false].
+		lastElm := elm].
+	^ true'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_SequenceableCollection_sorted [
  ^ GtGemStoneExtensionMethod new
  selector: #sorted;
@@ -2621,7 +3064,7 @@ comparison."
 	"(#(3 9 1) sorted: [:a :b | a >= b ]) >>> #(9 3 1)"
 	"(#(xa xc xz xb xy) sorted: #last ascending) >>> #(xa xb xc xy xz)"
 
-	^self copy sort: aSortBlockOrNil'
+	^ (self copy sort: aSortBlockOrNil) as: self species'
 ]
 
 { #category : #extensions }
@@ -2725,6 +3168,20 @@ GtGemStoneExtensionMethods class >> ext_SmallInteger_printOn_base_nDigits_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_SortFunction_class_default [
+	^ GtGemStoneExtensionMethod new
+		selector: #default;
+		protocol: #'accessing';
+		meta: true;
+		gtVersions: nil;
+		className: #SortFunction;
+		hash: '3d3743f94b535355530faf00b797eb9d15263a7aebceffddcd3c0871419db96c';
+		source: 'default
+	<gtGsExtension>
+	^ SessionTemps current at: #SortFunction_default_value ifAbsentPut: [ DefaultSortFunction new ]'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_String_addedToZnUrl_ [
 	^ GtGemStoneExtensionMethod new
 		className: #String;
@@ -2736,6 +3193,51 @@ GtGemStoneExtensionMethods class >> ext_String_addedToZnUrl_ [
 		source: 'addedToZnUrl: url
 	<gtGsExtension>
 	^ url withPathSegments: (self subStrings: ''/'')'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_asClass [
+	^ GtGemStoneExtensionMethod new
+		selector: #asClass;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'asClass
+	<gtGsExtension>
+	^ self asSymbol asClass'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_asClassIfAbsent_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #asClassIfAbsent:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'asClassIfAbsent: absentBlock
+	<gtGsExtension>
+	^ self asSymbol asClassIfAbsent: absentBlock'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_asPluralBasedOn_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #asPluralBasedOn:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'asPluralBasedOn: aNumberOrCollection
+	<gtGsExtension>
+	^ (aNumberOrCollection = 1 or: [
+		aNumberOrCollection isCollection and: [ aNumberOrCollection size = 1 ]])
+		ifTrue: [ self ]
+		ifFalse: [ self, ''s'' ]'
 ]
 
 { #category : #extensions }
@@ -2899,6 +3401,225 @@ GtGemStoneExtensionMethods class >> ext_String_neoJsonOn_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_removePrefix_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #removePrefix:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'removePrefix: prefix
+	<gtGsExtension>
+	"Remove the given prefix, if present."
+	^ (self beginsWith: prefix)
+		ifTrue: [ self copyFrom: 1 + prefix size to: self size ]
+		ifFalse: [ self ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_removeSuffix_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #removeSuffix:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'removeSuffix: suffix
+	<gtGsExtension>
+	"Remove the given suffix, if present."
+	^ (self endsWith: suffix)
+		ifTrue: [ self copyFrom: 1 to: self size - suffix size ]
+		ifFalse: [ self ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_splitOn_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #splitOn:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'splitOn: splitter
+	<gtGsExtension>
+	"Adapt GT''s split:indicesDo: implementations, preserving empty fields.
+	Custom splitters such as regular expressions can implement split:."
+	| result start position separatorSize sequence |
+	result := OrderedCollection new.
+	start := 1.
+	(splitter isKindOf: ExecBlock) ifTrue: [
+		1 to: self size do: [ :index |
+			(splitter value: (self at: index)) ifTrue: [
+				result add: (self copyFrom: start to: index - 1).
+				start := index + 1 ] ].
+		result add: (self copyFrom: start to: self size).
+		^ result ].
+	sequence := splitter isKindOf: SequenceableCollection.
+	(sequence not and: [ splitter respondsTo: #split: ]) ifTrue: [ ^ splitter split: self ].
+	separatorSize := sequence ifTrue: [ splitter size ] ifFalse: [ 1 ].
+	separatorSize = 0 ifTrue: [ self error: ''The separator must not be empty'' ].
+	position := sequence
+		ifTrue: [ self indexOfSubCollection: splitter startingAt: start ]
+		ifFalse: [ self indexOf: splitter startingAt: start ].
+	[ position > 0 ] whileTrue: [
+		result add: (self copyFrom: start to: position - 1).
+		start := position + separatorSize.
+		position := sequence
+			ifTrue: [ self indexOfSubCollection: splitter startingAt: start ]
+			ifFalse: [ self indexOf: splitter startingAt: start ] ].
+	result add: (self copyFrom: start to: self size).
+	^ result'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_threeWayCompareTo_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #threeWayCompareTo:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'threeWayCompareTo: aString
+	<gtGsExtension>
+	^ self = aString ifTrue: [ 0 ] ifFalse: [ self < aString ifTrue: [ -1 ] ifFalse: [ 1 ] ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_String_withInternalLineEndings [
+	^ GtGemStoneExtensionMethod new
+		selector: #withInternalLineEndings;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'withInternalLineEndings
+	<gtGsExtension>
+	^ self withLineEndings: String cr'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_asClass [
+	^ GtGemStoneExtensionMethod new
+		selector: #asClass;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'asClass
+	<gtGsExtension>
+	"Answer the class named by the receiver, or signal an error."
+	^ self asClassIfAbsent: [ self error: ''Class not found: '', self asString ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_asClassIfAbsent_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #asClassIfAbsent:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'asClassIfAbsent: absentBlock
+	<gtGsExtension>
+	"Resolve the receiver in the current session''s symbol list."
+	| candidate |
+	candidate := GsSession currentSession objectNamed: self.
+	(candidate notNil and: [ candidate isBehavior ])
+		ifTrue: [ ^ candidate ].
+	^ absentBlock value'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_asClassIfPresent_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #asClassIfPresent:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'asClassIfPresent: presentBlock
+	<gtGsExtension>
+	"returns a global class with my name"
+	^ presentBlock cull: (self asClassIfAbsent: [ ^ nil ])'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_asSortFunction [
+	^ GtGemStoneExtensionMethod new
+		selector: #asSortFunction;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'asSortFunction
+	<gtGsExtension>
+	"Return a SortFunction around the receiver, where the receiver will be used as a unary message to send to both a and b during sorting, and then the result of said send will be collated in ascending order using the <=> method."
+	"(#(''abc'' ''de'' ''fghi'') sorted: #size ascending) >>> #(''de'' ''abc'' ''fghi'')"
+
+	^PropertySortFunction property: self'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_ascending [
+	^ GtGemStoneExtensionMethod new
+		selector: #ascending;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'ascending
+	<gtGsExtension>
+	"Return a SortFunction around the receiver, where the receiver will be used as a unary message to send to both a and b during sorting, and then the result of said send will be collated in ascending order using the <=> method."
+	"(#(''abc'' ''de'' ''fghi'') sorted: #size ascending) >>> #(''de'' ''abc'' ''fghi'')"
+
+	^self asSortFunction'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_collatedBy_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #collatedBy:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'collatedBy: aSortFunction
+	<gtGsExtension>
+	"Return a SortFunction around the receiver, where the receiver will be used as a unary message to send to both a and b during sorting, and then the result of said send will be collated iusing aSortFunction."
+	"(#(''abc'' ''de'' ''fghi'') sorted: (#size collatedBy: [:e|e bitAnd: 1]) , #size) >>> #( ''de'' ''fghi'' ''abc'')"
+
+	^PropertySortFunction property: self collatedWith: aSortFunction asSortFunction'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Symbol_descending [
+	^ GtGemStoneExtensionMethod new
+		selector: #descending;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Symbol;
+		hash: #new;
+		source: 'descending
+	<gtGsExtension>
+	"Return a SortFunction around the receiver, where the receiver will be used as a unary message to send to both a and b during sorting, and then the result of said send will be collated in descending order using the <=> method."
+	"(#(''abc'' ''de'' ''fghi'') sorted: #size descending) >>> #(''fghi'' ''abc'' ''de'')"
+
+	^self asSortFunction reversed'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Symbol_isUnary [
  ^ GtGemStoneExtensionMethod new
  selector: #isUnary;
@@ -2916,6 +3637,38 @@ GtGemStoneExtensionMethods class >> ext_Symbol_isUnary [
 	"#between:and: isUnary >>> false"
 
 	^ self precedence = 1'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_TelemetryPing_totalFullGCTimeMicroseconds [
+	^ GtGemStoneExtensionMethod new
+		selector: #totalFullGCTimeMicroseconds;
+		meta: false;
+		gtVersions: nil;
+		className: #TelemetryPing;
+		hash: #new;
+		source: 'totalFullGCTimeMicroseconds
+	<gtGsExtension>
+	"Answer the total time in microseconds spent in full GCs since session startup."
+	^ (System myCacheStatistics
+		at: (System cacheStatisticsDescriptionForGem
+			indexOf: ''TimeInMarkSweep'')) * 1000'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_TelemetryPing_totalScavengeGCTimeMicroseconds [
+	^ GtGemStoneExtensionMethod new
+		selector: #totalScavengeGCTimeMicroseconds;
+		meta: false;
+		gtVersions: nil;
+		className: #TelemetryPing;
+		hash: #new;
+		source: 'totalScavengeGCTimeMicroseconds
+	<gtGsExtension>
+	"Answer the total time in microseconds spent in scavenge GCs since session startup."
+	^ (System myCacheStatistics
+		at: (System cacheStatisticsDescriptionForGem
+			indexOf: ''TimeInScavenges'')) * 1000'
 ]
 
 { #category : #extensions }
@@ -3105,6 +3858,22 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_watchDogLoop [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Text_threeWayCompareTo_ [
+	"Text is optional in GemStone; leave this descriptor inactive when the class is absent."
+	^ GtGemStoneExtensionMethod new
+		selector: #threeWayCompareTo:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: (self gtDo: [ nil ] gemstoneDo: [ (GsSession currentSession objectNamed: #Text) ifNil: [ #() ] ifNotNil: [ nil ] ]);
+		className: #Text;
+		hash: #new;
+		source: 'threeWayCompareTo: anotherText
+	<gtGsExtension>
+	
+	^ self asString threeWayCompareTo: anotherText asString'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Time_class_hour_minute_second_ [
  ^ GtGemStoneExtensionMethod new
   selector: #hour:minute:second:;
@@ -3124,6 +3893,21 @@ GtGemStoneExtensionMethods class >> ext_Time_class_hour_minute_second_ [
  (seconds between: 0 and: 86399)
   ifFalse: [ self error: ''Time should be in a 24 hour period (0 to 86399 seconds)'' ].
  ^ self fromSeconds: seconds'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Time_class_microsecondClockValue [
+	^ GtGemStoneExtensionMethod new
+		selector: #microsecondClockValue;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #Time;
+		hash: #new;
+		source: 'microsecondClockValue
+	<gtGsExtension>
+	"Answer the millisecond clock in microseconds, retaining millisecond resolution."
+	^ self millisecondClockValue * 1000'
 ]
 
 { #category : #extensions }

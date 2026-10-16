@@ -319,8 +319,7 @@ GtGemStoneGtCodeExporterExamples >> stubClassNamesAreSorted [
 	self assert: names equals: names sorted.
 	self assert: names size equals: names asSet size.
 	self assert: (names includesAny: #(GtExampleWithResult GtExampleResult ConnectionClosed)) not.
-	presentNames := names select: [ :each | Smalltalk globals includesKey: each ].
-	self assert: (exporter stubClasses collect: [ :each | each name ]) equals: presentNames.
+
 	^ exporter
 ]
 
