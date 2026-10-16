@@ -3,7 +3,7 @@ Class {
 	#superclass : #Object,
 	#traits : 'TGtRemoteGemStoneSesionCreator',
 	#classTraits : 'TGtRemoteGemStoneSesionCreator classTrait',
-	#category : #'GToolkit-RemoteExamples-GemStone-Examples'
+	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
 { #category : #examples }

@@ -7,6 +7,41 @@ Class {
 }
 
 { #category : #'examples - promise' }
+GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_forceTerminateConnection [
+	<gtExample>
+	<return: #AssertionFailure>
+	| evaluatorPromise evaluationResult executionException executionProcess semaphore |
+	evaluatorPromise := (self runningServer
+			createScriptEvaluationFor: 'Delay  waitForSeconds: 20.')
+			returnStonSerialized;
+			beAsyncExecution;
+			evaluate.
+
+	semaphore := Semaphore new.
+	evaluationResult := nil.
+	executionException := nil.
+	executionProcess := [ 
+		[evaluationResult := evaluatorPromise wait] 
+			on: Error do: [ :anException |
+				executionException := anException freeze. ].
+		semaphore signal ] fork.
+
+	"Force a termination of the RSR connection while the async computation is running."
+	self runningServer connection close.
+
+	semaphore wait.
+
+	self assert: evaluatorPromise isFulfilled not.
+	self assert: evaluatorPromise hasValidResult not.
+	
+	self assert: evaluationResult isNil.
+	self assert: executionException class name equals: #RsrBrokenPromise.
+	self assert: executionException reason class name equals: #RsrConnectionClosedBeforeReceivingResponse.
+
+	^ evaluatorPromise
+]
+
+{ #category : #'examples - promise' }
 GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndCancelComputation [
 	<gtExample>
 	<return: #AssertionFailure>
@@ -22,8 +57,10 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndCancelCompu
 	hasInterrupt := false.
 	executionProcess := [ [ computedResult := evaluatorPromise wait ]
 			on: GtRsrEvaluationException
-			do: [  "The interruption request will trigger a debugger in the process waiting
-			for the result. We catch that error and stop the evaluation":anException | 
+			do: [ :anException | 
+				"The interruption request will trigger a debugger in the process waiting
+				for the result. We catch that error and stop the evaluation"
+			
 				hasInterrupt := true.
 				stopResult := evaluatorPromise stopEvaluation.
 				evaluatorPromise break: nil ].
@@ -31,7 +68,8 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndCancelCompu
 		hasResult := true.
 		semaphore signal ] fork.
 
-	self waitForEvaluationContextFor: evaluatorPromise.	"We interrupt the promise execution. This will raise an error 
+	self waitForEvaluationContextFor: evaluatorPromise.	
+	"We interrupt the promise execution. This will raise an error 
 	in the process executing the promise. "
 	interruptResult := evaluatorPromise interruptEvaluation.
 	self assert: interruptResult equals: #interruptedAsync.
@@ -88,6 +126,65 @@ GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptAndResumeCompu
 	self assert: evaluatorPromise isFulfilled.
 	self assert: computedResult remoteClass equals: #SmallInteger.
 	self assert: computedResult remoteSideGtDisplayString equals: '1'.
+
+	^ evaluatorPromise
+]
+
+{ #category : #'examples - promise' }
+GtRemoteGemStoneSessionAsyncExamples >> testAsyncPromise_interruptFirstAndThenForceTerminateSession [
+	<gtExample>
+	| evaluatorPromise interruptResult computedResult executionProcess hasResult hasInterrupt semaphore gemStoneDebugSession targetProcess|
+	evaluatorPromise := (self runningServer
+			createScriptEvaluationFor: 'Delay  waitForSeconds: 20. 1')
+			returnProxy;
+			beAsyncExecution;
+			evaluate.
+
+	semaphore := Semaphore new.
+	hasResult := false.
+	hasInterrupt := false.
+	executionProcess := [ [ computedResult := evaluatorPromise wait ]
+			on: GtRsrEvaluationException
+			do: [ :anException | 
+				| debugSession |
+				"The interruption request will trigger a debugger in the process waiting
+				for the result. We catch that error. Evaluation will be stopped later."
+				debugSession := (OupsDebugRequest newForException: anException)							
+					debugSession.
+				gemStoneDebugSession := GtGemStoneExpandableDebuggerElement 
+					spanNewSessionFrom: debugSession.
+				
+				hasInterrupt := true.
+				semaphore signal.
+				debugSession process suspend ].
+
+		hasResult := true.
+		semaphore signal ] fork.
+
+	self waitForEvaluationContextFor: evaluatorPromise.	
+	
+	"We interrupt the promise execution. This will raise an error 
+	in the process executing the promise. "
+	interruptResult := evaluatorPromise interruptEvaluation.
+	self assert: interruptResult equals: #interruptedAsync.
+
+	semaphore wait.
+	
+	"Force close the connection while the process is interrupted"
+	self runningServer connection close.
+	
+	targetProcess := gemStoneDebugSession interruptedProcess.
+	self assert: targetProcess isSuspended.
+	
+	"Here terminating the session on a process after the connection was
+	force closed should not produce errors and should terminate the local process."
+	gemStoneDebugSession terminate.
+	
+	self assert: targetProcess isTerminated.
+
+	self assert: hasResult not.
+	self assert: hasInterrupt.
+	self assert: computedResult isNil.
 
 	^ evaluatorPromise
 ]
