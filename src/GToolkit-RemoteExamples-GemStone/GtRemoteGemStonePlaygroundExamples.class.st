@@ -720,6 +720,102 @@ a := 2.'.
 	^ scripter
 ]
 
+{ #category : #'examples - async' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interrupt_andTerminateComputation [
+	<gtExample>
+	| scripter promiseResolution semaphore capturedDebugSession targetProcess session |
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	semaphore := Semaphore new.
+	session := self runningServer.
+
+	self
+		withElapsedTimeUpdateDisabled: [
+			scripter gemStoneSnippet
+				useDoItAndInspectAsynchronousShortcut;
+				play.
+
+			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+
+			promiseResolution := self
+				promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+			self assertPromiseResolutionRunning: promiseResolution.
+			self assert: session activeAsyncExecutions size equals: 1.
+
+			promiseResolution debuggerHandler: [ :anException |
+				| debugSession |
+				debugSession := (OupsDebugRequest newForException: anException)
+					debugSession.
+				capturedDebugSession := GtGemStoneExpandableDebuggerElement
+					spanNewSessionFrom: debugSession.
+				[ semaphore signal ] forkAt: Processor activeProcess priority - 1.
+				debugSession process suspend ].
+
+			self waitForEvaluationContextFor: promiseResolution.
+
+			promiseResolution interruptEvaluation.
+			semaphore wait.
+
+			self assert: capturedDebugSession notNil.
+			targetProcess := capturedDebugSession interruptedProcess.
+			self assert: targetProcess isSuspended.
+			self assert: session activeAsyncExecutions size equals: 1.
+
+			capturedDebugSession terminate.
+			self assert: targetProcess isTerminated.
+			self assert: session activeAsyncExecutions size equals: 0.
+			self assert: session isRunning ].
+
+	^ scripter
+]
+
+{ #category : #'examples - async' }
+GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_interrupt_andTerminateSession [
+	<gtExample>
+	| scripter promiseResolution semaphore capturedDebugSession targetProcess session |
+	scripter := self playgroundPageWithConnectedGemStoneAndCodeWithDelay.
+	semaphore := Semaphore new.
+	session := self runningServer.
+
+	self
+		withElapsedTimeUpdateDisabled: [
+			scripter gemStoneSnippet
+				useDoItAndInspectAsynchronousShortcut;
+				play.
+
+			self assertResultingPaneAfterAyncExecutionStartedFor: scripter.
+
+			promiseResolution := self
+				promiseResolutionFromAsyncToolFromSecondPaneFor: scripter.
+			self assertPromiseResolutionRunning: promiseResolution.
+			self assert: session activeAsyncExecutions size equals: 1.
+
+			promiseResolution debuggerHandler: [ :anException |
+				| debugSession |
+				debugSession := (OupsDebugRequest newForException: anException)
+					debugSession.
+				capturedDebugSession := GtGemStoneExpandableDebuggerElement
+					spanNewSessionFrom: debugSession.
+				[ semaphore signal ] forkAt: Processor activeProcess priority - 1.
+				debugSession process suspend ].
+
+			self waitForEvaluationContextFor: promiseResolution.
+
+			promiseResolution interruptEvaluation.
+			semaphore wait.
+
+			self assert: capturedDebugSession notNil.
+			targetProcess := capturedDebugSession interruptedProcess.
+			self assert: targetProcess isSuspended.
+			self assert: session activeAsyncExecutions size equals: 1.
+
+			session connection close.
+			capturedDebugSession terminate.
+			self assert: targetProcess isTerminated.
+			self assert: session activeAsyncExecutions size equals: 0 ].
+
+	^ scripter
+]
+
 { #category : #'examples - execution' }
 GtRemoteGemStonePlaygroundExamples >> playgroundPage_runAsyncComputation_withReplace_button [
 	<gtExample>
@@ -1549,6 +1645,19 @@ GtRemoteGemStonePlaygroundExamples >> selectToolLabeled: aString fromPageElement
 		// #tabbar
 		/ [ :aTab | aTab label asString = aString ])
 		result anyOne phlow entity.
+]
+
+{ #category : #'private - waiting' }
+GtRemoteGemStonePlaygroundExamples >> waitForEvaluationContextFor: aPromiseResolution [
+	| retries |
+	retries := 5.
+	
+	[ retries > 0 and: [ aPromiseResolution hasEvaluationContext not ] ] whileTrue: [
+		1 seconds wait.
+		retries := retries - 1 ].
+	
+	aPromiseResolution hasEvaluationContext ifFalse: [
+		Error signal: 'Promise failed to start' ]
 ]
 
 { #category : #utils }
