@@ -2,15 +2,6 @@
 
 set -e
 
-ls *.image
-status_ls=$?
-if [ $status_ls -ne 0 ]
-then
-  echo "No image file found.  CWD should be the image directory."
-  exit 1
-fi
-imageDirectory=$(pwd)
-
 if [ -z "$ROWAN_PROJECTS_HOME" ]
 then
 	echo "ROWAN_PROJECTS_HOME must be defined"
