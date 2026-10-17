@@ -1669,10 +1669,6 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_stateChangingComputationInM
 	<gtExample>
 	<return: #AssertionFailure>
 	| scripter page |
-
-	(self runningServer gt4gemstoneVersion isZero not and: [ 
-		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
-			ifTrue: [ ^ self ].
 	
 	scripter := self playgroundPageWithStateChangingComputationInMultipleSnippetsSharingBinding.
 	page := scripter model page.

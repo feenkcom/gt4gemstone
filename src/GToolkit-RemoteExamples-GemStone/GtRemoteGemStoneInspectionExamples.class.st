@@ -131,10 +131,6 @@ GtRemoteGemStoneInspectionExamples >> dictionaryObject_itemsViewRefreshesOk [
 	<after: #stopServer>
 	| proxyObject scripter |
 
-	(self runningServer gt4gemstoneVersion isZero not and: [ 
-		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
-			ifTrue: [ ^ self ].
-
 	proxyObject := self createProxyObjectFor: [
 		Dictionary new
 			at: 'keyOne' put: 'Value for key one';
@@ -192,10 +188,6 @@ GtRemoteGemStoneInspectionExamples >> dictionaryObject_rawViewRefreshesOk [
 	<gtExample>
 	<after: #stopServer>
 	| proxyObject scripter |
-
-	(self runningServer gt4gemstoneVersion isZero not and: [ 
-		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
-			ifTrue: [ ^ self ].
 
 	proxyObject := self createProxyObjectFor: [
 		Dictionary new
@@ -356,10 +348,6 @@ GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection [
 	<return: #AssertionFailure>
 	| scripter |
 	
-	(self runningServer gt4gemstoneVersion isZero not and: [ 
-		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
-			ifTrue: [ ^ self ].
-	
 	scripter := self
 		assertObjectInspectionFor: [ GtRemotePhlowDeclarativeDetailsInspectableForExamples new ]
 		withTypeName: #GtRemotePhlowDeclarativeDetailsInspectableForExamples
@@ -416,10 +404,6 @@ GtRemoteGemStoneInspectionExamples >> objectWithDetailsViewInspection_properties
 	<after: #stopServer>
 	<return: #AssertionFailure>
 	| proxyObject scripter |
-	
-	(self runningServer gt4gemstoneVersion isZero not and: [ 
-		self runningServer gt4gemstoneVersion <= GtGemStoneSemanticVersionNumber v1_1_362 ]) 
-			ifTrue: [ ^ self ].
 	
 	proxyObject := self createProxyObjectFor: [
 		GtRemotePhlowDeclarativeDetailsInspectableForExamples new
