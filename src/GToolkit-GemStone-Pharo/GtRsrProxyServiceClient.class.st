@@ -365,7 +365,8 @@ GtRsrProxyServiceClient >> getGtSession [
 	"Attempt to get the GT session based on the _connection"
 
 	gtSession ifNotNil: [ ^ gtSession ].
-
+	_connection ifNil: [ ^ nil ].
+	
 	^ GtGemStoneSessionRegistry default 
 		sessionWithConnection: _connection
 		ifAbsent: [ nil ].
