@@ -74,23 +74,25 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 	startTimestamp := DateAndTime now.
 	resolutionProcess := [
 		[
-			| computedResult |
-			
-			self actOnResolutionStarted.
-			computedResult := [ asyncPromise value ]
-				on: GtRsrEvaluationException, RsrBrokenPromise
-				do: [ :ex | self handleEvaluationException: ex ].
-			
-			state := asyncPromise isBroken 
-				ifTrue: [ #Cancelled ] 
-				ifFalse: [ #Completed ].
-		] ensure: [
-			endTimestamp := DateAndTime now.
-			(state = #Running) ifTrue: [ 
-				state := #Terminated.
-				asyncPromise break: nil ].
-			
-			self actOnResolutionFinished ].
+			[
+				| computedResult |
+				
+				self actOnResolutionStarted.
+				computedResult := [ asyncPromise value ]
+					on: GtRsrEvaluationException
+					do: [ :ex | self handleEvaluationException: ex ].
+				
+				state := asyncPromise isBroken 
+					ifTrue: [ #Cancelled ] 
+					ifFalse: [ #Completed ].
+			] ensure: [
+				endTimestamp := DateAndTime now.
+				(state = #Running) ifTrue: [ 
+					state := #Terminated.
+					asyncPromise break: nil ].
+				
+				self actOnResolutionFinished ].
+		] on: RsrBrokenPromise do: [ :ex | self handleEvaluationException: ex ]
 	] 
 		forkAt: Processor userBackgroundPriority 
 		named: 'GtGemStoneSnippetPromiseExecution resolution process'.
