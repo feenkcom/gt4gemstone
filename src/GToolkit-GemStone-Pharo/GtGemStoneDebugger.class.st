@@ -116,11 +116,34 @@ GtGemStoneDebugger >> gsStepThroughFrameLevel: anInteger [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneDebugger >> gtViewAllStackFramesFor: aView [ 
+	<gtView>
+	
+	allStackFrames  ifNil: [ ^ aView empty ].
+	
+	^ aView columnedList 
+		title: 'All stack frames';
+		priority: 20;
+		items: [ allStackFrames ];
+		column: 'Index' 
+			text: [ :aStackFrame |
+				aStackFrame ordinal ]
+			width: 75;
+		column: 'Identifier' 
+			text: [ :aStackFrame |
+				aStackFrame frameIdentifier identityIndex ]
+			width: 75;
+		column: 'Method' text: [ :aStackFrame |
+			aStackFrame printString ]
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneDebugger >> gtViewStackFramesFor: aView [ 
 	<gtView>
 	
 	^ aView columnedList 
-		title: 'GemStone stack frames';
+		title: 'Stack frames';
+		priority: 10;
 		items: [ self stackFrames ];
 		column: 'Index' 
 			text: [ :aStackFrame |

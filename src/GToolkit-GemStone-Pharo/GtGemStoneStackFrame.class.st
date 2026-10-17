@@ -156,7 +156,8 @@ GtGemStoneStackFrame >> gtViewCoderFor: aView [
 		title: 'Coder';
 		priority: 5;
 		stencil: [
-			GtGemStoneContextCoderModel fromStackFrame: self ]
+			((GtGemStoneContextCoderModel fromStackFrame: self)
+				asExpandedOnlyElement) vFitContentLimited ]
 ]
 
 { #category : #'gt - extensions' }

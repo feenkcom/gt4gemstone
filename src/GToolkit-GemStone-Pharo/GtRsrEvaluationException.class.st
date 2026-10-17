@@ -99,19 +99,34 @@ GtRsrEvaluationException >> gtSession: aGtGemStoneSession [
 		[ self assert: gtSession == aGtGemStoneSession ]
 ]
 
+{ #category : #views }
+GtRsrEvaluationException >> gtViewGemStoneAllStackFramesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Remote stack (full)';
+		priority: 0.5;
+		object: [ self debuggerClient ];
+		view: #gtViewAllStackFramesFor:
+]
+
+{ #category : #views }
+GtRsrEvaluationException >> gtViewGemStoneStackFramesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Remote stack';
+		priority: 0.1;
+		object: [ self debuggerClient ];
+		view: #gtViewStackFramesFor:
+]
+
 { #category : #initialize }
 GtRsrEvaluationException >> gtViewRemoteStackFor: aView [
 	<gtView>
-	^aView list
-		title: 'Remote Stack';
-		priority: 0;
-		items: [ self debuggerState callStackSpecification frameSpecifications];
-		itemText: [ :aStackFrame |
-							String streamContents: [:aStream |
-								aStream 
-									<< aStackFrame printBehaviorName;
-									<< '>>';
-									<< (aStackFrame selector ifNil: [ '<none>' ]) ]]
+	^aView forward
+		title: 'Remote stack specification';
+		priority: 0.9;
+		object: [ self debuggerState ];
+		view: #gtViewCallFrameSpecificationsFor:
 ]
 
 { #category : #accessing }

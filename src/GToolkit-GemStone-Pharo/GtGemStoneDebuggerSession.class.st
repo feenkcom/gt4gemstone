@@ -104,6 +104,36 @@ GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
 		onFrameIdentifier: aFrameIdentifier.
 ]
 
+{ #category : #views }
+GtGemStoneDebuggerSession >> gtViewGemStoneAllStackFramesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Remote stack (all)';
+		priority: 10.5;
+		object: [ exception ];
+		view: #gtViewGemStoneAllStackFramesFor:
+]
+
+{ #category : #views }
+GtGemStoneDebuggerSession >> gtViewGemStoneStackFramesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Remote stack';
+		priority: 10;
+		object: [ exception ];
+		view: #gtViewGemStoneStackFramesFor:
+]
+
+{ #category : #views }
+GtGemStoneDebuggerSession >> gtViewRemoteStackExceptionFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Remote Stack Specification';
+		priority: 20;
+		object: [ exception ];
+		view: #gtViewRemoteStackFor:
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> modules [ 
 	"There are never loaded modules in the postmortem debugger"
