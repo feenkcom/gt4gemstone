@@ -78,7 +78,7 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 			
 			self actOnResolutionStarted.
 			computedResult := [ asyncPromise value ]
-				on: GtRsrEvaluationException
+				on: GtRsrEvaluationException, RsrBrokenPromise
 				do: [ :ex | self handleEvaluationException: ex ].
 			
 			state := asyncPromise isBroken 
