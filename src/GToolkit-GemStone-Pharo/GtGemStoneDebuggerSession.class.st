@@ -162,13 +162,18 @@ GtGemStoneDebuggerSession >> synchronizeCallStack [
 
 { #category : #accessing }
 GtGemStoneDebuggerSession >> terminate [
-
-	(interruptedContext isNotNil and: [ self exception isTerminated not ]) ifTrue:
-		[ [self debuggerProxy
-			proxyPerform: #terminateProcess
-			autoCommit: false ]
-				on: GtRsrEvaluationException
-				do: [ :ex | ex isTerminated ifFalse:
-					[ ex pass ] ] ].
-	super terminate.
+	[ 
+		(interruptedContext isNotNil and: [ 
+			self exception isTerminated not ])
+				ifTrue: [ 
+					[ 
+						self debuggerProxy isProxyObjectActive ifTrue: [
+							self debuggerProxy 
+								proxyPerform: #terminateProcess 
+								autoCommit: false ]
+					]
+						on: GtRsrEvaluationException
+						do: [ :ex | ex isTerminated ifFalse: [ ex pass ] ] ] 
+	]
+		ensure: [ super terminate ]
 ]

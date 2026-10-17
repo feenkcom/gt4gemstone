@@ -12,5 +12,6 @@ RsrBrokenPromise >> gtMessageTextFor: aView [
 	^ aView textEditor
 		title: 'Message';
 		priority: 2;
-		text: [ self messageText ifEmpty: [ reason summaryText ] ]
+		text: [ self messageText ifEmpty: [ 
+			'Reason:', reason printString ] ]
 ]

@@ -337,3 +337,52 @@ GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 	self assert: textChanges equals: 0.
 	^ checkedFrames
 ]
+
+{ #category : #'examples - close connection' }
+GtRemoteGemStoneDebuggerExamples >> testTerminateGemStoneDebugSessionOnClosedConnection [
+	<gtExample>
+	| gemstoneSession gemStoneDebugSession debuggingSession hasTerminationError targetProcess |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		forkedDebugSessionOn: [ 
+			gemstoneSession evaluateAndWait: 'self halt. ''1'' printString ' ]
+		withException: GtRsrEvaluationException.
+	
+	gemStoneDebugSession := GtGemStoneExpandableDebuggerElement spanNewSessionFrom: debuggingSession.
+
+	"Force a direct close on the RSR connection."
+	gemstoneSession connection close.
+	
+	targetProcess := gemStoneDebugSession interruptedProcess.
+	self assert: targetProcess isSuspended.
+	
+	hasTerminationError := false.
+	[gemStoneDebugSession terminate] on: Error do: [ hasTerminationError := true ].
+	
+	self assert: gemStoneDebugSession interruptedProcess isNil.
+	self assert: hasTerminationError not. 
+	self assert: targetProcess isTerminated.
+
+	^ gemStoneDebugSession
+]
+
+{ #category : #'examples - close connection' }
+GtRemoteGemStoneDebuggerExamples >> testTerminateNormalDebugSessionOnClosedConnection [
+	<gtExample>
+	| gemstoneSession debuggingSession hasTerminationError |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		forkedDebugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString ' ]
+		withException: GtRsrEvaluationException.
+
+	"Force a direct close on the RSR connection."
+	gemstoneSession connection close.
+	
+	hasTerminationError := false.
+	[debuggingSession terminate] on: Error do: [ hasTerminationError := true ].
+	self assert: hasTerminationError not. 
+
+	^ debuggingSession
+]

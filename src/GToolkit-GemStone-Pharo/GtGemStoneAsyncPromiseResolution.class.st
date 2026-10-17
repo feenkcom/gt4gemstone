@@ -7,7 +7,8 @@ Class {
 		'startTimestamp',
 		'endTimestamp',
 		'state',
-		'asyncPromise'
+		'asyncPromise',
+		'debuggerHandler'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Promises'
 }
@@ -48,6 +49,11 @@ GtGemStoneAsyncPromiseResolution >> canStopExecution [
 ]
 
 { #category : #accessing }
+GtGemStoneAsyncPromiseResolution >> debuggerHandler: aBlock [
+	debuggerHandler := aBlock
+]
+
+{ #category : #accessing }
 GtGemStoneAsyncPromiseResolution >> duration [ 
 	^ (startTimestamp notNil and: [
 		endTimestamp notNil ]) 
@@ -60,7 +66,7 @@ GtGemStoneAsyncPromiseResolution >> endTimestamp [
 	^ endTimestamp
 ]
 
-{ #category : #executing }
+{ #category : #actions }
 GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 	self hasProcess ifTrue: [ ^ self ].
 	
@@ -68,21 +74,25 @@ GtGemStoneAsyncPromiseResolution >> ensureExecuting [
 	startTimestamp := DateAndTime now.
 	resolutionProcess := [
 		[
-			| computedResult |
-			
-			self actOnResolutionStarted.
-			computedResult := asyncPromise value.
-			
-			state := asyncPromise isBroken 
-				ifTrue: [ #Cancelled ] 
-				ifFalse: [ #Completed ].
-		] ensure: [
-			endTimestamp := DateAndTime now.
-			(state = #Running) ifTrue: [ 
-				state := #Terminated.
-				asyncPromise break: nil ].
-			
-			self actOnResolutionFinished ].
+			[
+				| computedResult |
+				
+				self actOnResolutionStarted.
+				computedResult := [ asyncPromise value ]
+					on: GtRsrEvaluationException
+					do: [ :ex | self handleEvaluationException: ex ].
+				
+				state := asyncPromise isBroken 
+					ifTrue: [ #Cancelled ] 
+					ifFalse: [ #Completed ].
+			] ensure: [
+				endTimestamp := DateAndTime now.
+				(state = #Running) ifTrue: [ 
+					state := #Terminated.
+					asyncPromise break: nil ].
+				
+				self actOnResolutionFinished ].
+		] on: RsrBrokenPromise do: [ :ex | self handleEvaluationException: ex ]
 	] 
 		forkAt: Processor userBackgroundPriority 
 		named: 'GtGemStoneSnippetPromiseExecution resolution process'.
@@ -151,6 +161,18 @@ GtGemStoneAsyncPromiseResolution >> gtViewTranscriptFor: aView [
 			action: [ :aButton  |
 				aButton phlow 
 					spawnObject: self gemStoneSession remoteTranscript ]
+]
+
+{ #category : #private }
+GtGemStoneAsyncPromiseResolution >> handleEvaluationException: anException [
+	debuggerHandler
+		ifNil: [ anException pass ]
+		ifNotNil: [ :handler | handler cull: anException ]
+]
+
+{ #category : #testing }
+GtGemStoneAsyncPromiseResolution >> hasEvaluationContext [
+	^ asyncPromise gtRsrAsycPromise hasEvaluationContext
 ]
 
 { #category : #testing }

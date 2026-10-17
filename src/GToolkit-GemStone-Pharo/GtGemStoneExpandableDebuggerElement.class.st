@@ -34,15 +34,6 @@ GtGemStoneExpandableDebuggerElement class >> handlesContext: aContext [
 		aContext receiver canHandleSpecificDebugger ].
 ]
 
-{ #category : #'instance creation' }
-GtGemStoneExpandableDebuggerElement class >> openOnDebugger: aDAPDebugger [
-	| space |
-
-	space := BlSpace new.
-	space root addChild: (self new debuggerClient: aDAPDebugger).
-	space show.
-]
-
 { #category : #'tools registry' }
 GtGemStoneExpandableDebuggerElement class >> registerToolsOn: registry [
 	"self register"

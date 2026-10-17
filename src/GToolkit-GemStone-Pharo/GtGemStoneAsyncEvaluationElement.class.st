@@ -78,11 +78,12 @@ GtGemStoneAsyncEvaluationElement >> buildEndTimeRow [
 			text: '-')
 ]
 
-{ #category : #'building widgets' }
+{ #category : #building }
 GtGemStoneAsyncEvaluationElement >> buildExecutionStatusRow [
-	^self buildRowContainer
+	^ self buildRowContainer
 		addChild: (self buildDetailsLabelWithText: 'Status');
-		addChild: (executionStatusLabel := self buildUnknownValueLabel)
+		addChild: (executionStatusLabel := self buildUnknownValueLabel
+			id: GtGemStoneAsyncExecutionStatusLabelId)
 ]
 
 { #category : #'building widgets' }
