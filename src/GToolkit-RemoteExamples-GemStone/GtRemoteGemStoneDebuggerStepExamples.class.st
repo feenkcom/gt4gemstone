@@ -110,6 +110,76 @@ GtRemoteGemStoneDebuggerStepExamples >> stopServer [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneDebuggerStepExamples >> testDoLoopStepOverIntoDoLoopExecution [
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [
+			gemstoneSession evaluateBlockAndWait:	[ 
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ] ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+	
+	scripter gemStoneDebugger
+		assertInCodersListVisuallyHighlightedString: 'halt' atTopIndex: 1;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertInCodersListVisuallyHighlightedString: 'doLoop
+	(1 to: 10) do: [ :each |
+		(each + 1 + 1) printString ]' atTopIndex: 1;
+		play.
+
+	scripter gemStoneDebugger
+		assertInCodersListVisuallyHighlightedString: 'doLoop' atTopIndex: 2;
+		play.
+		
+	scripter do
+		label: 'Assert frame data and extract expected highlights';
+		// GtGemStoneExpandableDebuggerElement;
+		block: [ :debuggerEl |
+			| session frames doLoopHighlight initialCodeHighlight |
+			session := debuggerEl debugSession.
+			frames := session remoteStackFrames.
+
+			self assert: frames first methodSelector equals: 'doLoop'.
+			self assert: frames first inBlock equals: false.
+			self assert: frames second methodSelector equals: nil.
+			self assert: frames second inBlock equals: true.
+
+			doLoopHighlight := self highlightedTextForFrame: frames first.
+			self
+				assert: (doLoopHighlight)
+				equals: 'doLoop
+	(1 to: 10) do: [ :each |
+		(each + 1 + 1) printString ]'.
+
+			initialCodeHighlight := self highlightedTextForFrame: frames second.
+			self
+				assert: initialCodeHighlight
+				equals: 'doLoop'.
+
+];
+		play.
+
+	^ scripter
+]
+
+{ #category : #examples }
 GtRemoteGemStoneDebuggerStepExamples >> testDoLoopStepThroughFrameHighlighting [
 	<gtExample>
 	<after: #stopServer>
@@ -118,8 +188,8 @@ GtRemoteGemStoneDebuggerStepExamples >> testDoLoopStepThroughFrameHighlighting [
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [
-			gemstoneSession evaluateAndWait:
-				'GtRemotePhlowDebuggerStepTestObject new halt; doLoop' ]
+			gemstoneSession evaluateBlockAndWait:	[ 
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ] ]
 		withException: GtRsrEvaluationException.
 
 	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
@@ -127,6 +197,10 @@ GtRemoteGemStoneDebuggerStepExamples >> testDoLoopStepThroughFrameHighlighting [
 	scripter := BlScripter new.
 	scripter element: debuggerElement.
 	scripter model: debuggingSession.
+	
+	scripter gemStoneDebugger
+		assertInCodersListVisuallyHighlightedString: 'halt' atTopIndex: 1;
+		play.
 
 	scripter gemStoneDebugger
 		clickOnStepIntoButton;
@@ -204,8 +278,8 @@ GtRemoteGemStoneDebuggerStepExamples >> testHaltHighlightsOnlyHalt [
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [
-			gemstoneSession evaluateAndWait:
-				'self halt. GtRemotePhlowDebuggerStepTestObject new doLoop' ]
+			gemstoneSession evaluateBlockAndWait:	[ 
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ] ]
 		withException: GtRsrEvaluationException.
 
 	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.

@@ -165,6 +165,21 @@ GtGemStoneDebugger >> initialize [
 ]
 
 { #category : #private }
+GtGemStoneDebugger >> preserveNonTopFrameMarkersFrom: previousFrames [
+
+	previousFrames ifNil: [ ^ self ].
+	stackFrames size <= 1 ifTrue: [ ^ self ].
+	2 to: stackFrames size do: [ :index |
+		| frame oldFrame |
+		frame := stackFrames at: index.
+		oldFrame := previousFrames
+			detect: [ :old | old frameIdentifier = frame frameIdentifier ]
+			ifNone: [ nil ].
+		oldFrame ifNotNil: [
+			frame updateProgramCounterMarkers: oldFrame programCounterMarkers ] ]
+]
+
+{ #category : #private }
 GtGemStoneDebugger >> resetState [
 
 	stackFrames := nil.
@@ -193,13 +208,19 @@ GtGemStoneDebugger >> retrieveAllStackFrames [
 
 { #category : #accessing }
 GtGemStoneDebugger >> stackFrames [
-	"Answer a ordered collection of stack frames.
-	This is called many times by the debugger, so cache"
+	"Answer an ordered collection of stack frames.
+	This is called many times by the debugger, so cache.
+	For non-top frames, preserve previous markers so that return-address
+	step points (which may coincide with block-return ']') do not
+	replace the actual call-site highlighting."
 
-	stackFrames ifNil: [ 
+	stackFrames ifNil: [
+		| previousFrames |
+		previousFrames := allStackFrames.
 		allStackFrames := self retrieveAllStackFrames.
-		stackFrames := self filterUnrelatedStackFramesFrom: allStackFrames ].
-	
+		stackFrames := self filterUnrelatedStackFramesFrom: allStackFrames.
+		self preserveNonTopFrameMarkersFrom: previousFrames ].
+
 	^ stackFrames
 ]
 

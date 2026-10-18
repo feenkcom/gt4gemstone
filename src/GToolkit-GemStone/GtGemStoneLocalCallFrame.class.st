@@ -57,13 +57,67 @@ GtGemStoneLocalCallFrame >> gtFrameArrayItemsFor: aView [
 	
 	^ aView columnedList
 		title: 'Frame Contents';
-		priority: 25;
+		priority: 5;
 		items: [ frameContents ];
 		column: 'Index' 
 			text: [ :eachItem :eachIndex | eachIndex  ]
 			width: 45;
 		column: 'Item' 
 			text: [ :eachItem | eachItem gtDisplayString ].
+]
+
+{ #category : #'gt - views' }
+GtGemStoneLocalCallFrame >> gtFrameIpInfoFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Frame IP Info';
+		priority: 19;
+		items: [
+			| method ipOffset |
+
+			method := frameContents first.
+			ipOffset := frameContents second.
+			{
+				{ 'IP Offset'. ipOffset }.
+				{ 'isStackTopContext'. self isStackTopContext }.
+				{ 'Method'. method printString }.
+				{ 'Source size'. method sourceString size }
+			} ];
+		column: 'Property' text: [ :row | row first ] width: 150;
+		column: 'Value' text: [ :row | row second printString ]
+]
+
+{ #category : #'gt - views' }
+GtGemStoneLocalCallFrame >> gtIpHighlightsFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'IP Highlights';
+		priority: 20;
+		items: [ self ipHighlights ];
+		column: 'Strategy' text: [ :h | h strategyName ] width: 260;
+		column: 'Range' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h startIndex printString, ' to: ', h endIndex printString ]
+				ifFalse: [ 'no match' ] ] width: 100;
+		column: '' text: [ :h |
+			h isActive
+				ifTrue: [ 'ACTIVE' ]
+				ifFalse: [ '' ] ] width: 70;
+		column: 'Text' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h highlightedText ]
+				ifFalse: [ '' ] ];
+		send: [ :h | h ]
+]
+
+{ #category : #'gt - views' }
+GtGemStoneLocalCallFrame >> gtIpMarkersFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'IP Markers';
+		priority: 21;
+		object: [ self ipMarkerMap ];
+		view: #gtMarkersFor:
 ]
 
 { #category : #testing }
@@ -86,6 +140,129 @@ GtGemStoneLocalCallFrame >> homeMethodOop [
 GtGemStoneLocalCallFrame >> initializeForFrameContents: aFrameArray withIdentifier: aFrameIdentifier [ 
 	frameIdentifier := aFrameIdentifier.
 	self updateWithFrameContents: aFrameArray
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> ipHighlightAnalysisData [
+	"Return IP/marker/highlight data as a flat array for RSR serialization.
+	Format: { source. ipOffset. isStackTopContext. exactStart. exactEnd. prevStart. prevEnd. markerEntries }
+	where markerEntries is an Array of { srcPos. ip. nextPos. isFrameIp }"
+	| method markers ipOffset source exactIdx prevSrcPos exactEnd prevEnd entries |
+
+	method := frameContents first.
+	ipOffset := frameContents second.
+	source := method sourceString.
+	markers := method _buildIpMarkerArray.
+
+	exactIdx := markers indexOf: ipOffset.
+	exactEnd := 0.
+	exactIdx > 0 ifTrue: [
+		exactEnd := source size.
+		(exactIdx + 1) to: markers size do: [ :j |
+			(exactEnd = source size and: [ (markers at: j) notNil ])
+				ifTrue: [ exactEnd := j ] ] ].
+
+	prevSrcPos := method _sourceOffsetsAt:
+		(method _previousStepPointForIp: ipOffset).
+	prevEnd := source size.
+	prevSrcPos > 0 ifTrue: [
+		(prevSrcPos + 1) to: markers size do: [ :j |
+			(prevEnd = source size and: [ (markers at: j) notNil ])
+				ifTrue: [ prevEnd := j ] ] ].
+
+	entries := OrderedCollection new.
+	1 to: markers size do: [ :srcPos |
+		(markers at: srcPos) ifNotNil: [ :ip |
+			| nextPos |
+			nextPos := source size + 1.
+			(srcPos + 1) to: markers size do: [ :j |
+				(nextPos > source size and: [ (markers at: j) notNil ])
+					ifTrue: [ nextPos := j ] ].
+			entries add: {
+				srcPos. ip.
+				nextPos min: (source size + 1).
+				ip = ipOffset } ] ].
+
+	^ {
+		source.
+		ipOffset.
+		self isStackTopContext.
+		exactIdx.
+		exactEnd.
+		prevSrcPos.
+		prevEnd.
+		entries asArray }
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> ipHighlights [
+	| method markers ipOffset source exactIdx prevSrcPos exactEnd prevEnd |
+
+	method := frameContents first.
+	ipOffset := frameContents second.
+	source := method sourceString.
+	markers := method _buildIpMarkerArray.
+
+	exactIdx := markers indexOf: ipOffset.
+	exactEnd := 0.
+	exactIdx > 0 ifTrue: [
+		exactEnd := source size.
+		(exactIdx + 1) to: markers size do: [ :j |
+			(exactEnd = source size and: [ (markers at: j) notNil ])
+				ifTrue: [ exactEnd := j ] ] ].
+
+	prevSrcPos := method _sourceOffsetsAt:
+		(method _previousStepPointForIp: ipOffset).
+	prevEnd := source size.
+	prevSrcPos > 0 ifTrue: [
+		(prevSrcPos + 1) to: markers size do: [ :j |
+			(prevEnd = source size and: [ (markers at: j) notNil ])
+				ifTrue: [ prevEnd := j ] ] ].
+
+	^ {
+		GtGemStoneIpHighlight new
+			startIndex: exactIdx
+			endIndex: exactEnd
+			sourceString: source
+			strategyName: 'Exact (indexOf:)'
+			isActive: (self isStackTopContext and: [ exactIdx > 0 ]).
+		GtGemStoneIpHighlight new
+			startIndex: prevSrcPos
+			endIndex: prevEnd
+			sourceString: source
+			strategyName: 'Previous (_previousStepPointForIp:)'
+			isActive: (self isStackTopContext not or: [ exactIdx = 0 ])
+	}
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> ipMarkerMap [
+	| method markers ipOffset source entries |
+
+	method := frameContents first.
+	ipOffset := frameContents second.
+	source := method sourceString.
+	markers := method _buildIpMarkerArray.
+
+	entries := OrderedCollection new.
+	1 to: markers size do: [ :srcPos |
+		(markers at: srcPos) ifNotNil: [ :ip |
+			| nextPos |
+			nextPos := source size + 1.
+			(srcPos + 1) to: markers size do: [ :j |
+				(nextPos > source size and: [ (markers at: j) notNil ])
+					ifTrue: [ nextPos := j ] ].
+			entries add: (GtGemStoneIpMarkerEntry new
+				sourcePosition: srcPos
+				ip: ip
+				sourceString: source
+				nextPosition: (nextPos min: source size + 1)
+				isFrameIp: ip = ipOffset) ] ].
+
+	^ GtGemStoneIpMarkerMap new
+		entries: entries asArray
+		sourceString: source
+		ipOffset: ipOffset
 ]
 
 { #category : #accessing }
@@ -174,7 +351,7 @@ GtGemStoneLocalCallFrame >> printMethodDescriptionOn: aStream [
 		aStream nextPutAll: '[] in ' ].
 	self printClassLabelOn: aStream.
 	aStream 
-		nextPutAll: '>>#'.
+		nextPutAll: '>>'.
 	self selector 
 		ifNil: [ aStream nextPutAll: '<none>']
 		ifNotNil: [ :aSelector | 
@@ -233,7 +410,22 @@ GtGemStoneLocalCallFrame >> selfObjectClassName [
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> sourceInfo [
-	^ self sourceInfoIsTopFrame: self isStackTopContext
+	| source ipOffset markers startIndex endIndex i |
+
+	source := frameContents first sourceString.
+	ipOffset := frameContents second.
+	markers := frameContents first _buildIpMarkerArray.
+	startIndex := markers indexOf: ipOffset.
+	startIndex = 0 ifTrue:
+		[ ^ { 1. source size. source } ].
+	i := startIndex + 1.
+
+	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
+		[ (markers at: i) notNil ifTrue:
+			[ endIndex := i ].
+		i := i + 1 ].
+	endIndex ifNil: [ endIndex := source size ].
+	^ { startIndex. endIndex. source. }
 ]
 
 { #category : #accessing }

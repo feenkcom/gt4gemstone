@@ -9,6 +9,18 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #assertions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrame: aFrame highlightedText: expectedText atRange: expectedRange [
+	| range sourceString highlightedText |
+
+	range := aFrame programCounterRange.
+	sourceString := aFrame frameSpecification sourceString.
+	highlightedText := sourceString copyFrom: range first to: range last.
+
+	self assert: highlightedText trimBoth equals: expectedText trimBoth.
+	self assert: range equals: expectedRange
+]
+
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrame: aFrame isSelector: aSelector inBlock: aBoolean [
 	self assert: aFrame methodSelector equals: aSelector.

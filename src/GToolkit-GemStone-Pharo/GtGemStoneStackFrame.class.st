@@ -38,6 +38,47 @@ GtGemStoneStackFrame >> = anObject [
 	^ self frameIdentifier = anObject frameIdentifier
 ]
 
+{ #category : #private }
+GtGemStoneStackFrame >> buildHighlightsFromData: data [
+	| source isTop exactStart |
+
+	source := data at: 1.
+	isTop := data at: 3.
+	exactStart := data at: 4.
+	^ {
+		GtGemStoneIpHighlight new
+			startIndex: exactStart
+			endIndex: (data at: 5)
+			sourceString: source
+			strategyName: 'Exact (indexOf:)'
+			isActive: (isTop and: [ exactStart > 0 ]).
+		GtGemStoneIpHighlight new
+			startIndex: (data at: 6)
+			endIndex: (data at: 7)
+			sourceString: source
+			strategyName: 'Previous (_previousStepPointForIp:)'
+			isActive: (isTop not or: [ exactStart = 0 ])
+	}
+]
+
+{ #category : #private }
+GtGemStoneStackFrame >> buildMarkerMapFromData: data [
+	| source entries |
+
+	source := data at: 1.
+	entries := (data at: 8) collect: [ :raw |
+		GtGemStoneIpMarkerEntry new
+			sourcePosition: (raw at: 1)
+			ip: (raw at: 2)
+			sourceString: source
+			nextPosition: (raw at: 3)
+			isFrameIp: (raw at: 4) ].
+	^ GtGemStoneIpMarkerMap new
+		entries: entries
+		sourceString: source
+		ipOffset: (data at: 2)
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> className: aClassName [
 	className := aClassName
@@ -147,6 +188,45 @@ GtGemStoneStackFrame >> frameSpecification: aFrameSpecification [
 GtGemStoneStackFrame >> gsSession [
 
 	^ exception gtSession
+]
+
+{ #category : #'gt - views' }
+GtGemStoneStackFrame >> gtHighlightsFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'IP Highlights';
+		priority: 30;
+		items: [
+			| data |
+			data := self retrieveIpHighlightAnalysisData.
+			self buildHighlightsFromData: data ];
+		column: 'Strategy' text: [ :h | h strategyName ] width: 260;
+		column: 'Range' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h startIndex printString, ' to: ', h endIndex printString ]
+				ifFalse: [ 'no match' ] ] width: 100;
+		column: '' text: [ :h |
+			h isActive
+				ifTrue: [ 'ACTIVE' ]
+				ifFalse: [ '' ] ] width: 70;
+		column: 'Text' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h highlightedText ]
+				ifFalse: [ '' ] ];
+		send: [ :h | h ]
+]
+
+{ #category : #'gt - views' }
+GtGemStoneStackFrame >> gtIpMarkersFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'IP Markers';
+		priority: 31;
+		object: [
+			| data |
+			data := self retrieveIpHighlightAnalysisData.
+			self buildMarkerMapFromData: data ];
+		view: #gtMarkersFor:
 ]
 
 { #category : #'gt - extensions' }
@@ -320,6 +400,14 @@ GtGemStoneStackFrame >> programCounterRange [
 GtGemStoneStackFrame >> resetState [
 
 	variableAssociations := nil.
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> retrieveIpHighlightAnalysisData [
+	^ self debuggerProxy
+		proxyPerform: #ipHighlightAnalysisDataAtFrameIdentifierIndex:
+		withArguments: { self frameIdentifier identityIndex }
+		autoCommit: false
 ]
 
 { #category : #accessing }

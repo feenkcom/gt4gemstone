@@ -11,15 +11,37 @@ Class {
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession |
-	
+	| gemstoneSession debuggingSession topFrame secondFrame |
+
 	gemstoneSession := self runningServer.
 	debuggingSession := self
-		debuggingSessionForBlock: [ 
-			GtRemotePhlowDebuggerStepTestObject new halt; doLoop ]
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ]
 		session: gemstoneSession.
 
+	topFrame := debuggingSession remoteContext.
+	self assertFrame: topFrame isSelector: nil inBlock: true.
+	self assert: topFrame isStackTopContext equals: false.
+	self
+		assertFrame: topFrame
+		highlightedText: 'halt'
+		atRange: (10 to: 13).
+
 	self stepIntoMethodNamed: 'doLoop' in: debuggingSession.
+
+	topFrame := debuggingSession remoteStackFrames first.
+	secondFrame := debuggingSession remoteStackFrames second.
+	self assertFrame: topFrame isSelector: 'doLoop' inBlock: false.
+	self
+		assertFrame: topFrame
+		highlightedText: 'doLoop
+	(1 to: 10) do: [ :each |
+		(each + 1 + 1) printString ]'
+		atRange: (1 to: 63).
+	self
+		assertFrame: secondFrame
+		highlightedText: 'doLoop'
+		atRange: (56 to: 61).
 
 	^ debuggingSession
 ]
@@ -125,10 +147,11 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_01_en
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession |
-	
+
 	gemstoneSession := self runningServer.
 	debuggingSession := self
-		debuggingSessionForBlock: [ GtRemotePhlowDebuggerStepTestObject new halt; doMultipleMethodCalls ]
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doMultipleMethodCalls ]
 		session: gemstoneSession.
 
 	self stepIntoMethodNamed: 'doMultipleMethodCalls' in: debuggingSession.
@@ -178,10 +201,11 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_01_enterMeth
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession |
-	
+
 	gemstoneSession := self runningServer.
 	debuggingSession := self
-		debuggingSessionForBlock: [ GtRemotePhlowDebuggerStepTestObject new halt; doNestedBlocks ]
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doNestedBlocks ]
 		session: gemstoneSession.
 
 	self stepIntoMethodNamed: 'doNestedBlocks' in: debuggingSession.
