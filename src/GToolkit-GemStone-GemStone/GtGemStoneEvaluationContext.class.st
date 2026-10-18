@@ -218,6 +218,14 @@ GtGemStoneEvaluationContext >> interruptAsyncComputation [
 	^ #interruptedAsync
 ]
 
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> ipHighlightAnalysisDataAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	| frame |
+
+	frame := self frameForIdentifierIndex: aFrameIdentifierIndex.
+	^ frame ipHighlightAnalysisData
+]
+
 { #category : 'testing' }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
