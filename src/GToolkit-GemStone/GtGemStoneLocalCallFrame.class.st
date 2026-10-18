@@ -241,7 +241,7 @@ GtGemStoneLocalCallFrame >> sourceInfoIsTopFrame: aBoolean [
 	"Compute the source range for this frame's IP offset.
 	For the top frame the IP is a step point - use exact marker lookup.
 	For non-top frames the IP is a return address after a send,
-	so always use _previousStepPointForIp: to find the send site."
+	so use _previousStepPointForIp: to find the send site."
 	| source ipOffset method markers startIndex endIndex i |
 
 	method := frameContents first.
@@ -249,15 +249,10 @@ GtGemStoneLocalCallFrame >> sourceInfoIsTopFrame: aBoolean [
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
 
-	aBoolean
-		ifTrue: [
-			startIndex := markers indexOf: ipOffset.
-			startIndex = 0 ifTrue: [
-				startIndex := method _sourceOffsetsAt:
-					(method _previousStepPointForIp: ipOffset) ] ]
-		ifFalse: [
-			startIndex := method _sourceOffsetsAt:
-				(method _previousStepPointForIp: ipOffset) ].
+	startIndex := markers indexOf: ipOffset.
+	(aBoolean not or: [ startIndex = 0 ]) ifTrue: [
+		startIndex := method _sourceOffsetsAt:
+			(method _previousStepPointForIp: ipOffset) ].
 
 	i := startIndex + 1.
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
