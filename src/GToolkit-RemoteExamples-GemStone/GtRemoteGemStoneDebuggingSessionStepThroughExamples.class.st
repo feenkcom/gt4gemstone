@@ -18,10 +18,31 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 	3 timesRepeat: [ self stepThroughIn: debuggingSession ].
 
 	frames := debuggingSession remoteStackFrames.
-	self assertFrame: frames first isSelector: 'doLoop' inBlock: true.
-	self assertFrame: frames second isSelector: 'to:by:do:' inBlock: false.
-	self assertFrame: frames third isSelector: 'do:' inBlock: false.
-	self assertFrame: frames fourth isSelector: 'doLoop' inBlock: false.
+	self assertFrames: frames atIndex: 1 isSelector: 'doLoop' inBlock: true.
+	self assertFrames: frames atIndex: 2 isSelector: 'to:by:do:' inBlock: false.
+	self assertFrames: frames atIndex: 3 isSelector: 'do:' inBlock: false.
+	self assertFrames: frames atIndex: 4 isSelector: 'doLoop' inBlock: false.
+
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: '+ 1'
+		atProgramCounterRange: (42 to: 44)
+		atProgramCounterMarkers: #(42 46).
+	self
+		assertFrames: frames atIndex: 2
+		atProgramCounterRange: (1 to: 1149)
+		atProgramCounterMarkers: #(1 1149).
+	self
+		assertFrames: frames atIndex: 3
+		highlightedText: '^ self'
+		atProgramCounterRange: (156 to: 161)
+		atProgramCounterMarkers: #(156 163).
+	self
+		assertFrames: frames atIndex: 4
+		highlightedText: 'do: [ :each |
+		(each + 1 + 1) printString ]'
+		atProgramCounterRange: (20 to: 63)
+		atProgramCounterMarkers: #(20 63).
 
 	^ debuggingSession
 ]

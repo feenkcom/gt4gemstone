@@ -15,21 +15,29 @@ GtRemoteGemStoneDebuggingSessionStepExamples class >> isAbstract [
 ]
 
 { #category : #assertions }
-GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrame: aFrame highlightedText: expectedText atRange: expectedRange [
-	| range sourceString highlightedText |
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
+	self assert: (frames at: anIndex) programCounterRange equals: expectedRange.
+	self assert: (frames at: anIndex) programCounterMarkers equals: expectedMarkers
+]
 
-	range := aFrame programCounterRange.
-	sourceString := aFrame frameSpecification sourceString.
+{ #category : #assertions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
+	| frame range sourceString highlightedText |
+
+	frame := frames at: anIndex.
+	range := frame programCounterRange.
+	sourceString := frame frameSpecification sourceString.
 	highlightedText := sourceString copyFrom: range first to: range last.
 
 	self assert: highlightedText trimBoth equals: expectedText trimBoth.
-	self assert: range equals: expectedRange
+	self assert: range equals: expectedRange.
+	self assert: frame programCounterMarkers equals: expectedMarkers
 ]
 
-{ #category : #'private - helpers' }
-GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrame: aFrame isSelector: aSelector inBlock: aBoolean [
-	self assert: aFrame methodSelector equals: aSelector.
-	self assert: aFrame inBlock equals: aBoolean
+{ #category : #assertions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex isSelector: aSelector inBlock: aBoolean [
+	self assert: (frames at: anIndex) methodSelector equals: aSelector.
+	self assert: (frames at: anIndex) inBlock equals: aBoolean
 ]
 
 { #category : #'private - helpers' }
@@ -48,7 +56,7 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> debuggingSessionForBlock: aBlock
 GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession topFrame secondFrame |
+	| gemstoneSession debuggingSession frames |
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -56,29 +64,31 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 			nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ]
 		session: gemstoneSession.
 
-	topFrame := debuggingSession remoteContext.
-	self assertFrame: topFrame isSelector: nil inBlock: true.
-	self assert: topFrame isStackTopContext equals: false.
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: nil inBlock: true.
+	self assert: frames first isStackTopContext equals: false.
 	self
-		assertFrame: topFrame
+		assertFrames: frames atIndex: 1
 		highlightedText: 'halt'
-		atRange: (10 to: 13).
+		atProgramCounterRange: (10 to: 13)
+		atProgramCounterMarkers: #(10 52).
 
 	self stepIntoMethodNamed: 'doLoop' in: debuggingSession.
 
-	topFrame := debuggingSession remoteStackFrames first.
-	secondFrame := debuggingSession remoteStackFrames second.
-	self assertFrame: topFrame isSelector: 'doLoop' inBlock: false.
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doLoop' inBlock: false.
 	self
-		assertFrame: topFrame
+		assertFrames: frames atIndex: 1
 		highlightedText: 'doLoop
 	(1 to: 10) do: [ :each |
 		(each + 1 + 1) printString ]'
-		atRange: (1 to: 63).
+		atProgramCounterRange: (1 to: 63)
+		atProgramCounterMarkers: #(1 12).
 	self
-		assertFrame: secondFrame
+		assertFrames: frames atIndex: 2
 		highlightedText: 'doLoop'
-		atRange: (56 to: 61).
+		atProgramCounterRange: (56 to: 61)
+		atProgramCounterMarkers: #(56 62).
 
 	^ debuggingSession
 ]

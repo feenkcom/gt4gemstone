@@ -11,8 +11,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListVisuallyHighlightedS
 		atTopIndex: anIndex
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex highlightedText: expectedText [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText [
 	self assert
 		label: 'Assert session frame ', anIndex printString, ' highlighted text';
 		value: [ :debuggerEl |
@@ -25,8 +25,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex hig
 		// GtGemStoneExpandableDebuggerElement
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex highlightedText: expectedText atProgramCounterMarkers: expectedMarkers [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atProgramCounterMarkers: expectedMarkers [
 	self assert
 		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers';
 		value: [ :debuggerEl |
@@ -46,8 +46,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex hig
 		// GtGemStoneExpandableDebuggerElement
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange [
 	self assert
 		label: 'Assert session frame ', anIndex printString, ' programCounterRange';
 		value: [ :debuggerEl |
@@ -67,10 +67,10 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex hig
 		// GtGemStoneExpandableDebuggerElement
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
 	self
-		assertSessionFrameAtIndex: anIndex
+		assertSessionFrameAtTopIndex: anIndex
 		highlightedText: expectedText
 		atProgramCounterRange: expectedRange.
 	self assert
@@ -82,10 +82,10 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex hig
 		// GtGemStoneExpandableDebuggerElement
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex highlightedText: expectedText atRange: expectedRange [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atRange: expectedRange [
 	self
-		assertSessionFrameAtIndex: anIndex
+		assertSessionFrameAtTopIndex: anIndex
 		highlightedText: expectedText
 		atProgramCounterRange: expectedRange.
 	self assert
@@ -97,8 +97,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex hig
 		// GtGemStoneExpandableDebuggerElement
 ]
 
-{ #category : #'assertions - session' }
-GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtIndex: anIndex isSelector: aSelector inBlock: aBoolean [
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex isSelector: aSelector inBlock: aBoolean [
 	self assert
 		label: 'Assert session frame ', anIndex printString, ' selector';
 		value: [ :debuggerEl |

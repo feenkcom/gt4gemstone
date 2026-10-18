@@ -27,10 +27,10 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	self assert: stepCount <= 50.
 
 	frames := debuggingSession remoteStackFrames.
-	self assertFrame: frames first isSelector: 'doLoop' inBlock: true.
-	self assertFrame: frames second isSelector: 'to:by:do:' inBlock: false.
-	self assertFrame: frames third isSelector: 'do:' inBlock: false.
-	self assertFrame: frames fourth isSelector: 'doLoop' inBlock: false.
+	self assertFrames: frames atIndex: 1 isSelector: 'doLoop' inBlock: true.
+	self assertFrames: frames atIndex: 2 isSelector: 'to:by:do:' inBlock: false.
+	self assertFrames: frames atIndex: 3 isSelector: 'do:' inBlock: false.
+	self assertFrames: frames atIndex: 4 isSelector: 'doLoop' inBlock: false.
 
 	^ debuggingSession
 ]

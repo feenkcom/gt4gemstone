@@ -41,8 +41,8 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_00_haltAtStart [
 		play.
 
 	scripter gemStoneDebugger
-		assertSessionFrameAtIndex: 1 isSelector: nil inBlock: true;
-		assertSessionFrameAtIndex: 1
+		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
+		assertSessionFrameAtTopIndex: 1
 			highlightedText: 'halt'
 			atProgramCounterRange: (11 to: 14)
 			atProgramCounterMarkers: #(11 53);
@@ -73,15 +73,15 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_01_enterMethod [
 		play.
 
 	scripter gemStoneDebugger
-		assertSessionFrameAtIndex: 1 isSelector: 'doLoop' inBlock: false;
-		assertSessionFrameAtIndex: 2 isSelector: nil inBlock: true;
-		assertSessionFrameAtIndex: 1
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doLoop' inBlock: false;
+		assertSessionFrameAtTopIndex: 2 isSelector: nil inBlock: true;
+		assertSessionFrameAtTopIndex: 1
 			highlightedText: 'doLoop
 	(1 to: 10) do: [ :each |
 		(each + 1 + 1) printString ]'
 			atProgramCounterRange: (1 to: 63)
 			atProgramCounterMarkers: #(1 12);
-		assertSessionFrameAtIndex: 2
+		assertSessionFrameAtTopIndex: 2
 			highlightedText: 'doLoop'
 			atProgramCounterRange: (57 to: 62)
 			atProgramCounterMarkers: #(57 63);
