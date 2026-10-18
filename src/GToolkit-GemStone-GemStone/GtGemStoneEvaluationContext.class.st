@@ -340,15 +340,23 @@ GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifierIndex: aFrameIdentifie
 
 { #category : 'actions - debug (level)' }
 GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
-	| frameContents source ipOffset markers startIndex endIndex i |
+	"Compute the source range for the IP offset at the given frame level.
+	The IP marker array maps source positions to step-point IPs.
+	For non-top frames the IP is a return address after a send,
+	which may not be a step point. When the exact IP is missing,
+	use _previousStepPointForIp: to find the closest preceding
+	step point and _sourceOffsetsAt: to get its source position."
+	| frameContents source ipOffset method markers startIndex endIndex i |
 
 	frameContents := self stackFrames at: anInteger.
-	source := frameContents first sourceString.
+	method := frameContents first.
+	source := method sourceString.
 	ipOffset := frameContents second.
-	markers := frameContents first _buildIpMarkerArray.
+	markers := method _buildIpMarkerArray.
 	startIndex := markers indexOf: ipOffset.
-	startIndex = 0 ifTrue:
-		[ ^ { 1. source size. source } ].
+	startIndex = 0 ifTrue: [
+		startIndex := method _sourceOffsetsAt:
+			(method _previousStepPointForIp: ipOffset) ].
 	i := startIndex + 1.
 
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
@@ -356,7 +364,7 @@ GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
 			[ endIndex := i ].
 		i := i + 1 ].
 	endIndex ifNil: [ endIndex := source size ].
-	^ { startIndex. endIndex. source. }
+	^ { startIndex. endIndex. source }
 ]
 
 { #category : 'accessing' }
