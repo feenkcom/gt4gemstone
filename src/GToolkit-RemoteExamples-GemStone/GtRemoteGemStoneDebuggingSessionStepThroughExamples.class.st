@@ -222,38 +222,22 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_02_st
 
 { #category : #'examples - multipleMethodCalls' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_03_exitMethod [
-	"Step through until we either exit doMultipleMethodCalls or the IP
-	stops changing. Verifies step through advances through all statements.
-	Note: step through may not be able to exit a method with no blocks
-	because _setStackBreakAt: only triggers on block returns."
+	"Step through the remaining statements and exit doMultipleMethodCalls.
+	After step_02 we have done 3 step-throughs (at ip=96). The method
+	has 9 step points total before exiting, so 7 more steps are needed."
 	<gtExample>
 	<after: #stopServer>
-	| debuggingSession topFrame stepCount maxSteps lastIp currentIp stuckCount |
+	| debuggingSession |
 	debuggingSession := self multipleMethodCalls_02_stepThroughStatements.
 
-	stepCount := 0.
-	maxSteps := 20.
-	lastIp := 0.
-	stuckCount := 0.
-	[ topFrame := debuggingSession remoteContext.
-	  (topFrame methodSelector = 'doMultipleMethodCalls')
-		and: [ stepCount < maxSteps
-		and: [ stuckCount < 3 ] ] ]
-		whileTrue: [
-			currentIp := topFrame ipOffset.
-			currentIp = lastIp
-				ifTrue: [ stuckCount := stuckCount + 1 ]
-				ifFalse: [ stuckCount := 0 ].
-			lastIp := currentIp.
-			debuggingSession gsStepThroughFrameIdentifier:
-				debuggingSession remoteContext frameIdentifier.
-			debuggingSession synchronizeCallStack.
-			stepCount := stepCount + 1 ].
+	7 timesRepeat: [
+		debuggingSession gsStepThroughFrameIdentifier:
+			debuggingSession remoteContext frameIdentifier.
+		debuggingSession synchronizeCallStack ].
 
-	"We should have advanced through multiple step points"
 	self
-		assert: stepCount >= 1
-		description: 'Should have taken at least 1 step'.
+		assert: debuggingSession remoteContext methodSelector ~= 'doMultipleMethodCalls'
+		description: 'Should have exited doMultipleMethodCalls'.
 
 	^ debuggingSession
 ]
