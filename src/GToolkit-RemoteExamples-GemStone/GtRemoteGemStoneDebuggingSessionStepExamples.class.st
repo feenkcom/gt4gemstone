@@ -9,6 +9,11 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #testing }
+GtRemoteGemStoneDebuggingSessionStepExamples class >> isAbstract [
+	^ self == GtRemoteGemStoneDebuggingSessionStepExamples
+]
+
 { #category : #assertions }
 GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrame: aFrame highlightedText: expectedText atRange: expectedRange [
 	| range sourceString highlightedText |
@@ -36,6 +41,45 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> debuggingSessionForBlock: aBlock
 	debuggingSession := GtGemStoneExpandableDebuggerElement
 		spanNewSessionFrom: debuggingSession.
 	debuggingSession synchronizeCallStack.
+	^ debuggingSession
+]
+
+{ #category : #'examples - doLoop' }
+GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession topFrame secondFrame |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ]
+		session: gemstoneSession.
+
+	topFrame := debuggingSession remoteContext.
+	self assertFrame: topFrame isSelector: nil inBlock: true.
+	self assert: topFrame isStackTopContext equals: false.
+	self
+		assertFrame: topFrame
+		highlightedText: 'halt'
+		atRange: (10 to: 13).
+
+	self stepIntoMethodNamed: 'doLoop' in: debuggingSession.
+
+	topFrame := debuggingSession remoteStackFrames first.
+	secondFrame := debuggingSession remoteStackFrames second.
+	self assertFrame: topFrame isSelector: 'doLoop' inBlock: false.
+	self
+		assertFrame: topFrame
+		highlightedText: 'doLoop
+	(1 to: 10) do: [ :each |
+		(each + 1 + 1) printString ]'
+		atRange: (1 to: 63).
+	self
+		assertFrame: secondFrame
+		highlightedText: 'doLoop'
+		atRange: (56 to: 61).
+
 	^ debuggingSession
 ]
 

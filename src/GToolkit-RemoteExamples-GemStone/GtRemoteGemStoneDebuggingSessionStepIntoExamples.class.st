@@ -5,23 +5,6 @@ Class {
 }
 
 { #category : #'examples - doLoop' }
-GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_01_enterMethod [
-	<gtExample>
-	<after: #stopServer>
-	| gemstoneSession debuggingSession |
-
-	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debuggingSessionForBlock: [
-			GtRemotePhlowDebuggerStepTestObject new halt; doLoop ]
-		session: gemstoneSession.
-
-	self stepIntoMethodNamed: 'doLoop' in: debuggingSession.
-
-	^ debuggingSession
-]
-
-{ #category : #'examples - doLoop' }
 GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
