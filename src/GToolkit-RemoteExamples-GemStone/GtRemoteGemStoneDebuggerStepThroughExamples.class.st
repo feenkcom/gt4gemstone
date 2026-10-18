@@ -7,7 +7,7 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - doLoop' }
+{ #category : #examples }
 GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
@@ -30,11 +30,31 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 			highlightedText: '+ 1'
 			atProgramCounterRange: (42 to: 44)
 			atProgramCounterMarkers: #(42 46);
+		assertSessionFrameAtTopIndex: 2
+			atProgramCounterRange: (1 to: 1149)
+			atProgramCounterMarkers: #(1 1149);
+		assertSessionFrameAtTopIndex: 3
+			highlightedText: '^ self'
+			atProgramCounterRange: (156 to: 161)
+			atProgramCounterMarkers: #(156 163);
 		assertSessionFrameAtTopIndex: 4
 			highlightedText: 'do: [ :each |
 		(each + 1 + 1) printString ]'
 			atProgramCounterRange: (20 to: 63)
 			atProgramCounterMarkers: #(20 63);
+		play.
+
+	scripter gemStoneDebugger
+		assertInCodersListVisuallyHighlightedString: '+ 1' atTopIndex: 1;
+		assertInCodersListVisuallyHighlightedString: 'do: [ :each |
+		(each + 1 + 1) printString ]' atTopIndex: 4;
+		play.
+
+	scripter gemStoneDebugger
+		expandCoderAtTopIndex: 3;
+		assertInCodersListVisuallyHighlightedString: '^ self' atTopIndex: 3;
+		expandCoderAtTopIndex: 2;
+		assertInCodersListHasHighlightAtTopIndex: 2;
 		play.
 
 	^ scripter

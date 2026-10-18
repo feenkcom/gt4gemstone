@@ -4,11 +4,47 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListHasHighlightAtTopIndex: anIndex [
+	self assert
+		label: 'Assert highlight exists in coder at index ', anIndex asString;
+		value: [ :aCoderElement |
+			| attributes found |
+			found := false.
+			aCoderElement textualCoderViewModel styledText
+				attributeRunsDo: [ :from :to :attrs |
+					attrs do: [ :each |
+						((each isKindOf: BlTextHighlightAttribute) and: [
+							each id = GtSourceCoderViewModel debuggerTextHighlightId ])
+							ifTrue: [ found := true ] ] ].
+			found ]
+		equals: true;
+		// (GtExpandableContextMethodCoderId indexed: anIndex)
+]
+
 { #category : #'assertions - visual' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListVisuallyHighlightedString: aString atTopIndex: anIndex [
 	super
 		assertInCodersListVisuallyHighlightedString: aString withUnixLineEndings
 		atTopIndex: anIndex
+]
+
+{ #category : #assertions }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
+	self assert
+		label: 'Assert session frame ', anIndex printString, ' programCounterRange';
+		value: [ :debuggerEl |
+			(debuggerEl debugSession remoteStackFrames at: anIndex)
+				programCounterRange ]
+		equals: expectedRange;
+		// GtGemStoneExpandableDebuggerElement.
+	self assert
+		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers';
+		value: [ :debuggerEl |
+			(debuggerEl debugSession remoteStackFrames at: anIndex)
+				programCounterMarkers ]
+		equals: expectedMarkers;
+		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
@@ -116,4 +152,15 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 { #category : #accessing }
 GtGemStoneDebuggerDevScripterCheckStep >> debggerToolbarId [
 	^GtGemStoneExpandableDebuggerToolbar
+]
+
+{ #category : #actions }
+GtGemStoneDebuggerDevScripterCheckStep >> expandCoderAtTopIndex: anIndex [
+	self
+		substeps2: 'Expand coder at index ', anIndex printString
+		do: [ :aStep |
+			aStep do
+				label: 'Expand coder ', anIndex printString;
+				action: [ :aCoderElement | aCoderElement expand ];
+				// (GtExpandableContextMethodCoderId indexed: anIndex) ]
 ]
