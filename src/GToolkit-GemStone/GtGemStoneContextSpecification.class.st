@@ -5,7 +5,8 @@ Class {
 		'isForBlock',
 		'ipOffset',
 		'frameIdentifier',
-		'programCounterMarkers'
+		'programCounterMarkers',
+		'isStackTopContext'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -24,6 +25,7 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 		at: #ipOffset put: ipOffset;
 		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
 		at: #programCounterMarkers put: programCounterMarkers;
+		at: #isStackTopContext put: self isStackTopContext;
 		yourself
 ]
 
@@ -33,26 +35,28 @@ GtGemStoneContextSpecification >> frameIdentifier [
 ]
 
 { #category : #initialization }
-GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [ 
+GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	self initializeForGsMethod: aGsCallFrame homeMethod.
 	self initializeProviderBehaviorFromFrame: aGsCallFrame.
-	
+
 	isForBlock := aGsCallFrame isForBlock.
 	ipOffset := aGsCallFrame ipOffset.
-	frameIdentifier := aGsCallFrame frameIdentifier. 
-	programCounterMarkers := aGsCallFrame programCounterMarkers. 
+	frameIdentifier := aGsCallFrame frameIdentifier.
+	isStackTopContext := aGsCallFrame isStackTopContext.
+	programCounterMarkers := aGsCallFrame programCounterMarkers.
 ]
 
 { #category : #initialization }
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
-	
+
 	isForBlock := aDictionary at: #isForBlock.
 	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
 	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
-	
+	isStackTopContext := aDictionary at: #isStackTopContext ifAbsent: [ false ].
+
 	(aDictionary includesKey: #frameIdentifier) ifTrue: [
-		frameIdentifier := GtGemStoneCallFrameIdentifier 
+		frameIdentifier := GtGemStoneCallFrameIdentifier
 			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]
 ]
 
@@ -73,6 +77,11 @@ GtGemStoneContextSpecification >> ipOffset [
 { #category : #accessing }
 GtGemStoneContextSpecification >> isForBlock [
 	^ isForBlock ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtGemStoneContextSpecification >> isStackTopContext [
+	^ isStackTopContext ifNil: [ false ]
 ]
 
 { #category : #accessing }

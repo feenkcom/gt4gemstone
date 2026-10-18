@@ -16,7 +16,8 @@ Class {
 		'ipOffset',
 		'sender',
 		'frameIdentifier',
-		'programCounterMarkers'
+		'programCounterMarkers',
+		'isStackTopContext'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -185,17 +186,18 @@ GtGemStoneStackFrame >> inBlock: aBoolean [
 	inBlock := aBoolean
 ]
 
-{ #category : #initization }
-GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [ 
-	self 
+{ #category : #initialization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
+	self
 		className: aFrameSpecification coderClassName;
 		selector: aFrameSpecification selector;
 		inBlock: aFrameSpecification isForBlock;
 		ipOffset: aFrameSpecification ipOffset;
 		frameSpecification: aFrameSpecification;
-		frameIdentifier:aFrameSpecification frameIdentifier.
-	
-	programCounterMarkers := aFrameSpecification programCounterMarkers 
+		frameIdentifier: aFrameSpecification frameIdentifier.
+
+	programCounterMarkers := aFrameSpecification programCounterMarkers.
+	isStackTopContext := aFrameSpecification isStackTopContext.
 ]
 
 { #category : #initization }
@@ -214,6 +216,16 @@ GtGemStoneStackFrame >> ipOffset [
 { #category : #accessing }
 GtGemStoneStackFrame >> ipOffset: aNumber [
 	ipOffset := aNumber
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> isStackTopContext [
+	^ isStackTopContext ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> isStackTopContext: aBoolean [
+	isStackTopContext := aBoolean
 ]
 
 { #category : #accessing }

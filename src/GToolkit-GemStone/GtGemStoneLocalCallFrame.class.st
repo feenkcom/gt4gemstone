@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'frameContents',
 		'homeMethod',
-		'frameIdentifier'
+		'frameIdentifier',
+		'isStackTopContext'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -109,6 +110,16 @@ GtGemStoneLocalCallFrame >> isForSameMethodOrBlockAs: anotherContext [
 	^ self methodClassName = anotherContext methodClassName and: [
 		self selector = anotherContext selector and: [
 			self homeMethodOop = anotherContext homeMethodOop  ] ]
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> isStackTopContext [
+	^ isStackTopContext ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> isStackTopContext: aBoolean [
+	isStackTopContext := aBoolean
 ]
 
 { #category : #accessing }
@@ -222,24 +233,33 @@ GtGemStoneLocalCallFrame >> selfObjectClassName [
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> sourceInfo [
+	^ self sourceInfoIsTopFrame: self isStackTopContext
+]
+
+{ #category : #accessing }
+GtGemStoneLocalCallFrame >> sourceInfoIsTopFrame: aBoolean [
 	"Compute the source range for this frame's IP offset.
-	The IP marker array maps source positions to step-point IPs.
+	For the top frame the IP is a step point - use exact marker lookup.
 	For non-top frames the IP is a return address after a send,
-	which may not be a step point. When the exact IP is missing,
-	use _previousStepPointForIp: to find the closest preceding
-	step point and _sourceOffsetsAt: to get its source position."
+	so always use _previousStepPointForIp: to find the send site."
 	| source ipOffset method markers startIndex endIndex i |
 
 	method := frameContents first.
 	source := method sourceString.
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
-	startIndex := markers indexOf: ipOffset.
-	startIndex = 0 ifTrue: [
-		startIndex := method _sourceOffsetsAt:
-			(method _previousStepPointForIp: ipOffset) ].
-	i := startIndex + 1.
 
+	aBoolean
+		ifTrue: [
+			startIndex := markers indexOf: ipOffset.
+			startIndex = 0 ifTrue: [
+				startIndex := method _sourceOffsetsAt:
+					(method _previousStepPointForIp: ipOffset) ] ]
+		ifFalse: [
+			startIndex := method _sourceOffsetsAt:
+				(method _previousStepPointForIp: ipOffset) ].
+
+	i := startIndex + 1.
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
 		[ (markers at: i) notNil ifTrue:
 			[ endIndex := i ].
