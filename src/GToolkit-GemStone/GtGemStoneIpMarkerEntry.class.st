@@ -8,7 +8,7 @@ Class {
 		'nextPosition',
 		'isFrameIp'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #'gt - extensions' }
@@ -22,7 +22,7 @@ GtGemStoneIpMarkerEntry >> gtSourceCodeFor: aView [
 
 { #category : #'gt - extensions' }
 GtGemStoneIpMarkerEntry >> gtSourceWithHighlightFor: aView [
-	<gtView>
+	"<gtView>
 	^ aView explicit
 		title: 'Source with highlight';
 		priority: 1;
@@ -30,7 +30,7 @@ GtGemStoneIpMarkerEntry >> gtSourceWithHighlightFor: aView [
 			GtGemStoneSourceHighlightStencil new
 				sourceString: sourceString;
 				highlightStart: sourcePosition;
-				highlightEnd: nextPosition ]
+				highlightEnd: nextPosition ]"
 ]
 
 { #category : #accessing }

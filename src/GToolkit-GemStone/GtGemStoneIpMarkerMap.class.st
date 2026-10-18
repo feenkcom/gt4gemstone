@@ -6,7 +6,7 @@ Class {
 		'sourceString',
 		'ipOffset'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }

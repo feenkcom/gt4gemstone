@@ -8,7 +8,7 @@ Class {
 		'strategyName',
 		'isActive'
 	],
-	#category : #'GToolkit-GemStone-Pharo-Debugger'
+	#category : #'GToolkit-GemStone'
 }
 
 { #category : #accessing }
@@ -27,8 +27,8 @@ GtGemStoneIpHighlight >> gtHighlightedTextFor: aView [
 ]
 
 { #category : #'gt - extensions' }
-GtGemStoneIpHighlight >> gtSourceWithHighlightFor: aView [
-	<gtView>
+GtGemStoneIpHighlight >> gtSourceWithHighlightFor: aView [ 
+	"<gtView>
 	startIndex > 0 ifFalse: [ ^ aView empty ].
 	^ aView explicit
 		title: 'Source with highlight';
@@ -37,7 +37,7 @@ GtGemStoneIpHighlight >> gtSourceWithHighlightFor: aView [
 			GtGemStoneSourceHighlightStencil new
 				sourceString: sourceString;
 				highlightStart: startIndex;
-				highlightEnd: endIndex ]
+				highlightEnd: endIndex ]"
 ]
 
 { #category : #accessing }
