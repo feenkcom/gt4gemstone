@@ -43,15 +43,15 @@ GtGemStoneDebugger >> filterUnrelatedStackFramesFrom: aCollectionOfStackFrames [
 ]
 
 { #category : #actions }
-GtGemStoneDebugger >> gsRestartFrameLevel: anInteger [
+GtGemStoneDebugger >> gsRestartFrameIdentifier: aFrameIdentifier [
 
 	[ self debuggerProxy
-		proxyPerform: #restartFrameLevel:
-		withArguments: { anInteger }
+		proxyPerform: #restartFrameIdentifierIndex:
+		withArguments: { aFrameIdentifier identityIndex }
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
-	
+
 	self resetState.
 ]
 
@@ -79,39 +79,41 @@ GtGemStoneDebugger >> gsResume [
 ]
 
 { #category : #actions }
-GtGemStoneDebugger >> gsStepIntoFrameLevel: anInteger [
+GtGemStoneDebugger >> gsStepIntoFrameIdentifier: aFrameIdentifier [
 
 	[ self debuggerProxy
-		proxyPerform: #stepIntoFrameLevel:
-		withArguments: { anInteger. }
+		proxyPerform: #stepIntoFrameIdentifierIndex:
+		withArguments: { aFrameIdentifier identityIndex }
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
+
 	self resetState.
 ]
 
 { #category : #actions }
-GtGemStoneDebugger >> gsStepOverFrameLevel: anInteger [
+GtGemStoneDebugger >> gsStepOverFrameIdentifier: aFrameIdentifier [
 
 	[ self debuggerProxy
-		proxyPerform: #stepOverFrameLevel:
-		withArguments: { anInteger. }
+		proxyPerform: #stepOverFrameIdentifierIndex:
+		withArguments: { aFrameIdentifier identityIndex }
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
-	
+
 	self resetState.
 ]
 
 { #category : #actions }
-GtGemStoneDebugger >> gsStepThroughFrameLevel: anInteger [
+GtGemStoneDebugger >> gsStepThroughFrameIdentifier: aFrameIdentifier [
 
 	[ self debuggerProxy
-		proxyPerform: #stepThroughFrameLevel:
-		withArguments: { anInteger. }
+		proxyPerform: #stepThroughFrameIdentifierIndex:
+		withArguments: { aFrameIdentifier identityIndex }
 		autoCommit: false ]
 			on: GtRsrEvaluationException
 			do: [ :ex | self error: 'Unexpected debugger error'. ].
+
 	self resetState.
 ]
 
@@ -125,10 +127,6 @@ GtGemStoneDebugger >> gtViewAllStackFramesFor: aView [
 		title: 'All stack frames';
 		priority: 20;
 		items: [ allStackFrames ];
-		column: 'Index' 
-			text: [ :aStackFrame |
-				aStackFrame ordinal ]
-			width: 75;
 		column: 'Identifier' 
 			text: [ :aStackFrame |
 				aStackFrame frameIdentifier identityIndex ]
@@ -145,10 +143,6 @@ GtGemStoneDebugger >> gtViewStackFramesFor: aView [
 		title: 'Stack frames';
 		priority: 10;
 		items: [ self stackFrames ];
-		column: 'Index' 
-			text: [ :aStackFrame |
-				aStackFrame ordinal ]
-			width: 75;
 		column: 'Identifier' 
 			text: [ :aStackFrame |
 				aStackFrame frameIdentifier identityIndex ]
@@ -203,18 +197,17 @@ GtGemStoneDebugger >> resetState [
 	self announceStateChange.
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 GtGemStoneDebugger >> retrieveAllStackFrames [
 	| previousStackFrame currentStackFrame |
-		
+
 	previousStackFrame := nil.
 	currentStackFrame := nil.
-	
+
 	^ exception debuggerState callStackSpecification frameSpecifications
-		collectWithIndex: [ :aFrameSpecification :index |
-			currentStackFrame := GtGemStoneStackFrame 
-				fromSpecification: aFrameSpecification 
-				atIndex: index 
+		collect: [ :aFrameSpecification |
+			currentStackFrame := GtGemStoneStackFrame
+				fromSpecification: aFrameSpecification
 				forException: exception.
 			previousStackFrame ifNotNil: [
 				previousStackFrame sender: currentStackFrame ].

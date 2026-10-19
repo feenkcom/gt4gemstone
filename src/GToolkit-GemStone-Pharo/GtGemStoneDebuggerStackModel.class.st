@@ -26,7 +26,7 @@ GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
 	| contextChanged |
 	contextChanged := currentContext ~= aContext.
 	currentContext := aContext.
-	self updateFrameContextsInCoderModels.
+	"self updateFrameContextsInCoderModels."
 	^ contextChanged
 ]
 

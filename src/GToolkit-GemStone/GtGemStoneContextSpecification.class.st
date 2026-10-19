@@ -35,6 +35,11 @@ GtGemStoneContextSpecification >> callerProgramCounterMarkers [
 ]
 
 { #category : #accessing }
+GtGemStoneContextSpecification >> currentProgramCounterMarkers [
+	^ programCounterMarkers
+]
+
+{ #category : #accessing }
 GtGemStoneContextSpecification >> frameIdentifier [
 	^ frameIdentifier
 ]

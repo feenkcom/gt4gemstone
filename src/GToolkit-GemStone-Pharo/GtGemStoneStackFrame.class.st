@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'frameArray',
-		'ordinal',
 		'exception',
 		'line',
 		'className',
@@ -17,16 +16,16 @@ Class {
 		'sender',
 		'frameIdentifier',
 		'programCounterMarkers',
+		'currentProgramCounterMarkers',
 		'callerProgramCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #'instance creation' }
-GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification atIndex: anIndex forException: anException [
-	^ self new 
-		initializeFromSpecification: aFrameSpecification 
-		atIndex: anIndex 
+GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification forException: anException [
+	^ self new
+		initializeFromSpecification: aFrameSpecification
 		forException: anException
 ]
 
@@ -64,6 +63,11 @@ GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: e
 		((each start to: each stop) includes: anInteger) ifTrue:
 			[ messageNode := each ] ].
 	^ anInteger to: messageNode stop
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> currentProgramCounterMarkers [
+	^ currentProgramCounterMarkers
 ]
 
 { #category : #accessing }
@@ -111,13 +115,14 @@ GtGemStoneStackFrame >> filterSelfFrom: anArray [
 	^ indexedArray.
 ]
 
-{ #category : #'private - accessing' }
+{ #category : #accessing }
 GtGemStoneStackFrame >> frameArray [
 	"Only for debugging the debugger"
 
-	^ frameArray ifNil: [ frameArray := exception debuggerProxy
+	^ frameArray ifNil: [ frameArray := self debuggerProxy
 		proxyPerform: #frameContentsAtLevel:
-		withArguments: { self ordinal }
+		withArguments: { (self debuggerProxy asGtBareProxyObject
+			frameLevelForIdentifierIndex: self frameIdentifier identityIndex) }
 		autoCommit: false ]
 ]
 
@@ -154,7 +159,7 @@ GtGemStoneStackFrame >> gsSession [
 	^ exception gtSession
 ]
 
-{ #category : #views }
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtHighlightsFor: aView [
 	<gtView>
 	^ aView columnedList
@@ -164,10 +169,10 @@ GtGemStoneStackFrame >> gtHighlightsFor: aView [
 			| effectiveMarkers |
 			effectiveMarkers := self programCounterMarkers.
 			{
-				self highlightForMarkers: self originalProgramCounterMarkers
+				self highlightForMarkers: currentProgramCounterMarkers
 					named: 'Frame IP'
 					isActive: (effectiveMarkers notNil
-						and: [ self originalProgramCounterMarkers = effectiveMarkers ]).
+						and: [ currentProgramCounterMarkers = effectiveMarkers ]).
 				self highlightForMarkers: callerProgramCounterMarkers
 					named: 'Call site'
 					isActive: (effectiveMarkers notNil
@@ -260,15 +265,15 @@ GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
 		frameSpecification: aFrameSpecification;
 		frameIdentifier: aFrameSpecification frameIdentifier.
 
-	programCounterMarkers := aFrameSpecification programCounterMarkers.
+	currentProgramCounterMarkers := aFrameSpecification currentProgramCounterMarkers.
+	programCounterMarkers := aFrameSpecification currentProgramCounterMarkers.
 	callerProgramCounterMarkers := aFrameSpecification callerProgramCounterMarkers.
 ]
 
-{ #category : #initization }
-GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification atIndex: anIndex forException: anException [ 
+{ #category : #initialization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification forException: anException [
 	self initializeFromSpecification: aFrameSpecification.
-	
-	self ordinal: anIndex.
+
 	self exception: anException.
 ]
 
@@ -286,29 +291,14 @@ GtGemStoneStackFrame >> ipOffset: aNumber [
 GtGemStoneStackFrame >> method [
 
 	^ method ifNil:
-		[ method := self debuggerProxy asGtBareProxyObject methodAtFrameLevel: ordinal ]
+		[ method := self debuggerProxy asGtBareProxyObject
+			 methodAtFrameLevel: ((self debuggerProxy asGtBareProxyObject
+			 	frameLevelForIdentifierIndex: self frameIdentifier identityIndex)) ]
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> methodSelector [
 	^ self frameSpecification selector
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> ordinal [
-
-	^ ordinal
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> ordinal: aNumber [
-
-	ordinal := aNumber
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> originalProgramCounterMarkers [
-	^ frameSpecification programCounterMarkers
 ]
 
 { #category : #printing }
@@ -407,7 +397,7 @@ GtGemStoneStackFrame >> safeVariablesAssociationsBasedOnIndex [
 	side we catch the error and display a warning to prevent multiple
 	debuggers from opening."
 	
-	^ [ self variablesAssociationsBasedOnIndex ] 
+	^ [ self variablesAssociations ] 
 		on: GtRsrEvaluationException 
 		do: [ :anException |
 			anException logStackToFile.
@@ -445,9 +435,10 @@ GtGemStoneStackFrame >> sender: aStackFrame [
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceCode [
 
-	^ self debuggerProxy 
+	^ self debuggerProxy
 		proxyPerform: #sourceCodeAtFrameLevel:
-		withArguments: { ordinal }
+		withArguments: { (self debuggerProxy asGtBareProxyObject
+			frameLevelForIdentifierIndex: self frameIdentifier identityIndex) }
 ]
 
 { #category : #accessing }
@@ -456,8 +447,8 @@ GtGemStoneStackFrame >> sourceText [
 
 	sourceText ifNotNil: [ ^ sourceText ].
 	sourceInfo := self debuggerProxy 
-		proxyPerform: #sourceInfoAtFrameLevel: 
-		withArguments: { ordinal }
+		proxyPerform: #sourceInfoAtFrameIdentifierIndex: 
+		withArguments: { self frameIdentifier identityIndex }
 		autoCommit: false.
 	sourceString := sourceInfo third.
 	sourceText := sourceString asRopedText glamorousCodeFont.
@@ -485,19 +476,8 @@ GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
 { #category : #accessing }
 GtGemStoneStackFrame >> variablesAssociations [
 
-	^ variableAssociations ifNil: [ 
+	^ variableAssociations ifNil: [
 		variableAssociations := self filterSelfFrom:
-			(self debuggerProxy
-				proxyPerform: #variableInfoAtFrameLevel:
-				withArguments: { ordinal }
-				autoCommit: false) ].
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> variablesAssociationsBasedOnIndex [
-
-	^ variableAssociations ifNil: 
-		[ variableAssociations := self filterSelfFrom:
 			(self debuggerProxy
 				proxyPerform: #variableInfoAtFrameIdentifierIndex:
 				withArguments: { self frameIdentifier identityIndex }

@@ -1,6 +1,9 @@
 Class {
 	#name : #GtGemStoneDebuggerSession,
 	#superclass : #GtDebugSession,
+	#instVars : [
+		'initialStackFrames'
+	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
@@ -132,6 +135,66 @@ GtGemStoneDebuggerSession >> gtViewRemoteStackExceptionFor: aView [
 		priority: 20;
 		object: [ exception ];
 		view: #gtViewRemoteStackFor:
+]
+
+{ #category : #'gt - extensions' }
+GtGemStoneDebuggerSession >> gtViewStackDiffFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Stack diff';
+		priority: 25;
+		items: [
+			| currentFrames initial diff |
+			initial := self initialStackFrames.
+			currentFrames := self remoteStackFrames.
+			diff := currentFrames collect: [ :frame |
+				| initialFrame |
+				initialFrame := initial
+					detect: [ :f | f frameIdentifier = frame frameIdentifier ]
+					ifNone: [ nil ].
+				{ frame. initialFrame } ] ];
+		column: '#' text: [ :pair | pair first frameIdentifier identityIndex ] width: 40;
+		column: 'Frame' text: [ :pair |
+			String streamContents: [ :s |
+				pair first printMethodDescriptionOn: s ] ] width: 250;
+		column: 'Initial IP' text: [ :pair |
+			pair second
+				ifNotNil: [ :f | f ipOffset printString ]
+				ifNil: [ 'new' ] ] width: 80;
+		column: 'Current IP' text: [ :pair |
+			pair first ipOffset printString ] width: 80;
+		column: 'Changed' text: [ :pair |
+			pair second
+				ifNotNil: [ :f |
+					f ipOffset = pair first ipOffset
+						ifTrue: [ '' ]
+						ifFalse: [ f ipOffset printString, ' -> ', pair first ipOffset printString ] ]
+				ifNil: [ '' ] ] width: 120;
+		column: 'Initial highlight' text: [ :pair |
+			pair second
+				ifNotNil: [ :f |
+					f currentProgramCounterMarkers
+						ifNotNil: [ :m |
+							(f frameSpecification sourceString
+								copyFrom: m first
+								to: (m second min: f frameSpecification sourceString size)) ]
+						ifNil: [ '' ] ]
+				ifNil: [ '' ] ];
+		column: 'Current highlight' text: [ :pair |
+			pair first currentProgramCounterMarkers
+				ifNotNil: [ :m |
+					(pair first frameSpecification sourceString
+						copyFrom: m first
+						to: (m second min: pair first frameSpecification sourceString size)) ]
+				ifNil: [ '' ] ];
+		send: [ :pair | pair first ]
+]
+
+{ #category : #accessing }
+GtGemStoneDebuggerSession >> initialStackFrames [
+	^ initialStackFrames ifNil: [
+		initialStackFrames := self remoteStackFrames collect: [ :frame |
+			frame copy ] ]
 ]
 
 { #category : #accessing }

@@ -23,6 +23,15 @@ GtGemStoneStackRefreshExampleSession >> debuggerProxy [
 ]
 
 { #category : #accessing }
+GtGemStoneStackRefreshExampleSession >> frameLevelForIdentifierIndex: aFrameIdentifierIndex [
+
+	frames withIndexDo: [ :frame :index |
+		frame frameIdentifier identityIndex = aFrameIdentifierIndex
+			ifTrue: [ ^ index ] ].
+	Error signal: 'Frame not found for identifier index: ', aFrameIdentifierIndex printString
+]
+
+{ #category : #accessing }
 GtGemStoneStackRefreshExampleSession >> frames: anArray [
 	frames := anArray
 ]
