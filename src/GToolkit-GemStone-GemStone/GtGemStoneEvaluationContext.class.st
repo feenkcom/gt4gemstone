@@ -155,6 +155,12 @@ GtGemStoneEvaluationContext >> exception: anException [
 ]
 
 { #category : 'accessing' }
+GtGemStoneEvaluationContext >> frameContentsAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self frameContentsAtLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+]
+
+{ #category : 'accessing' }
 GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
 
 	^ process _frameContentsAt: anInteger
@@ -226,6 +232,14 @@ GtGemStoneEvaluationContext >> ipHighlightAnalysisDataAtFrameIdentifierIndex: aF
 	^ frame ipHighlightAnalysisData
 ]
 
+{ #category : 'accessing' }
+GtGemStoneEvaluationContext >> ipMarkerMapAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	| frame |
+
+	frame := self frameForIdentifierIndex: aFrameIdentifierIndex.
+	^ frame ipMarkerMap
+]
+
 { #category : 'testing' }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
@@ -249,6 +263,12 @@ GtGemStoneEvaluationContext >> isSuspended [
 GtGemStoneEvaluationContext >> isTerminated [
 
 	^ process _isTerminated
+]
+
+{ #category : 'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> methodAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self methodAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
@@ -336,6 +356,12 @@ GtGemStoneEvaluationContext >> serializationStrategy [
 { #category : 'accessing' }
 GtGemStoneEvaluationContext >> serializationStrategy: object [
 	serializationStrategy := object
+]
+
+{ #category : 'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> sourceCodeAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self sourceCodeAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : 'actions - debug (level)' }
