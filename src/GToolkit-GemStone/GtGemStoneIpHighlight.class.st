@@ -28,16 +28,20 @@ GtGemStoneIpHighlight >> gtHighlightedTextFor: aView [
 
 { #category : #'gt - extensions' }
 GtGemStoneIpHighlight >> gtSourceWithHighlightFor: aView [ 
-	"<gtView>
+	<gtView>
 	startIndex > 0 ifFalse: [ ^ aView empty ].
 	^ aView explicit
 		title: 'Source with highlight';
 		priority: 2;
 		declarativeStencil: [
-			GtGemStoneSourceHighlightStencil new
+			(self 
+					gtDo: [
+						#GtGemStoneSourceHighlightStencil asClass new] 
+						gemstoneDo: [(System myUserProfile 
+							objectNamed: #GtGemStoneSourceHighlightStencil) new])
 				sourceString: sourceString;
 				highlightStart: startIndex;
-				highlightEnd: endIndex ]"
+				highlightEnd: endIndex ]
 ]
 
 { #category : #accessing }

@@ -166,6 +166,18 @@ GtGemStoneDebugger >> initialize [
 
 { #category : #private }
 GtGemStoneDebugger >> preserveNonTopFrameMarkersFrom: previousFrames [
+	"When the user steps into a callee, the VM advances the caller's IP
+	to the return address (the next step point after the send). This means
+	sourceInfo computes markers for the return address, not the send site.
+	For example, stepping into doLoop in [ nil halt. ... doLoop ] advances
+	the block frame's IP from the doLoop send to the block-return ']',
+	so the highlight jumps to ']' instead of staying on 'doLoop'.
+	We fix this by preserving markers from when each frame was last
+	the top frame (when its IP was at the actual execution point).
+	For frames appearing for the first time (no previous match),
+	we fall back to callerProgramCounterMarkers which uses
+	_previousStepPointForIp: to recover the send site from the
+	return address."
 
 	previousFrames ifNil: [ ^ self ].
 	stackFrames size <= 1 ifTrue: [ ^ self ].
@@ -175,8 +187,12 @@ GtGemStoneDebugger >> preserveNonTopFrameMarkersFrom: previousFrames [
 		oldFrame := previousFrames
 			detect: [ :old | old frameIdentifier = frame frameIdentifier ]
 			ifNone: [ nil ].
-		oldFrame ifNotNil: [
-			frame updateProgramCounterMarkers: oldFrame programCounterMarkers ] ]
+		oldFrame
+			ifNotNil: [
+				frame updateProgramCounterMarkers: oldFrame programCounterMarkers ]
+			ifNil: [
+				frame callerProgramCounterMarkers ifNotNil: [ :markers |
+					frame updateProgramCounterMarkers: markers ] ] ]
 ]
 
 { #category : #private }

@@ -7,7 +7,7 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #examples }
+{ #category : #'examples - doLoop' }
 GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
@@ -31,12 +31,13 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 			atProgramCounterRange: (42 to: 44)
 			atProgramCounterMarkers: #(42 46);
 		assertSessionFrameAtTopIndex: 2
-			atProgramCounterRange: (1 to: 1149)
-			atProgramCounterMarkers: #(1 1149);
+			highlightedText: 'value: i'
+			atProgramCounterRange: (1140 to: 1147)
+			atProgramCounterMarkers: #(1140 1149);
 		assertSessionFrameAtTopIndex: 3
-			highlightedText: '^ self'
-			atProgramCounterRange: (156 to: 161)
-			atProgramCounterMarkers: #(156 163);
+			highlightedText: 'to: to by: by do: aBlock'
+			atProgramCounterRange: (130 to: 153)
+			atProgramCounterMarkers: #(130 156);
 		assertSessionFrameAtTopIndex: 4
 			highlightedText: 'do: [ :each |
 		(each + 1 + 1) printString ]'
@@ -52,9 +53,9 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 
 	scripter gemStoneDebugger
 		expandCoderAtTopIndex: 3;
-		assertInCodersListVisuallyHighlightedString: '^ self' atTopIndex: 3;
+		assertInCodersListVisuallyHighlightedString: 'to: to by: by do: aBlock' atTopIndex: 3;
 		expandCoderAtTopIndex: 2;
-		assertInCodersListHasHighlightAtTopIndex: 2;
+		assertInCodersListVisuallyHighlightedString: 'value: i' atTopIndex: 2;
 		play.
 
 	^ scripter

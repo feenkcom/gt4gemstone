@@ -30,13 +30,14 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 		atProgramCounterMarkers: #(42 46).
 	self
 		assertFrames: frames atIndex: 2
-		atProgramCounterRange: (1 to: 1149)
-		atProgramCounterMarkers: #(1 1149).
+		highlightedText: 'value: i'
+		atProgramCounterRange: (1140 to: 1147)
+		atProgramCounterMarkers: #(1140 1149).
 	self
 		assertFrames: frames atIndex: 3
-		highlightedText: '^ self'
-		atProgramCounterRange: (156 to: 161)
-		atProgramCounterMarkers: #(156 163).
+		highlightedText: 'to: to by: by do: aBlock'
+		atProgramCounterRange: (130 to: 153)
+		atProgramCounterMarkers: #(130 156).
 	self
 		assertFrames: frames atIndex: 4
 		highlightedText: 'do: [ :each |

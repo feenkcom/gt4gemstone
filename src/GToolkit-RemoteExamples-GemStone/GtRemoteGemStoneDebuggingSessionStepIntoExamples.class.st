@@ -32,5 +32,28 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	self assertFrames: frames atIndex: 3 isSelector: 'do:' inBlock: false.
 	self assertFrames: frames atIndex: 4 isSelector: 'doLoop' inBlock: false.
 
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: ':each |
+		(each + 1 + 1) printString ]'
+		atProgramCounterRange: (25 to: 63)
+		atProgramCounterMarkers: #(25 42).
+	self
+		assertFrames: frames atIndex: 2
+		highlightedText: 'value: i'
+		atProgramCounterRange: (1140 to: 1147)
+		atProgramCounterMarkers: #(1140 1149).
+	self
+		assertFrames: frames atIndex: 3
+		highlightedText: 'to: to by: by do: aBlock'
+		atProgramCounterRange: (130 to: 153)
+		atProgramCounterMarkers: #(130 156).
+	self
+		assertFrames: frames atIndex: 4
+		highlightedText: 'do: [ :each |
+		(each + 1 + 1) printString ]'
+		atProgramCounterRange: (20 to: 63)
+		atProgramCounterMarkers: #(20 63).
+
 	^ debuggingSession
 ]

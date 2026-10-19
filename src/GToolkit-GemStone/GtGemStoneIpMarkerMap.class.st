@@ -21,7 +21,7 @@ GtGemStoneIpMarkerMap >> entries: anArray sourceString: aString ipOffset: anInte
 	ipOffset := anInteger
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #views }
 GtGemStoneIpMarkerMap >> gtMarkersFor: aView [
 	<gtView>
 	^ aView columnedList
@@ -34,7 +34,8 @@ GtGemStoneIpMarkerMap >> gtMarkersFor: aView [
 			entry isFrameIp
 				ifTrue: [ '<< frame IP' ]
 				ifFalse: [ '' ] ] width: 80;
-		column: 'Source' text: [ :entry | entry sourceCode ];
+		column: 'Source' text: [ :entry | entry sourceCode ] width: 200;
+		column: 'Call site' text: [ :entry | entry callerSourceCode ];
 		send: [ :entry | entry ]
 ]
 

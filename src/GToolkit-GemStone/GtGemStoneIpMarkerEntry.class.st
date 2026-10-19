@@ -6,10 +6,48 @@ Class {
 		'ip',
 		'sourceString',
 		'nextPosition',
-		'isFrameIp'
+		'isFrameIp',
+		'callerSourcePosition',
+		'callerNextPosition'
 	],
 	#category : #'GToolkit-GemStone'
 }
+
+{ #category : #accessing }
+GtGemStoneIpMarkerEntry >> callerNextPosition [
+	^ callerNextPosition
+]
+
+{ #category : #accessing }
+GtGemStoneIpMarkerEntry >> callerSourceCode [
+	callerSourcePosition = 0 ifTrue: [ ^ '' ].
+	^ sourceString
+		copyFrom: callerSourcePosition
+		to: ((callerNextPosition - 1) min: sourceString size)
+]
+
+{ #category : #accessing }
+GtGemStoneIpMarkerEntry >> callerSourcePosition [
+	^ callerSourcePosition
+]
+
+{ #category : #views }
+GtGemStoneIpMarkerEntry >> gtCallerHighlightFor: aView [
+	<gtView>
+	callerSourcePosition = 0 ifTrue: [ ^ aView empty ].
+	^ aView explicit
+		title: 'Call site highlight';
+		priority: 2;
+		declarativeStencil: [
+			(self 
+					gtDo: [
+						#GtGemStoneSourceHighlightStencil asClass new] 
+						gemstoneDo: [(System myUserProfile 
+							objectNamed: #GtGemStoneSourceHighlightStencil) new])
+				sourceString: sourceString;
+				highlightStart: callerSourcePosition;
+				highlightEnd: callerNextPosition ]
+]
 
 { #category : #'gt - extensions' }
 GtGemStoneIpMarkerEntry >> gtSourceCodeFor: aView [
@@ -20,17 +58,21 @@ GtGemStoneIpMarkerEntry >> gtSourceCodeFor: aView [
 		text: [ self sourceCode ]
 ]
 
-{ #category : #'gt - extensions' }
+{ #category : #views }
 GtGemStoneIpMarkerEntry >> gtSourceWithHighlightFor: aView [
-	"<gtView>
+	<gtView>
 	^ aView explicit
-		title: 'Source with highlight';
+		title: 'Step point highlight';
 		priority: 1;
 		declarativeStencil: [
-			GtGemStoneSourceHighlightStencil new
+			(self 
+					gtDo: [
+						#GtGemStoneSourceHighlightStencil asClass new] 
+						gemstoneDo: [(System myUserProfile 
+							objectNamed: #GtGemStoneSourceHighlightStencil) new]) 
 				sourceString: sourceString;
 				highlightStart: sourcePosition;
-				highlightEnd: nextPosition ]"
+				highlightEnd: nextPosition ]
 ]
 
 { #category : #accessing }
@@ -72,12 +114,14 @@ GtGemStoneIpMarkerEntry >> sourcePosition [
 ]
 
 { #category : #initialization }
-GtGemStoneIpMarkerEntry >> sourcePosition: aSrcPos ip: anIp sourceString: aSource nextPosition: aNextPos isFrameIp: aBoolean [
+GtGemStoneIpMarkerEntry >> sourcePosition: aSrcPos ip: anIp sourceString: aSource nextPosition: aNextPos isFrameIp: aBoolean callerSourcePosition: aCallerSrcPos callerNextPosition: aCallerNextPos [
 	sourcePosition := aSrcPos.
 	ip := anIp.
 	sourceString := aSource.
 	nextPosition := aNextPos.
-	isFrameIp := aBoolean
+	isFrameIp := aBoolean.
+	callerSourcePosition := aCallerSrcPos.
+	callerNextPosition := aCallerNextPos
 ]
 
 { #category : #accessing }

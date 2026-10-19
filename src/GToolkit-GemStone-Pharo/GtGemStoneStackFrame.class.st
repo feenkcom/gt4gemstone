@@ -17,7 +17,7 @@ Class {
 		'sender',
 		'frameIdentifier',
 		'programCounterMarkers',
-		'isStackTopContext'
+		'callerProgramCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
@@ -38,45 +38,9 @@ GtGemStoneStackFrame >> = anObject [
 	^ self frameIdentifier = anObject frameIdentifier
 ]
 
-{ #category : #private }
-GtGemStoneStackFrame >> buildHighlightsFromData: data [
-	| source isTop exactStart |
-
-	source := data at: 1.
-	isTop := data at: 3.
-	exactStart := data at: 4.
-	^ {
-		GtGemStoneIpHighlight new
-			startIndex: exactStart
-			endIndex: (data at: 5)
-			sourceString: source
-			strategyName: 'Exact (indexOf:)'
-			isActive: (isTop and: [ exactStart > 0 ]).
-		GtGemStoneIpHighlight new
-			startIndex: (data at: 6)
-			endIndex: (data at: 7)
-			sourceString: source
-			strategyName: 'Previous (_previousStepPointForIp:)'
-			isActive: (isTop not or: [ exactStart = 0 ])
-	}
-]
-
-{ #category : #private }
-GtGemStoneStackFrame >> buildMarkerMapFromData: data [
-	| source entries |
-
-	source := data at: 1.
-	entries := (data at: 8) collect: [ :raw |
-		GtGemStoneIpMarkerEntry new
-			sourcePosition: (raw at: 1)
-			ip: (raw at: 2)
-			sourceString: source
-			nextPosition: (raw at: 3)
-			isFrameIp: (raw at: 4) ].
-	^ GtGemStoneIpMarkerMap new
-		entries: entries
-		sourceString: source
-		ipOffset: (data at: 2)
+{ #category : #accessing }
+GtGemStoneStackFrame >> callerProgramCounterMarkers [
+	^ callerProgramCounterMarkers
 ]
 
 { #category : #accessing }
@@ -190,21 +154,34 @@ GtGemStoneStackFrame >> gsSession [
 	^ exception gtSession
 ]
 
-{ #category : #'gt - views' }
+{ #category : #views }
 GtGemStoneStackFrame >> gtHighlightsFor: aView [
 	<gtView>
 	^ aView columnedList
 		title: 'IP Highlights';
 		priority: 30;
 		items: [
-			| data |
-			data := self retrieveIpHighlightAnalysisData.
-			self buildHighlightsFromData: data ];
-		column: 'Strategy' text: [ :h | h strategyName ] width: 260;
+			| effectiveMarkers |
+			effectiveMarkers := self programCounterMarkers.
+			{
+				self highlightForMarkers: self originalProgramCounterMarkers
+					named: 'Frame IP'
+					isActive: (effectiveMarkers notNil
+						and: [ self originalProgramCounterMarkers = effectiveMarkers ]).
+				self highlightForMarkers: callerProgramCounterMarkers
+					named: 'Call site'
+					isActive: (effectiveMarkers notNil
+						and: [ callerProgramCounterMarkers notNil
+							and: [ callerProgramCounterMarkers = effectiveMarkers ] ]).
+				self highlightForMarkers: effectiveMarkers
+					named: 'Effective'
+					isActive: true
+			} ];
+		column: 'Strategy' text: [ :h | h strategyName ] width: 120;
 		column: 'Range' text: [ :h |
 			h startIndex > 0
 				ifTrue: [ h startIndex printString, ' to: ', h endIndex printString ]
-				ifFalse: [ 'no match' ] ] width: 100;
+				ifFalse: [ 'n/a' ] ] width: 100;
 		column: '' text: [ :h |
 			h isActive
 				ifTrue: [ 'ACTIVE' ]
@@ -216,16 +193,13 @@ GtGemStoneStackFrame >> gtHighlightsFor: aView [
 		send: [ :h | h ]
 ]
 
-{ #category : #'gt - views' }
+{ #category : #views }
 GtGemStoneStackFrame >> gtIpMarkersFor: aView [
 	<gtView>
 	^ aView forward
 		title: 'IP Markers';
 		priority: 31;
-		object: [
-			| data |
-			data := self retrieveIpHighlightAnalysisData.
-			self buildMarkerMapFromData: data ];
+		object: [ self retrieveIpMarkerMap ];
 		view: #gtMarkersFor:
 ]
 
@@ -256,6 +230,16 @@ GtGemStoneStackFrame >> hash [
 	^ self frameIdentifier hash
 ]
 
+{ #category : #private }
+GtGemStoneStackFrame >> highlightForMarkers: markers named: aString isActive: aBoolean [
+	^ GtGemStoneIpHighlight new
+		startIndex: (markers ifNotNil: [ markers first ] ifNil: [ 0 ])
+		endIndex: (markers ifNotNil: [ markers second ] ifNil: [ 0 ])
+		sourceString: frameSpecification sourceString
+		strategyName: aString
+		isActive: aBoolean
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> inBlock [
 	^ inBlock
@@ -277,7 +261,7 @@ GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
 		frameIdentifier: aFrameSpecification frameIdentifier.
 
 	programCounterMarkers := aFrameSpecification programCounterMarkers.
-	isStackTopContext := aFrameSpecification isStackTopContext.
+	callerProgramCounterMarkers := aFrameSpecification callerProgramCounterMarkers.
 ]
 
 { #category : #initization }
@@ -296,16 +280,6 @@ GtGemStoneStackFrame >> ipOffset [
 { #category : #accessing }
 GtGemStoneStackFrame >> ipOffset: aNumber [
 	ipOffset := aNumber
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> isStackTopContext [
-	^ isStackTopContext ifNil: [ false ]
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> isStackTopContext: aBoolean [
-	isStackTopContext := aBoolean
 ]
 
 { #category : #accessing }
@@ -330,6 +304,11 @@ GtGemStoneStackFrame >> ordinal [
 GtGemStoneStackFrame >> ordinal: aNumber [
 
 	ordinal := aNumber
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> originalProgramCounterMarkers [
+	^ frameSpecification programCounterMarkers
 ]
 
 { #category : #printing }
@@ -402,11 +381,12 @@ GtGemStoneStackFrame >> resetState [
 	variableAssociations := nil.
 ]
 
-{ #category : #accessing }
-GtGemStoneStackFrame >> retrieveIpHighlightAnalysisData [
+{ #category : #private }
+GtGemStoneStackFrame >> retrieveIpMarkerMap [
 	^ self debuggerProxy
-		proxyPerform: #ipHighlightAnalysisDataAtFrameIdentifierIndex:
+		proxyPerform: #ipMarkerMapAtFrameIdentifierIndex:
 		withArguments: { self frameIdentifier identityIndex }
+		serializationStrategy: #GtRsrWireSerializationStrategy
 		autoCommit: false
 ]
 

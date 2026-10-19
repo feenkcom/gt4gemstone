@@ -6,7 +6,7 @@ Class {
 		'ipOffset',
 		'frameIdentifier',
 		'programCounterMarkers',
-		'isStackTopContext'
+		'callerProgramCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone'
 }
@@ -17,7 +17,7 @@ GtGemStoneContextSpecification class >> forGsCallFrame: aGsCallFrame [
 		initializeForGsCallFrame: aGsCallFrame 
 ]
 
-{ #category : #converting }
+{ #category : #serialization }
 GtGemStoneContextSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
@@ -25,8 +25,13 @@ GtGemStoneContextSpecification >> asDictionaryForExport [
 		at: #ipOffset put: ipOffset;
 		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
 		at: #programCounterMarkers put: programCounterMarkers;
-		at: #isStackTopContext put: self isStackTopContext;
+		at: #callerProgramCounterMarkers put: callerProgramCounterMarkers;
 		yourself
+]
+
+{ #category : #accessing }
+GtGemStoneContextSpecification >> callerProgramCounterMarkers [
+	^ callerProgramCounterMarkers
 ]
 
 { #category : #accessing }
@@ -42,18 +47,18 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 	isForBlock := aGsCallFrame isForBlock.
 	ipOffset := aGsCallFrame ipOffset.
 	frameIdentifier := aGsCallFrame frameIdentifier.
-	isStackTopContext := aGsCallFrame isStackTopContext.
 	programCounterMarkers := aGsCallFrame programCounterMarkers.
+	callerProgramCounterMarkers := aGsCallFrame callerProgramCounterMarkers.
 ]
 
-{ #category : #initialization }
+{ #category : #serialization }
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 
 	isForBlock := aDictionary at: #isForBlock.
 	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
 	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
-	isStackTopContext := aDictionary at: #isStackTopContext ifAbsent: [ false ].
+	callerProgramCounterMarkers := aDictionary at: #callerProgramCounterMarkers ifAbsent: [ nil ].
 
 	(aDictionary includesKey: #frameIdentifier) ifTrue: [
 		frameIdentifier := GtGemStoneCallFrameIdentifier
@@ -77,11 +82,6 @@ GtGemStoneContextSpecification >> ipOffset [
 { #category : #accessing }
 GtGemStoneContextSpecification >> isForBlock [
 	^ isForBlock ifNil: [ false ]
-]
-
-{ #category : #accessing }
-GtGemStoneContextSpecification >> isStackTopContext [
-	^ isStackTopContext ifNil: [ false ]
 ]
 
 { #category : #accessing }

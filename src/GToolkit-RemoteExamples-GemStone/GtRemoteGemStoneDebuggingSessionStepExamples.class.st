@@ -52,7 +52,7 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> debuggingSessionForBlock: aBlock
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #examples }
 GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
@@ -66,7 +66,6 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 
 	frames := debuggingSession remoteStackFrames.
 	self assertFrames: frames atIndex: 1 isSelector: nil inBlock: true.
-	self assert: frames first isStackTopContext equals: false.
 	self
 		assertFrames: frames atIndex: 1
 		highlightedText: 'halt'
