@@ -63,6 +63,17 @@ GtLGemStoneClassDescription >> inDictionary: anObject [
 	inDictionary := anObject
 ]
 
+{ #category : #magritte }
+GtLGemStoneClassDescription >> inDictionaryDescription [
+	<magritteDescription>
+	^ MAStringDescription new
+		label: 'Dictionary';
+		accessor: #inDictionary;
+		name: #dictionary;
+		beRequired;
+		yourself
+]
+
 { #category : #accessing }
 GtLGemStoneClassDescription >> options [
 	^ options
