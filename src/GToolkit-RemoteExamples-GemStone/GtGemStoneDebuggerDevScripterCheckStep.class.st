@@ -149,6 +149,16 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 		// GtGemStoneExpandableDebuggerElement
 ]
 
+{ #category : #'steps - assertions' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex notSelector: aSelector [
+	self assert
+		label: 'Assert session frame ', anIndex printString, ' not selector ', aSelector;
+		value: [ :debuggerEl |
+			(debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector ~= aSelector ]
+		equals: true;
+		// GtGemStoneExpandableDebuggerElement
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerDevScripterCheckStep >> debggerToolbarId [
 	^GtGemStoneExpandableDebuggerToolbar
@@ -163,4 +173,33 @@ GtGemStoneDebuggerDevScripterCheckStep >> expandCoderAtTopIndex: anIndex [
 				label: 'Expand coder ', anIndex printString;
 				action: [ :aCoderElement | aCoderElement expand ];
 				// (GtExpandableContextMethodCoderId indexed: anIndex) ]
+]
+
+{ #category : #steps }
+GtGemStoneDebuggerDevScripterCheckStep >> scrollToFrameAtTopIndex: anIndex [
+	self
+		substeps2: 'Scroll to frame at index ', anIndex printString
+		do: [ :aStep |
+			aStep do
+				label: 'Scroll to frame';
+				action: [ :aStackElement |
+					aStackElement stackFramesList scrollToIndex: anIndex offset: 0 ];
+				// GtGemStoneExpandableStackElement ]
+]
+
+{ #category : #steps }
+GtGemStoneDebuggerDevScripterCheckStep >> selectFrameAtTopIndex: anIndex [
+	self
+		substeps2: 'Select frame at index ', anIndex printString
+		do: [ :aStep |
+			aStep do
+				label: 'Scroll to frame';
+				action: [ :aStackElement |
+					aStackElement stackFramesList scrollToIndex: anIndex offset: 0 ];
+				// GtGemStoneExpandableStackElement.
+			aStep click
+				label: 'Click on frame coder';
+				// (GtExpandableContextMethodCoderId indexed: anIndex).
+			aStep wait forEnqueuedSpaceTaskTimeout: 0.4 seconds.
+			aStep wait forEmptySpaceTaskQueueTimeout: 0.4 seconds ]
 ]

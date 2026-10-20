@@ -24,6 +24,33 @@ GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
 	self assert: evaluationContext rawGtSession isNil.
 ]
 
+{ #category : #'examples - inspect method' }
+GtRemoteGemStoneDebuggerExamples >> assertInspectedMethodWithSelector: aSelector className: aClassName inSecondPaneOf: aScripter [
+	aScripter inspectorStep
+		onPagerPaneWithIndex: 2;
+		assertInspectedObjectOfType: GtGspoGsNMethod;
+		assertInspectedObjectValueFor: [ :obj | obj remoteClass ]
+			equals: [ #GsNMethod ];
+		assertInspectedObjectValueFor: [ :obj | obj selector ]
+			equals: [ aSelector ];
+		assertInspectedObjectValueFor: [ :obj | obj inClass name ]
+			equals: [ aClassName ];
+		play.
+]
+
+{ #category : #private }
+GtRemoteGemStoneDebuggerExamples >> clickOnInspectMethodButtonAtFrame: anIndex scripter: aScripter [
+	anIndex > 1 ifTrue: [
+		aScripter gemStoneDebugger
+			selectFrameAtTopIndex: anIndex;
+			play ].
+
+	aScripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: anIndex);
+		play.
+]
+
 { #category : #'examples - scripter' }
 GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCall [
 	<gtExample>
@@ -168,6 +195,52 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 	^ scripter
 ]
 
+{ #category : #'examples - inspect method' }
+GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
+	<gtExample>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [ gemstoneSession evaluateAndWait: '| obj | obj := GtRemotePhlowDebuggerStepTestObject new. self halt. obj doThreeLevelCall' ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement inPager.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		play.
+
+	self clickOnInspectMethodButtonAtFrame: 1 scripter: scripter.
+	self
+		assertInspectedMethodWithSelector: #'helperMethod:'
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
+
+	self clickOnInspectMethodButtonAtFrame: 2 scripter: scripter.
+	self
+		assertInspectedMethodWithSelector: #doThreeLevelMiddle
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
+
+	self clickOnInspectMethodButtonAtFrame: 3 scripter: scripter.
+	self
+		assertInspectedMethodWithSelector: #doThreeLevelCall
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
+
+	^ scripter
+]
+
 { #category : #private }
 GtRemoteGemStoneDebuggerExamples >> testPerformBlock: aBlock [
 	| session signalled |
@@ -252,7 +325,7 @@ GtRemoteGemStoneDebuggerExamples >> testPerformWithArgumentsSerializationStrateg
 				serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy ]
 ]
 
-{ #category : #'examples - stepping' }
+{ #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 	<gtExample>
 	<after: #stopServer>
@@ -273,6 +346,7 @@ GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 		clickOnStepIntoButton;
 		clickOnStepIntoButton;
 		assertSessionFrameAtTopIndex: 2 highlightedText: 'printString';
+		scrollToFrameAtTopIndex: 2;
 		expandCoderAtTopIndex: 2;
 		assertInCodersListHasHighlightAtTopIndex: 2;
 		play.
@@ -280,7 +354,7 @@ GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 	^ scripter
 ]
 
-{ #category : #'examples - stepping' }
+{ #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 	<gtExample>
 	<after: #stopServer>
@@ -301,6 +375,7 @@ GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 		clickOnStepIntoButton;
 		clickOnStepIntoButton;
 		assertInCodersListHasHighlightAtTopIndex: 1;
+		scrollToFrameAtTopIndex: 2;
 		expandCoderAtTopIndex: 2;
 		assertInCodersListVisuallyHighlightedString: 'printString' atTopIndex: 2;
 		play.

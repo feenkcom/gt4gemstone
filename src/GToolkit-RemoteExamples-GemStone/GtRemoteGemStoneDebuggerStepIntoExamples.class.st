@@ -60,3 +60,57 @@ GtRemoteGemStoneDebuggerStepIntoExamples >> doLoop_02_enterBlock [
 
 	^ scripter
 ]
+
+{ #category : #'examples - multipleMethodCalls' }
+GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_01_stepIntoHelperMethod [
+	"Step into enters the called method."
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	scripter := self multipleMethodCalls_01_enterMethod.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'helperMethod:' inBlock: false;
+		assertSessionFrameAtTopIndex: 1
+			highlightedText: 'helperMethod: aValue
+	^ aValue * 2 + 1'
+			atProgramCounterRange: (1 to: 38)
+			atProgramCounterMarkers: #(1 23);
+		assertInCodersListVisuallyHighlightedString: 'helperMethod: aValue
+	^ aValue * 2 + 1' atTopIndex: 1;
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - multipleMethodCalls' }
+GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_02_callerPreservesHighlight [
+	"The caller frame preserves its highlight at the call site."
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	scripter := self multipleMethodCalls_01_stepIntoHelperMethod.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 2 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		assertSessionFrameAtTopIndex: 2
+			highlightedText: 'helperMethod: 3'
+			atProgramCounterRange: (45 to: 59)
+			atProgramCounterMarkers: #(45 65);
+		play.
+
+	scripter gemStoneDebugger
+		scrollToFrameAtTopIndex: 2;
+		expandCoderAtTopIndex: 2;
+		assertInCodersListVisuallyHighlightedString: 'helperMethod: 3' atTopIndex: 2;
+		play.
+
+	^ scripter
+]

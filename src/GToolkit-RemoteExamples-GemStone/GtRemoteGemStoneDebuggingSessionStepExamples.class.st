@@ -92,6 +92,13 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 	^ debuggingSession
 ]
 
+{ #category : #actions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> restartIn: aDebuggingSession [
+	aDebuggingSession gsRestartFrameIdentifier:
+		aDebuggingSession remoteContext frameIdentifier.
+	aDebuggingSession synchronizeCallStack
+]
+
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> stepIntoIn: aDebuggingSession [
 	aDebuggingSession gsStepIntoFrameIdentifier:
@@ -109,6 +116,13 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> stepIntoMethodNamed: aMethodName
 		assert: (aDebuggingSession remoteStackFrames anySatisfy: [ :f |
 			f methodSelector = aMethodName ])
 		description: aMethodName, ' should be on the stack'.
+]
+
+{ #category : #actions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> stepOverIn: aDebuggingSession [
+	aDebuggingSession gsStepOverFrameIdentifier:
+		aDebuggingSession remoteContext frameIdentifier.
+	aDebuggingSession synchronizeCallStack
 ]
 
 { #category : #'private - helpers' }

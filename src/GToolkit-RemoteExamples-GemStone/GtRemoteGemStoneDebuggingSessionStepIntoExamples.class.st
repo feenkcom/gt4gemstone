@@ -57,3 +57,53 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 
 	^ debuggingSession
 ]
+
+{ #category : #'examples - multipleMethodCalls' }
+GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_01_stepIntoHelperMethod [
+	"Step into enters the called method."
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession frames |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doMultipleMethodCalls ]
+		session: gemstoneSession.
+
+	self stepIntoMethodNamed: 'doMultipleMethodCalls' in: debuggingSession.
+
+	self stepOverIn: debuggingSession.
+	self stepIntoIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'helperMethod:' inBlock: false.
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: 'helperMethod: aValue
+	^ aValue * 2 + 1'
+		atProgramCounterRange: (1 to: 38)
+		atProgramCounterMarkers: #(1 23).
+
+	^ debuggingSession
+]
+
+{ #category : #'examples - multipleMethodCalls' }
+GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_02_callerPreservesHighlight [
+	"The caller frame preserves its highlight at the call site."
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession frames |
+
+	debuggingSession := self multipleMethodCalls_01_stepIntoHelperMethod.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 2 isSelector: 'doMultipleMethodCalls' inBlock: false.
+	self
+		assertFrames: frames atIndex: 2
+		highlightedText: 'helperMethod: 3'
+		atProgramCounterRange: (45 to: 59)
+		atProgramCounterMarkers: #(45 65).
+
+	^ debuggingSession
+]

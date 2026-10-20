@@ -190,6 +190,16 @@ GtGemStoneDebuggerSession >> gtViewStackDiffFor: aView [
 		send: [ :pair | pair first ]
 ]
 
+{ #category : #views }
+GtGemStoneDebuggerSession >> gtViewTopContextCoderFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Top context';
+		priority:10;
+		object: [ self remoteContext ];
+		view: #gtViewCoderFor:
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> initialStackFrames [
 	^ initialStackFrames ifNil: [

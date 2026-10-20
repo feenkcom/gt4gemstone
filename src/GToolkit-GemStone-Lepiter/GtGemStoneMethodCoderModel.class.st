@@ -428,7 +428,7 @@ GtGemStoneMethodCoderModel >> initialMethodCoderSpecification [
 	^ initialMethodCoderSpecification
 ]
 
-{ #category : #initialization }
+{ #category : #initialize }
 GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel [
 	super initializeAddOns: addOns viewModel: aGtPharoMethodCoderViewModel.
 
@@ -449,7 +449,8 @@ GtGemStoneMethodCoderModel >> initializeAddOns: addOns viewModel: aGtPharoMethod
 	addOns
 		addMainAction: 'Inspect Method' translated
 		icon: BrGlamorousVectorIcons inspect
-		action: [ :aCoderUIModel :anElement | self notifyObjectSpawn: aCoderUIModel gsMethod requesterObject: aCoderUIModel ].
+		action: [ :aCoderUIModel :anElement | self notifyObjectSpawn: aCoderUIModel gsMethod requesterObject: aCoderUIModel ]
+		id: GtMethodCoderInspectActionId.
 	addOns
 		addMainAction: 'Copy Method Name' translated
 		icon: BrGlamorousVectorIcons clipboard
