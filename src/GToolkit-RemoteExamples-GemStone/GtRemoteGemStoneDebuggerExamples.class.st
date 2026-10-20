@@ -187,6 +187,10 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
 	<gtExample>
 	| gemstoneSession debuggingSession debuggerElement scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [ gemstoneSession evaluateAndWait: '| obj | obj := GtRemotePhlowDebuggerStepTestObject new. self halt. obj doThreeLevelCall' ]
