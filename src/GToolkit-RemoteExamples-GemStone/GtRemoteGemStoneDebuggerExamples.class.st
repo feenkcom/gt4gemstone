@@ -38,19 +38,6 @@ GtRemoteGemStoneDebuggerExamples >> assertInspectedMethodWithSelector: aSelector
 		play.
 ]
 
-{ #category : #private }
-GtRemoteGemStoneDebuggerExamples >> clickOnInspectMethodButtonAtFrame: anIndex scripter: aScripter [
-	anIndex > 1 ifTrue: [
-		aScripter gemStoneDebugger
-			selectFrameAtTopIndex: anIndex;
-			play ].
-
-	aScripter methodCoder
-		clickOnInspectMethodButton;
-		// (GtExpandableContextMethodCoderId indexed: anIndex);
-		play.
-]
-
 { #category : #'examples - scripter' }
 GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCall [
 	<gtExample>
@@ -195,7 +182,7 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 	^ scripter
 ]
 
-{ #category : #'examples - inspect method' }
+{ #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
 	<gtExample>
 	| gemstoneSession debuggingSession debuggerElement scripter |
@@ -220,19 +207,36 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
 		clickOnStepIntoButton;
 		play.
 
-	self clickOnInspectMethodButtonAtFrame: 1 scripter: scripter.
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 1);
+		play.
 	self
 		assertInspectedMethodWithSelector: #'helperMethod:'
 		className: #GtRemotePhlowDebuggerStepTestObject
 		inSecondPaneOf: scripter.
 
-	self clickOnInspectMethodButtonAtFrame: 2 scripter: scripter.
+	scripter click
+		label: 'Select frame 2';
+		// (GtExpandableContextMethodCoderId indexed: 2);
+		play.
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 2);
+		play.
 	self
 		assertInspectedMethodWithSelector: #doThreeLevelMiddle
 		className: #GtRemotePhlowDebuggerStepTestObject
 		inSecondPaneOf: scripter.
 
-	self clickOnInspectMethodButtonAtFrame: 3 scripter: scripter.
+	scripter click
+		label: 'Select frame 3';
+		// (GtExpandableContextMethodCoderId indexed: 3);
+		play.
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 3);
+		play.
 	self
 		assertInspectedMethodWithSelector: #doThreeLevelCall
 		className: #GtRemotePhlowDebuggerStepTestObject
