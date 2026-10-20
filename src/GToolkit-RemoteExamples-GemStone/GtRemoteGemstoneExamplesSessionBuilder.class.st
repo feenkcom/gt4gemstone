@@ -59,7 +59,7 @@ GtRemoteGemstoneExamplesSessionBuilder >> createConnectorNamed: aConnectorName [
 	connector := GtGemStoneGciConnector new
 		gemstoneVersion: GtGemStoneGciConnector defaultGemStoneVersion;
 		libraryPath: libraryDirectory;
-		host: '10.211.55.4';
+		host: 'localhost';
 		netldi: netldi;
 		stone: 'gs64stone';
 		username: 'SystemUser';
