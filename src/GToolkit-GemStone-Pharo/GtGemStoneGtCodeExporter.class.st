@@ -1318,13 +1318,6 @@ GtGemStoneGtCodeExporter >> stubClasses [
 		thenReject: [ :each | each isNil ]
 ]
 
-{ #category : #accessing }
-GtGemStoneGtCodeExporter >> unsupportedGeoSpherePointMethods [
-	<excludedMethods>
-	"Point is exported for core arithmetic; GeoSphere is outside the GemStone runtime selection."
-	^ { Point >> #asGSCoordinates }
-]
-
 { #category : #private }
 GtGemStoneGtCodeExporter >> znUrlExcludedMethods [
 	<excludedMethods>
