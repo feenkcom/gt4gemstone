@@ -7,6 +7,78 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #'examples - step over halt' }
+GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_01_enterMethod [
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession frames |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doCallMethodWithHalt ]
+		session: gemstoneSession.
+
+	self stepIntoMethodNamed: 'doCallMethodWithHalt' in: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doCallMethodWithHalt' inBlock: false.
+
+	^ debuggingSession
+]
+
+{ #category : #'examples - step over halt' }
+GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_02_stepOverToHaltingCall [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession frames |
+
+	debuggingSession := self callMethodWithHalt_01_enterMethod.
+
+	self stepOverIn: debuggingSession.
+	self stepOverIn: debuggingSession.
+	self stepOverIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doCallMethodWithHalt' inBlock: false.
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: 'methodThatHalts'
+		atProgramCounterRange: (71 to: 85)
+		atProgramCounterMarkers: #(71 89).
+
+	^ debuggingSession
+]
+
+{ #category : #'examples - step over halt' }
+GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_03_stepOverHitsHalt [
+	"Stepping over a method call that contains a halt stops at the halt, not past the call."
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession frames |
+
+	debuggingSession := self callMethodWithHalt_02_stepOverToHaltingCall.
+
+	self stepOverIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'methodThatHalts' inBlock: false.
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: 'halt'
+		atProgramCounterRange: (93 to: 96)
+		atProgramCounterMarkers: #(93 100).
+
+	self assertFrames: frames atIndex: 2 isSelector: 'doCallMethodWithHalt' inBlock: false.
+	self
+		assertFrames: frames atIndex: 2
+		highlightedText: 'methodThatHalts'
+		atProgramCounterRange: (71 to: 85)
+		atProgramCounterMarkers: #(71 89).
+
+	^ debuggingSession
+]
+
 { #category : #'examples - doLoop' }
 GtRemoteGemStoneDebuggingSessionStepOverExamples >> doLoop_01_enterMethod [
 	<gtExample>

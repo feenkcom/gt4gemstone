@@ -120,3 +120,41 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> multipleMethodCalls_runToCursor_f
 
 	^ scripter
 ]
+
+{ #category : #'examples - nestedBlocks' }
+GtRemoteGemStoneDebuggerRunToCursorExamples >> nestedBlocks_runToCursor_innerAndOuter [
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	scripter := self nestedBlocks_01_enterMethod.
+
+	scripter gemStoneDebugger
+		expandCoderAtTopIndex: 1;
+		moveCursorTo: 128 atTopIndex: 1;
+		clickOnRunToCursorButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doNestedBlocks' inBlock: true;
+		assertSessionFrameAtTopIndex: 1
+			highlightedText: '+ 2'
+			atProgramCounterRange: (129 to: 131)
+			atProgramCounterMarkers: #(129 132);
+		play.
+
+	scripter gemStoneDebugger
+		moveCursorTo: 154 atTopIndex: 1;
+		clickOnRunToCursorButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doNestedBlocks' inBlock: true;
+		assertSessionFrameAtTopIndex: 1
+			highlightedText: '+ 10'
+			atProgramCounterRange: (155 to: 158)
+			atProgramCounterMarkers: #(155 159);
+		play.
+
+	^ scripter
+]

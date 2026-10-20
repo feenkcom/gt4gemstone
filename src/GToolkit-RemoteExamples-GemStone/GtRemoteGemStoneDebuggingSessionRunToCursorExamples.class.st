@@ -63,3 +63,40 @@ GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> longComputation_runToMult
 
 	^ debuggingSession
 ]
+
+{ #category : #'examples - nestedBlocks' }
+GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> nestedBlocks_runToCursor_innerAndOuter [
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession frames |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debuggingSessionForBlock: [
+			nil halt. GtRemotePhlowDebuggerStepTestObject new doNestedBlocks ]
+		session: gemstoneSession.
+
+	self stepIntoMethodNamed: 'doNestedBlocks' in: debuggingSession.
+
+	self runToCursorSourceOffset: 129 in: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doNestedBlocks' inBlock: true.
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: '+ 2'
+		atProgramCounterRange: (129 to: 131)
+		atProgramCounterMarkers: #(129 132).
+
+	self runToCursorSourceOffset: 155 in: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doNestedBlocks' inBlock: true.
+	self
+		assertFrames: frames atIndex: 1
+		highlightedText: '+ 10'
+		atProgramCounterRange: (155 to: 158)
+		atProgramCounterMarkers: #(155 159).
+
+	^ debuggingSession
+]
