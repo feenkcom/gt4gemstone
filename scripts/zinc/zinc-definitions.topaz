@@ -1,0 +1,2084 @@
+fileformat utf8
+set compile_env: 0
+! ------------------- Class definition for HTTPProgress
+expectvalue /Class
+doit
+Notification subclass: 'HTTPProgress'
+	instVarNames: #( total amount)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-GemStone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+HTTPProgress category: 'Zinc-HTTP-GemStone'
+%
+set compile_env: 0
+! ------------------- Class definition for NetworkError
+expectvalue /Class
+doit
+Error subclass: 'NetworkError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'SocketStream'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+NetworkError category: 'SocketStream'
+%
+set compile_env: 0
+! ------------------- Class definition for ConnectionClosed
+expectvalue /Class
+doit
+NetworkError subclass: 'ConnectionClosed'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'SocketStream'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ConnectionClosed category: 'SocketStream'
+%
+set compile_env: 0
+! ------------------- Class definition for ConnectionTimedOut
+expectvalue /Class
+doit
+NetworkError subclass: 'ConnectionTimedOut'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'SocketStream'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ConnectionTimedOut category: 'SocketStream'
+%
+set compile_env: 0
+! ------------------- Class definition for NotFound
+expectvalue /Class
+doit
+Error subclass: 'NotFound'
+	instVarNames: #( object)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-GemStone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+NotFound category: 'Zinc-HTTP-GemStone'
+%
+set compile_env: 0
+! ------------------- Class definition for KeyNotFound
+expectvalue /Class
+doit
+NotFound subclass: 'KeyNotFound'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-GemStone'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+KeyNotFound category: 'Zinc-HTTP-GemStone'
+%
+set compile_env: 0
+! ------------------- Class definition for SocketStream
+expectvalue /Class
+doit
+Object subclass: 'SocketStream'
+	instVarNames: #( recentlyRead socket inBuffer
+	                  outBuffer inNextToWrite outNextToWrite lastRead
+	                  timeout autoFlush bufferSize binary
+	                  shouldSignal)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'SocketStream'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+SocketStream category: 'SocketStream'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnBase64Encoder
+expectvalue /Class
+doit
+Object subclass: 'ZnBase64Encoder'
+	instVarNames: #( alphabet inverse lineLength
+	                  lineEnd)
+	classVars: #( DefaultAlphabet DefaultInverse)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnBase64Encoder comment: 
+'I am ZnBase64Encoder.Base64 encoding is a technique to encode binary data as a string of characters that can be safely transported over various protocols. Basically, every 3 bytes are encoded using 4 characters from an alphabet of 64. Each encoded character represents 6 bits.The most commonly used alphabet is ''ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/''. One or two equal signs (= or ==) are used for padding.The encoded data can optionally be broken into lines. Characters not part of the alphabet are considered as white space and are ignored.My #encode: method works from ByteArray to String, while my #decode: method works from String to ByteArray.Note that to encode a String as Base64, you first have to encode the characters as bytes using a character encoder.See also http://en.wikipedia.org/wiki/Base64Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnBase64Encoder category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnBasicAuthenticator
+expectvalue /Class
+doit
+Object subclass: 'ZnBasicAuthenticator'
+	instVarNames: #( credentials realm)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnBasicAuthenticator comment: 
+'I am ZnBasicAuthenticator.I help servers handle HTTP Basic Authentication.I implement the required #authenticateRequest:do:I have a credentials dictionary with username->password associations.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnBasicAuthenticator category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnBivalentWriteStream
+expectvalue /Class
+doit
+Stream subclass: 'ZnBivalentWriteStream'
+	instVarNames: #( stream binary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnBivalentWriteStream comment: 
+'I am ZnBivalentWriteStream, wrapping another write stream.I allow both Characters and Strings as well as Integers (0 to: 255) and ByteArrays to be writtten to me.The write stream that I wrap can be both binary as well as character based.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnBivalentWriteStream category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnByteEncoder
+expectvalue /Class
+doit
+ZnCharacterEncoder subclass: 'ZnByteEncoder'
+	instVarNames: #( identifier byteToUnicode unicodeToByte
+	                  strict)
+	classVars: #( ByteTextConverters)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnByteEncoder comment: 
+'I am ZnByteEncoder, a concrete subclass of ZnCharacterEncoder.I handle single byte encodings where byte values 0 to 127 map to ASCIIand 128 to 255 are a permutation to Unicode characters.I derive my mappings by parsing official unicode.org specifications.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnByteEncoder category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnByteStringBecameWideString
+expectvalue /Class
+doit
+Notification subclass: 'ZnByteStringBecameWideString'
+	instVarNames: #( byteString wideString)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnByteStringBecameWideString comment: 
+'I am ZnByteStringBecameWideString, a Notification signalled to indicate that some byteString was changed to a wideString.Used by ZnUTF8Encoder>>#readInto:startingAt:count:fromStream: to avoid a #becomeForward: when a ByteString automagically changes into a WideString.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnByteStringBecameWideString category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnChunkedReadStream
+expectvalue /Class
+doit
+Stream subclass: 'ZnChunkedReadStream'
+	instVarNames: #( stream chunk position
+	                  limit atEnd totalSize chunkCount
+	                  extraHeaders)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnChunkedReadStream comment: 
+'I am ZnChunkedReadStream, implementing HTTP 1.1 chunked transfer encoding on a wrapped streams.Clients should read me until I am atEnd.After I am completely read, I can tell you my totalSize and optional extraHeaders.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnChunkedReadStream category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnChunkedWriteStream
+expectvalue /Class
+doit
+Object subclass: 'ZnChunkedWriteStream'
+	instVarNames: #( stream extraHeaders totalSize
+	                  chunkCount)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnChunkedWriteStream comment: 
+'I am ZnChunkedWriteStream, I wrap another write stream and add HTTP 1.1 chunked transfer encoding.I write a chunk for each #nextPutAll: or #next:putAll:startingAt:I should be wrapped in a ZnBufferedWriteStream for #next: to work.When done, send #close or #finish to me.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnChunkedWriteStream category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnClient
+expectvalue /Class
+doit
+Object subclass: 'ZnClient'
+	instVarNames: #( request response connection
+	                  lastUsed options session log)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnClient comment: 
+'I am ZnClient, an object to build, execute and process HTTP client requests.I have a rich protocol to construct requests and to access responses.I have various error handling options.I can reuse an existing connection to a specific host:port.I handle sessions, cookies, redirects and authentication.I have many options (settings) with sensible defaults.Simplest possible invocation:	ZnClient new		get: ''http://zn.stfx.eu/zn/numbers.txt''.	Using some features to make a better HTTP request:	ZnClient new		systemPolicy;		accept: ZnMimeType textPlain;		http;		host: ''zn.stfx.eu'';		path: ''zn/numbers.txt'';		contentReader: [ :entity | entity contents lines collect: [ :each | each asNumber ] ];		ifFail: [ :exception | self inform: ''I am sorry: '', exception printString ];		get.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnClient category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnConnectionTimeout
+expectvalue /Class
+doit
+DynamicVariable subclass: 'ZnConnectionTimeout'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Variables'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnConnectionTimeout comment: 
+'I am ZnConnectionTimeout.I am a DynamicVariable and a ProcessSpecificVariable.I can be used to modify the global default socket IO timeout on a per process basis, for example:ZnConnectionTimeout 	value: 5 	during: [ ^ ZnClient new get: ''http://zn.stfx.eu/zn/small.html'' ]'
+%
+expectvalue /Class
+doit
+ZnConnectionTimeout category: 'Zinc-HTTP-Variables'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnConstants
+expectvalue /Class
+doit
+Object subclass: 'ZnConstants'
+	instVarNames: #()
+	classVars: #( DefaultMaximumEntitySize HTTPStatusCodes)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnConstants comment: 
+'I am ZnConstants, holding various constants that we use.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnConstants category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnCookie
+expectvalue /Class
+doit
+Object subclass: 'ZnCookie'
+	instVarNames: #( attributes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnCookie comment: 
+'I represent an HTTP Cookie token.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnCookie category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnCookieJar
+expectvalue /Class
+doit
+Object subclass: 'ZnCookieJar'
+	instVarNames: #( cookies)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnCookieJar comment: 
+'I represent a container for storing HTTP Cookies for a client session.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnCookieJar category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnCredential
+expectvalue /Class
+doit
+Object subclass: 'ZnCredential'
+	instVarNames: #( domain realm)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnCredential comment: 
+'I am ZnCredential, an abstract class representing credentials in a domain and realm.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnCredential category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnBasicCredential
+expectvalue /Class
+doit
+ZnCredential subclass: 'ZnBasicCredential'
+	instVarNames: #( username password)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnBasicCredential comment: 
+'I am ZnBasicCredential, a concrete subclass of ZnCredential.I implement basic HTTP authentication.I hold a username and password.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnBasicCredential category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnCurrentServer
+expectvalue /Class
+doit
+DynamicVariable subclass: 'ZnCurrentServer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Variables'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnCurrentServer comment: 
+'I am ZnSignalProgress.I am a DynamicVariable and a ProcessSpecificVariable.I hold a reference to the current ZnServer instance during HTTP processing, during the dynamic scope of #handleRequest:'
+%
+expectvalue /Class
+doit
+ZnCurrentServer category: 'Zinc-HTTP-Variables'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnCurrentServerSession
+expectvalue /Class
+doit
+ProcessLocalVariable subclass: 'ZnCurrentServerSession'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Variables'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnCurrentServerSession comment: 
+'I am ZnSignalProgress.I am a ProcessLocalVariable and a ProcessSpecificVariable.I hold a reference to the current ZnServerSession instance during HTTP processing, during the dynamic scope of #handleRequest:ZnServerSessions are created lazily.'
+%
+expectvalue /Class
+doit
+ZnCurrentServerSession category: 'Zinc-HTTP-Variables'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnDefaultServerDelegate
+expectvalue /Class
+doit
+Object subclass: 'ZnDefaultServerDelegate'
+	instVarNames: #( prefixMap byteArray)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnDefaultServerDelegate comment: 
+'I am ZnDefaultServerDelegate.I function as a delegate for ZnServer, implementing #handleRequest:I implement responses to the following prefixes:/echo - an echo text of request information for debugging purposes/dw-bench - a dynamic html page for benchmarking purposes/unicode - a unicode test page/random - a random string (/random/32 for a specific size)/bytes - bytes according to a pattern (/bytes/32 for a specific size)/favicon.ico - a Zn favicon/status - a server status page/error - force server errors/session - a simpler session based counter/help - lists all page prefixes/ - an html welcome pageWithout any matches, I respond with a page not found.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnDefaultServerDelegate category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnDefaultGsTransactionalServerDelegate
+expectvalue /Class
+doit
+ZnDefaultServerDelegate subclass: 'ZnDefaultGsTransactionalServerDelegate'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnDefaultGsTransactionalServerDelegate category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnDigestAuthenticator
+expectvalue /Class
+doit
+ZnBasicAuthenticator subclass: 'ZnDigestAuthenticator'
+	instVarNames: #( nonces)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnDigestAuthenticator comment: 
+'I am ZnDigestAuthenticator.I help servers handle HTTP Digest Authentication.I have a nonces dictionary with nonce->opaque associations. I generate a new nonce value for every 401 response I trigger.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnDigestAuthenticator category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnDigestCredential
+expectvalue /Class
+doit
+ZnBasicCredential subclass: 'ZnDigestCredential'
+	instVarNames: #( nonce opaque)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnDigestCredential comment: 
+'I am ZnDigestCredential, a concrete subclass of ZnCredential and subclass of ZnBasicCredential.I implement digest HTTP authentication.I hold a nounce and opaque.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnDigestCredential category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnDispatcherDelegate
+expectvalue /Class
+doit
+Object subclass: 'ZnDispatcherDelegate'
+	instVarNames: #( dispatcherDictionary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnDispatcherDelegate comment: 
+'I am ZnDispatcherDelegate, doing a straight-forward dispatching to mapped URLs.ZnDispatcherDelegate API:(server := ZnServer startDefaultOn: 9090)	delegate: (ZnDispatcherDelegate new 		map: ''/hello'' to: [ :request :response | response entity: (ZnEntity html: ''<h1>hello server</h1>'') ];		map: ''/counter'' to: [ :request :response | counterApplication handleRequest: request response: response ]).'
+%
+expectvalue /Class
+doit
+ZnDispatcherDelegate category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnEasy
+expectvalue /Class
+doit
+Object subclass: 'ZnEasy'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnEasy comment: 
+'I am ZnEasy, a simplified HTTP client for occasional use.My class side implements a number of convenience methods to do common HTTP client operations.	ZnEasy get: ''http://zn.stfx.eu/zn/small.html''.For most requests, I return a response object. For a couple of message, I return an image Form.	ZnEasy getPng: ''http://www.pharo-project.org/images/pharo.png''.For my implementation I use ZnClient, a full featured HTTP client.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnEasy category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnEntity
+expectvalue /Class
+doit
+Object subclass: 'ZnEntity'
+	instVarNames: #( contentType contentLength)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnEntity comment: 
+'I am ZnEntity, an abstract HTTP Entity.An entity has a content type (mime-type), a content length (byte length) and a contents.Entities can encode and decode themselves to and from binary streams.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnApplicationFormUrlEncodedEntity
+expectvalue /Class
+doit
+ZnEntity subclass: 'ZnApplicationFormUrlEncodedEntity'
+	instVarNames: #( fields representation)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnApplicationFormUrlEncodedEntity comment: 
+'I am ZnApplicationFormUrlEncodedEntity, a concrete HTTP Entity holding a set of fields (key value pairs) that is form URL encoded.I am a ZnEntity.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnApplicationFormUrlEncodedEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnByteArrayEntity
+expectvalue /Class
+doit
+ZnEntity subclass: 'ZnByteArrayEntity'
+	instVarNames: #( bytes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnByteArrayEntity comment: 
+'I am ZnByteArrayEntity, a concrete HTTP Entity based on a ByteArray.It is used to hold binary (non textual) data.I am a ZnEntity.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnByteArrayEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnEntityReader
+expectvalue /Class
+doit
+Object subclass: 'ZnEntityReader'
+	instVarNames: #( headers stream streaming
+	                  binary allowReadingUpToEnd)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnEntityReader comment: 
+'I am ZnEntityReader, I help reading ZnEntities from a stream given meta data in headers.I deal with chunking and gzip decoding.I have several options:	- to read streaming entities, where the client has to do the actual reading	- to read binary entities, where textual content is not interpreted	- to allow reading up to end, when there is no content length setPart of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnEntityReader category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnEntityTooLarge
+expectvalue /Class
+doit
+Error subclass: 'ZnEntityTooLarge'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnEntityTooLarge comment: 
+'ZnEntityTooLarge is signalled when too big an entity is read from a stream.This is a resumable exception'
+%
+expectvalue /Class
+doit
+ZnEntityTooLarge category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnEntityWriter
+expectvalue /Class
+doit
+Object subclass: 'ZnEntityWriter'
+	instVarNames: #( headers stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnEntityWriter comment: 
+'I am ZnEntityWriter, I help writing ZnEntities to a stream given meta data in headers.I deal with chunking and gzip encoding.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnEntityWriter category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnFileSystemUtils
+expectvalue /Class
+doit
+Object subclass: 'ZnFileSystemUtils'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-FileSystem-Legacy'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnFileSystemUtils comment: 
+'I am ZnFileSystemUtils.I help is abstracting over API differences pre and post the introduction of FileSystem in Pharo 2.0Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnFileSystemUtils category: 'Zinc-FileSystem-Legacy'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnHTTPSocketFacade
+expectvalue /Class
+doit
+Object subclass: 'ZnHTTPSocketFacade'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Deprecated'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnHTTPSocketFacade comment: 
+'I am ZnHTTPSocketFacade.On my class side I implement all necessary replacement methods of HTTPSocket.The interface (signature and semantics) of this API is defined by HTTPSocket.Overwriting these HTTPSocket methods with mine will effectively redirect allHTTP client access in this Smalltalk image through Zinc HTTP Components.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnHTTPSocketFacade category: 'Zinc-HTTP-Deprecated'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnHeaders
+expectvalue /Class
+doit
+Object subclass: 'ZnHeaders'
+	instVarNames: #( headers)
+	classVars: #( CommonHeaders)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnHeaders comment: 
+'I am ZnHeaders.I am a collection of HTTP headers.I can be used for generating and parsing.Header names are normalized and used case insensitive.Header values can be multi-valued.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnHeaders category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnHttpUnsuccessful
+expectvalue /Class
+doit
+Error subclass: 'ZnHttpUnsuccessful'
+	instVarNames: #( response)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnHttpUnsuccessful comment: 
+'ZnHttpUnsuccessful is signalled when an HTTP client receives a non success response.See ZnResponse>>#isSuccessI hold the response that was unsuccessful.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnHttpUnsuccessful category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnInvalidUTF8
+expectvalue /Class
+doit
+ZnCharacterEncodingError subclass: 'ZnInvalidUTF8'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnInvalidUTF8 comment: 
+'I am ZnInvalidUTF8.I am a ZnCharacterEncodingError.I am an Error.I signal when something goes wrong while encoding or decoding UTF8.Part of Zinc HTTP Components'
+%
+expectvalue /Class
+doit
+ZnInvalidUTF8 category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLimitedReadStream
+expectvalue /Class
+doit
+Stream subclass: 'ZnLimitedReadStream'
+	instVarNames: #( stream position limit
+	                  binary)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLimitedReadStream comment: 
+'I am ZnLimitedReadStream, wrapping another read stream delegating to it but limiting reading to a fixed number of elements.I can be atEnd while my wrapped stream is not.My contentSpecies can be forced to be ByteArray (binary) or ByteString (ascii).I do byte/char conversions on the fly (support bivalent access).This implementation is really a kludge.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnLimitedReadStream category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLineReader
+expectvalue /Class
+doit
+Object subclass: 'ZnLineReader'
+	instVarNames: #( stream buffer position
+	                  limit)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Streaming'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLineReader comment: 
+'I am ZnLineReader and I help reading CRLF terminated lines from a stream.I can work on ascii and binary streams doing conversions as necessary.I limit lines to a maximum length.I work with a reusable buffer.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnLineReader category: 'Zinc-HTTP-Streaming'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLogEvent
+expectvalue /Class
+doit
+Announcement subclass: 'ZnLogEvent'
+	instVarNames: #( timeStamp processId category
+	                  label message)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLogEvent comment: 
+'I am ZnLogEvent, an Announcement sent by an HTTP server or client containing logging information.A log event has a TimeStamp, a Process ID, a category and a message.The following categories are used: #info (I), #debug (D) and #transaction (T).  Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnLogEvent category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLogListener
+expectvalue /Class
+doit
+Object subclass: 'ZnLogListener'
+	instVarNames: #( enabled filter lock)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLogListener comment: 
+'I am ZnLogListener.I am an abstract class, subclasses should implement #event:.I add filtering and monitor for exclusive access.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnLogListener category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnFileLogger
+expectvalue /Class
+doit
+ZnLogListener subclass: 'ZnFileLogger'
+	instVarNames: #( stream pathName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnFileLogger comment: 
+'I am ZnFileLogger, a ZnLogListener that appends to a file.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnFileLogger category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLogSupport
+expectvalue /Class
+doit
+Object subclass: 'ZnLogSupport'
+	instVarNames: #( announcer enabled)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLogSupport comment: 
+'I am ZnLogSupport, I help HTTP servers and clients to manage ZnLogEvents.To use the logging framework, instanciate your own log support: 	log := ZnLogSupport new.and use it to log messages:	log info: ''Started server''.	log debug: [ ''Created '', someComplexObject printString ].To view the log, add a log listener:	log addListener: ZnTranscriptLogger new.	Make sure to enable your log support as it is off by default:	log enabled: true.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnLogSupport category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMaximumEntitySize
+expectvalue /Class
+doit
+DynamicVariable subclass: 'ZnMaximumEntitySize'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Variables'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMaximumEntitySize comment: 
+'I am ZnMaximumEntitySize.I am a DynamicVariable and a ProcessSpecificVariable.I am used to control the maximum size of entities being read from streams.'
+%
+expectvalue /Class
+doit
+ZnMaximumEntitySize category: 'Zinc-HTTP-Variables'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMemoryLogger
+expectvalue /Class
+doit
+ZnLogListener subclass: 'ZnMemoryLogger'
+	instVarNames: #( logEvents limit)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMemoryLogger comment: 
+'I am ZnMemoryLogger, a ZnLogListener that collects ZnLogEvents in memory.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMemoryLogger category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMessage
+expectvalue /Class
+doit
+Object subclass: 'ZnMessage'
+	instVarNames: #( headers entity)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMessage comment: 
+'I am ZnMessage, an abstract class representing an HTTP Message.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMessage category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMimePart
+expectvalue /Class
+doit
+Object subclass: 'ZnMimePart'
+	instVarNames: #( headers entity)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMimePart comment: 
+'I am ZnMimePart.I hold headers and an optional entity.I am used in MultiPartMimeEncoding.Acknowledgement: some code borrowed from AJP.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMimePart category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMimeType
+expectvalue /Class
+doit
+Object subclass: 'ZnMimeType'
+	instVarNames: #( main sub parameters)
+	classVars: #( ExtensionsMap MimeTypes)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMimeType comment: 
+'I am ZnMimeType.Mime types are an element used in describing resources, more specifically their format.Here are some examples MIME types:	text/plain	text/html	text/plain;charset=utf-8	image/png	text/* A mime type has a main/sub form with optional parameters. For more information: http://en.wikipedia.org/wiki/MIME_typeI know whether I am binary or not and know my charset when applicable.My class side offers access to some common constants.Note that for text types we default to UTF-8 encoding.Examples:	ZnMimeType textPlain = ''text/plain'' asZnMimeType.	ZnMimeType textPlain charSet.	ZnMimeType textHtml matches: ZnMimeType text.	ZnMimeType default matches: ZnMimeType any.	ZnMimeType imagePng isBinary.	ZnMimeType forFilenameExtension: ''html''.I started life as a copy of WAMineType.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMimeType category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMissingHost
+expectvalue /Class
+doit
+Error subclass: 'ZnMissingHost'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMissingHost comment: 
+'ZnMissingHost is signalled when a host should be specified but was not.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnMissingHost category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMultiPartFormDataEntity
+expectvalue /Class
+doit
+ZnEntity subclass: 'ZnMultiPartFormDataEntity'
+	instVarNames: #( parts representation)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMultiPartFormDataEntity comment: 
+'I am ZnMultiPartFormDataEntity, a concrete HTTP Entity holding multi part form data that is encoded according to specific rules.I am a ZnEntity.Acknowledgement: some code borrowed from AJP.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMultiPartFormDataEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMultiValueDictionary
+expectvalue /Class
+doit
+Dictionary subclass: 'ZnMultiValueDictionary'
+	instVarNames: #( limit)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMultiValueDictionary comment: 
+'I am ZnMultiValueDictionary. I am a Dictionary.I offer an #at:add: method to transparently create Array valued multi entries when needed.My #keysAndValuesDo: is overwritten to transparently deal with multi entries.To merge two instance preserving multiple values you can use #addAllMulti:I normally limit the number of entries to protect me from resource abuse.Note that most other methods will show the actual value.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMultiValueDictionary category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnNetworkingUtils
+expectvalue /Class
+doit
+Object subclass: 'ZnNetworkingUtils'
+	instVarNames: #( socketStreamClass secureSocketStreamClass)
+	classVars: #( Default DefaultSocketStreamTimeout)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnNetworkingUtils comment: 
+'I am ZnNetworkingUtils holding various utilities related to HTTP networking.My class side is a general API.My instance side is a factory.ZnNetworkingUtils default socketStreamClass: SocketStream.ZnNetworkingUtils default socketStreamClass: ZdcSocketStream.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnNetworkingUtils category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnNullEncoder
+expectvalue /Class
+doit
+ZnCharacterEncoder subclass: 'ZnNullEncoder'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnNullEncoder comment: 
+'I am ZnNullEncoder, a concrete subclass of ZnCharacterEncoder.I perform no encoding or decoding at all for all characters with a code value below 256.I can only be used for ASCII.Note that in principle I could handle Latin1 (ISO-8859-1), although that is not completely correct. To get maximum efficiency, it remains an option.	Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnNullEncoder category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnObjectLogLogger
+expectvalue /Class
+doit
+ZnLogListener subclass: 'ZnObjectLogLogger'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnObjectLogLogger category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnParseError
+expectvalue /Class
+doit
+Error subclass: 'ZnParseError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnParseError comment: 
+'ZnParseError is the superclass of all Zinc HTTP parsing related errors.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnParseError category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnLineTooLong
+expectvalue /Class
+doit
+ZnParseError subclass: 'ZnLineTooLong'
+	instVarNames: #( limit)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnLineTooLong comment: 
+'ZnLineTooLong is signalled when an HTTP CRLF terminated input line exceeds a predefined limit.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnLineTooLong category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnPercentEncoder
+expectvalue /Class
+doit
+Object subclass: 'ZnPercentEncoder'
+	instVarNames: #( characterEncoder safeSet)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Character-Encoding-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnPercentEncoder comment: 
+'I am ZnPercentEncoder.I implement RFC 3986 percent encoding and decoding.All characters that are not part of a safe set are encoded using a percent (%) followed by a two digit hexadecimal number of a byte value. Non-ASCII characters are first encoded, normally using UTF-8.My #encode: and #decode: messages work from String to String.My decoder additionally will accept + as an encoding for a space.See also http://en.wikipedia.org/wiki/Percent-encodingPart of Zinc HTTP Components'
+%
+expectvalue /Class
+doit
+ZnPercentEncoder category: 'Zinc-Character-Encoding-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnPercentEncodingWrong
+expectvalue /Class
+doit
+ZnParseError subclass: 'ZnPercentEncodingWrong'
+	instVarNames: #( string)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnPercentEncodingWrong category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnPortNotANumber
+expectvalue /Class
+doit
+Error subclass: 'ZnPortNotANumber'
+	instVarNames: #( port)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnPortNotANumber comment: 
+'ZnPortNotANumber is signalled when an URL is parsed containing an illegal port specification.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnPortNotANumber category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnReadEvalPrintDelegate
+expectvalue /Class
+doit
+Object subclass: 'ZnReadEvalPrintDelegate'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnReadEvalPrintDelegate comment: 
+'I am ZnReadEvalPrintDelegate, I export a REPL Web Service.You can use this service to work with a headless image.	ZnReadEvalPrintDelegate startInServerOn: 1701.		ZnClient new		url: ''http://localhost:1701/repl'';		contents: ''42 factorial'';		post.	Web Service API:	POST /repl <some Smalltalk code>	 Here is an example terminal session:$ curl http://localhost:1701/repl# Pharo Smalltalk REPL. POST expressions to evaluate# Here is one way (type ctrl-d to end input)curl -X POST -H''Content-Type:text/plain'' --data-binary @- http://localhost:1701/repl$ curl -X POST -H''Content-Type:text/plain'' -d ''42 factorial'' http://localhost:1701/repl1405006117752879898543142606244511569936384000000000$ curl -X POST -H''Content-Type:text/plain'' --data-binary @- http://localhost:1701/repl{ (1 to: 10) sum. (1 to: 10) average }{55. (11/2)}There is error handling as well:$ curl -X POST -H''Content-Type:text/plain'' --data-binary @- http://localhost:1701/repl1 plus: 2MessageNotUnderstood: SmallInteger>>plus:SmallInteger(Object)>>doesNotUnderstand: #plus:	Receiver: 1	Arguments and temporary variables: 		aMessage: 	plus: 2		exception: 	MessageNotUnderstood: SmallInteger>>plus:		resumeValue: 	nil	Receiver''s instance variables: 1UndefinedObject>>DoItCompiler>>evaluate:in:to:notifying:ifFail:logged:Compiler>>evaluate:in:to:notifying:ifFail:Compiler>>evaluate:in:to:ZnReadEvalPrintDelegate>>evaluate: in Block: [| result |...BlockClosure>>on:do:ZnReadEvalPrintDelegate>>evaluate: in Block: [:out | [| result |...String class(SequenceableCollection class)>>new:streamContents:WARNING: never open this service beyond your local network !This service gives you absolute control over and access to everything in your image. For example, the following will kill your image:$ curl -X POST -H''Content-Type:text/plain'' -d ''Smalltalk quitPrimitive'' http://localhost:1701/replPart of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnReadEvalPrintDelegate category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnRequest
+expectvalue /Class
+doit
+ZnMessage subclass: 'ZnRequest'
+	instVarNames: #( requestLine)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnRequest comment: 
+'I am ZnRequest, representing an HTTP Request, consisting of a request line, headers and an optional entity (body).I am a ZnMessage.I can be used for generating and parsing.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnRequest category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnRequestLine
+expectvalue /Class
+doit
+Object subclass: 'ZnRequestLine'
+	instVarNames: #( method uri version)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnRequestLine comment: 
+'I am an HTTP Request Line.I consist of an HTTP method, an URI and an HTTP protocol version.I can be used for generating and parsing.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnRequestLine category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnResourceMetaUtils
+expectvalue /Class
+doit
+Object subclass: 'ZnResourceMetaUtils'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnResourceMetaUtils comment: 
+'I am ZnResourceMetaUtils.I contain some class side utility methods.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnResourceMetaUtils category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnResponse
+expectvalue /Class
+doit
+ZnMessage subclass: 'ZnResponse'
+	instVarNames: #( statusLine)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnResponse comment: 
+'I am ZnResponse, representing an HTTP Response consisting of a status line, headers and an optional entity (body).I am a ZnMessage.I can be used for generating and parsing.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnResponse category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnServer
+expectvalue /Class
+doit
+Object subclass: 'ZnServer'
+	instVarNames: #( options sessionManager)
+	classVars: #( AlwaysRestart ManagedServers)
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnServer comment: 
+'I am ZnServer, an abstract superclass of HTTP Servers.I am a facade for controlling a default server implementation.I delegate my public class protocol methods to #defaultServerClass.  ZnServer startDefaultOn: 1701.  ZnClient new get: ''http://localhost:1701''.Subclasses can register with me to have start/stop sent to them on System startUp/shutDown.The default server instance will be registered automatically when it is started.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnServer category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnServerSession
+expectvalue /Class
+doit
+Object subclass: 'ZnServerSession'
+	instVarNames: #( id attributes created
+	                  modified)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnServerSession comment: 
+'I am ZnServerSession.I represent an HTTP session in the context of a ZnServer.To get a reference to the current session, send #session to a ZnMessage (request or response).Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnServerSession category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnServerSessionManager
+expectvalue /Class
+doit
+Object subclass: 'ZnServerSessionManager'
+	instVarNames: #( sessions)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnServerSessionManager comment: 
+'I am ZnServerSessionManager.I manage a collection of ZnServerSession on behalf of a ZnServer.Session ids are stored in cookies.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnServerSessionManager category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnSignalProgress
+expectvalue /Class
+doit
+DynamicVariable subclass: 'ZnSignalProgress'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Variables'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnSignalProgress comment: 
+'I am ZnSignalProgress.I am a DynamicVariable and a ProcessSpecificVariable.I can be used to indicate that Zn related code down the call stack has to signal HTTPProgress, for example:ZnSignalProgress 	value: true 	during: [ ^ ZnClient new get: ''http://zn.stfx.eu/zn/small.html'' ]'
+%
+expectvalue /Class
+doit
+ZnSignalProgress category: 'Zinc-HTTP-Variables'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnSingleThreadedServer
+expectvalue /Class
+doit
+ZnServer subclass: 'ZnSingleThreadedServer'
+	instVarNames: #( process serverSocket log
+	                  lastRequest lastResponse)
+	classVars: #()
+	classInstVars: #( Default)
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnSingleThreadedServer comment: 
+'I am ZnSingleThreadedServer.I can be customized with a delegate (#handleRequest:) and an authenticator (#authenticateRequest:do:).  ZnSingleThreadedServer startDefaultOn: 1701.  ZnSingleThreadedServer default authenticator: (ZnBasicAuthenticator username: ''foo'' password: ''secret'').  ZnClient new username: ''foo'' password: ''secret''; get: ''http://localhost:1701''.I use ZnDefaultServerDelegate when no other delegate is set.I am single threaded, I run in a single process.I close connections after each request/response cycle.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnSingleThreadedServer category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnMultiThreadedServer
+expectvalue /Class
+doit
+ZnSingleThreadedServer subclass: 'ZnMultiThreadedServer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnMultiThreadedServer comment: 
+'I am ZnMultiThreadedServer.I inherit most features from ZnSingleThreadedServer.  ZnMultiThreadedServer startDefaultOn: 1701.  ZnMultiThreadedServer default authenticator: (ZnBasicAuthenticator username: ''foo'' password: ''secret'').  ZnClient new username: ''foo'' password: ''secret''; get: ''http://localhost:1701''.I am multi threaded, I fork a new process for each incoming request.I try to keep connections alive in each process.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnMultiThreadedServer category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnManagingMultiThreadedServer
+expectvalue /Class
+doit
+ZnMultiThreadedServer subclass: 'ZnManagingMultiThreadedServer'
+	instVarNames: #( lock connections)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnManagingMultiThreadedServer comment: 
+'ZnManagingMultiThreadedServer is a ZnMultiThreadedServer that manages the socket stream connections used by the worker threads that are spawned.  ZnManagingMultiThreadedServer startDefaultOn: 1701.I keep track of all the connections that I spawn so that I can close them when I am stopped.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnManagingMultiThreadedServer category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnStandardOutputLogger
+expectvalue /Class
+doit
+ZnLogListener subclass: 'ZnStandardOutputLogger'
+	instVarNames: #( stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnStandardOutputLogger comment: 
+'I am ZnStandardOutputLogger, a ZnLogListener that appends to the OS level standard output stream.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnStandardOutputLogger category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnStaticFileServerDelegate
+expectvalue /Class
+doit
+Object subclass: 'ZnStaticFileServerDelegate'
+	instVarNames: #( prefix directory mimeTypeExpirations)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-FileSystem-Legacy'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnStaticFileServerDelegate comment: 
+'I am ZnStaticFileServerDelegate.I am a simple proof of concept implementation of a web server serving static files.I handle urls with an optional prefix as requests for files in a directory.I serve index.html or index.htm when a directory is requested and these files exist.I do a redirect when a path that is not does not end with a / refers to directory.I function as a delegate for ZnServer.ZnServer startDefaultOn: 1701.ZnServer default delegate: ((ZnStaticFileServerDelegate new) 									prefixFromString: ''apple/macosx''; 									directory: (FileDirectory on: ''/Library/WebServer/Documents''); 									yourself).Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnStaticFileServerDelegate category: 'Zinc-FileSystem-Legacy'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnStatusLine
+expectvalue /Class
+doit
+Object subclass: 'ZnStatusLine'
+	instVarNames: #( version code reason)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnStatusLine comment: 
+'I am an HTTP Status Line.I consist of an HTTP protocol version, an integer HTTP status code and an HTTP reason string.I can be used for generating and parsing.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnStatusLine category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnStreamingEntity
+expectvalue /Class
+doit
+ZnEntity subclass: 'ZnStreamingEntity'
+	instVarNames: #( stream)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnStreamingEntity comment: 
+'I am ZnStreamingEntity, a concrete HTTP Entity based on a stream.I am a ZnEntity.When a ZnStreamingEntity is created using #readFrom: its content type and length are set but no body is actually read.Instead, stream is set to a ZnLimitedReadStream that clients can/mustuse to read from.When the client is done, either all data must be read or #consumeContent must be called.A client should normally not close the stream.A ZnStreamingEntity can also be instanciated with an existing read stream.During #writeOn: this stream is copied to the output stream.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnStreamingEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnStringEntity
+expectvalue /Class
+doit
+ZnEntity subclass: 'ZnStringEntity'
+	instVarNames: #( string encoder)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnStringEntity comment: 
+'I am ZnStringEntity, a concrete HTTP Entity based on a String.It is used to hold textual (non-binary) data.I am a ZnEntity.Optionally, an encoding is used to convert to and from bytes.The default encoding it UTF-8.Note that content length is the encoded byte count, not the number of characters in the string.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnStringEntity category: 'Zinc-HTTP-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnTooManyDictionaryEntries
+expectvalue /Class
+doit
+Error subclass: 'ZnTooManyDictionaryEntries'
+	instVarNames: #( limit)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnTooManyDictionaryEntries comment: 
+'ZnTooManyDictionaryEntries is signalled when too many entries are added to a limited ZnMultiValueDictionary.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnTooManyDictionaryEntries category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnTooManyRedirects
+expectvalue /Class
+doit
+Error subclass: 'ZnTooManyRedirects'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnTooManyRedirects comment: 
+'ZnTooManyRedirects is signalled when an HTTP client has been following more redirects than allowed.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnTooManyRedirects category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnTransactionSafeManagingMultiThreadedServer
+expectvalue /Class
+doit
+ZnMultiThreadedServer subclass: 'ZnTransactionSafeManagingMultiThreadedServer'
+	instVarNames: #( lock connections)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnTransactionSafeManagingMultiThreadedServer comment: 
+'ZnManagingMultiThreadedServer is a ZnMultiThreadedServer that manages the socket stream connections used by the worker threads that are spawned.  ZnManagingMultiThreadedServer startDefaultOn: 1701.I keep track of all the connections that I spawn so that I can close them when I am stopped.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnTransactionSafeManagingMultiThreadedServer category: 'Zinc-HTTP-Client-Server'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnTranscriptLogger
+expectvalue /Class
+doit
+ZnLogListener subclass: 'ZnTranscriptLogger'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Logging'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnTranscriptLogger comment: 
+'I am ZnTranscriptLogger, a ZnLogListener that appends to the Transcript.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnTranscriptLogger category: 'Zinc-HTTP-Logging'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUnexpectedContentType
+expectvalue /Class
+doit
+Error subclass: 'ZnUnexpectedContentType'
+	instVarNames: #( expectedContentType actualContentType)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUnexpectedContentType comment: 
+'ZnUnexpectedContentType is signalled when a different content type (mime type) was expected.I hold the expected and actual content types.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnUnexpectedContentType category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUnknownHttpMethod
+expectvalue /Class
+doit
+ZnParseError subclass: 'ZnUnknownHttpMethod'
+	instVarNames: #( method)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUnknownHttpMethod comment: 
+'ZnUnknownHttpMethod is signalled when an unknown/unsupported HTTP method is found while parsing a request.I am resumable to allow non-standard methods.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnUnknownHttpMethod category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUnknownHttpStatusCode
+expectvalue /Class
+doit
+ZnParseError subclass: 'ZnUnknownHttpStatusCode'
+	instVarNames: #( code)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUnknownHttpStatusCode comment: 
+'ZnUnknownHttpStatusCode is signalled when an unknown/unsupported HTTP status code is found.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnUnknownHttpStatusCode category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUnknownHttpVersion
+expectvalue /Class
+doit
+ZnParseError subclass: 'ZnUnknownHttpVersion'
+	instVarNames: #( version)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Exceptions'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUnknownHttpVersion comment: 
+'ZnUnknownHttpVersion is signalled when an unknown/unsupported HTTP version is found.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnUnknownHttpVersion category: 'Zinc-HTTP-Exceptions'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUnknownScheme
+expectvalue /Class
+doit
+Error subclass: 'ZnUnknownScheme'
+	instVarNames: #( scheme)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUnknownScheme comment: 
+'ZnUnknownScheme is signalled when an unknown/unsupported URL scheme is found.Part of Zinc HTTP Components. '
+%
+expectvalue /Class
+doit
+ZnUnknownScheme category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUrl
+expectvalue /Class
+doit
+Object subclass: 'ZnUrl'
+	instVarNames: #( scheme host port
+	                  segments query fragment username
+	                  password)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-Resource-Meta-Core'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUrl comment: 
+'I am ZnUrl, an implementation of an interpreted URL/URI.URLs are an element used in describing resources, more specifically to identify them.I consist of the following parts:  - scheme - like #http, #https, #ws, #wws, #file or nil  - host - hostname string or nil  - port - port integer or nil  - segments - collection of path segments, ends with #/ for directories  - query - query dictionary or nil  - fragment - fragment string or nil  - username - username string or nil  - password - password string or nilThe syntax of my external representation informally looks like this  scheme://username:password@host:port/segments?query#fragmentI am most often created by parsing my external representation using either my #fromString: class method or by sending the #asZnUrl convenience method to a String. Using #asZnUrl helps in accepting both Strings and ZnUrls arguments.  ZnUrl fromString: ''http://www.google.com/search?q=Smalltalk''.I can also be constucted programmatically.  ZnUrl new     scheme: #https;     host: ''encrypted.google.com'';     addPathSegment: ''search'';     queryAt: ''q'' put: ''Smalltalk'';     yourself.  My components can be manipulated destructively. Here is an example:  (''http://www.google.com/?one=1&two=2'' asZnUrl)    queryAt: ''three'' put: ''3'';    queryRemoveKey: ''one'';    yourself.Some characters of parts of a URL are illegal because they would interfere with the syntax and further processing and thus have to be encoded. The methods in accessing protocols do not do any encoding, those in parsing and printing do. Here is an example:  (''http://www.google.com'' asZnUrl)    addPathSegment: ''some encoding here'';    queryAt: ''and some encoding'' put: ''here, too'';    yourselfMy parser is somewhat forgiving and accepts some unencoded URLs as well, like most browsers would.  ''http://www.example.com:8888/a path?q=a, b, c'' asZnUrl.I can parse in the context of a default scheme, like a browser would do.  ZnUrl fromString: ''www.example.com'' defaultScheme: #httpGiven a scheme, I know its default port, try #portOrDefault.A path defaults to what is commonly referred to as slash, test with #isSlash. Paths are most often (but don''t have to be) interpreted as filesystem paths. To support this, I have #isFile and #isDirectory tests and #file and #directory accessors.I have some support to handle one URL in the context of another one, this is also known as a relative URL in the context of an absolute URL. Refer to #isAbsolute, #isRelative and #inContextOf:  ''/folder/file.txt'' asZnUrl inContextOf: (''http://fileserver.example.net:4400'' asZnUrl).Sometimes, the combination of my host and port are referred to as authority, see #authority.URL/URI/URN (Uniform/Universal Resource Locator/Identifier/Name) are closely related and can be and are used as synonyms is many contexts. Refer to http://en.wikipedia.org/wiki/Url for more information.There is a convenience method #retrieveContents to download the resource a ZnUrl points to,  ''http://zn.stfx.eu/zn/numbers.txt'' asZnUrl retrieveContents.  Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnUrl category: 'Zinc-Resource-Meta-Core'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUserAgentSession
+expectvalue /Class
+doit
+Object subclass: 'ZnUserAgentSession'
+	instVarNames: #( cookiejar credentials currentRealm)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUserAgentSession comment: 
+'I represent a session store for an HTTP client instance of ZnUserAgent. I hold the cookie jar for the session and any authentication credentials used by the client.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnUserAgentSession category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnUtils
+expectvalue /Class
+doit
+Object subclass: 'ZnUtils'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Support'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnUtils comment: 
+'I am ZnUtils holding various utilities related to HTTP handling.Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnUtils category: 'Zinc-HTTP-Support'
+%
+set compile_env: 0
+! ------------------- Class definition for ZnValueDelegate
+expectvalue /Class
+doit
+Object subclass: 'ZnValueDelegate'
+	instVarNames: #( object)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	category: 'Zinc-HTTP-Client-Server'
+	inDictionary: ZincGlobals
+	options: #()
+
+%
+expectvalue /Class
+doit
+ZnValueDelegate comment: 
+'I am ZnValueDelegate.I forward #handleRequest: messages to the object that I wrap using #value:ZnServer default delegate: 	(ZnValueDelegate with: [ :request | 		ZnResponse ok: (ZnEntity with: ''You asked for '', request uri printString) ] ).Part of Zinc HTTP Components.'
+%
+expectvalue /Class
+doit
+ZnValueDelegate category: 'Zinc-HTTP-Client-Server'
+%

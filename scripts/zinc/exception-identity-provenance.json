@@ -1,0 +1,8 @@
+{
+	"class" : "ZnMultiThreadedServer",
+	"originalSHA256" : "c5f7757dd44058bc629845c697225773a15b928518d0015b3d374f87cd7baf85",
+	"reason" : "After ordinary GT reload Globals precedes ZincGlobals; generic SmalltalkProxy reflective lookup may select GT ConnectionClosed. Resolve this exception list ZincGlobals first, then preserve original Smalltalk fallback; do not alter general proxy lookup or suppress logging.",
+	"originalSource" : "exceptionSet: classNames\n\t^ classNames\n\t\tinject: ExceptionSet new\n\t\tinto: [ :set :each |\n\t\t\t(Smalltalk includesKey: each)\n\t\t\t\tifTrue: [ set add: (Smalltalk at: each); yourself ]\n\t\t\t\tifFalse: [ set ] ]",
+	"selector" : "exceptionSet:",
+	"protocol" : "private"
+}

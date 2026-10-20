@@ -1,0 +1,42 @@
+[
+	[
+		"GsSocket>>connectTo:on:timeoutMs:",
+		"Hostname or numeric address; true success, false failure; timeout milliseconds, -1 indefinite; DNS timeout not guaranteed"
+	],
+	[
+		"GsSocket>>accept:",
+		"Obsolete accept: loops again after false readiness; finite adapter accepts use a readiness wait plus public acceptTimeoutMs:0 instead."
+	],
+	[
+		"GsSocket>>read:into:startingAt:",
+		"Positive count, nil failure, zero EOF; offset preserved; positive read size required"
+	],
+	[
+		"GsSocket>>write:from:startingAt:",
+		"Internally loops partial progress to complete amount; nil failure; SocketError on repeated EAGAIN"
+	],
+	[
+		"GsSocket>>readWillNotBlockWithin:",
+		"Milliseconds; zero poll, -1 indefinite; true ready, false timeout, nil failure"
+	],
+	[
+		"GsSocket>>makeServer:atPort:atAddress:",
+		"Receiver or nil failure; bind returns port or nil; makeListener returns receiver or nil"
+	],
+	[
+		"GsSocket>>lastErrorSymbol",
+		"Native symbols: TimedOut, InProgress, BrokenPipe, ConnReset, ConnAborted, NotConnected, Shutdown, NetworkReset; they are not POSIX errno names"
+	],
+	[
+		"GsSocket>>close",
+		"Receiver when closed or already closed; nil failure"
+	],
+	[
+		"TransientStackValue",
+		"Outbound and accepted sockets retain transient values; adapter receives _setNoStubbing before storage"
+	],
+	[
+		"GsSocket>>acceptTimeoutMs:",
+		"Public native milliseconds API. Adapter finite accept forces NONBLOCKING true, waits readiness for seconds*1000, then uses acceptTimeoutMs:0. Disappeared readiness returns nil without indefinite rewait. Nil+active+noError/WouldBlock/TryAgain/TimedOut is timeout; other reported errors normalize. -1 retains indefinite accept. The native API uses per-wait timeouts, not a hard absolute deadline. Live empty bound listener20ms -> nil,nilError,20ms,stillActive; closed listener -> nil,NotSocket. Default new socket NONBLOCKING=true verified, adapter enforces it explicitly."
+	]
+]

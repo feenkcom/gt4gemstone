@@ -30,19 +30,21 @@ Example JSON arguments:
 
 Example JSON response:
 {
-  "name": "Collection",
-  "superclassName": "SequenceableCollection",
-  "comment": "a comment",
-  "instVarNames": ["array"],
-  "classVarNames": [],
-  "classInstVarNames": ["classInstVar1"],
-  "poolDictionaries": [],
-  "instanceMethodNames": ["at:", "size"],
-  "classMethodNames": ["withAll:"],
-  "dictionary": "Globals",
-  "options": [],
-  "packageName": "Collections-Sequenceable"
+	"currentClassName" : "Collection",
+	"options" : [ ],
+	"allClassMethodNames" : [ "with:with:with:with:", "with:with:with:" ],
+	"instanceSlotNames" : [ ],
+	"classVariableNames" : [ ],
+	"comment" : "Collection is an abstract superclass.",
+	"classSlotNames" : [ ],
+	"poolDictionaryNames" : [ ],
+	"superclassName" : "Object",
+	"packageTagName" : null,
+	"allInstanceMethodNames" : [ "asIdentityBag", "=", "includes:" ],
+	"packageName" : "Collections",
+	"inDictionary" : "Globals"
 }'
+
 ]
 
 { #category : #accessing }

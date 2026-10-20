@@ -1,0 +1,86 @@
+[
+	[
+		"ZnConstants",
+		"class",
+		"frameworkMCVersion",
+		"Replaced by frozen provenance accessor in compatibility overlay"
+	],
+	[
+		"FileDirectory",
+		"instance",
+		"asRepositorySpecFor:",
+		"Monticello repository integration"
+	],
+	[
+		"ClientFileDirectory",
+		"instance",
+		"asRepositorySpecFor:",
+		"Monticello repository integration"
+	],
+	[
+		"FileDirectory",
+		"instance",
+		"fileTreeUtilityClass",
+		"Monticello FileTree integration"
+	],
+	[
+		"Url",
+		"instance",
+		"asRepository:password:",
+		"Monticello repository integration"
+	],
+	[
+		"FileUrl",
+		"instance",
+		"asRepository:password:",
+		"Monticello repository integration"
+	],
+	[
+		"FileUrl",
+		"instance",
+		"pathForDirectory",
+		"Monticello FileTree integration"
+	],
+	[
+		"FileUrl",
+		"class",
+		"workingDirectory",
+		"Monticello FileTree integration"
+	],
+	[
+		"FastUUIDGenerator",
+		"class",
+		"default",
+		"Replaced by SessionTemps accessor in compatibility overlay"
+	],
+	[
+		"FastUUIDGenerator",
+		"class",
+		"initialize",
+		"Replaced by SessionTemps clearing in compatibility overlay"
+	],
+	[
+		"HttpUrl",
+		"instance",
+		"asRepository:password:",
+		"Monticello repository integration"
+	],
+	[
+		"FtpUrl",
+		"instance",
+		"asRepository:password:",
+		"Monticello repository integration"
+	],
+	[
+		"SmalltalkProxy",
+		"instance",
+		"systemOrganization",
+		"Package organization tooling"
+	],
+	[
+		"ObjectLogEntry",
+		"instance",
+		"labelText",
+		"Object log rich text presentation"
+	]
+]

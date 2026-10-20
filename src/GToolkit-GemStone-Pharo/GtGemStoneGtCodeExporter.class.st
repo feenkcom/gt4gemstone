@@ -390,18 +390,9 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Point>>#asBrAnchoredAnchorBounds.
 	Point>>#asGVector.
 	Point>>#asMargin.
-	GtLlmToolForSUnitClassesRun>>#privatePerformToolCall:.
 	MemoryTelemetry>>#startSync:.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromClassesFrom:in:reportingNotFoundIn:.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
 	TelemetryPing>>#totalFullGCTimeMicroseconds.
 	TelemetryPing>>#totalScavengeGCTimeMicroseconds.
-	GtLlmRenameFormatComponentRefactoringExamples>>#destroyClass.
-	GtLlmReificationForm>>#assistantNameDescription.
-	GtLlmReificationForm>>#assistantSuperclassDescription.
-	GtLlmReificationForm>>#messageNameDescription.
-	GtLlmReificationForm>>#messageSuperclassDescription.
-	GtLlmAssistantLibraryForGt class>>#textFormatWithSmalltalkBlocks.
 	}
 ]
 
@@ -603,7 +594,6 @@ GtGemStoneGtCodeExporter >> packageNames [
 		PackageOrganizer default packageNames asOrderedCollection
 			select: [ :name | name beginsWith: prefix ] ]
 				as: OrderedCollection.
-	packageNames removeAll: { 'Gt4Llm' }.
 	packageNames addAll: {
 		'Grease-Core'.
 		'GToolkit-Examples'.

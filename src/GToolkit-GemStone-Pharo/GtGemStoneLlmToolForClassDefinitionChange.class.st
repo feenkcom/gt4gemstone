@@ -70,7 +70,7 @@ GtGemStoneLlmToolForClassDefinitionChange >> privatePerformToolCall: aToolCall i
 	self session ifNil: [ self error: 'No default GemStone session has been set' ].
 
 	details := self session
-		evaluateBlockAndWait: [ :className :superclassName :comment :instVarNames :classVarNames :classInstVarNames :poolDictionaryNames :dictionaryName :options :packageName |
+		evaluateBlockAndWait: [ :className :superclassName :comment :instVarNames :classVarNames :classInstVarNames :poolDictionaryNames :dictionaryName :options :packageName :instanceMethodNames :classMethodNames |
 			| oldClass superclass dictionary pools updatedClass resolution |
 			oldClass := GsSession currentSession objectNamed: className asSymbol.
 			superclass := GsSession currentSession objectNamed: superclassName asSymbol.
@@ -99,6 +99,24 @@ GtGemStoneLlmToolForClassDefinitionChange >> privatePerformToolCall: aToolCall i
 							category: packageName
 							inDictionary: dictionary
 							options: (options collect: #asSymbol) ].
+					"Compile against the new layout so slot references use the new offsets."
+					instanceMethodNames do: [ :each |
+						updatedClass
+							compileMethod: (oldClass compiledMethodAt: each asSymbol environmentId: 0) sourceString
+							category: (oldClass categoryOfSelector: each asSymbol)
+							environmentId: 0 ].
+					classMethodNames do: [ :each |
+						updatedClass class
+							compileMethod: (oldClass class compiledMethodAt: each asSymbol environmentId: 0) sourceString
+							category: (oldClass class categoryOfSelector: each asSymbol)
+							environmentId: 0 ].
+					"An unchanged layout can reuse the old class, which already has methods."
+					updatedClass selectors do: [ :each |
+						(instanceMethodNames includes: each asString)
+							ifFalse: [ updatedClass removeSelector: each ] ].
+					updatedClass class selectors do: [ :each |
+						(classMethodNames includes: each asString)
+							ifFalse: [ updatedClass class removeSelector: each ] ].
 					updatedClass comment: comment.
 					resolution := System myUserProfile symbolResolutionOf: updatedClass name.
 					{
@@ -125,7 +143,9 @@ GtGemStoneLlmToolForClassDefinitionChange >> privatePerformToolCall: aToolCall i
 			request poolDictionaries asArray.
 			request dictionary.
 			request options asArray.
-			request packageName }
+			request packageName.
+			request instanceMethodNames asArray.
+			request classMethodNames asArray }
 		serializationStrategy: GtRsrWireSerializationStrategy.
 
 	details ifNil: [ ^ GtLMissingDomainObject new objectName: request name ].

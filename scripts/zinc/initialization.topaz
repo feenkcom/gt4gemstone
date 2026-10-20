@@ -1,0 +1,33 @@
+fileformat utf8
+! Fresh-install initialization; no listeners or package loaders.
+doit
+ChronologyConstants initialize.
+Base64MimeConverter initialize.
+ZipConstants initialize.
+ZipFileConstants initialize.
+GZipConstants initialize.
+InflateStream initialize.
+FastInflateStream initialize.
+ZipWriteStream initialize.
+RxMatcher initialize.
+RxParser initialize.
+RxsPredicate initialize.
+GRNumberPrinter initialize.
+GRInflector initialize.
+GRUtf8CodecStream initialize.
+HTTPSocket initialize.
+ZnBase64Encoder initialize.
+ZnByteEncoder initialize.
+ZnConstants initialize.
+ZnHeaders initialize.
+ZnMimeType initialize.
+ZnSingleThreadedServer initialize.
+ZnServer initialize.
+ZnNetworkingUtils defaultSocketStreamTimeout: 30.
+ZnConstants defaultMaximumEntitySize: 16 * 1024 * 1024.
+Stream _initializeStreamClassVars.
+Stream _initializeWriteStreamClassVars: WriteStream.
+SecureHashAlgorithm initialize.
+MIMEDocument resetMIMEdatabase.
+true
+%

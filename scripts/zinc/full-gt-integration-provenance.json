@@ -1,0 +1,32 @@
+[
+	{
+		"descriptorClass" : "GtGemStoneExtensionMethods",
+		"descriptorSelector" : "ext_String_asZnUrl",
+		"descriptorSource" : "ext_String_asZnUrl\r\t^ GtGemStoneExtensionMethod new\r\t\tclassName: #String;\r\t\tselector: #'asZnUrl';\r\t\tmeta: false;\r\t\tprotocol: #'*Zinc-Resource-Meta-Core';\r\t\tgtVersions: nil;\r\t\thash: '6f92cdede440f2cd6d730c2511d047d967a40107a97f019ffdb6c69001268045';\r\t\tsource: 'asZnUrl\r\t<gtGsExtension>\r\t| zinc |\r\tzinc := Globals at: #ZincGlobals ifAbsent: [ nil ].\r\t^ (zinc\r\t\tifNil: [ ZnUrl ]\r\t\tifNotNil: [ zinc at: #ZnUrl ]) fromString: self'",
+		"descriptorSHA256" : "5080813b0e7cdf32fb9750ac0bddd82e981427ee776b33401c3774cabed42add",
+		"targetClass" : "String",
+		"targetSelector" : "asZnUrl",
+		"targetClassSide" : false,
+		"targetProtocol" : "*Zinc-Resource-Meta-Core",
+		"expectedOriginalHash" : "6f92cdede440f2cd6d730c2511d047d967a40107a97f019ffdb6c69001268045",
+		"targetSource" : "asZnUrl\r\t<gtGsExtension>\r\t| zinc |\r\tzinc := Globals at: #ZincGlobals ifAbsent: [ nil ].\r\t^ (zinc\r\t\tifNil: [ ZnUrl ]\r\t\tifNotNil: [ zinc at: #ZnUrl ]) fromString: self",
+		"targetSHA256" : "c40d77b055a5139cb29ea1c36c842b6deba7b49366afa1f4d3a47e217d71f57e",
+		"reason" : "Prefer the installed private ZincGlobals ZnUrl identity during normal full GT reload; retain the original GT fallback when Zinc is absent.",
+		"historicalEvidence" : "shared-kernel-provenance.json records the original pre-integration GT bodies; this artifact records the current full GT reload adapters."
+	},
+	{
+		"descriptorClass" : "GtGemStoneExtensionMethods",
+		"descriptorSelector" : "ext_String_addedToZnUrl_",
+		"descriptorSource" : "ext_String_addedToZnUrl_\r\t^ GtGemStoneExtensionMethod new\r\t\tclassName: #String;\r\t\tselector: #'addedToZnUrl:';\r\t\tmeta: false;\r\t\tprotocol: #'*Zinc-Resource-Meta-Core';\r\t\tgtVersions: nil;\r\t\thash: #new;\r\t\tsource: 'addedToZnUrl: url\r\t<gtGsExtension>\r\t| zinc segments |\r\tzinc := Globals at: #ZincGlobals ifAbsent: [ nil ].\r\tsegments := self subStrings: ''/''.\r\t(zinc notNil and: [ url isKindOf: (zinc at: #ZnUrl) ])\r\t\tifTrue: [ segments := segments reject: [ :segment | segment isEmpty ] ].\r\t^ url withPathSegments: segments'",
+		"descriptorSHA256" : "707be6fb201215ac3271353b2f3af4084959e11e21132ba57a2f409d51dd8590",
+		"targetClass" : "String",
+		"targetSelector" : "addedToZnUrl:",
+		"targetClassSide" : false,
+		"targetProtocol" : "*Zinc-Resource-Meta-Core",
+		"expectedOriginalHash" : "new",
+		"targetSource" : "addedToZnUrl: url\r\t<gtGsExtension>\r\t| zinc segments |\r\tzinc := Globals at: #ZincGlobals ifAbsent: [ nil ].\r\tsegments := self subStrings: '/'.\r\t(zinc notNil and: [ url isKindOf: (zinc at: #ZnUrl) ])\r\t\tifTrue: [ segments := segments reject: [ :segment | segment isEmpty ] ].\r\t^ url withPathSegments: segments",
+		"targetSHA256" : "a53af0b55245d803c5e9dceb74bb206b195067e820467098c64691343f6be7cf",
+		"reason" : "Retain native omission of empty path segments for private Zinc URLs while preserving existing GT subStrings: behavior for other URL identities.",
+		"historicalEvidence" : "shared-kernel-provenance.json records the original pre-integration GT bodies; this artifact records the current full GT reload adapters."
+	}
+]

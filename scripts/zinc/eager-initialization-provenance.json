@@ -1,0 +1,42 @@
+[
+	{
+		"source" : "defaultMaximumEntitySize: integer\n\t\"Set the default maximum entity size to accept from a stream to integer bytes.\"\n\t\n\t^ DefaultMaximumEntitySize := integer\n",
+		"classSide" : true,
+		"className" : "ZnConstants",
+		"reason" : "Eager immutable16MB maximum before DataCurator first use",
+		"sourceSHA256" : "73375c62ae29065a0269cbe0e70750bda3f316241b964760ff2858e25844d96e",
+		"selector" : "defaultMaximumEntitySize:"
+	},
+	{
+		"source" : "_initializeStreamClassVars\n\"set up classVars for methods in stream2.gs\"\n(self classVarAt: #Cr otherwise: nil) ifNil:[ | arr |\n  arr := {\n    #Lf . Character codePoint: 10 .\n    #Tab . Character codePoint: 9 . }.\n  1 to: arr size by: 2 do:[:j |\n    self _addInvariantClassVar: (arr at: j) value: (arr at: j + 1)\n  ].\n  ^ 'added'\n].\n^ 'no change'\n",
+		"classSide" : true,
+		"className" : "Stream",
+		"reason" : "Private native stream character constants",
+		"sourceSHA256" : "3f704bb542625b696ab74134d60dbee23b94491000b132a07b42a6aabc7b04cf",
+		"selector" : "_initializeStreamClassVars"
+	},
+	{
+		"source" : "_initializeWriteStreamClassVars: aClass\n  \"method used in filein of various WriteStream classes.\n   Those classes inherit Lf and Tab classVars from Stream.\n  \"\n  (aClass classVarAt: #Cr otherwise: nil) ifNil:[ | arr |\n    arr := {\n      #Cr . Character codePoint: 13 .\n      #CrLf .  (String new add:(Character codePoint: 13);\n                   add: (Character codePoint: 10); immediateInvariant\n                  ; yourself ) .\n      #CrTab .  (String new add:(Character codePoint: 13);\n                   add: (Character codePoint: 9); immediateInvariant\n                  ; yourself )   } .\n    1 to: arr size by: 2 do:[:j |\n      aClass _addInvariantClassVar: (arr at: j) value: (arr at: j + 1)\n    ].\n    ^ 'added'\n  ].\n  ^ 'no change'\n",
+		"classSide" : true,
+		"className" : "Stream",
+		"reason" : "Private native stream character constants",
+		"sourceSHA256" : "090f83977fe8909b5ef4685bb0568c946145afa9015b60b0b480e1233be1d319",
+		"selector" : "_initializeWriteStreamClassVars:"
+	},
+	{
+		"source" : "initialize\n\t\"SecureHashAlgorithm initialize\"\n\t\"For the curious, here's where these constants come from:\n\t  #(2 3 5 10) collect: [:x | ((x sqrt / 4.0) * (2.0 raisedTo: 32)) truncated hex]\"\n\n\tK1 _ ThirtyTwoBitRegister new load: 16r5A827999.\n\tK2 _ ThirtyTwoBitRegister new load: 16r6ED9EBA1.\n\tK3 _ ThirtyTwoBitRegister new load: 16r8F1BBCDC.\n\tK4 _ ThirtyTwoBitRegister new load: 16rCA62C1D6.\n",
+		"classSide" : true,
+		"className" : "SecureHashAlgorithm",
+		"reason" : "SHA1 numeric constant registers",
+		"sourceSHA256" : "d71cf2d43412d130a9b56d83c0fe374104bb89acd7462b85ed7a1b5369d06b42",
+		"selector" : "initialize"
+	},
+	{
+		"source" : "resetMIMEdatabase\n\tMIMEdatabase _ self extendedMIMEdatabase\n",
+		"classSide" : true,
+		"className" : "MIMEDocument",
+		"reason" : "MIME extension lookup table",
+		"sourceSHA256" : "e87b96b0c622b340dbbde9a1a9d8107472f45bdcc45da672dc8e38ae260e7b08",
+		"selector" : "resetMIMEdatabase"
+	}
+]

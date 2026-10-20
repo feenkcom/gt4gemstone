@@ -1,0 +1,510 @@
+fileformat utf8
+set compile_env: 0
+category: 'accessing'
+classmethod: ZnNetworkingUtils
+default	<gtGsExtension>	^ SessionTemps current at: #ZnNetworkingUtils_default ifAbsentPut: [ self new ]
+%
+category: 'accessing'
+classmethod: ZnNetworkingUtils
+default: anInstance	<gtGsExtension>	SessionTemps current at: #ZnNetworkingUtils_default put: anInstance
+%
+category: 'public'
+classmethod: ZnSingleThreadedServer
+default	<gtGsExtension>	| defaults |	defaults := SessionTemps current at: #ZnSingleThreadedServer_defaults ifAbsentPut: [ IdentityDictionary new ].	^ defaults at: self ifAbsent: [ nil ]
+%
+category: 'public'
+classmethod: ZnSingleThreadedServer
+defaultOn: portNumber	<gtGsExtension>	| defaults server |	defaults := SessionTemps current at: #ZnSingleThreadedServer_defaults ifAbsentPut: [ IdentityDictionary new ].	server := defaults at: self ifAbsent: [ nil ].	server ifNil: [ server := self on: portNumber. defaults at: self put: server ]		ifNotNil: [ server stop; port: portNumber ].	^ server
+%
+category: 'public'
+classmethod: ZnSingleThreadedServer
+stopDefault	<gtGsExtension>	| defaults server |	defaults := SessionTemps current at: #ZnSingleThreadedServer_defaults ifAbsentPut: [ IdentityDictionary new ].	server := defaults at: self ifAbsent: [ nil ].	server ifNotNil: [ server stop. defaults removeKey: self ifAbsent: [ ] ].	^ server
+%
+category: 'accessing'
+classmethod: ZnServer
+managedServers	<gtGsExtension>	^ SessionTemps current at: #ZnServer_managedServers ifAbsentPut: [ IdentitySet new ]
+%
+category: 'registration'
+classmethod: GRPlatform
+current	<gtGsExtension>	^ SessionTemps current at: #GRPlatform_current ifAbsentPut: [ GRGemStonePlatform new ]
+%
+category: 'registration'
+classmethod: GRPlatform
+current: aPlatform	<gtGsExtension>	SessionTemps current at: #GRPlatform_current put: aPlatform
+%
+category: 'transactions'
+method: GRGemStonePlatform
+transactionMutex	<gtGsExtension>	^ SessionTemps current at: #GRGemStonePlatform_transactionMutex ifAbsentPut: [ TransientRecursionLock new ]
+%
+category: 'accessing'
+classmethod: ZnConstants
+frameworkMCVersion	<gtGsExtension>	^ 'Zinc-HTTP-PaulDeBruicker.425'
+%
+category: '*monticello'
+classmethod: FastUUIDGenerator
+default	<gtGsExtension>	^ SessionTemps current at: #FastUUIDGenerator_default_value ifAbsentPut: [ self new ]
+%
+category: '*monticello'
+classmethod: FastUUIDGenerator
+initialize	<gtGsExtension>	SessionTemps current removeKey: #FastUUIDGenerator_default_value ifAbsent: [ ]
+%
+category: 'enumeration'
+method: FileDirectory
+directoryEntryFor: filenameOrPath	<gtGsExtension>	"Answer the directory entry for the given file or path. Sorta like a poor man's stat()."	| fName dir |	self class splitName: filenameOrPath to:[:filePath :name |		fName := name.		filePath isEmpty			ifTrue: [dir := self]			ifFalse: [dir := self class on: filePath]].	^dir entries detect:[:entry| entry name _unicodeEqual: fName] ifNone:[nil]
+%
+category: 'instance creation'
+classmethod: ArrayedCollection
+newFromArray: anArray	<gtGsExtension>	^ self newFrom: anArray
+%
+category: 'comparing'
+method: ZnMultiValueDictionary
+zincKey: storedKey equals: suppliedKey	<gtGsExtension>	(storedKey isString and: [ suppliedKey isString ])		ifTrue: [ ^ storedKey _unicodeEqual: suppliedKey ].	^ storedKey = suppliedKey
+%
+category: 'Accessing'
+method: ZnMultiValueDictionary
+associationAt: aKey otherwise: defaultValue	<gtGsExtension>"Returns the Association with key aKey.  If no such Association exists, returns the given default value."| index anAssoc |aKey == nil ifTrue:[ ^ defaultValue ] .index := self hashFunction: aKey.anAssoc := self _at: index.(anAssoc == nil) ifTrue:[^ defaultValue ].(anAssoc _isSmallInteger)  "There is a collision. Follow the chain."  ifTrue: [    index := anAssoc.    [index ~~ nil]    whileTrue: [      anAssoc := self _at: index.      (self zincKey: anAssoc key equals: aKey)        ifTrue: [^ anAssoc]        ifFalse: [index := self _at: (index + 1)].      ].    ^ defaultValue    ].(self zincKey: anAssoc key equals: aKey)  ifTrue: [ ^ anAssoc ].^ defaultValue
+%
+category: 'Private'
+method: ZnMultiValueDictionary
+associationAtOrNil: aKey hash: aHashVal	<gtGsExtension>"Returns the Association with key aKey.  If no such Association exists, returns nil.  The search is only done in the hash chain that corresponds to aHashVal."| index anAssoc |anAssoc := self _at: aHashVal.(anAssoc == nil) ifTrue: [ ^ nil ].(anAssoc _isSmallInteger)  "There is a collision. Follow the chain."  ifTrue: [    index := anAssoc.    [nil ~~ index]    whileTrue: [      anAssoc := self _at: index.      (self zincKey: anAssoc key equals: aKey)        ifTrue: [^ anAssoc]        ifFalse: [index := self _at: (index + 1)].      ].    ^ nil.    ].(self zincKey: anAssoc key equals: aKey)  ifTrue: [ ^ anAssoc ].^ nil.
+%
+category: 'Removing'
+method: ZnMultiValueDictionary
+removeKey: aKey otherwise: defaultValue	<gtGsExtension>"Removes an element from the receiver with key aKey and returns an Association. If an element with key aKey is not present, returns defaultValue."| prevIndex index anAssociation |aKey ifNil:[ self _error: #rtErrNilKey ].index := self hashFunction: aKey .anAssociation := self _at: index.(anAssociation == nil) ifTrue: [^ defaultValue ].(anAssociation _isSmallInteger)  ifTrue: [    "Need to follow the collision chains."    prevIndex := index.    index := anAssociation.    [index ~~ nil]    whileTrue: [      anAssociation := self _at: index.      (self zincKey: anAssociation key equals: aKey)        ifTrue: [           self basicAt: prevIndex put: (self _at: (index + 1)).           self basicAt: index put: nil.           self basicAt: (index + 1) put: nil.           count := count - 1.           ^ anAssociation.           ]        ifFalse: [          "Go to the next one."          prevIndex := index + 1.          index := self _at: (index + 1)          ].      ].    ^ defaultValue    ].(self zincKey: anAssociation key equals: aKey) ifTrue:[  self basicAt: index put: nil.  count := count - 1.  ^ anAssociation.  ].^ defaultValue
+%
+category: 'private'
+method: ZnMultiThreadedServer
+exceptionSet: classNames	<gtGsExtension>	| zinc |	zinc := Globals at: #ZincGlobals ifAbsent: [ nil ].	^ classNames		inject: ExceptionSet new		into: [ :set :each | | exceptionClass |			exceptionClass := zinc ifNotNil: [ zinc at: each asSymbol ifAbsent: [ nil ] ].			exceptionClass ifNil: [				(Smalltalk includesKey: each) ifTrue: [ exceptionClass := Smalltalk at: each ] ].			exceptionClass ifNotNil: [ set add: exceptionClass ].			set ]
+%
+category: 'private'
+classmethod: ObjectLogEntry
+objectQueue	<gtGsExtension>	^ SessionTemps current at: #ObjectLogEntry_objectQueue ifAbsentPut: [ RcQueue new: 100 ]
+%
+category: 'accessing'
+classmethod: ObjectLogEntry
+_objectLog	<gtGsExtension>	^ SessionTemps current at: #ObjectLogEntry_objectLog ifAbsentPut: [ OrderedCollection new ]
+%
+category: 'accessing'
+classmethod: ObjectLogEntry
+objectLog	<gtGsExtension>	| log |	log := self _objectLog.	log addAll: (self objectQueue _timeSortedComponents collect: [ :each | each value ]).	self objectQueue removeAll.	^ log
+%
+category: 'actions'
+classmethod: ObjectLogEntry
+emptyLog	<gtGsExtension>	self objectQueue removeAll.	SessionTemps current removeKey: #ObjectLogEntry_objectLog ifAbsent: [ ]
+%
+category: 'initialization'
+classmethod: ObjectLogEntry
+initialize	<gtGsExtension>	SessionTemps current removeKey: #ObjectLogEntry_objectQueue ifAbsent: [ ].	SessionTemps current removeKey: #ObjectLogEntry_objectLog ifAbsent: [ ]
+%
+category: 'initialization'
+classmethod: ObjectLogEntry
+initalize	<gtGsExtension>	^ self initialize
+%
+category: 'private'
+classmethod: ObjectLogEntry
+objectLogEntries: shouldLock	<gtGsExtension>	"The private runtime log is session-local; no repository queue lock is required."	^ self objectLog
+%
+category: 'accessing'
+classmethod: ObjectLogEntry
+acquireObjectLogLock	<gtGsExtension>	"No repository lock is required for the private session-local log."	^ true
+%
+category: '*squeak'
+method: Array
+isArray
+	<gtGsExtension>
+
+	^true
+%
+category: '*core-squeak'
+method: ByteArray
+asString
+	<gtGsExtension>
+  "Convert to a String with Characters for each byte"
+
+  | str |
+  str := String new: self size.
+  1 to: self size do: [:i |str at: i put: (Character value: (self at: i))].
+  ^str
+
+%
+category: '*gssqueakcommon-core'
+method: ByteArray
+hex
+	<gtGsExtension>
+	"Answer a hexa decimal representation of the receiver"
+	| string v index map |
+	map := '0123456789abcdef'.
+	string := String new: self size * 2. "hex"
+	index := 0.
+	1 to: self size do: [ :i |
+		v := self at: i.
+		string at: (index := index + 1) put: (map at: (v bitShift: -4) + 1).
+		string at: (index := index + 1) put: (map at: (v bitAnd: 15) + 1)].
+	^string
+%
+category: '*zinc-resource-meta-core'
+method: Collection
+addedToZnUrl: url 
+	<gtGsExtension>
+	^ url withPathSegments: self
+%
+category: '*squeak-instance creation'
+classmethod: Dictionary
+newFromPairs: anArray 
+	<gtGsExtension>
+	"Answer an instance of me associating (anArray at:i) to (anArray at: i+i)
+	 for each odd i.  anArray must have an even number of entries.
+	  Dictionary newFromPairs: {'Red' . Color red . 'Blue' . Color blue . 'Green' . Color green}. "
+	| newDictionary |
+
+	newDictionary := self new: (anArray size/2).
+	1 to: (anArray size-1) by: 2 do: [ :i|
+		newDictionary at: (anArray at: i) put: (anArray at: i+1).
+	].
+	^ newDictionary
+%
+category: '*squeak-parsing'
+classmethod: Integer
+readFrom: aStringOrStream ifFail: aBlock
+	<gtGsExtension>
+  "Answer an instance of one of the concrete subclasses if Integer. 
+	Initial minus sign accepted.
+	Imbedded radix specifiers not allowed;  use Number 
+	class readFrom: for that.
+	Execute aBlock if there are no digits."
+
+  ^ (NumberParser on: aStringOrStream) nextIntegerBase: 10 ifFail: aBlock
+%
+category: '*gssqueakcommon-core'
+method: Number
+closeTo: num
+	<gtGsExtension>
+	"are these two numbers close?"
+
+	num isFloat ifTrue: [^ num closeTo: self asFloat].
+	^[self = num] ifError: [false]
+%
+category: '*core-squeak'
+method: Object
+assert: aBlock
+	<gtGsExtension>
+	"Throw an assertion error if aBlock does not evaluates to true."
+
+	aBlock value ifFalse: [AssertionFailure signal: 'Assertion failed']
+%
+category: '*squeak'
+method: Object
+isArray
+	<gtGsExtension>
+
+	^false
+%
+category: '*gemstone-ansi-streams'
+method: SequenceableCollection
+writeStream
+	<gtGsExtension>
+	^ AnsiWriteStream on: self
+%
+category: '*zinc-resource-meta-core'
+method: String
+addedToZnUrl: url
+	<gtGsExtension>
+	| segments |
+	segments := self findTokens: '/'.
+	^ url withPathSegments: segments
+%
+category: 'converting'
+method: String
+asZnUrl
+	<gtGsExtension>
+	^ ZnUrl fromString: self
+
+%
+category: '*squeak'
+classmethod: ActionSequence
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Announcement
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Announcer
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: AnnouncerSubscription
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Authorizer
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: DirectoryEntry
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: FastUUIDGenerator
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: FileDirectory
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: GsContext
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: MessageSend
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: MimeConverter
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: MIMEDocument
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: NumberParser
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ObjectLogEntry
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ProcessSpecificVariable
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxCharSetParser
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxMatcher
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxMatchOptimizer
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxmLink
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxmTerminator
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxParser
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: RxsNode
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: SecureHashAlgorithm
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: SharedPool
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: SmalltalkProxy
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: SocketStream
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: SocketStreamSocket
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Stack
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Stream
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: TranscriptProxy
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: TransientSemaphore
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: TransientStackValue
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: Url
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: UTF8Encoding
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZipEncoderNode
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZipEncoderTree
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnBase64Encoder
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnByteEncoder
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnChunkedWriteStream
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnClient
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnConstants
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnCookie
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnCookieJar
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnCredential
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnDispatcherDelegate
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnEasy
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnEntityReader
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnEntityWriter
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnFileSystemUtils
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnHeaders
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnHTTPSocketFacade
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnLineReader
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnLogListener
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnLogSupport
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnMessage
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnMimePart
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnMimeType
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnNetworkingUtils
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnNullEncoder
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnPercentEncoder
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnReadEvalPrintDelegate
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnRequestLine
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnResourceMetaUtils
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnServer
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnServerSession
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnServerSessionManager
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnStaticFileServerDelegate
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnStatusLine
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnUrl
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnUserAgentSession
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnUtils
+new	<gtGsExtension>	^ (super new) initialize
+%
+category: '*squeak'
+classmethod: ZnValueDelegate
+new	<gtGsExtension>	^ (super new) initialize
+%
