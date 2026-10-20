@@ -348,6 +348,27 @@ GtGemStoneEvaluationContext >> resumeAsyncComputation [
 	^ GtGemstoneEvaluationResumedResult new asDictionaryForExport
 ]
 
+{ #category : 'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> runToCursorSourceOffset: aSourceOffset frameIdentifierIndex: aFrameIdentifierIndex [
+	| frameLevel homeMethod sourceOffsets stepPoint |
+
+	frameLevel := self frameLevelForIdentifierIndex: aFrameIdentifierIndex.
+	homeMethod := ((process _frameContentsAt: frameLevel) at: 1) homeMethod.
+	sourceOffsets := homeMethod _sourceOffsets.
+
+	stepPoint := self
+		stepPointNearestOffset: aSourceOffset
+		inOffsets: sourceOffsets.
+	stepPoint ifNil: [
+		self resume.
+		^ #runToCursor ].
+
+	homeMethod setBreakAtStepPoint: stepPoint breakpointLevel: 1.
+	[ self resume ] ensure: [
+		homeMethod clearBreakAtStepPoint: stepPoint ].
+	^ #runToCursor
+]
+
 { #category : 'accessing' }
 GtGemStoneEvaluationContext >> serializationStrategy [
 	^serializationStrategy
@@ -444,6 +465,21 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 	process setStepOverBreaksAtLevel: anInteger.
 	self resume.
 	^ #stepOver
+]
+
+{ #category : 'private' }
+GtGemStoneEvaluationContext >> stepPointNearestOffset: aSourceOffset inOffsets: sourceOffsets [
+	| bestStepPoint bestDist |
+
+	bestStepPoint := nil.
+	bestDist := SmallInteger maximumValue.
+	1 to: sourceOffsets size do: [ :i |
+		| dist |
+		dist := ((sourceOffsets at: i) - aSourceOffset) abs.
+		dist < bestDist ifTrue: [
+			bestDist := dist.
+			bestStepPoint := i ] ].
+	^ bestStepPoint
 ]
 
 { #category : 'actions - debug (identifier)' }
