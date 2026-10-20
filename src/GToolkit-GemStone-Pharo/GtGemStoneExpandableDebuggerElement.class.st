@@ -274,6 +274,17 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 	(ResumeDebugAction forDebugger: self) executeAction.
 ]
 
+{ #category : #'actions - gs' }
+GtGemStoneExpandableDebuggerElement >> gsRunToCursor [
+	| cursorPosition |
+
+	cursorPosition := stackElement cursorInterval first + 1.
+	cursorPosition < 1 ifTrue: [ ^ self ].
+	self debugSession
+		gsRunToCursorSourceOffset: cursorPosition
+		frameIdentifier: self currentCallFrame frameIdentifier.
+]
+
 { #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepInto [
 	self debugSession 

@@ -176,6 +176,32 @@ GtGemStoneDebuggerDevScripterCheckStep >> expandCoderAtTopIndex: anIndex [
 ]
 
 { #category : #steps }
+GtGemStoneDebuggerDevScripterCheckStep >> moveCursorTo: aPosition [
+	self
+		substeps2: 'Move cursor to position ', aPosition printString
+		do: [ :aStep |
+			aStep do
+				label: 'Move cursor';
+				action: [ :aStackElement |
+					aStackElement selectedCoderUIModel
+						moveCursorTo: aPosition ];
+				// GtGemStoneExpandableStackElement ]
+]
+
+{ #category : #steps }
+GtGemStoneDebuggerDevScripterCheckStep >> moveCursorTo: aPosition atTopIndex: anIndex [
+	self
+		substeps2: 'Move cursor to position ', aPosition printString
+		do: [ :aStep |
+			aStep do
+				label: 'Move cursor';
+				action: [ :anEditorElement |
+					anEditorElement editor moveCursorTo: aPosition ];
+				// (GtExpandableContextMethodCoderId indexed: anIndex);
+				// GtSourceCoderEditorId ]
+]
+
+{ #category : #steps }
 GtGemStoneDebuggerDevScripterCheckStep >> scrollToFrameAtTopIndex: anIndex [
 	self
 		substeps2: 'Scroll to frame at index ', anIndex printString

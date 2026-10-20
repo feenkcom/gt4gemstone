@@ -99,6 +99,13 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> restartIn: aDebuggingSession [
 	aDebuggingSession synchronizeCallStack
 ]
 
+{ #category : #operations }
+GtRemoteGemStoneDebuggingSessionStepExamples >> runToCursorSourceOffset: anOffset in: aDebuggingSession [
+	aDebuggingSession gsRunToCursorSourceOffset: anOffset
+		frameIdentifier: aDebuggingSession remoteContext frameIdentifier.
+	aDebuggingSession synchronizeCallStack
+]
+
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> stepIntoIn: aDebuggingSession [
 	aDebuggingSession gsStepIntoFrameIdentifier:

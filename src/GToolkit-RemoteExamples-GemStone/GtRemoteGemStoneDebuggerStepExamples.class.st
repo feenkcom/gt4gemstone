@@ -90,6 +90,53 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_01_enterMethod [
 	^ scripter
 ]
 
+{ #category : #'examples - longComputation' }
+GtRemoteGemStoneDebuggerStepExamples >> longComputation_00_haltAtStart [
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [
+			gemstoneSession evaluateBlockAndWait: [
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doLongComputation ] ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggerElement debugSession.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - longComputation' }
+GtRemoteGemStoneDebuggerStepExamples >> longComputation_01_enterMethod [
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	scripter := self longComputation_00_haltAtStart.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doLongComputation' inBlock: false;
+		play.
+
+	^ scripter
+]
+
 { #category : #'examples - multipleMethodCalls' }
 GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_00_haltAtStart [
 	<gtExample>

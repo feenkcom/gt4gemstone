@@ -86,6 +86,17 @@ GtGemStoneDebuggerSession >> gsResume [
 	self debuggerClient gsResume.
 ]
 
+{ #category : #'actions - gs' }
+GtGemStoneDebuggerSession >> gsRunToCursorSourceOffset: aSourceOffset frameIdentifier: aFrameIdentifier [
+	[ self debuggerProxy
+		proxyPerform: #runToCursorSourceOffset:frameIdentifierIndex:
+		withArguments: { aSourceOffset. aFrameIdentifier identityIndex }
+		autoCommit: false ]
+		on: GtRsrEvaluationException
+		do: [ :ex | self error: 'Unexpected debugger error' ].
+	self resetState.
+]
+
 { #category : #'remote actions - stepping' }
 GtGemStoneDebuggerSession >> gsStepIntoFrameIdentifier: aFrameIdentifier [
 	self 
