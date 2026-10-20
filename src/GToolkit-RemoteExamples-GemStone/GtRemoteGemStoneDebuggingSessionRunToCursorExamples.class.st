@@ -30,6 +30,9 @@ GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> longComputation_runToMult
 		highlightedText: ':= c * 3'
 		atProgramCounterRange: (78 to: 85)
 		atProgramCounterMarkers: #(78 83).
+	self assertFrames: frames atIndex: 1 variable: #a equals: '1'.
+	self assertFrames: frames atIndex: 1 variable: #b equals: '2'.
+	self assertFrames: frames atIndex: 1 variable: #c equals: '3'.
 
 	self runToCursorSourceOffset: 175 in: debuggingSession.
 
@@ -40,6 +43,7 @@ GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> longComputation_runToMult
 		highlightedText: 'add: a'
 		atProgramCounterRange: (175 to: 180)
 		atProgramCounterMarkers: #(175 191).
+	self assertFrames: frames atIndex: 1 variable: #d equals: '9'.
 
 	self runToCursorSourceOffset: 348 in: debuggingSession.
 

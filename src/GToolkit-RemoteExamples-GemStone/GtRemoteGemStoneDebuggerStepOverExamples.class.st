@@ -7,24 +7,18 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - step over halt' }
+{ #category : #'examples - callMethodWithHalt' }
 GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession debuggerElement scripter |
+	| gemstoneSession scripter |
 
 	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debugSessionOn: [
+	scripter := self
+		scripterWithDebuggerOn: [
 			gemstoneSession evaluateBlockAndWait: [
 				nil halt. GtRemotePhlowDebuggerStepTestObject new doCallMethodWithHalt ] ]
 		withException: GtRsrEvaluationException.
-
-	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
-
-	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
@@ -54,7 +48,7 @@ GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_01_enterMethod [
 	^ scripter
 ]
 
-{ #category : #'examples - step over halt' }
+{ #category : #'examples - callMethodWithHalt' }
 GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_02_stepOverToHaltingCall [
 	<gtExample>
 	<after: #stopServer>
@@ -74,12 +68,13 @@ GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_02_stepOverToHalt
 			highlightedText: 'methodThatHalts'
 			atProgramCounterRange: (71 to: 85)
 			atProgramCounterMarkers: #(71 89);
+		assertVariable: #a equals: '7';
 		play.
 
 	^ scripter
 ]
 
-{ #category : #'examples - step over halt' }
+{ #category : #'examples - callMethodWithHalt' }
 GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_03_stepOverHitsHalt [
 	"Stepping over a method call that contains a halt stops at the halt, not past the call."
 	<gtExample>
@@ -94,6 +89,7 @@ GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_03_stepOverHitsHa
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: 'methodThatHalts' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
 		assertSessionFrameAtTopIndex: 1
 			highlightedText: 'halt'
 			atProgramCounterRange: (93 to: 96)
@@ -104,6 +100,7 @@ GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_03_stepOverHitsHa
 			highlightedText: 'methodThatHalts'
 			atProgramCounterRange: (71 to: 85)
 			atProgramCounterMarkers: #(71 89);
+		assertSessionVariableAtFrameIndex: 2 name: #a equals: '7';
 		expandCoderAtTopIndex: 2;
 		assertInCodersListVisuallyHighlightedString: 'methodThatHalts' atTopIndex: 2;
 		play.
@@ -127,6 +124,7 @@ GtRemoteGemStoneDebuggerStepOverExamples >> doLoop_02_stepOverLoop [
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: 'doLoop' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
 		assertSessionFrameAtTopIndex: 1
 			highlightedText: 'do: [ :each |
 		(each + 1 + 1) printString ]'
@@ -200,10 +198,12 @@ GtRemoteGemStoneDebuggerStepOverExamples >> multipleMethodCalls_03_stepOverToSec
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
 		assertSessionFrameAtTopIndex: 1
 			highlightedText: 'helperMethod: a'
 			atProgramCounterRange: (73 to: 87)
 			atProgramCounterMarkers: #(73 93);
+		assertVariable: #a equals: '7';
 		assertInCodersListVisuallyHighlightedString: 'helperMethod: a' atTopIndex: 1;
 		play.
 

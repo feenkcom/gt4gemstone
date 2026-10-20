@@ -44,6 +44,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 		(each + 1 + 1) printString ]'
 		atProgramCounterRange: (20 to: 63)
 		atProgramCounterMarkers: #(20 63).
+	self assertFrames: frames atIndex: 1 variable: #each equals: '1'.
 
 	^ debuggingSession
 ]
@@ -111,6 +112,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_04_enterSecondIter
 		(each + 1 + 1) printString ]'
 		atProgramCounterRange: (20 to: 63)
 		atProgramCounterMarkers: #(20 63).
+	self assertFrames: frames atIndex: 1 variable: #each equals: '2'.
 
 	^ debuggingSession
 ]
@@ -138,6 +140,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_05_enterThirdItera
 		highlightedText: 'value: i'
 		atProgramCounterRange: (1140 to: 1147)
 		atProgramCounterMarkers: #(1140 1149).
+	self assertFrames: frames atIndex: 1 variable: #each equals: '3'.
 
 	^ debuggingSession
 ]
@@ -205,6 +208,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_02_st
 		highlightedText: 'helperMethod: a'
 		atProgramCounterRange: (73 to: 87)
 		atProgramCounterMarkers: #(73 93).
+	self assertFrames: frames atIndex: 1 variable: #a equals: '7'.
 
 	^ debuggingSession
 ]

@@ -9,7 +9,7 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListHasHighlightAtTopInd
 	self assert
 		label: 'Assert highlight exists in coder at index ', anIndex asString;
 		value: [ :aCoderElement |
-			| attributes found |
+			| found |
 			found := false.
 			aCoderElement textualCoderViewModel styledText
 				attributeRunsDo: [ :from :to :attrs |
@@ -27,6 +27,19 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListVisuallyHighlightedS
 	super
 		assertInCodersListVisuallyHighlightedString: aString withUnixLineEndings
 		atTopIndex: anIndex
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertNoDuplicateSessionVariableNames [
+	self assert
+		label: 'Assert no duplicate session variable names';
+		value: [ :debuggerEl |
+			| names |
+			names := (debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
+				collect: [ :each | each first ]) asArray.
+			names size = names asSet size ]
+		equals: true;
+		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
@@ -159,20 +172,124 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 		// GtGemStoneExpandableDebuggerElement
 ]
 
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariable: aName equals: aValueString [
+	self assert
+		label: 'Assert session variable ', aName, ' value';
+		value: [ :debuggerEl |
+			| vars match |
+			vars := debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex.
+			match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
+			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+		equals: aValueString;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableAtFrameIndex: anIndex name: aName equals: aValueString [
+	self assert
+		label: 'Assert variable ', aName, ' at frame ', anIndex printString;
+		value: [ :debuggerEl |
+			| frame vars match |
+			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+			vars := frame safeVariablesAssociationsBasedOnIndex.
+			match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
+			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+		equals: aValueString;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableNames: expectedNames [
+	self assert
+		label: 'Assert session variable names';
+		value: [ :debuggerEl |
+			(debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
+				collect: [ :each | each first ]) asArray ]
+		equals: expectedNames asArray;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableNamesAtFrameIndex: anIndex equals: expectedNames [
+	self assert
+		label: 'Assert session variable names at frame ', anIndex printString;
+		value: [ :debuggerEl |
+			| frame |
+			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+			(frame safeVariablesAssociationsBasedOnIndex
+				collect: [ :each | each first ]) asArray ]
+		equals: expectedNames asArray;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertVariable: aName equals: aValueString [
+	self assertSessionVariable: aName equals: aValueString.
+	self assertVisualVariable: aName equals: aValueString
+]
+
+{ #category : #'assertions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertVariableNames: expectedNames [
+	self assertSessionVariableNames: expectedNames.
+	self assertVisualVariableNames: expectedNames
+]
+
+{ #category : #'steps - assertions' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertVisualVariable: aName equals: aValueString [
+	self assert
+		label: 'Assert visual variable ', aName, ' value';
+		value: [ :debuggerEl |
+			| items match |
+			items := debuggerEl variableListItems.
+			match := items detect: [ :each | each first = aName ] ifNone: [ nil ].
+			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+		equals: aValueString;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'steps - assertions' }
+GtGemStoneDebuggerDevScripterCheckStep >> assertVisualVariableNames: expectedNames [
+	self assert
+		label: 'Assert visual variable names';
+		value: [ :debuggerEl |
+			(debuggerEl variableListItems collect: [ :each | each first ]) asArray ]
+		equals: expectedNames asArray;
+		// GtGemStoneExpandableDebuggerElement
+]
+
+{ #category : #'actions - stack' }
+GtGemStoneDebuggerDevScripterCheckStep >> clickInsideCoderAtTopIndex: anIndex [
+	self click
+		label: 'Click inside coder at frame ', anIndex printString;
+		// (GtExpandableContextMethodCoderId indexed: anIndex)
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerDevScripterCheckStep >> debggerToolbarId [
 	^GtGemStoneExpandableDebuggerToolbar
 ]
 
-{ #category : #actions }
+{ #category : #'actions - variables' }
+GtGemStoneDebuggerDevScripterCheckStep >> doubleClickOnVariableNamed: aName [
+	self doubleClick
+		label: 'Double-click on variable ', aName;
+		// GtGemStoneExpandableDebuggerElement;
+		onChildFromBlock: [ :debuggerEl |
+			| list |
+			list := debuggerEl instVarNamed: 'variableList'.
+			list withAllChildrenBreadthFirst
+				detect: [ :el |
+					(el isKindOf: BrLabel) and: [
+						el text asString = aName ] ] ]
+]
+
+{ #category : #'actions - stack' }
 GtGemStoneDebuggerDevScripterCheckStep >> expandCoderAtTopIndex: anIndex [
-	self
-		substeps2: 'Expand coder at index ', anIndex printString
-		do: [ :aStep |
-			aStep do
-				label: 'Expand coder ', anIndex printString;
-				action: [ :aCoderElement | aCoderElement expand ];
-				// (GtExpandableContextMethodCoderId indexed: anIndex) ]
+	self click
+		label: 'Expand coder at frame ', anIndex printString;
+		// (GtExpandableContextMethodCoderId indexed: anIndex);
+		// GtSourceCoderExpanderToggleId
 ]
 
 { #category : #steps }
@@ -201,19 +318,16 @@ GtGemStoneDebuggerDevScripterCheckStep >> moveCursorTo: aPosition atTopIndex: an
 				// GtSourceCoderEditorId ]
 ]
 
-{ #category : #steps }
+{ #category : #'actions - stack' }
 GtGemStoneDebuggerDevScripterCheckStep >> scrollToFrameAtTopIndex: anIndex [
-	self
-		substeps2: 'Scroll to frame at index ', anIndex printString
-		do: [ :aStep |
-			aStep do
-				label: 'Scroll to frame';
-				action: [ :aStackElement |
-					aStackElement stackFramesList scrollToIndex: anIndex offset: 0 ];
-				// GtGemStoneExpandableStackElement ]
+	self do
+		label: 'Scroll to frame ', anIndex printString;
+		action: [ :aStackElement |
+			aStackElement stackFramesList scrollToIndex: anIndex offset: 0 ];
+		// GtGemStoneExpandableStackElement
 ]
 
-{ #category : #steps }
+{ #category : #'actions - stack' }
 GtGemStoneDebuggerDevScripterCheckStep >> selectFrameAtTopIndex: anIndex [
 	self
 		substeps2: 'Select frame at index ', anIndex printString
@@ -224,8 +338,10 @@ GtGemStoneDebuggerDevScripterCheckStep >> selectFrameAtTopIndex: anIndex [
 					aStackElement stackFramesList scrollToIndex: anIndex offset: 0 ];
 				// GtGemStoneExpandableStackElement.
 			aStep click
-				label: 'Click on frame coder';
-				// (GtExpandableContextMethodCoderId indexed: anIndex).
-			aStep wait forEnqueuedSpaceTaskTimeout: 0.4 seconds.
-			aStep wait forEmptySpaceTaskQueueTimeout: 0.4 seconds ]
+				label: 'Expand frame coder';
+				// (GtExpandableContextMethodCoderId indexed: anIndex);
+				// GtSourceCoderExpanderToggleId.
+			aStep click
+				label: 'Click inside frame coder';
+				// (GtExpandableContextMethodCoderId indexed: anIndex) ]
 ]

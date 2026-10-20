@@ -84,6 +84,7 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_01_stepI
 	^ aValue * 2 + 1'
 		atProgramCounterRange: (1 to: 38)
 		atProgramCounterMarkers: #(1 23).
+	self assertFrames: frames atIndex: 1 variable: #aValue equals: '3'.
 
 	^ debuggingSession
 ]

@@ -40,6 +40,29 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: an
 	self assert: (frames at: anIndex) inBlock equals: aBoolean
 ]
 
+{ #category : #assertions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex variable: aName equals: aValueString [
+	| frame vars match |
+
+	frame := frames at: anIndex.
+	vars := frame safeVariablesAssociationsBasedOnIndex.
+	match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
+	self
+		assert: match notNil
+		description: 'Variable ', aName, ' not found'.
+	self assert: match second equals: aValueString
+]
+
+{ #category : #assertions }
+GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex variableNames: expectedNames [
+	| frame names |
+
+	frame := frames at: anIndex.
+	names := (frame safeVariablesAssociationsBasedOnIndex
+		collect: [ :each | each first ]) asArray.
+	self assert: names equals: expectedNames asArray
+]
+
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> debuggingSessionForBlock: aBlock session: aGemstoneSession [
 	| debuggingSession |

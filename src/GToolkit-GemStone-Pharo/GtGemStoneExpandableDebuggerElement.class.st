@@ -522,6 +522,11 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 	variableList expandAll."
 ]
 
+{ #category : #private }
+GtGemStoneExpandableDebuggerElement >> variableListItems [
+	^ variableList ifNil: [ #() ] ifNotNil: [ :aList | aList items ]
+]
+
 { #category : #'private - element creation' }
 GtGemStoneExpandableDebuggerElement >> variablesTab [
 

@@ -17,24 +17,26 @@ GtRemoteGemStoneDebuggerStepExamples class >> isAbstract [
 	^ self == GtRemoteGemStoneDebuggerStepExamples
 ]
 
+{ #category : #support }
+GtRemoteGemStoneDebuggerStepExamples >> debuggerOn: aBlock withException: anExceptionClass [
+	| aDebugSession |
+
+	aDebugSession := self debugSessionOn: aBlock withException: anExceptionClass.
+	^ (GtMoldableDebugger on: aDebugSession) beDetailedLevel
+]
+
 { #category : #'examples - doLoop' }
 GtRemoteGemStoneDebuggerStepExamples >> doLoop_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession debuggerElement scripter |
+	| gemstoneSession scripter |
 
 	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debugSessionOn: [
+	scripter := self
+		scripterWithDebuggerOn: [
 			gemstoneSession evaluateBlockAndWait: [
 				nil halt. GtRemotePhlowDebuggerStepTestObject new doLoop ] ]
 		withException: GtRsrEvaluationException.
-
-	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
-
-	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		assertInCodersListVisuallyHighlightedString: 'halt' atTopIndex: 1;
@@ -94,20 +96,14 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_01_enterMethod [
 GtRemoteGemStoneDebuggerStepExamples >> longComputation_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession debuggerElement scripter |
+	| gemstoneSession scripter |
 
 	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debugSessionOn: [
+	scripter := self
+		scripterWithDebuggerOn: [
 			gemstoneSession evaluateBlockAndWait: [
 				nil halt. GtRemotePhlowDebuggerStepTestObject new doLongComputation ] ]
 		withException: GtRsrEvaluationException.
-
-	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
-
-	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
@@ -141,20 +137,14 @@ GtRemoteGemStoneDebuggerStepExamples >> longComputation_01_enterMethod [
 GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession debuggerElement scripter |
+	| gemstoneSession scripter |
 
 	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debugSessionOn: [
+	scripter := self
+		scripterWithDebuggerOn: [
 			gemstoneSession evaluateBlockAndWait: [
 				nil halt. GtRemotePhlowDebuggerStepTestObject new doMultipleMethodCalls ] ]
 		withException: GtRsrEvaluationException.
-
-	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
-
-	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
@@ -188,20 +178,14 @@ GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_01_enterMethod [
 GtRemoteGemStoneDebuggerStepExamples >> nestedBlocks_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession debuggerElement scripter |
+	| gemstoneSession scripter |
 
 	gemstoneSession := self runningServer.
-	debuggingSession := self
-		debugSessionOn: [
+	scripter := self
+		scripterWithDebuggerOn: [
 			gemstoneSession evaluateBlockAndWait: [
 				nil halt. GtRemotePhlowDebuggerStepTestObject new doNestedBlocks ] ]
 		withException: GtRsrEvaluationException.
-
-	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
-
-	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		assertSessionFrameAtTopIndex: 1 isSelector: nil inBlock: true;
@@ -228,6 +212,30 @@ GtRemoteGemStoneDebuggerStepExamples >> nestedBlocks_01_enterMethod [
 		assertSessionFrameAtTopIndex: 1 isSelector: 'doNestedBlocks' inBlock: false;
 		play.
 
+	^ scripter
+]
+
+{ #category : #support }
+GtRemoteGemStoneDebuggerStepExamples >> scripterWithDebuggerInPagerOn: aBlock withException: anExceptionClass [
+	| debuggerElement scripter |
+
+	debuggerElement := self debuggerOn: aBlock withException: anExceptionClass.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement inPager.
+	scripter model: debuggerElement debugSession.
+	^ scripter
+]
+
+{ #category : #support }
+GtRemoteGemStoneDebuggerStepExamples >> scripterWithDebuggerOn: aBlock withException: anExceptionClass [
+	| debuggerElement scripter |
+
+	debuggerElement := self debuggerOn: aBlock withException: anExceptionClass.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggerElement debugSession.
 	^ scripter
 ]
 

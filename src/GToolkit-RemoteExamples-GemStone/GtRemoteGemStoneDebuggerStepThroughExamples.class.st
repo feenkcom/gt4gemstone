@@ -43,6 +43,7 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_02_enterBlock [
 		(each + 1 + 1) printString ]'
 			atProgramCounterRange: (20 to: 63)
 			atProgramCounterMarkers: #(20 63);
+		assertVariable: #each equals: '1';
 		play.
 
 	scripter gemStoneDebugger
@@ -106,6 +107,7 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_04_enterSecondIteration [
 			highlightedText: '+ 1'
 			atProgramCounterRange: (42 to: 44)
 			atProgramCounterMarkers: #(42 46);
+		assertVariable: #each equals: '2';
 		assertInCodersListVisuallyHighlightedString: '+ 1' atTopIndex: 1;
 		play.
 
@@ -133,6 +135,7 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_05_enterThirdIteration [
 			highlightedText: '+ 1'
 			atProgramCounterRange: (42 to: 44)
 			atProgramCounterMarkers: #(42 46);
+		assertVariable: #each equals: '3';
 		assertInCodersListVisuallyHighlightedString: '+ 1' atTopIndex: 1;
 		play.
 
@@ -160,6 +163,7 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> multipleMethodCalls_02_stepThroug
 			highlightedText: 'helperMethod: a'
 			atProgramCounterRange: (73 to: 87)
 			atProgramCounterMarkers: #(73 93);
+		assertVariable: #a equals: '7';
 		play.
 
 	^ scripter

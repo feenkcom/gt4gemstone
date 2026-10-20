@@ -27,7 +27,7 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_01_enterM
 	^ debuggingSession
 ]
 
-{ #category : #'examples - step over halt' }
+{ #category : #'examples - callMethodWithHalt' }
 GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_02_stepOverToHaltingCall [
 	<gtExample>
 	<after: #stopServer>
@@ -46,11 +46,12 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_02_stepOv
 		highlightedText: 'methodThatHalts'
 		atProgramCounterRange: (71 to: 85)
 		atProgramCounterMarkers: #(71 89).
+	self assertFrames: frames atIndex: 1 variable: #a equals: '7'.
 
 	^ debuggingSession
 ]
 
-{ #category : #'examples - step over halt' }
+{ #category : #'examples - callMethodWithHalt' }
 GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_03_stepOverHitsHalt [
 	"Stepping over a method call that contains a halt stops at the halt, not past the call."
 	<gtExample>
@@ -75,6 +76,7 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_03_stepOv
 		highlightedText: 'methodThatHalts'
 		atProgramCounterRange: (71 to: 85)
 		atProgramCounterMarkers: #(71 89).
+	self assertFrames: frames atIndex: 2 variable: #a equals: '7'.
 
 	^ debuggingSession
 ]
@@ -209,6 +211,7 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> multipleMethodCalls_03_stepO
 		highlightedText: 'helperMethod: a'
 		atProgramCounterRange: (73 to: 87)
 		atProgramCounterMarkers: #(73 93).
+	self assertFrames: frames atIndex: 1 variable: #a equals: '7'.
 
 	^ debuggingSession
 ]

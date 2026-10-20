@@ -82,6 +82,7 @@ GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_01_stepIntoHelpe
 	^ aValue * 2 + 1'
 			atProgramCounterRange: (1 to: 38)
 			atProgramCounterMarkers: #(1 23);
+		assertVariable: #aValue equals: '3';
 		assertInCodersListVisuallyHighlightedString: 'helperMethod: aValue
 	^ aValue * 2 + 1' atTopIndex: 1;
 		play.
