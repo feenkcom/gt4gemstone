@@ -16,7 +16,6 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> doLoop_runToCursor_printString [
 	scripter := self doLoop_01_enterMethod.
 
 	scripter gemStoneDebugger
-		expandCoderAtTopIndex: 1;
 		moveCursorTo: 50 atTopIndex: 1;
 		clickOnRunToCursorButton;
 		play.
@@ -41,7 +40,6 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> longComputation_runToMultiplePoin
 	scripter := self longComputation_01_enterMethod.
 
 	scripter gemStoneDebugger
-		expandCoderAtTopIndex: 1;
 		moveCursorTo: 77 atTopIndex: 1;
 		clickOnRunToCursorButton;
 		play.
@@ -105,7 +103,6 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> multipleMethodCalls_runToCursor_f
 	scripter := self multipleMethodCalls_01_enterMethod.
 
 	scripter gemStoneDebugger
-		expandCoderAtTopIndex: 1;
 		moveCursorTo: 100 atTopIndex: 1;
 		clickOnRunToCursorButton;
 		play.
@@ -130,7 +127,6 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> nestedBlocks_runToCursor_innerAnd
 	scripter := self nestedBlocks_01_enterMethod.
 
 	scripter gemStoneDebugger
-		expandCoderAtTopIndex: 1;
 		moveCursorTo: 128 atTopIndex: 1;
 		clickOnRunToCursorButton;
 		play.

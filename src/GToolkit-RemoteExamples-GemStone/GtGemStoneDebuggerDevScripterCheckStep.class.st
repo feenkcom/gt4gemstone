@@ -112,7 +112,7 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 			range := frame programCounterRange.
 			(frame frameSpecification sourceString
 				copyFrom: range first to: range last) trimBoth ]
-		equals: expectedText trimBoth;
+		equals: expectedText trimBoth withUnixLineEndings;
 		// GtGemStoneExpandableDebuggerElement
 ]
 

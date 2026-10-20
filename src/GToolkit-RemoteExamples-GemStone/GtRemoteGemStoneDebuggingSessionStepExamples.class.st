@@ -29,7 +29,7 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: an
 	sourceString := frame frameSpecification sourceString.
 	highlightedText := sourceString copyFrom: range first to: range last.
 
-	self assert: highlightedText trimBoth equals: expectedText trimBoth.
+	self assert: highlightedText trimBoth equals: expectedText trimBoth withUnixLineEndings.
 	self assert: range equals: expectedRange.
 	self assert: frame programCounterMarkers equals: expectedMarkers
 ]
