@@ -1325,13 +1325,6 @@ GtGemStoneGtCodeExporter >> unsupportedGeoSpherePointMethods [
 	^ { Point >> #asGSCoordinates }
 ]
 
-{ #category : #accessing }
-GtGemStoneGtCodeExporter >> unsupportedPersonalRagMethods [
-	<excludedMethods>
-	"Personal Knowling integration is outside the release selection and requires AkgLlmKnowlingRag."
-	^ { GtLModelUserMessage >> #addKnowlingContextPages }
-]
-
 { #category : #private }
 GtGemStoneGtCodeExporter >> znUrlExcludedMethods [
 	<excludedMethods>
