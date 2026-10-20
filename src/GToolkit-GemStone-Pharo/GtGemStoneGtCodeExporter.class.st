@@ -594,7 +594,6 @@ GtGemStoneGtCodeExporter >> packageNames [
 		PackageOrganizer default packageNames asOrderedCollection
 			select: [ :name | name beginsWith: prefix ] ]
 				as: OrderedCollection.
-	packageNames removeAll: { 'Gt4Llm' }.
 	packageNames addAll: {
 		'Grease-Core'.
 		'GToolkit-Examples'.
