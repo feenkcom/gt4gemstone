@@ -25,11 +25,15 @@ GtRemoteGemStoneDebuggerStepExamples >> debuggerOn: aBlock withException: anExce
 	^ (GtMoldableDebugger on: aDebugSession) beDetailedLevel
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerStepExamples >> doLoop_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	scripter := self
@@ -53,11 +57,15 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_00_haltAtStart [
 	^ scripter
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerStepExamples >> doLoop_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self doLoop_00_haltAtStart.
 
@@ -92,11 +100,15 @@ GtRemoteGemStoneDebuggerStepExamples >> doLoop_01_enterMethod [
 	^ scripter
 ]
 
-{ #category : #'examples - longComputation' }
+{ #category : #'examples - long computation' }
 GtRemoteGemStoneDebuggerStepExamples >> longComputation_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	scripter := self
@@ -112,11 +124,15 @@ GtRemoteGemStoneDebuggerStepExamples >> longComputation_00_haltAtStart [
 	^ scripter
 ]
 
-{ #category : #'examples - longComputation' }
+{ #category : #'examples - long computation' }
 GtRemoteGemStoneDebuggerStepExamples >> longComputation_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self longComputation_00_haltAtStart.
 
@@ -133,11 +149,15 @@ GtRemoteGemStoneDebuggerStepExamples >> longComputation_01_enterMethod [
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	scripter := self
@@ -153,11 +173,15 @@ GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_00_haltAtStart [
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_00_haltAtStart.
 
@@ -174,11 +198,15 @@ GtRemoteGemStoneDebuggerStepExamples >> multipleMethodCalls_01_enterMethod [
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerStepExamples >> nestedBlocks_00_haltAtStart [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	scripter := self
@@ -194,11 +222,15 @@ GtRemoteGemStoneDebuggerStepExamples >> nestedBlocks_00_haltAtStart [
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerStepExamples >> nestedBlocks_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_00_haltAtStart.
 

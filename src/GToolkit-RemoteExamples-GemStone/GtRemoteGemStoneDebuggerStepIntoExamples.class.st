@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #examples }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerStepIntoExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self doLoop_01_enterMethod.
 
@@ -61,12 +65,16 @@ GtRemoteGemStoneDebuggerStepIntoExamples >> doLoop_02_enterBlock [
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_01_stepIntoHelperMethod [
 	"Step into enters the called method."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_01_enterMethod.
 
@@ -90,12 +98,16 @@ GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_01_stepIntoHelpe
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerStepIntoExamples >> multipleMethodCalls_02_callerPreservesHighlight [
 	"The caller frame preserves its highlight at the call site."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_01_stepIntoHelperMethod.
 

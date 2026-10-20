@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_01_enterMethod.
 
@@ -49,11 +53,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_03_endFirstIteration [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_02_enterBlock.
 
@@ -82,12 +90,16 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_03_endFirstIterati
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_04_enterSecondIteration [
 	"Verifies step through re-enters the loop block for a new iteration."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_03_endFirstIteration.
 
@@ -117,11 +129,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_04_enterSecondIter
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_05_enterThirdIteration [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_04_enterSecondIteration.
 
@@ -145,11 +161,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_05_enterThirdItera
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_06_exitMethod [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession topFrame stepCount maxSteps |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_05_enterThirdIteration.
 
@@ -170,11 +190,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_06_exitMethod [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -187,13 +211,17 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_01_en
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_02_stepThroughStatements [
 	"Verifies step through without blocks behaves as step over:
 	each step advances to the next statement without entering called methods."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self multipleMethodCalls_01_enterMethod.
 
@@ -213,11 +241,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_02_st
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_03_exitMethod [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self multipleMethodCalls_02_stepThroughStatements.
 
@@ -230,11 +262,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_03_ex
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -249,11 +285,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_01_enterMeth
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_02_enterOuterBlock [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self nestedBlocks_01_enterMethod.
 
@@ -287,11 +327,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_02_enterOute
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_03_enterInnerBlock [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self nestedBlocks_02_enterOuterBlock.
 
@@ -328,13 +372,17 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_03_enterInne
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_04_returnToOuterBlock [
 	"Verifies that after the inner block completes, step through
 	returns to the outer block, not the home method."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self nestedBlocks_03_enterInnerBlock.
 
@@ -368,11 +416,15 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_04_returnToO
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_05_exitMethod [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self nestedBlocks_04_returnToOuterBlock.
 

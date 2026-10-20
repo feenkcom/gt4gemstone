@@ -14,6 +14,10 @@ GtRemoteGemStoneDebuggingSessionResumeExamples >> resume_01_haltAndResume [
 	<after: #stopServer>
 	| gemstoneSession debuggingSession result |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debuggingSessionForBlock: [
@@ -36,6 +40,10 @@ GtRemoteGemStoneDebuggingSessionResumeExamples >> resume_02_haltStepAndResume [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession result |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self

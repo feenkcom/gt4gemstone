@@ -4,11 +4,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #examples }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames stepCount topFrame found |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_01_enterMethod.
 
@@ -58,12 +62,16 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_01_stepIntoHelperMethod [
 	"Step into enters the called method."
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -89,12 +97,16 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_01_stepI
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionStepIntoExamples >> multipleMethodCalls_02_callerPreservesHighlight [
 	"The caller frame preserves its highlight at the call site."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self multipleMethodCalls_01_stepIntoHelperMethod.
 

@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - longComputation' }
+{ #category : #'examples - long computation' }
 GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> longComputation_runToMultiplePoints [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -68,11 +72,15 @@ GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> longComputation_runToMult
 	^ debuggingSession
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggingSessionRunToCursorExamples >> nestedBlocks_runToCursor_innerAndOuter [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self

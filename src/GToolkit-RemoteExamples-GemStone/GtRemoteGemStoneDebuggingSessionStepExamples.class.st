@@ -75,11 +75,15 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> debuggingSessionForBlock: aBlock
 	^ debuggingSession
 ]
 
-{ #category : #examples }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> doLoop_01_enterMethod [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self

@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionRestartExamples >> doLoop_01_enterBlockAndAdvance [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -34,12 +38,16 @@ GtRemoteGemStoneDebuggingSessionRestartExamples >> doLoop_01_enterBlockAndAdvanc
 	^ debuggingSession
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionRestartExamples >> doLoop_02_restartBlock [
 	"Restart from within a block resets to block entry."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self doLoop_01_enterBlockAndAdvance.
 
@@ -57,11 +65,15 @@ GtRemoteGemStoneDebuggingSessionRestartExamples >> doLoop_02_restartBlock [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionRestartExamples >> multipleMethodCalls_01_enterAndAdvance [
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	debuggingSession := self
@@ -85,12 +97,16 @@ GtRemoteGemStoneDebuggingSessionRestartExamples >> multipleMethodCalls_01_enterA
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionRestartExamples >> multipleMethodCalls_02_restart [
 	"Restart resets execution to the method entry point."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self multipleMethodCalls_01_enterAndAdvance.
 
@@ -112,12 +128,16 @@ GtRemoteGemStoneDebuggingSessionRestartExamples >> multipleMethodCalls_02_restar
 	^ debuggingSession
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggingSessionRestartExamples >> multipleMethodCalls_03_stepAfterRestart [
 	"After restart, stepping advances from the method entry again."
 	<gtExample>
 	<after: #stopServer>
 	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	debuggingSession := self multipleMethodCalls_02_restart.
 

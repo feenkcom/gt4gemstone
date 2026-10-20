@@ -274,9 +274,13 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 	(ResumeDebugAction forDebugger: self) executeAction.
 ]
 
-{ #category : #'actions - gs' }
+{ #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsRunToCursor [
 	| cursorPosition |
+
+	self debugSession exception gtSession
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	cursorPosition := stackElement cursorInterval first + 1.
 	cursorPosition < 1 ifTrue: [ ^ self ].

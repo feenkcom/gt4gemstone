@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerRunToCursorExamples >> doLoop_runToCursor_printString [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self doLoop_01_enterMethod.
 
@@ -31,11 +35,15 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> doLoop_runToCursor_printString [
 	^ scripter
 ]
 
-{ #category : #'examples - longComputation' }
+{ #category : #'examples - long computation' }
 GtRemoteGemStoneDebuggerRunToCursorExamples >> longComputation_runToMultiplePoints [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self longComputation_01_enterMethod.
 
@@ -94,11 +102,15 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> longComputation_runToMultiplePoin
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerRunToCursorExamples >> multipleMethodCalls_runToCursor_factorial [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_01_enterMethod.
 
@@ -118,11 +130,15 @@ GtRemoteGemStoneDebuggerRunToCursorExamples >> multipleMethodCalls_runToCursor_f
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerRunToCursorExamples >> nestedBlocks_runToCursor_innerAndOuter [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_01_enterMethod.
 

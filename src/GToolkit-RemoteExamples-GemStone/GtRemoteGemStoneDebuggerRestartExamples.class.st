@@ -7,11 +7,15 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerRestartExamples >> doLoop_01_enterBlockAndAdvance [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self doLoop_01_enterMethod.
 
@@ -28,12 +32,16 @@ GtRemoteGemStoneDebuggerRestartExamples >> doLoop_01_enterBlockAndAdvance [
 	^ scripter
 ]
 
-{ #category : #'examples - doLoop' }
+{ #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerRestartExamples >> doLoop_02_restartBlock [
 	"Restart from within a block resets to block entry."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self doLoop_01_enterBlockAndAdvance.
 
@@ -53,11 +61,15 @@ GtRemoteGemStoneDebuggerRestartExamples >> doLoop_02_restartBlock [
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_01_enterAndAdvance [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_01_enterMethod.
 
@@ -73,12 +85,16 @@ GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_01_enterAndAdvanc
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_02_restart [
 	"Restart resets execution to the method entry point."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_01_enterAndAdvance.
 
@@ -102,12 +118,16 @@ GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_02_restart [
 	^ scripter
 ]
 
-{ #category : #'examples - multipleMethodCalls' }
+{ #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_03_stepAfterRestart [
 	"After restart, stepping advances from the method entry again."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self multipleMethodCalls_02_restart.
 
@@ -127,11 +147,15 @@ GtRemoteGemStoneDebuggerRestartExamples >> multipleMethodCalls_03_stepAfterResta
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerRestartExamples >> nestedBlocks_01_enterInnerBlock [
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_01_enterMethod.
 
@@ -155,12 +179,16 @@ GtRemoteGemStoneDebuggerRestartExamples >> nestedBlocks_01_enterInnerBlock [
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerRestartExamples >> nestedBlocks_02_restartInnerBlock [
 	"Restart from within a twice-nested block resets to inner block entry."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_01_enterInnerBlock.
 
@@ -180,12 +208,16 @@ GtRemoteGemStoneDebuggerRestartExamples >> nestedBlocks_02_restartInnerBlock [
 	^ scripter
 ]
 
-{ #category : #'examples - nestedBlocks' }
+{ #category : #'examples - nested blocks' }
 GtRemoteGemStoneDebuggerRestartExamples >> nestedBlocks_03_stepAfterRestart [
 	"After restart, stepping advances from the inner block entry again."
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_02_restartInnerBlock.
 

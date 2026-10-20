@@ -10,6 +10,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> methodWithArgs_00_haltAtStar
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -29,6 +33,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> methodWithArgs_01_enterMetho
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self methodWithArgs_00_haltAtStart.
 
@@ -52,6 +60,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> methodWithArgs_02_stepToHalt
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self methodWithArgs_01_enterMethod.
 
@@ -77,6 +89,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> nestedBlocks_00_haltInInnerB
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -99,6 +115,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> nestedBlocks_01_checkInnerBl
 	<after: #stopServer>
 	| scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	scripter := self nestedBlocks_00_haltInInnerBlock.
 
 	scripter gemStoneDebugger
@@ -120,6 +140,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> nestedBlocks_02_checkOuterBl
 	<after: #stopServer>
 	| scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	scripter := self nestedBlocks_01_checkInnerBlockVariables.
 
 	scripter gemStoneDebugger
@@ -139,6 +163,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> nestedBlocks_03_scrollAndExp
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self nestedBlocks_01_checkInnerBlockVariables.
 
@@ -164,6 +192,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> nestedBlocks_04_selectFrameU
 	<after: #stopServer>
 	| scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	scripter := self nestedBlocks_01_checkInnerBlockVariables.
 
 	scripter gemStoneDebugger
@@ -182,6 +214,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> objectSlots_00_haltInMethod 
 	<gtExample>
 	<after: #stopServer>
 	| gemstoneSession scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	gemstoneSession := self runningServer.
 	scripter := self
@@ -204,6 +240,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> objectSlots_01_checkSlotVari
 	<after: #stopServer>
 	| scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	scripter := self objectSlots_00_haltInMethod.
 
 	scripter gemStoneDebugger
@@ -222,6 +262,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> objectSlots_02_doubleClickOp
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self objectSlots_01_checkSlotVariables.
 
@@ -245,6 +289,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> sharedTemp_00_haltInBlock [
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -266,6 +314,10 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> sharedTemp_01_checkVariables
 	<gtExample>
 	<after: #stopServer>
 	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
 
 	scripter := self sharedTemp_00_haltInBlock.
 
