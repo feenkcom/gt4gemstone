@@ -604,19 +604,28 @@ GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	^ frameContents at: index + 10.
 ]
 
-{ #category : 'actions - debug (level)' }
+{ #category : 'debugging' }
 GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
-	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
-	| frameContents associations varNames selfObject |
+	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame.
+	Use seenNames to deduplicate: when a block-local temp is shared with nested blocks
+	via a VariableContext, _frameContentsAt: returns the variable name twice 
+	(once for the direct frame slot and once for the VariableContext entry)."
+	| frameContents associations varNames selfObject seenNames |
 
 	frameContents := process _frameContentsAt: anInteger.
 	selfObject := frameContents at: 8.
 	associations := SortedCollection sortBlock: [ :a :b | a first < b first ].
 
+	seenNames := Set new.
 	varNames := frameContents at: 9.
-	1 to: varNames size do: [ :i | | object |
-		object := frameContents at: i + 10.
-		associations add: { varNames at: i. object. #frame. object class gtSystemIconName.  } ].
+	1 to: varNames size do: [ :i |
+		| name object |
+		name := varNames at: i.
+		(seenNames includes: name) ifFalse: [
+			seenNames add: name.
+			object := frameContents at: i + 10.
+			associations add: {
+				name. object. #frame. object class gtSystemIconName. } ] ].
 
 	associations := associations asOrderedCollection.
 
