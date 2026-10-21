@@ -34,17 +34,13 @@ GtGemStoneDebugger >> debuggerProxy [
 	^ exception debuggerProxy
 ]
 
-{ #category : #accessing }
-GtGemStoneDebugger >> filterUnrelatedStackFramesFrom: aCollectionOfStackFrames [ 
-	| defaultFrameOrdinal |
-	defaultFrameOrdinal := self defaultFrameOrdinalFrom: aCollectionOfStackFrames.
-	^ defaultFrameOrdinal > 1 
-		ifTrue: [ 
-			aCollectionOfStackFrames 
-				copyFrom: defaultFrameOrdinal 
-				to: aCollectionOfStackFrames size ]
-		ifFalse: [ 
-			aCollectionOfStackFrames ]
+{ #category : #private }
+GtGemStoneDebugger >> filterUnrelatedStackFramesFrom: aCollectionOfStackFrames [
+	| filter |
+
+	filter := GtGemStoneStackFrameFilter new.
+	filter filter: aCollectionOfStackFrames.
+	^ filter filteredFrames
 ]
 
 { #category : #actions }
