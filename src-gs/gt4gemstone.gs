@@ -2976,12 +2976,16 @@ resumeAsyncComputation
 	^ GtGemstoneEvaluationResumedResult new asDictionaryForExport
 %
 
-category: 'actions - debug (identifier)'
+category: 'actions - run to cursor'
 method: GtGemStoneEvaluationContext
 runToCursorSourceOffset: aSourceOffset frameIdentifierIndex: aFrameIdentifierIndex
-	| frameLevel homeMethod sourceOffsets stepPoint |
+	| frameLevel homeMethod sourceOffsets stepPoint currentMarkers |
 
 	frameLevel := self frameLevelForIdentifierIndex: aFrameIdentifierIndex.
+	currentMarkers := self programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex.
+	(currentMarkers notNil and: [ aSourceOffset <= currentMarkers first ])
+		ifTrue: [ ^ #runToCursor ].
+
 	homeMethod := ((process _frameContentsAt: frameLevel) at: 1) homeMethod.
 	sourceOffsets := homeMethod _sourceOffsets.
 
@@ -7409,7 +7413,12 @@ ext_String_addedToZnUrl_
 		hash: #new;
 		source: 'addedToZnUrl: url
 	<gtGsExtension>
-	^ url withPathSegments: (self subStrings: ''/'')'
+	| zinc segments |
+	zinc := Globals at: #ZincGlobals ifAbsent: [ nil ].
+	segments := self subStrings: ''/''.
+	(zinc notNil and: [ url isKindOf: (zinc at: #ZnUrl) ])
+		ifTrue: [ segments := segments reject: [ :segment | segment isEmpty ] ].
+	^ url withPathSegments: segments'
 %
 
 category: 'extensions'
@@ -7487,7 +7496,11 @@ ext_String_asZnUrl
 		hash: '6f92cdede440f2cd6d730c2511d047d967a40107a97f019ffdb6c69001268045';
 		source: 'asZnUrl
 	<gtGsExtension>
-	^ ZnUrl fromString: self'
+	| zinc |
+	zinc := Globals at: #ZincGlobals ifAbsent: [ nil ].
+	^ (zinc
+		ifNil: [ ZnUrl ]
+		ifNotNil: [ zinc at: #ZnUrl ]) fromString: self'
 %
 
 category: 'extensions'
