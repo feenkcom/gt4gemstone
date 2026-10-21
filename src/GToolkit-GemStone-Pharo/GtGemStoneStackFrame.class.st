@@ -47,15 +47,16 @@ GtGemStoneStackFrame >> className: aClassName [
 	className := aClassName
 ]
 
-{ #category : #private }
+{ #category : #accessing }
 GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: endPoint [
 	"Answer the indexes for the message send starting at anInteger in method source aString"
-	| ast messageNode |
+	| ast messageNode trimmedString |
 
-	ast := [ RBParser parseMethod: aString ]
+	trimmedString := aString trimRight.
+	ast := [ RBParser parseMethod: trimmedString ]
 		on: Error
 		do: [ :ex1 |
-			[ RBParser parseExpression: aString ]
+			[ RBParser parseExpression: trimmedString ]
 				on: Error
 				do: [ :ex2 | nil ] ].
 	ast ifNil: [ ^ anInteger to: endPoint ].
