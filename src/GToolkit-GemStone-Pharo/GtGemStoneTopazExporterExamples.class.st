@@ -227,6 +227,25 @@ GtGemStoneTopazExporterExamples >> exportPreservingInheritedNew [
 ]
 
 { #category : #examples }
+GtGemStoneTopazExporterExamples >> exportRbAliasStubDefinitionsOnlyWhenAbsent [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter aliases output |
+	exporter := GtGemStoneTopazExporter new
+		stubClasses: { OCProgramNode };
+		yourself.
+	aliases := exporter class environment associations select: [ :each |
+		(each key beginsWith: 'RB') and: [ each value == OCProgramNode
+			and: [ (exporter gemstoneClassNames includes: each key) not ] ] ].
+	self assert: aliases notEmpty.
+	output := String streamContents: [ :stream | exporter writeRbAliasStubsOn: stream ].
+	aliases do: [ :each |
+		self assert: (output includesSubstring:
+			'(System myUserProfile symbolList resolveSymbol: #', each key, ') isNil ifTrue: [') ].
+	^ exporter
+]
+
+{ #category : #examples }
 GtGemStoneTopazExporterExamples >> exportSelectedClassOverStubAncestor [
 	<gtExample>
 	<return: #GtGemStoneTopazExporter>
@@ -273,6 +292,28 @@ GtGemStoneTopazExporterExamples >> exportStubClassesWithoutMethods [
 	classes do: [ :each |
 		self assert: (output includesSubstring: 'removeallmethods ', each name) not.
 		self assert: (output includesSubstring: 'method: ', each name) not ].
+	^ exporter
+]
+
+{ #category : #examples }
+GtGemStoneTopazExporterExamples >> exportStubDefinitionsOnlyWhenAbsent [
+	<gtExample>
+	<return: #GtGemStoneTopazExporter>
+	| exporter output selectedOutput |
+	exporter := self exportStubClassesWithoutMethods.
+	output := exporter asTopazString.
+	exporter classesToDefine do: [ :each |
+		self assert: (output includesSubstring:
+			'(System myUserProfile symbolList resolveSymbol: #', each name, ') isNil ifTrue: [') ].
+	exporter alternateClassDefinitions:
+		{ 'GtLReplyMessage' -> 'Object subclass: ''GtLReplyMessage'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()' } asDictionary.
+	output := String streamContents: [ :stream |
+		exporter writeDefinitionOf: GtLReplyMessage on: stream ].
+	self assert: (output includesSubstring: 'resolveSymbol: #GtLReplyMessage) isNil ifTrue: [').
+	exporter := self exportSelectedClassOverStubAncestor.
+	selectedOutput := String streamContents: [ :stream |
+		exporter writeDefinitionOf: OrderedDictionary on: stream ].
+	self assert: (selectedOutput includesSubstring: 'resolveSymbol:') not.
 	^ exporter
 ]
 

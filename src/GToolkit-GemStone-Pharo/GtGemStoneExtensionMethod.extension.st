@@ -94,8 +94,9 @@ GtGemStoneExtensionMethod class >> newFromLocalClass: className selector: select
 		ifAbsent: [
 			methodSource := String streamContents: [ :stream |
 				stream
-					<< (methodSource copyFrom: 1 to: methodAst body start - 1);
+					<< (methodSource copyFrom: 1 to: methodAst body start - 1) trimRight;
 					cr; tab; << '<gtGsExtension>'; cr;
+					cr; tab;
 					<< (methodSource copyFrom: methodAst body start to: methodSource size) ] ].
 
 	^ self new

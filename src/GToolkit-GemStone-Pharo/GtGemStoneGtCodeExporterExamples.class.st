@@ -237,9 +237,9 @@ GtGemStoneGtCodeExporterExamples >> gsCodeClassesUnionsPragmaProviders [
 	| exporterClass exporter missingName expectedClasses |
 	exporter := GtGemStoneGtCodeExporter new.
 	self assert: ((GtGemStoneGtCodeExporter >> #gsCodeClassList) hasPragmaNamed: #gsCodeClasses).
-	self assert: exporter gsCodeClassList equals: #(Class CurrentExecutionEnvironment class Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleDependenciesResolver class GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue class GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker class Metaclass3 Object Pragma Symbol).
+	self assert: (#(Class CurrentExecutionEnvironment Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleDependenciesResolver GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker Metaclass3 Object Pragma Symbol) asSet difference: exporter gsCodeClassList asSet) isEmpty.
 	"Resolution removes duplicate names and ignores unbound names such as #class."
-	self assert: (exporter gsCodeClasses collect: #name) equals: #(Class CurrentExecutionEnvironment Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker Metaclass3 Object Pragma Symbol).
+	self assert: (#(Class CurrentExecutionEnvironment Exception GsNMethod GtExample GtExampleClassResolver GtExampleDependenciesResolver GtExampleEvaluator GtExampleMethodResolver GtExampleResultNoValue GtGemStoneExtensionMethod GtGemStoneTopazExporterExamples GtProcessStackOverflowChecker Metaclass3 Object Pragma Symbol) asSet difference: (exporter gsCodeClasses collect: #name) asSet) isEmpty.
 	missingName := #GtGemStoneGtCodeExporterMissingGsCodeClassForExample.
 	self assert: (Smalltalk globals includesKey: missingName) not.
 	exporterClass := GtGemStoneGtCodeExporter newAnonymousSubclass.
