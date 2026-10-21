@@ -34,10 +34,11 @@ GtGemStoneLocalCallFrame >> callerProgramCounterMarkers [
 	that method is correct for the top frame (where the IP is at the
 	actual execution point), but wrong for non-top frames whose IP
 	has been advanced to the return address."
-	| source ipOffset markers method prevOrdinal startIndex endIndex i |
+	| source ipOffset markers method prevOrdinal startIndex endIndex i sourceEnd |
 
 	method := frameContents first.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
 
@@ -50,7 +51,7 @@ GtGemStoneLocalCallFrame >> callerProgramCounterMarkers [
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue: [
 		(markers at: i) notNil ifTrue: [ endIndex := i ].
 		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
+	endIndex ifNil: [ endIndex := sourceEnd ].
 	^ { startIndex. endIndex }
 ]
 
@@ -400,10 +401,11 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 	Compare with callerProgramCounterMarkers which always uses
 	_previousStepPointForIp: — that method computes the call-site
 	highlight for when this frame becomes a caller (non-top frame)."
-	| source ipOffset markers startIndex endIndex i method |
+	| source ipOffset markers startIndex endIndex i method sourceEnd |
 
 	method := frameContents first.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
 	startIndex := markers indexOf: ipOffset.
@@ -412,14 +414,14 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 		prevOrdinal := method _previousStepPointForIp: ipOffset.
 		startIndex := method _sourceOffsetsAt: prevOrdinal.
 		(startIndex isNil or: [ startIndex < 1 ])
-			ifTrue: [ ^ { 1. source size. source } ] ].
+			ifTrue: [ ^ { 1. sourceEnd. source } ] ].
 	i := startIndex + 1.
 
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
 		[ (markers at: i) notNil ifTrue:
 			[ endIndex := i ].
 		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
+	endIndex ifNil: [ endIndex := sourceEnd ].
 	^ { startIndex. endIndex. source. }
 ]
 
