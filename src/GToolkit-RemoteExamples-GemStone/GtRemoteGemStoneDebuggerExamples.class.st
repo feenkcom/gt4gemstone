@@ -43,6 +43,10 @@ GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCa
 	<gtExample>
 	| gemstoneSession debuggingSession debuggerElement scripter|
 	 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 			debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString ' ]
@@ -338,6 +342,10 @@ GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 	<after: #stopServer>
 	| gemstoneSession debuggingSession debuggerElement scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString' ]
@@ -443,6 +451,10 @@ GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 	<after: #stopServer>
 	| gemstoneSession debuggingSession debuggerElement scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString' ]
