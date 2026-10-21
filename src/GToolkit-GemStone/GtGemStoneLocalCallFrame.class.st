@@ -174,27 +174,28 @@ GtGemStoneLocalCallFrame >> initializeForFrameContents: aFrameArray withIdentifi
 
 { #category : #views }
 GtGemStoneLocalCallFrame >> ipHighlights [
-	| method markers ipOffset source exactIdx exactEnd prevSrcPos prevEnd |
+	| method markers ipOffset source sourceEnd exactIdx exactEnd prevSrcPos prevEnd |
 
 	method := frameContents first.
 	ipOffset := frameContents second.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	markers := method _buildIpMarkerArray.
 
 	exactIdx := markers indexOf: ipOffset.
 	exactEnd := 0.
 	exactIdx > 0 ifTrue: [
-		exactEnd := source size.
+		exactEnd := sourceEnd.
 		(exactIdx + 1) to: markers size do: [ :j |
-			(exactEnd = source size and: [ (markers at: j) notNil ])
+			(exactEnd = sourceEnd and: [ (markers at: j) notNil ])
 				ifTrue: [ exactEnd := j ] ] ].
 
 	prevSrcPos := method _sourceOffsetsAt:
 		(method _previousStepPointForIp: ipOffset).
-	prevEnd := source size.
+	prevEnd := sourceEnd.
 	prevSrcPos > 0 ifTrue: [
 		(prevSrcPos + 1) to: markers size do: [ :j |
-			(prevEnd = source size and: [ (markers at: j) notNil ])
+			(prevEnd = sourceEnd and: [ (markers at: j) notNil ])
 				ifTrue: [ prevEnd := j ] ] ].
 
 	^ {
@@ -209,38 +210,39 @@ GtGemStoneLocalCallFrame >> ipHighlights [
 
 { #category : #accessing }
 GtGemStoneLocalCallFrame >> ipMarkerMap [
-	| method markers ipOffset source entries |
+	| method markers ipOffset source sourceEnd entries |
 
 	method := frameContents first.
 	ipOffset := frameContents second.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	markers := method _buildIpMarkerArray.
 
 	entries := OrderedCollection new.
 	1 to: markers size do: [ :srcPos |
 		(markers at: srcPos) ifNotNil: [ :ip |
 			| nextPos callerSrcPos callerNextPos |
-			nextPos := source size + 1.
+			nextPos := sourceEnd + 1.
 			(srcPos + 1) to: markers size do: [ :j |
-				(nextPos > source size and: [ (markers at: j) notNil ])
+				(nextPos > sourceEnd and: [ (markers at: j) notNil ])
 					ifTrue: [ nextPos := j ] ].
 			callerSrcPos := method _sourceOffsetsAt:
 				(method _previousStepPointForIp: ip).
 			(callerSrcPos isNil or: [ callerSrcPos < 1 ])
 				ifTrue: [ callerSrcPos := 0. callerNextPos := 0 ]
 				ifFalse: [
-					callerNextPos := source size + 1.
+					callerNextPos := sourceEnd + 1.
 					(callerSrcPos + 1) to: markers size do: [ :j |
-						(callerNextPos > source size and: [ (markers at: j) notNil ])
+						(callerNextPos > sourceEnd and: [ (markers at: j) notNil ])
 							ifTrue: [ callerNextPos := j ] ] ].
 			entries add: (GtGemStoneIpMarkerEntry new
 				sourcePosition: srcPos
 				ip: ip
 				sourceString: source
-				nextPosition: (nextPos min: source size + 1)
+				nextPosition: (nextPos min: sourceEnd + 1)
 				isFrameIp: ip = ipOffset
 				callerSourcePosition: callerSrcPos
-				callerNextPosition: (callerNextPos min: source size + 1)) ] ].
+				callerNextPosition: (callerNextPos min: sourceEnd + 1)) ] ].
 
 	^ GtGemStoneIpMarkerMap new
 		entries: entries asArray
@@ -423,33 +425,6 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 		i := i + 1 ].
 	endIndex ifNil: [ endIndex := sourceEnd ].
 	^ { startIndex. endIndex. source. }
-]
-
-{ #category : #accessing }
-GtGemStoneLocalCallFrame >> sourceInfoIsTopFrame: aBoolean [
-	"Compute the source range for this frame's IP offset.
-	For the top frame the IP is a step point - use exact marker lookup.
-	For non-top frames the IP is a return address after a send,
-	so use _previousStepPointForIp: to find the send site."
-	| source ipOffset method markers startIndex endIndex i |
-
-	method := frameContents first.
-	source := method sourceString.
-	ipOffset := frameContents second.
-	markers := method _buildIpMarkerArray.
-
-	startIndex := markers indexOf: ipOffset.
-	(aBoolean not or: [ startIndex = 0 ]) ifTrue: [
-		startIndex := method _sourceOffsetsAt:
-			(method _previousStepPointForIp: ipOffset) ].
-
-	i := startIndex + 1.
-	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
-		[ (markers at: i) notNil ifTrue:
-			[ endIndex := i ].
-		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
-	^ { startIndex. endIndex. source }
 ]
 
 { #category : #updating }
