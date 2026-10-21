@@ -4,11 +4,43 @@ Class {
 	#instVars : [
 		'allFrames',
 		'exceptionInfrastructureSelectors',
+		'evaluationInfrastructureClassNames',
 		'executeHandlerBarrierIndex',
-		'firstRelevantFrameOrdinal'
+		'firstRelevantFrameOrdinal',
+		'lastRelevantFrameOrdinal',
+		'filterExceptionInfrastructure',
+		'filterEvaluationInfrastructure'
+	],
+	#classVars : [
+		'FilterEvaluationInfrastructure',
+		'FilterExceptionInfrastructure'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
+
+{ #category : #settings }
+GtGemStoneStackFrameFilter class >> filterEvaluationInfrastructure [
+
+	^ FilterEvaluationInfrastructure ifNil: [ FilterEvaluationInfrastructure := true ]
+]
+
+{ #category : #settings }
+GtGemStoneStackFrameFilter class >> filterEvaluationInfrastructure: aBoolean [
+
+	FilterEvaluationInfrastructure := aBoolean
+]
+
+{ #category : #settings }
+GtGemStoneStackFrameFilter class >> filterExceptionInfrastructure [
+
+	^ FilterExceptionInfrastructure ifNil: [ FilterExceptionInfrastructure := true ]
+]
+
+{ #category : #settings }
+GtGemStoneStackFrameFilter class >> filterExceptionInfrastructure: aBoolean [
+
+	FilterExceptionInfrastructure := aBoolean
+]
 
 { #category : #'instance creation' }
 GtGemStoneStackFrameFilter class >> new [
@@ -23,6 +55,12 @@ GtGemStoneStackFrameFilter >> allFrames [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrameFilter >> evaluationInfrastructureClassNames [
+
+	^ evaluationInfrastructureClassNames
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrameFilter >> exceptionInfrastructureSelectors [
 
 	^ exceptionInfrastructureSelectors
@@ -34,12 +72,41 @@ GtGemStoneStackFrameFilter >> executeHandlerBarrierIndex [
 	^ executeHandlerBarrierIndex
 ]
 
-{ #category : #actions }
+{ #category : #filtering }
 GtGemStoneStackFrameFilter >> filter: aCollectionOfFrames [
 
 	allFrames := aCollectionOfFrames.
 	self findExecuteHandlerBarrier.
-	self findFirstRelevantFrameOrdinal
+	filterExceptionInfrastructure
+		ifTrue: [ self findFirstRelevantFrameOrdinal ]
+		ifFalse: [ firstRelevantFrameOrdinal := 1 ].
+	filterEvaluationInfrastructure
+		ifTrue: [ self findLastRelevantFrameOrdinal ]
+		ifFalse: [ lastRelevantFrameOrdinal := allFrames size ]
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> filterEvaluationInfrastructure [
+
+	^ filterEvaluationInfrastructure
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> filterEvaluationInfrastructure: aBoolean [
+
+	filterEvaluationInfrastructure := aBoolean
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> filterExceptionInfrastructure [
+
+	^ filterExceptionInfrastructure
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> filterExceptionInfrastructure: aBoolean [
+
+	filterExceptionInfrastructure := aBoolean
 ]
 
 { #category : #views }
@@ -53,18 +120,39 @@ GtGemStoneStackFrameFilter >> filterSummaryText [
 	executeHandlerBarrierIndex = 0
 		ifTrue: [ stream nextPutAll: 'none (no nested exception)' ]
 		ifFalse: [ stream nextPutAll: 'frame '; print: executeHandlerBarrierIndex ].
-	stream cr;
-		nextPutAll: 'First relevant frame ordinal: '; print: firstRelevantFrameOrdinal; cr;
-		nextPutAll: 'Frames filtered out: '; print: firstRelevantFrameOrdinal - 1; cr;
-		nextPutAll: 'Frames kept: '; print: allFrames size - firstRelevantFrameOrdinal + 1; cr; cr.
-	stream nextPutAll: 'Exception infrastructure selectors: '.
+	stream cr; cr.
+	stream nextPutAll: '--- Top filtering (exception infrastructure) ---'; cr.
+	stream nextPutAll: 'Enabled: '; print: filterExceptionInfrastructure; cr.
+	stream nextPutAll: 'First relevant frame ordinal: '; print: firstRelevantFrameOrdinal; cr.
+	stream nextPutAll: 'Top frames filtered out: '; print: firstRelevantFrameOrdinal - 1; cr.
+	stream nextPutAll: 'Selectors: '.
 	self exceptionInfrastructureSelectors do: [ :each | stream print: each; nextPutAll: ' ' ].
 	stream cr; cr.
+	stream nextPutAll: '--- Bottom filtering (evaluation infrastructure) ---'; cr.
+	stream nextPutAll: 'Enabled: '; print: filterEvaluationInfrastructure; cr.
+	stream nextPutAll: 'Last relevant frame ordinal: '; print: lastRelevantFrameOrdinal; cr.
+	stream nextPutAll: 'Bottom frames filtered out: '; print: allFrames size - lastRelevantFrameOrdinal; cr.
+	stream nextPutAll: 'Class names: '.
+	self evaluationInfrastructureClassNames do: [ :each | stream nextPutAll: each; nextPutAll: ' ' ].
+	stream cr; cr.
+	stream nextPutAll: '--- Result ---'; cr.
+	stream nextPutAll: 'Frames kept: '; print: lastRelevantFrameOrdinal - firstRelevantFrameOrdinal + 1; cr.
 	stream nextPutAll: 'First user frame: '.
 	firstRelevantFrameOrdinal <= allFrames size
 		ifTrue: [
 			| frame |
 			frame := allFrames at: firstRelevantFrameOrdinal.
+			stream
+				nextPutAll: (frame targetClassName ifNil: [ '?' ]);
+				nextPutAll: '>>';
+				nextPutAll: frame selector ]
+		ifFalse: [ stream nextPutAll: '(none)' ].
+	stream cr.
+	stream nextPutAll: 'Last user frame: '.
+	(lastRelevantFrameOrdinal >= 1 and: [ lastRelevantFrameOrdinal <= allFrames size ])
+		ifTrue: [
+			| frame |
+			frame := allFrames at: lastRelevantFrameOrdinal.
 			stream
 				nextPutAll: (frame targetClassName ifNil: [ '?' ]);
 				nextPutAll: '>>';
@@ -76,9 +164,9 @@ GtGemStoneStackFrameFilter >> filterSummaryText [
 { #category : #accessing }
 GtGemStoneStackFrameFilter >> filteredFrames [
 
-	^ firstRelevantFrameOrdinal > 1
-		ifTrue: [ allFrames copyFrom: firstRelevantFrameOrdinal to: allFrames size ]
-		ifFalse: [ allFrames ]
+	^ (firstRelevantFrameOrdinal = 1 and: [ lastRelevantFrameOrdinal = allFrames size ])
+		ifTrue: [ allFrames ]
+		ifFalse: [ allFrames copyFrom: firstRelevantFrameOrdinal to: lastRelevantFrameOrdinal ]
 ]
 
 { #category : #private }
@@ -103,6 +191,16 @@ GtGemStoneStackFrameFilter >> findFirstRelevantFrameOrdinal [
 					^ self ] ]
 ]
 
+{ #category : #private }
+GtGemStoneStackFrameFilter >> findLastRelevantFrameOrdinal [
+
+	lastRelevantFrameOrdinal := allFrames size.
+	allFrames size to: 1 by: -1 do: [ :i |
+		(self isEvaluationInfrastructureAt: i)
+			ifTrue: [ lastRelevantFrameOrdinal := i - 1 ]
+			ifFalse: [ ^ self ] ]
+]
+
 { #category : #accessing }
 GtGemStoneStackFrameFilter >> firstRelevantFrameOrdinal [
 
@@ -122,11 +220,15 @@ GtGemStoneStackFrameFilter >> gtViewAllFramesFor: aView [
 		column: 'Status' text: [ :assoc |
 			assoc key = firstRelevantFrameOrdinal
 				ifTrue: [ '>>> FIRST USER FRAME' ]
-				ifFalse: [ (self isExecuteHandlerBarrierAt: assoc key)
-					ifTrue: [ '--- BARRIER ---' ]
-					ifFalse: [ (self isFilteredOutAt: assoc key)
-						ifTrue: [ 'filtered out' ]
-						ifFalse: [ '' ] ] ] ] width: 150;
+				ifFalse: [ assoc key = lastRelevantFrameOrdinal
+					ifTrue: [ '<<< LAST USER FRAME' ]
+					ifFalse: [ (self isExecuteHandlerBarrierAt: assoc key)
+						ifTrue: [ '--- BARRIER ---' ]
+						ifFalse: [ (self isFilteredOutAt: assoc key)
+							ifTrue: [ assoc key < firstRelevantFrameOrdinal
+								ifTrue: [ 'filtered (top)' ]
+								ifFalse: [ 'filtered (bottom)' ] ]
+							ifFalse: [ '' ] ] ] ] ] width: 160;
 		column: 'Selector' text: [ :assoc | assoc value selector ];
 		column: 'Class' text: [ :assoc | assoc value targetClassName ifNil: [ '' ] ];
 		column: 'Block' text: [ :assoc |
@@ -167,7 +269,10 @@ GtGemStoneStackFrameFilter >> initialize [
 
 	super initialize.
 
-	exceptionInfrastructureSelectors := #(halt halt: signal signal: error: doesNotUnderstand: _signalAsync: subclassResponsibility subclassResponsibility:)
+	exceptionInfrastructureSelectors := #(halt halt: signal signal: error: doesNotUnderstand: _signalAsync: subclassResponsibility subclassResponsibility:).
+	evaluationInfrastructureClassNames := #(GsProcess GsNMethod ExecBlock GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
+	filterExceptionInfrastructure := self class filterExceptionInfrastructure.
+	filterEvaluationInfrastructure := self class filterEvaluationInfrastructure
 ]
 
 { #category : #testing }
@@ -175,6 +280,15 @@ GtGemStoneStackFrameFilter >> isAboveExecuteHandlerBarrier: anIndex [
 
 	^ executeHandlerBarrierIndex = 0
 		or: [ anIndex < executeHandlerBarrierIndex ]
+]
+
+{ #category : #testing }
+GtGemStoneStackFrameFilter >> isEvaluationInfrastructureAt: anIndex [
+	| className |
+
+	className := (allFrames at: anIndex) targetClassName.
+	className ifNil: [ ^ false ].
+	^ evaluationInfrastructureClassNames includes: className
 ]
 
 { #category : #testing }
@@ -186,5 +300,11 @@ GtGemStoneStackFrameFilter >> isExecuteHandlerBarrierAt: anIndex [
 { #category : #testing }
 GtGemStoneStackFrameFilter >> isFilteredOutAt: anIndex [
 
-	^ anIndex < firstRelevantFrameOrdinal
+	^ anIndex < firstRelevantFrameOrdinal or: [ anIndex > lastRelevantFrameOrdinal ]
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> lastRelevantFrameOrdinal [
+
+	^ lastRelevantFrameOrdinal
 ]

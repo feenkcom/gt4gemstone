@@ -389,7 +389,7 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_01_filterStack [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - exception handler filter' }
+{ #category : #'examples - exception handler' }
 GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_02_filterObjectDetails [
 	<gtExample>
 	<after: #stopServer>
@@ -400,8 +400,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_02_filterObjectDet
 
 	self assert: filter executeHandlerBarrierIndex > 0.
 	self assert: filter firstRelevantFrameOrdinal > 1.
+	self assert: filter lastRelevantFrameOrdinal < filter allFrames size.
 	self assert: filter filteredFrames first selector
 		equals: (debuggingSession remoteStackFrames at: 1) methodSelector.
+	self assert: (filter isEvaluationInfrastructureAt: filter allFrames size).
 
 	^ filter
 ]
@@ -426,6 +428,29 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_03_debuggerOpensOn
 		play.
 
 	^ scripter
+]
+
+{ #category : #'examples - exception handler' }
+GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_04_bottomContextsFiltered [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
+
+	debuggingSession := self haltInExceptionHandler_01_filterStack.
+	debugger := debuggingSession debuggerClient.
+	debugger stackFrames.
+	filteredFrames := debugger stackFrames.
+	allFrames := debugger allStackFrames.
+
+	self assert: filteredFrames size < allFrames size.
+
+	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
+	filteredFrames do: [ :frame |
+		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+
+	self assert: filteredFrames last sender isNotNil.
+
+	^ debuggingSession
 ]
 
 { #category : #'examples - filter - exception handler' }
@@ -463,6 +488,12 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_02_filterObject
 	self assert: filter executeHandlerBarrierIndex > 0.
 	self assert: (filter isExecuteHandlerBarrierAt: filter executeHandlerBarrierIndex).
 
+	self assert: filter firstRelevantFrameOrdinal equals: 13.
+	self assert: filter lastRelevantFrameOrdinal < allFrames size.
+	self assert: (filter isFilteredOutAt: allFrames size).
+	self assert: (filter isFilteredOutAt: 1).
+	self assert: (filter isEvaluationInfrastructureAt: allFrames size).
+
 	^ filter
 ]
 
@@ -486,6 +517,29 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_03_debuggerOpen
 		play.
 
 	^ scripter
+]
+
+{ #category : #'examples - triple nested handler' }
+GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_04_bottomContextsFiltered [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
+
+	debuggingSession := self haltInTripleNestedHandler_01_filterStack.
+	debugger := debuggingSession debuggerClient.
+	debugger stackFrames.
+	filteredFrames := debugger stackFrames.
+	allFrames := debugger allStackFrames.
+
+	self assert: filteredFrames size < allFrames size.
+
+	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
+	filteredFrames do: [ :frame |
+		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+
+	self assert: filteredFrames last sender isNotNil.
+
+	^ debuggingSession
 ]
 
 { #category : #'examples - stepping in handler - multiple calls' }
@@ -589,7 +643,7 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_01_filterStack [
 	^ debuggingSession
 ]
 
-{ #category : #'examples - normal halt filter' }
+{ #category : #'examples - normal halt' }
 GtRemoteGemStoneStackFilterExamples >> normalHalt_02_filterObjectHasNoBarrier [
 	<gtExample>
 	<after: #stopServer>
@@ -600,8 +654,33 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_02_filterObjectHasNoBarrier [
 
 	self assert: filter executeHandlerBarrierIndex equals: 0.
 	self assert: filter firstRelevantFrameOrdinal > 1.
+	self assert: filter lastRelevantFrameOrdinal < filter allFrames size.
+	self assert: (filter isEvaluationInfrastructureAt: filter allFrames size).
 
 	^ filter
+]
+
+{ #category : #'examples - normal halt' }
+GtRemoteGemStoneStackFilterExamples >> normalHalt_03_bottomContextsFiltered [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
+
+	debuggingSession := self normalHalt_01_filterStack.
+	debugger := debuggingSession debuggerClient.
+	debugger stackFrames.
+	filteredFrames := debugger stackFrames.
+	allFrames := debugger allStackFrames.
+
+	self assert: filteredFrames size < allFrames size.
+
+	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
+	filteredFrames do: [ :frame |
+		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+
+	self assert: filteredFrames last sender isNotNil.
+
+	^ debuggingSession
 ]
 
 { #category : #helpers }

@@ -129,6 +129,16 @@ GtRsrEvaluationException >> gtViewRemoteStackFor: aView [
 		view: #gtViewCallFrameSpecificationsFor:
 ]
 
+{ #category : #views }
+GtRsrEvaluationException >> gtViewStackFilterFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Stack filter';
+		priority: 0.95;
+		object: [ self debuggerClient ];
+		view: #gtViewStackFilterFor:
+]
+
 { #category : #accessing }
 GtRsrEvaluationException >> hasDebugResult [
 	^ hasDebugResult

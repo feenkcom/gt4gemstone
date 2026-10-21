@@ -136,6 +136,18 @@ GtGemStoneDebugger >> gtViewAllStackFramesFor: aView [
 			aStackFrame printString ]
 ]
 
+{ #category : #views }
+GtGemStoneDebugger >> gtViewStackFilterFor: aView [
+	<gtView>
+
+	allStackFrames ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Stack filter';
+		priority: 25;
+		object: [ self stackFrameFilter ];
+		view: #gtViewAllFramesFor:
+]
+
 { #category : #'gt - extensions' }
 GtGemStoneDebugger >> gtViewStackFramesFor: aView [ 
 	<gtView>
@@ -214,6 +226,15 @@ GtGemStoneDebugger >> retrieveAllStackFrames [
 				previousStackFrame sender: currentStackFrame ].
 			previousStackFrame := currentStackFrame.
 			currentStackFrame ].
+]
+
+{ #category : #private }
+GtGemStoneDebugger >> stackFrameFilter [
+	| filter |
+
+	filter := GtGemStoneStackFrameFilter new.
+	filter filter: self allStackFrames.
+	^ filter
 ]
 
 { #category : #accessing }

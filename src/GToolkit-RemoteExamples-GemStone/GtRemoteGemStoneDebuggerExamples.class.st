@@ -62,8 +62,7 @@ GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCa
 "Returns a CharacterCollection whose contents are a displayable representation of the
  receiver."
 
-^ self printStringWithMaxSize: 100000
-' withUnixLineEndings atTopIndex: 1;
+^ self printStringWithMaxSize: 100000' withUnixLineEndings atTopIndex: 1;
 		play.
 
 	^ scripter
