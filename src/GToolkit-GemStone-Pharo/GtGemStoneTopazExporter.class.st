@@ -492,11 +492,12 @@ GtGemStoneTopazExporter >> writeClassInitializationsFor: classes on: aStream [
 
 { #category : #'private - writing' }
 GtGemStoneTopazExporter >> writeDefinitionOf: aClass on: aStream [
-	| packageName superclass instanceVariables classInstanceVariables arrayFormatter definition |
+	| packageName superclass instanceVariables classInstanceVariables arrayFormatter definition isStub |
 	(self gemstoneClassNames includes: aClass name) ifTrue: [
 		self error: aClass printString, ' must not be defined.' ].
-	((stubClasses includes: aClass)
-		and: [ (self selectedClasses includes: aClass) not ])
+	isStub := (stubClasses includes: aClass)
+		and: [ (self selectedClasses includes: aClass) not ].
+	isStub
 		ifTrue: [
 			packageName := 'GToolkit-Stubs'.
 			superclass := ((stubClasses includes: aClass superclass)
@@ -529,12 +530,17 @@ GtGemStoneTopazExporter >> writeDefinitionOf: aClass on: aStream [
 			<< (GtpoMetaclass3 defaultDictionary value: aClass); lf;
 			<< '  options: #()'; lf ].
 	definition := self alternateClassDefinitions at: aClass name ifAbsent: [ definition ].
+	aStream << 'doit'; lf.
+	isStub ifTrue: [
+		aStream
+			<< '(System myUserProfile symbolList resolveSymbol: #';
+			<< aClass name; << ') isNil ifTrue: ['; lf ].
 	aStream
-		<< 'doit'; lf;
 		<< '('; << definition; << ') category: ''';
 		<< (self topazQuoted: packageName); << ''';'; lf;
-		<< '  immediateInvariant.'; lf;
-		<< '%'; lf; lf
+		<< '  immediateInvariant.'.
+	isStub ifTrue: [ aStream lf; << '].' ].
+	aStream lf; << '%'; lf; lf
 ]
 
 { #category : #writing }
@@ -683,10 +689,13 @@ GtGemStoneTopazExporter >> writeRbAliasStubsOn: aStream [
 	(aliases sorted: [ :left :right | left key < right key ]) do: [ :association |
 		aStream
 			<< 'doit'; lf;
+			<< '(System myUserProfile symbolList resolveSymbol: #';
+			<< association key; << ') isNil ifTrue: ['; lf;
 			<< '('; << association value name;
 			<< ' subclass: '''; << association key;
 			<< ''' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()) category: ''GToolkit-Stubs'';'; lf;
 			<< '  immediateInvariant.'; lf;
+			<< '].'; lf;
 			<< '%'; lf; lf ]
 ]
 

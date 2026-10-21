@@ -190,6 +190,8 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#ArithmeticError
 		#AssertionFailure
 		#AsyncFutureExecutionError
+		#AsyncMutex
+		#AsyncMutexExamples
 		#AutomaticRewriting
 		#BlDevScripterAssertionFailure
 		#ConnectionClosed
@@ -417,28 +419,30 @@ GtGemStoneGtCodeExporter >> exporter [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClassList [
 	<gsCodeClasses>
-
-^ #(
+	^ #(
 		#Class
-		#CurrentExecutionEnvironment class
+		#CurrentExecutionEnvironment
 		#Exception
 		#GsNMethod
 		#GtExample
 		#GtExampleClassResolver
 		#GtExampleDependenciesResolver
-		#GtExampleDependenciesResolver class
 		#GtExampleEvaluator
 		#GtExampleMethodResolver
-		#GtExampleResultNoValue class
+		#GtExampleResultNoValue
 		#GtGemStoneExtensionMethod
 		#GtGemStoneTopazExporterExamples
-		#GtProcessStackOverflowChecker class
+		#GtLMcpGemStoneExamples
+		#GtLMcpServer
+		#GtLSerializedObjectValue
+		#GtLWrappedObjectModel
+		#GtMagriteJSONDataCreationVisitor
+		#GtProcessStackOverflowChecker
 		#Metaclass3
 		#Object
 		#Pragma
 		#Symbol
 	)
-
 ]
 
 { #category : #accessing }
@@ -702,7 +706,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncMapStream
 		#AsyncMapWithCacheStream
 		#AsyncMapWithIndexStream
-		#AsyncMutex
 		#AsyncObservableValue
 		#AsyncOnceStream
 		#AsyncOptionalValue
