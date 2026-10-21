@@ -399,7 +399,7 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 	a send), falls back to _previousStepPointForIp: to find the preceding
 	step point's source position.
 	Compare with callerProgramCounterMarkers which always uses
-	_previousStepPointForIp: — that method computes the call-site
+	_previousStepPointForIp: that method computes the call-site
 	highlight for when this frame becomes a caller (non-top frame)."
 	| source ipOffset markers startIndex endIndex i method sourceEnd |
 
