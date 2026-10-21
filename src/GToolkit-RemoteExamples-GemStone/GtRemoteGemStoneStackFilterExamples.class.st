@@ -575,6 +575,7 @@ GtRemoteGemStoneStackFilterExamples >> multipleCallsInHandler_04_stepOutOfHandle
 GtRemoteGemStoneStackFilterExamples >> normalHalt_01_filterStack [
 	<gtExample>
 	<after: #stopServer>
+	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
 	| debuggingSession frames |
 
 	debuggingSession := self

@@ -367,6 +367,7 @@ GtRemoteGemStoneDebuggerExamples >> testStepOverWithCallerSelectedUpdatesVariabl
 	"Issue #4069: after stepping into a method, selecting the caller frame, and stepping over to return, the variables should be correct."
 	<gtExample>
 	<after: #stopServer>
+	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
 	| gemstoneSession debuggingSession debuggerElement scripter |
 
 	self runningServer
