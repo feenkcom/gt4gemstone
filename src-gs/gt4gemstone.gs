@@ -5315,6 +5315,21 @@ ext_DomainError_class_signalFrom_to_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Duration_asMilliseconds
+	^ GtGemStoneExtensionMethod new
+		selector: #asMilliseconds;
+		meta: false;
+		gtVersions: nil;
+		className: #Duration;
+		hash: '557beeec158d9ef9582c2b94294ee1a8af940e49928f06e1751ff80483391a2e';
+		source: 'asMilliseconds
+	<gtGsExtension>
+	"Answer total milliseconds, rounded down as in Pharo."
+	^ (self asSeconds * 1000) floor'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Duration_class_hours_
  ^ GtGemStoneExtensionMethod new
  selector: #hours:;
@@ -5826,6 +5841,22 @@ ext_Integer_printStringLength_
 	^ String streamContents: [ :stream |
 		1 to: minimal - decimal size do: [ :index | stream space ].
 		stream nextPutAll: decimal ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_LookupError_key
+	^ GtGemStoneExtensionMethod new
+		selector: #key;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #LookupError;
+		hash: #new;
+		source: 'key
+	<gtGsExtension>
+  ^ key
+'
 %
 
 category: 'extensions'
@@ -7171,6 +7202,67 @@ ext_ReadStream_readStream
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Semaphore_criticalReleasingOnError_
+	^ GtGemStoneExtensionMethod new
+		selector: #criticalReleasingOnError:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: #new;
+		source: 'criticalReleasingOnError: mutuallyExcludedBlock
+	<gtGsExtension>
+	"This is like #critical: but releasing the lock if there is an exception in the block"
+	| blockValue caught |
+	caught := false.
+	[
+		caught := true.
+		self wait.
+		blockValue := mutuallyExcludedBlock
+			on: Exception
+			do: [ :e | caught ifTrue: [self signal].
+				caught := false.
+				e pass.].
+
+	] ensure: [caught ifTrue: [self signal]].
+
+	^blockValue'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Semaphore_waitTimeoutMilliseconds_
+	^ GtGemStoneExtensionMethod new
+		selector: #waitTimeoutMilliseconds:;
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: #new;
+		source: 'waitTimeoutMilliseconds: anInteger
+	<gtGsExtension>
+	"GT compatibility method. Wait on this semaphore for up to anInteger milliseconds.
+	Return true if the timeout expires without a signal, or false if the semaphore is signalled."
+	^ (self waitForMilliseconds: anInteger) not'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Semaphore_waitTimeoutSeconds_
+	^ GtGemStoneExtensionMethod new
+		selector: #waitTimeoutSeconds:;
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: 'aaeb31110540cd8a4e657fc8e5d30b2834eb1c15efd21cdd2b41a44e8c316353';
+		source: 'waitTimeoutSeconds: anInteger
+	<gtGsExtension>
+	"GT compatibility method. Wait on this semaphore for up to anInteger seconds.
+	Return true if the timeout expires without a signal, or false if the semaphore is signalled."
+	^ (self waitForSeconds: anInteger) not'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_SequenceableCollection_allButLastDo_
  ^ GtGemStoneExtensionMethod new
  selector: #allButLastDo:;
@@ -8227,6 +8319,37 @@ ext_ZnDefaultCharacterEncoder_default
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_ZnEntity_class_json_
+	^ GtGemStoneExtensionMethod new
+		selector: #json:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #ZnEntity;
+		hash: #new;
+		source: 'json: text
+	
+	<gtGsExtension>
+^ self stringEntityClass json: text'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnHeaders_contentLength_
+	^ GtGemStoneExtensionMethod new
+		selector: #contentLength:;
+		protocol: #accessing;
+		meta: false;
+		gtVersions: nil;
+		className: #ZnHeaders;
+		hash: #new;
+		source: 'contentLength: object
+	<gtGsExtension>
+	self at: ''Content-Length'' put: object asString'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_ZnMaximumNumberOfDictionaryEntries_class_defaultValue
 	^ GtGemStoneExtensionMethod new
 		className: #ZnMaximumNumberOfDictionaryEntries;
@@ -8363,6 +8486,23 @@ ext_ZnResourceMetaUtils_class_writeQueryFields_on_
 		source: 'writeQueryFields: dictionary on: stream
 	<gtGsExtension>
 	self writeQueryFields: dictionary withEncoder: ZnUTF8Encoder default on: stream'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnStringEntity_class_json_
+	^ GtGemStoneExtensionMethod new
+		selector: #json:;
+		protocol: #convenience;
+		meta: true;
+		gtVersions: nil;
+		className: #ZnStringEntity;
+		hash: #new;
+		source: 'json: string
+	<gtGsExtension>
+	^ (self type: ZnMimeType applicationJson)
+		string: string;
+		yourself'
 %
 
 category: 'extensions'
@@ -9022,10 +9162,11 @@ callerProgramCounterMarkers
 	that method is correct for the top frame (where the IP is at the
 	actual execution point), but wrong for non-top frames whose IP
 	has been advanced to the return address."
-	| source ipOffset markers method prevOrdinal startIndex endIndex i |
+	| source ipOffset markers method prevOrdinal startIndex endIndex i sourceEnd |
 
 	method := frameContents first.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
 
@@ -9038,7 +9179,7 @@ callerProgramCounterMarkers
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue: [
 		(markers at: i) notNil ifTrue: [ endIndex := i ].
 		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
+	endIndex ifNil: [ endIndex := sourceEnd ].
 	^ { startIndex. endIndex }
 %
 
@@ -9173,27 +9314,28 @@ initializeForFrameContents: aFrameArray withIdentifier: aFrameIdentifier
 category: 'views'
 method: GtGemStoneLocalCallFrame
 ipHighlights
-	| method markers ipOffset source exactIdx exactEnd prevSrcPos prevEnd |
+	| method markers ipOffset source sourceEnd exactIdx exactEnd prevSrcPos prevEnd |
 
 	method := frameContents first.
 	ipOffset := frameContents second.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	markers := method _buildIpMarkerArray.
 
 	exactIdx := markers indexOf: ipOffset.
 	exactEnd := 0.
 	exactIdx > 0 ifTrue: [
-		exactEnd := source size.
+		exactEnd := sourceEnd.
 		(exactIdx + 1) to: markers size do: [ :j |
-			(exactEnd = source size and: [ (markers at: j) notNil ])
+			(exactEnd = sourceEnd and: [ (markers at: j) notNil ])
 				ifTrue: [ exactEnd := j ] ] ].
 
 	prevSrcPos := method _sourceOffsetsAt:
 		(method _previousStepPointForIp: ipOffset).
-	prevEnd := source size.
+	prevEnd := sourceEnd.
 	prevSrcPos > 0 ifTrue: [
 		(prevSrcPos + 1) to: markers size do: [ :j |
-			(prevEnd = source size and: [ (markers at: j) notNil ])
+			(prevEnd = sourceEnd and: [ (markers at: j) notNil ])
 				ifTrue: [ prevEnd := j ] ] ].
 
 	^ {
@@ -9209,38 +9351,39 @@ ipHighlights
 category: 'accessing'
 method: GtGemStoneLocalCallFrame
 ipMarkerMap
-	| method markers ipOffset source entries |
+	| method markers ipOffset source sourceEnd entries |
 
 	method := frameContents first.
 	ipOffset := frameContents second.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	markers := method _buildIpMarkerArray.
 
 	entries := OrderedCollection new.
 	1 to: markers size do: [ :srcPos |
 		(markers at: srcPos) ifNotNil: [ :ip |
 			| nextPos callerSrcPos callerNextPos |
-			nextPos := source size + 1.
+			nextPos := sourceEnd + 1.
 			(srcPos + 1) to: markers size do: [ :j |
-				(nextPos > source size and: [ (markers at: j) notNil ])
+				(nextPos > sourceEnd and: [ (markers at: j) notNil ])
 					ifTrue: [ nextPos := j ] ].
 			callerSrcPos := method _sourceOffsetsAt:
 				(method _previousStepPointForIp: ip).
 			(callerSrcPos isNil or: [ callerSrcPos < 1 ])
 				ifTrue: [ callerSrcPos := 0. callerNextPos := 0 ]
 				ifFalse: [
-					callerNextPos := source size + 1.
+					callerNextPos := sourceEnd + 1.
 					(callerSrcPos + 1) to: markers size do: [ :j |
-						(callerNextPos > source size and: [ (markers at: j) notNil ])
+						(callerNextPos > sourceEnd and: [ (markers at: j) notNil ])
 							ifTrue: [ callerNextPos := j ] ] ].
 			entries add: (GtGemStoneIpMarkerEntry new
 				sourcePosition: srcPos
 				ip: ip
 				sourceString: source
-				nextPosition: (nextPos min: source size + 1)
+				nextPosition: (nextPos min: sourceEnd + 1)
 				isFrameIp: ip = ipOffset
 				callerSourcePosition: callerSrcPos
-				callerNextPosition: (callerNextPos min: source size + 1)) ] ].
+				callerNextPosition: (callerNextPos min: sourceEnd + 1)) ] ].
 
 	^ GtGemStoneIpMarkerMap new
 		entries: entries asArray
@@ -9422,12 +9565,13 @@ sourceInfo
 	a send), falls back to _previousStepPointForIp: to find the preceding
 	step point's source position.
 	Compare with callerProgramCounterMarkers which always uses
-	_previousStepPointForIp: — that method computes the call-site
+	_previousStepPointForIp: that method computes the call-site
 	highlight for when this frame becomes a caller (non-top frame)."
-	| source ipOffset markers startIndex endIndex i method |
+	| source ipOffset markers startIndex endIndex i method sourceEnd |
 
 	method := frameContents first.
 	source := method sourceString.
+	sourceEnd := source trimRight size.
 	ipOffset := frameContents second.
 	markers := method _buildIpMarkerArray.
 	startIndex := markers indexOf: ipOffset.
@@ -9436,43 +9580,15 @@ sourceInfo
 		prevOrdinal := method _previousStepPointForIp: ipOffset.
 		startIndex := method _sourceOffsetsAt: prevOrdinal.
 		(startIndex isNil or: [ startIndex < 1 ])
-			ifTrue: [ ^ { 1. source size. source } ] ].
+			ifTrue: [ ^ { 1. sourceEnd. source } ] ].
 	i := startIndex + 1.
 
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
 		[ (markers at: i) notNil ifTrue:
 			[ endIndex := i ].
 		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
+	endIndex ifNil: [ endIndex := sourceEnd ].
 	^ { startIndex. endIndex. source. }
-%
-
-category: 'accessing'
-method: GtGemStoneLocalCallFrame
-sourceInfoIsTopFrame: aBoolean
-	"Compute the source range for this frame's IP offset.
-	For the top frame the IP is a step point - use exact marker lookup.
-	For non-top frames the IP is a return address after a send,
-	so use _previousStepPointForIp: to find the send site."
-	| source ipOffset method markers startIndex endIndex i |
-
-	method := frameContents first.
-	source := method sourceString.
-	ipOffset := frameContents second.
-	markers := method _buildIpMarkerArray.
-
-	startIndex := markers indexOf: ipOffset.
-	(aBoolean not or: [ startIndex = 0 ]) ifTrue: [
-		startIndex := method _sourceOffsetsAt:
-			(method _previousStepPointForIp: ipOffset) ].
-
-	i := startIndex + 1.
-	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
-		[ (markers at: i) notNil ifTrue:
-			[ endIndex := i ].
-		i := i + 1 ].
-	endIndex ifNil: [ endIndex := source size ].
-	^ { startIndex. endIndex. source }
 %
 
 category: 'updating'
