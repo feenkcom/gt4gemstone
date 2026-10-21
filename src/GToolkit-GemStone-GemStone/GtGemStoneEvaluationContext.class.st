@@ -348,11 +348,15 @@ GtGemStoneEvaluationContext >> resumeAsyncComputation [
 	^ GtGemstoneEvaluationResumedResult new asDictionaryForExport
 ]
 
-{ #category : 'actions - debug (identifier)' }
+{ #category : 'actions - run to cursor' }
 GtGemStoneEvaluationContext >> runToCursorSourceOffset: aSourceOffset frameIdentifierIndex: aFrameIdentifierIndex [
-	| frameLevel homeMethod sourceOffsets stepPoint |
+	| frameLevel homeMethod sourceOffsets stepPoint currentMarkers |
 
 	frameLevel := self frameLevelForIdentifierIndex: aFrameIdentifierIndex.
+	currentMarkers := self programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex.
+	(currentMarkers notNil and: [ aSourceOffset <= currentMarkers first ])
+		ifTrue: [ ^ #runToCursor ].
+
 	homeMethod := ((process _frameContentsAt: frameLevel) at: 1) homeMethod.
 	sourceOffsets := homeMethod _sourceOffsets.
 
