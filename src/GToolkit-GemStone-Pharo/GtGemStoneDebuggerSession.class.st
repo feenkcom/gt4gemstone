@@ -86,8 +86,18 @@ GtGemStoneDebuggerSession >> gsResume [
 	self debuggerClient gsResume.
 ]
 
-{ #category : #'actions - gs' }
+{ #category : #actions }
 GtGemStoneDebuggerSession >> gsRunToCursorSourceOffset: aSourceOffset frameIdentifier: aFrameIdentifier [
+	| frame |
+
+	frame := self remoteStackFrames
+		detect: [ :f | f frameIdentifier = aFrameIdentifier ]
+		ifNone: [ nil ].
+	(frame notNil and: [
+		frame programCounterMarkers notNil and: [
+			aSourceOffset <= frame programCounterMarkers first ] ])
+		ifTrue: [ ^ self ].
+
 	[ self debuggerProxy
 		proxyPerform: #runToCursorSourceOffset:frameIdentifierIndex:
 		withArguments: { aSourceOffset. aFrameIdentifier identityIndex }
@@ -214,7 +224,7 @@ GtGemStoneDebuggerSession >> gtViewTopContextCoderFor: aView [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> initialStackFrames [
 	^ initialStackFrames ifNil: [
-		initialStackFrames := self remoteStackFrames collect: [ :frame |
+		initialStackFrames := self debuggerClient allStackFrames collect: [ :frame |
 			frame copy ] ]
 ]
 

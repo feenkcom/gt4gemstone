@@ -93,6 +93,35 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_03_stepOv
 	^ debuggingSession
 ]
 
+{ #category : #'examples - call method with halt' }
+GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_04_returnFromHalt_callerVariables [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	debuggingSession := self callMethodWithHalt_02_stepOverToHaltingCall.
+
+	self stepOverIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'methodThatHalts' inBlock: false.
+
+	self stepOverIn: debuggingSession.
+	self stepOverIn: debuggingSession.
+	self stepOverIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doCallMethodWithHalt' inBlock: false.
+	self assertFrames: frames atIndex: 1 variable: #a equals: '7'.
+	self assertFrames: frames atIndex: 1 variable: #b equals: '42'.
+
+	^ debuggingSession
+]
+
 { #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggingSessionStepOverExamples >> doLoop_01_enterMethod [
 	<gtExample>
@@ -276,6 +305,36 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> multipleMethodCalls_04_exitM
 		assert: debuggingSession remoteContext methodSelector ~= 'doMultipleMethodCalls'
 		description: 'Should have exited doMultipleMethodCalls'.
 	self assert: stepCount < maxSteps.
+
+	^ debuggingSession
+]
+
+{ #category : #'examples - step into and return' }
+GtRemoteGemStoneDebuggingSessionStepOverExamples >> multipleMethodCalls_05_stepIntoAndReturn_callerVariables [
+	<gtExample>
+	<after: #stopServer>
+	| debuggingSession frames |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	debuggingSession := self multipleMethodCalls_02_stepOverFirstSend.
+
+	self stepIntoIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'helperMethod:' inBlock: false.
+	self assertFrames: frames atIndex: 1 variable: #aValue equals: '3'.
+	self assertFrames: frames atIndex: 2 isSelector: 'doMultipleMethodCalls' inBlock: false.
+
+	4 timesRepeat: [ self stepOverIn: debuggingSession ].
+
+	self stepOverIn: debuggingSession.
+
+	frames := debuggingSession remoteStackFrames.
+	self assertFrames: frames atIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false.
+	self assertFrames: frames atIndex: 1 variable: #a equals: '7'.
 
 	^ debuggingSession
 ]

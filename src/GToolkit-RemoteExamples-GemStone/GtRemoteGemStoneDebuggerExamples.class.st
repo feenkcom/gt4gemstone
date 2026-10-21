@@ -362,6 +362,81 @@ GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 	^ scripter
 ]
 
+{ #category : #'examples - issue 4069' }
+GtRemoteGemStoneDebuggerExamples >> testStepOverWithCallerSelectedUpdatesVariables [
+	"Issue #4069: after stepping into a method, selecting the caller frame, and stepping over to return, the variables should be correct."
+	<gtExample>
+	<after: #stopServer>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [
+			gemstoneSession evaluateBlockAndWait: [
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doMultipleMethodCalls ] ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'helperMethod:' inBlock: false;
+		assertVariable: #aValue equals: '3';
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		selectFrameAtTopIndex: 2;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
+		assertVariable: #a equals: '7';
+		play.
+
+	^ scripter
+]
+
 { #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 	<gtExample>

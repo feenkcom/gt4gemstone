@@ -10,6 +10,11 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
+{ #category : #announcer }
+GtGemStoneDebugger >> allStackFrames [
+	^ allStackFrames
+]
+
 { #category : #private }
 GtGemStoneDebugger >> announceStateChange [
 	"Announce that the receiver's state has changed"

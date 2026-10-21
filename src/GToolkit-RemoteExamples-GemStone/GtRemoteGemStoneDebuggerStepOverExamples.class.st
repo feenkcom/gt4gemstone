@@ -124,6 +124,46 @@ GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_03_stepOverHitsHa
 	^ scripter
 ]
 
+{ #category : #'examples - call method with halt' }
+GtRemoteGemStoneDebuggerStepOverExamples >> callMethodWithHalt_04_selectCallerAndStepOverFromHalt [
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	scripter := self callMethodWithHalt_02_stepOverToHaltingCall.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'methodThatHalts' inBlock: false;
+		play.
+
+	scripter gemStoneDebugger
+		selectFrameAtTopIndex: 2;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doCallMethodWithHalt' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
+		assertVariable: #a equals: '7';
+		assertVariable: #b equals: '42';
+		play.
+
+	^ scripter
+]
+
 { #category : #'examples - do loop' }
 GtRemoteGemStoneDebuggerStepOverExamples >> doLoop_02_stepOverLoop [
 	"Step over executes the entire loop without entering the block."

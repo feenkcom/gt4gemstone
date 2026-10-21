@@ -158,6 +158,48 @@ GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_05_enterThirdIteration [
 	^ scripter
 ]
 
+{ #category : #'examples - do loop' }
+GtRemoteGemStoneDebuggerStepThroughExamples >> doLoop_06_selectCallerAndStepThrough [
+	<gtExample>
+	<after: #stopServer>
+	| scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	scripter := self doLoop_02_enterBlock.
+
+	scripter gemStoneDebugger
+		assertVariable: #each equals: '1';
+		play.
+
+	scripter gemStoneDebugger
+		selectFrameAtTopIndex: 4;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepThroughButton;
+		clickOnStepThroughButton;
+		clickOnStepThroughButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doLoop' inBlock: true;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepThroughButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doLoop' inBlock: true;
+		assertVariable: #each equals: '2';
+		play.
+
+	^ scripter
+]
+
 { #category : #'examples - multiple method calls' }
 GtRemoteGemStoneDebuggerStepThroughExamples >> multipleMethodCalls_02_stepThroughStatements [
 	"Verifies step through without blocks behaves as step over."
