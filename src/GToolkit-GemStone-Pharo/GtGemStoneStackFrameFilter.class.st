@@ -7,7 +7,7 @@ Class {
 		'executeHandlerBarrierIndex',
 		'firstRelevantFrameOrdinal'
 	],
-	#category : #'GToolkit-GemStone'
+	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #'instance creation' }
