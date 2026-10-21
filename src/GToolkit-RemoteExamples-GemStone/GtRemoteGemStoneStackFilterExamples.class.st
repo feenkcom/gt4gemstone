@@ -35,6 +35,10 @@ GtRemoteGemStoneStackFilterExamples >> callMethodInHandler_01_haltInHandler [
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doCallMethodInHandler ]
@@ -206,6 +210,10 @@ GtRemoteGemStoneStackFilterExamples >> ensureWithMethodCalls_01_haltInEnsure [
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doEnsureWithMethodCalls ]
@@ -279,6 +287,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInDoubleNestedHandler_01_filterStack 
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doHaltInDoubleNestedHandler ]
@@ -297,6 +309,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInDoubleNestedHandler_02_filterObject
 	<after: #stopServer>
 	| debuggingSession filter allFrames executeHandlerCount |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self haltInDoubleNestedHandler_01_filterStack.
 	filter := self filterForDebuggingSession: debuggingSession.
 	allFrames := filter allFrames.
@@ -315,6 +331,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInDoubleNestedHandler_03_debuggerOpen
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -337,6 +357,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInEnsureBlock_01_filterStack [
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doHaltInEnsureBlock ]
@@ -355,6 +379,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInEnsureBlock_03_debuggerOpensOnCorre
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -377,6 +405,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_01_filterStack [
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doHaltInExceptionHandler ]
@@ -395,6 +427,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_02_filterObjectDet
 	<after: #stopServer>
 	| debuggingSession filter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self haltInExceptionHandler_01_filterStack.
 	filter := self filterForDebuggingSession: debuggingSession.
 
@@ -414,6 +450,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_03_debuggerOpensOn
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -436,6 +476,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_04_bottomContextsF
 	<after: #stopServer>
 	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self haltInExceptionHandler_01_filterStack.
 	debugger := debuggingSession debuggerClient.
 	debugger stackFrames.
@@ -459,6 +503,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_01_filterStack 
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doHaltInTripleNestedHandler ]
@@ -477,6 +525,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_02_filterObject
 	<after: #stopServer>
 	| debuggingSession filter allFrames barrierCount |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self haltInTripleNestedHandler_01_filterStack.
 	filter := self filterForDebuggingSession: debuggingSession.
 	allFrames := filter allFrames.
@@ -503,6 +555,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_03_debuggerOpen
 	<after: #stopServer>
 	| gemstoneSession scripter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	scripter := self
 		scripterWithDebuggerOn: [
@@ -525,6 +581,10 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_04_bottomContex
 	<after: #stopServer>
 	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self haltInTripleNestedHandler_01_filterStack.
 	debugger := debuggingSession debuggerClient.
 	debugger stackFrames.
@@ -548,6 +608,10 @@ GtRemoteGemStoneStackFilterExamples >> multipleCallsInHandler_01_haltInHandler [
 	<after: #stopServer>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			GtRemotePhlowDebuggerStepTestObject new doMultipleCallsInHandler ]
@@ -632,6 +696,10 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_01_filterStack [
 	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
 	| debuggingSession frames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self
 		debuggingSessionForBlock: [
 			nil halt. 42 ]
@@ -649,6 +717,10 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_02_filterObjectHasNoBarrier [
 	<after: #stopServer>
 	| debuggingSession filter |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self normalHalt_01_filterStack.
 	filter := self filterForDebuggingSession: debuggingSession.
 
@@ -666,6 +738,10 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_03_bottomContextsFiltered [
 	<after: #stopServer>
 	| debuggingSession debugger filteredFrames allFrames evalInfraClassNames |
 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	debuggingSession := self normalHalt_01_filterStack.
 	debugger := debuggingSession debuggerClient.
 	debugger stackFrames.
