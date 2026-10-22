@@ -36,7 +36,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_02_enterBlock [
 		assertFrames: frames atIndex: 2
 		highlightedText: 'value: i'
 		atProgramCounterRange: (1140 to: 1147)
-		atProgramCounterMarkers: #(1140 1149).
+		atProgramCounterMarkers: #(1140 1148).
 	self
 		assertFrames: frames atIndex: 3
 		highlightedText: 'to: to by: by do: aBlock'
@@ -79,7 +79,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_03_endFirstIterati
 		assertFrames: frames atIndex: 2
 		highlightedText: 'value: i'
 		atProgramCounterRange: (1140 to: 1147)
-		atProgramCounterMarkers: #(1140 1149).
+		atProgramCounterMarkers: #(1140 1148).
 	self
 		assertFrames: frames atIndex: 4
 		highlightedText: 'do: [ :each |
@@ -117,7 +117,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_04_enterSecondIter
 		assertFrames: frames atIndex: 2
 		highlightedText: 'value: i'
 		atProgramCounterRange: (1140 to: 1147)
-		atProgramCounterMarkers: #(1140 1149).
+		atProgramCounterMarkers: #(1140 1148).
 	self
 		assertFrames: frames atIndex: 4
 		highlightedText: 'do: [ :each |
@@ -155,7 +155,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_05_enterThirdItera
 		assertFrames: frames atIndex: 2
 		highlightedText: 'value: i'
 		atProgramCounterRange: (1140 to: 1147)
-		atProgramCounterMarkers: #(1140 1149).
+		atProgramCounterMarkers: #(1140 1148).
 	self assertFrames: frames atIndex: 1 variable: #each equals: '3'.
 
 	^ debuggingSession

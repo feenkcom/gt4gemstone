@@ -79,8 +79,8 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> callMethodWithHalt_03_stepOv
 	self
 		assertFrames: frames atIndex: 1
 		highlightedText: 'halt'
-		atProgramCounterRange: (93 to: 96)
-		atProgramCounterMarkers: #(93 100).
+		atProgramCounterRange: (22 to: 25)
+		atProgramCounterMarkers: #(22 29).
 
 	self assertFrames: frames atIndex: 2 isSelector: 'doCallMethodWithHalt' inBlock: false.
 	self
