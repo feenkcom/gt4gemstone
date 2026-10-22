@@ -38,8 +38,7 @@ GtGemStoneDebugger >> debuggerProxy [
 GtGemStoneDebugger >> filterUnrelatedStackFramesFrom: aCollectionOfStackFrames [
 	| filter |
 
-	filter := GtGemStoneStackFrameFilter new.
-	filter filter: aCollectionOfStackFrames.
+	filter := self stackFrameFilterOn: aCollectionOfStackFrames.
 	^ filter filteredFrames
 ]
 
@@ -230,10 +229,19 @@ GtGemStoneDebugger >> retrieveAllStackFrames [
 
 { #category : #private }
 GtGemStoneDebugger >> stackFrameFilter [
+	^ self stackFrameFilterOn: self allStackFrames.
+]
+
+{ #category : #private }
+GtGemStoneDebugger >> stackFrameFilterOn: aCollectionOfStackFrames [
 	| filter |
 
 	filter := GtGemStoneStackFrameFilter new.
-	filter filter: self allStackFrames.
+	self exception gtSession
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
+		do: [ filter ignoreFirstHandler ].
+		
+	filter filter: aCollectionOfStackFrames.
 	^ filter
 ]
 

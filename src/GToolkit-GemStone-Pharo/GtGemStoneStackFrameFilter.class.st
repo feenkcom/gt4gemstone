@@ -9,7 +9,8 @@ Class {
 		'firstRelevantFrameOrdinal',
 		'lastRelevantFrameOrdinal',
 		'filterExceptionInfrastructure',
-		'filterEvaluationInfrastructure'
+		'filterEvaluationInfrastructure',
+		'shouldIgnoreFirstHandler'
 	],
 	#classVars : [
 		'FilterEvaluationInfrastructure',
@@ -171,12 +172,23 @@ GtGemStoneStackFrameFilter >> filteredFrames [
 
 { #category : #private }
 GtGemStoneStackFrameFilter >> findExecuteHandlerBarrier [
-
-	executeHandlerBarrierIndex := 0.
+	| barrierIndexes |
+	barrierIndexes := OrderedCollection new.
+	
 	1 to: allFrames size do: [ :i |
 		(self isExecuteHandlerBarrierAt: i) ifTrue: [
-			executeHandlerBarrierIndex := i.
-			^ self ] ]
+			barrierIndexes add: i ] ].
+			
+	executeHandlerBarrierIndex := barrierIndexes 
+		ifEmpty: [ 0 ] 
+		ifNotEmpty: [
+			shouldIgnoreFirstHandler 
+				ifTrue: [	
+					barrierIndexes size > 1
+						ifTrue: [ barrierIndexes second ] 
+						ifFalse: [ 0 ]] 
+				ifFalse: [
+					barrierIndexes first ] ].
 ]
 
 { #category : #private }
@@ -263,12 +275,18 @@ GtGemStoneStackFrameFilter >> gtViewFilteredFramesFor: aView [
 			assoc value inBlock ifTrue: [ 'block' ] ifFalse: [ '' ] ] width: 50
 ]
 
+{ #category : #accessing }
+GtGemStoneStackFrameFilter >> ignoreFirstHandler [
+	shouldIgnoreFirstHandler := true
+]
+
 { #category : #initialization }
 GtGemStoneStackFrameFilter >> initialize [
 	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
 
 	super initialize.
 
+	shouldIgnoreFirstHandler := false.
 	exceptionInfrastructureSelectors := #(halt halt: signal signal: error: doesNotUnderstand: _signalAsync: subclassResponsibility subclassResponsibility:).
 	evaluationInfrastructureClassNames := #(GsProcess GsNMethod ExecBlock GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
 	filterExceptionInfrastructure := self class filterExceptionInfrastructure.
