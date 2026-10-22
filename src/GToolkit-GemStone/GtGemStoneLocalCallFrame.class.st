@@ -52,6 +52,8 @@ GtGemStoneLocalCallFrame >> callerProgramCounterMarkers [
 		(markers at: i) notNil ifTrue: [ endIndex := i ].
 		i := i + 1 ].
 	endIndex ifNil: [ endIndex := sourceEnd ].
+	"The next VM marker can point into trailing source whitespace."
+	endIndex := endIndex min: sourceEnd.
 	^ { startIndex. endIndex }
 ]
 
@@ -424,6 +426,8 @@ GtGemStoneLocalCallFrame >> sourceInfo [
 			[ endIndex := i ].
 		i := i + 1 ].
 	endIndex ifNil: [ endIndex := sourceEnd ].
+	"The next VM marker can point into trailing source whitespace."
+	endIndex := endIndex min: sourceEnd.
 	^ { startIndex. endIndex. source. }
 ]
 

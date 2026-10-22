@@ -45,7 +45,7 @@ GtRemoteGemStoneDebuggerStepIntoExamples >> doLoop_02_enterBlock [
 		assertSessionFrameAtTopIndex: 2
 			highlightedText: 'value: i'
 			atProgramCounterRange: (1140 to: 1147)
-			atProgramCounterMarkers: #(1140 1149);
+			atProgramCounterMarkers: #(1140 1148);
 		assertSessionFrameAtTopIndex: 3
 			highlightedText: 'to: to by: by do: aBlock'
 			atProgramCounterRange: (130 to: 153)

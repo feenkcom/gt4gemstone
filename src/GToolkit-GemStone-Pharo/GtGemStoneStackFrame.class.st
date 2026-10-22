@@ -63,6 +63,7 @@ GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: e
 	ast nodesDo: [ :each |
 		((each start to: each stop) includes: anInteger) ifTrue:
 			[ messageNode := each ] ].
+	messageNode ifNil: [ ^ anInteger to: endPoint ].
 	^ anInteger to: messageNode stop
 ]
 
