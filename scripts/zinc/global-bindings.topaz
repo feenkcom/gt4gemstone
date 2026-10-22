@@ -1,0 +1,6 @@
+fileformat utf8
+doit
+ZincGlobals at: #Smalltalk put: SmalltalkProxy new.
+ZincGlobals at: #Transcript put: TranscriptProxy.
+true
+%

@@ -190,6 +190,8 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#ArithmeticError
 		#AssertionFailure
 		#AsyncFutureExecutionError
+		#AsyncMutex
+		#AsyncMutexExamples
 		#AutomaticRewriting
 		#BlDevScripterAssertionFailure
 		#ConnectionClosed
@@ -390,18 +392,9 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	Point>>#asBrAnchoredAnchorBounds.
 	Point>>#asGVector.
 	Point>>#asMargin.
-	GtLlmToolForSUnitClassesRun>>#privatePerformToolCall:.
 	MemoryTelemetry>>#startSync:.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromClassesFrom:in:reportingNotFoundIn:.
-	GtLlmToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
 	TelemetryPing>>#totalFullGCTimeMicroseconds.
 	TelemetryPing>>#totalScavengeGCTimeMicroseconds.
-	GtLlmRenameFormatComponentRefactoringExamples>>#destroyClass.
-	GtLlmReificationForm>>#assistantNameDescription.
-	GtLlmReificationForm>>#assistantSuperclassDescription.
-	GtLlmReificationForm>>#messageNameDescription.
-	GtLlmReificationForm>>#messageSuperclassDescription.
-	GtLlmAssistantLibraryForGt class>>#textFormatWithSmalltalkBlocks.
 	}
 ]
 
@@ -426,28 +419,30 @@ GtGemStoneGtCodeExporter >> exporter [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClassList [
 	<gsCodeClasses>
-
-^ #(
+	^ #(
 		#Class
-		#CurrentExecutionEnvironment class
+		#CurrentExecutionEnvironment
 		#Exception
 		#GsNMethod
 		#GtExample
 		#GtExampleClassResolver
 		#GtExampleDependenciesResolver
-		#GtExampleDependenciesResolver class
 		#GtExampleEvaluator
 		#GtExampleMethodResolver
-		#GtExampleResultNoValue class
+		#GtExampleResultNoValue
 		#GtGemStoneExtensionMethod
 		#GtGemStoneTopazExporterExamples
-		#GtProcessStackOverflowChecker class
+		#GtLMcpGemStoneExamples
+		#GtLMcpServer
+		#GtLSerializedObjectValue
+		#GtLWrappedObjectModel
+		#GtMagriteJSONDataCreationVisitor
+		#GtProcessStackOverflowChecker
 		#Metaclass3
 		#Object
 		#Pragma
 		#Symbol
 	)
-
 ]
 
 { #category : #accessing }
@@ -603,7 +598,6 @@ GtGemStoneGtCodeExporter >> packageNames [
 		PackageOrganizer default packageNames asOrderedCollection
 			select: [ :name | name beginsWith: prefix ] ]
 				as: OrderedCollection.
-	packageNames removeAll: { 'Gt4Llm' }.
 	packageNames addAll: {
 		'Grease-Core'.
 		'GToolkit-Examples'.
@@ -712,7 +706,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncMapStream
 		#AsyncMapWithCacheStream
 		#AsyncMapWithIndexStream
-		#AsyncMutex
 		#AsyncObservableValue
 		#AsyncOnceStream
 		#AsyncOptionalValue

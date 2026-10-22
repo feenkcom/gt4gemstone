@@ -24,11 +24,29 @@ GtRemoteGemStoneDebuggerExamples >> assertDataForExceptionResult: aValue [
 	self assert: evaluationContext rawGtSession isNil.
 ]
 
+{ #category : #'examples - inspect method' }
+GtRemoteGemStoneDebuggerExamples >> assertInspectedMethodWithSelector: aSelector className: aClassName inSecondPaneOf: aScripter [
+	aScripter inspectorStep
+		onPagerPaneWithIndex: 2;
+		assertInspectedObjectOfType: GtGspoGsNMethod;
+		assertInspectedObjectValueFor: [ :obj | obj remoteClass ]
+			equals: [ #GsNMethod ];
+		assertInspectedObjectValueFor: [ :obj | obj selector ]
+			equals: [ aSelector ];
+		assertInspectedObjectValueFor: [ :obj | obj inClass name ]
+			equals: [ aClassName ];
+		play.
+]
+
 { #category : #'examples - scripter' }
 GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCall [
 	<gtExample>
 	| gemstoneSession debuggingSession debuggerElement scripter|
 	 
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 			debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString ' ]
@@ -48,8 +66,7 @@ GtRemoteGemStoneDebuggerExamples >> testCoderSelectionUpdatedAfterSteppingIntoCa
 "Returns a CharacterCollection whose contents are a displayable representation of the
  receiver."
 
-^ self printStringWithMaxSize: 100000
-' withUnixLineEndings atTopIndex: 1;
+^ self printStringWithMaxSize: 100000' withUnixLineEndings atTopIndex: 1;
 		play.
 
 	^ scripter
@@ -116,8 +133,8 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
 
 	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggingSession.
+	scripter element: debuggerElement inPager.
+	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		clickOnStepIntoButton;
@@ -127,43 +144,94 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 		play.
 
 	"Bring the second frame to the top of the viewport before looking for its actions."
-	scripter do
-		label: 'Scroll the second frame into view';
-		// GtGemStoneExpandableStackElement;
-		block: [ :aStackElement |
-			aStackElement stackFramesList scrollToIndex: 2 offset: 0 ];
+	scripter gemStoneDebugger
+		label: 'Select and focus the second frame';
+		scrollToFrameAtTopIndex: 2;
+		clickInsideCoderAtTopIndex: 2;
+		play.
+		
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 2);
+		play.
+		
+	scripter inspectorStep
+		onPagerPaneWithIndex: 2;
+		assertInspectedObjectOfType: GtGspoGsNMethod;
+		assertInspectedObjectValueFor: [ :obj | obj remoteClass ]
+			equals: [ #GsNMethod ];
+		assertInspectedObjectValueFor: [ :obj | obj selector ]
+			equals: [ #printString ];
+		assertInspectedObjectValueFor: [ :obj | obj inClass name ]
+			equals: [ #CharacterCollection ];
 		play.
 
-	"Use the stack selection path to expand and focus the coder, not its outer wrapper."
-	scripter do
-		label: 'Select and focus the second frame';
-		// GtGemStoneExpandableStackElement;
-		block: [ :aStackElement |
-			| aCoderElement |
-			aCoderElement := aStackElement stackFramesList withAllChildrenBreadthFirst
-				detect: [ :each | each id = (GtExpandableContextMethodCoderId indexed: 2) ].
-			aStackElement selectCoderUIModel: aCoderElement coderViewModel ];
+	^ scripter
+]
+
+{ #category : #examples }
+GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
+	<gtExample>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [ gemstoneSession evaluateAndWait: '| obj | obj := GtRemotePhlowDebuggerStepTestObject new. self halt. obj doThreeLevelCall' ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement inPager.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
 		play.
+
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 1);
+		play.
+	self
+		assertInspectedMethodWithSelector: #'helperMethod:'
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
 
 	scripter click
-		label: 'Inspect method in the second frame';
+		label: 'Select frame 2';
 		// (GtExpandableContextMethodCoderId indexed: 2);
-		onChildFromBlock: [ :aCoderElement |
-			aCoderElement withAllChildrenBreadthFirst detect: [ :each |
-				(each isKindOf: BrButton) and: [ each label asString = 'Inspect Method' ] ] ];
 		play.
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 2);
+		play.
+	self
+		assertInspectedMethodWithSelector: #doThreeLevelMiddle
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
 
-	scripter assert
-		label: 'Assert inspected method is CharacterCollection>>printString';
-		value: [ :theScripter |
-			theScripter events reversed
-				detectEventOfClass: GtPhlowObjectToSpawn
-				ifFound: [ :event |
-					{ event object inClass name. event object selector } ]
-				ifNone: [ AssertionFailure signal: 'Inspect Method did not spawn an object' ] ]
-			equals: { #CharacterCollection. #printString };
-		onScripter;
+	scripter click
+		label: 'Select frame 3';
+		// (GtExpandableContextMethodCoderId indexed: 3);
 		play.
+	scripter methodCoder
+		clickOnInspectMethodButton;
+		// (GtExpandableContextMethodCoderId indexed: 3);
+		play.
+	self
+		assertInspectedMethodWithSelector: #doThreeLevelCall
+		className: #GtRemotePhlowDebuggerStepTestObject
+		inSecondPaneOf: scripter.
 
 	^ scripter
 ]
@@ -256,86 +324,142 @@ GtRemoteGemStoneDebuggerExamples >> testPerformWithArgumentsSerializationStrateg
 GtRemoteGemStoneDebuggerExamples >> testStepIntoPreservesCallerHighlight [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession model cache caller freshCaller viewModel source expectedRange highlight |
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString' ]
 		withException: GtRsrEvaluationException.
-	debuggingSession := GtGemStoneExpandableDebuggerElement spanNewSessionFrom: debuggingSession.
-	debuggingSession synchronizeCallStack.
-	debuggingSession gsStepIntoFrameIdentifier: debuggingSession remoteContext frameIdentifier.
-	debuggingSession synchronizeCallStack.
-	model := GtGemStoneDebuggerStackModel new session: debuggingSession.
-	caller := debuggingSession remoteContext.
-	viewModel := (model createCoderFor: caller in: debuggingSession) asCoderViewModel.
-	cache := model instVarNamed: 'coderViewModelCache'.
-	cache at: caller put: viewModel.
-	source := viewModel coderModel sourceCode.
-	expectedRange := caller programCounterRange.
-	self assert: (caller frameSpecification sourceString
-		copyFrom: expectedRange first to: expectedRange last) equals: 'printString'.
-	debuggingSession gsStepIntoFrameIdentifier: caller frameIdentifier.
-	debuggingSession synchronizeCallStack.
-	model updateBasedOnCurentSession.
-	freshCaller := debuggingSession remoteStackFrames detect: [ :frame | frame = caller ].
-	self assert: freshCaller ~= debuggingSession remoteContext.
-	self assert: (cache at: freshCaller) == viewModel.
-	self assert: viewModel coderModel stackFrame == freshCaller.
-	self assert: viewModel coderModel sourceCode == source.
-	self assert: viewModel coderModel programCounterRange equals: expectedRange.
-	highlight := viewModel textHighlights detect: [ :each | each id = viewModel class debuggerTextHighlightId ].
-	self assert: highlight textRange start equals: expectedRange first.
-	self assert: highlight textRange end equals: expectedRange last.
-	self assert: highlight documentId equals: source currentSourceText documentId.
-	^ viewModel
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		assertSessionFrameAtTopIndex: 2 highlightedText: 'printString';
+		scrollToFrameAtTopIndex: 2;
+		expandCoderAtTopIndex: 2;
+		assertInCodersListHasHighlightAtTopIndex: 2;
+		play.
+
+	^ scripter
+]
+
+{ #category : #'examples - issue 4069' }
+GtRemoteGemStoneDebuggerExamples >> testStepOverWithCallerSelectedUpdatesVariables [
+	"Issue #4069: after stepping into a method, selecting the caller frame, and stepping over to return, the variables should be correct."
+	<gtExample>
+	<after: #stopServer>
+	<gtIgnoreConstraint: #GtSendersOfHaltSelectorsInGtPackagesConstraint>
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	gemstoneSession := self runningServer.
+	debuggingSession := self
+		debugSessionOn: [
+			gemstoneSession evaluateBlockAndWait: [
+				nil halt. GtRemotePhlowDebuggerStepTestObject new doMultipleMethodCalls ] ]
+		withException: GtRsrEvaluationException.
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepIntoButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'helperMethod:' inBlock: false;
+		assertVariable: #aValue equals: '3';
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		selectFrameAtTopIndex: 2;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		play.
+
+	scripter gemStoneDebugger
+		clickOnStepOverButton;
+		play.
+
+	scripter gemStoneDebugger
+		assertSessionFrameAtTopIndex: 1 isSelector: 'doMultipleMethodCalls' inBlock: false;
+		assertNoDuplicateSessionVariableNames;
+		assertVariable: #a equals: '7';
+		play.
+
+	^ scripter
 ]
 
 { #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testStepPreservesCallerSourceDocuments [
 	<gtExample>
 	<after: #stopServer>
-	| gemstoneSession debuggingSession model cache snapshots replacements textChanges checkedFrames |
+	| gemstoneSession debuggingSession debuggerElement scripter |
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+		
 	gemstoneSession := self runningServer.
 	debuggingSession := self
 		debugSessionOn: [ gemstoneSession evaluateAndWait: 'self halt. ''1'' printString' ]
 		withException: GtRsrEvaluationException.
-	debuggingSession := GtGemStoneExpandableDebuggerElement spanNewSessionFrom: debuggingSession.
-	debuggingSession synchronizeCallStack.
-	model := GtGemStoneDebuggerStackModel new session: debuggingSession.
-	cache := model instVarNamed: 'coderViewModelCache'.
-	snapshots := debuggingSession remoteStackFrames collect: [ :frame |
-		| viewModel |
-		viewModel := (model createCoderFor: frame in: debuggingSession) asCoderViewModel.
-		cache at: frame put: viewModel.
-		{ frame. viewModel. viewModel coderModel sourceCode } ].
-	replacements := 0.
-	textChanges := 0.
-	checkedFrames := 0.
-	snapshots do: [ :snapshot |
-		snapshot second coderModel announcer
-			when: GtCoderSourceCodeReplaced do: [ :event | replacements := replacements + 1 ] for: model.
-		snapshot second announcer
-			when: GtTextualCoderViewModelTextChanged do: [ :event | textChanges := textChanges + 1 ] for: model ].
-	2 timesRepeat: [
-		debuggingSession gsStepIntoFrameIdentifier: debuggingSession remoteContext frameIdentifier.
-		debuggingSession synchronizeCallStack.
-		model updateBasedOnCurentSession.
-		self assert: model currentContext == debuggingSession remoteContext.
-		snapshots do: [ :snapshot |
-			| index freshFrame viewModel |
-			index := debuggingSession remoteStackFrames indexOf: snapshot first.
-			index > 0 ifTrue: [
-				freshFrame := debuggingSession remoteStackFrames at: index.
-				viewModel := snapshot second.
-				self assert: (cache at: freshFrame) == viewModel description: 'Cached view model changed'.
-				self assert: viewModel coderModel stackFrame == freshFrame description: 'Cached frame reference is stale'.
-				self assert: viewModel coderModel sourceCode == snapshot third description: [ 'Source document replaced for ', freshFrame printString, ' old specification: ', snapshot first frameSpecification printString, ' new specification: ', freshFrame frameSpecification printString ].
-				self assert: viewModel coderModel programCounterRange equals: freshFrame programCounterRange.
-				checkedFrames := checkedFrames + 1 ] ] ].
-	self assert: checkedFrames > 0.
-	self assert: replacements equals: 0.
-	self assert: textChanges equals: 0.
-	^ checkedFrames
+
+	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
+
+	scripter := BlScripter new.
+	scripter element: debuggerElement.
+	scripter model: debuggingSession.
+
+	scripter gemStoneDebugger
+		clickOnStepIntoButton;
+		clickOnStepIntoButton;
+		assertInCodersListHasHighlightAtTopIndex: 1;
+		scrollToFrameAtTopIndex: 2;
+		expandCoderAtTopIndex: 2;
+		assertInCodersListVisuallyHighlightedString: 'printString' atTopIndex: 2;
+		play.
+
+	^ scripter
 ]
 
 { #category : #'examples - close connection' }

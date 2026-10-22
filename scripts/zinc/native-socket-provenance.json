@@ -1,0 +1,490 @@
+[
+	{
+		"source" : "newTCPSocket\n ^ self basicNew onNativeSocket: GsSocket new",
+		"class" : "SocketStreamSocket",
+		"classSide" : true,
+		"originalSource" : null,
+		"selector" : "newTCPSocket",
+		"protocol" : "instance creation"
+	},
+	{
+		"source" : "connectToServerOnHost: host port: port\n ^ self newTCPSocket connectTo: host port: port timeout: -1",
+		"class" : "SocketStreamSocket",
+		"classSide" : true,
+		"originalSource" : null,
+		"selector" : "connectToServerOnHost:port:",
+		"protocol" : "services"
+	},
+	{
+		"source" : "onNativeclientSocket: native for: server\n ^ self basicNew onNativeclientSocket: native for: server",
+		"class" : "SocketStreamSocket",
+		"classSide" : true,
+		"originalSource" : null,
+		"selector" : "onNativeclientSocket:for:",
+		"protocol" : "instance creation"
+	},
+	{
+		"source" : "onNativeSocket: native\n self _setNoStubbing.\n underlyingSocket := TransientStackValue value: native.\n ^ self",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "onNativeSocket:",
+		"protocol" : "initialize-release"
+	},
+	{
+		"source" : "onNativeclientSocket: native for: server\n ^ self onNativeSocket: native",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "onNativeclientSocket: aNativeSocket for: aServerSocket\n  \"^self\n\tI initialize myself with the same properties as aServerSocket and with\n\taNativeSocket as my underlying socket.\"\n\n  communicationDomain := aServerSocket communicationDomain.\n  socketType := aServerSocket socketType.\n  protocolNumber := aServerSocket protocolNumber.\n  self _setNoStubbing.\t\"as long as I am in memory prevent stubbing of my instance variables ... I will stay in memory as long as I am referenced from stack..\"\n  underlyingSocket := TransientStackValue value: aNativeSocket.\t\"if I am committed, then do not persist aNativeSocket\"\n  ^ self",
+		"selector" : "onNativeclientSocket:for:",
+		"protocol" : "private"
+	},
+	{
+		"source" : "onNativeSocket: native forDomain: domain type: type protocol: protocol\n ^ self onNativeSocket: native",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "onNativeSocket: aSocket forDomain: aCommunicationDomain type: aSocketType protocol: aProtocolNumber\n  \"^self\n\tI initialize myself as a socket defined by the communications domain, type and protocol.  This\n\tfollows the equivalent of the using the socket()  or socketpair() function.\"\n\n  communicationDomain := aCommunicationDomain.\n  socketType := aSocketType.\n  protocolNumber := aProtocolNumber.\n  self _setNoStubbing.\t\"as long as I am in memory prevent stubbing of my instance variables ... I will stay in memory as long as I am referenced from stack..\"\n  underlyingSocket := TransientStackValue value: aSocket.\t\"if I am committed, then do not persist aSocket\"\n  ^ self",
+		"selector" : "onNativeSocket:forDomain:type:protocol:",
+		"protocol" : "initialize-release"
+	},
+	{
+		"source" : "underlyingSocket\n ^ underlyingSocket ifNil: [ nil ] ifNotNil: [ underlyingSocket value ]",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "underlyingSocket\n  ^ underlyingSocket value",
+		"selector" : "underlyingSocket",
+		"protocol" : "private"
+	},
+	{
+		"source" : "nativeOperation: block\n ^ [ block value ] on: SocketError do: [ :error | self socketFailure: error description ]",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "nativeOperation:",
+		"protocol" : "private"
+	},
+	{
+		"source" : "socketFailure: message\n | native symbol |\n native := self underlyingSocket.\n symbol := native ifNotNil: [ [ native lastErrorSymbol ] on: SocketError do: [ :ignored | nil ] ].\n self close.\n symbol == #TimedOut ifTrue: [ ConnectionTimedOut signal: message ].\n (#(BrokenPipe ConnReset ConnAborted NotConnected Shutdown NetworkReset) includes: symbol)\n  ifTrue: [ ConnectionClosed signal: message ].\n NetworkError signal: message",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "socketFailure:",
+		"protocol" : "private"
+	},
+	{
+		"source" : "close\n | native |\n native := self underlyingSocket.\n native ifNotNil: [ [ native close ] on: SocketError do: [ :error | nil ] ].\n ^ self",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "close",
+		"protocol" : "services-status"
+	},
+	{
+		"source" : "closeAndDestroy\n ^ self close",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "closeAndDestroy",
+		"protocol" : "services-status"
+	},
+	{
+		"source" : "isActive\n ^ self underlyingSocket notNil and: [ self underlyingSocket isActive == true ]",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "isActive",
+		"protocol" : "testing"
+	},
+	{
+		"source" : "isConnected\n | result |\n self isActive ifFalse: [ ^ false ].\n result := self nativeOperation: [ self underlyingSocket isConnected ].\n result ifNil: [ self socketFailure: 'Cannot determine connection state' ].\n ^ result",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "isConnected\n\t^self underlyingSocket isConnected",
+		"selector" : "isConnected",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "connectTo: host port: port\n ^ self connectTo: host port: port timeout: -1",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "connectTo:port:",
+		"protocol" : "services-status"
+	},
+	{
+		"source" : "connectTo: host port: port timeout: seconds\n | result milliseconds |\n \"Timeout is seconds; -1 means indefinite. Native name resolution has no timeout guarantee.\"\n milliseconds := seconds < 0 ifTrue: [ -1 ] ifFalse: [ (seconds * 1000) truncated ].\n [ result := self nativeOperation: [ self underlyingSocket connectTo: port on: host timeoutMs: milliseconds ].\n result == true ifFalse: [\n  (milliseconds >= 0 and: [ self underlyingSocket lastErrorSymbol == #InProgress ])\n   ifTrue: [ self close. ConnectionTimedOut signal: 'Socket connection timed out' ].\n  self socketFailure: 'Socket connection failed' ] ]\n  on: Exception do: [ :error | self close. error pass ].\n ^ self",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "connectTo:port:timeout:",
+		"protocol" : "services-status"
+	},
+	{
+		"source" : "readInto: buffer startingAt: start for: count\n | result |\n count = 0 ifTrue: [ ^ 0 ].\n self isActive ifFalse: [ ^ 0 ].\n result := self nativeOperation: [ self underlyingSocket read: count into: buffer startingAt: start ].\n result ifNil: [ self socketFailure: 'Socket read failed' ].\n result = 0 ifTrue: [ self close ].\n ^ result",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "readInto:startingAt:for:",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "writeFrom: buffer startingAt: start for: count\n | result |\n count = 0 ifTrue: [ ^ 0 ].\n self isActive ifFalse: [ ConnectionClosed signal: 'Socket is closed' ].\n result := self nativeOperation: [ self underlyingSocket write: count from: buffer startingAt: start ].\n result ifNil: [ self socketFailure: 'Socket write failed' ].\n result <= 0 ifTrue: [ self close. ConnectionClosed signal: 'Socket write made no progress' ].\n ^ result",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "writeFrom:startingAt:for:",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "write: buffer\n self sendData: buffer count: buffer size.\n ^ buffer size",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "write:",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "sendData: buffer\n ^ self sendData: buffer count: buffer size",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "sendData:",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "readyForRead\n ^ self waitForReadDataUpToMs: 0",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "readyForRead",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "waitForReadDataUpToMs: milliseconds\n | result |\n self isActive ifFalse: [ ^ false ].\n result := self nativeOperation: [ self underlyingSocket readWillNotBlockWithin: milliseconds ].\n result ifNil: [ self socketFailure: 'Socket readiness check failed' ].\n ^ result",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "waitForReadDataUpToMs:",
+		"protocol" : "services-io"
+	},
+	{
+		"source" : "waitForNonBlockingReadActivityUpToMs: milliseconds\n ^ self waitForReadDataUpToMs: milliseconds",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : null,
+		"selector" : "waitForNonBlockingReadActivityUpToMs:",
+		"protocol" : "services-io non-blocking"
+	},
+	{
+		"source" : "accept\n ^ self accept: -1",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "accept\n  \"^an SpSocket\n\tI accept the next connection made to the server socket I represent.  I return a new\n\tinstance of SpSocket which represents the socket over which information can be\n\texchanged.\n\tNOTE: this call will block waiting for an inbound connection\"\n\n  | gsSocket |\n  gsSocket := self underlyingSocket accept.\n  gsSocket\n    ifNil: [ \n      NetworkError\n        signal:\n          'accept error: ' , self underlyingSocket lastErrorString asString ].\n  ^ SocketStreamSocket onNativeclientSocket: gsSocket for: self",
+		"selector" : "accept",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "accept: seconds\n | native milliseconds symbol |\n \"Seconds; -1 indefinite. A finite readiness wait is followed by nonblocking native accept with zero milliseconds, so disappeared readiness never falls into indefinite accept.\"\n milliseconds := seconds < 0 ifTrue: [ -1 ] ifFalse: [ (seconds * 1000) truncated ].\n native := milliseconds < 0\n  ifTrue: [ self nativeOperation: [ self underlyingSocket accept ] ]\n  ifFalse: [\n   self isActive ifFalse: [ self socketFailure: 'Cannot accept on a closed listener' ].\n   self setOption: 'NONBLOCKING' value: true.\n   (self waitForReadDataUpToMs: milliseconds) ifFalse: [\n    self isActive ifFalse: [ self socketFailure: 'Listener closed while waiting to accept' ].\n    ^ nil ].\n   self nativeOperation: [ self underlyingSocket acceptTimeoutMs: 0 ] ].\n native ifNil: [\n  symbol := self nativeOperation: [ self underlyingSocket lastErrorSymbol ].\n  self isActive ifFalse: [ self socketFailure: 'Listener closed while accepting' ].\n  (milliseconds >= 0 and: [ symbol isNil or: [ #(WouldBlock TryAgain TimedOut) includes: symbol ] ])\n   ifTrue: [ ^ nil ].\n  self socketFailure: 'Socket accept failed' ].\n ^ [ self class onNativeclientSocket: native for: self ]\n  on: Exception do: [ :error | [ native close ] on: SocketError do: [ :ignored | nil ]. error pass ]",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "accept: aTimeout\n  \"^an SpSocket\n\tI accept the next connection made to the server socket I represent.  I return a new\n\tinstance of SpSocket which represents the socket over which information can be\n\texchanged.\n\tNOTE: this call will block waiting for an inbound connection\"\n\n  | gsSocket |\n  gsSocket := self underlyingSocket accept: aTimeout.\n  gsSocket\n    ifNil: [ NetworkError signal: 'accept error: ' , self underlyingSocket lastErrorString ].\n  ^ SocketStreamSocket onNativeclientSocket: gsSocket for: self",
+		"selector" : "accept:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "waitForConnectionFor: seconds ifTimedOut: block\n | accepted |\n accepted := self accept: seconds.\n ^ accepted ifNil: [ block value ]",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "waitForConnectionFor: timeout ifTimedOut: timeoutBlock\n\t\"Wait up until the given deadline for a connection to be established. Return true if it is established by the deadline, false if not.\"\n\n\"This doesn't work in Gemstone so we just accept\"\n\t\n^self accept\n\n\"|status|\nstatus := self accept: timeout.\n\n(status==false or:[status ==nil]) ifTrue:[^timeoutBlock value].\n^status\"",
+		"selector" : "waitForConnectionFor:ifTimedOut:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "receiveAvailableDataInto: buffer startingAt: start\n | position count |\n position := start.\n [ position <= buffer size and: [ self dataAvailable ] ] whileTrue: [\n  count := self receiveSomeDataInto: buffer startingAt: position.\n  count = 0 ifTrue: [ ^ position - start ].\n  position := position + count ].\n ^ position - start",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "receiveAvailableDataInto: buffer startingAt: startIndex\n\t\"Receive all available data into the given buffer and return the number of bytes received.\n\tNote the given buffer may be only partially filled by the received data.\n\tDo not wait for data.\"\n\n\t| bufferPos bytesRead |\n\tbufferPos := startIndex.\n\t[self dataAvailable\n\t\tand: [bufferPos-1 < buffer size]] \n\t\twhileTrue: [\n\t\t\tbytesRead := self receiveSomeDataInto: buffer startingAt: bufferPos.\n\t\t\tbufferPos := bufferPos + bytesRead].\n\t^bufferPos - startIndex",
+		"selector" : "receiveAvailableDataInto:startingAt:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "receiveDataInto: buffer startingAt: start\n self waitForDataIfClosed: [ ^ 0 ].\n ^ self readInto: buffer startingAt: start for: buffer size - start + 1",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "receiveDataInto: aStringOrByteArray startingAt: aNumber\n\t\"Receive data into the given buffer and return the number of bytes received. \n\tNote the given buffer may be only partially filled by the received data.\n\tWaits for data once.  The answer may be zero (indicating that no data was \n\tavailable before the socket closed).\"\n\n\t| bytesRead closed b |\n\tbytesRead := 0.\n\tclosed := false.\n\t[closed not and: [bytesRead == 0]]\n\t\twhileTrue: [self waitForDataIfClosed: [closed := true].\n\t\t\tb:=(aStringOrByteArray size  -aNumber +1).\n\t\t\n\t\t\tbytesRead := self  readInto: aStringOrByteArray startingAt: aNumber for: b  ].\n\t\t\n\t^bytesRead",
+		"selector" : "receiveDataInto:startingAt:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "receiveDataSignallingClosedInto: buffer startingAt: start\n | count |\n self waitForData.\n count := self readInto: buffer startingAt: start for: buffer size - start + 1.\n count = 0 ifTrue: [ ConnectionClosed signal: 'End of socket input' ].\n ^ count",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "receiveDataSignallingClosedInto: aStringOrByteArray startingAt: aNumber\n\t\"Receive data into the given buffer and return the number of bytes received. \n\tNote the given buffer may be only partially filled by the received data.\n\tWaits for data until something is read or the socket is closed, upon which\n\twe signal.\"\n\n\t| bytesRead |\n\tbytesRead := 0.\n\t[bytesRead == 0]\n\t\twhileTrue: [\n\t\t\tself waitForData.\n\t\t\tbytesRead := self  readInto: aStringOrByteArray startingAt: aNumber for: (aStringOrByteArray size  -aNumber +1) ].\n\t^bytesRead",
+		"selector" : "receiveDataSignallingClosedInto:startingAt:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "receiveDataTimeout: seconds into: buffer startingAt: start\n self waitForDataFor: seconds ifClosed: [ ^ 0 ] ifTimedOut: [ ^ 0 ].\n ^ self readInto: buffer startingAt: start for: buffer size - start + 1",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "receiveDataTimeout: timeout into: aStringOrByteArray startingAt: aNumber\n\t\"Receive data into the given buffer and return the number of bytes received. \n\tNote the given buffer may be only partially filled by the received data.\n\tWait for data once for the specified nr of seconds.  The answer may be \n\tzero (indicating that there was no data available within the given timeout).\"\n\n\tself waitForDataFor: timeout ifClosed: [] ifTimedOut: [].\n\t^self readInto: aStringOrByteArray startingAt: aNumber for: (aStringOrByteArray size - aNumber +1)",
+		"selector" : "receiveDataTimeout:into:startingAt:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "waitForDataFor: seconds ifClosed: closedBlock ifTimedOut: timedOutBlock\n | milliseconds |\n self isConnected ifFalse: [ self close. ^ closedBlock value ].\n milliseconds := seconds < 0 ifTrue: [ -1 ] ifFalse: [ (seconds * 1000) truncated ].\n (self waitForReadDataUpToMs: milliseconds) ifTrue: [ ^ self ].\n self isConnected ifFalse: [ self close. ^ closedBlock value ].\n ^ timedOutBlock value",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "waitForDataFor: timeout ifClosed: closedBlock ifTimedOut: timedOutBlock\n  \"Wait for the given nr of seconds for data to arrive.\"\n\n  | startTime msecsDelta |\n  startTime := Time millisecondClockValue.\n  msecsDelta := (timeout * 1000) truncated.\n  [ (Time millisecondsSince: startTime) < msecsDelta ]\n    whileTrue: [ \n      self readyForRead\n        ifTrue: [ ^ self ].\n      self isConnected\n        ifFalse: [ ^ closedBlock value ].\n      self\n        waitForNonBlockingReadActivityUpToMs:\n          (msecsDelta - (Time millisecondsSince: startTime) max: 0) ].\n  self readyForRead\n    ifFalse: [ \n      self isConnected\n        ifTrue: [ ^ timedOutBlock value ]\n        ifFalse: [ ^ closedBlock value ] ]",
+		"selector" : "waitForDataFor:ifClosed:ifTimedOut:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "waitForDataIfClosed: closedBlock\n ^ self waitForDataFor: -1 ifClosed: closedBlock ifTimedOut: closedBlock",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "waitForDataIfClosed: closedBlock\n\t\"Wait indefinitely for data to arrive.  This method will block until\n\tdata is available or the socket is closed.\"\n\n\t[true]\n\t\twhileTrue: [\n\t\t\tself isConnected\n\t\t\t\tifFalse: [^closedBlock value].\n\t\t\t(self readyForRead)\n\t\t\t\tifTrue: [\n\t\t\t\t\t^self].\n\n\t\t\tself underlyingSocket readWillNotBlockWithin: -1].",
+		"selector" : "waitForDataIfClosed:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "listenOn: port backlogSize: length\n ^ self listenOn: port backlogSize: length interface: nil",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "listenOn: portNum backlogSize: queueLength\n\n\t^self underlyingSocket makeServer: queueLength atPort: portNum",
+		"selector" : "listenOn:backlogSize:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "listenOn: port backlogSize: length interface: address\n | result |\n result := self nativeOperation: [ self underlyingSocket makeServer: length atPort: port atAddress: address ].\n (result == nil or: [ result == false ]) ifTrue: [ self socketFailure: 'Socket listen failed' ].\n ^ self",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "listenOn: portNum backlogSize: queueLength interface: address\n\n\t^self underlyingSocket makeServer: queueLength atPort: portNum atAddress: address",
+		"selector" : "listenOn:backlogSize:interface:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "setOption: name value: value\n | result |\n result := self nativeOperation: [ self underlyingSocket option: name put: value ].\n result ifNil: [ self socketFailure: 'Socket option failed' ].\n ^ result",
+		"class" : "SocketStreamSocket",
+		"classSide" : false,
+		"originalSource" : "setOption: anOption value: aValue\n\tself underlyingSocket option: anOption put: aValue",
+		"selector" : "setOption:value:",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "flushComet\n  \"Flushes the receiver and answer if the socket is still in a valid state and both ends are properly connected. Free the socket, as a side-effect if there is a problem.\"\n\n  | result |\n  result := [ \n  self flush.\n  true ]\n    on: NetworkError\n    do: [ :err | false ].\n  result := result and: [ self isConnected and: [ self isOtherEndConnected ] ].\n  result\n    ifFalse: [ self socket destroy ].\n  ^ result",
+		"class" : "SocketStream",
+		"classSide" : false,
+		"originalSource" : "flushComet\n  \"Flushes the receiver and answer if the socket is still in a valid state and both ends are properly connected. Free the socket, as a side-effect if there is a problem.\"\n\n  | result |\n  result := [ \n  self flush.\n  true ]\n    on: NetworkError , SpSocketError\n    do: [ :err | false ].\n  result := result and: [ self isConnected and: [ self isOtherEndConnected ] ].\n  result\n    ifFalse: [ self socket destroy ].\n  ^ result",
+		"selector" : "flushComet",
+		"protocol" : "as yet unclassified"
+	},
+	{
+		"source" : "executeWithRetriesRemaining: retryCount\n  ^ [ self executeWithRedirectsRemaining: self maxNumberOfRedirects ]\n    on:\n      NetworkError , ZnParseError , ZnCharacterEncodingError , ZnUnknownScheme\n        , ZnPortNotANumber\n    do: [ :exception | \n      retryCount > 0\n        ifTrue: [ \n          self\n            handleRetry: exception;\n            executeWithRetriesRemaining: retryCount - 1 ]\n        ifFalse: [ exception pass ] ]",
+		"class" : "ZnClient",
+		"classSide" : false,
+		"originalSource" : "executeWithRetriesRemaining: retryCount\n  ^ [ self executeWithRedirectsRemaining: self maxNumberOfRedirects ]\n    on:\n      NetworkError , ZnParseError , ZnCharacterEncodingError , ZnUnknownScheme\n        , ZnPortNotANumber , SpSocketError\n    do: [ :exception | \n      retryCount > 0\n        ifTrue: [ \n          self\n            handleRetry: exception;\n            executeWithRetriesRemaining: retryCount - 1 ]\n        ifFalse: [ exception pass ] ]",
+		"selector" : "executeWithRetriesRemaining:",
+		"protocol" : "private protocol"
+	},
+	{
+		"source" : "readRequestTerminationExceptionSet\n  \"Return the set of exceptions which, when they occur while reading a request,\n\tare interpreted as equivalent to a timeout or connection close.\"\n\n  ^ self\n    exceptionSet:\n      #(#'ConnectionClosed' #'ConnectionTimedOut' #'PrimitiveFailed' #'NetworkError')",
+		"class" : "ZnMultiThreadedServer",
+		"classSide" : false,
+		"originalSource" : "readRequestTerminationExceptionSet\n  \"Return the set of exceptions which, when they occur while reading a request,\n\tare interpreted as equivalent to a timeout or connection close.\"\n\n  ^ self\n    exceptionSet:\n      #(#'ConnectionClosed' #'ConnectionTimedOut' #'PrimitiveFailed' #'SpSocketError')",
+		"selector" : "readRequestTerminationExceptionSet",
+		"protocol" : "private"
+	},
+	{
+		"source" : "writeResponseTerminationExceptionSet\n  \"Return the set of exceptions which, when they occur while writing a response,\n\tare interpreted as equivalent to a timeout or connection close.\"\n\n  ^ self\n    exceptionSet:\n      #(#'ConnectionClosed' #'ConnectionTimedOut' #'PrimitiveFailed' #'NetworkError')",
+		"class" : "ZnMultiThreadedServer",
+		"classSide" : false,
+		"originalSource" : "writeResponseTerminationExceptionSet\n  \"Return the set of exceptions which, when they occur while writing a response,\n\tare interpreted as equivalent to a timeout or connection close.\"\n\n  ^ self\n    exceptionSet:\n      #(#'ConnectionClosed' #'ConnectionTimedOut' #'PrimitiveFailed' #'SpSocketError')",
+		"selector" : "writeResponseTerminationExceptionSet",
+		"protocol" : "private"
+	},
+	{
+		"source" : "socketStreamToUrlDirectly: url\n\t| stream address |\n\taddress := url host. \n\tstream := (self streamClassForScheme: url scheme) \n\t\topenConnectionToHost: address\n\t\tport: url portOrDefault\n\t\ttimeout: self timeout.\t\n\tself setSocketStreamParameters: stream.\t\n\t(#(https wss) includes: url scheme)\n\t\tifTrue:\n\t\t\t[stream\n\t\t\t\t\"Avoid warning about unimplemented selector when Zodiac is not loaded.\"\n\t\t\t\tperform: #serverNameIndication:\n\t\t\t\twith: url host.\n\t\t\tstream\n\t\t\t\tconnect].\t\n\t^ stream",
+		"class" : "ZnNetworkingUtils",
+		"classSide" : false,
+		"originalSource" : "socketStreamToUrlDirectly: url\n\t| stream address |\n\taddress := SpIPAddress ipAddressForHostName: url host timeout: self timeout. \n\tstream := (self streamClassForScheme: url scheme) \n\t\topenConnectionToHost: address\n\t\tport: url portOrDefault\n\t\ttimeout: self timeout.\t\n\tself setSocketStreamParameters: stream.\t\n\t(#(https wss) includes: url scheme)\n\t\tifTrue:\n\t\t\t[stream\n\t\t\t\t\"Avoid warning about unimplemented selector when Zodiac is not loaded.\"\n\t\t\t\tperform: #serverNameIndication:\n\t\t\t\twith: url host.\n\t\t\tstream\n\t\t\t\tconnect].\t\n\t^ stream",
+		"selector" : "socketStreamToUrlDirectly:",
+		"protocol" : "public"
+	},
+	{
+		"source" : "httpGetDocument: url args: args accept: mimeType request: requestString\n\t\"Return the exact contents of a web object. Asks for the given MIME type. If mimeType is nil, use 'text/html'. An extra requestString may be  submitted and must end with crlf.  The parsed header is saved. Use a proxy server if one has been registered.  tk 7/23/97 17:12\"\n\t\"Note: To fetch raw data, you can use the MIME type 'application/octet-stream'.\"\n\n\t| serverName serverAddr port bare page index connectToHost connectToPort aStream portSuffix |\n\tbare := (url asLowercase beginsWith: 'http://') \n\t\t\t\tifTrue: [url copyFrom: 8 to: url size]\n\t\t\t\tifFalse: [url].\n\tbare := bare copyUpTo: $#.  \"remove fragment, if specified\"\n\tserverName := bare copyUpTo: $/.\n\tpage := bare copyFrom: serverName size + 1 to: bare size.\n\t(serverName includes: $:) \n\t\tifTrue:\n\t\t\t[index := serverName indexOf: $:.\n\t\t\tport := (serverName copyFrom: index+1 to: serverName size) asNumber.\n\t\t\tportSuffix := ':', port printString.\n\t\t\tserverName := serverName copyFrom: 1 to: index-1. ]\n\t\tifFalse: [ \n\t\t\tport := self defaultPort.\n\t\t\tportSuffix := ''].\n\tpage size = 0 ifTrue: [page := '/'].\n\t\"add arguments\"\n\targs ifNotNil: [page := page, (self argString: args) ].\n\n\t(self shouldUseProxy: serverName)\n\t\tifFalse: \n\t\t\t[connectToHost := serverName.\n\t\t\tconnectToPort := port ]\n\t\tifTrue:\n\t\t\t[page := 'http://', serverName, portSuffix, page. \"put back together\"\n\t\t\tconnectToHost := self httpProxyServer.\n\t\t\tconnectToPort := self httpProxyPort].\n\t\n\tserverAddr := GsSocket getHostAddressByName: connectToHost.\n\tserverAddr ifNil: [^ 'Could not resolve the server named: ', connectToHost].\n\n\t3 timesRepeat: [ | sock header firstData newUrl list length type |\n\t\tsock := HTTPSocket connectToServerOnHost: connectToHost port: connectToPort .\n\t\t[ sock sendCommand: 'GET ', page, ' HTTP/1.0', String crlf, \n\t\t\t(mimeType ifNotNil: ['ACCEPT: ', mimeType,  String crlf] ifNil: ['']),\n\t\t\t'ACCEPT: text/html',  String crlf,\t\"Always accept plain text\"\n\t\t\tHTTPProxyCredentials,\n\t\t\tHTTPBlabEmail,\t\"may be empty\"\n\t\t\trequestString,\t\"extra user request. Authorization\"\n\t\t\tself userAgentString,  String crlf,\n\t\t\t'Host: ', serverName, portSuffix,  String crlf.\t\"blank line automatically added\"\n\n\t\tlist := sock getResponseUpTo: String crlf, String crlf ignoring: (String with: Character cr). \"list = header, CrLf, CrLf, beginningOfData\"\n\t\theader := list at: 1.\n\t\tfirstData := list at: 3.\n\t\theader isEmpty \n\t\t\tifTrue: [aStream := 'server aborted early']\n\t\t\tifFalse: [\n\t\t\t\t\"dig out some headers\"\n\t\t\t\tsock header: header.\n\t\t\t\tlength := sock getHeader: 'content-length'.\n\t\t\t\tlength ifNotNil: [ length := length asNumber ].\n\t\t\t\ttype := sock getHeader: 'content-type'.\n\t\t\t\tsock responseCode first = $3 ifTrue: [\n\t\t\t\t\tnewUrl := sock getHeader: 'location'.\n\t\t\t\t\tnewUrl ifNotNil: [ \n\t\t\t\t\t\tTranscript show: 'redirecting to ', newUrl; cr.\n\t\t\t\t\t\tsock closeAndDestroy.\n\t\t\t\t\t\tnewUrl := self expandUrl: newUrl ip: serverAddr port: connectToPort.\n\t\t\t\t\t\t^self httpGetDocument: newUrl args: args  accept: mimeType request: requestString] ].\n\t\t\taStream := sock getRestOfBuffer: firstData totalLength: length.\n\t\t\t\"a 400-series error\"\n\t\t\tsock responseCode first = $4 ifTrue: [^ header, aStream contents].\n\t\t\t].\n\tsock closeAndDestroy.\t\"Always OK to destroy!\"\n\taStream class ~~ String ifTrue: [\n \t\t^ MIMEDocument contentType: type content: aStream contents url: url].\n\taStream = 'server aborted early' ifTrue: [ ^aStream ].\n ] ensure: [ sock closeAndDestroy ].\n\t].\n\n\t{'HTTPSocket class>>httpGetDocument:args:accept:request:'. aStream. url} inspect.\n\t^'some other bad thing happened!'",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "httpGetDocument: url args: args accept: mimeType request: requestString\n\t\"Return the exact contents of a web object. Asks for the given MIME type. If mimeType is nil, use 'text/html'. An extra requestString may be  submitted and must end with crlf.  The parsed header is saved. Use a proxy server if one has been registered.  tk 7/23/97 17:12\"\n\t\"Note: To fetch raw data, you can use the MIME type 'application/octet-stream'.\"\n\n\t| serverName serverAddr port bare page index connectToHost connectToPort aStream portSuffix |\n\tbare := (url asLowercase beginsWith: 'http://') \n\t\t\t\tifTrue: [url copyFrom: 8 to: url size]\n\t\t\t\tifFalse: [url].\n\tbare := bare copyUpTo: $#.  \"remove fragment, if specified\"\n\tserverName := bare copyUpTo: $/.\n\tpage := bare copyFrom: serverName size + 1 to: bare size.\n\t(serverName includes: $:) \n\t\tifTrue:\n\t\t\t[index := serverName indexOf: $:.\n\t\t\tport := (serverName copyFrom: index+1 to: serverName size) asNumber.\n\t\t\tportSuffix := ':', port printString.\n\t\t\tserverName := serverName copyFrom: 1 to: index-1. ]\n\t\tifFalse: [ \n\t\t\tport := self defaultPort.\n\t\t\tportSuffix := ''].\n\tpage size = 0 ifTrue: [page := '/'].\n\t\"add arguments\"\n\targs ifNotNil: [page := page, (self argString: args) ].\n\n\t(self shouldUseProxy: serverName)\n\t\tifFalse: \n\t\t\t[connectToHost := serverName.\n\t\t\tconnectToPort := port ]\n\t\tifTrue:\n\t\t\t[page := 'http://', serverName, portSuffix, page. \"put back together\"\n\t\t\tconnectToHost := self httpProxyServer.\n\t\t\tconnectToPort := self httpProxyPort].\n\t\n\tserverAddr := SpIPAddress ipAddressForHostName: connectToHost timeout: 20.\n\tserverAddr ifNil: [^ 'Could not resolve the server named: ', connectToHost].\n\n\t3 timesRepeat: [ | sock header firstData newUrl list length type |\n\t\tsock := HTTPSocket connectToServerOnHost: connectToHost port: connectToPort .\n\t\tsock sendCommand: 'GET ', page, ' HTTP/1.0', String crlf, \n\t\t\t(mimeType ifNotNil: ['ACCEPT: ', mimeType,  String crlf] ifNil: ['']),\n\t\t\t'ACCEPT: text/html',  String crlf,\t\"Always accept plain text\"\n\t\t\tHTTPProxyCredentials,\n\t\t\tHTTPBlabEmail,\t\"may be empty\"\n\t\t\trequestString,\t\"extra user request. Authorization\"\n\t\t\tself userAgentString,  String crlf,\n\t\t\t'Host: ', serverName, portSuffix,  String crlf.\t\"blank line automatically added\"\n\n\t\tlist := sock getResponseUpTo: String crlf, String crlf ignoring: (String with: Character cr). \"list = header, CrLf, CrLf, beginningOfData\"\n\t\theader := list at: 1.\n\t\tfirstData := list at: 3.\n\t\theader isEmpty \n\t\t\tifTrue: [aStream := 'server aborted early']\n\t\t\tifFalse: [\n\t\t\t\t\"dig out some headers\"\n\t\t\t\tsock header: header.\n\t\t\t\tlength := sock getHeader: 'content-length'.\n\t\t\t\tlength ifNotNil: [ length := length asNumber ].\n\t\t\t\ttype := sock getHeader: 'content-type'.\n\t\t\t\tsock responseCode first = $3 ifTrue: [\n\t\t\t\t\tnewUrl := sock getHeader: 'location'.\n\t\t\t\t\tnewUrl ifNotNil: [ \n\t\t\t\t\t\tTranscript show: 'redirecting to ', newUrl; cr.\n\t\t\t\t\t\tsock closeAndDestroy.\n\t\t\t\t\t\tnewUrl := self expandUrl: newUrl ip: serverAddr port: connectToPort.\n\t\t\t\t\t\t^self httpGetDocument: newUrl args: args  accept: mimeType request: requestString] ].\n\t\t\taStream := sock getRestOfBuffer: firstData totalLength: length.\n\t\t\t\"a 400-series error\"\n\t\t\tsock responseCode first = $4 ifTrue: [^ header, aStream contents].\n\t\t\t].\n\tsock closeAndDestroy.\t\"Always OK to destroy!\"\n\taStream class ~~ String ifTrue: [\n \t\t^ MIMEDocument contentType: type content: aStream contents url: url].\n\taStream = 'server aborted early' ifTrue: [ ^aStream ].\n\t].\n\n\t{'HTTPSocket class>>httpGetDocument:args:accept:request:'. aStream. url} inspect.\n\t^'some other bad thing happened!'",
+		"selector" : "httpGetDocument:args:accept:request:",
+		"protocol" : "get"
+	},
+	{
+		"source" : "getResponseUpTo: marker\n ^ self getResponseUpTo: marker ignoring: ''",
+		"class" : "HTTPSocket",
+		"classSide" : false,
+		"originalSource" : "getResponseUpTo: markerString\n\t\"Keep reading until the marker is seen.  Return three parts: header, marker, beginningOfData.  Fails if no marker in first 2000 chars.\" \n\n\t| buf response bytesRead tester mm tries |\n\tbuf := ByteArray new: 2000.\n\tresponse := WriteStream on: ByteArray new.\n\ttester := 1. mm := 1.\n\ttries := 3.\n\t[tester := tester - markerString size + 1 max: 1.  \"rewind a little, in case the marker crosses a read boundary\"\n\ttester to: response position - 1 do: [:tt |\n\t\t(Character value: (buf at: tt)) = (markerString at: mm)\n\t\t\tifTrue: [mm := mm + 1]\n\t\t\tifFalse: [mm := 1 ].\n\t\t\t\"Not totally correct for markers like xx0xx\"\n\t\tmm > markerString size ifTrue: [\"got it\"\n\t\t\t^ Array with: (buf asString copyFrom: 1 to: tt+1-mm)\n\t\t\t\twith: markerString\n\t\t\t\twith: (buf asString copyFrom: tt+1 to: response position - 1)]].\n\t tester := 1 max: response position.\t\"OK if mm in the middle\"\n\t (response position < buf size) & (self isActive | self readyForRead)\n\t\t& ((tries := tries - 1) >= 0) ] whileTrue: [\n\t\t(self waitForReadDataUpToMs: 20000) ifFalse: [\n\t\t\tself error: 'data was late'].\n\t\tbytesRead := self readInto: buf startingAt: 1 for: buf size.\n\t\tresponse nextPutAll: (buf copyFrom: 1 to: bytesRead)].\t\n\n\t^ Array with: response contents asString\n\t\twith: ''\n\t\twith: ''\t\t\"Marker not found and connection closed\"",
+		"selector" : "getResponseUpTo:",
+		"protocol" : "http"
+	},
+	{
+		"source" : "getResponseUpTo: marker ignoring: ignored\n | response buffer count target matched start character |\n response := ''.\n buffer := ByteArray new: 2000.\n target := marker reject: [ :each | ignored includes: each ].\n target isEmpty ifTrue: [ self error: 'Empty HTTP header delimiter' ].\n [ response size < 2000 ] whileTrue: [\n  count := self receiveDataTimeout: 20 into: buffer startingAt: 1.\n  count = 0 ifTrue: [\n   self isConnected ifTrue: [ ConnectionTimedOut signal: 'HTTP header receive timed out' ].\n   ^ { response. ''. '' } ].\n  response := response, (buffer copyFrom: 1 to: count) asString.\n  matched := 0. start := 1.\n  1 to: response size do: [ :index |\n   character := response at: index.\n   (ignored includes: character) ifFalse: [\n    character = (target at: matched + 1)\n     ifTrue: [ matched = 0 ifTrue: [ start := index ]. matched := matched + 1 ]\n     ifFalse: [ matched := character = target first ifTrue: [ start := index. 1 ] ifFalse: [ 0 ] ].\n    matched = target size ifTrue: [\n     ^ { response copyFrom: 1 to: start - 1. marker.\n      response copyFrom: index + 1 to: response size } ] ] ] ].\n ^ { response. ''. '' }",
+		"class" : "HTTPSocket",
+		"classSide" : false,
+		"originalSource" : "getResponseUpTo: markerString ignoring: ignoreString\n  \"Keep reading, until the marker is seen, skipping characters in ignoreString when\n      comparing to the marker.  Return three parts: header, marker, beginningOfData.\n     Fails if no marker in first 2000 chars.\"\n\n  | buf response bytesRead tester mm skipped |\n  buf _ ByteArray new: 2000.\n  response _ WriteStream on: ByteArray new.\n  tester _ 1.\n  mm _ 1.\n  skipped _ 0.\n  [ tester _ tester - markerString size + 1 max: 1.\t\"rewind a little, in case the marker crosses a read boundary\"\n  tester to: response position - 1 do: [ :tt | (Character value: (buf at: tt)) = (markerString at: mm)\n      ifFalse: [ [ ignoreString includes: (markerString at: mm) ] whileTrue: [ mm _ mm + 1.\n            skipped _ skipped + 1 ] ].\n    (Character value: (buf at: tt)) = (markerString at: mm)\n      ifTrue: [ mm _ mm + 1 ]\n      ifFalse: [ mm _ 1.\n        skipped _ 0 ].\t\"Not totally correct for markers like xx0xx\"\n    mm > markerString size\n      ifTrue: [ \"got it\"\n        ^ Array\n          with: (buf asString copyFrom: 1 to: tt + 1 - mm + skipped)\n          with: markerString\n          with: (buf asString copyFrom: tt + 1 to: response position - 1) ] ].\n  tester _ 1 max: response position.\t\"OK if mm in the middle\"\n  response position < buf size & (self isActive | self readyForRead) ]\n    whileTrue: [ (self waitForReadDataUpToMs: 20000)\n        ifFalse: [ self error: 'data was late' ].\n      bytesRead _ self readInto: buf startingAt: 1 for: buf size.\n      response nextPutAll: (buf copyFrom: 1 to: bytesRead) ].\n  ^ Array with: response contents asString with: '' with: ''\t\"Marker not found and connection closed\"",
+		"selector" : "getResponseUpTo:ignoring:",
+		"protocol" : "GsDevKit Issue60 patch"
+	},
+	{
+		"source" : "getRestOfBuffer: beginning\n | response buffer count |\n response := RWBinaryOrTextStream on: String new.\n response nextPutAll: beginning.\n buffer := ByteArray new: 2000.\n [\n  count := self receiveDataTimeout: 5 into: buffer startingAt: 1.\n  count > 0\n ] whileTrue: [\n  response nextPutAll: (buffer copyFrom: 1 to: count) asString ].\n self isConnected ifTrue: [ ConnectionTimedOut signal: 'HTTP body receive timed out' ].\n response size = 0 ifTrue: [ ^ 'Empty Buffer' ].\n response reset.\n ^ response",
+		"class" : "HTTPSocket",
+		"classSide" : false,
+		"originalSource" : "getRestOfBuffer: beginning \n\t\"We don't know the length. Keep going until connection is closed. Part of\n\tit has already been received. Response is of type text, not binary.\"\n\t| buf response bytesRead |\n\tresponse := RWBinaryOrTextStream\n\t\t\t\ton: String new.\n\tresponse nextPutAll: beginning.\n\tbuf := String new: 2000.\n\t[self isActive \"& self readyForRead\" & self underlyingSocket isConnected]\n\t\twhileTrue: [\n\t\t\t[(self waitForReadDataUpToMs: (5000))] whileFalse: [\n\t \t\t\tGsFile gciLogServer: 'data is slow'].\n\t\t\tbytesRead _ self readInto: buf startingAt: 1 for: buf size.\n\t\t\tbytesRead > 0\n\t\t\t\tifTrue: [ response nextPutAll: (buf copyFrom: 1 to: bytesRead) ]].\n\tresponse size = 0 ifTrue: [ ^'Empty Buffer' ].\n\tresponse reset.\n\t^ response",
+		"selector" : "getRestOfBuffer:",
+		"protocol" : "http"
+	},
+	{
+		"source" : "getRestOfBuffer: beginning totalLength: length\n | response buffer count received |\n length ifNil: [ ^ self getRestOfBuffer: beginning ].\n response := RWBinaryOrTextStream on: String new.\n response nextPutAll: beginning.\n received := beginning size.\n buffer := ByteArray new: 2000.\n [ received < length ] whileTrue: [\n  count := self receiveDataTimeout: 5 into: buffer startingAt: 1.\n  count = 0 ifTrue: [\n   self isConnected ifTrue: [ ConnectionTimedOut signal: 'HTTP body receive timed out' ].\n   ^ 'server aborted early' ].\n  response nextPutAll: (buffer copyFrom: 1 to: count) asString.\n  received := received + count ].\n response reset.\n ^ response",
+		"class" : "HTTPSocket",
+		"classSide" : false,
+		"originalSource" : "getRestOfBuffer: beginning totalLength: length\n\t\"Reel in a string of a fixed length.  Part of it has already been received.  Close the connection after all chars are received.  We do not strip out linefeed chars.\" \n\t\"if length is nil, read until connection close.  Response is of type text, not binary.\"\n\n\t| buf response bytesRead |\n\tlength ifNil: [^ self getRestOfBuffer: beginning].\n\tresponse _ RWBinaryOrTextStream on: String new.\n\tresponse nextPutAll: beginning.\n\tbuf _ String new: 2000.\n\n\t[(response position - 1 < length) & (self isActive | self readyForRead)] \n\twhileTrue: [\n\t\t[(self waitForReadDataUpToMs: (5000))] whileFalse: [\n\t \t\tGsFile gciLogServer: 'data is slow'].\n\t\tbytesRead _ self readInto: buf startingAt: 1 for: buf size.\n\t\tbytesRead > 0 ifTrue: [  \n\t\t\tresponse nextPutAll: (buf copyFrom: 1 to: bytesRead)] ].\n\tresponse position < length ifTrue: [^ 'server aborted early'].\n\tresponse reset.\t\"position: 0.\"\n\t^ response",
+		"selector" : "getRestOfBuffer:totalLength:",
+		"protocol" : "http"
+	},
+	{
+		"source" : "header: headerText\n\t\"set the headers.  Then getHeader: can be used\"\n\n\t\"divide into basic lines\"\n\t| lines foldedLines i statusLine |\n\tlines := headerText findTokens: (String with: Character cr  with: Character lf).\n\tlines := lines reject: [ :line | line isEmpty ].\n\tstatusLine := lines first.\n\tlines := lines copyFrom: 2 to: lines size.\n\n\t\"parse the status (pretty trivial right now)\"\n\tresponseCode := (statusLine findTokens: ' ') second.\n\n\t\"fold lines that start with spaces into the previous line\"\n\tfoldedLines := OrderedCollection new.\n\tlines do: [ :line |\n\t\tline first isSeparator ifTrue: [\n\t\t\tfoldedLines at: foldedLines size  put: (foldedLines last, line) ]\n\t\tifFalse: [ foldedLines add: line ] ].\n\n\t\"make a dictionary mapping headers to header contents\"\n\theaders := Dictionary new.\n\tfoldedLines do: [ :line |\n\t\ti := line indexOf: $:.\n\t\ti > 0 ifTrue: [\n\t\t\theaders \n\t\t\tat: (line copyFrom: 1 to: i-1) asLowercase \n\t\t\tput: (line copyFrom: i+1 to: line size) trimSeparators ] ].",
+		"class" : "HTTPSocket",
+		"classSide" : false,
+		"originalSource" : "header: headerText\n\t\"set the headers.  Then getHeader: can be used\"\n\n\t\"divide into basic lines\"\n\t| lines foldedLines i statusLine |\n\tlines _ headerText findTokens: (String with: Character cr  with: Character lf).\n\tstatusLine _ lines first.\n\tlines _ lines copyFrom: 2 to: lines size.\n\n\t\"parse the status (pretty trivial right now)\"\n\tresponseCode _ (statusLine findTokens: ' ') second.\n\n\t\"fold lines that start with spaces into the previous line\"\n\tfoldedLines _ OrderedCollection new.\n\tlines do: [ :line |\n\t\tline first isSeparator ifTrue: [\n\t\t\tfoldedLines at: foldedLines size  put: (foldedLines last, line) ]\n\t\tifFalse: [ foldedLines add: line ] ].\n\n\t\"make a dictionary mapping headers to header contents\"\n\theaders _ Dictionary new.\n\tfoldedLines do: [ :line |\n\t\ti _ line indexOf: $:.\n\t\ti > 0 ifTrue: [\n\t\t\theaders \n\t\t\tat: (line copyFrom: 1 to: i-1) asLowercase \n\t\t\tput: (line copyFrom: i+1 to: line size) withBlanksTrimmed ] ].",
+		"selector" : "header:",
+		"protocol" : "http"
+	},
+	{
+		"source" : "contentType: aString  content: content  url: aUrl\n\t\"create a MIMEObject with the given content-type and content\"\n\t\"MIMEObject contentType: 'text/plain' content: 'This is a test'\"\n\t\n\t| ans idx |\n\tans := self new.\n\tans privateContent: content.\n\n\t\"parse the content-type\"\n\t(aString isNil or: [\n\t\tidx := aString indexOf: $/.\n\t\tidx = 0]) \n\tifTrue: [ \n\t\tans privateMainType: 'application'.  \n\t\tans privateSubType: 'octet-stream' ]\n\tifFalse: [ \n\t\tans privateMainType: (aString copyFrom: 1 to: idx-1).\n\t\tans privateSubType: (aString copyFrom: idx+1 to: aString size) ].\n\n\tans privateUrl: (aUrl isString ifTrue: [ Url absoluteFromText: aUrl ] ifFalse: [ aUrl asUrl ]).\n\n\t^ans",
+		"class" : "MIMEDocument",
+		"classSide" : true,
+		"originalSource" : "contentType: aString  content: content  url: aUrl\n\t\"create a MIMEObject with the given content-type and content\"\n\t\"MIMEObject contentType: 'text/plain' content: 'This is a test'\"\n\t\n\t| ans idx |\n\tans _ self new.\n\tans privateContent: content.\n\n\t\"parse the content-type\"\n\t(aString isNil or: [\n\t\tidx _ aString indexOf: $/.\n\t\tidx = 0]) \n\tifTrue: [ \n\t\tans privateMainType: 'application'.  \n\t\tans privateSubType: 'octet-stream' ]\n\tifFalse: [ \n\t\tans privateMainType: (aString copyFrom: 1 to: idx-1).\n\t\tans privateSubType: (aString copyFrom: idx+1 to: aString size) ].\n\n\tans privateUrl: aUrl asUrl.\n\n\t^ans",
+		"selector" : "contentType:content:url:",
+		"protocol" : "instance creation"
+	},
+	{
+		"source" : "privateParsePath: remainder relativeTo: basePath \n\t| nextTok s parsedPath |\n\ts := remainder readStream.\n\tparsedPath := OrderedCollection new.\n\tparsedPath addAll: basePath.\n\tparsedPath isEmpty ifFalse: [ parsedPath removeLast ].\n\t\n\t[ s peek = $/ ifTrue: [ s next ].\n\tnextTok := WriteStreamPortable on: String new.\n\t[ s atEnd or: [ s peek = $/ ] ] whileFalse: [ nextTok nextPut: s next ].\n\tnextTok := self nativeDecodePercent: nextTok contents.\n\t(nextTok _unicodeEqual: '..') \n\t\tifTrue: [ parsedPath size > 0 ifTrue: [ parsedPath removeLast ] ]\n\t\tifFalse: [ (nextTok _unicodeEqual: '.') not ifTrue: [ parsedPath add: nextTok ] ].\n\ts atEnd ] whileFalse.\n\tparsedPath isEmpty ifTrue: [ parsedPath add: '' ].\n\t^ parsedPath",
+		"class" : "HierarchicalUrl",
+		"classSide" : false,
+		"originalSource" : "privateParsePath: remainder relativeTo: basePath \n\t| nextTok s parsedPath |\n\ts := remainder readStream.\n\tparsedPath := OrderedCollection new.\n\tparsedPath addAll: basePath.\n\tparsedPath isEmpty ifFalse: [ parsedPath removeLast ].\n\t\n\t[ s peek = $/ ifTrue: [ s next ].\n\tnextTok := WriteStreamPortable on: String new.\n\t[ s atEnd or: [ s peek = $/ ] ] whileFalse: [ nextTok nextPut: s next ].\n\tnextTok := nextTok contents unescapePercents.\n\tnextTok = '..' \n\t\tifTrue: [ parsedPath size > 0 ifTrue: [ parsedPath removeLast ] ]\n\t\tifFalse: [ nextTok ~= '.' ifTrue: [ parsedPath add: nextTok ] ].\n\ts atEnd ] whileFalse.\n\tparsedPath isEmpty ifTrue: [ parsedPath add: '' ].\n\t^ parsedPath",
+		"selector" : "privateParsePath:relativeTo:",
+		"protocol" : "parsing"
+	},
+	{
+		"source" : "privateInitializeFromText: aString \n\t| remainder ind specifiedSchemeName |\n\tremainder := aString.\n\tschemeName ifNil: \n\t\t\t[specifiedSchemeName := Url schemeNameForString: remainder.\n\t\t\tspecifiedSchemeName ifNotNil: \n\t\t\t\t\t[schemeName := specifiedSchemeName.\n\t\t\t\t\tremainder := remainder copyFrom: schemeName size + 2 to: remainder size].\n\t\t\tschemeName ifNil: \n\t\t\t\t\t[\"assume HTTP\"\n\t\t\t\t\tschemeName := 'http']].\n\n\t\"remove leading // if it's there\"\n\t(remainder beginsWith: '//') \n\t\tifTrue: [remainder := remainder copyFrom: 3 to: remainder size].\n\n\t\"get the query\"\n\tind := remainder indexOf: $?.\n\tind > 0 \n\t\tifTrue: \n\t\t\t[query := remainder copyFrom: ind + 1 to: remainder size.\n\t\t\tremainder := remainder copyFrom: 1 to: ind - 1].\n\n\t\"get the authority\"\n\tind := remainder indexOf: $/.\n\tind > 0 \n\t\tifTrue: \n\t\t\t[ind = 1 \n\t\t\t\tifTrue: [authority := '']\n\t\t\t\tifFalse: \n\t\t\t\t\t[authority := remainder copyFrom: 1 to: ind - 1.\n\t\t\t\t\tremainder := remainder copyFrom: ind + 1 to: remainder size]]\n\t\tifFalse: \n\t\t\t[authority := remainder.\n\t\t\tremainder := ''].\n\n\t\"extract the username+password\"\n\t(authority includes: $@) \n\t\tifTrue: \n\t\t\t[username := authority copyUpTo: $@.\n\t\t\tauthority := authority copyFrom: (authority indexOf: $@) + 1\n\t\t\t\t\t\tto: authority size.\n\t\t\t(username includes: $:) \n\t\t\t\tifTrue: \n\t\t\t\t\t[password := self nativeDecodePercent: (username copyFrom: (username indexOf: $:) + 1 to: username size).\n\t\t\t\t\tusername := self nativeDecodePercent: (username copyUpTo: $:)]\n\t\t\t\tifFalse: \n\t\t\t\t\t[password := nil.\n\t\t\t\t\tusername := self nativeDecodePercent: username]].\n\n\t\"Extract the port\"\n\t(authority includes: $:) \n\t\tifTrue: \n\t\t\t[| lastColonIndex portString |\n\t\t\tlastColonIndex := authority findLast: [:c | c = $:].\n\t\t\tportString := authority copyFrom: lastColonIndex + 1 to: authority size.\n\t\t\t(portString allSatisfy: [:each | each isDigit])\n\t\t\t\tifTrue: \n\t\t\t\t\t[port := Integer fromString: portString.\n\t\t\t\t\t(port > 65535) ifTrue: [self error: 'Invalid port number'].\n\t\t\t\t\t authority := authority copyFrom: 1 to: lastColonIndex - 1]\n\t\t\t\tifFalse:[self error: 'Invalid port number']].\n\n\t\"get the path\"\n\tpath := self privateParsePath: remainder relativeTo: #() .",
+		"class" : "HierarchicalUrl",
+		"classSide" : false,
+		"originalSource" : "privateInitializeFromText: aString \n\t| remainder ind specifiedSchemeName |\n\tremainder := aString.\n\tschemeName ifNil: \n\t\t\t[specifiedSchemeName := Url schemeNameForString: remainder.\n\t\t\tspecifiedSchemeName ifNotNil: \n\t\t\t\t\t[schemeName := specifiedSchemeName.\n\t\t\t\t\tremainder := remainder copyFrom: schemeName size + 2 to: remainder size].\n\t\t\tschemeName ifNil: \n\t\t\t\t\t[\"assume HTTP\"\n\t\t\t\t\tschemeName := 'http']].\n\n\t\"remove leading // if it's there\"\n\t(remainder beginsWith: '//') \n\t\tifTrue: [remainder := remainder copyFrom: 3 to: remainder size].\n\n\t\"get the query\"\n\tind := remainder indexOf: $?.\n\tind > 0 \n\t\tifTrue: \n\t\t\t[query := remainder copyFrom: ind + 1 to: remainder size.\n\t\t\tremainder := remainder copyFrom: 1 to: ind - 1].\n\n\t\"get the authority\"\n\tind := remainder indexOf: $/.\n\tind > 0 \n\t\tifTrue: \n\t\t\t[ind = 1 \n\t\t\t\tifTrue: [authority := '']\n\t\t\t\tifFalse: \n\t\t\t\t\t[authority := remainder copyFrom: 1 to: ind - 1.\n\t\t\t\t\tremainder := remainder copyFrom: ind + 1 to: remainder size]]\n\t\tifFalse: \n\t\t\t[authority := remainder.\n\t\t\tremainder := ''].\n\n\t\"extract the username+password\"\n\t(authority includes: $@) \n\t\tifTrue: \n\t\t\t[username := authority copyUpTo: $@.\n\t\t\tauthority := authority copyFrom: (authority indexOf: $@) + 1\n\t\t\t\t\t\tto: authority size.\n\t\t\t(username includes: $:) \n\t\t\t\tifTrue: \n\t\t\t\t\t[password := (username copyFrom: (username indexOf: $:) + 1 to: username size) unescapePercents asByteArray decodeFromUTF8 asString.\n\t\t\t\t\tusername := (username copyUpTo: $:) unescapePercents asByteArray decodeFromUTF8 asString]\n\t\t\t\tifFalse: \n\t\t\t\t\t[password := nil.\n\t\t\t\t\tusername := username unescapePercents asByteArray decodeFromUTF8 asString]].\n\n\t\"Extract the port\"\n\t(authority includes: $:) \n\t\tifTrue: \n\t\t\t[| lastColonIndex portString |\n\t\t\tlastColonIndex := authority findLast: [:c | c = $:].\n\t\t\tportString := authority copyFrom: lastColonIndex + 1 to: authority size.\n\t\t\t(portString allSatisfy: [:each | each isDigit])\n\t\t\t\tifTrue: \n\t\t\t\t\t[port := Integer fromString: portString.\n\t\t\t\t\t(port > 65535) ifTrue: [self error: 'Invalid port number'].\n\t\t\t\t\t authority := authority copyFrom: 1 to: lastColonIndex - 1]\n\t\t\t\tifFalse:[self error: 'Invalid port number']].\n\n\t\"get the path\"\n\tpath := self privateParsePath: remainder relativeTo: #() .",
+		"selector" : "privateInitializeFromText:",
+		"protocol" : "parsing"
+	},
+	{
+		"class" : "HierarchicalUrl",
+		"classSide" : false,
+		"source" : "nativeDecodePercent: text\n | index hex |\n \"Validate delimiters before percent decoding; incomplete escapes have the established encoding error.\"\n index := 1.\n hex := '0123456789abcdefABCDEF'.\n [ index <= text size ] whileTrue: [\n  (text at: index) = $% ifTrue: [\n   (index + 2 > text size or: [\n    (hex includes: (text at: index + 1)) not or: [\n     (hex includes: (text at: index + 2)) not ] ])\n    ifTrue: [ ZnCharacterEncodingError signal: 'Invalid percent escape in legacy URL' ].\n   index := index + 2 ].\n  index := index + 1 ].\n ^ ZnPercentEncoder new decode: text",
+		"originalSource" : null,
+		"selector" : "nativeDecodePercent:",
+		"protocol" : "private"
+	},
+	{
+		"source" : "readHexFrom: stream\n | first second character |\n stream atEnd ifTrue: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n character := stream next.\n character ifNil: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n first := character digitValueInRadix: 16.\n first ifNil: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n stream atEnd ifTrue: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n character := stream next.\n character ifNil: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n second := character digitValueInRadix: 16.\n second ifNil: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n ^ first * 16 + second",
+		"class" : "ZnPercentEncoder",
+		"classSide" : false,
+		"originalSource" : "readHexFrom: stream\n\t| first second |\n\t(stream atEnd not and: [(first := stream next digitValue) between: 0 and: 15])\n\t\tifFalse: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n\t(stream atEnd not and: [ (second := stream next digitValue) between: 0 and: 15 ])\n\t\tifFalse: [ ZnCharacterEncodingError signal: 'hex digit expected' ].\n\t^ (first << 4) + second",
+		"selector" : "readHexFrom:",
+		"protocol" : "private"
+	},
+	{
+		"source" : "forEncoding: aString\n\t\"Answer a new codec instance for the given encoding name. Raise an WAUnsupportedEncodingError if the encoding name is not supported by this image.\"\n\n\tself allSubclasses do: [ :each |\n\t\t(each supportsEncoding: aString)\n\t\t\tifTrue: [ ^ each basicForEncoding: aString ] ].\n\t^ self unsupportedEncoding: aString",
+		"class" : "GRCodec",
+		"classSide" : true,
+		"originalSource" : "forEncoding: aString\n\t\"Answer a new codec instance for the given encoding name. Raise an WAUnsupportedEncodingError if the encoding name is not supported by this image.\"\n\n\tself allSubclassesDo: [ :each |\n\t\t(each supportsEncoding: aString)\n\t\t\tifTrue: [ ^ each basicForEncoding: aString ] ].\n\t^ self unsupportedEncoding: aString",
+		"selector" : "forEncoding:",
+		"protocol" : "instance creation"
+	},
+	{
+		"source" : "printOn: aStream\n\n\taStream nextPutAll: self schemeName.\n\taStream nextPutAll: '://'.\n\tself username ifNotNil: [\n\t\taStream nextPutAll: (ZnPercentEncoder new encode: self username).\n\t\tself password ifNotNil: [\n\t\t\taStream nextPutAll: ':'.\n\t\t\taStream nextPutAll: (ZnPercentEncoder new encode: self password)].\n\t\taStream nextPutAll: '@' ].\n\taStream nextPutAll: self authority.\n\tport ifNotNil: [aStream nextPut: $:; nextPutAll: port printString].\n\tpath do: [ :pathElem |\n\t\taStream nextPut: $/.\n\t\taStream nextPutAll: (ZnPercentEncoder new encode: pathElem). ].\n\tself query == nil  ifFalse: [ \n\t\taStream nextPut: $?.\n\t\taStream nextPutAll: self query. ].\n\tself fragment == nil  ifFalse: [\n\t\taStream nextPut: $#.\n\t\taStream nextPutAll: (ZnPercentEncoder new encode: self fragment). ].",
+		"class" : "HierarchicalUrl",
+		"classSide" : false,
+		"originalSource" : "printOn: aStream\n\n\taStream nextPutAll: self schemeName.\n\taStream nextPutAll: '://'.\n\tself username ifNotNil: [\n\t\taStream nextPutAll: self username encodeForHTTP.\n\t\tself password ifNotNil: [\n\t\t\taStream nextPutAll: ':'.\n\t\t\taStream nextPutAll: self password encodeForHTTP].\n\t\taStream nextPutAll: '@' ].\n\taStream nextPutAll: self authority.\n\tport ifNotNil: [aStream nextPut: $:; nextPutAll: port printString].\n\tpath do: [ :pathElem |\n\t\taStream nextPut: $/.\n\t\taStream nextPutAll: pathElem encodeForHTTP. ].\n\tself query == nil  ifFalse: [ \n\t\taStream nextPut: $?.\n\t\taStream nextPutAll: self query. ].\n\tself fragment == nil  ifFalse: [\n\t\taStream nextPut: $#.\n\t\taStream nextPutAll: self fragment encodeForHTTP. ].",
+		"selector" : "printOn:",
+		"protocol" : "printing"
+	},
+	{
+		"source" : "httpPostDocument: url  args: argsDict accept: mimeType request: requestString\n\t\"like httpGET, except it does a POST instead of a GET.  POST allows data to be uploaded\"\n\n\t| s header length page list firstData aStream type newUrl httpUrl argString |\n\thttpUrl := Url absoluteFromText: url.\n\tpage := httpUrl fullPath.\n\t\"add arguments\"\n\targString := argsDict\n\t\tifNotNil: [\n\t\t\targString := self argString: argsDict.\n\t\t\targString first = $? ifTrue: [ argString := argString copyFrom: 2 to: argString size]]\n\t\tifNil: [''].\n\n\ts := HTTPSocket new. \n\ts := self initHTTPSocket: httpUrl timeoutSecs: 30 ifError: [:errorString | ^errorString].\n\t[ s sendCommand: 'POST ', page, ' HTTP/1.0', String crlf, \n\t\t(mimeType ifNotNil: ['ACCEPT: ', mimeType, String crlf] ifNil: ['']),\n\t\t'ACCEPT: text/html', String crlf,\t\"Always accept plain text\"\n\t\tHTTPProxyCredentials,\n\t\tHTTPBlabEmail,\t\"may be empty\"\n\t\trequestString,\t\"extra user request. Authorization\"\n\t\tself userAgentString, String crlf,\n\t\t'Content-type: application/x-www-form-urlencoded', String crlf,\n\t\t'Content-length: ', argString size printString, String crlf,\n\t\t'Host: ', httpUrl authority, (httpUrl port ifNil: [ '' ] ifNotNil: [ :value | ':', value asString ]), String crlf.  \"blank line automatically added\"\n\n\t\"umur - IE sends argString without a $? and swiki expects so\"\n\ts sendCommand: argString.\n\n\t\"get the header of the reply\"\n\tlist := s getResponseUpTo: String crlf, String crlf ignoring: String cr. \"list = header, CrLf, CrLf, beginningOfData\"\n\theader := list at: 1.\n\theader isEmpty ifTrue: [ ^ 'server aborted early' ].\n\t\"Transcript show: page; cr; show: argsStream contents; cr; show: header; cr.\"\n\tfirstData := list at: 3.\n\n\t\"dig out some headers\"\n\ts header: header.\n\tlength := s getHeader: 'content-length'.\n\tlength ifNotNil: [ length := length asNumber ].\n\ttype := s getHeader: 'content-type'.\n\ts responseCode first = $3 ifTrue: [\n\t\tnewUrl := s getHeader: 'location'.\n\t\tnewUrl ifNotNil: [\n\t\t\t\"umur 6/25/2003 12:58 - If newUrl is relative then we need to make it absolute.\"\n\t\t\tnewUrl := (httpUrl newFromRelativeText: newUrl) asString.\n\t\t\tself flag: #refactor. \"get, post, postmultipart are almost doing the same stuff\"\n\t\t\ts destroy.\n\t\t\t\"^self httpPostDocument: newUrl  args: argsDict  accept: mimeType\"\n\t\t\t^self httpGetDocument: newUrl accept: mimeType ] ].\n\n\taStream := s getRestOfBuffer: firstData totalLength: length.\n\t(s responseCode _unicodeEqual: '401') ifTrue: [^ header, aStream contents].\n\ts closeAndDestroy.\t\"Always OK to destroy!\"\n\n\t^ MIMEDocument contentType: type  content: aStream contents url: url\n ] ensure: [ s closeAndDestroy ]",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "httpPostDocument: url  args: argsDict accept: mimeType request: requestString\n\t\"like httpGET, except it does a POST instead of a GET.  POST allows data to be uploaded\"\n\n\t| s header length page list firstData aStream type newUrl httpUrl argString |\n\thttpUrl := Url absoluteFromText: url.\n\tpage := httpUrl fullPath.\n\t\"add arguments\"\n\targString := argsDict\n\t\tifNotNil: [\n\t\t\targString := self argString: argsDict.\n\t\t\targString first = $? ifTrue: [ argString := argString copyFrom: 2 to: argString size]]\n\t\tifNil: [''].\n\n\ts := HTTPSocket new. \n\ts := self initHTTPSocket: httpUrl timeoutSecs: 30 ifError: [:errorString | ^errorString].\n\ts sendCommand: 'POST ', page, ' HTTP/1.0', String crlf, \n\t\t(mimeType ifNotNil: ['ACCEPT: ', mimeType, String crlf] ifNil: ['']),\n\t\t'ACCEPT: text/html', String crlf,\t\"Always accept plain text\"\n\t\tHTTPProxyCredentials,\n\t\tHTTPBlabEmail,\t\"may be empty\"\n\t\trequestString,\t\"extra user request. Authorization\"\n\t\tself userAgentString, String crlf,\n\t\t'Content-type: application/x-www-form-urlencoded', String crlf,\n\t\t'Content-length: ', argString size printString, String crlf,\n\t\t'Host: ', httpUrl authority, String crlf.  \"blank line automatically added\"\n\n\t\"umur - IE sends argString without a $? and swiki expects so\"\n\ts sendCommand: argString.\n\n\t\"get the header of the reply\"\n\tlist := s getResponseUpTo: String crlf, String crlf ignoring: String cr. \"list = header, CrLf, CrLf, beginningOfData\"\n\theader := list at: 1.\n\t\"Transcript show: page; cr; show: argsStream contents; cr; show: header; cr.\"\n\tfirstData := list at: 3.\n\n\t\"dig out some headers\"\n\ts header: header.\n\tlength := s getHeader: 'content-length'.\n\tlength ifNotNil: [ length := length asNumber ].\n\ttype := s getHeader: 'content-type'.\n\ts responseCode first = $3 ifTrue: [\n\t\tnewUrl := s getHeader: 'location'.\n\t\tnewUrl ifNotNil: [\n\t\t\t\"umur 6/25/2003 12:58 - If newUrl is relative then we need to make it absolute.\"\n\t\t\tnewUrl := (httpUrl newFromRelativeText: newUrl) asString.\n\t\t\tself flag: #refactor. \"get, post, postmultipart are almost doing the same stuff\"\n\t\t\ts destroy.\n\t\t\t\"^self httpPostDocument: newUrl  args: argsDict  accept: mimeType\"\n\t\t\t^self httpGetDocument: newUrl accept: mimeType ] ].\n\n\taStream := s getRestOfBuffer: firstData totalLength: length.\n\ts responseCode = '401' ifTrue: [^ header, aStream contents].\n\ts closeAndDestroy.\t\"Always OK to destroy!\"\n\n\t^ MIMEDocument contentType: type  content: aStream contents url: url",
+		"selector" : "httpPostDocument:args:accept:request:",
+		"protocol" : "get"
+	},
+	{
+		"source" : "httpPut: contents to: url user: user passwd: passwd\n\t\"Upload the contents of the stream to a file on the server\"\n\n\t| bare serverName specifiedServer port page serverAddr authorization s list header firstData length aStream command |\n\t\"parse url\"\n\tbare := (url asLowercase beginsWith: 'http://') \n\t\tifTrue: [url copyFrom: 8 to: url size]\n\t\tifFalse: [url].\n\tserverName := bare copyUpTo: $/.\n\tspecifiedServer := serverName.\n\t(serverName includes: $:) ifFalse: [ port := self defaultPort ] ifTrue: [\n\t\tport := (serverName copyFrom: (serverName indexOf: $:) + 1 \n\t\t\t\tto: serverName size) asNumber.\n\t\tserverName := serverName copyUpTo: $:.\n\t].\n\n\tpage := bare copyFrom: (bare indexOf: $/) to: bare size.\n\tpage size = 0 ifTrue: [page := '/'].\n\t(self shouldUseProxy: serverName) ifTrue: [ \n\t\tpage := 'http://', serverName, ':', port printString, page.\t\t\"put back together\"\n\t\tserverName := self httpProxyServer.\n\t\tport := self httpProxyPort].\n\n  \t\"make the request\"\t\n\tserverAddr := GsSocket getHostAddressByName: serverName.\n\tserverAddr ifNil: [\n\t\t^ 'Could not resolve the server named: ', serverName].\n\n\tauthorization := (ZnBase64Encoder new encode: (user , ':' , passwd) asByteArray).\n\ts := HTTPSocket  connectToServerOnHost: serverAddr port: port.\n\t[ command := \n\t\t'PUT ', page, ' HTTP/1.0', CrLf, \n\t\tself userAgentString, CrLf,\n\t\t'Host: ', specifiedServer, CrLf, \n\t\t'ACCEPT: */*', CrLf,\n\t\t'',\n\t\t'Authorization: Basic ' , authorization , CrLf , \n\t\t'Content-length: ', contents size printString, CrLf , CrLf , \n\t\tcontents.\n\ts sendCommand: command.\n\t\"get the header of the reply\"\n\tlist := s getResponseUpTo: CrLf, CrLf ignoring: (String with: CR).\t\"list = header, CrLf, CrLf, beginningOfData\"\n\theader := list at: 1.\n\theader isEmpty ifTrue: [ ^ 'server aborted early' ].\n\tfirstData := list at: 3.\n\n\t\"dig out some headers\"\n\ts header: header.\n\tlength := s getHeader: 'content-length'.\n\tlength ifNotNil: [ length := length asNumber ].\n\n\taStream := s getRestOfBuffer: firstData totalLength: length.\n\ts close.\t\"Always OK to destroy!\"\n\n\t^ header, aStream contents\n ] ensure: [ s closeAndDestroy ]",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "httpPut: contents to: url user: user passwd: passwd\n\t\"Upload the contents of the stream to a file on the server\"\n\n\t| bare serverName specifiedServer port page serverAddr authorization s list header firstData length aStream command |\n\t\"parse url\"\n\tbare _ (url asLowercase beginsWith: 'http://') \n\t\tifTrue: [url copyFrom: 8 to: url size]\n\t\tifFalse: [url].\n\tserverName _ bare copyUpTo: $/.\n\tspecifiedServer _ serverName.\n\t(serverName includes: $:) ifFalse: [ port _ self defaultPort ] ifTrue: [\n\t\tport _ (serverName copyFrom: (serverName indexOf: $:) + 1 \n\t\t\t\tto: serverName size) asNumber.\n\t\tserverName _ serverName copyUpTo: $:.\n\t].\n\n\tpage _ bare copyFrom: (bare indexOf: $/) to: bare size.\n\tpage size = 0 ifTrue: [page _ '/'].\n\t(self shouldUseProxy: serverName) ifTrue: [ \n\t\tpage := 'http://', serverName, ':', port printString, page.\t\t\"put back together\"\n\t\tserverName := self httpProxyServer.\n\t\tport := self httpProxyPort].\n\n  \t\"make the request\"\t\n\tserverAddr := GsSocket getHostAddressByName: serverName.\n\tserverAddr ifNil: [\n\t\t^ 'Could not resolve the server named: ', serverName].\n\n\tauthorization _ (self mimeConverterClass mimeEncode: (user , ':' , passwd) readStream) contents.\n\ts _ HTTPSocket  connectToServerOnHost: serverAddr port: port.\n\tcommand _ \n\t\t'PUT ', page, ' HTTP/1.0', CrLf, \n\t\tself userAgentString, CrLf,\n\t\t'Host: ', specifiedServer, CrLf, \n\t\t'ACCEPT: */*', CrLf,\n\t\t'',\n\t\t'Authorization: Basic ' , authorization , CrLf , \n\t\t'Content-length: ', contents size printString, CrLf , CrLf , \n\t\tcontents.\n\ts sendCommand: command.\n\t\"get the header of the reply\"\n\tlist _ s getResponseUpTo: CrLf, CrLf ignoring: (String with: CR).\t\"list = header, CrLf, CrLf, beginningOfData\"\n\theader _ list at: 1.\n\tfirstData _ list at: 3.\n\n\t\"dig out some headers\"\n\ts header: header.\n\tlength _ s getHeader: 'content-length'.\n\tlength ifNotNil: [ length _ length asNumber ].\n\n\taStream _ s getRestOfBuffer: firstData totalLength: length.\n\ts close.\t\"Always OK to destroy!\"\n\n\t^ header, aStream contents",
+		"selector" : "httpPut:to:user:passwd:",
+		"protocol" : "put"
+	},
+	{
+		"source" : "argString: args\n\t\"Return the args in a long string, as encoded in a url\"\n\n\t| argsString first |\n\targs isString ifTrue: [\n        args isEmpty ifTrue: [ ^ '?' ].\"sent in as a string, not a dictionary\"\n\t\t^ (args first = $? ifTrue: [''] ifFalse: ['?']), args].\n\targsString := WriteStream on: String new.\n\targsString nextPut: $?.\n\tfirst := true.\n\targs associationsDo: [ :assoc |\n\t\tassoc value do: [ :value |\n\t\t\tfirst ifTrue: [ first := false ] ifFalse: [ argsString nextPut: $& ].\n\t\t\targsString nextPutAll: (ZnPercentEncoder new encode: assoc key).\n\t\t\targsString nextPut: $=.\n\t\t\targsString nextPutAll: (ZnPercentEncoder new encode: value). ] ].\n\t^ argsString contents",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "argString: args\n\t\"Return the args in a long string, as encoded in a url\"\n\n\t| argsString first |\n\targs isString ifTrue: [\"sent in as a string, not a dictionary\"\n\t\t^ (args first = $? ifTrue: [''] ifFalse: ['?']), args].\n\targsString _ WriteStream on: String new.\n\targsString nextPut: $?.\n\tfirst _ true.\n\targs associationsDo: [ :assoc |\n\t\tassoc value do: [ :value |\n\t\t\tfirst ifTrue: [ first _ false ] ifFalse: [ argsString nextPut: $& ].\n\t\t\targsString nextPutAll: assoc key encodeForHTTP.\n\t\t\targsString nextPut: $=.\n\t\t\targsString nextPutAll: value encodeForHTTP. ] ].\n\t^ argsString contents",
+		"selector" : "argString:",
+		"protocol" : "utilities"
+	},
+	{
+		"source" : "initHTTPSocket: httpUrl wait: timeout ifError: errorBlock\n | serverName connectToHost connectToPort socket |\n serverName := connectToHost := httpUrl authority.\n connectToPort := httpUrl port ifNil: [ self defaultPort ].\n (self shouldUseProxy: connectToHost) ifTrue: [\n  connectToHost := self httpProxyServer ifNil: [ serverName ].\n  connectToPort := self httpProxyPort ].\n socket := self newTCPSocket.\n [ socket connectTo: connectToHost port: connectToPort timeout: timeout ]\n  on: NetworkError do: [ :error |\n   socket closeAndDestroy.\n   ^ errorBlock value: 'Error: Server ', httpUrl authority, ' is not responding' ].\n ^ socket",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "initHTTPSocket: httpUrl wait: timeout ifError: aBlock\n\t\"Retrieve the server and port information from the URL, match it to the proxy settings and open a http socket for the request.\"\n\n\t| serverName connectToHost connectToPort serverAddr s |\n\tserverName := connectToHost := httpUrl authority.\n\tconnectToPort := httpUrl port ifNil: [self defaultPort].\n\n\t(self shouldUseProxy: connectToHost) ifTrue: [ \n\t\tconnectToHost := self httpProxyServer.\n\t\tconnectToHost isNil ifTrue: [connectToHost := serverName.]. \n\t\tconnectToPort := self httpProxyPort].\n\n  \t\"make the request\"\t\n\tserverAddr := GsSocket getHostAddressByName: connectToHost.\n\tserverAddr ifNil: [\n\t\taBlock value: 'Error: Could not resolve the server named: ', connectToHost].\n\n\t[ s := HTTPSocket connectToServerOnHost: serverAddr port: connectToPort ] \n\t\ton: Error \n\t\tdo: [:ex | \n\t\t\t^ aBlock value: 'Error: Server ',httpUrl authority,' is not responding' ].\n\t^s",
+		"selector" : "initHTTPSocket:wait:ifError:",
+		"protocol" : "utilities"
+	},
+	{
+		"source" : "fullPath\n\t| ans |\n\tans := WriteStreamPortable on: String new.\n\tpath do: [ :pathElem |\n\t\tans nextPut: $/.\n\t\tans nextPutAll: (ZnPercentEncoder new encode: pathElem). ].\n\tself query == nil  ifFalse: [ \n\t\tans nextPut: $?.\n\t\tans nextPutAll: self query. ].\n\tself fragment == nil  ifFalse: [\n\t\tans nextPut: $#.\n\t\tans nextPutAll: (ZnPercentEncoder new encode: self fragment). ].\n\t\n\t^ans contents",
+		"class" : "HierarchicalUrl",
+		"classSide" : false,
+		"originalSource" : "fullPath\n\t| ans |\n\tans := WriteStreamPortable on: String new.\n\tpath do: [ :pathElem |\n\t\tans nextPut: $/.\n\t\tans nextPutAll: pathElem encodeForHTTP. ].\n\tself query == nil  ifFalse: [ \n\t\tans nextPut: $?.\n\t\tans nextPutAll: self query. ].\n\tself fragment == nil  ifFalse: [\n\t\tans nextPut: $#.\n\t\tans nextPutAll: self fragment encodeForHTTP. ].\n\t\n\t^ans contents",
+		"selector" : "fullPath",
+		"protocol" : "printing"
+	},
+	{
+		"source" : "httpGet: url args: args user: user passwd: passwd\n\t| authorization |\n\tauthorization := (ZnBase64Encoder new encode: (user , ':' , passwd) asByteArray).\n\t^self \n\t\thttpGet: url args: args accept: '*/*' \n\t\trequest: 'Authorization: Basic ' , authorization , CrLf",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "httpGet: url args: args user: user passwd: passwd\n\t| authorization |\n\tauthorization _ (self mimeConverterClass mimeEncode: (user , ':' , passwd) readStream) contents.\n\t^self \n\t\thttpGet: url args: args accept: '*/*' \n\t\trequest: 'Authorization: Basic ' , authorization , CrLf",
+		"selector" : "httpGet:args:user:passwd:",
+		"protocol" : "get"
+	},
+	{
+		"source" : "proxyUser: userName password: password\n HTTPProxyUser := userName.\n HTTPProxyPassword := password.\n HTTPProxyCredentials := 'Proxy-Authorization: Basic ',\n  (ZnBase64Encoder new encode: (userName, ':', password) asByteArray), String crlf",
+		"class" : "HTTPSocket",
+		"classSide" : true,
+		"originalSource" : "proxyUser: userName password: password\n\t\"Store  HTTP 1.0 basic authentication credentials\n\tNote: this is an ugly hack that stores your password\n\tin your image.  It's just enought to get you going\n\tif you use a firewall that requires authentication\"\n\n    | stream encodedStream |\n\tHTTPProxyUser := userName.\n\tHTTPProxyPassword := password.\n\tstream := ReadWriteStream on: (String new).\n\tstream nextPutAll: userName ,':' , password.\n\tencodedStream := Base64MimeConverter mimeEncode: stream.\n\tHTTPProxyCredentials := 'Proxy-Authorization: Basic ' , (encodedStream contents) , String crlf",
+		"selector" : "proxyUser:password:",
+		"protocol" : "proxy settings"
+	},
+	{
+		"source" : "isBinary\n\t\"answers whether the contents of a document of the receiving mime type are binary\"\n\t| subTypes |\n\tself main = 'text' ifTrue: [ ^ false ].\n\t(self matches: self class applicationJson) ifTrue: [ ^ false ].\n\tself main = 'application' ifFalse: [ ^ true ].\n\tsubTypes := self sub subStrings: '+'.\n\t^ (subTypes anySatisfy: [ :each | \n\t\t#('x-javascript' 'xml') includes: each ]) not",
+		"class" : "ZnMimeType",
+		"classSide" : false,
+		"originalSource" : "isBinary\n\t\"answers whether the contents of a document of the receiving mime type are binary\"\n\t| subTypes |\n\tself main = 'text' ifTrue: [ ^ false ].\n\t(self matches: self class applicationJson) ifTrue: [ ^ false ].\n\tself main = 'application' ifFalse: [ ^ true ].\n\tsubTypes := self sub subStrings: '+'.\n\t^ subTypes noneSatisfy: [ :each | \n\t\t#('x-javascript' 'xml') includes: each ]",
+		"selector" : "isBinary",
+		"protocol" : "testing"
+	},
+	{
+		"source" : "readFrom: stream\n\tself contentLength isNil\n\t\tifTrue: [ \n\t\t\tself bytes: (ZnUtils readUpToEnd: stream limit: ZnConstants maximumEntitySize).\n\t\t\tself contentLength: self bytes size ]\n\t\tifFalse: [ | byteArray |\n\t\t\tself contentLength > ZnConstants maximumEntitySize\n\t\t\t\tifTrue: [ ZnEntityTooLarge signal ].\n\t\t\tbyteArray := ByteArray new: self contentLength.\n\t\t\tself contentLength > ZnUtils streamingBufferSize \n\t\t\t\tifTrue: [\n\t\t\t\t\tZnUtils streamFrom: stream to: byteArray writeStream size: self contentLength ]\n\t\t\t\tifFalse: [\n\t\t\t\t\tstream next: self contentLength into: byteArray ]. \n\t\t\tself bytes: byteArray ]",
+		"class" : "ZnByteArrayEntity",
+		"classSide" : false,
+		"originalSource" : "readFrom: stream\n\tself contentLength isNil\n\t\tifTrue: [ \n\t\t\tself bytes: (ZnUtils readUpToEnd: stream limit: ZnConstants maximumEntitySize).\n\t\t\tself contentLength: self bytes size ]\n\t\tifFalse: [ | byteArray |\n\t\t\tself contentLength > ZnConstants maximumEntitySize\n\t\t\t\tifTrue: [ ZnEntityTooLarge signal ].\n\t\t\tbyteArray := ByteArray ofSize: self contentLength.\n\t\t\tself contentLength > ZnUtils streamingBufferSize \n\t\t\t\tifTrue: [\n\t\t\t\t\tZnUtils streamFrom: stream to: byteArray writeStream size: self contentLength ]\n\t\t\t\tifFalse: [\n\t\t\t\t\tstream next: self contentLength into: byteArray ]. \n\t\t\tself bytes: byteArray ]",
+		"selector" : "readFrom:",
+		"protocol" : "initialize-release"
+	}
+]

@@ -275,6 +275,21 @@ GtGemStoneExpandableDebuggerElement >> gsResume [
 ]
 
 { #category : #actions }
+GtGemStoneExpandableDebuggerElement >> gsRunToCursor [
+	| cursorPosition |
+
+	self debugSession exception gtSession
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [ ^ self ].
+
+	cursorPosition := stackElement cursorInterval first + 1.
+	cursorPosition < 1 ifTrue: [ ^ self ].
+	self debugSession
+		gsRunToCursorSourceOffset: cursorPosition
+		frameIdentifier: self currentCallFrame frameIdentifier.
+]
+
+{ #category : #actions }
 GtGemStoneExpandableDebuggerElement >> gsStepInto [
 	self debugSession 
 		gsStepIntoFrameIdentifier:  self currentCallFrame frameIdentifier.
@@ -509,6 +524,11 @@ GtGemStoneExpandableDebuggerElement >> updateVariables [
 						ifTrue: [ item value collectWithIndex: [ :x :i | i -> x ] ]
 						ifFalse: [ #() ] ] ].
 	variableList expandAll."
+]
+
+{ #category : #private }
+GtGemStoneExpandableDebuggerElement >> variableListItems [
+	^ variableList ifNil: [ #() ] ifNotNil: [ :aList | aList items ]
 ]
 
 { #category : #'private - element creation' }

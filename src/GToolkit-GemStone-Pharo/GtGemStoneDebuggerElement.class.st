@@ -233,13 +233,13 @@ GtGemStoneDebuggerElement >> currentCallFrame: aStackFrame [
 	currentCallFrame := aStackFrame "or nil"
 ]
 
-{ #category : #private }
+{ #category : #accessing }
 GtGemStoneDebuggerElement >> currentFrameVariable: variableName atIndex: anInteger [
 
-	^ debuggingSession 
-		currentFrameVariable: variableName 
+	^ debuggingSession
+		currentFrameVariable: variableName
 		atIndex: anInteger
-		frameLevel: self currentCallFrame ordinal
+		frameIndentifier: self currentCallFrame frameIdentifier
 ]
 
 { #category : #'private - accessing' }
@@ -278,7 +278,7 @@ GtGemStoneDebuggerElement >> exception [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsRestartFrame [
 
-	self debuggerClient gsRestartFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsRestartFrameIdentifier: currentCallFrame frameIdentifier.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -294,7 +294,7 @@ GtGemStoneDebuggerElement >> gsResume [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepInto [
 
-	self debuggerClient gsStepIntoFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsStepIntoFrameIdentifier: currentCallFrame frameIdentifier.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -302,7 +302,8 @@ GtGemStoneDebuggerElement >> gsStepInto [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepOut [
 
-	self debuggerClient gsStepOverFrameLevel: currentCallFrame ordinal + 1.
+	currentCallFrame sender ifNotNil: [ :aSender |
+		self debuggerClient gsStepOverFrameIdentifier: aSender frameIdentifier ].
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -310,7 +311,7 @@ GtGemStoneDebuggerElement >> gsStepOut [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepOver [
 
-	self debuggerClient gsStepOverFrameLevel: self currentCallFrame ordinal.
+	self debuggerClient gsStepOverFrameIdentifier: self currentCallFrame frameIdentifier.
 	self currentCallFrame: nil.
 	self scheduleUpdateUI.
 ]
@@ -318,7 +319,7 @@ GtGemStoneDebuggerElement >> gsStepOver [
 { #category : #actions }
 GtGemStoneDebuggerElement >> gsStepThrough [
 
-	self debuggerClient gsStepThroughFrameLevel: currentCallFrame ordinal.
+	self debuggerClient gsStepThroughFrameIdentifier: currentCallFrame frameIdentifier.
 	currentCallFrame := nil.
 	self scheduleUpdateUI.
 ]
@@ -394,7 +395,7 @@ GtGemStoneDebuggerElement >> newBreakpointsList [
 	^ list
 ]
 
-{ #category : #'instance creation' }
+{ #category : #'private - ui' }
 GtGemStoneDebuggerElement >> newCallFramesList [
 	| list |
 
@@ -416,7 +417,7 @@ GtGemStoneDebuggerElement >> newCallFramesList [
 				vFitContent;
 				margin: (BlInsets top: 3 left: 10 bottom: 3 right: 0) ];
 		dataBinder: [ :aCellElement :aGtGemStoneStackFrame |
-			aCellElement text: aGtGemStoneStackFrame ordinal asString asRopedText ].
+			aCellElement text: aGtGemStoneStackFrame frameIdentifier identityIndex asString asRopedText ].
 	list column
 		title: 'Frame';
 		cellStencil: [

@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'frameArray',
-		'ordinal',
 		'exception',
 		'line',
 		'className',
@@ -16,16 +15,17 @@ Class {
 		'ipOffset',
 		'sender',
 		'frameIdentifier',
-		'programCounterMarkers'
+		'programCounterMarkers',
+		'currentProgramCounterMarkers',
+		'callerProgramCounterMarkers'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
 { #category : #'instance creation' }
-GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification atIndex: anIndex forException: anException [
-	^ self new 
-		initializeFromSpecification: aFrameSpecification 
-		atIndex: anIndex 
+GtGemStoneStackFrame class >> fromSpecification: aFrameSpecification forException: anException [
+	^ self new
+		initializeFromSpecification: aFrameSpecification
 		forException: anException
 ]
 
@@ -38,26 +38,38 @@ GtGemStoneStackFrame >> = anObject [
 ]
 
 { #category : #accessing }
+GtGemStoneStackFrame >> callerProgramCounterMarkers [
+	^ callerProgramCounterMarkers
+]
+
+{ #category : #accessing }
 GtGemStoneStackFrame >> className: aClassName [
 	className := aClassName
 ]
 
-{ #category : #private }
+{ #category : #accessing }
 GtGemStoneStackFrame >> currentMessageRangeAt: anInteger in: aString fallBack: endPoint [
 	"Answer the indexes for the message send starting at anInteger in method source aString"
-	| ast messageNode |
+	| ast messageNode trimmedString |
 
-	ast := [ RBParser parseMethod: aString ]
+	trimmedString := aString trimRight.
+	ast := [ RBParser parseMethod: trimmedString ]
 		on: Error
 		do: [ :ex1 |
-			[ RBParser parseExpression: aString ]
+			[ RBParser parseExpression: trimmedString ]
 				on: Error
 				do: [ :ex2 | nil ] ].
 	ast ifNil: [ ^ anInteger to: endPoint ].
 	ast nodesDo: [ :each |
 		((each start to: each stop) includes: anInteger) ifTrue:
 			[ messageNode := each ] ].
+	messageNode ifNil: [ ^ anInteger to: endPoint ].
 	^ anInteger to: messageNode stop
+]
+
+{ #category : #accessing }
+GtGemStoneStackFrame >> currentProgramCounterMarkers [
+	^ currentProgramCounterMarkers
 ]
 
 { #category : #accessing }
@@ -105,13 +117,14 @@ GtGemStoneStackFrame >> filterSelfFrom: anArray [
 	^ indexedArray.
 ]
 
-{ #category : #'private - accessing' }
+{ #category : #accessing }
 GtGemStoneStackFrame >> frameArray [
 	"Only for debugging the debugger"
 
-	^ frameArray ifNil: [ frameArray := exception debuggerProxy
+	^ frameArray ifNil: [ frameArray := self debuggerProxy
 		proxyPerform: #frameContentsAtLevel:
-		withArguments: { self ordinal }
+		withArguments: { (self debuggerProxy asGtBareProxyObject
+			frameLevelForIdentifierIndex: self frameIdentifier identityIndex) }
 		autoCommit: false ]
 ]
 
@@ -149,6 +162,55 @@ GtGemStoneStackFrame >> gsSession [
 ]
 
 { #category : #'gt - extensions' }
+GtGemStoneStackFrame >> gtHighlightsFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'IP Highlights';
+		priority: 30;
+		items: [
+			| effectiveMarkers |
+			effectiveMarkers := self programCounterMarkers.
+			{
+				self highlightForMarkers: currentProgramCounterMarkers
+					named: 'Frame IP'
+					isActive: (effectiveMarkers notNil
+						and: [ currentProgramCounterMarkers = effectiveMarkers ]).
+				self highlightForMarkers: callerProgramCounterMarkers
+					named: 'Call site'
+					isActive: (effectiveMarkers notNil
+						and: [ callerProgramCounterMarkers notNil
+							and: [ callerProgramCounterMarkers = effectiveMarkers ] ]).
+				self highlightForMarkers: effectiveMarkers
+					named: 'Effective'
+					isActive: true
+			} ];
+		column: 'Strategy' text: [ :h | h strategyName ] width: 120;
+		column: 'Range' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h startIndex printString, ' to: ', h endIndex printString ]
+				ifFalse: [ 'n/a' ] ] width: 100;
+		column: '' text: [ :h |
+			h isActive
+				ifTrue: [ 'ACTIVE' ]
+				ifFalse: [ '' ] ] width: 70;
+		column: 'Text' text: [ :h |
+			h startIndex > 0
+				ifTrue: [ h highlightedText ]
+				ifFalse: [ '' ] ];
+		send: [ :h | h ]
+]
+
+{ #category : #views }
+GtGemStoneStackFrame >> gtIpMarkersFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'IP Markers';
+		priority: 31;
+		object: [ self retrieveIpMarkerMap ];
+		view: #gtMarkersFor:
+]
+
+{ #category : #'gt - extensions' }
 GtGemStoneStackFrame >> gtViewCoderFor: aView [ 
 	<gtView>
 	
@@ -156,7 +218,8 @@ GtGemStoneStackFrame >> gtViewCoderFor: aView [
 		title: 'Coder';
 		priority: 5;
 		stencil: [
-			GtGemStoneContextCoderModel fromStackFrame: self ]
+			((GtGemStoneContextCoderModel fromStackFrame: self)
+				asExpandedOnlyElement) vFitContentLimited ]
 ]
 
 { #category : #'gt - extensions' }
@@ -174,6 +237,16 @@ GtGemStoneStackFrame >> hash [
 	^ self frameIdentifier hash
 ]
 
+{ #category : #private }
+GtGemStoneStackFrame >> highlightForMarkers: markers named: aString isActive: aBoolean [
+	^ GtGemStoneIpHighlight new
+		startIndex: (markers ifNotNil: [ markers first ] ifNil: [ 0 ])
+		endIndex: (markers ifNotNil: [ markers second ] ifNil: [ 0 ])
+		sourceString: frameSpecification sourceString
+		strategyName: aString
+		isActive: aBoolean
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> inBlock [
 	^ inBlock
@@ -184,24 +257,25 @@ GtGemStoneStackFrame >> inBlock: aBoolean [
 	inBlock := aBoolean
 ]
 
-{ #category : #initization }
-GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [ 
-	self 
+{ #category : #initialization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification [
+	self
 		className: aFrameSpecification coderClassName;
 		selector: aFrameSpecification selector;
 		inBlock: aFrameSpecification isForBlock;
 		ipOffset: aFrameSpecification ipOffset;
 		frameSpecification: aFrameSpecification;
-		frameIdentifier:aFrameSpecification frameIdentifier.
-	
-	programCounterMarkers := aFrameSpecification programCounterMarkers 
+		frameIdentifier: aFrameSpecification frameIdentifier.
+
+	currentProgramCounterMarkers := aFrameSpecification currentProgramCounterMarkers.
+	programCounterMarkers := aFrameSpecification currentProgramCounterMarkers.
+	callerProgramCounterMarkers := aFrameSpecification callerProgramCounterMarkers.
 ]
 
-{ #category : #initization }
-GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification atIndex: anIndex forException: anException [ 
+{ #category : #initialization }
+GtGemStoneStackFrame >> initializeFromSpecification: aFrameSpecification forException: anException [
 	self initializeFromSpecification: aFrameSpecification.
-	
-	self ordinal: anIndex.
+
 	self exception: anException.
 ]
 
@@ -219,24 +293,14 @@ GtGemStoneStackFrame >> ipOffset: aNumber [
 GtGemStoneStackFrame >> method [
 
 	^ method ifNil:
-		[ method := self debuggerProxy asGtBareProxyObject methodAtFrameLevel: ordinal ]
+		[ method := self debuggerProxy asGtBareProxyObject
+			 methodAtFrameLevel: ((self debuggerProxy asGtBareProxyObject
+			 	frameLevelForIdentifierIndex: self frameIdentifier identityIndex)) ]
 ]
 
 { #category : #accessing }
 GtGemStoneStackFrame >> methodSelector [
 	^ self frameSpecification selector
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> ordinal [
-
-	^ ordinal
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> ordinal: aNumber [
-
-	ordinal := aNumber
 ]
 
 { #category : #printing }
@@ -309,6 +373,15 @@ GtGemStoneStackFrame >> resetState [
 	variableAssociations := nil.
 ]
 
+{ #category : #private }
+GtGemStoneStackFrame >> retrieveIpMarkerMap [
+	^ self debuggerProxy
+		proxyPerform: #ipMarkerMapAtFrameIdentifierIndex:
+		withArguments: { self frameIdentifier identityIndex }
+		serializationStrategy: #GtRsrWireSerializationStrategy
+		autoCommit: false
+]
+
 { #category : #accessing }
 GtGemStoneStackFrame >> retrieveProgramCounterMarkers [
 	^ self debuggerProxy 
@@ -326,7 +399,7 @@ GtGemStoneStackFrame >> safeVariablesAssociationsBasedOnIndex [
 	side we catch the error and display a warning to prevent multiple
 	debuggers from opening."
 	
-	^ [ self variablesAssociationsBasedOnIndex ] 
+	^ [ self variablesAssociations ] 
 		on: GtRsrEvaluationException 
 		do: [ :anException |
 			anException logStackToFile.
@@ -364,9 +437,10 @@ GtGemStoneStackFrame >> sender: aStackFrame [
 { #category : #accessing }
 GtGemStoneStackFrame >> sourceCode [
 
-	^ self debuggerProxy 
+	^ self debuggerProxy
 		proxyPerform: #sourceCodeAtFrameLevel:
-		withArguments: { ordinal }
+		withArguments: { (self debuggerProxy asGtBareProxyObject
+			frameLevelForIdentifierIndex: self frameIdentifier identityIndex) }
 ]
 
 { #category : #accessing }
@@ -375,8 +449,8 @@ GtGemStoneStackFrame >> sourceText [
 
 	sourceText ifNotNil: [ ^ sourceText ].
 	sourceInfo := self debuggerProxy 
-		proxyPerform: #sourceInfoAtFrameLevel: 
-		withArguments: { ordinal }
+		proxyPerform: #sourceInfoAtFrameIdentifierIndex: 
+		withArguments: { self frameIdentifier identityIndex }
 		autoCommit: false.
 	sourceString := sourceInfo third.
 	sourceText := sourceString asRopedText glamorousCodeFont.
@@ -404,19 +478,8 @@ GtGemStoneStackFrame >> updateProgramCounterMarkers: newMarkers [
 { #category : #accessing }
 GtGemStoneStackFrame >> variablesAssociations [
 
-	^ variableAssociations ifNil: [ 
+	^ variableAssociations ifNil: [
 		variableAssociations := self filterSelfFrom:
-			(self debuggerProxy
-				proxyPerform: #variableInfoAtFrameLevel:
-				withArguments: { ordinal }
-				autoCommit: false) ].
-]
-
-{ #category : #accessing }
-GtGemStoneStackFrame >> variablesAssociationsBasedOnIndex [
-
-	^ variableAssociations ifNil: 
-		[ variableAssociations := self filterSelfFrom:
 			(self debuggerProxy
 				proxyPerform: #variableInfoAtFrameIdentifierIndex:
 				withArguments: { self frameIdentifier identityIndex }

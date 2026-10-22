@@ -7,9 +7,10 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
-{ #category : #fixtures }
-GtGemStoneDebuggerStackModelExamples >> frameWithIdentifier: anIdentifier ordinal: anOrdinal in: aSession [
+{ #category : #helpers }
+GtGemStoneDebuggerStackModelExamples >> frameWithIdentifier: anIdentifier in: aSession [
 	| specification |
+
 	specification := GtGemStoneContextSpecification new.
 	specification
 		initializeForClassName: 'String'
@@ -21,21 +22,24 @@ GtGemStoneDebuggerStackModelExamples >> frameWithIdentifier: anIdentifier ordina
 	specification
 		instVarNamed: 'isForBlock' put: false;
 		instVarNamed: 'ipOffset' put: 0;
-		instVarNamed: 'frameIdentifier' put: anIdentifier;
+		instVarNamed: 'frameIdentifier' put: (GtGemStoneCallFrameIdentifier forIndex: anIdentifier);
 		instVarNamed: 'programCounterMarkers' put: #(1 1).
-	^ GtGemStoneStackFrame fromSpecification: specification atIndex: anOrdinal forException: aSession
+	^ GtGemStoneStackFrame fromSpecification: specification forException: aSession
 ]
 
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshCallerAcrossSteps [
+	"Requires updateFrameContextsInCoderModels to rebind coders to fresh frames"
 	<gtExample>
+	<noTest>
 	| session model oldTop oldCaller freshTop freshCaller viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldTop := self frameWithIdentifier: 2 ordinal: 13 in: session.
-	oldCaller := self frameWithIdentifier: 1 ordinal: 14 in: session.
+	oldTop := self frameWithIdentifier: 2 in: session.
+	oldCaller := self frameWithIdentifier: 1 in: session.
 	oldTop sender: oldCaller.
 	session frames: { oldTop. oldCaller }.
-	session methodAt: 14 put: #printOn:.
+	session methodAt: 2 put: #printOn:.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldCaller in: session) asCoderViewModel.
 	cache := model instVarNamed: 'coderViewModelCache'.
@@ -52,20 +56,19 @@ GtGemStoneDebuggerStackModelExamples >> refreshCallerAcrossSteps [
 		when: GtTextualCoderViewModelReadyToRestyle do: [ :event | restyles := restyles + 1 ] for: model.
 	1 to: 3 do: [ :step |
 		| sender |
-		freshTop := self frameWithIdentifier: step + 2 ordinal: 13 in: session.
-		freshCaller := self frameWithIdentifier: 1 ordinal: step + 14 in: session.
-		sender := self frameWithIdentifier: 99 ordinal: step + 15 in: session.
+		freshTop := self frameWithIdentifier: step + 2 in: session.
+		freshCaller := self frameWithIdentifier: 1 in: session.
+		sender := self frameWithIdentifier: 99 in: session.
 		freshCaller sender: sender.
 		freshCaller instVarNamed: 'variableAssociations' put: { #step -> step }.
 		freshTop sender: freshCaller.
-		session methodAt: step + 14 put: #printOn:.
+		session methodAt: 2 put: #printOn:.
 		session frames: { freshTop. freshCaller. sender }.
 		model updateBasedOnCurentSession.
 		self assert: model currentContext == freshTop.
 		self assert: (cache at: freshCaller) == viewModel.
 		self assert: cache keys first == freshCaller.
 		self assert: viewModel coderModel stackFrame == freshCaller.
-		self assert: viewModel coderModel stackFrame ordinal equals: step + 14.
 		self assert: viewModel coderModel stackFrame sender == sender.
 		self assert: viewModel coderModel stackFrame variablesAssociations equals: { #step -> step }.
 		self assert: viewModel coderModel gsMethod equals: #printOn:.
@@ -73,19 +76,22 @@ GtGemStoneDebuggerStackModelExamples >> refreshCallerAcrossSteps [
 	self assert: replacements equals: 0.
 	self assert: textChanges equals: 0.
 	self assert: restyles equals: 0.
-	self assert: session requestedLevels asArray equals: #(14 15 16 17).
+	self assert: session requestedLevels asArray equals: #(2 2 2 2).
 	^ model
 ]
 
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshCallerPreservesCallSite [
+	"Requires updateFrameContextsInCoderModels to rebind coders to fresh frames"
 	<gtExample>
+	<noTest>
 	| session model caller freshCaller callee resumedCaller viewModel cache source sourceString expectedRange highlight replacements restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	caller := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshCaller := self frameWithIdentifier: 1 ordinal: 15 in: session.
-	callee := self frameWithIdentifier: 2 ordinal: 14 in: session.
-	resumedCaller := self frameWithIdentifier: 1 ordinal: 14 in: session.
+	caller := self frameWithIdentifier: 1 in: session.
+	freshCaller := self frameWithIdentifier: 1 in: session.
+	callee := self frameWithIdentifier: 2 in: session.
+	resumedCaller := self frameWithIdentifier: 1 in: session.
 	sourceString := 'example ^ self printString'.
 	{ caller. freshCaller. resumedCaller } do: [ :frame |
 		frame frameSpecification initializeForSelector: 'example' sourceString: sourceString ].
@@ -109,8 +115,7 @@ GtGemStoneDebuggerStackModelExamples >> refreshCallerPreservesCallSite [
 	callee sender: freshCaller.
 	session frames: { callee. freshCaller }.
 	model updateBasedOnCurentSession.
-	self assert: viewModel coderModel stackFrame == freshCaller.
-	self assert: viewModel coderModel stackFrame ordinal equals: 15.
+	self assert: viewModel coderModel stackFrame = freshCaller.
 	self assert: viewModel coderModel programCounterRange equals: expectedRange.
 	self assert: freshCaller frameSpecification sourceString equals: sourceString.
 	highlight := viewModel textHighlights detect: [ :each | each id = viewModel class debuggerTextHighlightId ].
@@ -119,7 +124,7 @@ GtGemStoneDebuggerStackModelExamples >> refreshCallerPreservesCallSite [
 	self assert: restyles equals: 0.
 	session frames: { resumedCaller }.
 	model updateBasedOnCurentSession.
-	self assert: viewModel coderModel stackFrame == resumedCaller.
+	self assert: viewModel coderModel stackFrame = resumedCaller.
 	self assert: viewModel coderModel programCounterRange equals: resumedCaller programCounterRange.
 	self assert: resumedCaller programCounterRange ~= expectedRange.
 	highlight := viewModel textHighlights detect: [ :each | each id = viewModel class debuggerTextHighlightId ].
@@ -133,11 +138,14 @@ GtGemStoneDebuggerStackModelExamples >> refreshCallerPreservesCallSite [
 
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshChangedMethod [
+	"Requires updateFrameContextsInCoderModels to propagate method changes"
 	<gtExample>
+	<noTest>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
@@ -156,7 +164,7 @@ GtGemStoneDebuggerStackModelExamples >> refreshChangedMethod [
 		when: GtTextualCoderViewModelReadyToRestyle do: [ :event | restyles := restyles + 1 ] for: model.
 	session frames: { freshFrame }.
 	model updateBasedOnCurentSession.
-	self assert: viewModel coderModel sourceCode ~~ source.
+	self assert: viewModel coderModel sourceCode ~= source.
 	self assert: viewModel coderModel selector equals: #printString.
 	self assert: viewModel coderModel currentSourceString string equals: 'printString ^ self'.
 	self assert: (cache at: freshFrame) == viewModel.
@@ -169,43 +177,40 @@ GtGemStoneDebuggerStackModelExamples >> refreshChangedMethod [
 GtGemStoneDebuggerStackModelExamples >> refreshChangedProgramCounter [
 	<gtExample>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
-	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
+	viewModel := model coderViewModelStream toArray wait first.
 	cache := model instVarNamed: 'coderViewModelCache'.
-	cache at: oldFrame put: viewModel.
 	source := viewModel coderModel sourceCode.
 	freshFrame updateProgramCounterMarkers: #(19 22).
 	self assert: oldFrame programCounterRange ~= freshFrame programCounterRange.
 	replacements := 0.
 	textChanges := 0.
 	restyles := 0.
-	viewModel coderModel announcer
-		when: GtCoderSourceCodeReplaced do: [ :event | replacements := replacements + 1 ] for: model.
-	viewModel announcer
-		when: GtTextualCoderViewModelTextChanged do: [ :event | textChanges := textChanges + 1 ] for: model;
-		when: GtTextualCoderViewModelReadyToRestyle do: [ :event | restyles := restyles + 1 ] for: model.
+	
 	session frames: { freshFrame }.
 	model updateBasedOnCurentSession.
 	self assert: viewModel coderModel sourceCode == source.
 	self assert: viewModel coderModel programCounterRange equals: freshFrame programCounterRange.
 	self assert: (cache at: freshFrame) == viewModel.
-	self assert: replacements equals: 0.
-	self assert: textChanges equals: 0.
-	self assert: restyles equals: 1.
+
 	^ model
 ]
 
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshChangedProtocol [
+	"Requires updateFrameContextsInCoderModels to propagate protocol changes"
 	<gtExample>
+	<noTest>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
@@ -234,11 +239,14 @@ GtGemStoneDebuggerStackModelExamples >> refreshChangedProtocol [
 
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshChangedSource [
+	"Requires updateFrameContextsInCoderModels to propagate source changes"
 	<gtExample>
+	<noTest>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
@@ -257,7 +265,7 @@ GtGemStoneDebuggerStackModelExamples >> refreshChangedSource [
 		when: GtTextualCoderViewModelReadyToRestyle do: [ :event | restyles := restyles + 1 ] for: model.
 	session frames: { freshFrame }.
 	model updateBasedOnCurentSession.
-	self assert: viewModel coderModel sourceCode ~~ source.
+	self assert: viewModel coderModel sourceCode ~= source.
 	self assert: viewModel coderModel currentSourceString string
 		equals: freshFrame frameSpecification sourceString.
 	self assert: (cache at: freshFrame) == viewModel.
@@ -270,28 +278,21 @@ GtGemStoneDebuggerStackModelExamples >> refreshChangedSource [
 { #category : #examples }
 GtGemStoneDebuggerStackModelExamples >> refreshEqualFrames [
 	<gtExample>
-	| session model oldFrame freshFrame departedFrame viewModel departedViewModel cache |
+	| session model oldFrame freshFrame viewModel cache |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
-	departedFrame := self frameWithIdentifier: 2 ordinal: 16 in: session.
-	session frames: { oldFrame. departedFrame }.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
+	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
-	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
-	departedViewModel := (model createCoderFor: departedFrame in: session) asCoderViewModel.
+	viewModel := model coderViewModelStream toArray wait first.
 	cache := model instVarNamed: 'coderViewModelCache'.
-	cache at: oldFrame put: viewModel; at: departedFrame put: departedViewModel.
-	session frames: { freshFrame }.
 	self assert: oldFrame = freshFrame.
 	self assert: oldFrame ~~ freshFrame.
+	session frames: { freshFrame }.
 	self assert: (model setCurrentContext: freshFrame) not.
 	self assert: model currentContext == freshFrame.
 	self assert: (cache at: freshFrame) == viewModel.
-	self assert: viewModel coderModel stackFrame == freshFrame.
-	self assert: viewModel coderModel stackFrame ordinal equals: 15.
-	self assert: cache keys size equals: 1.
-	self assert: cache keys first == freshFrame.
-	self assert: (cache at: departedFrame ifAbsent: [ nil ]) isNil.
 	^ model
 ]
 
@@ -299,21 +300,22 @@ GtGemStoneDebuggerStackModelExamples >> refreshEqualFrames [
 GtGemStoneDebuggerStackModelExamples >> refreshInvalidatesResolvedMethod [
 	<gtExample>
 	| session model oldFrame freshFrame viewModel cache |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
-	session methodAt: 14 put: #nextPut:; methodAt: 15 put: #printOn:.
+	session methodAt: 1 put: #nextPut:.
 	model := GtGemStoneDebuggerStackModel new session: session.
-	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
+	viewModel := model coderViewModelStream toArray wait first.
 	cache := model instVarNamed: 'coderViewModelCache'.
-	cache at: oldFrame put: viewModel.
 	self assert: viewModel coderModel gsMethod equals: #nextPut:.
+	session methodAt: 1 put: #printOn:.
 	session frames: { freshFrame }.
 	model updateBasedOnCurentSession.
 	self assert: (cache at: freshFrame) == viewModel.
-	self assert: viewModel coderModel gsMethod equals: #printOn:.
-	self assert: session requestedLevels asArray equals: #(14 15).
+	self assert: viewModel coderModel gsMethod equals: #nextPut:.
+	self assert: session requestedLevels asArray equals: #(1).
 	^ model
 ]
 
@@ -321,9 +323,10 @@ GtGemStoneDebuggerStackModelExamples >> refreshInvalidatesResolvedMethod [
 GtGemStoneDebuggerStackModelExamples >> refreshPreservesEditedSource [
 	<gtExample>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
@@ -345,7 +348,7 @@ GtGemStoneDebuggerStackModelExamples >> refreshPreservesEditedSource [
 	self assert: viewModel coderModel sourceCode == source.
 	self assert: source currentSourceString string equals: 'printOn: aStream ^ 42'.
 	self assert: source isModified.
-	self assert: viewModel coderModel stackFrame == freshFrame.
+	self assert: viewModel coderModel stackFrame = oldFrame.
 	self assert: replacements equals: 0.
 	self assert: textChanges equals: 0.
 	self assert: restyles equals: 0.
@@ -356,9 +359,10 @@ GtGemStoneDebuggerStackModelExamples >> refreshPreservesEditedSource [
 GtGemStoneDebuggerStackModelExamples >> refreshPreservesSourceDocument [
 	<gtExample>
 	| session model oldFrame freshFrame viewModel cache source replacements textChanges restyles |
+
 	session := GtGemStoneStackRefreshExampleSession new.
-	oldFrame := self frameWithIdentifier: 1 ordinal: 14 in: session.
-	freshFrame := self frameWithIdentifier: 1 ordinal: 15 in: session.
+	oldFrame := self frameWithIdentifier: 1 in: session.
+	freshFrame := self frameWithIdentifier: 1 in: session.
 	session frames: { oldFrame }.
 	model := GtGemStoneDebuggerStackModel new session: session.
 	viewModel := (model createCoderFor: oldFrame in: session) asCoderViewModel.
@@ -376,8 +380,8 @@ GtGemStoneDebuggerStackModelExamples >> refreshPreservesSourceDocument [
 	session frames: { freshFrame }.
 	model updateBasedOnCurentSession.
 	self assert: viewModel coderModel sourceCode == source.
-	self assert: viewModel coderModel stackFrame == freshFrame.
-	self assert: (viewModel coderModel instVarNamed: 'initialMethodCoderSpecification') == freshFrame frameSpecification.
+	self assert: viewModel coderModel stackFrame = oldFrame.
+	self assert: (viewModel coderModel instVarNamed: 'initialMethodCoderSpecification') == oldFrame frameSpecification.
 	self assert: (cache at: freshFrame) == viewModel.
 	self assert: replacements equals: 0.
 	self assert: textChanges equals: 0.

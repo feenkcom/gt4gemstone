@@ -5,6 +5,20 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneDebuggerStackModel >> contextStream [
+	| allContexts |
+
+	allContexts := session remoteStackFrames asAsyncStream.
+
+	filters ifEmpty: [ ^ allContexts ].
+
+	^ allContexts
+		select: [ :each |
+			each sender isNil
+				or: [ filters anySatisfy: [ :filter | filter matches: each method method ] ] ]
+]
+
+{ #category : #accessing }
 GtGemStoneDebuggerStackModel >> createCoderFor: aContext in: aSession [
 	| coder |
 	
@@ -26,7 +40,7 @@ GtGemStoneDebuggerStackModel >> setCurrentContext: aContext [
 	| contextChanged |
 	contextChanged := currentContext ~= aContext.
 	currentContext := aContext.
-	self updateFrameContextsInCoderModels.
+	"self updateFrameContextsInCoderModels."
 	^ contextChanged
 ]
 

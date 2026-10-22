@@ -1,0 +1,650 @@
+[
+	[
+		"ActionSequence",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Announcement",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Announcer",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"AnnouncerSubscription",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Authorizer",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"DirectoryEntry",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"FastUUIDGenerator",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"FileDirectory",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"GsContext",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"MessageSend",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"MimeConverter",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"MIMEDocument",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"NumberParser",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ObjectLogEntry",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ProcessSpecificVariable",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxCharSetParser",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxMatcher",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxMatchOptimizer",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxmLink",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxmTerminator",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxParser",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"RxsNode",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"SecureHashAlgorithm",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"SharedPool",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"SmalltalkProxy",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"SocketStream",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"SocketStreamSocket",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Stack",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Stream",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"TranscriptProxy",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"TransientSemaphore",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"TransientStackValue",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"Url",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"UTF8Encoding",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZipEncoderNode",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZipEncoderTree",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnBase64Encoder",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnByteEncoder",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnChunkedWriteStream",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnClient",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnConstants",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnCookie",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnCookieJar",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnCredential",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnDispatcherDelegate",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnEasy",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnEntityReader",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnEntityWriter",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnFileSystemUtils",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnHeaders",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnHTTPSocketFacade",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnLineReader",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnLogListener",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnLogSupport",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnMessage",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnMimePart",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnMimeType",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnNetworkingUtils",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnNullEncoder",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnPercentEncoder",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnReadEvalPrintDelegate",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnRequestLine",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnResourceMetaUtils",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnServer",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnServerSession",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnServerSessionManager",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnStaticFileServerDelegate",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnStatusLine",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnUrl",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnUserAgentSession",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnUtils",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	],
+	[
+		"ZnValueDelegate",
+		"*squeak",
+		"new\n\n\t^(super new) initialize",
+		"Object class",
+		206081,
+		"1a91b1649b5fcc3399b0768fb8397682cac4b96a09b9e1778f6e81031bee51e3",
+		"New own constructor preserves inherited reference Object class>>new; target native Object remains unchanged."
+	]
+]

@@ -1,0 +1,16 @@
+! Generated from live GT: GtGemStoneZincInstallerArtifacts>>inputTopazScript
+! Fresh installation only. GT has already loaded into its original Globals.
+iferr 1 stk
+iferr 2 stack
+iferr 3 exit
+input $GT4GEMSTONE_ZINC_HOME/begin-import.topaz
+input $GT4GEMSTONE_ZINC_HOME/dependencies-definitions.topaz
+input $GT4GEMSTONE_ZINC_HOME/zinc-definitions.topaz
+input $GT4GEMSTONE_ZINC_HOME/global-bindings.topaz
+input $GT4GEMSTONE_ZINC_HOME/dependencies-methods.topaz
+input $GT4GEMSTONE_ZINC_HOME/zinc-methods.topaz
+input $GT4GEMSTONE_ZINC_HOME/runtime-compatibility.topaz
+input $GT4GEMSTONE_ZINC_HOME/initialization.topaz
+input $GT4GEMSTONE_ZINC_HOME/finish-import.topaz
+commit
+errorCount

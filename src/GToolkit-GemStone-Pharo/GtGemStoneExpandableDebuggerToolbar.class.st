@@ -18,7 +18,7 @@ GtGemStoneExpandableDebuggerToolbar >> actOnBrowserClosing: ann [
 	"No action required at the moment"
 ]
 
-{ #category : #callbacks }
+{ #category : #'event handling' }
 GtGemStoneExpandableDebuggerToolbar >> actOnDebugSessionChanged [
 	| visibility |
 
@@ -27,6 +27,14 @@ GtGemStoneExpandableDebuggerToolbar >> actOnDebugSessionChanged [
 		ifFalse: [ BlVisibility gone ].
 	{ restartFrameButton. resumeButton. stepIntoButton. stepOverButton. } do: [ :button |
 		button visibility: visibility ].
+
+	dapDebugElement debugSession exception gtSession
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
+		do: [
+			self
+				childWithId: #runToCursor
+				ifFound: [ :btn | btn visibility: BlVisibility gone ]
+				ifNone: [ ] ].
 ]
 
 { #category : #accessing }
@@ -38,7 +46,6 @@ GtGemStoneExpandableDebuggerToolbar >> dapDebugElement [
 GtGemStoneExpandableDebuggerToolbar >> dapDebugElement: aDAPDebugElement [
 
 	dapDebugElement := aDAPDebugElement.
-
 ]
 
 { #category : #accessing }
@@ -56,8 +63,10 @@ GtGemStoneExpandableDebuggerToolbar >> initialize [
 	stepIntoButton := self newStepIntoButton.
 	stepOverButton := self newStepOverButton.
 	stepThroughButton := self newStepThroughButton.
+	self addChildren: { resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. self newRunToCursorButton  }.
+	
 	stepOutButton := self newStepOutButton.
-	self addChildren: { resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. stepOutButton. }.
+	self addChild: stepOutButton.
 	self addChild: self newInspectButton.
 ]
 
@@ -100,6 +109,18 @@ GtGemStoneExpandableDebuggerToolbar >> newResumeButton [
 		label: 'Proceed';
 		id: #resume;
 		action: [ :aButton | dapDebugElement gsResume ]
+]
+
+{ #category : #initialization }
+GtGemStoneExpandableDebuggerToolbar >> newRunToCursorButton [
+
+	^ BrButton new 
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		margin: (BlInsets left: 5);
+		icon: BrGlamorousVectorIcons tohere;
+		id: #runToCursor;
+		label: 'Run to Cursor';
+		action: [ :aButton | dapDebugElement gsRunToCursor ]
 ]
 
 { #category : #'private - element creation' }

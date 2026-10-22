@@ -1,0 +1,18 @@
+expectvalue true
+run
+| zinc curator symbols |
+zinc := Globals at: #ZincGlobals.
+GsSession currentSession transientSymbolList: nil.
+(System myUserProfile symbolList last == zinc)
+  ifFalse: [ self error: 'Zinc must remain last in the installer symbol list' ].
+curator := AllUsers userWithId: 'DataCurator'.
+symbols := curator symbolList copy.
+(symbols anySatisfy: [ :dictionary | dictionary name = #ZincGlobals ])
+  ifTrue: [ self error: 'DataCurator already has a Zinc dictionary' ].
+symbols addLast: zinc.
+curator symbolList: symbols.
+#(WAComponent WAApplication Gofer Metacello MCWorkingCopy) do: [ :name |
+  (GsSession currentSession symbolList anySatisfy: [ :dictionary | dictionary includesKey: name ])
+    ifTrue: [ self error: 'Unexpected framework or package-loader global: ', name asString ] ].
+true
+%

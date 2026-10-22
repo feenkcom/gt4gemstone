@@ -125,23 +125,27 @@ GtGemStoneLocalCallStack >> initializeForActiveProcess [
 	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
 
 	gsProcess := Processor activeProcess.
-	callFrames := OrderedCollection withAll: (GsProcess gtAllFrames 
+	callFrames := OrderedCollection withAll: (GsProcess gtAllFrames
 		collect: [ :aFrameArray |
-			GtGemStoneActiveProcessCallFrame 
-				forFrameContents: aFrameArray 
+			GtGemStoneActiveProcessCallFrame
+				forFrameContents: aFrameArray
 				withIdentifier: self generateIdentifier ]).
+	callFrames ifNotEmpty: [
+		callFrames first isStackTopContext: true ].
 ]
 
 { #category : #initialization }
-GtGemStoneLocalCallStack >> initializeForProcess: aGsProcess [ 
+GtGemStoneLocalCallStack >> initializeForProcess: aGsProcess [
 	nextFrameIdentifier := GtGemStoneCallFrameIdentifier initialIdentifier.
 
 	gsProcess := aGsProcess.
-	callFrames := OrderedCollection withAll: (aGsProcess gtAllFrames 
+	callFrames := OrderedCollection withAll: (aGsProcess gtAllFrames
 		collect: [ :aFrameArray |
-			GtGemStoneLocalCallFrame 
-				forFrameContents: aFrameArray 
+			GtGemStoneLocalCallFrame
+				forFrameContents: aFrameArray
 				withIdentifier: self generateIdentifier ]).
+	callFrames ifNotEmpty: [
+		callFrames first isStackTopContext: true ].
 ]
 
 { #category : #testing }

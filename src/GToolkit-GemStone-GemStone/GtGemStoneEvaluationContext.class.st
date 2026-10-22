@@ -155,6 +155,12 @@ GtGemStoneEvaluationContext >> exception: anException [
 ]
 
 { #category : #accessing }
+GtGemStoneEvaluationContext >> frameContentsAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self frameContentsAtLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
+]
+
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> frameContentsAtLevel: anInteger [
 
 	^ process _frameContentsAt: anInteger
@@ -218,6 +224,22 @@ GtGemStoneEvaluationContext >> interruptAsyncComputation [
 	^ #interruptedAsync
 ]
 
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> ipHighlightAnalysisDataAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	| frame |
+
+	frame := self frameForIdentifierIndex: aFrameIdentifierIndex.
+	^ frame ipHighlightAnalysisData
+]
+
+{ #category : #accessing }
+GtGemStoneEvaluationContext >> ipMarkerMapAtFrameIdentifierIndex: aFrameIdentifierIndex [
+	| frame |
+
+	frame := self frameForIdentifierIndex: aFrameIdentifierIndex.
+	^ frame ipMarkerMap
+]
+
 { #category : #testing }
 GtGemStoneEvaluationContext >> isCompleted [
 	"Answer a boolean indicating whether the receiver's process has completed and successfully answered a result"
@@ -241,6 +263,12 @@ GtGemStoneEvaluationContext >> isSuspended [
 GtGemStoneEvaluationContext >> isTerminated [
 
 	^ process _isTerminated
+]
+
+{ #category : #'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> methodAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self methodAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : #'actions - debug (level)' }
@@ -282,9 +310,12 @@ GtGemStoneEvaluationContext >> processOop [
 	^ process asOop
 ]
 
-{ #category : #'actions - debug (identifier)' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex [
-	^ (self frameForIdentifierIndex: aFrameIdentifierIndex) programCounterMarkers
+	| frame |
+
+	frame := self frameForIdentifierIndex: aFrameIdentifierIndex.
+	^ frame programCounterMarkers
 ]
 
 { #category : #'actions - debug (identifier)' }
@@ -317,6 +348,31 @@ GtGemStoneEvaluationContext >> resumeAsyncComputation [
 	^ GtGemstoneEvaluationResumedResult new asDictionaryForExport
 ]
 
+{ #category : #'actions - run to cursor' }
+GtGemStoneEvaluationContext >> runToCursorSourceOffset: aSourceOffset frameIdentifierIndex: aFrameIdentifierIndex [
+	| frameLevel homeMethod sourceOffsets stepPoint currentMarkers |
+
+	frameLevel := self frameLevelForIdentifierIndex: aFrameIdentifierIndex.
+	currentMarkers := self programCounterMarkersAtFrameIdentifierIndex: aFrameIdentifierIndex.
+	(currentMarkers notNil and: [ aSourceOffset <= currentMarkers first ])
+		ifTrue: [ ^ #runToCursor ].
+
+	homeMethod := ((process _frameContentsAt: frameLevel) at: 1) homeMethod.
+	sourceOffsets := homeMethod _sourceOffsets.
+
+	stepPoint := self
+		stepPointNearestOffset: aSourceOffset
+		inOffsets: sourceOffsets.
+	stepPoint ifNil: [
+		self resume.
+		^ #runToCursor ].
+
+	homeMethod setBreakAtStepPoint: stepPoint breakpointLevel: 1.
+	[ self resume ] ensure: [
+		homeMethod clearBreakAtStepPoint: stepPoint ].
+	^ #runToCursor
+]
+
 { #category : #accessing }
 GtGemStoneEvaluationContext >> serializationStrategy [
 	^serializationStrategy
@@ -325,6 +381,12 @@ GtGemStoneEvaluationContext >> serializationStrategy [
 { #category : #accessing }
 GtGemStoneEvaluationContext >> serializationStrategy: object [
 	serializationStrategy := object
+]
+
+{ #category : #'actions - debug (identifier)' }
+GtGemStoneEvaluationContext >> sourceCodeAtFrameIdentifierIndex: aFrameIdentifierIndex [
+
+	^ self sourceCodeAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
 { #category : #'actions - debug (level)' }
@@ -338,25 +400,37 @@ GtGemStoneEvaluationContext >> sourceInfoAtFrameIdentifierIndex: aFrameIdentifie
 	^ self sourceInfoAtFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : #'actions - debug (level)' }
+{ #category : #accessing }
 GtGemStoneEvaluationContext >> sourceInfoAtFrameLevel: anInteger [
-	| frameContents source ipOffset markers startIndex endIndex i |
+	"Compute the source range for the IP offset at the given frame level.
+	For the top frame (level 1) the IP is a step point - use exact lookup.
+	For non-top frames the IP is a return address after a send,
+	so always use _previousStepPointForIp: to find the send site."
+	| frameContents source ipOffset method markers startIndex endIndex i |
 
 	frameContents := self stackFrames at: anInteger.
-	source := frameContents first sourceString.
+	method := frameContents first.
+	source := method sourceString.
 	ipOffset := frameContents second.
-	markers := frameContents first _buildIpMarkerArray.
-	startIndex := markers indexOf: ipOffset.
-	startIndex = 0 ifTrue:
-		[ ^ { 1. source size. source } ].
-	i := startIndex + 1.
+	markers := method _buildIpMarkerArray.
 
+	anInteger = 1
+		ifTrue: [
+			startIndex := markers indexOf: ipOffset.
+			startIndex = 0 ifTrue: [
+				startIndex := method _sourceOffsetsAt:
+					(method _previousStepPointForIp: ipOffset) ] ]
+		ifFalse: [
+			startIndex := method _sourceOffsetsAt:
+				(method _previousStepPointForIp: ipOffset) ].
+
+	i := startIndex + 1.
 	[ endIndex isNil and: [ i <= markers size ] ] whileTrue:
 		[ (markers at: i) notNil ifTrue:
 			[ endIndex := i ].
 		i := i + 1 ].
 	endIndex ifNil: [ endIndex := source size ].
-	^ { startIndex. endIndex. source. }
+	^ { startIndex. endIndex. source }
 ]
 
 { #category : #accessing }
@@ -397,15 +471,73 @@ GtGemStoneEvaluationContext >> stepOverFrameLevel: anInteger [
 	^ #stepOver
 ]
 
+{ #category : #private }
+GtGemStoneEvaluationContext >> stepPointNearestOffset: aSourceOffset inOffsets: sourceOffsets [
+	| bestStepPoint bestDist |
+
+	bestStepPoint := nil.
+	bestDist := SmallInteger maximumValue.
+	1 to: sourceOffsets size do: [ :i |
+		| dist |
+		dist := ((sourceOffsets at: i) - aSourceOffset) abs.
+		dist < bestDist ifTrue: [
+			bestDist := dist.
+			bestStepPoint := i ] ].
+	^ bestStepPoint
+]
+
 { #category : #'actions - debug (identifier)' }
 GtGemStoneEvaluationContext >> stepThroughFrameIdentifierIndex: aFrameIdentifierIndex [
 	^ self stepThroughFrameLevel: (self frameLevelForIdentifierIndex: aFrameIdentifierIndex)
 ]
 
-{ #category : #'actions - debug (level)' }
+{ #category : #stepping }
 GtGemStoneEvaluationContext >> stepThroughFrameLevel: anInteger [
+	"Step through execution at the given frame level, stopping in blocks
+	that share the same home method (loop iterations, nested blocks, etc.).
+
+	GT uses in-process debugging with breakpointLevel: 1, which means step
+	breaks are signaled as Breakpoint exceptions to Smalltalk. The debugActionBlock
+	handler creates exception frames on the process stack above the user code.
+	As a result, the user's frame is never at level 1 -- it is always at level N
+	where N >= 2.
+
+	The GemStone primitive _setBreaksForStepOverFromLevel: has two code paths:
+	  - aLevel = 1: sets step breaks in sibling blocks AND searches the stack
+	    for the home method frame, setting the stack break there. This allows
+	    do:/collect:/etc. to re-invoke the block without hitting a stack break.
+	  - aLevel >= 2: sets step breaks in sibling blocks BUT sets the stack break
+	    at aLevel + 1 (the immediate caller). This causes the process to stop
+	    when the block returns to its caller (e.g., to:by:do:) instead of
+	    allowing re-invocation for the next loop iteration.
+
+	The GCI path always uses level 1 with no handler frames, so it
+	naturally takes the correct aLevel = 1 path. GT cannot -- the handler
+	frames are inherent to in-process debugging.
+
+	This method works around the issue: after setStepThroughBreaksAtLevel:
+	sets the step breaks correctly (sibling blocks get breaks via
+	_setStepOverBreaks:frame:process:stepThrough: true, which works in
+	both branches), we detect when we are in a block and relocate the
+	stack break from the immediate caller to the home method frame.
+	This makes the behavior match the GCI aLevel = 1 path."
+
+	| frameMethod homeMethod homeLevel |
+	frameMethod := (process _frameContentsAt: anInteger) at: 1.
+	homeMethod := frameMethod homeMethod.
 
 	process setStepThroughBreaksAtLevel: anInteger.
+
+	frameMethod ~~ homeMethod ifTrue: [
+		homeLevel := 0.
+		anInteger + 1 to: process localStackDepth do: [ :i |
+			homeLevel = 0 ifTrue: [
+				((process _frameContentsAt: i) at: 1) == homeMethod ifTrue: [
+					homeLevel := i ] ] ].
+		process _clearAllStackBreaks.
+		(homeLevel > 0 and: [ homeLevel < process localStackDepth ]) ifTrue: [
+			process _setStackBreakAt: homeLevel ] ].
+
 	self resume.
 	^ #stepThrough
 ]
@@ -476,19 +608,28 @@ GtGemStoneEvaluationContext >> variable: aSymbol atFrameLevel: anInteger [
 	^ frameContents at: index + 10.
 ]
 
-{ #category : #'actions - debug (level)' }
+{ #category : #debugging }
 GtGemStoneEvaluationContext >> variableArrayAtFrameLevel: anInteger [
-	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame."
-	| frameContents associations varNames selfObject |
+	"Answer an Array of Associations of the items to be displayed in the Variable pane of the specified frame.
+	Use seenNames to deduplicate: when a block-local temp is shared with nested blocks
+	via a VariableContext, _frameContentsAt: returns the variable name twice 
+	(once for the direct frame slot and once for the VariableContext entry)."
+	| frameContents associations varNames selfObject seenNames |
 
 	frameContents := process _frameContentsAt: anInteger.
 	selfObject := frameContents at: 8.
 	associations := SortedCollection sortBlock: [ :a :b | a first < b first ].
 
+	seenNames := Set new.
 	varNames := frameContents at: 9.
-	1 to: varNames size do: [ :i | | object |
-		object := frameContents at: i + 10.
-		associations add: { varNames at: i. object. #frame. object class gtSystemIconName.  } ].
+	1 to: varNames size do: [ :i |
+		| name object |
+		name := varNames at: i.
+		(seenNames includes: name) ifFalse: [
+			seenNames add: name.
+			object := frameContents at: i + 10.
+			associations add: {
+				name. object. #frame. object class gtSystemIconName. } ] ].
 
 	associations := associations asOrderedCollection.
 

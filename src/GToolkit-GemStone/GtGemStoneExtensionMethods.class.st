@@ -1204,6 +1204,20 @@ GtGemStoneExtensionMethods class >> ext_DomainError_class_signalFrom_to_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Duration_asMilliseconds [
+	^ GtGemStoneExtensionMethod new
+		selector: #asMilliseconds;
+		meta: false;
+		gtVersions: nil;
+		className: #Duration;
+		hash: '557beeec158d9ef9582c2b94294ee1a8af940e49928f06e1751ff80483391a2e';
+		source: 'asMilliseconds
+	<gtGsExtension>
+	"Answer total milliseconds, rounded down as in Pharo."
+	^ (self asSeconds * 1000) floor'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Duration_class_hours_ [
  ^ GtGemStoneExtensionMethod new
  selector: #hours:;
@@ -1687,6 +1701,22 @@ GtGemStoneExtensionMethods class >> ext_Integer_printStringLength_ [
 	^ String streamContents: [ :stream |
 		1 to: minimal - decimal size do: [ :index | stream space ].
 		stream nextPutAll: decimal ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_LookupError_key [
+	^ GtGemStoneExtensionMethod new
+		selector: #key;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #LookupError;
+		hash: #new;
+		source: 'key
+	<gtGsExtension>
+  ^ key
+'
+
 ]
 
 { #category : #extensions }
@@ -2959,6 +2989,64 @@ GtGemStoneExtensionMethods class >> ext_ReadStream_readStream [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Semaphore_criticalReleasingOnError_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #criticalReleasingOnError:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: #new;
+		source: 'criticalReleasingOnError: mutuallyExcludedBlock
+	<gtGsExtension>
+	"This is like #critical: but releasing the lock if there is an exception in the block"
+	| blockValue caught |
+	caught := false.
+	[
+		caught := true.
+		self wait.
+		blockValue := mutuallyExcludedBlock
+			on: Exception
+			do: [ :e | caught ifTrue: [self signal].
+				caught := false.
+				e pass.].
+
+	] ensure: [caught ifTrue: [self signal]].
+
+	^blockValue'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Semaphore_waitTimeoutMilliseconds_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitTimeoutMilliseconds:;
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: #new;
+		source: 'waitTimeoutMilliseconds: anInteger
+	<gtGsExtension>
+	"GT compatibility method. Wait on this semaphore for up to anInteger milliseconds.
+	Return true if the timeout expires without a signal, or false if the semaphore is signalled."
+	^ (self waitForMilliseconds: anInteger) not'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Semaphore_waitTimeoutSeconds_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #waitTimeoutSeconds:;
+		meta: false;
+		gtVersions: nil;
+		className: #Semaphore;
+		hash: 'aaeb31110540cd8a4e657fc8e5d30b2834eb1c15efd21cdd2b41a44e8c316353';
+		source: 'waitTimeoutSeconds: anInteger
+	<gtGsExtension>
+	"GT compatibility method. Wait on this semaphore for up to anInteger seconds.
+	Return true if the timeout expires without a signal, or false if the semaphore is signalled."
+	^ (self waitForSeconds: anInteger) not'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_SequenceableCollection_allButLastDo_ [
  ^ GtGemStoneExtensionMethod new
  selector: #allButLastDo:;
@@ -3192,7 +3280,12 @@ GtGemStoneExtensionMethods class >> ext_String_addedToZnUrl_ [
 		hash: #new;
 		source: 'addedToZnUrl: url
 	<gtGsExtension>
-	^ url withPathSegments: (self subStrings: ''/'')'
+	| zinc segments |
+	zinc := Globals at: #ZincGlobals ifAbsent: [ nil ].
+	segments := self subStrings: ''/''.
+	(zinc notNil and: [ url isKindOf: (zinc at: #ZnUrl) ])
+		ifTrue: [ segments := segments reject: [ :segment | segment isEmpty ] ].
+	^ url withPathSegments: segments'
 ]
 
 { #category : #extensions }
@@ -3265,7 +3358,11 @@ GtGemStoneExtensionMethods class >> ext_String_asZnUrl [
 		hash: '6f92cdede440f2cd6d730c2511d047d967a40107a97f019ffdb6c69001268045';
 		source: 'asZnUrl
 	<gtGsExtension>
-	^ ZnUrl fromString: self'
+	| zinc |
+	zinc := Globals at: #ZincGlobals ifAbsent: [ nil ].
+	^ (zinc
+		ifNil: [ ZnUrl ]
+		ifNotNil: [ zinc at: #ZnUrl ]) fromString: self'
 ]
 
 { #category : #extensions }
@@ -3953,6 +4050,36 @@ GtGemStoneExtensionMethods class >> ext_ZnDefaultCharacterEncoder_default [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ZnEntity_class_json_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #json:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #ZnEntity;
+		hash: #new;
+		source: 'json: text
+	
+	<gtGsExtension>
+^ self stringEntityClass json: text'
+
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ZnHeaders_contentLength_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #contentLength:;
+		protocol: #accessing;
+		meta: false;
+		gtVersions: nil;
+		className: #ZnHeaders;
+		hash: #new;
+		source: 'contentLength: object
+	<gtGsExtension>
+	self at: ''Content-Length'' put: object asString'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_ZnMaximumNumberOfDictionaryEntries_class_defaultValue [
 	^ GtGemStoneExtensionMethod new
 		className: #ZnMaximumNumberOfDictionaryEntries;
@@ -4083,6 +4210,22 @@ GtGemStoneExtensionMethods class >> ext_ZnResourceMetaUtils_class_writeQueryFiel
 		source: 'writeQueryFields: dictionary on: stream
 	<gtGsExtension>
 	self writeQueryFields: dictionary withEncoder: ZnUTF8Encoder default on: stream'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_ZnStringEntity_class_json_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #json:;
+		protocol: #convenience;
+		meta: true;
+		gtVersions: nil;
+		className: #ZnStringEntity;
+		hash: #new;
+		source: 'json: string
+	<gtGsExtension>
+	^ (self type: ZnMimeType applicationJson)
+		string: string;
+		yourself'
 ]
 
 { #category : #extensions }

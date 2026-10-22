@@ -1,0 +1,8 @@
+! Generated from live GT: GtGemStoneZincInstallerArtifacts>>obsoleteInstallScript
+! The former network bootstrap is retired. Use the checksum-preflight shell importer.
+iferr 1 stk
+iferr 2 stack
+iferr 3 exit
+run
+self error: 'Obsolete Zinc bootstrap. Run bash scripts/zinc/inputZinc.sh -s STONE after the original GT importer on a fresh default extent.'
+%
