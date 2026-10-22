@@ -133,8 +133,8 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 	debuggerElement := (GtMoldableDebugger on: debuggingSession) beDetailedLevel.
 
 	scripter := BlScripter new.
-	scripter element: debuggerElement.
-	scripter model: debuggingSession.
+	scripter element: debuggerElement inPager.
+	scripter model: debuggerElement debugSession.
 
 	scripter gemStoneDebugger
 		clickOnStepIntoButton;
@@ -144,42 +144,26 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 		play.
 
 	"Bring the second frame to the top of the viewport before looking for its actions."
-	scripter do
-		label: 'Scroll the second frame into view';
-		// GtGemStoneExpandableStackElement;
-		block: [ :aStackElement |
-			aStackElement stackFramesList scrollToIndex: 2 offset: 0 ];
-		play.
-
-	"Use the stack selection path to expand and focus the coder, not its outer wrapper."
-	scripter do
+	scripter gemStoneDebugger
 		label: 'Select and focus the second frame';
-		// GtGemStoneExpandableStackElement;
-		block: [ :aStackElement |
-			| aCoderElement |
-			aCoderElement := aStackElement stackFramesList withAllChildrenBreadthFirst
-				detect: [ :each | each id = (GtExpandableContextMethodCoderId indexed: 2) ].
-			aStackElement selectCoderUIModel: aCoderElement coderViewModel ];
+		scrollToFrameAtTopIndex: 2;
+		clickInsideCoderAtTopIndex: 2;
 		play.
-
-	scripter click
-		label: 'Inspect method in the second frame';
+		
+	scripter methodCoder
+		clickOnInspectMethodButton;
 		// (GtExpandableContextMethodCoderId indexed: 2);
-		onChildFromBlock: [ :aCoderElement |
-			aCoderElement withAllChildrenBreadthFirst detect: [ :each |
-				(each isKindOf: BrButton) and: [ each label asString = 'Inspect Method' ] ] ];
 		play.
-
-	scripter assert
-		label: 'Assert inspected method is CharacterCollection>>printString';
-		value: [ :theScripter |
-			theScripter events reversed
-				detectEventOfClass: GtPhlowObjectToSpawn
-				ifFound: [ :event |
-					{ event object inClass name. event object selector } ]
-				ifNone: [ AssertionFailure signal: 'Inspect Method did not spawn an object' ] ]
-			equals: { #CharacterCollection. #printString };
-		onScripter;
+		
+	scripter inspectorStep
+		onPagerPaneWithIndex: 2;
+		assertInspectedObjectOfType: GtGspoGsNMethod;
+		assertInspectedObjectValueFor: [ :obj | obj remoteClass ]
+			equals: [ #GsNMethod ];
+		assertInspectedObjectValueFor: [ :obj | obj selector ]
+			equals: [ #printString ];
+		assertInspectedObjectValueFor: [ :obj | obj inClass name ]
+			equals: [ #CharacterCollection ];
 		play.
 
 	^ scripter
