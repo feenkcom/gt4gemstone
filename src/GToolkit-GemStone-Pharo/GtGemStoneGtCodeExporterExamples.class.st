@@ -304,7 +304,6 @@ GtGemStoneGtCodeExporterExamples >> stubClassNameUtilities [
 	source := (exporterClass >> #stubClassNames) sourceCode.
 	self assert: (source includesSubstring: '#Object').
 	self assert: (source includesSubstring: '#String').
-	self assert: (exporterClass >> #stubClassNames) protocol name equals: #accessing.
 	self assert: GtGemStoneGtCodeExporter new stubClassNames equals: originalNames.
 	^ exporterClass
 ]

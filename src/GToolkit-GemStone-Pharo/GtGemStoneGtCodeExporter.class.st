@@ -458,7 +458,7 @@ GtGemStoneGtCodeExporter >> gsCodeClasses [
 		thenReject: [ :each | each isNil ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #ui }
 GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
 	<gtView>
 	
@@ -466,6 +466,12 @@ GtGemStoneGtCodeExporter >> gtAdditionalClassesFor: aView [
 		title: 'Additional Classes';
 		priority: 20;
 		items: [ self additionalClasses sorted: #name ascending ]
+]
+
+{ #category : #'stub classes' }
+GtGemStoneGtCodeExporter >> llmMethodsCompilationStubClassNames [
+	<stubClassNames>
+	^ #(GtGemStoneLlmToolForMethodsCompilation)
 ]
 
 { #category : #exporting }
@@ -506,7 +512,7 @@ GtGemStoneGtCodeExporter >> loadZnUrlPortOnGemStone [
 	^ focused
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'excluded methods' }
 GtGemStoneGtCodeExporter >> magritteExcludedExampleMethods [
 	<excludedMethods>
 	
@@ -675,7 +681,7 @@ GtGemStoneGtCodeExporter >> staticExportAnalysisForPackageNames: aCollection [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : #'stub classes' }
 GtGemStoneGtCodeExporter >> stubClassNames [
 	<stubClassNames>
 	^ #(
