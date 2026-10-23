@@ -37,6 +37,32 @@ GtGemStoneExpandableDebuggerToolbar >> actOnDebugSessionChanged [
 				ifNone: [ ] ].
 ]
 
+{ #category : #initialization }
+GtGemStoneExpandableDebuggerToolbar >> addExtraActionsButton [
+	| phlowAction |
+	phlowAction := GtPhlowAction new dropdown
+		tooltip: 'Inspect';
+		icon: BrGlamorousVectorIcons hamburger;
+		content: [ :aButton | 
+			| actions |
+			actions := OrderedCollection new.
+			dapDebugElement debugSession exception ifNotNil: [
+				actions add: ('Inspect Exception' -> [ :anElement | 
+					anElement phlow spawnObject: dapDebugElement debugSession exception.
+					aButton dispatchEvent: BrDropdownHideWish new])].
+			actions add: ('Inspect Debugging Session' -> [ :anElement | 
+				anElement phlow spawnObject: dapDebugElement debugSession.
+				aButton dispatchEvent: BrDropdownHideWish new ]).
+			BrGlamorousSimpleContextMenuContent new
+				items:actions;
+				yourself ].
+	phlowAction 
+		asElement: [ :actionElement | 
+			 actionElement margin: (BlInsets left: 5).
+			 self addChild: actionElement ]				
+		withHostElement: self 
+]
+
 { #category : #accessing }
 GtGemStoneExpandableDebuggerToolbar >> dapDebugElement [
 	^ dapDebugElement
@@ -67,24 +93,13 @@ GtGemStoneExpandableDebuggerToolbar >> initialize [
 	
 	stepOutButton := self newStepOutButton.
 	self addChild: stepOutButton.
-	self addChild: self newInspectButton.
+	self addExtraActionsButton.
 ]
 
 { #category : #testing }
 GtGemStoneExpandableDebuggerToolbar >> isResumable [
 
 	^ self debuggerClient exception isResumable
-]
-
-{ #category : #'private - element creation' }
-GtGemStoneExpandableDebuggerToolbar >> newInspectButton [
-
-	^ BrButton new 
-		aptitude: BrGlamorousButtonWithIconAptitude;
-		margin: (BlInsets left: 5);
-		label: 'Inspect the DAP Debugger';
-		icon: BrGlamorousVectorIcons emphasizedInspect;
-		action: [ :aButton | dapDebugElement inspect ]
 ]
 
 { #category : #'private - element creation' }
@@ -119,7 +134,7 @@ GtGemStoneExpandableDebuggerToolbar >> newRunToCursorButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons tohere;
 		id: #runToCursor;
-		label: 'Run to Cursor';
+		label: 'Run to cursor';
 		action: [ :aButton | dapDebugElement gsRunToCursor ]
 ]
 
@@ -167,7 +182,7 @@ GtGemStoneExpandableDebuggerToolbar >> newStepThroughButton [
 		margin: (BlInsets left: 5);
 		icon: BrGlamorousVectorIcons through;
 		id: #stepThrough;
-		label: 'Step Through';
+		label: 'Step through';
 		action: [ :aButton | dapDebugElement gsStepThrough ]
 ]
 
