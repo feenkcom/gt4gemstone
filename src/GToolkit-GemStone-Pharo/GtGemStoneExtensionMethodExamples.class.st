@@ -8,6 +8,31 @@ Class {
 }
 
 { #category : #examples }
+GtGemStoneExtensionMethodExamples >> abstractFractionAsScaledDecimalExtension [
+	<gtExample>
+	<return: #GtGemStoneExtensionMethod>
+	| extension expectedSource |
+	extension := GtGemStoneExtensionMethods ext_AbstractFraction_asScaledDecimal.
+	self assert: extension selector equals: #asScaledDecimal.
+	self assert: extension protocol equals: #'gt-extension'.
+	self assert: extension className equals: #AbstractFraction.
+	self assert: extension meta not.
+	self assert: extension gtVersions isNil.
+	self assert: extension hash equals: #new.
+	expectedSource := (Fraction compiledMethodAt: #asScaledDecimal) sourceCode.
+	expectedSource := expectedSource
+		copyReplaceAll: 'asScaledDecimal' , String cr
+		with: 'asScaledDecimal' , String cr , String tab , '<gtGsExtension>' , String cr.
+	expectedSource := expectedSource copyReplaceAll: 'Else, use a default number of decimals.' with: 'Else, use the GT default of eight decimal places.'.
+	expectedSource := expectedSource copyReplaceAll: 'denominator' with: 'self denominator'.
+	expectedSource := expectedSource copyReplaceAll: 'super asScaledDecimal' with: 'self asScaledDecimal: 8'.
+	self assert: (extension source withLineEndings: String lf)
+		equals: (expectedSource withLineEndings: String lf).
+	self assert: (GtGemStoneExtensionMethods extensionSelectors includes: #ext_AbstractFraction_asScaledDecimal).
+	^ extension
+]
+
+{ #category : #examples }
 GtGemStoneExtensionMethodExamples >> collectionIntersectionExtension [
 	<gtExample>
 	<return: #GtGemStoneExtensionMethod>
@@ -117,6 +142,22 @@ GtGemStoneExtensionMethodExamples >> extensionSha256WithLineEndings [
 	inputs do: [ :each |
 		self assert: (extension sha256Of: each) equals: expectedDigest ].
 	^ expectedDigest
+]
+
+{ #category : #examples }
+GtGemStoneExtensionMethodExamples >> objectAssertIdenticalToExtension [
+	<gtExample>
+	| extension |
+	extension := GtGemStoneExtensionMethods ext_Object_assert_identicalTo_.
+	self assert: extension selector equals: #assert:identicalTo:.
+	self assert: extension className equals: #Object.
+	self assert: extension meta not.
+	self assert: extension gtVersions isNil.
+	self assert: extension hash equals: #new.
+	self assert: extension protocol equals: #'gt-extension-method'.
+	self assert: (extension source includesSubstring: '<gtGsExtension>').
+	self assert: (extension source includesSubstring: 'expected == actual').
+	^ extension
 ]
 
 { #category : #examples }

@@ -35,7 +35,7 @@ GtPharoMethodCoder >> gtGemStoneCompileMethodFromFor: anAST into: coderAddOns [
 			source := session evaluateAndWait: cmd.
 			self compiledMethod methodClass
 				compile: source
-				classified: self compiledMethod category ]
+				classified: self compiledMethod protocol ]
 		id: nil) ifNotNil: [ :anAction | anAction priority: 303 ]
 ]
 

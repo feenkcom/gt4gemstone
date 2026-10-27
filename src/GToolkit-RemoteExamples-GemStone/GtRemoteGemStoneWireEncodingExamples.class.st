@@ -403,6 +403,21 @@ GtRemoteGemStoneWireEncodingExamples >> performWithAssociation [
 ]
 
 { #category : #examples }
+GtRemoteGemStoneWireEncodingExamples >> returnDateAndTime [
+	<gtExample>
+	| session |
+	session := self runningServer.
+	^ #(0 19800 -12600) collect: [ :offset | | result expected expression |
+		expression := 'DateAndTime year: 2020 month: 1 day: 2 hour: 3 minute: 4 second: 5 offset: (Duration seconds: ', offset printString, ')'.
+		result := session evaluateAndWait: expression serializationStrategy: #GtRsrWireSerializationStrategy.
+		expected := DateAndTime year: 2020 month: 1 day: 2 hour: 3 minute: 4 second: 5 offset: (Duration seconds: offset).
+		self assert: result equals: expected.
+		self assert: result offset equals: expected offset.
+		self assert: result nanoSecond equals: expected nanoSecond.
+		result ]
+]
+
+{ #category : #examples }
 GtRemoteGemStoneWireEncodingExamples >> sendMessageToBlockClosure [
 	<gtExample>
 	<return: #AssertionFailure>
