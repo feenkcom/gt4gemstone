@@ -33,6 +33,34 @@ GtGemStoneExtensionMethods class >> ext_AbstractException_gtMessageTextFor_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_AbstractFraction_asScaledDecimal [
+	^ GtGemStoneExtensionMethod new
+		selector: #asScaledDecimal;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #AbstractFraction;
+		hash: #new;
+		source: 'asScaledDecimal
+	<gtGsExtension>
+	"Convert the receiver to a ScaledDecimal.
+	If there is a finite decimal representation of the receiver, then use the exact number of decimal places required.
+	Else, use the GT default of eight decimal places."
+
+	| pow2 pow5 q q5 |
+	pow2 := self denominator lowBit - 1.
+	q := self denominator bitShift: pow2 negated.
+	pow5 := 0.
+	[q = 1]
+		whileFalse: [
+			q5 := q // 5.
+			(q - (5 * q5)) = 0 ifFalse: [^self asScaledDecimal: 8].
+			q := q5.
+			pow5 := pow5 + 1].
+	^self asScaledDecimal: (pow2 max: pow5)'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Array_as_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #as:;
@@ -2760,6 +2788,19 @@ GtGemStoneExtensionMethods class >> ext_Object_assert_equals_ [
 		source: 'assert: actual equals: expected
 	<gtGsExtension>
 	^ self assert: expected = actual description: [ ''Got '', actual printString, '' instead of '', expected printString ]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Object_assert_identicalTo_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #assert:identicalTo:;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'assert: actual identicalTo: expected
+	<gtGsExtension>
+	^ self assert: expected == actual description: [ ''Got '', actual printString, '' instead of identical '', expected printString ]'
 ]
 
 { #category : #extensions }
