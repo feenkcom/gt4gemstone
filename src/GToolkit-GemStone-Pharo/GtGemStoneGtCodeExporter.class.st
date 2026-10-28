@@ -201,6 +201,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#DomainError
 		#ExecutionEnvironment
 		#GtExampleComparisonExceptionWithDebuggingViews
+		#GtGemStoneCheckSuite
 		#GtGemStoneExtensionMethod
 		#GtGemStoneExtensionMethods
 		#KeyNotFound
@@ -307,35 +308,32 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 	^ {
 	GtLMarkdown>>#commentForSmaCC.
 	GtLClassCreationDataExtractor>>#extractSuperclassIfError:.
-	GtLClassChangeDataExtractor>>#extractSuperclassIfError:.
+	
 	GtLClassCreationDataExtractor>>#extractTargetClassNameIfError:.
 	GtLDataView>>#documentData.
-	GtLDataView>>#compositeData.
+	
 	GtLDataView>>#emptyData.
 	GtLDataView>>#forwardCollection.
 	GtLDataView>>#forwardObject.
 	GtLDataView>>#imageData.
-	GtLDataView>>#jsonData.
-	GtLDataView>>#magritteObject.
+	
+	
 	GtLDataView>>#basicOn:perform:withArguments:.
 	GRPlatform>>#bindingOf:.
 	GtLDataSourceEncoderDecoder class>>#writeClientHistory:to:selector:.
 	GtLValueSerializerExamples>>#serializeProtoObjectClass.
 	GtLPackageChangeHistory>>#gtViewChangeIcon.
 	GtLPackageTagChangeHistory>>#gtViewChangeIcon.
-	GtLClassChangeDataExtractor>>#extractTargetClassIfError:.
+	
 	GtLSmaCCModel>>#grammarFor:.
-	GtLMagritteToolForClassDefinitionChangeExamples>>#removeClassNamedIfPresent:.
+	
 	GtLSmaCCToolForParserCompilationExamples>>#compile.
 	GtLSmaCCToolForParserCompilationExamples>>#cleanUp.
-	GtLMagritteToolForClassesCreationExamples>>#createClassesWithInstanceVariables.
-	GtLMagritteToolForClassesCreationExamples>>#createTraitsWithInstanceVariables.
-	GtLMagritteToolForClassesCreationExamples>>#removeClassNamedIfPresent:.
-	GtLMagritteToolForMethodsRemovalExamples>>#removeClassNamedIfPresent:.
+	
 	GtLMethodChangeHistory>>#gtViewChangeIcon.
 	GtLDocumentDataViewExamples>>#samplePdfBytes.
 	GtLResponseMarkdownFormat>>#initialize.
-	GtLToolForExampleClassesRun>>#extractExamplesFromClassesFrom:in:reportingNotFoundIn:.
+	
 	GtLToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
 	GtLToolForTestClassesRun>>#privatePerformToolCall:inContext:.
 	GtLOllamaMigrationExamples>>#gemma4Image.
@@ -432,9 +430,26 @@ GtGemStoneGtCodeExporter >> gsCodeClassList [
 		#GtExampleResultNoValue
 		#GtGemStoneExtensionMethod
 		#GtGemStoneTopazExporterExamples
+		#GtLClassChangeDataExtractor
+		#GtLClassDefinitionDescription
+		#GtLClassDescription
+		#GtLDataView
+		#GtLMagritteToolForClassCommentChange
+		#GtLMagritteToolForClassCommentChangeExamples
+		#GtLMagritteToolForClassCreation
+		#GtLMagritteToolForClassDefinitionChange
+		#GtLMagritteToolForClassDefinitionChangeExamples
+		#GtLMagritteToolForClassSearch
+		#GtLMagritteToolForMethodCompilation
+		#GtLMagritteToolForMethodsCompilationExamples
+		#GtLMagritteToolForMethodsRemoval
+		#GtLMagritteToolForMethodsRemovalExamples
+		#GtLMagritteToolForObjectStorageSlotValue
 		#GtLMcpGemStoneExamples
 		#GtLMcpServer
 		#GtLSerializedObjectValue
+		#GtLToolForExampleClassesRun
+		#GtLToolForExampleClassesRunExamples
 		#GtLWrappedObjectModel
 		#GtMagriteJSONDataCreationVisitor
 		#GtProcessStackOverflowChecker
@@ -611,6 +626,23 @@ GtGemStoneGtCodeExporter >> packageNames [
 		'Telemetry'.
 		}.
 	^ packageNames
+]
+
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> smalltalkCodeEvaluationExcludedMethods [
+	<excludedMethods>
+	"Lepiter and Bloc functionality is not ported to GemStone."
+	^ { GtLMagritteToolForSmalltalkCodeEvaluationExamples >> #executeReturningBlElement.
+	GtLMagritteToolForSmalltalkCodeEvaluationExamples >> #theDatabase.
+	GtLMagritteToolForSmalltalkCodeEvaluationExamples >> #ensureLepiterPageForObject:withSnippetCode:.
+	GtLMagritteToolForSmalltalkCodeEvaluationExamples >> #lepiterPageReferenceForObject:withSnippetCode:.
+	GtLMagritteToolForSmalltalkCodeEvaluationExamples >> #expectedPlaygroundPageReferenceForObjectClassName: }
+]
+
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> smalltalkCodeEvaluationGsCodeClasses [
+	<gsCodeClasses>
+	^ #(GtLMagritteToolForSmalltalkCodeEvaluationExamples)
 ]
 
 { #category : #analysis }
@@ -1205,6 +1237,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LeIcons
 		#LeJsonV4
 		#LeLogicalDatabase
+		#LeMarkdownTableExamples
 		#LeObjectReferenceAnnotationAdapter
 		#LePage
 		#LePagePhlowTool
@@ -1217,6 +1250,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LePythonSnippet
 		#LeShellScriptSnippet
 		#LeSnippetChange
+		#LeSnippetStyler
 		#LeSnippetStylerVisitor
 		#LeTextCoderSnippetViewModel
 		#LeTextSnippet

@@ -561,6 +561,20 @@ GtGemStoneExtensionMethods class >> ext_Collection_copyEmpty [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Collection_copyWithoutAll_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #copyWithoutAll:;
+		meta: false;
+		gtVersions: nil;
+		className: #Collection;
+		hash: #new;
+		protocol: 'copying';
+		source: 'copyWithoutAll: aCollection
+	<gtGsExtension>
+	^ self reject: [ :each | aCollection includes: each ]'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Collection_count_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #'count:';
@@ -1446,6 +1460,20 @@ GtGemStoneExtensionMethods class >> ext_Fraction_neoJsonOn_ [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GsNMethod_hasPragmaNamed_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #hasPragmaNamed:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GsNMethod;
+		hash: #new;
+		source: 'hasPragmaNamed: aSymbol
+	<gtGsExtension>
+	^ self pragmas anySatisfy: [ :pragma | pragma keyword = aSymbol ]'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_GsNMethod_isSourceSearchable [
 	^ GtGemStoneExtensionMethod new
 		selector: #isSourceSearchable;
@@ -1458,6 +1486,20 @@ GtGemStoneExtensionMethods class >> ext_GsNMethod_isSourceSearchable [
 	<gtGsExtension>
 	"Other projects may override this to exclude methods from source searches."
 	^ true'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_GsNMethod_name [
+	^ GtGemStoneExtensionMethod new
+		selector: #name;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GsNMethod;
+		hash: #new;
+		source: 'name
+	<gtGsExtension>
+	^ self methodClass name, ''>>#'', self selector'
 ]
 
 { #category : #extensions }
@@ -2906,6 +2948,66 @@ GtGemStoneExtensionMethods class >> ext_Object_isPoint [
 ]
 
 { #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Object_llmDataViewsFor_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #llmDataViewsFor:;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		protocol: '*Gt4LlmCore';
+		source: 'llmDataViewsFor: aDataView
+	<gtGsExtension>
+	"This is the default entry method for retrieving the wrapper view containing all views"
+	^ self llmDataViewsFor: aDataView inContext: GtLDataViewContext new'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Object_llmDataViewsFor_inContext_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #llmDataViewsFor:inContext:;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		protocol: '*Gt4LlmCore';
+		source: 'llmDataViewsFor: aDataView inContext: aContext
+	<gtGsExtension>
+	^aDataView compositeData
+		title: ''Object views'';
+		addDataViews: (self llmDataViewsInContext: aContext);
+		yourself'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_Object_llmDataViewsInContext_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #llmDataViewsInContext:;
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		protocol: '*Gt4LlmCore';
+		source: 'llmDataViewsInContext: aContext
+	<gtGsExtension>
+	| behavior selectors views |
+	behavior := self class.
+	selectors := Set new.
+	views := OrderedCollection new.
+	[ behavior notNil ] whileTrue: [
+		(Pragma allNamed: #gtLlmDataView in: behavior) do: [ :pragma |
+			| selector arguments |
+			selector := pragma methodSelector.
+			(selectors includes: selector) ifFalse: [
+				selectors add: selector.
+				arguments := { GtLDataView empty. aContext }.
+				views add: (self perform: selector withArguments:
+					(arguments copyFrom: 1 to: selector numArgs)) ] ].
+		behavior := behavior superclass ].
+	^ views asArray sort: [ :a :b | a priority <= b priority ]'
+]
+
+{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Object_neoJsonOn_ [
  ^ GtGemStoneExtensionMethod new
  selector: #neoJsonOn:;
@@ -3105,6 +3207,26 @@ GtGemStoneExtensionMethods class >> ext_SequenceableCollection_allButLastDo_ [
 
 	1 to: self size - 1 do:
 		[:index | block value: (self at: index)]'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_SequenceableCollection_fillFrom_with_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #fillFrom:with:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #SequenceableCollection;
+		hash: #new;
+		source: 'fillFrom: aCollection with: aBlock
+	<gtGsExtension>
+	"Evaluate aBlock with each of aCollections''s elements as the argument.
+	Collect the resulting values into self. Answer self."
+	| index |
+	
+	index := 0.
+	aCollection do: [ :each |
+		self at: (index := index + 1) put: (aBlock value: each) ]'
 ]
 
 { #category : #extensions }
@@ -4046,6 +4168,30 @@ GtGemStoneExtensionMethods class >> ext_Time_class_microsecondClockValue [
 	<gtGsExtension>
 	"Answer the millisecond clock in microseconds, retaining millisecond resolution."
 	^ self millisecondClockValue * 1000'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_UUID_class_fromString36_ [
+	^ GtGemStoneExtensionMethod new
+		selector: #fromString36:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #UUID;
+		hash: #new;
+		source: 'fromString36: aString
+	<gtGsExtension>
+	| object number digit |
+	object := self nilUUID.
+	number := 0.
+	aString asLowercase do: [ :character |
+		digit := ''0123456789abcdefghijklmnopqrstuvwxyz'' indexOf: character.
+		digit = 0 ifTrue: [ self error: ''Invalid base 36 UUID'' ].
+		number := number * 36 + digit - 1 ].
+	1 to: 16 do: [ :index |
+		object at: index put: (number bitAnd: 255).
+		number := number bitShift: -8 ].
+	^ object'
 ]
 
 { #category : #extensions }

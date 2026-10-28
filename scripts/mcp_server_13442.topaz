@@ -1,0 +1,16 @@
+	iferr 1 stk
+	iferr 2 stack
+	iferr 3 exit
+
+	run
+GtLMcpServer new
+		port: 13442;
+		addTools: GtLTools gtSearch;
+		addTools: GtLTools gtCodeChange;
+		addTools: GtLTools gtExamplesRun;
+		addTools: (GtLTools gtObjectsExecution
+			reject: [ :each | each name = 'getViewContent' ]);
+		start.
+Semaphore new wait.
+%
+	abort
