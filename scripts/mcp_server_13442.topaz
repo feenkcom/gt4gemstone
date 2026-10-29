@@ -3,13 +3,9 @@
 	iferr 3 exit
 
 	run
-GtLMcpServer new
+GtLMcpServer current: (GtLMcpServer new
 		port: 13442;
-		addTools: GtLTools gtSearch;
-		addTools: GtLTools gtCodeChange;
-		addTools: GtLTools gtExamplesRun;
-		addTools: (GtLTools gtObjectsExecution
-			reject: [ :each | each name = 'getViewContent' ]);
+		addTools: GtLTools onGemstone;
 		start.
 Semaphore new wait.
 %

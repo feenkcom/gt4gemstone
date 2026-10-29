@@ -49,6 +49,12 @@ GtLTools class >> gemstoneIfActive [
 ]
 
 { #category : #'*GToolkit-GemStone-Pharo' }
+GtLTools class >> gtGemStone [
+
+	^ self gt, self gemstone
+]
+
+{ #category : #'*GToolkit-GemStone-Pharo' }
 GtLTools class >> onGemstone [
 	"Answer the set of tools available to the GemStone MCP server.
 	i.e. the MCP server running in GemStone."
