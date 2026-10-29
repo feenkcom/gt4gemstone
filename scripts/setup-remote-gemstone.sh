@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Generated from live GT: GtGemStoneZincInstallerArtifacts>>setupScript
-# The non-Rowan installer starts from the original default extent.
-# Zinc is opt-in with LOAD_ZINC=yes. Rowan Zinc loading remains unimplemented.
+#
+# Setup a default base GT GemStone configuration in
+#
+#    {image_directory}/remote-gemstone
+# 
 set -e
 set -x
 
@@ -17,12 +19,19 @@ stop_servers() {
     started_netldi=no
   fi
 }
-on_exit() {
-  local status=$?
+
+function on_exit()
+{
+  local exit_status=$?
+  if [ "$exit_status" -ne 0 ]; then
+    printf 'ERROR: %s is exiting with status %s\n' "$0" "$exit_status" >&2
+  fi
+  # Attempt both shutdown commands and preserve the original exit status.
   set +e
   stop_servers
-  exit "$status"
+  exit "$exit_status"
 }
+
 start_servers() {
   startnetldi -g
   started_netldi=yes
@@ -31,13 +40,6 @@ start_servers() {
   sleep 1
 }
 
-LOAD_ZINC="${LOAD_ZINC:-no}"
-case "$LOAD_ZINC" in yes|no) ;; *) echo "LOAD_ZINC must be yes or no" >&2; exit 1 ;; esac
-if [[ "$LOAD_ZINC" = yes && -n "${USE_ROWAN:-}" && "$USE_ROWAN" != no ]]; then
-  echo "This installer has no tested Rowan Zinc loading path" >&2
-  exit 1
-fi
-export LOAD_ZINC
 export STONE=gs64stone
 DIR=$(readlink "$0") || DIR="$0"
 export SCRIPT_DIR="$(cd "$(dirname "$DIR")" && pwd)"
@@ -88,13 +90,6 @@ if [[ -z "${USE_ROWAN:-}" || "$USE_ROWAN" = no ]]; then
       exit 1
     fi
   done
-  if [ "$LOAD_ZINC" = yes ]; then
-    if [ ! -f "$release_home/zinc/preflight.sh" ]; then
-      echo "Selected release has no frozen Zinc export; use LOAD_ZINC=no or a release with exports" >&2
-      exit 1
-    fi
-    bash "$release_home/zinc/preflight.sh"
-  fi
 fi
 
 # gtinstallgs copies the original bin/extent0.dbf; never substitute the GLASS extent.
@@ -107,9 +102,6 @@ start_servers
 if [[ -z "${USE_ROWAN:-}" || "$USE_ROWAN" = no ]]; then
   # Always use this selected release's original GT importer and its own frozen Zinc.
   bash "$release_home/inputRelease.sh" -s "$STONE"
-  if [ "$LOAD_ZINC" = yes ]; then
-    bash "$release_home/zinc/inputZinc.sh" -s "$STONE"
-  fi
 else
   # Preserve the existing Rowan installation path.
   stop_servers
