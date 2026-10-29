@@ -6,7 +6,7 @@
 GtLMcpServer current: (GtLMcpServer new
 		port: 13442;
 		addTools: GtLTools onGemstone;
-		start.
+		start).
 Semaphore new wait.
 %
 	abort
