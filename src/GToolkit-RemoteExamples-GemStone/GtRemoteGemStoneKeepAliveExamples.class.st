@@ -219,6 +219,9 @@ GtRemoteGemStoneKeepAliveExamples >> closeRecordsARequestedDisconnection [
 	self assert: record keepAlive isConnected not.
 	self assert: record keepAlive timeLeftDescription equals: '-'.
 	self assert: self liveRegistry keepAlive loggedOutConnections isEmpty.
+	self
+		assert: self liveRegistry endedConnectionRecords asArray
+		equals: (Array with: record).
 	^ session
 ]
 

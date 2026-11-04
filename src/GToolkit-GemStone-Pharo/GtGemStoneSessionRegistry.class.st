@@ -27,7 +27,8 @@ Class {
 		'keepAlive',
 		'codeSync',
 		'sharedAccess',
-		'notifier'
+		'notifier',
+		'endedConnectionRecords'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -125,6 +126,17 @@ GtGemStoneSessionRegistry >> addConnector: aGtGemStoneConnector [
 	sharedAccess critical: 
 		[ connectors at: aGtGemStoneConnector name put: aGtGemStoneConnector ].
 	^ aGtGemStoneConnector
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> addEndedConnectionRecord: aConnectionRecord [
+
+	sharedAccess critical: [
+		(endedConnectionRecords includes: aConnectionRecord) ifFalse: [
+			aConnectionRecord addFirstTo: endedConnectionRecords.
+			[ endedConnectionRecords size > self maxEndedConnectionRecords ]
+				whileTrue: [ endedConnectionRecords removeLast ] ] ]
+
 ]
 
 { #category : #actions }
@@ -404,9 +416,9 @@ GtGemStoneSessionRegistry >> enableGtGemStoneSyncForDefaultSession [
 { #category : #accessing }
 GtGemStoneSessionRegistry >> endedConnectionRecords [
 
-	^ ((self activeSessions flatCollect: [ :each | each connectionRecords ])
-		select: [ :each | each hasEnded ])
-			sorted: [ :each | each disconnectionReason time ] descending
+	^ sharedAccess critical: [
+		endedConnectionRecords asArray
+			sorted: [ :each | each disconnectionReason time ] descending ]
 
 ]
 
@@ -755,6 +767,7 @@ GtGemStoneSessionRegistry >> initialize [
 	super initialize.
 	sharedAccess := Mutex new.
 	notifier := GtGemStoneSessionWorldNotifier new.
+	self initializeEndedConnectionRecords.
 	self reload "resetSessions".
 	"Unless a custom encoder has been specified, use the GemStone default wire encoder"
 	GtWireEncoder hasDefaultEncoder ifFalse:
@@ -770,6 +783,13 @@ GtGemStoneSessionRegistry >> initializeConnectors: aDictionary [
 	connectors := aDictionary
 ]
 
+{ #category : #initialization }
+GtGemStoneSessionRegistry >> initializeEndedConnectionRecords [
+
+	endedConnectionRecords := OrderedCollection new
+
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> keepAlive [
 
@@ -782,6 +802,13 @@ GtGemStoneSessionRegistry >> keepAlive: aGtGemStoneSessionKeepAlive [
 	self assert: [ keepAlive isNil ] description: 'A keep alive is already attached'.
 	keepAlive := aGtGemStoneSessionKeepAlive.
 	keepAlive registry: self
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> maxEndedConnectionRecords [
+
+	^ 50
 
 ]
 

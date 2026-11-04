@@ -312,7 +312,7 @@ GtGemStoneSessionKeepAlive >> logoutSessions: aCollection [
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> maxLoggedOutConnections [
 
-	^ 10
+	^ 50
 
 ]
 

@@ -94,9 +94,17 @@ GtGemStoneSession >> announce: anAnnouncement [
 { #category : #private }
 GtGemStoneSession >> announceDisconnection [
 
+	self announceDisconnectionOf: connectionRecord
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> announceDisconnectionOf: aConnectionRecord [
+
+	registry ifNotNil: [ registry addEndedConnectionRecord: aConnectionRecord ].
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement
 		session: self
-		connectionRecord: connectionRecord)
+		connectionRecord: aConnectionRecord)
 
 ]
 
@@ -1724,7 +1732,7 @@ GtGemStoneSession >> logEmitter [
 { #category : #accessing }
 GtGemStoneSession >> maxEndedConnectionRecords [
 
-	^ 3
+	^ 10
 
 ]
 
@@ -1843,9 +1851,7 @@ GtGemStoneSession >> recordConnectionLostOf: aConnectionRecord [
 	aConnectionRecord canRecordConnectionLoss ifFalse: [ ^ self ].
 	aConnectionRecord recordDisconnectionReason:
 		(GtGemStoneUnexpectedDisconnectionReason time: self currentTime).
-	self announce: (GtGemStoneSessionDisconnectedAnnouncement
-		session: self
-		connectionRecord: aConnectionRecord).
+	self announceDisconnectionOf: aConnectionRecord.
 	registry ifNotNil: [
 		registry notifier showConnectionLost: aConnectionRecord of: self ]
 

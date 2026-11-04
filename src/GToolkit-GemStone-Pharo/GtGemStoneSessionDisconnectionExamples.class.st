@@ -57,6 +57,21 @@ GtGemStoneSessionDisconnectionExamples >> closeUnsubscribesFromTheRsrConnection 
 
 ]
 
+{ #category : #'examples - close' }
+GtGemStoneSessionDisconnectionExamples >> closedSessionStaysInTheRegistryHistory [
+	<gtExample>
+	<return: #GtGemStoneTestingSession>
+	| session |
+
+	session := self closeRecordsARequestedDisconnection.
+	self assert: (session registry activeSessions includes: session) not.
+	self
+		assert: session registry endedConnectionRecords asArray
+		equals: (Array with: session connectionRecord).
+	^ session
+
+]
+
 { #category : #'examples - connection lost' }
 GtGemStoneSessionDisconnectionExamples >> closingALostSessionKeepsTheLoss [
 	<gtExample>
@@ -74,6 +89,9 @@ GtGemStoneSessionDisconnectionExamples >> closingALostSessionKeepsTheLoss [
 	self assert: announcements first reason equals: reason.
 	self assert: session registry notifier connectionLosses size equals: 1.
 	self assert: (session registry activeSessions includes: session) not.
+	self
+		assert: session registry endedConnectionRecords asArray
+		equals: (Array with: session connectionRecord).
 	^ session
 
 ]
@@ -342,6 +360,9 @@ GtGemStoneSessionDisconnectionExamples >> rsrLossSeenAfterAReconnectIsRecordedOn
 		equals: (Array with: oldRecord).
 	self assert: announcements first connectionRecord == oldRecord.
 	self assert: announcements first isForCurrentConnection not.
+	self
+		assert: session registry endedConnectionRecords asArray
+		equals: (Array with: oldRecord).
 	message := GtGemStoneSessionWorldNotifier new
 			messageForConnectionLost: oldRecord.
 	self
@@ -352,36 +373,35 @@ GtGemStoneSessionDisconnectionExamples >> rsrLossSeenAfterAReconnectIsRecordedOn
 ]
 
 { #category : #'examples - reconnect' }
-GtGemStoneSessionDisconnectionExamples >> sessionKeepsItsLastThreeEndedConnections [
+GtGemStoneSessionDisconnectionExamples >> sessionKeepsItsLastTenEndedConnections [
 	<gtExample>
 	<return: #GtGemStoneTestingSession>
 	| session firstConnectionTime |
 
 	session := self connectedSession.
 	firstConnectionTime := session connectionTime.
-	4 timesRepeat: [
+	12 timesRepeat: [
 		session advanceTimeBy: 1 minute.
 		session close.
 		session connect ].
 	self assert: session isRunning.
 	self assert: session connectionRecord hasEnded not.
-	self assert: session endedConnectionRecords size equals: 3.
-	self assert: session connectionRecords size equals: 4.
+	self assert: session endedConnectionRecords size equals: 10.
+	self assert: session connectionRecords size equals: 11.
 	self assert: session connectionRecords first equals: session connectionRecord.
 	self
-		assert: (session endedConnectionRecords collect: [ :each |
+		assert: ((session endedConnectionRecords first: 3) collect: [ :each |
 			each disconnectionReason time ]) asArray
 		equals: (Array
-			with: firstConnectionTime + 4 minutes
-			with: firstConnectionTime + 3 minutes
-			with: firstConnectionTime + 2 minutes).
-	self
-		assert: (session endedConnectionRecords collect: [ :each |
-			each connectedDuration ]) asArray
-		equals: (Array with: 1 minute with: 1 minute with: 1 minute).
+			with: firstConnectionTime + 12 minutes
+			with: firstConnectionTime + 11 minutes
+			with: firstConnectionTime + 10 minutes).
+	self assert: (session endedConnectionRecords allSatisfy: [ :each |
+		each connectedDuration = 1 minute ]).
 	self
 		assert: session previousDisconnectionReason
 		equals: session endedConnectionRecords first disconnectionReason.
+	self assert: session registry endedConnectionRecords size equals: 12.
 	^ session
 
 ]

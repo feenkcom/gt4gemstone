@@ -402,7 +402,7 @@ GtGemStoneSessionKeepAliveExamples >> keepAliveOn: aRegistry [
 ]
 
 { #category : #'examples - connection records' }
-GtGemStoneSessionKeepAliveExamples >> keepAliveRemembersAtMostTenLogouts [
+GtGemStoneSessionKeepAliveExamples >> keepAliveRemembersAtMostFiftyLogouts [
 	<gtExample>
 	<return: #GtGemStoneSessionKeepAlive>
 	| keepAlive session records |
@@ -410,21 +410,24 @@ GtGemStoneSessionKeepAliveExamples >> keepAliveRemembersAtMostTenLogouts [
 	keepAlive := self keepAliveWithSessionOn: (self connectorNamed: 'testing').
 	session := self sessionOf: keepAlive.
 	records := OrderedCollection new.
-	12 timesRepeat: [
+	52 timesRepeat: [
 		session connect.
 		records addFirst: session connectionRecord.
 		session advanceTimeBy: 1 minute.
 		keepAlive logoutSessionNow: session ].
 	self assert: session isRunning not.
-	self assert: keepAlive loggedOutConnections size equals: 10.
+	self assert: keepAlive loggedOutConnections size equals: 50.
 	self
 		assert: keepAlive loggedOutConnections asArray
-		equals: (records first: 10) asArray.
-	self assert: keepAlive notifier logouts size equals: 12.
+		equals: (records first: 50) asArray.
+	self assert: keepAlive notifier logouts size equals: 52.
 	self assert: session connectionRecord equals: records first.
 	self
 		assert: session endedConnectionRecords asArray
-		equals: (records copyFrom: 2 to: 4) asArray.
+		equals: (records copyFrom: 2 to: 11) asArray.
+	self
+		assert: keepAlive registry endedConnectionRecords asArray
+		equals: (records first: 50) asArray.
 	^ keepAlive
 
 ]
@@ -954,6 +957,22 @@ GtGemStoneSessionKeepAliveExamples >> reconnectStartsWithAFreshKeepAlive [
 	self assert: session keepAlive isScheduledForAutoLogout.
 	self poll: keepAlive.
 	self assert: session isRunning not.
+	^ keepAlive
+
+]
+
+{ #category : #'examples - connection records' }
+GtGemStoneSessionKeepAliveExamples >> registryKeepsTheLogoutOfASessionThatLeftIt [
+	<gtExample>
+	<return: #GtGemStoneSessionKeepAlive>
+	| keepAlive record |
+
+	keepAlive := self scheduledSessionIsLoggedOutAtTheNextPoll.
+	record := keepAlive loggedOutConnections first.
+	self assert: keepAlive registry activeSessions isEmpty.
+	self
+		assert: keepAlive registry endedConnectionRecords asArray
+		equals: (Array with: record).
 	^ keepAlive
 
 ]
