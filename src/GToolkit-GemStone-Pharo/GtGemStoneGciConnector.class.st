@@ -9,7 +9,10 @@ Class {
 		'hostUsername',
 		'hostPassword',
 		'libraryPath',
-		'gemstoneVersion'
+		'gemstoneVersion',
+		'autoLogoutEnabled',
+		'logoutPostponable',
+		'logoutPostponeDuration'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -29,6 +32,20 @@ GtGemStoneGciConnector class >> defaultGemStoneVersion [
 		detect: [ :dir | regEx matches: dir basename ]
 		ifFound: [ :dir | dir basename ]
 		ifNone: [ fallbackVersion ].
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> autoLogoutEnabled [
+
+	^ autoLogoutEnabled
+
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> autoLogoutEnabled: aBoolean [
+
+	autoLogoutEnabled := aBoolean
+
 ]
 
 { #category : #accessing }
@@ -120,6 +137,24 @@ GtGemStoneGciConnector >> initialize [
 	username := 'DataCurator'.
 	password := 'swordfish'.
 	gemstoneVersion := self class defaultGemStoneVersion.
+	autoLogoutEnabled := false.
+	logoutPostponable := false.
+	logoutPostponeDuration := 15 minutes
+
+]
+
+{ #category : #testing }
+GtGemStoneGciConnector >> isAutoLogoutEnabled [
+
+	^ autoLogoutEnabled
+
+]
+
+{ #category : #testing }
+GtGemStoneGciConnector >> isLogoutPostponable [
+
+	^ logoutPostponable
+
 ]
 
 { #category : #accessing }
@@ -156,6 +191,34 @@ GtGemStoneGciConnector >> loggedInSession [
 		hostPassword: hostPassword.
 	
 	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> logoutPostponable [
+
+	^ logoutPostponable
+
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> logoutPostponable: aBoolean [
+
+	logoutPostponable := aBoolean
+
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> logoutPostponeDuration [
+
+	^ logoutPostponeDuration
+
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> logoutPostponeDuration: aDuration [
+
+	logoutPostponeDuration := aDuration
+
 ]
 
 { #category : #accessing }

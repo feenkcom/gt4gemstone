@@ -25,14 +25,15 @@ Class {
 		'cacheName',
 		'autoCommit',
 		'codeSync',
-		'keepAlive',
 		'logEmitter',
 		'activeAsyncExecutions',
 		'isBookmarked',
 		'lifecycleHandlers',
 		'sessionNrsString',
 		'sessionParameters',
-		'gemstoneVersion'
+		'gemstoneVersion',
+		'connectionRecord',
+		'endedConnectionRecords'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -88,6 +89,33 @@ GtGemStoneSession >> announce: anAnnouncement [
 
 	registry ifNotNil: [ 
 		registry announce: anAnnouncement]
+]
+
+{ #category : #private }
+GtGemStoneSession >> announceDisconnection [
+
+	self announceDisconnectionOf: connectionRecord
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> announceDisconnectionOf: aConnectionRecord [
+
+	registry ifNotNil: [ registry addEndedConnectionRecord: aConnectionRecord ].
+	self announce: (GtGemStoneSessionDisconnectedAnnouncement
+		session: self
+		connectionRecord: aConnectionRecord)
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> archiveConnectionRecord [
+
+	connectionRecord addFirstTo: endedConnectionRecords.
+	[ endedConnectionRecords size > self maxEndedConnectionRecords ]
+		whileTrue: [ endedConnectionRecords removeLast ].
+	connectionRecord := GtGemStoneSessionNoConnectionRecord new
+
 ]
 
 { #category : #converting }
@@ -177,6 +205,13 @@ GtGemStoneSession >> cacheName: aString [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> canPostponeAutoLogout [
+
+	^ connectionRecord canPostponeAutoLogout
+
+]
+
+{ #category : #testing }
 GtGemStoneSession >> cleanupAsyncExecutionsOnConnect [
 	"If the sessions terminated in a bad state, ensure
 	we do not have any async executions that were terminated 
@@ -201,14 +236,24 @@ GtGemStoneSession >> clearAutoCommit [
 { #category : #actions }
 GtGemStoneSession >> close [
 
+	self closeBecause: (GtGemStoneRequestedDisconnectionReason time: self currentTime)
+
+]
+
+{ #category : #actions }
+GtGemStoneSession >> closeBecause: aDisconnectionReason [
+
 	connection ifNil: [ ^ self ].
 
+	self unsubscribeFromConnection.
+	self recordDisconnectionReason: aDisconnectionReason.
 	connection close.
-	connection := evaluator := keepAlive := nil.
-	(registry notNil and: self isBookmarked not) ifTrue: [ 
+	connection := evaluator := nil.
+	(registry notNil and: [ self isBookmarked not ]) ifTrue: [
 		registry removeSession: self ].
-	
-	self announce: (GtGemStoneSessionDisconnectedAnnouncement session: self).
+
+	self announceDisconnection
+
 ]
 
 { #category : #accessing }
@@ -255,28 +300,31 @@ GtGemStoneSession >> connect [
 	| session |
 
 	(connection isNotNil and: [ connection isOpen ]) ifTrue: [ ^ self ].
-	
+
 	self resetSessionData.
 
 	"The GCI session is established as part of creating the RSR session and then discarded"
 	session := connector newSession.
 	sessionParameters := session sessionParameters.
 	sessionNrsString := sessionParameters gemResource asNrsString.
-	
+
 	connection := connector connectionForSession: session.
+	connectionTime := DateAndTime now.
+	self startConnectionRecord.
 	session logoutNbNoError.
 	session := nil.
 	evaluator := GtRsrEvaluatorServiceClient new
 		registerWith: connection;
 		gtSession: self;
 		yourself.
-	connectionTime := DateAndTime now.
+	self subscribeToConnection.
 	self runPostConnectActions.
 	self cleanupAsyncExecutionsOnConnect.
-	
+
 	registry ifNotNil:[ registry addSession: self ].
-	
+
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
+
 ]
 
 { #category : #actions }
@@ -301,6 +349,23 @@ GtGemStoneSession >> connection [
 GtGemStoneSession >> connection: aRsrConnection [
 
 	connection := aRsrConnection
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> connectionRecord [
+
+	^ connectionRecord
+
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> connectionRecords [
+	| records |
+
+	records := endedConnectionRecords copy.
+	connectionRecord addFirstTo: records.
+	^ records
+
 ]
 
 { #category : #accessing }
@@ -388,6 +453,14 @@ GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock [
 GtGemStoneSession >> createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray [
 
 	^ self versionedEvaluator createEvaluationStringFromCleanBlock: aCleanBlock withArguments: anArray
+]
+
+{ #category : #private }
+GtGemStoneSession >> createKeepAlive [
+
+	^ (GtGemStoneKeepAliveSession session: self)
+		configureFromConnector: connector;
+		yourself
 ]
 
 { #category : #'actions - create script evaluation' }
@@ -503,6 +576,13 @@ GtGemStoneSession >> currentFeatures [
 	^ GtGemStoneRemoteSessionFeatures forGemStoneSession: self
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> currentTime [
+
+	^ DateAndTime now
+
+]
+
 { #category : #'accessing - remote properties' }
 GtGemStoneSession >> dbSize [
 
@@ -518,6 +598,13 @@ GtGemStoneSession >> dbSizeHumanReadable [
 ]
 
 { #category : #accessing }
+GtGemStoneSession >> disconnectionReason [
+
+	^ connectionRecord disconnectionReason
+
+]
+
+{ #category : #accessing }
 GtGemStoneSession >> displayName [
 	"Answer the receiver's name.
 	The default session doesn't display the session id"
@@ -525,6 +612,13 @@ GtGemStoneSession >> displayName [
 	^ sessionId = 'default'
 		ifTrue: [ connector name ]
 		ifFalse: [ connector name, ':', sessionId asString ]
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> endedConnectionRecords [
+
+	^ endedConnectionRecords
+
 ]
 
 { #category : #actions }
@@ -1270,6 +1364,22 @@ GtGemStoneSession >> gtConnectActionFor: anAction [
 ]
 
 { #category : #ui }
+GtGemStoneSession >> gtConnectionHistoryFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		title: 'Connection history';
+		priority: 26;
+		items: [ self connectionRecords ];
+		column: 'Connected at' text: [ :each | each connectionTime ];
+		column: 'State' text: [ :each | each stateDescription ];
+		column: 'Aborts' text: [ :each | each statistics aborts count ] width: 60;
+		column: 'Last poll' text: [ :each | each keepAlive lastPollDescription ];
+		actionUpdateButton
+
+]
+
+{ #category : #ui }
 GtGemStoneSession >> gtConnectorFor: aView [
 	<gtView>
 	
@@ -1294,6 +1404,22 @@ GtGemStoneSession >> gtDisconnectActionFor: anAction [
 				[:button |
 				self close.
 				button phlow spawnObject: self]
+]
+
+{ #category : #ui }
+GtGemStoneSession >> gtKeepAliveFor: aView [
+	<gtView>
+
+	self hasKeepAlive ifFalse: [ ^ aView empty ].
+	^ aView forward
+		title: 'Keep alive';
+		priority: 25;
+		object: [ self keepAlive ];
+		view: #gtKeepAliveFor:;
+		actionButtonIcon: BrGlamorousVectorIcons inspect 
+			tooltip: 'Inspect keep alive' 
+			action: [ :aButton |
+				aButton phlow spawnObject: self keepAlive ]
 ]
 
 { #category : #ui }
@@ -1468,7 +1594,8 @@ GtGemStoneSession >> hasFeatureNamed: aSymbol [
 { #category : #testing }
 GtGemStoneSession >> hasKeepAlive [
 
-	^ keepAlive isNotNil
+	^ connectionRecord hasKeepAlive
+
 ]
 
 { #category : #testing }
@@ -1489,17 +1616,27 @@ GtGemStoneSession >> iconName [
 ]
 
 { #category : #initialization }
-GtGemStoneSession >> initialize [ 
+GtGemStoneSession >> initialize [
 
 	super initialize.
-	
+
 	mutex := Mutex new.
 	autoCommit := false.
 	activeAsyncExecutions := OrderedCollection new.
 	lifecycleHandlers := OrderedCollection new.
+	self initializeConnectionRecords.
 	logEmitter := GtGemStoneSessionSignalsEmitter new
 		disableEmitting;
 		yourself.
+
+]
+
+{ #category : #initialization }
+GtGemStoneSession >> initializeConnectionRecords [
+
+	connectionRecord := GtGemStoneSessionNoConnectionRecord new.
+	endedConnectionRecords := OrderedCollection new
+
 ]
 
 { #category : #testing }
@@ -1534,6 +1671,13 @@ GtGemStoneSession >> isExplicitSessionIdentifier [
 ]
 
 { #category : #testing }
+GtGemStoneSession >> isLogoutPending [
+
+	^ connectionRecord isLogoutPending
+
+]
+
+{ #category : #testing }
 GtGemStoneSession >> isRunning [ 
 
 	connection ifNil: [ ^ false ].
@@ -1549,15 +1693,47 @@ GtGemStoneSession >> isSessionIdentifier [
 { #category : #accessing }
 GtGemStoneSession >> keepAlive [
 
-	^ keepAlive ifNil: [ 
-		keepAlive := GtGemStoneKeepAliveSession session: self.
-		keepAlive maxKeepAlive: connector maxKeepAlive.
-		keepAlive ]
+	^ connectionRecord keepAlive
+
+]
+
+{ #category : #ui }
+GtGemStoneSession >> localStatusAttributes [
+	| isRunning attributes |
+	isRunning := self isRunning.
+	attributes := OrderedCollection new.
+	attributes
+		add: 'Name' -> self name;
+		add: 'Connected' -> isRunning;
+		add: 'Disconnection' -> self disconnectionReason description;
+		add: 'Previous disconnection' -> self previousDisconnectionReason description;
+		add: 'Changed' -> self needsCommit;
+		add: 'Default' -> self isDefaultSession.
+	(self hasKeepAlive and: [ self keepAlive isDirty ])
+		ifTrue: [ attributes add: 'Keep Alive' -> 'dirty' ].
+
+	attributes
+		add: (connector isCodeSyncAllowed
+			ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
+			ifFalse: [ 'Code Sync Allowed' -> false ]);
+		add: 'Auto-commit' -> self autoCommitEnabled;
+		add: 'Keep Alive' -> (self hasKeepAlive
+			ifTrue: [ self keepAlive maxKeepAlive ]
+			ifFalse: [ '-' ]).
+	^ attributes
+
 ]
 
 { #category : #accessing }
 GtGemStoneSession >> logEmitter [
 	^ logEmitter
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> maxEndedConnectionRecords [
+
+	^ 10
+
 ]
 
 { #category : #'accessing - remote properties' }
@@ -1597,6 +1773,33 @@ GtGemStoneSession >> needsCommit [
 		ifFalse: [ false ]
 ]
 
+{ #category : #actions }
+GtGemStoneSession >> needsCommitAbortingIfClean [
+
+	^ (self scriptEvaluation
+		script: '| needsCommit |
+			needsCommit := System needsCommit.
+			needsCommit ifFalse: [ System abortTransaction ].
+			needsCommit';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> onConnectionClosed: anAnnouncement [
+	"The record is taken here, before forking: when the forked process runs,
+	the session may already be connected again with a new connection and record."
+	| closedRecord |
+
+	anAnnouncement connection == connection ifFalse: [ ^ self ].
+	closedRecord := connectionRecord.
+	[ self recordConnectionLostOf: closedRecord ]
+		forkAt: Processor userBackgroundPriority
+		named: 'GemStone session connection lost'
+
+]
+
 { #category : #private }
 GtGemStoneSession >> onConnectorChanged: aGtGemStoneConnnectorAnnouncement [
 	"Some of the details in the receiver's connector have been changed, restart the connection if required."
@@ -1612,6 +1815,15 @@ GtGemStoneSession >> performEvaluation [
 	
 	^ GtRsrPerformEvaluation new
 		gtSession: self
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> previousDisconnectionReason [
+
+	^ (endedConnectionRecords
+		detect: [ :each | each disconnectionReason isKnown ]
+		ifNone: [ GtGemStoneSessionNoConnectionRecord new ]) disconnectionReason
+
 ]
 
 { #category : #printing }
@@ -1633,6 +1845,25 @@ GtGemStoneSession >> reconnect [
 	self connect.
 ]
 
+{ #category : #private }
+GtGemStoneSession >> recordConnectionLostOf: aConnectionRecord [
+
+	aConnectionRecord canRecordConnectionLoss ifFalse: [ ^ self ].
+	aConnectionRecord recordDisconnectionReason:
+		(GtGemStoneUnexpectedDisconnectionReason time: self currentTime).
+	self announceDisconnectionOf: aConnectionRecord.
+	registry ifNotNil: [
+		registry notifier showConnectionLost: aConnectionRecord of: self ]
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> recordDisconnectionReason: aDisconnectionReason [
+
+	connectionRecord recordDisconnectionReason: aDisconnectionReason
+
+]
+
 { #category : #accessing }
 GtGemStoneSession >> registry [
 
@@ -1644,6 +1875,52 @@ GtGemStoneSession >> registry: aGtGemStoneSessionRegistry [
 	registry := aGtGemStoneSessionRegistry.
 	registry codeSync ifNotNil: [ :registryCodeSyn |
 		self codeSync enabled: (registryCodeSyn sessionStrategy syncSession: self registry: registry) ].
+]
+
+{ #category : #ui }
+GtGemStoneSession >> remoteStatusAttributes [
+	| attributes gsAttributes |
+	attributes := OrderedCollection new.
+	gsAttributes := (self 
+		evaluateBlockAndWaitReturnPrimitive: [
+			| currentAttributes |
+			currentAttributes := Dictionary new
+			at: 'Size' 
+				put: SystemRepository fileSize 
+					- SystemRepository freeSpace;
+			at: 'gt4gemstoneVersion' put: GtGsRelease versionString;
+			at: 'CacheName' 
+				put: (System getSharedCacheAttributes at: #cacheName);
+			at: 'fpExceptions' 
+				put: (
+					(System myUserProfile 
+						objectNamed: #FloatingPointError) enabledExceptions);
+			at: 'Time' put: DateAndTime now;
+			yourself.
+			
+			(System myUserProfile objectNamed: #GtGemStoneTranscriptHandler)
+				ifNotNil: [ :aClass |
+					currentAttributes
+						at: 'gt4gemstonetranscriptclass' 
+						put: aClass transcriptClassName. 
+					currentAttributes
+						at: 'gt4gemstonetranscriptstatus' 
+						put: aClass currentTranscript statusDescription ].
+			currentAttributes ] 
+		autoCommit: false).
+
+	attributes
+		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
+		add: 'Cache name' -> (gsAttributes at: 'CacheName');
+		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
+		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
+		add: 'Connection time' -> connectionTime;
+		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
+		add: 'Transcript class' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
+		add: 'Transcript status' -> (gsAttributes 
+			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['-']).
+	^ attributes
 ]
 
 { #category : #accessing }
@@ -1680,12 +1957,15 @@ GtGemStoneSession >> resetRunningExecutions [
 { #category : #'as yet unclassified' }
 GtGemStoneSession >> resetSessionData [
 	self assert: self isRunning not.
-	
+
 	self resetSessionVersionData.
-	
+	self unsubscribeFromConnection.
+	self archiveConnectionRecord.
+
 	connectionTime := nil.
 	sessionParameters := nil.
 	sessionNrsString := nil.
+	transactionMode := nil
 ]
 
 { #category : #'as yet unclassified' }
@@ -1759,69 +2039,20 @@ GtGemStoneSession >> setAutoCommit [
 	autoCommit := true.
 ]
 
+{ #category : #private }
+GtGemStoneSession >> startConnectionRecord [
+
+	connectionRecord := GtGemStoneSessionConnectionRecord session: self
+
+]
+
 { #category : #ui }
 GtGemStoneSession >> statusAttributes [
-	| isRunning attributes gsAttributes |
-	isRunning := self isRunning.
-	attributes := OrderedCollection new.
-	attributes
-		add: 'Name' -> self name;
-		add: 'Connected' -> isRunning;
-		add: 'Changed' -> self needsCommit;
-		add: 'Default' -> self isDefaultSession.
-	(keepAlive isNotNil and: [ keepAlive isDirty ])
-		ifTrue: [ attributes add: 'Keep Alive' -> 'dirty' ].
+	| attributes |
 
-	attributes
-		add: (connector isCodeSyncAllowed
-			ifTrue: [ 'Code Sync enabled' -> self codeSyncEnabled ]
-			ifFalse: [ 'Code Sync Allowed' -> false ]);
-		add: 'Auto-commit' -> self autoCommitEnabled;
-		add: 'Keep Alive' -> (self hasKeepAlive
-			ifTrue: [ self keepAlive maxKeepAlive ]
-			ifFalse: [ '-' ]).
-
-	isRunning ifFalse: [ ^ attributes ].
-
-	gsAttributes := (self 
-		evaluateBlockAndWaitReturnPrimitive: [
-			| currentAttributes |
-			currentAttributes := Dictionary new
-			at: 'Size' 
-				put: SystemRepository fileSize 
-					- SystemRepository freeSpace;
-			at: 'gt4gemstoneVersion' put: GtGsRelease versionString;
-			at: 'CacheName' 
-				put: (System getSharedCacheAttributes at: #cacheName);
-			at: 'fpExceptions' 
-				put: (
-					(System myUserProfile 
-						objectNamed: #FloatingPointError) enabledExceptions);
-			at: 'Time' put: DateAndTime now;
-			yourself.
-			
-			(System myUserProfile objectNamed: #GtGemStoneTranscriptHandler)
-				ifNotNil: [ :aClass |
-					currentAttributes
-						at: 'gt4gemstonetranscriptclass' 
-						put: aClass transcriptClassName. 
-					currentAttributes
-						at: 'gt4gemstonetranscriptstatus' 
-						put: aClass currentTranscript statusDescription ].
-			currentAttributes ] 
-		autoCommit: false).
-
-	attributes
-		add: 'Size' -> (gsAttributes at: 'Size') humanReadableSISizeString;
-		add: 'Cache name' -> (gsAttributes at: 'CacheName');
-		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
-		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
-		add: 'Connection time' -> connectionTime;
-		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
-		add: 'Transcript class' -> (gsAttributes 
-			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
-		add: 'Transcript status' -> (gsAttributes 
-			at: 'gt4gemstonetranscriptstatus' ifAbsent: ['-']).
+	attributes := self localStatusAttributes.
+	self isRunning ifFalse: [ ^ attributes ].
+	attributes addAll: self remoteStatusAttributes.
 	^ attributes
 ]
 
@@ -1830,7 +2061,7 @@ GtGemStoneSession >> statusDescription [
 	"Answer a short description of the receiver's state"
 	| words |
 
-	self isRunning ifFalse: [ ^ 'Disconnected' ].
+	self isRunning ifFalse: [ ^ self disconnectionReason statusDescription ].
 
 	words := OrderedCollection new: 5.
 	(self codeSyncEnabled or: [ autoCommit ]) ifFalse:
@@ -1840,10 +2071,11 @@ GtGemStoneSession >> statusDescription [
 		autoCommit ifTrue: [ words add: 'AutoCommit' ] ].
 	self needsCommit ifTrue: [ words add: 'changed' ].
 
-	^ String streamContents: [ :stream | 
+	^ String streamContents: [ :stream |
 		words
 			do: [ :word | stream << word ]
 			separatedBy: [ stream << ', ' ] ]
+
 ]
 
 { #category : #accessing }
@@ -1857,6 +2089,16 @@ GtGemStoneSession >> stop [
 	"Synonym for #close"
 
 	^ self close
+]
+
+{ #category : #private }
+GtGemStoneSession >> subscribeToConnection [
+
+	connection announcer
+		when: RsrConnectionClosed
+		send: #onConnectionClosed:
+		to: self
+
 ]
 
 { #category : #'code sync' }
@@ -1947,17 +2189,26 @@ GtGemStoneSession >> transactionMode [
 
 { #category : #accessing }
 GtGemStoneSession >> transactionMode: aSymbol [
+	"Caches the mode reported by the gem until the next reconnect: a mode changed
+	afterwards directly in the gem, for example by a snippet, is not seen by #isAutoMode."
 
-	(self scriptEvaluation
-		script: 'System transactionMode: #', aSymbol;
-		returnPrimitiveOnly) evaluateAndWait.
-	
-	transactionMode := aSymbol
+	transactionMode := (self scriptEvaluation
+		script: 'System transactionMode: #' , aSymbol , '. System transactionMode';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait
+
 ]
 
 { #category : #actions }
 GtGemStoneSession >> unbookmark [
 	isBookmarked := false
+]
+
+{ #category : #private }
+GtGemStoneSession >> unsubscribeFromConnection [
+
+	connection ifNotNil: [ connection announcer unsubscribe: self ]
+
 ]
 
 { #category : #accessing }

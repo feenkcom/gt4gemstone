@@ -118,6 +118,13 @@ GtGemStoneConnector >> isAutoCommitAllowed [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isAutoLogoutEnabled [
+
+	^ false
+
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isCodeSyncAllowed [
 	"Answer a boolean indicating whether code sync is allowed for this connector.
 	This overrides the sessionStrategy."
@@ -140,6 +147,20 @@ GtGemStoneConnector >> isExplicitSessionIdentifier [
 ]
 
 { #category : #testing }
+GtGemStoneConnector >> isLogoutPostponable [
+
+	^ false
+
+]
+
+{ #category : #testing }
+GtGemStoneConnector >> isLogoutRequestedFor: aGtGemStoneSession [
+
+	^ false
+
+]
+
+{ #category : #testing }
 GtGemStoneConnector >> isNull [
 
 	^ false
@@ -149,6 +170,20 @@ GtGemStoneConnector >> isNull [
 GtGemStoneConnector >> isSessionIdentifier [
 
 	^ false
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> logoutPostponeDuration [
+
+	^ 15 minutes
+
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> logoutRequestDescription [
+
+	^ 'The database requested a logout'
+
 ]
 
 { #category : #accessing }

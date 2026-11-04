@@ -134,8 +134,8 @@ GtGemStoneSessionsCardWidget >> createList [
 			aLabel text: (aSession formatBasedOnStatusText: aSession statusDescription) ].
 	
 	newList column
-		title: 'Default';
-		width: 50;
+		title: '';
+		width: 20;
 		stencil: [ :aSession |
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
@@ -150,6 +150,9 @@ GtGemStoneSessionsCardWidget >> createList [
 		padding: (BlInsets top: 5);
 		matchParent.
 	
+	newList rowDataBinder: [ :aRowElement :aSession |
+		GtGemStoneLogoutPendingRowAptitude bindRow: aRowElement toSession: aSession ].
+
 	newList addAptitude: BrColumnedListHeaderAptitude.
 	
 	^ newList.
@@ -178,9 +181,11 @@ GtGemStoneSessionsCardWidget >> createRefreshButton [
 { #category : #'private - children' }
 GtGemStoneSessionsCardWidget >> createRowStencil [
 	^ BrColumnedListItemElementWithContextMenuDecorator new
-		stencilBuilder: BrGlamorousColumnedListSelectableRowElementStencilBuilder new;
-		contextMenuStencil: [ :anElement :aSession | 
-			self sessionActionsFor: aSession ] 
+		stencilBuilder: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new
+			cellSpacing: BrColumn defaultCellSpacing);
+		contextMenuStencil: [ :anElement :aSession |
+			self sessionActionsFor: aSession ]
+
 ]
 
 { #category : #'private - children' }
@@ -398,6 +403,11 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 					aGtGemStoneSession connect.
 					self updateContent] } ].
 					
+	aGtGemStoneSession canPostponeAutoLogout ifTrue: [
+		actions add: 'Postpone logout' -> [ :aStatusLineElement |
+			self registry postponeAutoLogoutOf: aGtGemStoneSession.
+			self updateContent ] ].
+
 	aGtGemStoneSession isDefaultSession 
 		ifFalse: [
 			actions addAll: {

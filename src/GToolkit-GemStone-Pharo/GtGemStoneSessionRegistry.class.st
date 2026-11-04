@@ -26,7 +26,9 @@ Class {
 		'defaultSession',
 		'keepAlive',
 		'codeSync',
-		'sharedAccess'
+		'sharedAccess',
+		'notifier',
+		'endedConnectionRecords'
 	],
 	#classInstVars : [
 		'uniqueInstance'
@@ -124,6 +126,17 @@ GtGemStoneSessionRegistry >> addConnector: aGtGemStoneConnector [
 	sharedAccess critical: 
 		[ connectors at: aGtGemStoneConnector name put: aGtGemStoneConnector ].
 	^ aGtGemStoneConnector
+]
+
+{ #category : #private }
+GtGemStoneSessionRegistry >> addEndedConnectionRecord: aConnectionRecord [
+
+	sharedAccess critical: [
+		(endedConnectionRecords includes: aConnectionRecord) ifFalse: [
+			aConnectionRecord addFirstTo: endedConnectionRecords.
+			[ endedConnectionRecords size > self maxEndedConnectionRecords ]
+				whileTrue: [ endedConnectionRecords removeLast ] ] ]
+
 ]
 
 { #category : #actions }
@@ -400,6 +413,15 @@ GtGemStoneSessionRegistry >> enableGtGemStoneSyncForDefaultSession [
 	codeSync start.
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> endedConnectionRecords [
+
+	^ sharedAccess critical: [
+		endedConnectionRecords asArray
+			sorted: [ :each | each disconnectionReason time ] descending ]
+
+]
+
 { #category : #actions }
 GtGemStoneSessionRegistry >> ensureDefaultSession [
 	self hasDefaultSession ifTrue: [ ^ self defaultSession ].
@@ -415,9 +437,9 @@ GtGemStoneSessionRegistry >> ensureDefaultSession [
 GtGemStoneSessionRegistry >> ensureKeepAlive [
 
 	keepAlive ifNotNil: [ ^ self ].
-	keepAlive := GtGemStoneSessionKeepAlive new
-		registry: self;
-		start.
+	self keepAlive: GtGemStoneSessionKeepAlive new.
+	keepAlive start.
+
 ]
 
 { #category : #accessing }
@@ -535,16 +557,40 @@ GtGemStoneSessionRegistry >> gtConnectorsFor: aView [
 ]
 
 { #category : #ui }
-GtGemStoneSessionRegistry >> gtInspectKeepAliveFor: anAction [
-	<gtAction>
+GtGemStoneSessionRegistry >> gtEndedConnectionsFor: aView [
+	<gtView>
 
-	^ anAction button
-		label: 'KeepAlive';
-		priority: 10;
-		icon: BrGlamorousVectorIcons transcript;
-		tooltip: 'Inspect KeepAlive log';
-		action: [ :button |
-			button phlow spawnObject: GtGemStoneKeepAliveCollector start ].
+	^ aView columnedList
+		title: 'Ended connections';
+		priority: 7;
+		items: [ self endedConnectionRecords ];
+		column: 'Time' text: [ :each | each disconnectionReason time ];
+		column: 'Session' text: [ :each | each sessionName ];
+		column: 'How it ended' text: [ :each | each disconnectionReason description ];
+		column: 'Connected for' text: [ :each | each connectedDuration gtHumanReadableString ];
+		actionUpdateButton
+
+]
+
+{ #category : #ui }
+GtGemStoneSessionRegistry >> gtKeepAliveFor: aView [
+	<gtView>
+
+	keepAlive ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Keep alive';
+		priority: 6;
+		object: [ keepAlive ];
+		view: #gtSessionStatusFor:;
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			tooltip: 'Inspect the keep alive'
+			action: [ :aButton |
+				aButton phlow spawnObject: keepAlive ];
+		actionButtonIcon: BrGlamorousVectorIcons transcript
+			tooltip: 'Inspect the keep alive log'
+			action: [ :aButton |
+				aButton phlow spawnObject: GtGemStoneKeepAliveCollector start ]
+
 ]
 
 { #category : #ui }
@@ -573,18 +619,18 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			aSession isDefaultSession
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 50;
+			width: 75;
 		column: 'Bookmarked' icon: [ :aSession |
 			aSession isBookmarked
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 75;
+			width: 100;
 		column: 'Keep Alive' 
 			text: [ :aSession | 
 				aSession hasKeepAlive
-					ifTrue: [ aSession keepAlive maxKeepAlive ]
+					ifTrue: [ aSession keepAlive stateDescription ]
 					ifFalse: [ '-' ] ]
-			width: 70;
+			width: 230;
 		contextItemLabel: 'Playground (default snippet)' 
 			action: [ :anElement :aGtGemStoneSession | 
 				self openPlaygroundWithDefaultSessionIdentifierFrom: anElement ]
@@ -602,6 +648,10 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession abortTransaction ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
+		contextItemLabel: 'Postpone logout'
+			action: [ :anElement :aGtGemStoneSession |
+				self postponeAutoLogoutOf: aGtGemStoneSession ]
+			if: [ :aGtGemStoneSession | aGtGemStoneSession canPostponeAutoLogout ];
 		contextItemLabel: 'Connect' 
 			action:[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession connect ]
@@ -716,10 +766,13 @@ GtGemStoneSessionRegistry >> initialize [
 
 	super initialize.
 	sharedAccess := Mutex new.
+	notifier := GtGemStoneSessionWorldNotifier new.
+	self initializeEndedConnectionRecords.
 	self reload "resetSessions".
 	"Unless a custom encoder has been specified, use the GemStone default wire encoder"
 	GtWireEncoder hasDefaultEncoder ifFalse:
 		[ GtWireEncoder setDefaultGemStoneEncoder ].
+
 ]
 
 { #category : #initialization }
@@ -730,10 +783,33 @@ GtGemStoneSessionRegistry >> initializeConnectors: aDictionary [
 	connectors := aDictionary
 ]
 
+{ #category : #initialization }
+GtGemStoneSessionRegistry >> initializeEndedConnectionRecords [
+
+	endedConnectionRecords := OrderedCollection new
+
+]
+
 { #category : #accessing }
 GtGemStoneSessionRegistry >> keepAlive [
 
 	^ keepAlive
+]
+
+{ #category : #'keep alive' }
+GtGemStoneSessionRegistry >> keepAlive: aGtGemStoneSessionKeepAlive [
+
+	self assert: [ keepAlive isNil ] description: 'A keep alive is already attached'.
+	keepAlive := aGtGemStoneSessionKeepAlive.
+	keepAlive registry: self
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> maxEndedConnectionRecords [
+
+	^ 50
+
 ]
 
 { #category : #accessing }
@@ -842,6 +918,20 @@ GtGemStoneSessionRegistry >> notConnectedCleanSessionOrNilWithConnectorName: aCo
 		ifNone: [ nil ]
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> notifier [
+
+	^ notifier
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionRegistry >> notifier: aGtGemStoneSessionNotifier [
+
+	notifier := aGtGemStoneSessionNotifier
+
+]
+
 { #category : #private }
 GtGemStoneSessionRegistry >> onConnectorAnnouncement: aGtGemStoneConnectorAnnouncement [
 	"Propogate any announcements from the properties file.
@@ -889,6 +979,15 @@ GtGemStoneSessionRegistry >> openPlaygroundWithSnippet: aGemStoneSnippet from: a
 		addPage: page.
 	
 	anElement phlow spawnTool: page asLepiterPagePhlowTool
+]
+
+{ #category : #actions }
+GtGemStoneSessionRegistry >> postponeAutoLogoutOf: aGtGemStoneSession [
+
+	keepAlive
+		ifNil: [ aGtGemStoneSession keepAlive postponeAutoLogout ]
+		ifNotNil: [ keepAlive postponeAutoLogoutOf: aGtGemStoneSession ]
+
 ]
 
 { #category : #accessing }
@@ -1122,7 +1221,9 @@ GtGemStoneSessionRegistry >> stopKeepAlive [
 
 	keepAlive ifNil: [ ^ self ].
 	keepAlive stop.
+	self unsubscribe: keepAlive.
 	keepAlive := nil.
+
 ]
 
 { #category : #'api - announcer' }

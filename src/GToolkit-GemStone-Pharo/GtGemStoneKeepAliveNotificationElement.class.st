@@ -6,7 +6,8 @@ Class {
 		'borderElement',
 		'updater',
 		'statesPane',
-		'sessionList'
+		'sessionList',
+		'descriptionEditor'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Notifications'
 }
@@ -18,20 +19,21 @@ GtGemStoneKeepAliveNotificationElement >> actOnElementDetached [
 ]
 
 { #category : #'private - accessing' }
-GtGemStoneKeepAliveNotificationElement >> activeMark [
-
-	^ BlElement new
-		layout: BlLinearLayout horizontal alignCenter;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
-			c vertical fitContent ];
-		addChild: (BrGlamorousVectorIcons accept asElement)
-]
-
-{ #category : #'private - accessing' }
 GtGemStoneKeepAliveNotificationElement >> borderElement [
 	<return: #GtNotificationBorderElement>
 	^ borderElement
+]
+
+{ #category : #initialization }
+GtGemStoneKeepAliveNotificationElement >> buildDescriptionEditor [
+
+	^ BrEditor new
+		aptitude: BrGlamorousRegularEditorAptitude;
+		hMatchParent;
+		vFitContent;
+		beReadOnlyWithSelection;
+		text: ''
+
 ]
 
 { #category : #initialization }
@@ -58,9 +60,15 @@ GtGemStoneKeepAliveNotificationElement >> buildSessionList [
 
 	newList := BrColumnedList new.
 	newList
-		rowStencil: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new);
+		rowStencil: (BrGlamorousColumnedListItemElementWithContextMenuDecorator new
+			contextMenuStencil: [ :anItemElement :aSession :anItemIndex :anItemType |
+				self contextMenuFor: aSession ];
+			stencilBuilder: (BrGlamorousColumnedListSelectableRowElementStencilBuilder new
+				cellSpacing: BrColumn defaultCellSpacing));
 		padding: (BlInsets top: 5);
 		matchParent.
+	newList rowDataBinder: [ :aRowElement :aSession |
+		GtGemStoneLogoutPendingRowAptitude bindRow: aRowElement toSession: aSession ].
 	newList column
 		title: 'Name';
 		width: 100;
@@ -70,21 +78,17 @@ GtGemStoneKeepAliveNotificationElement >> buildSessionList [
 				hMatchParent;
 				vFitContent ];
 		dataBinder: [ :aLabel :aSession |
-			aLabel parent addAptitude: 
-				(BrGlamorousWithExplicitContextMenuAptitude 
-					itemsWithAnchorActions: [ aSession contextMenuContent ]).
 			aLabel text: (aSession formatBasedOnStatusText: aSession name)].
 
 	newList column
-		title: 'Default';
-		width: 50;
+		title: 'Status';
+		matchParent;
 		stencil: [ :aSession |
-			aSession isDefaultSession
-				ifTrue: [ self activeMark ]
-				ifFalse: [ BlElement new size: 0@0 ] ].
-	
+			self labelWithText: aSession keepAlive notificationStateDescription ].
+
 	newList addAptitude: BrColumnedListHeaderAptitude.
 	^ newList.
+
 ]
 
 { #category : #initialization }
@@ -106,17 +110,17 @@ GtGemStoneKeepAliveNotificationElement >> buildToolbar [
 { #category : #initialization }
 GtGemStoneKeepAliveNotificationElement >> buildToolbarButtons [
 	| infoButton |
-	
-	infoButton := BrButton new
-			beTinySize;
-			aptitude: BrGlamorousButtonWithIconAptitude;
-			label: 'Inspect KeepAlive';
-			icon: BrGlamorousVectorIcons inspect;
-			margin: (BlInsets top: 2 left: 10);
-			action: [ self inspectRegistry ].
 
+	infoButton := BrButton new
+		beTinySize;
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		label: 'Inspect KeepAlive';
+		icon: BrGlamorousVectorIcons inspect;
+		margin: (BlInsets top: 2 left: 10);
+		action: [ self inspectKeepAlive ].
 
 	^ { infoButton }
+
 ]
 
 { #category : #'private - hooks' }
@@ -125,9 +129,45 @@ GtGemStoneKeepAliveNotificationElement >> clearContent [
 	sessionList items: #().
 ]
 
+{ #category : #private }
+GtGemStoneKeepAliveNotificationElement >> contextMenuContentFor: aSession [
+	| items |
+
+	items := OrderedCollection withAll: aSession contextMenuContent.
+	aSession keepAlive canPostponeAutoLogout ifTrue: [
+		items add: 'Postpone logout' -> [ :anElement |
+			self postponeAutoLogoutOf: aSession ] ].
+	(aSession keepAlive isScheduledForAutoLogout and: [ aSession isBusy not ]) ifTrue: [
+		items add: 'Logout now' -> [ :anElement |
+			self logoutSessionNow: aSession ] ].
+	^ items asArray
+
+]
+
+{ #category : #private }
+GtGemStoneKeepAliveNotificationElement >> contextMenuFor: aSession [
+	| menuItems |
+
+	menuItems := BrMenuItems new.
+	(self contextMenuContentFor: aSession) do: [ :each |
+		menuItems
+			addItemLabel: each key
+			action: [ :anElement :aButtonModel :anEvent |
+				each value cull: anElement anchor ] ].
+	^ menuItems
+
+]
+
 { #category : #initialization }
 GtGemStoneKeepAliveNotificationElement >> defaultLayout [
 	^ BlLinearLayout vertical alignCenterRight
+]
+
+{ #category : #'private - accessing' }
+GtGemStoneKeepAliveNotificationElement >> descriptionEditor [
+
+	^ descriptionEditor
+
 ]
 
 { #category : #initialization }
@@ -135,32 +175,37 @@ GtGemStoneKeepAliveNotificationElement >> initialize [
 	| namePane toolbarPane |
 
 	super initialize.
-	
+
 	self initializeBorderElement.
 	namePane := self buildNameLabel.
-	nameLabel text: 'GemStone Dirty Sessions'.
+	nameLabel text: 'GemStone Sessions'.
+	descriptionEditor := self buildDescriptionEditor.
 	sessionList := self buildSessionList.
 	toolbarPane := self buildToolbar.
-	
+
 	self addChild: self borderElement as: #border.
 	self borderElement containerDo: [ :aContainer |
-		aContainer 
+		aContainer
 			addChild: namePane;
+			addChild: descriptionEditor;
 			addChild: sessionList;
 			addChild: toolbarPane ].
-	
+
 	self addAptitude: (BrLayoutResizerAptitude new
 		hInherit;
 		vAnyToFitContent;
 		hInherit: self borderElement;
 		vAnyToFitContent: self borderElement;
+		hInherit: descriptionEditor;
+		vAnyToFitContent: descriptionEditor;
 		hInherit: sessionList;
 		vAnyToFitContent: sessionList).
-		
+
 	updater := BrElementUpdater new
 		element: self
 		selector: #updateContent.
 	updater postponedDuration: 1 seconds.
+
 ]
 
 { #category : #initialization }
@@ -170,20 +215,40 @@ GtGemStoneKeepAliveNotificationElement >> initializeBorderElement [
 ]
 
 { #category : #private }
-GtGemStoneKeepAliveNotificationElement >> inspectRegistry [
-	"Inspect the receiver's job in a new tab in GtWorld"
-	
+GtGemStoneKeepAliveNotificationElement >> inspectKeepAlive [
+
 	self notificationDo: [ :aNotification |
 		GtInspectorTool
-			openWrappedOn: aNotification registry
-			title: 'Session Registry' 
+			openWrappedOn: aNotification keepAlive
+			title: 'GemStone Keep Alive'
 			from: self ]
+
 ]
 
 { #category : #accessing }
 GtGemStoneKeepAliveNotificationElement >> keepAlive [
 
-	^ notification registry keepAlive
+	^ notification keepAlive
+
+]
+
+{ #category : #'private - accessing' }
+GtGemStoneKeepAliveNotificationElement >> labelWithText: aString [
+
+	^ BrLabel new
+		aptitude: BrGlamorousLabelAptitude new;
+		text: aString;
+		hMatchParent;
+		vFitContent
+
+]
+
+{ #category : #private }
+GtGemStoneKeepAliveNotificationElement >> logoutSessionNow: aSession [
+
+	self notificationDo: [ :aNotification |
+		aNotification logoutSessionNow: aSession ]
+
 ]
 
 { #category : #accessing }
@@ -205,26 +270,43 @@ GtGemStoneKeepAliveNotificationElement >> onNotificationDataChangedFor: anAnnoun
 	self requestUpdate
 ]
 
+{ #category : #private }
+GtGemStoneKeepAliveNotificationElement >> postponeAutoLogoutOf: aSession [
+
+	self notificationDo: [ :aNotification |
+		aNotification postponeAutoLogoutOf: aSession ]
+
+]
+
 { #category : #'private - updating' }
 GtGemStoneKeepAliveNotificationElement >> requestUpdate [
 	updater requestUpdate
 ]
 
+{ #category : #'private - accessing' }
+GtGemStoneKeepAliveNotificationElement >> sessionList [
+
+	^ sessionList
+
+]
+
 { #category : #subscriptions }
 GtGemStoneKeepAliveNotificationElement >> subscribeToNotification [
-	"Subscribe for updates, which actually come from the registgry keepalive, not the notification itself"
 
-	self notificationDo: [ :aNotification | 
-		aNotification registry keepAlive
-			when: GtGemStoneKeepAlivePollCompletedSignal
-			send: #onNotificationDataChangedFor: 
+	self notificationDo: [ :aNotification |
+		aNotification weak
+			when: GtNotificationDataChangedAnnouncement
+			send: #onNotificationDataChangedFor:
 			to: self ]
+
 ]
 
 { #category : #'private - subscriptions' }
 GtGemStoneKeepAliveNotificationElement >> unsubscribeFromNotification [
-	self notificationDo: [ :aNotification | 
-		aNotification registry keepAlive unsubscribe: self ]	
+
+	self notificationDo: [ :aNotification |
+		aNotification unsubscribe: self ]
+
 ]
 
 { #category : #'private - updating' }
@@ -235,14 +317,23 @@ GtGemStoneKeepAliveNotificationElement >> updateContent [
 ]
 
 { #category : #'private - updating' }
-GtGemStoneKeepAliveNotificationElement >> updateSessions [
-	| dirtySessions |
+GtGemStoneKeepAliveNotificationElement >> updateDescription [
 
-	dirtySessions := self notification
+	self notificationDo: [ :aNotification |
+		descriptionEditor text: aNotification descriptionText ]
+
+]
+
+{ #category : #'private - updating' }
+GtGemStoneKeepAliveNotificationElement >> updateSessions [
+	| sessions |
+
+	sessions := self notification
 		ifNil: [ #() ]
-		ifNotNil: [ self keepAlive dirtySessions ].
-	
-	sessionList items: dirtySessions.
-	dirtySessions ifEmpty: [ notification
-		ifNotNil: [ :aNotification | aNotification requestRemoval ] ].
+		ifNotNil: [ :aNotification | aNotification sessions ].
+	sessionList items: sessions.
+	self updateDescription.
+	sessions ifEmpty: [
+		self notificationDo: [ :aNotification | aNotification requestRemoval ] ].
+
 ]
