@@ -27,6 +27,13 @@ GtGemStoneCardWidgetNoSessions >> isDefaultSession [
 ]
 
 { #category : #testing }
+GtGemStoneCardWidgetNoSessions >> isLogoutPending [
+
+	^ false
+
+]
+
+{ #category : #testing }
 GtGemStoneCardWidgetNoSessions >> isRunning [
 
 	^ false
