@@ -28,6 +28,13 @@ Class {
 }
 
 { #category : #accessing }
+GtGemStoneSessionKeepAlive class >> defaultPollInterval [
+
+	^ 3 minutes
+
+]
+
+{ #category : #accessing }
 GtGemStoneSessionKeepAlive class >> maxKeepAlive [
 	"Answer the number of minutes to keep the session alive"
 
@@ -250,7 +257,7 @@ GtGemStoneSessionKeepAlive >> hasSessionsNeedingAttention [
 GtGemStoneSessionKeepAlive >> initialize [
 
 	super initialize.
-	delay := 3 minutes.
+	delay := self class defaultPollInterval.
 	shouldExit := false.
 	announcer := Announcer new.
 	loggedOutConnections := OrderedCollection new.
@@ -264,7 +271,6 @@ GtGemStoneSessionKeepAlive >> initialize [
 			keepAlive: self;
 			session: session;
 			emit ].
-
 
 ]
 
