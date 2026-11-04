@@ -147,7 +147,9 @@ GtGemStoneSessionDisconnectionExamples >> lostConnectionIsRecorded [
 	self assert: announcements first reason equals: session disconnectionReason.
 	self
 		assert: session registry notifier connectionLosses asArray
-		equals: (Array with: session).
+		equals: (Array with: session connectionRecord).
+	self assert: announcements first connectionRecord == session connectionRecord.
+	self assert: announcements first isForCurrentConnection.
 	self assert: (session registry activeSessions includes: session).
 	^ session
 
@@ -164,7 +166,7 @@ GtGemStoneSessionDisconnectionExamples >> lostConnectionIsRecordedOnce [
 	session advanceTimeBy: 1 minute.
 	announcements := self
 		disconnectionsAnnouncedBy: session
-		during: [ session recordConnectionLost ].
+		during: [ session recordConnectionLostOf: session connectionRecord ].
 	self assert: session disconnectionReason equals: reason.
 	self assert: announcements isEmpty.
 	self assert: session registry notifier connectionLosses size equals: 1.
@@ -305,7 +307,7 @@ GtGemStoneSessionDisconnectionExamples >> rsrClosingTheConnectionRecordsTheLoss 
 	self assert: announcements first reason equals: session disconnectionReason.
 	self
 		assert: session registry notifier connectionLosses asArray
-		equals: (Array with: session).
+		equals: (Array with: session connectionRecord).
 	^ session
 
 ]
@@ -337,7 +339,9 @@ GtGemStoneSessionDisconnectionExamples >> rsrLossSeenAfterAReconnectIsRecordedOn
 	self assert: announcements first reason equals: reason.
 	self
 		assert: session registry notifier connectionLosses asArray
-		equals: (Array with: session).
+		equals: (Array with: oldRecord).
+	self assert: announcements first connectionRecord == oldRecord.
+	self assert: announcements first isForCurrentConnection not.
 	message := GtGemStoneSessionWorldNotifier new
 			messageForConnectionLost: oldRecord.
 	self

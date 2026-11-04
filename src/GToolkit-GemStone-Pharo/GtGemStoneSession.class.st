@@ -96,7 +96,7 @@ GtGemStoneSession >> announceDisconnection [
 
 	self announce: (GtGemStoneSessionDisconnectedAnnouncement
 		session: self
-		reason: self disconnectionReason)
+		connectionRecord: connectionRecord)
 
 ]
 
@@ -1780,22 +1780,16 @@ GtGemStoneSession >> needsCommitAbortingIfClean [
 
 { #category : #private }
 GtGemStoneSession >> onConnectionClosed: anAnnouncement [
-	"RSR announces this from its reader or writer process, and only for a connection that
-	ended without #closeBecause:, which unsubscribes first. RSR may announce it twice for
-	the same connection (from #close and again from its reader).
-	The record of the closed connection is taken here, in the announcing process, while it is
-	still the current one. The work is forked so that errors in the listeners of the session
-	never end up in the RSR loop. When the forked process runs, the session may already be
-	reconnecting (its record archived, the old connection still set) or connected again, so
-	the forked process must not look at the current connection or record: the loss is
-	recorded on the record taken here."
-
+	"The record is taken here, before forking: when the forked process runs,
+	the session may already be connected again with a new connection and record."
 	| closedRecord |
+
 	anAnnouncement connection == connection ifFalse: [ ^ self ].
 	closedRecord := connectionRecord.
 	[ self recordConnectionLostOf: closedRecord ]
 		forkAt: Processor userBackgroundPriority
 		named: 'GemStone session connection lost'
+
 ]
 
 { #category : #private }
@@ -1844,25 +1838,17 @@ GtGemStoneSession >> reconnect [
 ]
 
 { #category : #private }
-GtGemStoneSession >> recordConnectionLost [
-	self recordConnectionLostOf: connectionRecord
-]
-
-{ #category : #private }
 GtGemStoneSession >> recordConnectionLostOf: aConnectionRecord [
-	"Record that the connection of aConnectionRecord ended without #close, announce it and
-	show the notice. Nothing happens when the record already has a reason (the session was
-	closed, or the loss is already recorded) or when there was no connection.
-	aConnectionRecord is not necessarily the current record: the session may have reconnected."
 
-	| reason |
 	aConnectionRecord canRecordConnectionLoss ifFalse: [ ^ self ].
-	reason := GtGemStoneUnexpectedDisconnectionReason time: self currentTime.
-	aConnectionRecord recordDisconnectionReason: reason.
-	self
-		announce: (GtGemStoneSessionDisconnectedAnnouncement session: self reason: reason).
-	registry
-		ifNotNil: [ registry notifier showConnectionLost: aConnectionRecord of: self ]
+	aConnectionRecord recordDisconnectionReason:
+		(GtGemStoneUnexpectedDisconnectionReason time: self currentTime).
+	self announce: (GtGemStoneSessionDisconnectedAnnouncement
+		session: self
+		connectionRecord: aConnectionRecord).
+	registry ifNotNil: [
+		registry notifier showConnectionLost: aConnectionRecord of: self ]
+
 ]
 
 { #category : #private }
@@ -2197,17 +2183,14 @@ GtGemStoneSession >> transactionMode [
 
 { #category : #accessing }
 GtGemStoneSession >> transactionMode: aSymbol [
-	"Set the transaction mode of the gem (#autoBegin, #manualBegin or #transactionless)
-	and cache the mode the gem reports.
-	In GemStone, System class>>#transactionMode: answers the System class, which RSR cannot
-	return as a primitive, so the script answers System transactionMode instead.
-	GemStone aborts the current transaction when the mode changes: uncommitted changes
-	of the session are discarded."
+	"Caches the mode reported by the gem until the next reconnect: a mode changed
+	afterwards directly in the gem, for example by a snippet, is not seen by #isAutoMode."
 
 	transactionMode := (self scriptEvaluation
-			script: 'System transactionMode: #' , aSymbol , '. System transactionMode';
-			autoCommit: false;
-			returnPrimitiveOnly) evaluateAndWait
+		script: 'System transactionMode: #' , aSymbol , '. System transactionMode';
+		autoCommit: false;
+		returnPrimitiveOnly) evaluateAndWait
+
 ]
 
 { #category : #actions }

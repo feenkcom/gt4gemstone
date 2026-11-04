@@ -207,7 +207,7 @@ GtGemStoneSessionKeepAliveExamples >> connectionLostMessageMentionsTheLostChange
 
 	keepAlive := self lostConnectionIsShownInTheKeepAliveState.
 	session := self sessionOf: keepAlive.
-	message := GtGemStoneSessionWorldNotifier new messageForConnectionLostOf: session.
+	message := GtGemStoneSessionWorldNotifier new messageForConnectionLost: session connectionRecord.
 	self
 		assert: message
 		equals: 'GemStone session testing:default: Connection lost at '
@@ -618,7 +618,7 @@ GtGemStoneSessionKeepAliveExamples >> lostConnectionIsShownInTheKeepAliveState [
 	self assert: session keepAlive needsAttention not.
 	self assert: keepAlive sessionsNeedingAttention isEmpty.
 	self assert: keepAlive notifier isShowing not.
-	self assert: keepAlive notifier connectionLosses asArray equals: (Array with: session).
+	self assert: keepAlive notifier connectionLosses asArray equals: (Array with: session connectionRecord).
 	self poll: keepAlive.
 	self assert: session keepAlive statistics changesFound count equals: 2.
 	self

@@ -2,30 +2,44 @@ Class {
 	#name : #GtGemStoneSessionDisconnectedAnnouncement,
 	#superclass : #GtGemStoneSessionChangedAnnouncement,
 	#instVars : [
-		'reason'
+		'connectionRecord'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Announcements'
 }
 
 { #category : #'instance creation' }
-GtGemStoneSessionDisconnectedAnnouncement class >> session: aGtGemStoneSession reason: aDisconnectionReason [
+GtGemStoneSessionDisconnectedAnnouncement class >> session: aGtGemStoneSession connectionRecord: aConnectionRecord [
 
 	^ (self session: aGtGemStoneSession)
-		reason: aDisconnectionReason;
+		connectionRecord: aConnectionRecord;
 		yourself
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionDisconnectedAnnouncement >> connectionRecord [
+
+	^ connectionRecord
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionDisconnectedAnnouncement >> connectionRecord: aConnectionRecord [
+
+	connectionRecord := aConnectionRecord
+
+]
+
+{ #category : #testing }
+GtGemStoneSessionDisconnectedAnnouncement >> isForCurrentConnection [
+
+	^ self session connectionRecord == connectionRecord
 
 ]
 
 { #category : #accessing }
 GtGemStoneSessionDisconnectedAnnouncement >> reason [
 
-	^ reason
-
-]
-
-{ #category : #accessing }
-GtGemStoneSessionDisconnectedAnnouncement >> reason: aDisconnectionReason [
-
-	reason := aDisconnectionReason
+	^ connectionRecord disconnectionReason
 
 ]

@@ -275,12 +275,12 @@ GtGemStoneTestingSession >> keepAliveAbortCount [
 
 ]
 
-{ #category : #utils }
+{ #category : #accessing }
 GtGemStoneTestingSession >> loseConnection [
 
 	self markAsDisconnected.
 	hasChanges := false.
-	self recordConnectionLost
+	self recordConnectionLostOf: connectionRecord
 
 ]
 

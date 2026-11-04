@@ -60,7 +60,9 @@ GtGemStoneSessionRecordingNotifier >> show: aGtGemStoneKeepAliveNotification [
 
 { #category : #notifying }
 GtGemStoneSessionRecordingNotifier >> showConnectionLost: aConnectionRecord of: aGtGemStoneSession [
-	connectionLosses add: aGtGemStoneSession
+
+	connectionLosses add: aConnectionRecord
+
 ]
 
 { #category : #accessing }

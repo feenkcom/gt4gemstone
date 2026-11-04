@@ -33,9 +33,9 @@ GtGemStoneSessionConnectionRecord >> canPostponeAutoLogout [
 
 { #category : #testing }
 GtGemStoneSessionConnectionRecord >> canRecordConnectionLoss [
-	"Only the first reason recorded for a connection is kept"
 
 	^ self hasEnded not
+
 ]
 
 { #category : #accessing }

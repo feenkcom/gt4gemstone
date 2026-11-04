@@ -50,7 +50,8 @@ GtRemoteGemStoneKeepAliveExamples >> assertConnectionLossOf: aSession announceme
 	self assert: announcements first reason identicalTo: reason.
 	self
 		assert: self liveRegistry notifier connectionLosses asArray
-		equals: (Array with: aSession).
+		equals: (Array with: aSession connectionRecord).
+	self assert: announcements first connectionRecord identicalTo: aSession connectionRecord.
 	self assert: (self liveRegistry activeSessions includes: aSession).
 	self
 		assert: aSession connectionRecord stateDescription
@@ -712,7 +713,9 @@ GtRemoteGemStoneKeepAliveExamples >> rsrCloseFollowedByAReconnectIsNotALoss [
 	self assert: announcements first reason identicalTo: reason.
 	self
 		assert: self liveRegistry notifier connectionLosses asArray
-		equals: (Array with: session).
+		equals: (Array with: oldRecord).
+	self assert: announcements first connectionRecord identicalTo: oldRecord.
+	self assert: announcements first isForCurrentConnection not.
 	message := GtGemStoneSessionWorldNotifier new
 			messageForConnectionLost: oldRecord.
 	self

@@ -6,28 +6,20 @@ Class {
 
 { #category : #private }
 GtGemStoneSessionWorldNotifier >> messageForConnectionLost: aConnectionRecord [
-	"Build the message from the record of the lost connection, not from the current
-	record of the session, which may already belong to a new connection"
 
-	^ String
-		streamContents: [ :aStream | 
-			aStream
-				nextPutAll: 'GemStone session ';
-				nextPutAll: aConnectionRecord sessionName;
-				nextPutAll: ': ';
-				nextPutAll: aConnectionRecord disconnectionReason description;
-				nextPutAll: ', connected for ';
-				nextPutAll: aConnectionRecord connectedDuration gtHumanReadableString;
-				nextPutAll: '. The gem was stopped from the GemStone side or the network is down.'.
-			(aConnectionRecord hasKeepAlive
-				and: [ aConnectionRecord keepAlive hasUncommittedChanges ])
-				ifTrue: [ aStream
-						nextPutAll: ' The uncommitted changes seen at the last keep alive check are lost.' ] ]
-]
+	^ String streamContents: [ :aStream |
+		aStream
+			nextPutAll: 'GemStone session ';
+			nextPutAll: aConnectionRecord sessionName;
+			nextPutAll: ': ';
+			nextPutAll: aConnectionRecord disconnectionReason description;
+			nextPutAll: ', connected for ';
+			nextPutAll: aConnectionRecord connectedDuration gtHumanReadableString;
+			nextPutAll: '. The gem was stopped from the GemStone side or the network is down.'.
+		(aConnectionRecord hasKeepAlive and: [
+			aConnectionRecord keepAlive hasUncommittedChanges ]) ifTrue: [
+				aStream nextPutAll: ' The uncommitted changes seen at the last keep alive check are lost.' ] ]
 
-{ #category : #private }
-GtGemStoneSessionWorldNotifier >> messageForConnectionLostOf: aGtGemStoneSession [
-	^ self messageForConnectionLost: aGtGemStoneSession connectionRecord
 ]
 
 { #category : #private }
