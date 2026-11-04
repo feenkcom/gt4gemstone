@@ -134,8 +134,8 @@ GtGemStoneSessionsCardWidget >> createList [
 			aLabel text: (aSession formatBasedOnStatusText: aSession statusDescription) ].
 	
 	newList column
-		title: 'Default';
-		width: 50;
+		title: '';
+		width: 20;
 		stencil: [ :aSession |
 			aSession isDefaultSession
 				ifTrue: [ self activeMark ]
