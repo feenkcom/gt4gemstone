@@ -360,6 +360,33 @@ GtGemStoneSessionKeepAliveExamples >> errorSignalsDuring: aBlock [
 
 ]
 
+{ #category : #'examples - auto logout' }
+GtGemStoneSessionKeepAliveExamples >> gciConnectorAutoLogoutSettings [
+	<gtExample>
+	<return: #GtGemStoneGciConnector>
+	| connector keepAliveSession |
+
+	connector := GtGemStoneGciConnector new.
+	self assert: connector isAutoLogoutEnabled not.
+	self assert: connector isLogoutPostponable not.
+	self assert: connector logoutPostponeDuration equals: 15 minutes.
+	self assert: connector maxKeepAlive equals: GtGemStoneSessionKeepAlive maxKeepAlive.
+	connector
+		autoLogoutEnabled: true;
+		logoutPostponable: true;
+		logoutPostponeDuration: 5 minutes;
+		maxKeepAlive: 0.
+	keepAliveSession := GtGemStoneKeepAliveSession new
+		configureFromConnector: connector;
+		yourself.
+	self assert: keepAliveSession isAutoLogoutEnabled.
+	self assert: keepAliveSession isLogoutPostponable.
+	self assert: keepAliveSession logoutPostponeDuration equals: 5 minutes.
+	self assert: keepAliveSession maxKeepAlive equals: 0.
+	^ connector
+
+]
+
 { #category : #private }
 GtGemStoneSessionKeepAliveExamples >> keepAliveOn: aRegistry [
 	| keepAlive |
