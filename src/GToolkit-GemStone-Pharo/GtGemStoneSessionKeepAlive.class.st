@@ -101,24 +101,27 @@ GtGemStoneSessionKeepAlive >> emitError: anException forSession: session [
 
 ]
 
-{ #category : #accessing }
+{ #category : #ui }
 GtGemStoneSessionKeepAlive >> gtLiveFor: aView [
 	<gtView>
 
 	^ aView columnedList
 		title: 'Status';
 		priority: 10;
-		items: [ {
-			'Status' -> self status.
-			'Next poll' -> (self nextPollTime ifNil: [ '-' ]).
-			'Poll interval' -> delay.
-			'Sessions needing attention' -> self sessionsNeedingAttention size.
-			'Automatic logouts' -> loggedOutConnections size.
-			'Default max keep alive (minutes)' -> self class maxKeepAlive.
+		items: [ | attentionSessions |
+			attentionSessions := self sessionsNeedingAttention.
+			{
+			{ 'Status'. self status. self status }.
+			{ 'Next poll'. self nextPollTime ifNil: [ '-' ]. self nextPollTime }.
+			{ 'Poll interval'. delay. delay }.
+			{ 'Sessions needing attention'. attentionSessions size. attentionSessions }.
+			{ 'Automatic logouts'. loggedOutConnections size. loggedOutConnections }.
+			{ 'Default max keep alive (minutes)'. self class maxKeepAlive. self class maxKeepAlive }.
 			} ];
-		column: 'Attribute' text: #key;
-		column: 'Value' text: #value;
-		actionUpdateButton.
+		column: 'Attribute' text: [ :each | each first ];
+		column: 'Value' text: [ :each | each second ];
+		send: [ :each | each third ];
+		actionUpdateButton
 
 ]
 
@@ -155,6 +158,22 @@ GtGemStoneSessionKeepAlive >> gtLogoutsFor: aView [
 
 ]
 
+{ #category : #ui }
+GtGemStoneSessionKeepAlive >> gtPollNowActionFor: anAction [
+	<gtAction>
+
+	self isPolling ifFalse: [ ^ anAction noAction ].
+	^ anAction button
+		label: 'Poll now';
+		priority: 11;
+		icon: BrGlamorousVectorIcons refresh;
+		tooltip: 'Poll the sessions now, without waiting for the next poll';
+		action: [ :aButton |
+			self pollSessionsNow then: [ :aKeepAlive |
+				aButton phlow fireToolUpdateWish ] ]
+
+]
+
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 	<gtView>
@@ -181,6 +200,42 @@ GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 		send: [ :session | session keepAlive ];
 		actionUpdateButton
 
+
+]
+
+{ #category : #ui }
+GtGemStoneSessionKeepAlive >> gtStartActionFor: anAction [
+	<gtAction>
+
+	self isPolling ifTrue: [ ^ anAction noAction ].
+	^ anAction button
+		label: (self isStopping
+			ifTrue: [ 'Cancel stop' ]
+			ifFalse: [ 'Start' ]);
+		priority: 12;
+		icon: BrGlamorousVectorIcons play;
+		tooltip: (self isStopping
+			ifTrue: [ 'Keep the keep alive running: cancel the stop requested for its next poll' ]
+			ifFalse: [ 'Start the keep alive' ]);
+		action: [ :aButton |
+			self startIfStopped.
+			aButton phlow fireToolUpdateWish ]
+
+]
+
+{ #category : #ui }
+GtGemStoneSessionKeepAlive >> gtStopActionFor: anAction [
+	<gtAction>
+
+	self isPolling ifFalse: [ ^ anAction noAction ].
+	^ anAction button
+		label: 'Stop';
+		priority: 13;
+		icon: BrGlamorousVectorIcons stop;
+		tooltip: 'Stop the keep alive at its next poll';
+		action: [ :aButton |
+			self stop.
+			aButton phlow fireToolUpdateWish ]
 
 ]
 
@@ -213,10 +268,24 @@ GtGemStoneSessionKeepAlive >> initialize [
 
 ]
 
+{ #category : #testing }
+GtGemStoneSessionKeepAlive >> isPolling [
+
+	^ self isRunning and: [ self isStopping not ]
+
+]
+
 { #category : #accessing }
 GtGemStoneSessionKeepAlive >> isRunning [
 
 	^ scheduleTask isNotNil
+]
+
+{ #category : #testing }
+GtGemStoneSessionKeepAlive >> isStopping [
+
+	^ shouldExit
+
 ]
 
 { #category : #private }
@@ -421,6 +490,13 @@ GtGemStoneSessionKeepAlive >> pollSessions [
 ]
 
 { #category : #actions }
+GtGemStoneSessionKeepAlive >> pollSessionsNow [
+
+	^ [ self pollSessions. self ] asAsyncPromise
+
+]
+
+{ #category : #actions }
 GtGemStoneSessionKeepAlive >> postponeAllAutoLogouts [
 
 	self sessionsNeedingAttention do: [ :session |
@@ -586,6 +662,15 @@ GtGemStoneSessionKeepAlive >> start [
 		at: DateAndTime now + delay
 		entryIdentifier: Object new.
 	TaskAtQueue schedule: scheduleTask.
+]
+
+{ #category : #actions }
+GtGemStoneSessionKeepAlive >> startIfStopped [
+
+	self isRunning
+		ifTrue: [ shouldExit := false ]
+		ifFalse: [ self start ]
+
 ]
 
 { #category : #accessing }

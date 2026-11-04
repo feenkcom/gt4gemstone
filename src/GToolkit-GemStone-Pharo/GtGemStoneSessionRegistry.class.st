@@ -576,12 +576,29 @@ GtGemStoneSessionRegistry >> gtEndedConnectionsFor: aView [
 GtGemStoneSessionRegistry >> gtKeepAliveFor: aView [
 	<gtView>
 
-	keepAlive ifNil: [ ^ aView empty ].
+	keepAlive ifNil: [
+		^ aView textEditor
+			title: 'Keep alive';
+			priority: 6;
+			text: [ 'No keep alive is running for this registry: idle sessions are not aborted.' asRopedText ];
+			actionButtonIcon: BrGlamorousVectorIcons play
+				label: 'Start keep alive'
+				tooltip: 'Start a keep alive for this registry'
+				action: [ :aButton |
+					self ensureKeepAlive.
+					aButton phlow fireToolUpdateWish ] ].
+					
 	^ aView forward
 		title: 'Keep alive';
 		priority: 6;
 		object: [ keepAlive ];
 		view: #gtSessionStatusFor:;
+		actionButtonIcon: BrGlamorousVectorIcons refresh
+			label: 'Poll now'
+			tooltip: 'Poll the sessions now, without waiting for the next poll'
+			action: [ :aButton |
+				keepAlive pollSessionsNow then: [ :aKeepAlive |
+					aButton phlow fireToolUpdateWish ] ];
 		actionButtonIcon: BrGlamorousVectorIcons inspect
 			tooltip: 'Inspect the keep alive'
 			action: [ :aButton |
