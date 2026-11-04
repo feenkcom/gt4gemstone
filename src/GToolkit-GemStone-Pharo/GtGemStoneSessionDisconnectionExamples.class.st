@@ -310,6 +310,43 @@ GtGemStoneSessionDisconnectionExamples >> rsrClosingTheConnectionRecordsTheLoss 
 
 ]
 
+{ #category : #'examples - rsr connection' }
+GtGemStoneSessionDisconnectionExamples >> rsrLossSeenAfterAReconnectIsRecordedOnTheOldConnection [
+	<gtExample>
+	<return: #GtGemStoneTestingSession>
+	| session connection oldRecord announcements reason message |
+	session := self sessionSubscribedToItsRsrConnection.
+	connection := session connection.
+	oldRecord := session connectionRecord.
+	announcements := self
+			disconnectionsAnnouncedBy: session
+			during: [ session markAsDisconnected.
+				self announceRsrCloseOf: connection.
+				self announceRsrCloseOf: connection.
+				session connect.
+				self waitUntil: [ oldRecord disconnectionReason isKnown ].
+				self waitForTheConnectionClosedHandler ].
+	reason := oldRecord disconnectionReason.
+	self assert: session isRunning.
+	self assert: session connectionRecord ~~ oldRecord.
+	self assert: session disconnectionReason isKnown not.
+	self assert: session statusDescription equals: 'Connected'.
+	self assert: reason class equals: GtGemStoneUnexpectedDisconnectionReason.
+	self assert: session previousDisconnectionReason equals: reason.
+	self assert: announcements size equals: 1.
+	self assert: announcements first reason equals: reason.
+	self
+		assert: session registry notifier connectionLosses asArray
+		equals: (Array with: session).
+	message := GtGemStoneSessionWorldNotifier new
+			messageForConnectionLost: oldRecord.
+	self
+		assert: (message
+				beginsWith: 'GemStone session testing:default: Connection lost at '
+						, reason time asTime print24 , ', connected for ').
+	^ session
+]
+
 { #category : #'examples - reconnect' }
 GtGemStoneSessionDisconnectionExamples >> sessionKeepsItsLastThreeEndedConnections [
 	<gtExample>

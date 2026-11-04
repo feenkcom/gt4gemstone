@@ -92,18 +92,16 @@ GtGemStoneTestingSession >> commandHistory [
 
 { #category : #accessing }
 GtGemStoneTestingSession >> connect [
-
 	self isRunning ifTrue: [ ^ self ].
 	self resetSessionData.
+	transactionMode := #autoBegin.
 	connectionTime := self currentTime.
 	self startConnectionRecord.
 	state := #connected.
 	self runPostConnectActions.
 
-	registry ifNotNil:[ registry addSession: self ].
-	self announce: (GtGemStoneSessionConnectedAnnouncement session: self).
-
-
+	registry ifNotNil: [ registry addSession: self ].
+	self announce: (GtGemStoneSessionConnectedAnnouncement session: self)
 ]
 
 { #category : #accessing }

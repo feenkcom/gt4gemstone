@@ -16,6 +16,11 @@ GtGemStoneSessionNoConnectionRecord >> canPostponeAutoLogout [
 
 ]
 
+{ #category : #testing }
+GtGemStoneSessionNoConnectionRecord >> canRecordConnectionLoss [
+	^ false
+]
+
 { #category : #accessing }
 GtGemStoneSessionNoConnectionRecord >> description [
 

@@ -18,6 +18,13 @@ GtGemStoneAbstractSessionConnectionRecord >> canPostponeAutoLogout [
 
 ]
 
+{ #category : #testing }
+GtGemStoneAbstractSessionConnectionRecord >> canRecordConnectionLoss [
+	"Answer whether a lost connection can still be recorded on the receiver"
+
+	^ self subclassResponsibility
+]
+
 { #category : #accessing }
 GtGemStoneAbstractSessionConnectionRecord >> description [
 

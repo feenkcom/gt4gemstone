@@ -19,10 +19,12 @@ GtGemStoneAbstractSessionNotifier >> show: aGtGemStoneKeepAliveNotification [
 ]
 
 { #category : #notifying }
-GtGemStoneAbstractSessionNotifier >> showConnectionLostOf: aGtGemStoneSession [
+GtGemStoneAbstractSessionNotifier >> showConnectionLost: aConnectionRecord of: aGtGemStoneSession [
+	"Tell the user that the connection of aConnectionRecord was lost.
+	aConnectionRecord is not necessarily the current record of the session:
+	the session may have reconnected in the meantime."
 
 	self subclassResponsibility
-
 ]
 
 { #category : #notifying }
