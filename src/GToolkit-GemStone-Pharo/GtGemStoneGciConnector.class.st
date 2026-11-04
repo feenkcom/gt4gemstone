@@ -35,6 +35,13 @@ GtGemStoneGciConnector class >> defaultGemStoneVersion [
 ]
 
 { #category : #accessing }
+GtGemStoneGciConnector >> autoLogoutEnabled [
+
+	^ autoLogoutEnabled
+
+]
+
+{ #category : #accessing }
 GtGemStoneGciConnector >> autoLogoutEnabled: aBoolean [
 
 	autoLogoutEnabled := aBoolean
@@ -184,6 +191,13 @@ GtGemStoneGciConnector >> loggedInSession [
 		hostPassword: hostPassword.
 	
 	^ session
+]
+
+{ #category : #accessing }
+GtGemStoneGciConnector >> logoutPostponable [
+
+	^ logoutPostponable
+
 ]
 
 { #category : #accessing }
