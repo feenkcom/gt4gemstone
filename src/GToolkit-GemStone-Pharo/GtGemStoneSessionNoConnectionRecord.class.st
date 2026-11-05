@@ -22,6 +22,13 @@ GtGemStoneSessionNoConnectionRecord >> canRecordConnectionLoss [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionNoConnectionRecord >> connectionTime [
+
+	^ nil
+
+]
+
+{ #category : #accessing }
 GtGemStoneSessionNoConnectionRecord >> description [
 
 	^ 'No connection'
@@ -32,6 +39,13 @@ GtGemStoneSessionNoConnectionRecord >> description [
 GtGemStoneSessionNoConnectionRecord >> disconnectionReason [
 
 	^ GtGemStoneNullDisconnectionReason new
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionNoConnectionRecord >> gemDetails [
+
+	^ GtGemStoneNoGemDetails notRetrieved
 
 ]
 

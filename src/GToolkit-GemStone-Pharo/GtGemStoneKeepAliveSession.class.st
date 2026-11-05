@@ -86,6 +86,16 @@ GtGemStoneKeepAliveSession >> dirtyCount [
 	^ dirtyCount
 ]
 
+{ #category : #views }
+GtGemStoneKeepAliveSession >> gtConnectionRecordFor: aView [
+	<gtView>
+	^(aView forward)
+		title: 'Connection details';
+		priority: 40;
+		object: [connectionRecord];
+		view: #gtConnectionDetailsFor:
+]
+
 { #category : #ui }
 GtGemStoneKeepAliveSession >> gtKeepAliveFor: aView [
 	<gtView>

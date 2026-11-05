@@ -26,6 +26,13 @@ GtGemStoneAbstractSessionConnectionRecord >> canRecordConnectionLoss [
 ]
 
 { #category : #accessing }
+GtGemStoneAbstractSessionConnectionRecord >> connectionTime [
+
+	^ self subclassResponsibility
+
+]
+
+{ #category : #accessing }
 GtGemStoneAbstractSessionConnectionRecord >> description [
 
 	^ self subclassResponsibility
@@ -34,6 +41,13 @@ GtGemStoneAbstractSessionConnectionRecord >> description [
 
 { #category : #accessing }
 GtGemStoneAbstractSessionConnectionRecord >> disconnectionReason [
+
+	^ self subclassResponsibility
+
+]
+
+{ #category : #accessing }
+GtGemStoneAbstractSessionConnectionRecord >> gemDetails [
 
 	^ self subclassResponsibility
 
