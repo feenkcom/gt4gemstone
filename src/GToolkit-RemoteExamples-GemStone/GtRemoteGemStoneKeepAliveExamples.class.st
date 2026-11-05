@@ -263,11 +263,15 @@ GtRemoteGemStoneKeepAliveExamples >> closingALostSessionKeepsTheLoss [
 { #category : #'private - setup' }
 GtRemoteGemStoneKeepAliveExamples >> connectHelperSessionNamed: aString [
 	| session |
-	session := GtRemoteGemstoneExamplesSessionBuilder
-			createAndStartSessionForConnector: (self connectorNamed: aString).
+	session := (GtRemoteGemstoneExamplesSessionBuilder
+		createSessionForConnector: (self connectorNamed: aString))
+			sessionId: 'helper';
+			yourself.
 	self createdSessions add: session.
+	session connect.
 	self assertSafeSession: session.
 	^ session
+
 ]
 
 { #category : #'private - setup' }
@@ -313,7 +317,11 @@ GtRemoteGemStoneKeepAliveExamples >> connectedSession [
 
 { #category : #'private - setup' }
 GtRemoteGemStoneKeepAliveExamples >> connectorNamed: aString [
-	^ GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: aString
+	^ (GtRemoteGemstoneExamplesSessionBuilder createConnectorNamed: aString)
+		autoLogoutEnabled: false;
+		logoutPostponable: false;
+		yourself
+
 ]
 
 { #category : #'private - setup' }
