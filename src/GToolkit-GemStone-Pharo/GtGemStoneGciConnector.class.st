@@ -35,6 +35,13 @@ GtGemStoneGciConnector class >> defaultGemStoneVersion [
 ]
 
 { #category : #accessing }
+GtGemStoneGciConnector class >> defaultLogoutPostponeDuration [
+
+	^ 15 minutes
+
+]
+
+{ #category : #accessing }
 GtGemStoneGciConnector >> autoLogoutEnabled [
 
 	^ autoLogoutEnabled
@@ -139,7 +146,7 @@ GtGemStoneGciConnector >> initialize [
 	gemstoneVersion := self class defaultGemStoneVersion.
 	autoLogoutEnabled := false.
 	logoutPostponable := false.
-	logoutPostponeDuration := 15 minutes
+	logoutPostponeDuration := self class defaultLogoutPostponeDuration
 
 ]
 

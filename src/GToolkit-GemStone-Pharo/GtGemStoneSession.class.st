@@ -1409,17 +1409,34 @@ GtGemStoneSession >> gtDisconnectActionFor: anAction [
 { #category : #ui }
 GtGemStoneSession >> gtKeepAliveFor: aView [
 	<gtView>
+	| view |
 
 	self hasKeepAlive ifFalse: [ ^ aView empty ].
-	^ aView forward
+	view := aView forward
 		title: 'Keep alive';
 		priority: 25;
 		object: [ self keepAlive ];
 		view: #gtKeepAliveFor:;
-		actionButtonIcon: BrGlamorousVectorIcons inspect 
-			tooltip: 'Inspect keep alive' 
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			tooltip: 'Inspect keep alive'
 			action: [ :aButton |
-				aButton phlow spawnObject: self keepAlive ]
+				aButton phlow spawnObject: self keepAlive ].
+	self keepAlive canPostponeAutoLogout ifTrue: [
+		view
+			actionButtonIcon: BrGlamorousVectorIcons pause
+			label: 'Postpone logout'
+			tooltip: 'Postpone the pending auto-logout'
+			action: [ :aButton | registry postponeAutoLogoutOf: self ] ].
+	self keepAlive isLogoutPending ifTrue: [
+		view
+			actionButtonIcon: BrGlamorousVectorIcons cancel
+			label: 'Log out now'
+			tooltip: 'Log the session out now instead of at the next poll'
+			action: [ :aButton |
+				registry keepAlive ifNotNil: [ :aKeepAlive |
+					aKeepAlive logoutSessionNow: self ] ] ].
+	^ view
+
 ]
 
 { #category : #ui }
