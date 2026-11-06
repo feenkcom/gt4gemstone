@@ -10,7 +10,9 @@ Class {
 		'currentTime',
 		'hasChanges',
 		'busy',
-		'keepAliveChecksFail'
+		'keepAliveChecksFail',
+		'gemDetailsFail',
+		'gemLogFileSystem'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
@@ -95,13 +97,14 @@ GtGemStoneTestingSession >> connect [
 	self isRunning ifTrue: [ ^ self ].
 	self resetSessionData.
 	transactionMode := #autoBegin.
-	connectionTime := self currentTime.
 	self startConnectionRecord.
 	state := #connected.
 	self runPostConnectActions.
+	self retrieveGemDetails.
 
 	registry ifNotNil: [ registry addSession: self ].
 	self announce: (GtGemStoneSessionConnectedAnnouncement session: self)
+
 ]
 
 { #category : #accessing }
@@ -210,6 +213,22 @@ GtGemStoneTestingSession >> evaluateBlockAndWait: aBlock autoCommit: aBoolean [
 
 ]
 
+{ #category : #private }
+GtGemStoneTestingSession >> evaluateGemDetails [
+
+	gemDetailsFail == true ifTrue: [ self error: 'Gem details are not available' ].
+	^ Dictionary new
+		at: 'gemStoneSessionId' put: 1;
+		at: 'gemProcessId' put: 4242;
+		at: 'gemHost' put: 'testing-host';
+		at: 'gemLogFileName' put: '/tmp/gem-testing.log';
+		at: 'stoneName' put: 'testing-stone';
+		at: 'gemStoneVersion' put: '3.7.2';
+		at: 'failures' put: Dictionary new;
+		yourself
+
+]
+
 { #category : #actions }
 GtGemStoneTestingSession >> evaluateReturnProxy: remoteScript [
 
@@ -222,10 +241,43 @@ GtGemStoneTestingSession >> evaluateReturnProxy: remoteScript for: anObject bind
 	^ self recordMessageSend
 ]
 
+{ #category : #accessing }
+GtGemStoneTestingSession >> failGemDetails [
+
+	gemDetailsFail := true
+
+]
+
 { #category : #utils }
 GtGemStoneTestingSession >> failKeepAliveChecks [
 
 	keepAliveChecksFail := true
+
+]
+
+{ #category : #accessing }
+GtGemStoneTestingSession >> gemLogFileSystem [
+
+	^ gemLogFileSystem
+
+]
+
+{ #category : #private }
+GtGemStoneTestingSession >> gemLogValuesFor: aFileName keepingLast: aNumber [
+	| file values |
+
+	file := gemLogFileSystem referenceTo: aFileName.
+	values := Dictionary new.
+	values at: 'readOnHost' put: 'testing-host'.
+	values at: 'exists' put: file exists.
+	file exists ifTrue: [ | contents |
+		contents := file contents.
+		values
+			at: 'size' put: contents size;
+			at: 'contents' put: (contents
+				copyFrom: ((contents size - aNumber) max: 0) + 1
+				to: contents size) ].
+	^ values
 
 ]
 
@@ -245,12 +297,13 @@ GtGemStoneTestingSession >> initialize [
 	hasChanges := false.
 	busy := false.
 	keepAliveChecksFail := false.
+	gemDetailsFail := false.
+	gemLogFileSystem := FileSystem memory.
 	transactionMode := #autoBegin.
 	"The connector only needs to answer whether code sync is allowed"
 	connector := GtGemStoneConnector new.
 	"We want all changes propagated to the test session"
 	self codeSync eventStrategy: GtGemStoneCodeSyncEpEventStrategy new.
-
 
 ]
 
@@ -345,7 +398,7 @@ GtGemStoneTestingSession >> remoteStatusAttributes [
 
 	^ OrderedCollection new
 		add: 'Simulated gem' -> true;
-		add: 'Connection time' -> connectionTime;
+		add: 'Connection time' -> self connectionTime;
 		add: 'Current time' -> currentTime;
 		add: 'Busy' -> busy;
 		add: 'Transaction mode' -> transactionMode;

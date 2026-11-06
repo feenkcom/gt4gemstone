@@ -21,7 +21,6 @@ Class {
 		'sessionId',
 		'transactionMode',
 		'gt4gemstoneVersion',
-		'connectionTime',
 		'cacheName',
 		'autoCommit',
 		'codeSync',
@@ -31,7 +30,6 @@ Class {
 		'lifecycleHandlers',
 		'sessionNrsString',
 		'sessionParameters',
-		'gemstoneVersion',
 		'connectionRecord',
 		'endedConnectionRecords'
 	],
@@ -191,10 +189,11 @@ GtGemStoneSession >> bookmark [
 { #category : #accessing }
 GtGemStoneSession >> cacheName [
 
-	^ cacheName ifNil: 
+	^ cacheName ifNil:
 		[ cacheName := (self scriptEvaluation
 			script: 'System getSharedCacheAttributes at: #cacheName';
 			returnPrimitiveOnly) evaluateAndWait ]
+
 ]
 
 { #category : #accessing }
@@ -309,7 +308,6 @@ GtGemStoneSession >> connect [
 	sessionNrsString := sessionParameters gemResource asNrsString.
 
 	connection := connector connectionForSession: session.
-	connectionTime := DateAndTime now.
 	self startConnectionRecord.
 	session logoutNbNoError.
 	session := nil.
@@ -319,6 +317,7 @@ GtGemStoneSession >> connect [
 		yourself.
 	self subscribeToConnection.
 	self runPostConnectActions.
+	self retrieveGemDetails.
 	self cleanupAsyncExecutionsOnConnect.
 
 	registry ifNotNil:[ registry addSession: self ].
@@ -371,7 +370,8 @@ GtGemStoneSession >> connectionRecords [
 { #category : #accessing }
 GtGemStoneSession >> connectionTime [
 
-	^ connectionTime
+	^ connectionRecord connectionTime
+
 ]
 
 { #category : #accessing }
@@ -574,6 +574,21 @@ GtGemStoneSession >> createScriptEvaluationReturnProxyFor: remoteScript for: anO
 { #category : #accessing }
 GtGemStoneSession >> currentFeatures [
 	^ GtGemStoneRemoteSessionFeatures forGemStoneSession: self
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> currentGemLog [
+
+	^ self isBusy
+		ifTrue: [ GtGemStoneUnreadGemLog
+			fileName: self gemDetails gemLogFileName
+			reason: 'The session is busy: its gem log can be read once the current evaluation has finished.' ]
+		ifFalse: [ [ self gemDetails readGemLogUsing: self ]
+			on: Error
+			do: [ :anError | GtGemStoneUnreadGemLog
+				fileName: self gemDetails gemLogFileName
+				reason: 'The gem log could not be read: ' , anError description ] ]
+
 ]
 
 { #category : #accessing }
@@ -1089,6 +1104,15 @@ GtGemStoneSession >> evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments:
 	^ self versionedEvaluator evaluateBlockAndWaitReturnProxy: aCleanBlock withArguments: anArray
 ]
 
+{ #category : #private }
+GtGemStoneSession >> evaluateGemDetails [
+
+	^ self
+		evaluateBlockAndWaitReturnPrimitive: self gemDetailsBlock
+		autoCommit: false
+
+]
+
 { #category : #'actions - evaluate script' }
 GtGemStoneSession >> evaluateProxyInspector: remoteScript [
 
@@ -1202,6 +1226,54 @@ GtGemStoneSession >> formatBasedOnStatusText: aText [
 	^ ropedText
 ]
 
+{ #category : #accessing }
+GtGemStoneSession >> gemDetails [
+
+	^ connectionRecord gemDetails
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> gemDetailsBlock [
+
+	^ [ | values failures try |
+		values := Dictionary new.
+		failures := Dictionary new.
+		try := [ :aKey :aBlock |
+			[ values at: aKey put: aBlock value ]
+				on: Error
+				do: [ :anError | failures at: aKey put: (anError messageText ifNil: [ anError class name ]) asString ] ].
+		try value: 'gemStoneSessionId' value: [ System session ].
+		try value: 'gemProcessId' value: [ (System descriptionOfSession: System session) at: 2 ].
+		try value: 'gemHost' value: [ System hostname ].
+		try value: 'gemLogFileName' value: [ System gemLogFileName ].
+		try value: 'stoneName' value: [ System stoneName ].
+		try value: 'gemStoneVersion' value: [ System gemVersionAt: #gsVersion ].
+		try value: 'gt4gemstoneVersion' value: [ GtGsRelease versionString ].
+		values at: 'failures' put: failures.
+		values ]
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> gemLogBlock [
+
+	^ [ :aFileName :aTailSize | | gsFile values file size |
+		gsFile := System myUserProfile objectNamed: #GsFile.
+		values := Dictionary new.
+		values at: 'readOnHost' put: System hostname.
+		values at: 'exists' put: (gsFile existsOnServer: aFileName).
+		(values at: 'exists') ifTrue: [
+			file := gsFile openReadOnServer: aFileName.
+			[ size := file fileSize.
+			values at: 'size' put: size.
+			file position: ((size - aTailSize) max: 0).
+			values at: 'contents' put: (file next: (size min: aTailSize)) ]
+				ensure: [ file close ] ].
+		values ]
+
+]
+
 { #category : #'accessing - remote properties' }
 GtGemStoneSession >> gemLogFileReference [
 	"Answer a file reference to the server's log file.
@@ -1213,16 +1285,27 @@ GtGemStoneSession >> gemLogFileReference [
 		returnPrimitiveOnly) evaluateAndWait asFileReference
 ]
 
+{ #category : #private }
+GtGemStoneSession >> gemLogValuesFor: aFileName keepingLast: aNumber [
+
+	^ self
+		evaluateBlockAndWait: self gemLogBlock
+		withArguments: (Array with: aFileName with: aNumber)
+		serializationStrategy: #GtRsrPrimitiveOnlySerializationStrategy
+		autoCommit: false
+
+]
+
 { #category : #accessing }
 GtGemStoneSession >> gemstoneVersionString [
 	"Answer the gemstone version string for this session"
 	<return: #String>
 
-	^ gemstoneVersion ifNil: 
-			[ gemstoneVersion := self 
-				evaluateBlockAndWaitReturnPrimitive: [
-					System gemVersionAt: 'gsVersion'. ]
-				autoCommit: false ]
+	^ self gemDetails gemStoneVersion ifNil: [
+		self
+			evaluateBlockAndWaitReturnPrimitive: [ System gemVersionAt: 'gsVersion' ]
+			autoCommit: false ]
+
 ]
 
 { #category : #accessing }
@@ -1276,18 +1359,15 @@ GtGemStoneSession >> gt4gemstoneVersion [
 	"Answer the gt4gemstone libary version installed on the server"
 	<return: #GtGemStoneSemanticVersionNumber>
 
-	^ gt4gemstoneVersion ifNil: [ 
+	^ gt4gemstoneVersion ifNil: [
 		| versionString |
-		versionString := self 
+		versionString := self
 			evaluateBlockAndWaitReturnPrimitive: [
 				GtGsRelease versionString ]
 			autoCommit: false.
-		gt4gemstoneVersion := versionString 
-			ifNil: [ GtGemStoneSemanticVersionNumber zero ]
-			ifNotNil: [
-				(versionString matchesRegex: GtGemStoneSemanticVersionNumber versionNumberRegexString)
-					ifTrue: [GtGemStoneSemanticVersionNumber readFromString: versionString]
-					ifFalse: [GtGemStoneSemanticVersionNumber zero] ] ]
+		self useGt4gemstoneVersionString: versionString.
+		gt4gemstoneVersion ]
+
 ]
 
 { #category : #ui }
@@ -1446,7 +1526,7 @@ GtGemStoneSession >> gtLiveFor: aView [
 	^ aView columnedList
 		title: 'Status';
 		priority: 10;
-		items: [ self statusAttributes];
+		items: [ self statusAttributes , self gemDetails detailAttributes ];
 		column: 'Attribute' text: [ :item | item key ];
 		column: 'Value' 
 			text: [ :item | | value |
@@ -1464,15 +1544,18 @@ GtGemStoneSession >> gtLiveFor: aView [
 GtGemStoneSession >> gtLogFor: aView [
 	"Display the contents of stdout of the receiver if the log file is available locally"
 	<gtView>
-	
-	self isRunning ifFalse: [ ^ aView empty ] .
-	(evaluator isNil or: [ self gemLogFileReference exists not ]) ifTrue: [ ^ aView empty ].
-	
-	^ aView textEditor
-		  title: 'Gem Log';
-		  priority: 20;
-		  text: [ self gemLogFileReference contents ];
-		  actionUpdateButton
+
+	(self isRunning and: [ self gemDetails hasGemLog ]) ifFalse: [ ^ aView empty ].
+	^ aView forward
+		title: 'Gem Log';
+		priority: 20;
+		object: [ self currentGemLog ];
+		view: #gtLogFor:;
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			tooltip: 'Inspect the gem log'
+			action: [ :aButton | aButton phlow spawnObject: aButton phlow forwardViewObjectFromViewAction ];
+		actionUpdateButton
+
 ]
 
 { #category : #ui }
@@ -1869,8 +1952,8 @@ GtGemStoneSession >> recordConnectionLostOf: aConnectionRecord [
 	aConnectionRecord recordDisconnectionReason:
 		(GtGemStoneUnexpectedDisconnectionReason time: self currentTime).
 	self announceDisconnectionOf: aConnectionRecord.
-	registry ifNotNil: [
-		registry notifier showConnectionLost: aConnectionRecord of: self ]
+	registry ifNotNil: [ :aRegistry |
+		aRegistry notifier showConnectionLost: aConnectionRecord of: self ]
 
 ]
 
@@ -1931,7 +2014,7 @@ GtGemStoneSession >> remoteStatusAttributes [
 		add: 'Cache name' -> (gsAttributes at: 'CacheName');
 		add: 'Floating point exceptions' -> (gsAttributes at: 'fpExceptions') storeString;
 		add: 'Time difference' -> (DateAndTime now - (gsAttributes at: 'Time'));
-		add: 'Connection time' -> connectionTime;
+		add: 'Connection time' -> self connectionTime;
 		add: 'gt4gemstone version' -> (gsAttributes at: 'gt4gemstoneVersion');
 		add: 'Transcript class' -> (gsAttributes 
 			at: 'gt4gemstonetranscriptclass' ifAbsent: ['-']);
@@ -1979,16 +2062,30 @@ GtGemStoneSession >> resetSessionData [
 	self unsubscribeFromConnection.
 	self archiveConnectionRecord.
 
-	connectionTime := nil.
 	sessionParameters := nil.
 	sessionNrsString := nil.
 	transactionMode := nil
+
 ]
 
 { #category : #'as yet unclassified' }
 GtGemStoneSession >> resetSessionVersionData [
-	gemstoneVersion := nil.
 	gt4gemstoneVersion := nil.
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> retrieveGemDetails [
+
+	[ | values |
+	values := self evaluateGemDetails.
+	self useGemDetails: (GtGemStoneGemDetails fromDictionary: values).
+	(values includesKey: 'gt4gemstoneVersion') ifTrue: [
+		self useGt4gemstoneVersionString: (values at: 'gt4gemstoneVersion') ] ]
+		on: Error
+		do: [ :anError |
+			self useGemDetails: (GtGemStoneNoGemDetails reason: anError description) ]
+
 ]
 
 { #category : #private }
@@ -2021,6 +2118,16 @@ GtGemStoneSession >> serverTime [
 	^ (self scriptEvaluation
 		script: 'DateAndTime now';
 		returnPrimitiveOnly) evaluateAndWait
+]
+
+{ #category : #accessing }
+GtGemStoneSession >> sessionCacheName [
+
+	^ self
+		evaluateBlockAndWaitReturnPrimitive: [
+			(System cacheStatisticsAt: (System cacheSlotForSessionId: System session)) first ]
+		autoCommit: false
+
 ]
 
 { #category : #accessing }
@@ -2225,6 +2332,25 @@ GtGemStoneSession >> unbookmark [
 GtGemStoneSession >> unsubscribeFromConnection [
 
 	connection ifNotNil: [ connection announcer unsubscribe: self ]
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> useGemDetails: aGemDetails [
+
+	connectionRecord gemDetails: aGemDetails
+
+]
+
+{ #category : #private }
+GtGemStoneSession >> useGt4gemstoneVersionString: versionString [
+
+	gt4gemstoneVersion := versionString
+		ifNil: [ GtGemStoneSemanticVersionNumber zero ]
+		ifNotNil: [
+			(versionString matchesRegex: GtGemStoneSemanticVersionNumber versionNumberRegexString)
+				ifTrue: [GtGemStoneSemanticVersionNumber readFromString: versionString]
+				ifFalse: [GtGemStoneSemanticVersionNumber zero] ]
 
 ]
 

@@ -229,12 +229,13 @@ GtGemStoneSessionRegistry >> cleanSessionWithConnectorNamed: aString [
 	Create the session if required."
 
 	^ sessions
-		detect: [ :each | 
-			each connector name = aString and: [ 
-				each isRunning and: [ 
+		detect: [ :each |
+			each connector name = aString and: [
+				each isRunning and: [
 					each needsCommit not and: [
 						each hasRegisteredAsyncExecution not ] ] ] ]
-		ifNone: [ self newSessionWithConnectorNamed: aString ]
+		ifNone: [ self newSessionWithReusageWithConnector: (self connectorNamed: aString) ]
+
 ]
 
 { #category : #accessing }
@@ -564,10 +565,13 @@ GtGemStoneSessionRegistry >> gtEndedConnectionsFor: aView [
 		title: 'Ended connections';
 		priority: 7;
 		items: [ self endedConnectionRecords ];
-		column: 'Time' text: [ :each | each disconnectionReason time ];
+		column: 'Disconnect time' text: [ :each | each disconnectionReason time ];
 		column: 'Session' text: [ :each | each sessionName ];
 		column: 'How it ended' text: [ :each | each disconnectionReason description ];
 		column: 'Connected for' text: [ :each | each connectedDuration gtHumanReadableString ];
+		contextItemLabel: 'Gem log'
+			action: [ :anElement :aRecord | aRecord spawnGemLogFrom: anElement ]
+			if: [ :aRecord | aRecord gemDetails hasGemLog ];
 		actionUpdateButton
 
 ]

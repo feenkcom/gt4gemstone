@@ -5,7 +5,8 @@ Class {
 		'sessionName',
 		'connectionTime',
 		'keepAlive',
-		'disconnectionReason'
+		'disconnectionReason',
+		'gemDetails'
 	],
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
@@ -66,19 +67,51 @@ GtGemStoneSessionConnectionRecord >> disconnectionReason [
 
 ]
 
+{ #category : #accessing }
+GtGemStoneSessionConnectionRecord >> gemDetails [
+
+	^ gemDetails
+
+]
+
+{ #category : #accessing }
+GtGemStoneSessionConnectionRecord >> gemDetails: aGemDetails [
+
+	gemDetails := aGemDetails
+
+]
+
 { #category : #ui }
 GtGemStoneSessionConnectionRecord >> gtConnectionDetailsFor: aView [
 	<gtView>
+	| view |
 
-	^ aView columnedList
+	view := aView columnedList
 		title: 'Connection details';
 		priority: 10;
 		items: [ self recordAttributes ];
 		column: 'Attribute' text: #key;
 		column: 'Value' text: #value;
 		send: #value;
-		actionUpdateButton
+		actionUpdateButton.
+	gemDetails hasGemLog ifTrue: [
+		view
+			actionButtonIcon: BrGlamorousVectorIcons transcript
+			label: 'Gem log'
+			tooltip: 'Read the end of the gem log of this connection'
+			action: [ :aButton | self spawnGemLogFrom: aButton ] ].
+	^ view
 
+]
+
+{ #category : #views }
+GtGemStoneSessionConnectionRecord >> gtGemDetailsFor: aView [
+	<gtView>
+	^(aView forward)
+		title: 'Gem details';
+		priority: 40;
+		object: [gemDetails];
+		view: #gtDetailsFor:
 ]
 
 { #category : #ui }
@@ -123,8 +156,9 @@ GtGemStoneSessionConnectionRecord >> hasKeepAlive [
 GtGemStoneSessionConnectionRecord >> initializeWithSession: aGtGemStoneSession [
 
 	sessionName := aGtGemStoneSession name.
-	connectionTime := aGtGemStoneSession connectionTime.
+	connectionTime := aGtGemStoneSession currentTime.
 	disconnectionReason := GtGemStoneNullDisconnectionReason new.
+	gemDetails := GtGemStoneNoGemDetails notRetrieved.
 	keepAlive := aGtGemStoneSession createKeepAlive.
 	keepAlive connectionRecord: self
 
@@ -151,6 +185,16 @@ GtGemStoneSessionConnectionRecord >> keepAlive [
 
 ]
 
+{ #category : #actions }
+GtGemStoneSessionConnectionRecord >> readGemLog [
+	| session |
+
+	session := keepAlive session.
+	^ gemDetails readGemLogUsing: (session registry
+		cleanSessionWithConnectorNamed: session connector name)
+
+]
+
 { #category : #accessing }
 GtGemStoneSessionConnectionRecord >> recordAttributes [
 	| attributes |
@@ -167,7 +211,8 @@ GtGemStoneSessionConnectionRecord >> recordAttributes [
 		add: 'Aborts by the keep alive' -> self statistics aborts count;
 		add: 'Dirty count at the last poll' -> keepAlive dirtyCount;
 		add: 'Max keep alive (minutes)' -> keepAlive maxKeepAlive;
-		add: 'Postponement' -> keepAlive postponement description.
+		add: 'Postponement' -> keepAlive postponement description;
+		add: 'Gem' -> gemDetails.
 	^ attributes
 
 ]
@@ -184,6 +229,19 @@ GtGemStoneSessionConnectionRecord >> recordDisconnectionReason: aDisconnectionRe
 GtGemStoneSessionConnectionRecord >> sessionName [
 
 	^ sessionName
+
+]
+
+{ #category : #ui }
+GtGemStoneSessionConnectionRecord >> spawnGemLogFrom: anElement [
+
+	[ self readGemLog ] asAsyncPromise
+		then: [ :aGemLog |
+			anElement enqueueTask: (BlTaskAction new
+				action: [ anElement phlow spawnObject: aGemLog ]) ]
+		otherwise: [ :anError |
+			anElement enqueueTask: (BlTaskAction new
+				action: [ anElement phlow spawnObject: anError ]) ]
 
 ]
 

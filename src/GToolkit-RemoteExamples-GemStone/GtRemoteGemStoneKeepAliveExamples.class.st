@@ -274,6 +274,41 @@ GtRemoteGemStoneKeepAliveExamples >> connectHelperSessionNamed: aString [
 
 ]
 
+{ #category : #'examples - gem details' }
+GtRemoteGemStoneKeepAliveExamples >> connectRecordsTheGemDetails [
+	<gtExample>
+	<after: #cleanUpLiveSessions>
+	<return: #GtGemStoneSession>
+	| session details |
+
+	session := self connectedSession.
+	details := session gemDetails.
+	self assert: details class equals: GtGemStoneGemDetails.
+	self assert: details failures isEmpty.
+	self assert: details hasGemLog.
+	self
+		assert: details gemStoneSessionId
+		equals: (self evaluateInGem: 'System session' of: session).
+	self
+		assert: details gemProcessId
+		equals: (self evaluateInGem: '(System descriptionOfSession: System session) at: 2' of: session).
+	self
+		assert: details gemHost
+		equals: (self evaluateInGem: 'System hostname' of: session).
+	self
+		assert: details gemLogFileName
+		equals: (self evaluateInGem: 'System gemLogFileName' of: session).
+	self
+		assert: details stoneName
+		equals: (self evaluateInGem: 'System stoneName' of: session).
+	self
+		assert: details gemStoneVersion
+		equals: (self evaluateInGem: 'System gemVersionAt: #gsVersion' of: session).
+	self assert: session gemstoneVersionString equals: details gemStoneVersion.
+	^ session
+
+]
+
 { #category : #'private - setup' }
 GtRemoteGemStoneKeepAliveExamples >> connectSessionWith: aConnector [
 	| session |
@@ -396,6 +431,26 @@ GtRemoteGemStoneKeepAliveExamples >> gemHasTheExampleChange: aSession [
 		of: aSession
 ]
 
+{ #category : #'examples - gem details' }
+GtRemoteGemStoneKeepAliveExamples >> gemLogOfTheCurrentSessionIsReadThroughIt [
+	<gtExample>
+	<after: #cleanUpLiveSessions>
+	<return: #GtGemStoneGemLog>
+	| session log serial |
+
+	session := self connectedSession.
+	serial := self evaluateInGem: 'System session' of: session.
+	log := session currentGemLog.
+	self assert: log class equals: GtGemStoneGemLog.
+	self assert: log exists.
+	self assert: log session == session.
+	self assert: log isReadOnAnotherHost not.
+	self assert: log fileName equals: session gemDetails gemLogFileName.
+	self assert: (log contents includesSubstring: 'Session ID: ' , serial printString).
+	^ log
+
+]
+
 { #category : #'private - gem' }
 GtRemoteGemStoneKeepAliveExamples >> gemNeedsCommit: aSession [
 	^ self evaluateInGem: 'System needsCommit' of: aSession
@@ -406,7 +461,7 @@ GtRemoteGemStoneKeepAliveExamples >> gemStoppedFromTheGemStoneSideRecordsTheLoss
 	<gtExample>
 	<after: #cleanUpLiveSessions>
 	<return: #Dictionary>
-	| session announcements serial stopper start latency |
+	| session announcements serial stopper start latency gemLog |
 	session := self connectedSession.
 	announcements := self
 			recordAnnouncementsOf: GtGemStoneSessionDisconnectedAnnouncement.
@@ -422,11 +477,17 @@ GtRemoteGemStoneKeepAliveExamples >> gemStoppedFromTheGemStoneSideRecordsTheLoss
 	self waitFor: 1 second.
 	self assertConnectionLossOf: session announcements: announcements.
 	self assert: stopper isRunning.
+	gemLog := session connectionRecord readGemLog.
+	self assert: gemLog exists.
+	self assert: gemLog fileName equals: session gemDetails gemLogFileName.
+	self assert: (gemLog contents includesSubstring: 'stopSession').
 	^ Dictionary new
 		at: #session put: session;
 		at: #serial put: serial;
 		at: #latency put: latency;
+		at: #gemLog put: gemLog;
 		yourself
+
 ]
 
 { #category : #'private - setup' }
@@ -577,6 +638,36 @@ GtRemoteGemStoneKeepAliveExamples >> postponedLogoutIsNotPerformed [
 	self assert: changes size equals: 2.
 	self assert: keepAlive loggedOutConnections isEmpty.
 	^ session
+]
+
+{ #category : #'examples - gem details' }
+GtRemoteGemStoneKeepAliveExamples >> readGemLogReusesACleanSession [
+	<gtExample>
+	<after: #cleanUpLiveSessions>
+	<return: #GtGemStoneGemLog>
+	| connector first second record gemLog sessionCount newLog |
+
+	connector := self connectorNamed: 'keep-alive-gem-log'.
+	first := self connectSessionWith: connector.
+	second := self liveRegistry newSessionWithConnector: connector.
+	self createdSessions add: second.
+	self assertSafeSession: second.
+	record := first connectionRecord.
+	first close.
+	sessionCount := self liveRegistry activeSessions size.
+	gemLog := record readGemLog.
+	self assert: gemLog session == second.
+	self assert: gemLog fileName equals: record gemDetails gemLogFileName.
+	self assert: self liveRegistry activeSessions size equals: sessionCount.
+	self modifyObjectsIn: second.
+	newLog := record readGemLog.
+	self assert: newLog session ~~ second.
+	self assert: newLog session isRunning.
+	self assert: (self liveRegistry activeSessions includes: newLog session).
+	self assert: self liveRegistry activeSessions size equals: sessionCount + 1.
+	self assert: newLog session name equals: connector defaultSessionName.
+	^ newLog
+
 ]
 
 { #category : #'examples - connection lost' }
@@ -754,6 +845,23 @@ GtRemoteGemStoneKeepAliveExamples >> rsrClosingTheConnectionRecordsTheLoss [
 	self waitFor: 1 second.
 	self assertConnectionLossOf: session announcements: announcements.
 	^ session
+]
+
+{ #category : #'examples - gem details' }
+GtRemoteGemStoneKeepAliveExamples >> sessionCacheNameIsTheSessionsOwnName [
+	<gtExample>
+	<after: #cleanUpLiveSessions>
+	<return: #GtGemStoneSession>
+	| session |
+
+	session := self connectedSession.
+	session cacheName: 'gt_keep_alive_example'.
+	self assert: session sessionCacheName equals: 'gt_keep_alive_example'.
+	self
+		assert: session cacheName
+		equals: (self evaluateInGem: 'System getSharedCacheAttributes at: #cacheName' of: session).
+	^ session
+
 ]
 
 { #category : #'examples - keep alive' }
