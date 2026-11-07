@@ -54,6 +54,13 @@ GtGemStoneSessionConnectionRecord >> connectionTime [
 ]
 
 { #category : #accessing }
+GtGemStoneSessionConnectionRecord >> connector [
+
+	^ keepAlive session connector
+
+]
+
+{ #category : #accessing }
 GtGemStoneSessionConnectionRecord >> description [
 
 	^ sessionName , ', connected at ' , connectionTime asTime print24 , ': ' , self stateDescription
@@ -90,7 +97,7 @@ GtGemStoneSessionConnectionRecord >> gtConnectionDetailsFor: aView [
 		title: 'Connection details';
 		priority: 10;
 		items: [ self recordAttributes ];
-		column: 'Attribute' text: #key;
+		column: 'Attribute' text: #key width: 250;
 		column: 'Value' text: #value;
 		send: #value;
 		actionUpdateButton.

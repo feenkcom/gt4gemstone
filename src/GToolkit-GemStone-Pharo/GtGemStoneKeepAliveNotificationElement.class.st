@@ -143,7 +143,7 @@ GtGemStoneKeepAliveNotificationElement >> contextMenuContentFor: aSession [
 
 	items := OrderedCollection withAll: aSession contextMenuContent.
 	aSession keepAlive canPostponeAutoLogout ifTrue: [
-		items add: 'Postpone logout' -> [ :anElement |
+		items add: aSession keepAlive postponeLogoutLabel -> [ :anElement |
 			self postponeAutoLogoutOf: aSession ] ].
 	(aSession keepAlive isScheduledForAutoLogout and: [ aSession isBusy not ]) ifTrue: [
 		items add: 'Logout now' -> [ :anElement |

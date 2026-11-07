@@ -1504,7 +1504,7 @@ GtGemStoneSession >> gtKeepAliveFor: aView [
 	self keepAlive canPostponeAutoLogout ifTrue: [
 		view
 			actionButtonIcon: BrGlamorousVectorIcons pause
-			label: 'Postpone logout'
+			label: self keepAlive postponeLogoutLabel
 			tooltip: 'Postpone the pending auto-logout'
 			action: [ :aButton | registry postponeAutoLogoutOf: self ] ].
 	self keepAlive isLogoutPending ifTrue: [

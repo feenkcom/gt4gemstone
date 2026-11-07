@@ -781,7 +781,7 @@ GtGemStoneSessionKeepAliveExamples >> notificationElementListsTheSessions [
 	self assert: (menuLabels includes: 'Commit').
 	self assert: (menuLabels includes: 'Abort').
 	self assert: (menuLabels includes: 'Logout now').
-	self assert: (menuLabels includes: 'Postpone logout') not.
+	self assert: (menuLabels contains: [ :each | each beginsWith: 'Postpone logout' ]) not.
 	^ element
 
 ]
@@ -944,6 +944,22 @@ GtGemStoneSessionKeepAliveExamples >> postponeIsRefusedWhenNotPostponable [
 	self assert: session isRunning not.
 	self assert: keepAlive loggedOutConnections first keepAlive hasBeenPostponed not.
 	^ keepAlive
+
+]
+
+{ #category : #'examples - postpone' }
+GtGemStoneSessionKeepAliveExamples >> postponeLogoutLabelShowsTheDuration [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveSession>
+	| keepAlive session |
+
+	keepAlive := self keepAliveWithSessionOn: (self autoLogoutConnector
+		logoutPostponable: true;
+		yourself).
+	session := self sessionOf: keepAlive.
+	self assert: session keepAlive logoutPostponeDuration equals: 15 minutes.
+	self assert: session keepAlive postponeLogoutLabel equals: 'Postpone logout for 15 minutes'.
+	^ session keepAlive
 
 ]
 

@@ -401,6 +401,13 @@ GtGemStoneKeepAliveSession >> postponeAutoLogout [
 ]
 
 { #category : #accessing }
+GtGemStoneKeepAliveSession >> postponeLogoutLabel [
+
+	^ 'Postpone logout for ' , logoutPostponeDuration humanReadablePrintString
+
+]
+
+{ #category : #accessing }
 GtGemStoneKeepAliveSession >> postponement [
 
 	^ postponement

@@ -404,7 +404,7 @@ GtGemStoneSessionsCardWidget >> sessionActionsFor: aGtGemStoneSession [
 					self updateContent] } ].
 					
 	aGtGemStoneSession canPostponeAutoLogout ifTrue: [
-		actions add: 'Postpone logout' -> [ :aStatusLineElement |
+		actions add: aGtGemStoneSession keepAlive postponeLogoutLabel -> [ :aStatusLineElement |
 			self registry postponeAutoLogoutOf: aGtGemStoneSession.
 			self updateContent ] ].
 

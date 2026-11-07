@@ -565,8 +565,15 @@ GtGemStoneSessionRegistry >> gtEndedConnectionsFor: aView [
 		title: 'Ended connections';
 		priority: 7;
 		items: [ self endedConnectionRecords ];
+		column: 'Session' do: [ :aColumn |
+			aColumn
+				cellStencil: [ GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :aRecord |
+					anElement
+						initializeWithIcon: (self iconForSymbol: aRecord connector iconName)
+						label: aRecord sessionName ];
+				width: 150 ];
 		column: 'Disconnect time' text: [ :each | each disconnectionReason time ];
-		column: 'Session' text: [ :each | each sessionName ];
 		column: 'How it ended' text: [ :each | each disconnectionReason description ];
 		column: 'Connected for' text: [ :each | each connectedDuration gtHumanReadableString ];
 		contextItemLabel: 'Gem log'
@@ -670,10 +677,11 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 			action: [ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession abortTransaction ]
 			if: [ :aGtGemStoneSession | aGtGemStoneSession isRunning ];
-		contextItemLabel: 'Postpone logout'
-			action: [ :anElement :aGtGemStoneSession |
-				self postponeAutoLogoutOf: aGtGemStoneSession ]
-			if: [ :aGtGemStoneSession | aGtGemStoneSession canPostponeAutoLogout ];
+		dynamicContextItems: [ :anElement :aGtGemStoneSession |
+			aGtGemStoneSession canPostponeAutoLogout
+				ifTrue: [ Array with: aGtGemStoneSession keepAlive postponeLogoutLabel -> [ :aMenuElement |
+					self postponeAutoLogoutOf: aGtGemStoneSession ] ]
+				ifFalse: [ #() ] ];
 		contextItemLabel: 'Connect' 
 			action:[ :anElement :aGtGemStoneSession | 
 				aGtGemStoneSession connect ]

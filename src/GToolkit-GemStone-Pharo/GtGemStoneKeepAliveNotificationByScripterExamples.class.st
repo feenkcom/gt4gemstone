@@ -103,7 +103,7 @@ GtGemStoneKeepAliveNotificationByScripterExamples >> contextMenuOfAPostponableSe
 	aScripter := self notificationShowsTheSessionsAndTheirStatus.
 	self openContextMenuOfSessionNamed: 'pending:default' in: aScripter.
 	aScripter menuStep
-		assertMenuItemLabels: #('Disconnect' 'Commit' 'Abort' 'Be Default' 'Inspect' 'Postpone logout' 'Logout now');
+		assertMenuItemLabels: #('Disconnect' 'Commit' 'Abort' 'Be Default' 'Inspect' 'Postpone logout for 15 minutes' 'Logout now');
 		play.
 	^ aScripter
 
@@ -222,7 +222,7 @@ GtGemStoneKeepAliveNotificationByScripterExamples >> postponeFromTheContextMenu 
 	| aScripter pending |
 
 	aScripter := self contextMenuOfAPostponableSession.
-	self clickMenuItemLabeled: 'Postpone logout' in: aScripter.
+	self clickMenuItemLabeled: 'Postpone logout for 15 minutes' in: aScripter.
 	pending := aScripter model sessions detect: [ :each |
 		each name = 'pending:default' ].
 	self assert: pending keepAlive isPostponed.

@@ -192,8 +192,14 @@ GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 		updateWhen: GtGemStoneSessionAnnouncement in: [ registry announcer ];
 		rowDataBinder: [ :aRowElement :aSession |
 			GtGemStoneLogoutPendingRowAptitude bindRow: aRowElement toSession: aSession ];
-		column: 'Session' text: [ :session |
-			session formatBasedOnStatusText: session name ] width: 130;
+		column: 'Session' do: [ :aColumn |
+			aColumn
+				cellStencil: [ GtPhlowLabelWithIcon new ];
+				dataBinder: [ :anElement :aSession |
+					anElement
+						initializeWithIcon: (registry iconForSymbol: aSession connector iconName)
+						label: (aSession formatBasedOnStatusText: aSession name) ];
+				width: 150 ];
 		column: 'Keep alive state' text: [ :session |
 			session formatBasedOnStatusText: session keepAlive stateDescription ];
 		column: 'Last poll' text: [ :session | session keepAlive lastPollDescription ];
@@ -201,9 +207,11 @@ GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 		column: 'Aborts' text: [ :session | session keepAlive statistics aborts count ] width: 50;
 		column: 'Keep Alive (min)' text: [ :session | 
 			(Duration minutes: session keepAlive maxKeepAlive) gtHumanReadableString ] width: 100;
-		contextItemLabel: 'Postpone logout'
-			action: [ :anElement :session | self postponeAutoLogoutOf: session ]
-			if: [ :session | session keepAlive canPostponeAutoLogout ];
+		dynamicContextItems: [ :anElement :session |
+			session keepAlive canPostponeAutoLogout
+				ifTrue: [ Array with: session keepAlive postponeLogoutLabel -> [ :aMenuElement |
+					self postponeAutoLogoutOf: session ] ]
+				ifFalse: [ #() ] ];
 		send: [ :session | session keepAlive ];
 		actionUpdateButton
 
