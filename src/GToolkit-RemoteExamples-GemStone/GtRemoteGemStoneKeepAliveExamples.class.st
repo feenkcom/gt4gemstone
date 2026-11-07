@@ -305,6 +305,10 @@ GtRemoteGemStoneKeepAliveExamples >> connectRecordsTheGemDetails [
 		assert: details gemStoneVersion
 		equals: (self evaluateInGem: 'System gemVersionAt: #gsVersion' of: session).
 	self assert: session gemstoneVersionString equals: details gemStoneVersion.
+	self
+		assert: session gt4gemstoneVersion
+		equals: (GtGemStoneSemanticVersionNumber readFromString:
+			(self evaluateInGem: 'GtGsRelease versionString' of: session)).
 	^ session
 
 ]
@@ -481,6 +485,9 @@ GtRemoteGemStoneKeepAliveExamples >> gemStoppedFromTheGemStoneSideRecordsTheLoss
 	self assert: gemLog exists.
 	self assert: gemLog fileName equals: session gemDetails gemLogFileName.
 	self assert: (gemLog contents includesSubstring: 'stopSession').
+	self assert: gemLog analysis isTerminatedByGemStone.
+	self assert: gemLog analysis ending errorNumber equals: '4059'.
+	self assert: gemLog analysis gemStoneSessionId equals: serial printString.
 	^ Dictionary new
 		at: #session put: session;
 		at: #serial put: serial;

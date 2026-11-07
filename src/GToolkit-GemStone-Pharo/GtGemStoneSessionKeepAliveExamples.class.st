@@ -20,7 +20,14 @@ GtGemStoneSessionKeepAliveExamples >> advanceTimeBy: aDuration andPoll: aKeepAli
 { #category : #private }
 GtGemStoneSessionKeepAliveExamples >> autoLogoutConnector [
 
-	^ (self connectorNamed: 'testing')
+	^ self autoLogoutConnectorNamed: 'testing'
+
+]
+
+{ #category : #private }
+GtGemStoneSessionKeepAliveExamples >> autoLogoutConnectorNamed: aString [
+
+	^ (self connectorNamed: aString)
 		autoLogoutEnabled: true;
 		yourself
 
@@ -633,6 +640,28 @@ GtGemStoneSessionKeepAliveExamples >> lostConnectionIsShownInTheKeepAliveState [
 ]
 
 { #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationAsksToCommitOnlyChangedSessions [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveNotification>
+	| keepAlive session notification |
+
+	keepAlive := self keepAliveWithSessionOn: (self autoLogoutConnector
+		maxKeepAlive: 60;
+		yourself).
+	session := self sessionOf: keepAlive.
+	session modifyObjects.
+	2 timesRepeat: [ self poll: keepAlive ].
+	notification := keepAlive notification.
+	self assert: notification sessions asArray equals: (Array with: session).
+	self assert: notification hasSessionsScheduledForAutoLogout not.
+	self
+		assert: notification descriptionText
+		equals: 'Uncommitted changes in testing:default should be committed or aborted.'.
+	^ notification
+
+]
+
+{ #category : #'examples - notification' }
 GtGemStoneSessionKeepAliveExamples >> notificationDescribesDirtyAndScheduledSessions [
 	<gtExample>
 	<return: #GtGemStoneKeepAliveNotification>
@@ -647,10 +676,52 @@ GtGemStoneSessionKeepAliveExamples >> notificationDescribesDirtyAndScheduledSess
 	self assert: notification sessionsScheduledForAutoLogout asArray equals: (Array with: session).
 	self assert: notification hasLogoutsRequestedByConnector not.
 	self assert: notification canPostponeAutoLogouts not.
-	self assert: (notification descriptionText includesSubstring: 'committed or aborted').
-	self assert: (notification descriptionText includesSubstring: 'will be logged out').
-	self assert: (notification descriptionText includesSubstring:
-		'at about ' , session keepAlive scheduledLogoutTime asTime print24 , ' (in at most 3 minutes)').
+	self
+		assert: notification descriptionText
+		equals: 'testing:default will be logged out at the next keep alive check, at about '
+			, session keepAlive scheduledLogoutTime asTime print24
+			, ' (in at most 3 minutes). Uncommitted changes in testing:default will be lost.'.
+	^ notification
+
+]
+
+{ #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationDescribesSessionsInEveryState [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveNotification>
+	| keepAlive registry changed idle lost postponed clean notification |
+
+	keepAlive := self keepAliveOn: self emptyRegistry.
+	registry := keepAlive registry.
+	changed := self connectSessionWith: (self connectorNamed: 'changed') to: registry.
+	idle := self connectSessionWith: (self autoLogoutConnectorNamed: 'idle') to: registry.
+	lost := self connectSessionWith: (self autoLogoutConnectorNamed: 'lost') to: registry.
+	postponed := self
+		connectSessionWith: ((self autoLogoutConnectorNamed: 'postponed')
+			logoutPostponable: true;
+			yourself)
+		to: registry.
+	clean := self connectSessionWith: (self connectorNamed: 'clean') to: registry.
+	changed modifyObjects.
+	lost modifyObjects.
+	3 timesRepeat: [ self poll: keepAlive ].
+	keepAlive postponeAutoLogoutOf: postponed.
+	notification := keepAlive notification.
+	self
+		assert: notification sessions asArray
+		equals: (Array with: changed with: idle with: lost with: postponed).
+	self
+		assert: notification sessionsScheduledForAutoLogout asArray
+		equals: (Array with: idle with: lost).
+	self
+		assert: notification descriptionText
+		equals: (String cr join: (Array
+			with: 'Uncommitted changes in changed:default should be committed or aborted.'
+			with: 'idle:default, lost:default will be logged out at the next keep alive check, at about '
+				, notification scheduledLogoutTime asTime print24
+				, ' (in at most 3 minutes). Uncommitted changes in lost:default will be lost.'
+			with: 'The automatic logout of postponed:default is postponed.')).
+	self assert: (notification descriptionText includesSubstring: 'clean:default') not.
 	^ notification
 
 ]
@@ -1072,6 +1143,7 @@ GtGemStoneSessionKeepAliveExamples >> requestedLogoutIsPerformedAtTheNextPoll [
 	self assert: keepAlive notification hasLogoutsRequestedByConnector.
 	self assert: (keepAlive notification descriptionText
 		includesSubstring: connector logoutRequestDescription).
+	self assert: (keepAlive notification descriptionText includesSubstring: 'Uncommitted') not.
 	self poll: keepAlive.
 	self assert: session isRunning not.
 	record := keepAlive loggedOutConnections first.

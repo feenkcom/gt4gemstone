@@ -631,21 +631,22 @@ GtGemStoneSessionRegistry >> gtLiveFor: aView [
 					anElement  
 						initializeWithIcon: (self 
 							iconForSymbol: aSession connector iconName)
-						label: (aSession formatBasedOnStatusText: aSession name) ] ];
+						label: (aSession formatBasedOnStatusText: aSession name) ];
+				width: 150 ];
 		column: 'Status' 
 			text: [ :aSession | 
 				aSession formatBasedOnStatusText: aSession statusDescription ]
-			width: 175;
+			width: 150;
 		column: 'Default' icon: [ :aSession |
 			aSession isDefaultSession
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 75;
+			width: 50;
 		column: 'Bookmarked' icon: [ :aSession |
 			aSession isBookmarked
 				ifTrue: [ BrGlamorousVectorIcons accept ]
 				ifFalse: [ BrGlamorousVectorIcons noIcon ] ]
-			width: 100;
+			width: 75;
 		column: 'Keep Alive' 
 			text: [ :aSession | 
 				aSession hasKeepAlive

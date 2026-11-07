@@ -32,7 +32,6 @@ GtGemStoneConnectorLogoutCause >> initializeWithDescription: aString [
 GtGemStoneConnectorLogoutCause >> printWarningFor: aGtGemStoneSession on: aStream [
 
 	aStream
-		cr;
 		nextPutAll: aGtGemStoneSession name;
 		nextPutAll: ': ';
 		nextPutAll: description;

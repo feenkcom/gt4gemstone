@@ -196,7 +196,7 @@ GtGemStoneSessionKeepAlive >> gtSessionStatusFor: aView [
 			session formatBasedOnStatusText: session name ] width: 130;
 		column: 'Keep alive state' text: [ :session |
 			session formatBasedOnStatusText: session keepAlive stateDescription ];
-		column: 'Last poll' text: [ :session | session keepAlive lastPollDescription ] width: 200;
+		column: 'Last poll' text: [ :session | session keepAlive lastPollDescription ];
 		column: 'Dirty Count' text: [ :session | session keepAlive dirtyCount ] width: 70;
 		column: 'Aborts' text: [ :session | session keepAlive statistics aborts count ] width: 50;
 		column: 'Keep Alive (min)' text: [ :session | 
