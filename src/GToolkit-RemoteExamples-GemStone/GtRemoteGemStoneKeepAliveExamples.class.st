@@ -279,7 +279,7 @@ GtRemoteGemStoneKeepAliveExamples >> connectRecordsTheGemDetails [
 	<gtExample>
 	<after: #cleanUpLiveSessions>
 	<return: #GtGemStoneSession>
-	| session details |
+	| session details gt4gemstoneVersionString expectedGt4GemStoneVersion |
 
 	session := self connectedSession.
 	details := session gemDetails.
@@ -305,10 +305,16 @@ GtRemoteGemStoneKeepAliveExamples >> connectRecordsTheGemDetails [
 		assert: details gemStoneVersion
 		equals: (self evaluateInGem: 'System gemVersionAt: #gsVersion' of: session).
 	self assert: session gemstoneVersionString equals: details gemStoneVersion.
+
+	gt4gemstoneVersionString := self 
+		evaluateInGem: 'GtGsRelease versionString' 
+		of: session.
+	expectedGt4GemStoneVersion := (gt4gemstoneVersionString 
+		matchesRegex: GtGemStoneSemanticVersionNumber versionNumberRegexString)
+		 ifTrue: [ (GtGemStoneSemanticVersionNumber readFromString: gt4gemstoneVersionString)] 
+			ifFalse: [GtGemStoneSemanticVersionNumber zero].
 	self
-		assert: session gt4gemstoneVersion
-		equals: (GtGemStoneSemanticVersionNumber readFromString:
-			(self evaluateInGem: 'GtGsRelease versionString' of: session)).
+		assert: session gt4gemstoneVersion equals: expectedGt4GemStoneVersion.
 	^ session
 
 ]
