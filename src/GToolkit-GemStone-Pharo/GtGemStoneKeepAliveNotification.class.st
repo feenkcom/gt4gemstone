@@ -43,6 +43,15 @@ GtGemStoneKeepAliveNotification >> descriptionText [
 
 ]
 
+{ #category : #accessing }
+GtGemStoneKeepAliveNotification >> documentationPage [
+
+	^ self sessions isEmpty
+		ifTrue: [ GtGemStoneConnector keepAliveDocumentationPage ]
+		ifFalse: [ self sessions first connector keepAliveDocumentationPage ]
+
+]
+
 { #category : #'api - accessing' }
 GtGemStoneKeepAliveNotification >> elementClass [
 	"Return a class that when instantiated displayes the notification to user (as a widget)"

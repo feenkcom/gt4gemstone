@@ -38,7 +38,7 @@ GtGemStoneSessionKeepAlive class >> defaultPollInterval [
 GtGemStoneSessionKeepAlive class >> maxKeepAlive [
 	"Answer the number of minutes to keep the session alive"
 
-	^ MaxKeepAlive ifNil: [ 60 ]
+	^ MaxKeepAlive ifNil: [ 120 ]
 
 ]
 

@@ -727,6 +727,43 @@ GtGemStoneSessionKeepAliveExamples >> notificationDescribesSessionsInEveryState 
 ]
 
 { #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationDocumentationIsTheConnectorsPage [
+	<gtExample>
+	<return: #LeNamedPageReference>
+	| keepAlive notification reference |
+
+	keepAlive := self keepAliveWithSessionOn: self autoLogoutConnector.
+	notification := keepAlive notification.
+	reference := notification documentationPage.
+	self
+		assert: reference
+		equals: (LeNamedPageReference
+			databaseName: 'Glamorous Toolkit Book'
+			pageTitle: 'Keep-alive overview for GemStone sessions').
+	self
+		assert: reference
+		equals: (self sessionOf: keepAlive) connector keepAliveDocumentationPage.
+	self
+		assert: (GtGemStoneKeepAliveNotification keepAlive: (self keepAliveOn: self emptyRegistry)) documentationPage
+		equals: GtGemStoneConnector keepAliveDocumentationPage.
+	^ reference
+
+]
+
+{ #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationElementHasADocumentationButton [
+	<gtExample>
+	<return: #Array>
+	| buttons |
+
+	buttons := GtGemStoneKeepAliveNotificationElement new buildToolbarButtons.
+	self assert: buttons size equals: 2.
+	self assert: (buttons collect: [ :each | each label asString ]) equals: #('Inspect KeepAlive' 'Keep alive documentation').
+	^ buttons
+
+]
+
+{ #category : #'examples - notification' }
 GtGemStoneSessionKeepAliveExamples >> notificationElementListsTheSessions [
 	<gtExample>
 	<return: #GtGemStoneKeepAliveNotificationElement>
