@@ -457,6 +457,21 @@ GtGemStoneSessionDisconnectionExamples >> gemLogShowsOnlyItsEnd [
 ]
 
 { #category : #'examples - gem log' }
+GtGemStoneSessionDisconnectionExamples >> gemLogViewHasASingleInspectButton [
+	<gtExample>
+	<return: #GtGemStoneGemLog>
+	| session log |
+
+	session := self connectRecordsTheGemDetails.
+	self writeTestingGemLog: '[Info]: Session ID: 1 login' in: session.
+	log := session currentGemLog.
+	self assert: (log gtLogFor: GtPhlowEmptyView new) actions isEmpty.
+	self assert: (session gtLogFor: GtPhlowEmptyView new) actions size equals: 2.
+	^ log
+
+]
+
+{ #category : #'examples - gem log' }
 GtGemStoneSessionDisconnectionExamples >> gemLogViewNeedsAConnectedSessionWithALog [
 	<gtExample>
 	<return: #GtGemStoneTestingSession>
@@ -467,6 +482,25 @@ GtGemStoneSessionDisconnectionExamples >> gemLogViewNeedsAConnectedSessionWithAL
 	session := self connectRecordsTheGemDetails.
 	session close.
 	self assert: (session gtLogFor: GtPhlowEmptyView new) class equals: GtPhlowEmptyView.
+	^ session
+
+]
+
+{ #category : #'examples - gem details' }
+GtGemStoneSessionDisconnectionExamples >> gt4gemstoneVersionStringsAreParsedLikeTheGetter [
+	<gtExample>
+	<return: #GtGemStoneSession>
+	| session |
+
+	session := GtGemStoneSession new.
+	session useGt4gemstoneVersionString: 'v1.1.485'.
+	self
+		assert: session gt4gemstoneVersion
+		equals: (GtGemStoneSemanticVersionNumber readFromString: 'v1.1.485').
+	session useGt4gemstoneVersionString: nil.
+	self assert: session gt4gemstoneVersion equals: GtGemStoneSemanticVersionNumber zero.
+	session useGt4gemstoneVersionString: '1.1.485'.
+	self assert: session gt4gemstoneVersion equals: GtGemStoneSemanticVersionNumber zero.
 	^ session
 
 ]

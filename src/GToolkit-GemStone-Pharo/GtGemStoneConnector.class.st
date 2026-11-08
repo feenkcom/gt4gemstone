@@ -20,6 +20,15 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Client'
 }
 
+{ #category : #accessing }
+GtGemStoneConnector class >> keepAliveDocumentationPage [
+
+	^ LeNamedPageReference
+		databaseName: 'Glamorous Toolkit Book'
+		pageTitle: 'Keep-alive overview for GemStone sessions'
+
+]
+
 { #category : #'api - announcer' }
 GtGemStoneConnector >> announce: anAnnouncement [
 	<generatedFrom: #'TGtRobocoderAnnouncerTemplate>>#announceTemplate'>
@@ -170,6 +179,13 @@ GtGemStoneConnector >> isNull [
 GtGemStoneConnector >> isSessionIdentifier [
 
 	^ false
+]
+
+{ #category : #accessing }
+GtGemStoneConnector >> keepAliveDocumentationPage [
+
+	^ self class keepAliveDocumentationPage
+
 ]
 
 { #category : #accessing }

@@ -109,7 +109,7 @@ GtGemStoneKeepAliveNotificationElement >> buildToolbar [
 
 { #category : #initialization }
 GtGemStoneKeepAliveNotificationElement >> buildToolbarButtons [
-	| infoButton |
+	| infoButton documentationButton |
 
 	infoButton := BrButton new
 		beTinySize;
@@ -119,7 +119,15 @@ GtGemStoneKeepAliveNotificationElement >> buildToolbarButtons [
 		margin: (BlInsets top: 2 left: 10);
 		action: [ self inspectKeepAlive ].
 
-	^ { infoButton }
+	documentationButton := BrButton new
+		beTinySize;
+		aptitude: BrGlamorousButtonWithIconAptitude;
+		label: 'Keep alive documentation';
+		icon: BrGlamorousVectorIcons help;
+		margin: (BlInsets top: 2 left: 5);
+		action: [ self inspectDocumentation ].
+
+	^ Array with: infoButton with: documentationButton
 
 ]
 
@@ -135,7 +143,7 @@ GtGemStoneKeepAliveNotificationElement >> contextMenuContentFor: aSession [
 
 	items := OrderedCollection withAll: aSession contextMenuContent.
 	aSession keepAlive canPostponeAutoLogout ifTrue: [
-		items add: 'Postpone logout' -> [ :anElement |
+		items add: aSession keepAlive postponeLogoutLabel -> [ :anElement |
 			self postponeAutoLogoutOf: aSession ] ].
 	(aSession keepAlive isScheduledForAutoLogout and: [ aSession isBusy not ]) ifTrue: [
 		items add: 'Logout now' -> [ :anElement |
@@ -212,6 +220,18 @@ GtGemStoneKeepAliveNotificationElement >> initialize [
 GtGemStoneKeepAliveNotificationElement >> initializeBorderElement [
 	borderElement := GtNotificationBorderElement new
 		withCloseButtonAction: [ self dismiss ]
+]
+
+{ #category : #private }
+GtGemStoneKeepAliveNotificationElement >> inspectDocumentation [
+
+	self notificationDo: [ :aNotification | | reference |
+		reference := aNotification documentationPage.
+		reference
+			pageFor: self
+			ifFound: [ :aPage | self phlow spawnObject: aPage ]
+			ifNone: [ self phlow spawnObject: reference ] ]
+
 ]
 
 { #category : #private }

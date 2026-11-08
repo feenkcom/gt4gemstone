@@ -74,11 +74,11 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardOffersToPostponeTheLogout 
 		each name = 'changed-pending:default' ].
 	labels := ((card sessionActionsFor: pending) items collect: #key) asArray.
 	self
-		assert: (labels indexOf: 'Postpone logout')
+		assert: (labels indexOf: 'Postpone logout for 15 minutes')
 		equals: (labels indexOf: 'Disconnect') + 1.
 	self assert: (((card sessionActionsFor: changedAndPending) items collect: #key)
-		includes: 'Postpone logout') not.
-	((card sessionActionsFor: pending) items detect: [ :each | each key = 'Postpone logout' ])
+		includes: 'Postpone logout for 15 minutes') not.
+	((card sessionActionsFor: pending) items detect: [ :each | each key = 'Postpone logout for 15 minutes' ])
 		value cull: card.
 	self assert: pending keepAlive isPostponed.
 	self assert: pending isLogoutPending not.

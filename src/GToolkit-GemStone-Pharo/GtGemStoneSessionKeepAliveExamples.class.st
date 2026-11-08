@@ -20,7 +20,14 @@ GtGemStoneSessionKeepAliveExamples >> advanceTimeBy: aDuration andPoll: aKeepAli
 { #category : #private }
 GtGemStoneSessionKeepAliveExamples >> autoLogoutConnector [
 
-	^ (self connectorNamed: 'testing')
+	^ self autoLogoutConnectorNamed: 'testing'
+
+]
+
+{ #category : #private }
+GtGemStoneSessionKeepAliveExamples >> autoLogoutConnectorNamed: aString [
+
+	^ (self connectorNamed: aString)
 		autoLogoutEnabled: true;
 		yourself
 
@@ -633,6 +640,28 @@ GtGemStoneSessionKeepAliveExamples >> lostConnectionIsShownInTheKeepAliveState [
 ]
 
 { #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationAsksToCommitOnlyChangedSessions [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveNotification>
+	| keepAlive session notification |
+
+	keepAlive := self keepAliveWithSessionOn: (self autoLogoutConnector
+		maxKeepAlive: 60;
+		yourself).
+	session := self sessionOf: keepAlive.
+	session modifyObjects.
+	2 timesRepeat: [ self poll: keepAlive ].
+	notification := keepAlive notification.
+	self assert: notification sessions asArray equals: (Array with: session).
+	self assert: notification hasSessionsScheduledForAutoLogout not.
+	self
+		assert: notification descriptionText
+		equals: 'Uncommitted changes in testing:default should be committed or aborted.'.
+	^ notification
+
+]
+
+{ #category : #'examples - notification' }
 GtGemStoneSessionKeepAliveExamples >> notificationDescribesDirtyAndScheduledSessions [
 	<gtExample>
 	<return: #GtGemStoneKeepAliveNotification>
@@ -647,11 +676,90 @@ GtGemStoneSessionKeepAliveExamples >> notificationDescribesDirtyAndScheduledSess
 	self assert: notification sessionsScheduledForAutoLogout asArray equals: (Array with: session).
 	self assert: notification hasLogoutsRequestedByConnector not.
 	self assert: notification canPostponeAutoLogouts not.
-	self assert: (notification descriptionText includesSubstring: 'committed or aborted').
-	self assert: (notification descriptionText includesSubstring: 'will be logged out').
-	self assert: (notification descriptionText includesSubstring:
-		'at about ' , session keepAlive scheduledLogoutTime asTime print24 , ' (in at most 3 minutes)').
+	self
+		assert: notification descriptionText
+		equals: 'testing:default will be logged out at the next keep alive check, at about '
+			, session keepAlive scheduledLogoutTime asTime print24
+			, ' (in at most 3 minutes). Uncommitted changes in testing:default will be lost.'.
 	^ notification
+
+]
+
+{ #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationDescribesSessionsInEveryState [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveNotification>
+	| keepAlive registry changed idle lost postponed clean notification |
+
+	keepAlive := self keepAliveOn: self emptyRegistry.
+	registry := keepAlive registry.
+	changed := self connectSessionWith: (self connectorNamed: 'changed') to: registry.
+	idle := self connectSessionWith: (self autoLogoutConnectorNamed: 'idle') to: registry.
+	lost := self connectSessionWith: (self autoLogoutConnectorNamed: 'lost') to: registry.
+	postponed := self
+		connectSessionWith: ((self autoLogoutConnectorNamed: 'postponed')
+			logoutPostponable: true;
+			yourself)
+		to: registry.
+	clean := self connectSessionWith: (self connectorNamed: 'clean') to: registry.
+	changed modifyObjects.
+	lost modifyObjects.
+	3 timesRepeat: [ self poll: keepAlive ].
+	keepAlive postponeAutoLogoutOf: postponed.
+	notification := keepAlive notification.
+	self
+		assert: notification sessions asArray
+		equals: (Array with: changed with: idle with: lost with: postponed).
+	self
+		assert: notification sessionsScheduledForAutoLogout asArray
+		equals: (Array with: idle with: lost).
+	self
+		assert: notification descriptionText
+		equals: (String cr join: (Array
+			with: 'Uncommitted changes in changed:default should be committed or aborted.'
+			with: 'idle:default, lost:default will be logged out at the next keep alive check, at about '
+				, notification scheduledLogoutTime asTime print24
+				, ' (in at most 3 minutes). Uncommitted changes in lost:default will be lost.'
+			with: 'The automatic logout of postponed:default is postponed.')).
+	self assert: (notification descriptionText includesSubstring: 'clean:default') not.
+	^ notification
+
+]
+
+{ #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationDocumentationIsTheConnectorsPage [
+	<gtExample>
+	<return: #LeNamedPageReference>
+	| keepAlive notification reference |
+
+	keepAlive := self keepAliveWithSessionOn: self autoLogoutConnector.
+	notification := keepAlive notification.
+	reference := notification documentationPage.
+	self
+		assert: reference
+		equals: (LeNamedPageReference
+			databaseName: 'Glamorous Toolkit Book'
+			pageTitle: 'Keep-alive overview for GemStone sessions').
+	self
+		assert: reference
+		equals: (self sessionOf: keepAlive) connector keepAliveDocumentationPage.
+	self
+		assert: (GtGemStoneKeepAliveNotification keepAlive: (self keepAliveOn: self emptyRegistry)) documentationPage
+		equals: GtGemStoneConnector keepAliveDocumentationPage.
+	^ reference
+
+]
+
+{ #category : #'examples - notification' }
+GtGemStoneSessionKeepAliveExamples >> notificationElementHasADocumentationButton [
+	<gtExample>
+	<return: #Array>
+	| buttons |
+
+	buttons := GtGemStoneKeepAliveNotificationElement new buildToolbarButtons.
+	self assert: buttons size equals: 2.
+	self assert: (buttons collect: [ :each | each label asString ]) equals: #('Inspect KeepAlive' 'Keep alive documentation').
+	^ buttons
 
 ]
 
@@ -673,7 +781,7 @@ GtGemStoneSessionKeepAliveExamples >> notificationElementListsTheSessions [
 	self assert: (menuLabels includes: 'Commit').
 	self assert: (menuLabels includes: 'Abort').
 	self assert: (menuLabels includes: 'Logout now').
-	self assert: (menuLabels includes: 'Postpone logout') not.
+	self assert: (menuLabels contains: [ :each | each beginsWith: 'Postpone logout' ]) not.
 	^ element
 
 ]
@@ -836,6 +944,22 @@ GtGemStoneSessionKeepAliveExamples >> postponeIsRefusedWhenNotPostponable [
 	self assert: session isRunning not.
 	self assert: keepAlive loggedOutConnections first keepAlive hasBeenPostponed not.
 	^ keepAlive
+
+]
+
+{ #category : #'examples - postpone' }
+GtGemStoneSessionKeepAliveExamples >> postponeLogoutLabelShowsTheDuration [
+	<gtExample>
+	<return: #GtGemStoneKeepAliveSession>
+	| keepAlive session |
+
+	keepAlive := self keepAliveWithSessionOn: (self autoLogoutConnector
+		logoutPostponable: true;
+		yourself).
+	session := self sessionOf: keepAlive.
+	self assert: session keepAlive logoutPostponeDuration equals: 15 minutes.
+	self assert: session keepAlive postponeLogoutLabel equals: 'Postpone logout for 15 minutes'.
+	^ session keepAlive
 
 ]
 
@@ -1072,6 +1196,7 @@ GtGemStoneSessionKeepAliveExamples >> requestedLogoutIsPerformedAtTheNextPoll [
 	self assert: keepAlive notification hasLogoutsRequestedByConnector.
 	self assert: (keepAlive notification descriptionText
 		includesSubstring: connector logoutRequestDescription).
+	self assert: (keepAlive notification descriptionText includesSubstring: 'Uncommitted') not.
 	self poll: keepAlive.
 	self assert: session isRunning not.
 	record := keepAlive loggedOutConnections first.
