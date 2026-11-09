@@ -499,7 +499,8 @@ GtGemStoneSessionKeepAlive >> pollSessions [
 				session keepAlive recordError.
 				self emitError: ex forSession: session ] ].
 
-	self updateNotification
+	self updateNotification.
+	registry announce: (GtGemStoneKeepAlivePolledAnnouncement keepAlive: self)
 
 ]
 

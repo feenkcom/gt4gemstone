@@ -927,6 +927,34 @@ GtGemStoneSessionKeepAliveExamples >> poll: aKeepAlive [
 
 ]
 
+{ #category : #'examples - polling' }
+GtGemStoneSessionKeepAliveExamples >> pollsAreAnnounced [
+	<gtExample>
+	<return: #GtGemStoneSessionKeepAlive>
+	| keepAlive polls sessionAnnouncements |
+
+	keepAlive := self keepAliveWithSessionOn: self autoLogoutConnector.
+	polls := OrderedCollection new.
+	sessionAnnouncements := OrderedCollection new.
+	keepAlive registry announcer
+		when: GtGemStoneKeepAlivePolledAnnouncement
+		do: [ :anAnnouncement | polls add: anAnnouncement ]
+		for: self.
+	keepAlive registry announcer
+		when: GtGemStoneSessionAnnouncement
+		do: [ :anAnnouncement | sessionAnnouncements add: anAnnouncement ]
+		for: self.
+	self poll: keepAlive.
+	self assert: polls size equals: 1.
+	self assert: polls first keepAlive equals: keepAlive.
+	self poll: keepAlive.
+	self assert: polls size equals: 2.
+	self assert: sessionAnnouncements isEmpty.
+	keepAlive registry announcer unsubscribe: self.
+	^ keepAlive
+
+]
+
 { #category : #'examples - postpone' }
 GtGemStoneSessionKeepAliveExamples >> postponeIsRefusedWhenNotPostponable [
 	<gtExample>
