@@ -272,18 +272,14 @@ GtGemStoneSessionsCardWidget >> initialize [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> inspectRegistryFrom: aButton [
-	BlSpace new
-		inPager: (GtInspectorTool forObject: self registry);
-		title: 'GemStone Registry';
-		showFrom: aButton
+	aButton phlow spawnObject: self registry
+
 ]
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> inspectSession: aSession from: anElement [
-	BlSpace new
-		inPager: (GtInspectorTool forObject: aSession);
-		title: aSession name;
-		showFrom: anElement
+	anElement phlow spawnObject: aSession
+
 ]
 
 { #category : #'private - hooks' }
