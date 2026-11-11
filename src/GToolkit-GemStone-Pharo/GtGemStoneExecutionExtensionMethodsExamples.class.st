@@ -10,6 +10,7 @@ Class {
 { #category : #examples }
 GtGemStoneExecutionExtensionMethodsExamples >> executionExtensions [
 	<gtExample>
+	<noTest>
 	| selectors extensions |
 	selectors := #(
 		ext_DefaultExecutionEnvironment_runExampleEvaluator_
