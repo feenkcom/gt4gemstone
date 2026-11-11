@@ -45,7 +45,6 @@ set username SystemUser
 set password ${GSPWD}
 login
 ${source}
-%
 commit
 logout
 quit
