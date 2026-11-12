@@ -21,46 +21,44 @@ GtGemStoneExpandableDebuggerToolbar >> actOnBrowserClosing: ann [
 { #category : #'event handling' }
 GtGemStoneExpandableDebuggerToolbar >> actOnDebugSessionChanged [
 	| visibility |
-
 	visibility := self isResumable
-		ifTrue: [ BlVisibility visible ]
-		ifFalse: [ BlVisibility gone ].
-	{ restartFrameButton. resumeButton. stepIntoButton. stepOverButton. } do: [ :button |
-		button visibility: visibility ].
+			ifTrue: [ BlVisibility visible ]
+			ifFalse: [ BlVisibility gone ].
+	{restartFrameButton.
+		resumeButton.
+		stepIntoButton.
+		stepOverButton} do: [ :button | button visibility: visibility ].
 
 	dapDebugElement debugSession exception gtSession
 		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_617
-		do: [
-			self
+		do: [ self
 				childWithId: #runToCursor
 				ifFound: [ :btn | btn visibility: BlVisibility gone ]
-				ifNone: [ ] ].
+				ifNone: [  ] ].	
+				
+	"The extra actions need the debug session, which is only available at this point"
+	self
+		childWithId: GtDebuggerContextMenuButtonId
+		ifFound: [ :anElement |  ]
+		ifNone: [ self addExtraActionsButton ]
 ]
 
 { #category : #initialization }
 GtGemStoneExpandableDebuggerToolbar >> addExtraActionsButton [
 	| phlowAction |
 	phlowAction := GtPhlowAction new dropdown
-		tooltip: 'Inspect';
-		icon: BrGlamorousVectorIcons hamburger;
-		content: [ :aButton | 
-			| actions |
-			actions := OrderedCollection new.
-			dapDebugElement debugSession exception ifNotNil: [
-				actions add: ('Inspect Exception' -> [ :anElement | 
-					anElement phlow spawnObject: dapDebugElement debugSession exception.
-					aButton dispatchEvent: BrDropdownHideWish new])].
-			actions add: ('Inspect Debugging Session' -> [ :anElement | 
-				anElement phlow spawnObject: dapDebugElement debugSession.
-				aButton dispatchEvent: BrDropdownHideWish new ]).
-			BrGlamorousSimpleContextMenuContent new
-				items:actions;
-				yourself ].
-	phlowAction 
+			id: GtDebuggerContextMenuButtonId;
+			tooltip: 'Debugger actions';
+			icon: BrGlamorousVectorIcons hamburger;
+			phlowActionsForObjects: dapDebugElement debugSession
+						debuggerContextMenuObjects
+				inContext: (GtPhlowContext new currentDebugger: dapDebugElement)
+				fromTarget: GtDebuggerContextMenuTarget.
+	phlowAction
 		asElement: [ :actionElement | 
-			 actionElement margin: (BlInsets left: 5).
-			 self addChild: actionElement ]				
-		withHostElement: self 
+			actionElement margin: (BlInsets left: 5).
+			self addChild: actionElement ]
+		withHostElement: self
 ]
 
 { #category : #accessing }
@@ -81,7 +79,6 @@ GtGemStoneExpandableDebuggerToolbar >> debuggerClient [
 
 { #category : #initialization }
 GtGemStoneExpandableDebuggerToolbar >> initialize [
-
 	super initialize.
 	self vFitContent.
 	resumeButton := self newResumeButton.
@@ -89,11 +86,16 @@ GtGemStoneExpandableDebuggerToolbar >> initialize [
 	stepIntoButton := self newStepIntoButton.
 	stepOverButton := self newStepOverButton.
 	stepThroughButton := self newStepThroughButton.
-	self addChildren: { resumeButton. restartFrameButton. stepIntoButton. stepOverButton. stepThroughButton. self newRunToCursorButton  }.
-	
+	self
+		addChildren: {resumeButton.
+				restartFrameButton.
+				stepIntoButton.
+				stepOverButton.
+				stepThroughButton.
+				self newRunToCursorButton}.
+
 	stepOutButton := self newStepOutButton.
-	self addChild: stepOutButton.
-	self addExtraActionsButton.
+	self addChild: stepOutButton
 ]
 
 { #category : #testing }

@@ -77,6 +77,14 @@ GtRsrEvaluationException >> getDebuggerState [
 			autoCommit: false).
 ]
 
+{ #category : #'gt - actions' }
+GtRsrEvaluationException >> gtActionStartChatOnExceptionWithObjectsFor: anAction [
+	"The inherited action serializes the Pharo stack, which for this exception is the stack waiting on the GemStone promise, not the GemStone stack. Hide it until there is a GemStone-aware version."
+
+	<gtAction>
+	^ anAction noAction
+]
+
 { #category : #initialize }
 GtRsrEvaluationException >> gtPharoProxyInitializeWithSession: aGtGemStoneSession [
 	"Provide a callback from initializing proxy objects."
