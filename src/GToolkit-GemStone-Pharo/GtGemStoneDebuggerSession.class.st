@@ -129,6 +129,40 @@ GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
 ]
 
 { #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionCopyDebugLogFor: anAction [
+	"The interrupted context is the local (Pharo) stack"
+
+	<gtAction>
+	^ (super gtActionCopyDebugLogFor: anAction)
+		label: 'Copy Local Debug Log';
+		addTarget: GtGemStoneDebuggerContextMenuTarget;
+		yourself
+]
+
+{ #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionCopyRemoteStackFor: anAction [
+	<gtAction>
+	^ anAction button
+		priority: 32;
+		target: GtGemStoneDebuggerContextMenuTarget;
+		icon: BrGlamorousVectorIcons clipboard;
+		label: 'Copy Remote Stack';
+		menuItemGroup: BrMenuItemGroupConfiguration debugger;
+		action: [ :aButton | GtClipboard clipboardText: self remoteStackString ]
+]
+
+{ #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionCopyStackMethodsFor: anAction [
+	"The interrupted context is the local (Pharo) stack"
+
+	<gtAction>
+	^ (super gtActionCopyStackMethodsFor: anAction)
+		label: 'Copy Local Stack';
+		addTarget: GtGemStoneDebuggerContextMenuTarget;
+		yourself
+]
+
+{ #category : #'gt - actions' }
 GtGemStoneDebuggerSession >> gtActionInspectDebugSessionFor: anAction [
 	"For now the same action as for Pharo debug sessions"
 
@@ -304,6 +338,17 @@ GtGemStoneDebuggerSession >> remoteSchemaVersion [
 { #category : #accessing }
 GtGemStoneDebuggerSession >> remoteStackFrames [
 	^ self debuggerClient stackFrames
+]
+
+{ #category : #printing }
+GtGemStoneDebuggerSession >> remoteStackString [
+	"Return the frames of the remote (GemStone) stack, one per line, as they are printed in the debugger"
+
+	^ String
+		streamContents: [ :aStream | 
+			self remoteStackFrames
+				do: [ :eachFrame | eachFrame printDescriptionOn: aStream ]
+				separatedBy: [ aStream cr ] ]
 ]
 
 { #category : #actions }

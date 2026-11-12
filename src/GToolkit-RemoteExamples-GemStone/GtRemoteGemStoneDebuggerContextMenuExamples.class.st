@@ -13,6 +13,31 @@ Class {
 }
 
 { #category : #examples }
+GtRemoteGemStoneDebuggerContextMenuExamples >> gemStoneDebuggerCopyRemoteStack [
+	<gtExample>
+	<after: #stopServer>
+	<return: #BlScripter>
+	| scripter previousClipboardText |
+	scripter := self scripterOnGemStoneDebugger.
+
+	previousClipboardText := GtClipboard clipboardText.
+	[ scripter gemStoneDebugger
+		openContextMenu;
+		assertContextMenuHasItemWithLabel: 'Copy Local Stack';
+		assertContextMenuHasItemWithLabel: 'Copy Local Debug Log';
+		assertContextMenuHasNoItemWithLabel: 'Copy Stack';
+		clickContextMenuItemWithLabel: 'Copy Remote Stack';
+		play.
+
+	self
+		assert: GtClipboard clipboardText asString
+		equals: scripter model remoteStackString ]
+		ensure: [ GtClipboard clipboardText: previousClipboardText ].
+
+	^ scripter
+]
+
+{ #category : #examples }
 GtRemoteGemStoneDebuggerContextMenuExamples >> gemStoneDebuggerInspectDebugSession [
 	<gtExample>
 	<after: #stopServer>
