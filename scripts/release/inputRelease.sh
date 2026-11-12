@@ -8,10 +8,11 @@ error() {
   echo ERROR: $* 1>&2
 }
 
-while getopts "s:" opt; do
+while getopts "s:p:" opt; do
   case $opt in
     s) STONE=$OPTARG ;;
     T) TEMPOBJ=$OPTARG ;;
+    p) GSPWD=$OPTARG ;;
     :)
       error "Option -$OPTARG requires an argument."
       exit 1
@@ -24,16 +25,31 @@ if [ "a$STONE" = "a" ]; then
   exit 1
 fi
 
+if [ "a$GSPWD" = "a" ]; then
+   GSPWD=swordfish
+fi
+
 if [ "a$TEMPOBJ" = "a" ]; then
    TEMPOBJ=200000
 fi
 
 export STONE
-
+export GSPWD
 export GT4GEMSTONE_RELEASE_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-## Topaz refuses to exit from script if input is stdin, so redirect from /dev/zero
-topaz -l -T $TEMPOBJ  -I ${GT4GEMSTONE_RELEASE_HOME}/loginSystemUser.topaz  -S ${GT4GEMSTONE_RELEASE_HOME}/inputRelease.topaz < /dev/zero
+source=$(cat ${GT4GEMSTONE_RELEASE_HOME}/inputRelease.topaz)
+
+topaz -l -T $TEMPOBJ << EOF
+set gemstone ${STONE}
+set username SystemUser
+set password ${GSPWD}
+login
+${source}
+commit
+logout
+quit
+EOF
+
 if [ $? = 0 ]
     then
         exit 0
