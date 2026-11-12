@@ -50,10 +50,9 @@ GtGemStoneExpandableDebuggerToolbar >> addExtraActionsButton [
 			id: GtDebuggerContextMenuButtonId;
 			tooltip: 'Debugger actions';
 			icon: BrGlamorousVectorIcons hamburger;
-			phlowActionsForObjects: dapDebugElement debugSession
-						debuggerContextMenuObjects
+			phlowActionsForObjects: dapDebugElement debuggerContextMenuObjects
 				inContext: (GtPhlowContext new currentDebugger: dapDebugElement)
-				fromTarget: GtGemStoneDebuggerContextMenuTarget.
+				fromTargets: dapDebugElement debuggerContextMenuTargets.
 	phlowAction
 		asElement: [ :actionElement | 
 			actionElement margin: (BlInsets left: 5).

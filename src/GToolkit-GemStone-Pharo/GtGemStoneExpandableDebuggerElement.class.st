@@ -242,6 +242,12 @@ GtGemStoneExpandableDebuggerElement >> debuggerClient [
 	^ debuggingSession debuggerClient 
 ]
 
+{ #category : #'accessing - context menu' }
+GtGemStoneExpandableDebuggerElement >> debuggerContextMenuTargets [
+	<return: #Collection of: #GtPhlowActionTarget>
+	^ {GtGemStoneDebuggerContextMenuTarget}
+]
+
 { #category : #accessing }
 GtGemStoneExpandableDebuggerElement >> debuggerProxy [
 
