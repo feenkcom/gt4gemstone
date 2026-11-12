@@ -128,6 +128,38 @@ GtGemStoneDebuggerSession >> gsStepThroughFrameIdentifier: aFrameIdentifier [
 		onFrameIdentifier: aFrameIdentifier.
 ]
 
+{ #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionInspectDebugSessionFor: anAction [
+	"For now the same action as for Pharo debug sessions"
+
+	<gtAction>
+	^ (super gtActionInspectDebugSessionFor: anAction)
+		addTarget: GtGemStoneDebuggerContextMenuTarget;
+		yourself
+]
+
+{ #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionInspectExceptionFor: anAction [
+	"For now the same action as for Pharo debug sessions.
+	Later it can inspect the exception data from GemStone"
+
+	<gtAction>
+	^ (super gtActionInspectExceptionFor: anAction)
+		addTarget: GtGemStoneDebuggerContextMenuTarget;
+		yourself
+]
+
+{ #category : #'gt - actions' }
+GtGemStoneDebuggerSession >> gtActionInspectRecentExceptionFor: anAction [
+	"For now the same action as for Pharo debug sessions.
+	Later it can inspect the exception data from GemStone"
+
+	<gtAction>
+	^ (super gtActionInspectRecentExceptionFor: anAction)
+		addTarget: GtGemStoneDebuggerContextMenuTarget;
+		yourself
+]
+
 { #category : #views }
 GtGemStoneDebuggerSession >> gtViewGemStoneAllStackFramesFor: aView [
 	<gtView>

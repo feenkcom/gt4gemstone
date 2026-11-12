@@ -43,6 +43,7 @@ GtRemoteGemStoneDebuggerContextMenuExamples >> gemStoneDebuggerInspectException 
 
 	scripter gemStoneDebugger
 		openContextMenu;
+		assertContextMenuHasNoItemWithLabel: 'Analyse exception (static)';
 		clickContextMenuItemWithLabel: 'Inspect Exception';
 		play.
 
