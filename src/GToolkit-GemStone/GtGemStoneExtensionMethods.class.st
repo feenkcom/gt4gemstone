@@ -915,7 +915,7 @@ GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_runUnmanaged
 		meta: false;
 		gtVersions: nil;
 		className: #DefaultExecutionEnvironment;
-		hash: '010d9099dc737f4aeed515bac7b8698d826aeb51514dcdeb7a5f155151602cac';
+		hash: 'da1f39b8cd09b07b9d7c402daeacca11a4e441b262ae6087ae9a81cc1aea8dc2';
 		source: 'runUnmanagedExampleEvaluator: anExampleEvaluator
 	<gtGsExtension>
 	^ TestExecutionEnvironment new initialize
