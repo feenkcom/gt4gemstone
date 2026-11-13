@@ -196,7 +196,7 @@ GtGemStoneGtCodeExporterExamples >> exportsTimeoutExecutionExtensions [
 	descriptors := {
 		GtGemStoneExtensionMethods ext_DefaultExecutionEnvironment_runExampleEvaluator_.
 		GtGemStoneExtensionMethods ext_TestExecutionEnvironment_watchDogLoop }.
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_runExampleEvaluator_').
+	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_registerDefaultServices').
 	self assert: (output includesSubstring: 'testEnv activated.').
 	self assert: (output includesSubstring: 'ensure: [ testEnv deactivated ]').
 	descriptors do: [ :each |
