@@ -4041,29 +4041,6 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_registerDefault
 ]
 
 { #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleEvaluator_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #runExampleEvaluator:;
-		meta: false;
-		gtVersions: nil;
-		className: #TestExecutionEnvironment;
-		hash: 'f15ae466e754ac59f38532348d1b7d6345af896c5939a6f0fc5ddb4e264859f2';
-		source: 'runExampleEvaluator: anExampleEvaluator
-	<gtGsExtension>
-	| exampleResult |
-	testCase := anExampleEvaluator.
-	maxTimeForTest := anExampleEvaluator timeLimit.
-	testCompleted := false.
-	watchDogSemaphore signal.
-	[ exampleResult := self runExampleUnderWatchdogUsingEvaluator: anExampleEvaluator ]
-		ensure: [
-			testCompleted := true.
-			watchDogSemaphore signal.
-			self cleanUpAfterTest ].
-	^ exampleResult'
-]
-
-{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleUnderWatchdogUsingEvaluator_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #runExampleUnderWatchdogUsingEvaluator:;
