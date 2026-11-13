@@ -7,6 +7,16 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Debugger'
 }
 
+{ #category : #'accessing - reports' }
+GtGemStoneDebuggerSession class >> localStackReportName [
+	^ 'local-stack'
+]
+
+{ #category : #'accessing - reports' }
+GtGemStoneDebuggerSession class >> remoteStackReportName [
+	^ 'remote-stack'
+]
+
 { #category : #accessing }
 GtGemStoneDebuggerSession >> breakpoints [ 
 	<return: #Dictionary>
@@ -51,6 +61,18 @@ GtGemStoneDebuggerSession >> debuggerClient [
 GtGemStoneDebuggerSession >> debuggerProxy [
 
 	^ self exception debuggerProxy
+]
+
+{ #category : #'accessing - reports' }
+GtGemStoneDebuggerSession >> debuggerReportStacks [
+	"Save both the local (Pharo) and the remote (GemStone) stack"
+
+	^ {GtDebuggerReportStack
+			named: self class localStackReportName
+			text: self stackMethodsString.
+		GtDebuggerReportStack
+			named: self class remoteStackReportName
+			text: self remoteStackString}
 ]
 
 { #category : #'private - accessing' }
