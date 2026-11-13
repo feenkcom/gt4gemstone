@@ -209,6 +209,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#MutexTest
 		#NetworkError
 		#NotFound
+		#OCCodeError
 		#OrderedDictionary
 		#OrderedDictionaryTest
 		#Point
@@ -775,8 +776,10 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#Base64UrlEncoder
 		#BeaconSignal
 		#BinaryFileStream
+		#BlAbsolutePositionAnchor
 		#BlArrowheadSimpleArrow
 		#BlAttributedTextElement
+		#BlBasicLayout
 		#BlBorder
 		#BlCircleGeometry
 		#BlClickEvent
@@ -787,6 +790,8 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlDoubleClickEvent
 		#BlElement
 		#BlElementAddedToSceneGraphEvent
+		#BlElementLayoutComputedEvent
+		#BlElementScrolledEvent
 		#BlElementSelectedStateWish
 		#BlElementState
 		#BlElementUniqueId
@@ -801,19 +806,26 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlFocusSearchDirectionBackward
 		#BlFocusSearchDirectionForward
 		#BlFontFamilyAttribute
+		#BlFontItalicAttribute
 		#BlFontWeightAttribute
 		#BlFrameLayout
 		#BlGlamorousExpanderShadowAptitude
+		#BlGridLayout
 		#BlInsets
 		#BlKeyCombination
 		#BlKeyModifiers
+		#BlKeyboardKey
+		#BlLineGeometry
 		#BlLinearGradientPaint
 		#BlLinearLayout
+		#BlManhattanLineElement
 		#BlMarkElementNeedsPaintSignal
+		#BlMouseDownEvent
 		#BlMouseEnterEvent
 		#BlMouseLeaveEvent
 		#BlMouseOutEvent
 		#BlMouseOverEvent
+		#BlNullEffect
 		#BlOutskirts
 		#BlParabollaArcElement
 		#BlPromiseTask
@@ -833,15 +845,19 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlText
 		#BlTextAttributesBuilder
 		#BlTextForegroundAttribute
+		#BlTextNullStyler
 		#BlTextStyler
 		#BlTextStylerTelemetry
 		#BlTextUnderlayAttribute
+		#BlVector
 		#BlVisibility
 		#BrAnchoredVisualAnalysis
 		#BrAsyncFileWidget
 		#BrButton
 		#BrCheckbox
+		#BrColumn
 		#BrColumnedList
+		#BrColumnedListHeaderAptitude
 		#BrColumnedMultiListAptitude
 		#BrDebuggableEditorElementStencil
 		#BrDeletableFileWidget
@@ -874,11 +890,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrGlamorousEditableLabelAptitude
 		#BrGlamorousExpanderSubtleAptitude
 		#BrGlamorousFocusableShadowAptitude
+		#BrGlamorousIcons
 		#BrGlamorousLabelAptitude
 		#BrGlamorousListItemAptitude
 		#BrGlamorousListLabelAptitude
 		#BrGlamorousPopoverPinnableAptitude
 		#BrGlamorousPopoverResizableAptitude
+		#BrGlamorousRadioButtonAptitude
 		#BrGlamorousRegularEditorAptitude
 		#BrGlamorousResizerBottomBarAptitude
 		#BrGlamorousResizerRightBarAptitude
@@ -907,15 +925,25 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrLazyStyleCommonAptitude
 		#BrListRowStencilBuilder
 		#BrMenuActionItem
+		#BrMenuExplicit
+		#BrMenuIconTextLabelModel
 		#BrMenuItemGroupConfiguration
 		#BrMenuItems
+		#BrMenuSubmenuItem
 		#BrPackageNameInputFilter
 		#BrPackageTagNameInputFilter
 		#BrRBTextStyler
+		#BrRadioButton
+		#BrRadioButtonGroup
+		#BrResizer
+		#BrResizerBottomLocation
 		#BrResizerElementLength
+		#BrResizerRightLocation
 		#BrScrollPane
 		#BrScrollPaneAptitude
 		#BrSelectionChanged
+		#BrSelectionModel
+		#BrSelectionRequest
 		#BrSequenceableCollectionItemsProvider
 		#BrShadowAptitude
 		#BrSimpleList
@@ -925,6 +953,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrStyleCommonAptitude
 		#BrTab
 		#BrTabGroup
+		#BrTabSelectedEvent
 		#BrTagger
 		#BrTaggerAddTagRequest
 		#BrTaggerRemoveTagRequest
@@ -981,11 +1010,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtCoder
 		#GtCoderElement
 		#GtCoderExpanderAptitude
+		#GtCoderExplicitStringSource
 		#GtCoderPackageTagTarget
 		#GtCoderPackageTarget
 		#GtCoderRenameMethodRefactoring
 		#GtCoderShortcutIds
 		#GtCoderViewModelRenameAction
+		#GtCompleterCompletionAccepted
 		#GtCompletionController
 		#GtCompletionStrategyAttribute
 		#GtCompositeCompletionAction
@@ -1005,8 +1036,10 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtExampleResultSimplifiedNestedErrorValue
 		#GtExampleResultSimplifiedSuccessValue
 		#GtExplainerExplanationAptitude
+		#GtExternalProcessBuilder
 		#GtFixItMarkerAttribute
 		#GtGatherMessageTallyFilter
+		#GtGemStoneExplicitSessionIdentifier
 		#GtGemStoneLlmToolForClassDefinitionChange
 		#GtGemStoneLlmToolForClassLookup
 		#GtGemStoneLlmToolForClassReferences
@@ -1018,7 +1051,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtGemStoneLlmToolForMethodSenders
 		#GtGemStoneLlmToolForMethodsSource
 		#GtGemStoneLlmToolForSmalltalkCodeEvaluation
+		#GtGemStoneSessionLocator
 		#GtGemStoneSessionRegistry
+		#GtGemStoneSnippetCoderModel
 		#GtGeminiClient
 		#GtGenericPharoStyler
 		#GtHomeCard
@@ -1094,6 +1129,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtMultiSplitterDiffElement
 		#GtNestedTreeItemLeaf
 		#GtNestedTreeNode
+		#GtNotifications
+		#GtObjectNotificationMessage
+		#GtObjectNotificationMessageElement
 		#GtOpenAIClient
 		#GtOpenAIMessage
 		#GtOpenAIMessageForGT
@@ -1101,6 +1139,8 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtOpenAIProvider
 		#GtOpenAIThreadRunUpdatedAnnouncement
 		#GtPackageCoderTool
+		#GtPager
+		#GtPagerSettings
 		#GtPharoCoderUIUtility
 		#GtPharoCreationForm
 		#GtPharoDummiesGenerator
@@ -1110,6 +1150,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPharoMethodCoder
 		#GtPharoParser
 		#GtPharoSnippetCoder
+		#GtPhlowAction
 		#GtPhlowActionUniqueTarget
 		#GtPhlowActionsCollector
 		#GtPhlowBrowseDefinitionAptitude
@@ -1130,15 +1171,21 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPhlowContext
 		#GtPhlowDefiningMethodsCollector
 		#GtPhlowEmptyView
+		#GtPhlowExplicitView
 		#GtPhlowForwardViewDefiningMethodProvider
 		#GtPhlowLabelTooltipAptitude2
 		#GtPhlowListToSelectHandler
+		#GtPhlowNoAction
+		#GtPhlowObjectActionTarget
+		#GtPhlowObjectToSelect
 		#GtPhlowObjectToSpawn
 		#GtPhlowOverviewItem
 		#GtPhlowTool
 		#GtPhlowToolClassType
 		#GtPhlowUtility
 		#GtPhlowView
+		#GtPhlowViewRefreshContentButtonId
+		#GtPhlowViewTester
 		#GtPhlowViewsCollector
 		#GtPlaygroundEvaluatedCodeButtonAttribute
 		#GtPlotter
@@ -1157,13 +1204,16 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtRBCompositeTransformation
 		#GtRBNamespace
 		#GtRBPullUpInstanceVariableRefactoring
+		#GtRBRenameClassRefactoring
 		#GtRecursionSummaryFilter
 		#GtRefactoringsPreviewElement
+		#GtRefactoryChangeManager
 		#GtRemoteRunner
 		#GtRenameActionAnnouncement
 		#GtRenameController
 		#GtRenameLiteralItemController
 		#GtRenameSelectorEditorAttribute
+		#GtReplaceSubtextCompletionAction
 		#GtResizablePreviewAttribute
 		#GtRrChangesSync
 		#GtRrExplicitExampleTask
@@ -1183,9 +1233,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtSourceCoderEditorInnerId
 		#GtSourceCoderEmbeddedExpanderToggleId
 		#GtSourceCoderErrorAttribute
+		#GtSourceCoderExpanderToggleId
 		#GtSourceCoderId
 		#GtSourceCoderInlineRenameShortcut
 		#GtSpotterContext
+		#GtSpotterDropdownButtonStencil
+		#GtSpotterSearch
+		#GtSpotterSearchPragmasFuture
 		#GtSpotterSubstringsFilter
 		#GtStreamedCompletionStrategy
 		#GtStringsCompletionStrategy
@@ -1270,6 +1324,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#NonInteractiveTranscript
 		#NumberParser
 		#OCParseTreeRewriter
+		#OSEnvironment
 		#OSPlatform
 		#OmReference
 		#OpalCompiler
@@ -1285,12 +1340,15 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#Process
 		#ProcessMonitorTestService
 		#ProtoObject
+		#RBAddMethodChange
 		#RBCondition
 		#RBMethodRefactoring
 		#RBNamespace
 		#RBParseTreeRewriter
 		#RBParser
 		#RBPushDownMethodRefactoring
+		#RBRemoveInstanceVariableChange
+		#RBRemoveMethodChange
 		#RBRemoveMethodRefactoring
 		#RBRenameMethodRefactoring
 		#RBScanner

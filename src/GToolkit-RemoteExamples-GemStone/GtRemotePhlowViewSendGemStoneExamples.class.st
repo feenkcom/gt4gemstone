@@ -95,6 +95,7 @@ GtRemotePhlowViewSendGemStoneExamples >> columnedTreeMultipleSelectionSendOnExpa
 { #category : #'examples - send - columned tree' }
 GtRemotePhlowViewSendGemStoneExamples >> columnedTreeMultipleSelectionSendOnRootAndExpandedChild [
 	<gtExample>
+	<timeLimit: 120000>
 	self runningServer
 		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_533
 		do: [ ^ self ].

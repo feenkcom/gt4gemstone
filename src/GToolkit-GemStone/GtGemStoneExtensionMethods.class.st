@@ -915,7 +915,7 @@ GtGemStoneExtensionMethods class >> ext_DefaultExecutionEnvironment_runUnmanaged
 		meta: false;
 		gtVersions: nil;
 		className: #DefaultExecutionEnvironment;
-		hash: '010d9099dc737f4aeed515bac7b8698d826aeb51514dcdeb7a5f155151602cac';
+		hash: 'da1f39b8cd09b07b9d7c402daeacca11a4e441b262ae6087ae9a81cc1aea8dc2';
 		source: 'runUnmanagedExampleEvaluator: anExampleEvaluator
 	<gtGsExtension>
 	^ TestExecutionEnvironment new initialize
@@ -4038,29 +4038,6 @@ GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_registerDefault
 		source: 'registerDefaultServices
 	<gtGsExtension>
 	^ self'.
-]
-
-{ #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_TestExecutionEnvironment_runExampleEvaluator_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #runExampleEvaluator:;
-		meta: false;
-		gtVersions: nil;
-		className: #TestExecutionEnvironment;
-		hash: 'f15ae466e754ac59f38532348d1b7d6345af896c5939a6f0fc5ddb4e264859f2';
-		source: 'runExampleEvaluator: anExampleEvaluator
-	<gtGsExtension>
-	| exampleResult |
-	testCase := anExampleEvaluator.
-	maxTimeForTest := anExampleEvaluator timeLimit.
-	testCompleted := false.
-	watchDogSemaphore signal.
-	[ exampleResult := self runExampleUnderWatchdogUsingEvaluator: anExampleEvaluator ]
-		ensure: [
-			testCompleted := true.
-			watchDogSemaphore signal.
-			self cleanUpAfterTest ].
-	^ exampleResult'
 ]
 
 { #category : #extensions }
