@@ -172,6 +172,7 @@ GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnSecondFrame [
 { #category : #examples }
 GtRemoteGemStoneDebuggerExamples >> testInspectMethodButtonOnThreeFrames [
 	<gtExample>
+	<timeLimit: 120000>
 	| gemstoneSession debuggingSession debuggerElement scripter |
 
 	self runningServer

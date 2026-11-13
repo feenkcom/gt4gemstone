@@ -195,15 +195,13 @@ GtGemStoneGtCodeExporterExamples >> exportsTimeoutExecutionExtensions [
 	output := GtGemStoneGtCodeExporter new configuredExporter asTopazString.
 	descriptors := {
 		GtGemStoneExtensionMethods ext_DefaultExecutionEnvironment_runExampleEvaluator_.
-		GtGemStoneExtensionMethods ext_TestExecutionEnvironment_runExampleEvaluator_.
 		GtGemStoneExtensionMethods ext_TestExecutionEnvironment_watchDogLoop }.
-	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_runExampleEvaluator_').
+	self assert: (output includesSubstring: 'ext_TestExecutionEnvironment_registerDefaultServices').
 	self assert: (output includesSubstring: 'testEnv activated.').
 	self assert: (output includesSubstring: 'ensure: [ testEnv deactivated ]').
 	descriptors do: [ :each |
 		self assert: (each source includesSubstring: 'beActiveDuring:') not ].
-	self assert: (descriptors second source includesSubstring: 'watchDogSemaphore signal').
-	self assert: (descriptors third source includesSubstring: '_isSuspended') not.
+	self assert: (descriptors second source includesSubstring: '_isSuspended') not.
 	^ descriptors
 ]
 
