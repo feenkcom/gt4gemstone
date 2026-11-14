@@ -8,7 +8,11 @@ Class {
 
 { #category : #examples }
 GtRemoteGemStoneMiscellaneousExamples >> remoteExampleExecution [
+	"Ensure basic example execution in GemStone.
+	Requires GT.gs to be loaded.
+	noTest as GT.gs is not loaded by default."
 	<gtExample>
+	<noTest>
 	| aSession aMethod aCoder aViewModel aResult |
 	
 	aSession := self runningServer.
@@ -30,7 +34,11 @@ GtRemoteGemStoneMiscellaneousExamples >> remoteExampleExecution [
 
 { #category : #examples }
 GtRemoteGemStoneMiscellaneousExamples >> sameContentAs [
+	"Confirm #sameContentAs: operation in GemStone.
+	Requires GT.gs to be loaded.
+	noTest as GT.gs is not loaded by default."
 	<gtExample>
+	<noTest>
 	| results |
 	results := self runningServer
 			evaluateAndWait: '
