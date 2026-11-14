@@ -279,10 +279,82 @@ GtGemStoneMethodCoderModel >> currentSelectorPromise [
 			ifTrue: [ anAst selector ifNil: [ #faulty ] ] ]
 ]
 
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> debugExampleWithRequesterObject: aViewModel [
+	| aContext |
+	(self isModified and: [ aViewModel save not ]) ifTrue: [ ^ self ].
+	aContext := self newEvaluationContext
+			receiverObject: self example;
+			requesterObject: aViewModel;
+			yourself.	"Use the GemStone debugger, not the Pharo-only GtExampleOpenDebugger. The debug evaluator does not swallow example failures."
+	^ self
+		primitiveDebug: 'self debug'
+		inContext: aContext
+		onFailDo: [ nil ]
+]
+
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> evaluateExample: aScript withRequesterObject: aViewModel [
+	| aContext |
+	aContext := self newEvaluationContext
+			receiverObject: self example;
+			requesterObject: aViewModel;
+			yourself.
+	^ self
+		primitiveEvaluate: aScript
+		inContext: aContext
+		onFailDo: [ nil ]
+]
+
 { #category : #accessing }
 GtGemStoneMethodCoderModel >> evaluationContext [
 	^ super evaluationContext
 		receiverObject: self gsBehavior theNonMetaClass
+]
+
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> example [
+	"Keep the example and its result in the method's GemStone session. Recompiling invalidates the cached example."
+
+	| aMethod |
+	aMethod := self gsMethod.
+	(self attributeNamed: #gemStoneExampleMethod) == aMethod
+		ifFalse: [ self
+				attributeNamed: #gemStoneExample
+				put: (aMethod asGtProxyObject evaluateAndWait: 'self gtExampleWithResult')
+						asGtBareProxyObject.
+			self attributeNamed: #gemStoneExampleMethod put: aMethod ].
+	^ self attributeNamed: #gemStoneExample
+]
+
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> exampleAstFor: anAST into: coderAddOns viewModel: aViewModel [
+	<gtAstCoderAddOns: 10>
+	anAST methodNode ifNil: [ ^ self ].
+	(anAST methodNode numArgs isZero
+		and: [ anAST methodNode pragmas
+				anySatisfy: [ :each | each isErrorNode not and: [ each selector = #gtExample ] ] ])
+		ifFalse: [ ^ self ].
+	self session ifNil: [ ^ self ].
+	coderAddOns
+		addContextAction: 'Evaluate and inspect example result' translated
+		icon: BrGlamorousVectorIcons playinspect
+		action: [ :aCoderUIModel :button | self playAndInspectExampleWithRequesterObject: aCoderUIModel ]
+		id: GtMethodCoderPlayAndInspectExampleActionId.
+	coderAddOns
+		addContextAction: 'Evaluate example' translated
+		icon: BrGlamorousVectorIcons play
+		action: [ :aCoderUIModel :button | self playExampleWithRequesterObject: aCoderUIModel ]
+		id: GtMethodCoderPlayExampleActionId.
+	coderAddOns
+		addContextAction: 'Inspect example object' translated
+		icon: BrGlamorousVectorIcons eg
+		action: [ :aCoderUIModel :button | self notifyObjectSpawn: self example requesterObject: aCoderUIModel ].
+	coderAddOns
+		addContextAction: 'Debug example' translated
+		icon: BrGlamorousVectorIcons debug
+		action: [ :aCoderUIModel :button | self debugExampleWithRequesterObject: aCoderUIModel ]
+		id: GtMethodCoderDebugExampleActionId
 ]
 
 { #category : #testing }
@@ -586,6 +658,22 @@ GtGemStoneMethodCoderModel >> notifyMethodRecompiledFrom: aPreviousCompiledMetho
 		methodCoder: self;
 		previousMethod: aPreviousCompiledMethod; 
 		newMethod: aNewCompiledMethod)
+]
+
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> playAndInspectExampleWithRequesterObject: aViewModel [
+	| aResult |
+	aResult := self playExampleWithRequesterObject: aViewModel.
+	aResult ifNil: [ ^ self ].
+	self
+		notifyObjectSpawn: (self evaluateExample: 'self result returnValue' withRequesterObject: aViewModel)
+		requesterObject: aViewModel
+]
+
+{ #category : #examples }
+GtGemStoneMethodCoderModel >> playExampleWithRequesterObject: aViewModel [
+	(self isModified and: [ aViewModel save not ]) ifTrue: [ ^ nil ].
+	^ self evaluateExample: 'self run' withRequesterObject: aViewModel
 ]
 
 { #category : #accessing }

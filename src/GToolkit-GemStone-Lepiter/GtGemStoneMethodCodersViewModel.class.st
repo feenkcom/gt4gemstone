@@ -11,7 +11,7 @@ Class {
 GtGemStoneMethodCodersViewModel >> coderUIModelFor: aCoder [
 	^ aCoder asCoderViewModel
 		expanded: false;
-		withoutHeader;
+		withHeader;
 		selfObject: self selfObject
 ]
 
