@@ -7,18 +7,20 @@ Class {
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListHasHighlightAtTopIndex: anIndex [
 	self assert
-		label: 'Assert highlight exists in coder at index ', anIndex asString;
-		value: [ :aCoderElement |
-			| found |
-			found := false.
-			aCoderElement textualCoderViewModel styledText
-				attributeRunsDo: [ :from :to :attrs |
-					attrs do: [ :each |
-						((each isKindOf: BlTextHighlightAttribute) and: [
-							each id = GtSourceCoderViewModel debuggerTextHighlightId ])
-							ifTrue: [ found := true ] ] ].
-			found ]
-		equals: true;
+		onParentStepTarget: self;
+		label: 'Assert highlight exists in coder at index ' , anIndex asString;
+		value: [ :aCoderElement | 
+				| found |
+				found := false.
+				aCoderElement textualCoderViewModel styledText
+					attributeRunsDo: [ :from :to :attrs | 
+						attrs
+							do: [ :each | 
+								((each isKindOf: BlTextHighlightAttribute)
+									and: [ each id = GtSourceCoderViewModel debuggerTextHighlightId ])
+									ifTrue: [ found := true ] ] ].
+				found ]
+			equals: true;
 		// (GtExpandableContextMethodCoderId indexed: anIndex)
 ]
 
@@ -32,87 +34,87 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertInCodersListVisuallyHighlightedS
 { #category : #'assertions - variables' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertNoDuplicateSessionVariableNames [
 	self assert
+		onParentStepTarget: self;
 		label: 'Assert no duplicate session variable names';
-		value: [ :debuggerEl |
-			| names |
-			names := (debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
-				collect: [ :each | each first ]) asArray.
-			names size = names asSet size ]
-		equals: true;
+		value: [ :debuggerEl | 
+				| names |
+				names := (debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
+						collect: [ :each | each first ]) asArray.
+				names size = names asSet size ]
+			equals: true;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex atProgramCounterRange: expectedRange atProgramCounterMarkers: expectedMarkers [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterRange';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterRange ]
-		equals: expectedRange;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' programCounterRange';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterRange ]
+			equals: expectedRange;
 		// GtGemStoneExpandableDebuggerElement.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterMarkers ]
-		equals: expectedMarkers;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' programCounterMarkers';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterMarkers ]
+			equals: expectedMarkers;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' highlighted text';
-		value: [ :debuggerEl |
-			| frame range |
-			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
-			range := frame programCounterRange.
-			frame frameSpecification sourceString
-				copyFrom: range first to: range last ]
-		equals: expectedText;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' highlighted text';
+		value: [ :debuggerEl | 
+				| frame range |
+				frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+				range := frame programCounterRange.
+				frame frameSpecification sourceString copyFrom: range first to: range last ]
+			equals: expectedText;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atProgramCounterMarkers: expectedMarkers [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterMarkers ]
-		equals: expectedMarkers;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' programCounterMarkers';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterMarkers ]
+			equals: expectedMarkers;
 		// GtGemStoneExpandableDebuggerElement.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' highlighted text from markers';
-		value: [ :debuggerEl |
-			| frame markers |
-			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
-			markers := frame programCounterMarkers.
-			(frame frameSpecification sourceString
-				copyFrom: markers first to: markers second) trimBoth ]
-		equals: expectedText trimBoth;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' highlighted text from markers';
+		value: [ :debuggerEl | 
+				| frame markers |
+				frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+				markers := frame programCounterMarkers.
+				(frame frameSpecification sourceString
+					copyFrom: markers first
+					to: markers second) trimBoth ]
+			equals: expectedText trimBoth;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex highlightedText: expectedText atProgramCounterRange: expectedRange [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterRange';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterRange ]
-		equals: expectedRange;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' programCounterRange';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterRange ]
+			equals: expectedRange;
 		// GtGemStoneExpandableDebuggerElement.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' highlighted text from range';
-		value: [ :debuggerEl |
-			| frame range |
-			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
-			range := frame programCounterRange.
-			(frame frameSpecification sourceString
-				copyFrom: range first to: range last) trimBoth ]
-		equals: expectedText trimBoth withUnixLineEndings;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' highlighted text from range';
+		value: [ :debuggerEl | 
+				| frame range |
+				frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+				range := frame programCounterRange.
+				(frame frameSpecification sourceString copyFrom: range first to: range last)
+					trimBoth ]
+			equals: expectedText trimBoth withUnixLineEndings;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
@@ -123,11 +125,10 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 		highlightedText: expectedText
 		atProgramCounterRange: expectedRange.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterMarkers ]
-		equals: expectedMarkers;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' programCounterMarkers';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterMarkers ]
+			equals: expectedMarkers;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
@@ -138,88 +139,95 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 		highlightedText: expectedText
 		atProgramCounterRange: expectedRange.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' programCounterMarkers matches range';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex)
-				programCounterMarkers ]
-		equals: { expectedRange first. expectedRange last };
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString
+				, ' programCounterMarkers matches range';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) programCounterMarkers ]
+			equals: {expectedRange first.
+					expectedRange last};
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #assertions }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex isSelector: aSelector inBlock: aBoolean [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' selector';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector ]
-		equals: aSelector;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' selector';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector ]
+			equals: aSelector;
 		// GtGemStoneExpandableDebuggerElement.
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' inBlock';
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex) inBlock ]
-		equals: aBoolean;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' inBlock';
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) inBlock ]
+			equals: aBoolean;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'steps - assertions' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex notSelector: aSelector [
 	self assert
-		label: 'Assert session frame ', anIndex printString, ' not selector ', aSelector;
-		value: [ :debuggerEl |
-			(debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector ~= aSelector ]
-		equals: true;
+		onParentStepTarget: self;
+		label: 'Assert session frame ' , anIndex printString , ' not selector ' , aSelector;
+		value: [ :debuggerEl | 
+				(debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector
+					~= aSelector ]
+			equals: true;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'assertions - variables' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariable: aName equals: aValueString [
 	self assert
-		label: 'Assert session variable ', aName, ' value';
-		value: [ :debuggerEl |
-			| vars match |
-			vars := debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex.
-			match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
-			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
-		equals: aValueString;
+		onParentStepTarget: self;
+		label: 'Assert session variable ' , aName , ' value';
+		value: [ :debuggerEl | 
+				| vars match |
+				vars := debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex.
+				match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
+				match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+			equals: aValueString;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'assertions - variables' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableAtFrameIndex: anIndex name: aName equals: aValueString [
 	self assert
-		label: 'Assert variable ', aName, ' at frame ', anIndex printString;
-		value: [ :debuggerEl |
-			| frame vars match |
-			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
-			vars := frame safeVariablesAssociationsBasedOnIndex.
-			match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
-			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
-		equals: aValueString;
+		onParentStepTarget: self;
+		label: 'Assert variable ' , aName , ' at frame ' , anIndex printString;
+		value: [ :debuggerEl | 
+				| frame vars match |
+				frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+				vars := frame safeVariablesAssociationsBasedOnIndex.
+				match := vars detect: [ :each | each first = aName ] ifNone: [ nil ].
+				match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+			equals: aValueString;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'assertions - variables' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableNames: expectedNames [
 	self assert
+		onParentStepTarget: self;
 		label: 'Assert session variable names';
-		value: [ :debuggerEl |
-			(debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
-				collect: [ :each | each first ]) asArray ]
-		equals: expectedNames asArray;
+		value: [ :debuggerEl | 
+				(debuggerEl currentCallFrame safeVariablesAssociationsBasedOnIndex
+					collect: [ :each | each first ]) asArray ]
+			equals: expectedNames asArray;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'assertions - variables' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertSessionVariableNamesAtFrameIndex: anIndex equals: expectedNames [
 	self assert
-		label: 'Assert session variable names at frame ', anIndex printString;
-		value: [ :debuggerEl |
-			| frame |
-			frame := debuggerEl debugSession remoteStackFrames at: anIndex.
-			(frame safeVariablesAssociationsBasedOnIndex
-				collect: [ :each | each first ]) asArray ]
-		equals: expectedNames asArray;
+		onParentStepTarget: self;
+		label: 'Assert session variable names at frame ' , anIndex printString;
+		value: [ :debuggerEl | 
+				| frame |
+				frame := debuggerEl debugSession remoteStackFrames at: anIndex.
+				(frame safeVariablesAssociationsBasedOnIndex collect: [ :each | each first ])
+					asArray ]
+			equals: expectedNames asArray;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
@@ -238,23 +246,24 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertVariableNames: expectedNames [
 { #category : #'steps - assertions' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertVisualVariable: aName equals: aValueString [
 	self assert
-		label: 'Assert visual variable ', aName, ' value';
-		value: [ :debuggerEl |
-			| items match |
-			items := debuggerEl variableListItems.
-			match := items detect: [ :each | each first = aName ] ifNone: [ nil ].
-			match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
-		equals: aValueString;
+		onParentStepTarget: self;
+		label: 'Assert visual variable ' , aName , ' value';
+		value: [ :debuggerEl | 
+				| items match |
+				items := debuggerEl variableListItems.
+				match := items detect: [ :each | each first = aName ] ifNone: [ nil ].
+				match ifNil: [ 'variable not found' ] ifNotNil: [ match second ] ]
+			equals: aValueString;
 		// GtGemStoneExpandableDebuggerElement
 ]
 
 { #category : #'steps - assertions' }
 GtGemStoneDebuggerDevScripterCheckStep >> assertVisualVariableNames: expectedNames [
 	self assert
+		onParentStepTarget: self;
 		label: 'Assert visual variable names';
-		value: [ :debuggerEl |
-			(debuggerEl variableListItems collect: [ :each | each first ]) asArray ]
-		equals: expectedNames asArray;
+		value: [ :debuggerEl | (debuggerEl variableListItems collect: [ :each | each first ]) asArray ]
+			equals: expectedNames asArray;
 		// GtGemStoneExpandableDebuggerElement
 ]
 

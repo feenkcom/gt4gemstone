@@ -738,6 +738,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#AsyncFutureExecutionContext
 		#AsyncFuturePromise
 		#AsyncFutureThreadPool
+		#AsyncFutureThreadPoolTestService
 		#AsyncLePageStream
 		#AsyncLineReadStream
 		#AsyncMapFuture
