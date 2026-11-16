@@ -918,6 +918,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrHorizontalFlow
 		#BrHorizontalGrid
 		#BrHorizontalPane
+		#BrInlineExpanderElement
 		#BrLabel
 		#BrLayoutAlignmentAptitude
 		#BrLayoutHorizontalResizerState
@@ -1032,6 +1033,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtExampleColorHandler
 		#GtExampleGroupCoder
 		#GtExampleLabelTextHandler
+		#GtExamplePreviewAttribute
 		#GtExampleResultSimplifiedErrorValue
 		#GtExampleResultSimplifiedFailureValue
 		#GtExampleResultSimplifiedNestedErrorValue
@@ -1057,6 +1059,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtGemStoneSnippetCoderModel
 		#GtGeminiClient
 		#GtGenericPharoStyler
+		#GtGitRepository
 		#GtHomeCard
 		#GtHomeMultiCardSection
 		#GtInsertTextCompletionAction
@@ -1166,6 +1169,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPhlowChangeTabGroupModifyTabAction
 		#GtPhlowChangeTabGroupRemoveTabAction
 		#GtPhlowCollector
+		#GtPhlowColumnDecorationElement
 		#GtPhlowCompositeTool
 		#GtPhlowCompositeView
 		#GtPhlowConcreteDefiningMethodProvider
@@ -1177,6 +1181,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPhlowLabelTooltipAptitude2
 		#GtPhlowListToSelectHandler
 		#GtPhlowNoAction
+		#GtPhlowNumberColumn
 		#GtPhlowObjectActionTarget
 		#GtPhlowObjectToSelect
 		#GtPhlowObjectToSpawn
@@ -1284,6 +1289,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LeContentExamples
 		#LeDatabase
 		#LeDatabasesRegistry
+		#LeExampleAnnotationNode
 		#LeExampleSnippet
 		#LeExplicitlyAttachedLinksExamples
 		#LeExternalUrlLinkNode
@@ -1309,6 +1315,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#LeSnippetStylerVisitor
 		#LeTextCoderSnippetViewModel
 		#LeTextSnippet
+		#LeTextSnippetAttributeExampleElementId
 		#LeTextSnippetAttributeLabelElementId
 		#LeTextualSnippet
 		#LeUID
