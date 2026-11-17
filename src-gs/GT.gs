@@ -325,6 +325,18 @@ doit
 %
 
 doit
+(Object subclass: 'GtLSamplingProfilerExamples'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4LlmCore';
+  immediateInvariant.
+%
+
+doit
 (System myUserProfile symbolList resolveSymbol: #GtRefactoryChangeManager) isNil ifTrue: [
 (Object subclass: 'GtRefactoryChangeManager'
   instVarNames: #( undo redo isPerformingChanges announcer)
@@ -347,18 +359,6 @@ doit
   inDictionary: Globals
   options: #()
 ) category: 'Gt4LlmCore-Examples';
-  immediateInvariant.
-%
-
-doit
-(Object subclass: 'GtLACPExternalSessionStoreExamples'
-  instVarNames: #()
-  classVars: #()
-  classInstVars: #()
-  poolDictionaries: #()
-  inDictionary: Globals
-  options: #()
-) category: 'Gt4Llm-ACP';
   immediateInvariant.
 %
 
@@ -1859,20 +1859,6 @@ doit
 %
 
 doit
-(System myUserProfile symbolList resolveSymbol: #AsyncSharedDictionary) isNil ifTrue: [
-(Object subclass: 'AsyncSharedDictionary'
-  instVarNames: #( monitor dictionary)
-  classVars: #()
-  classInstVars: #()
-  poolDictionaries: #()
-  inDictionary: Globals
-  options: #()
-) category: 'GToolkit-Stubs';
-  immediateInvariant.
-].
-%
-
-doit
 (GtLEndpoint subclass: 'GtLOllamaCreateEmbeddingsEndpoint'
   instVarNames: #()
   classVars: #()
@@ -1947,11 +1933,11 @@ doit
 %
 
 doit
-(System myUserProfile symbolList resolveSymbol: #BlVector) isNil ifTrue: [
-(Object subclass: 'BlVector'
-  instVarNames: #()
+(System myUserProfile symbolList resolveSymbol: #AsyncSharedDictionary) isNil ifTrue: [
+(Object subclass: 'AsyncSharedDictionary'
+  instVarNames: #( monitor dictionary)
   classVars: #()
-  classInstVars: #( zAxis xAxis yAxis zero one)
+  classInstVars: #()
   poolDictionaries: #()
   inDictionary: Globals
   options: #()
@@ -1970,6 +1956,20 @@ doit
   options: #()
 ) category: 'GToolkit-Examples-Dummies-Package4';
   immediateInvariant.
+%
+
+doit
+(System myUserProfile symbolList resolveSymbol: #BlVector) isNil ifTrue: [
+(Object subclass: 'BlVector'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #( zAxis xAxis yAxis zero one)
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'GToolkit-Stubs';
+  immediateInvariant.
+].
 %
 
 doit
@@ -5693,6 +5693,30 @@ doit
 %
 
 doit
+(Object subclass: 'GtLACPStoredSessionFixtures'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPStoredSessionFixtures subclass: 'GtLACPExternalSessionStoreExamples'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
 (Object subclass: 'GtLOllamaProviderProcessedMessage'
   instVarNames: #( result inputMessage outputMessage anotherProcessedMessage)
   classVars: #()
@@ -7939,18 +7963,6 @@ doit
 %
 
 doit
-(GtLACPStoredSession subclass: 'GtLACPClaudeCodeStoredSession'
-  instVarNames: #()
-  classVars: #()
-  classInstVars: #()
-  poolDictionaries: #()
-  inDictionary: Globals
-  options: #()
-) category: 'Gt4Llm-ACP';
-  immediateInvariant.
-%
-
-doit
 (GtLACPChatMessageViewModel subclass: 'GtLACPAssistantMessageViewModel'
   instVarNames: #( workExpanded finalReplyExpanded)
   classVars: #()
@@ -7989,6 +8001,18 @@ doit
 doit
 (GtLACPObject subclass: 'GtLACPTransport'
   instVarNames: #( connection state)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPObject subclass: 'GtLACPClaudeCodeTranscriptRecord'
+  instVarNames: #( rawData file lineNumber session)
   classVars: #()
   classInstVars: #()
   poolDictionaries: #()
@@ -8424,6 +8448,20 @@ doit
 (System myUserProfile symbolList resolveSymbol: #BlDevScripterMultipleActionStep) isNil ifTrue: [
 (BlDevScripterCompositeStep subclass: 'BlDevScripterMultipleActionStep'
   instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'GToolkit-Stubs';
+  immediateInvariant.
+].
+%
+
+doit
+(System myUserProfile symbolList resolveSymbol: #GtSamplingProfiler) isNil ifTrue: [
+(Object subclass: 'GtSamplingProfiler'
+  instVarNames: #( rootTally gcStats time timer timerDelay)
   classVars: #()
   classInstVars: #()
   poolDictionaries: #()
@@ -9041,18 +9079,6 @@ doit
   inDictionary: Globals
   options: #()
 ) category: 'Gt4LlmCore-Examples';
-  immediateInvariant.
-%
-
-doit
-(GtLACPStoredSession subclass: 'GtLACPCodexStoredSession'
-  instVarNames: #()
-  classVars: #()
-  classInstVars: #()
-  poolDictionaries: #()
-  inDictionary: Globals
-  options: #()
-) category: 'Gt4Llm-ACP';
   immediateInvariant.
 %
 
@@ -9690,6 +9716,18 @@ doit
 ) category: 'GToolkit-Stubs';
   immediateInvariant.
 ].
+%
+
+doit
+(GtLACPStoredSessionFixtures subclass: 'GtLACPClaudeCodeTranscriptExamples'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
 %
 
 doit
@@ -11432,6 +11470,18 @@ doit
 ) category: 'GToolkit-Stubs';
   immediateInvariant.
 ].
+%
+
+doit
+(GtLACPClaudeCodeTranscriptRecord subclass: 'GtLACPClaudeCodeTitleRecord'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
 %
 
 doit
@@ -13551,6 +13601,18 @@ doit
 %
 
 doit
+(GtLACPStoredSessionFixtures subclass: 'GtLACPCodexStoredSessionExamples'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
 (System myUserProfile symbolList resolveSymbol: #BlAnimation) isNil ifTrue: [
 (BlBaseAnimation subclass: 'BlAnimation'
   instVarNames: #( duration easing)
@@ -15452,6 +15514,18 @@ doit
 ) category: 'GToolkit-Stubs';
   immediateInvariant.
 ].
+%
+
+doit
+(GtLACPObject subclass: 'GtLACPCodexRolloutEntry'
+  instVarNames: #( rawData session file lineNumber)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
 %
 
 doit
@@ -21326,6 +21400,42 @@ doit
 %
 
 doit
+(GtLACPStoredSession subclass: 'GtLACPFileStoredSession'
+  instVarNames: #( rawBytes rawData allRecords parseIssues)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPFileStoredSession subclass: 'GtLACPClaudeCodeStoredSession'
+  instVarNames: #( file sidecarRecords metadataRecords)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPFileStoredSession subclass: 'GtLACPCodexStoredSession'
+  instVarNames: #( originRecord)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
 (System myUserProfile symbolList resolveSymbol: #AsyncCounterSink) isNil ifTrue: [
 (Object subclass: 'AsyncCounterSink'
   instVarNames: #( count parentSink)
@@ -26121,6 +26231,54 @@ doit
 %
 
 doit
+(GtLACPStoredSessionSource subclass: 'GtLACPCodexSessionRecord'
+  instVarNames: #( session lineNumber)
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPCodexSessionRecord subclass: 'GtLACPCodexCompressedRolloutRecord'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPCodexSessionRecord subclass: 'GtLACPCodexIndexRecord'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
+(GtLACPCodexSessionRecord subclass: 'GtLACPCodexRolloutRecord'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4Llm-ACP';
+  immediateInvariant.
+%
+
+doit
 (Object subclass: 'GtMagritteDummyPostalAddress'
   instVarNames: #( street city isPrimary announcer zipCode)
   classVars: #()
@@ -26662,6 +26820,18 @@ doit
 ) category: 'GToolkit-Stubs';
   immediateInvariant.
 ].
+%
+
+doit
+(Object subclass: 'GtLMessageTallyExamples'
+  instVarNames: #()
+  classVars: #()
+  classInstVars: #()
+  poolDictionaries: #()
+  inDictionary: Globals
+  options: #()
+) category: 'Gt4LlmCore';
+  immediateInvariant.
 %
 
 doit
@@ -33107,6 +33277,9 @@ removeallclassmethods GtLOpenAiCodexExamples
 removeallmethods GtLEntity
 removeallclassmethods GtLEntity
 
+removeallmethods GtLSamplingProfilerExamples
+removeallclassmethods GtLSamplingProfilerExamples
+
 removeallmethods GtLDemoMathReasoningBasicStep
 removeallclassmethods GtLDemoMathReasoningBasicStep
 
@@ -33397,9 +33570,6 @@ removeallclassmethods GtLClassChangeRequest
 
 removeallmethods NeoJSONMapper
 removeallclassmethods NeoJSONMapper
-
-removeallmethods GtLACPExternalSessionStoreExamples
-removeallclassmethods GtLACPExternalSessionStoreExamples
 
 removeallmethods GtLMcpClient
 removeallclassmethods GtLMcpClient
@@ -34655,6 +34825,9 @@ removeallclassmethods NeoJSONMapping
 removeallmethods GtLACPObject
 removeallclassmethods GtLACPObject
 
+removeallmethods GtLACPCodexRolloutEntry
+removeallclassmethods GtLACPCodexRolloutEntry
+
 removeallmethods GtLACPProtocolTranscript
 removeallclassmethods GtLACPProtocolTranscript
 
@@ -34765,6 +34938,9 @@ removeallclassmethods GtJsonDateAndTimeModel
 
 removeallmethods GtLACPStoredSessionSource
 removeallclassmethods GtLACPStoredSessionSource
+
+removeallmethods GtLACPCodexSessionRecord
+removeallclassmethods GtLACPCodexSessionRecord
 
 removeallmethods GtLRefactoringPreview
 removeallclassmethods GtLRefactoringPreview
@@ -34964,6 +35140,9 @@ removeallclassmethods GtLMagritteDataView
 removeallmethods NeoJSONSchemaValidator
 removeallclassmethods NeoJSONSchemaValidator
 
+removeallmethods GtLACPCodexCompressedRolloutRecord
+removeallclassmethods GtLACPCodexCompressedRolloutRecord
+
 removeallmethods GtLACPPromptTurnState
 removeallclassmethods GtLACPPromptTurnState
 
@@ -35032,6 +35211,12 @@ removeallclassmethods GtExamplesReportRunPackageSignal
 
 removeallmethods GtLDataViewWithError
 removeallclassmethods GtLDataViewWithError
+
+removeallmethods GtLACPStoredSessionFixtures
+removeallclassmethods GtLACPStoredSessionFixtures
+
+removeallmethods GtLACPExternalSessionStoreExamples
+removeallclassmethods GtLACPExternalSessionStoreExamples
 
 removeallmethods GtLPrimitiveCompositeJsonDataBlock
 removeallclassmethods GtLPrimitiveCompositeJsonDataBlock
@@ -35492,6 +35677,9 @@ removeallclassmethods GtLCompositeDataView
 removeallmethods GtLACPPromptTurnActiveState
 removeallclassmethods GtLACPPromptTurnActiveState
 
+removeallmethods GtLACPCodexIndexRecord
+removeallclassmethods GtLACPCodexIndexRecord
+
 removeallmethods GtLPharoScript
 removeallclassmethods GtLPharoScript
 
@@ -35575,6 +35763,9 @@ removeallclassmethods GtExamplesReportExceptionSignal
 
 removeallmethods GtLDataViewBuildContext
 removeallclassmethods GtLDataViewBuildContext
+
+removeallmethods GtLACPClaudeCodeTranscriptExamples
+removeallclassmethods GtLACPClaudeCodeTranscriptExamples
 
 removeallmethods GtLPrimitiveCompositeJsonArrayDataBlock
 removeallclassmethods GtLPrimitiveCompositeJsonArrayDataBlock
@@ -35996,6 +36187,9 @@ removeallclassmethods GtLDocumentDataView
 removeallmethods GtLACPPromptTurnCancellingState
 removeallclassmethods GtLACPPromptTurnCancellingState
 
+removeallmethods GtLACPCodexRolloutRecord
+removeallclassmethods GtLACPCodexRolloutRecord
+
 removeallmethods GtLPhlowSummarizersChangedListener
 removeallclassmethods GtLPhlowSummarizersChangedListener
 
@@ -36055,6 +36249,9 @@ removeallclassmethods GtExamplesReportRetrySignal
 
 removeallmethods GtLDataViewContext
 removeallclassmethods GtLDataViewContext
+
+removeallmethods GtLACPCodexStoredSessionExamples
+removeallclassmethods GtLACPCodexStoredSessionExamples
 
 removeallmethods GtLPrimitiveCompositeJsonGenericDataBlock
 removeallclassmethods GtLPrimitiveCompositeJsonGenericDataBlock
@@ -36641,6 +36838,9 @@ removeallclassmethods GtLACPPromptTurnRunningState
 removeallmethods TelemetrySignal
 removeallclassmethods TelemetrySignal
 
+removeallmethods GtLACPClaudeCodeTranscriptRecord
+removeallclassmethods GtLACPClaudeCodeTranscriptRecord
+
 removeallmethods SubscriptOutOfBounds
 removeallclassmethods SubscriptOutOfBounds
 
@@ -36874,6 +37074,9 @@ removeallclassmethods GtJsonPersonModel
 
 removeallmethods GtLACPStoredSession
 removeallclassmethods GtLACPStoredSession
+
+removeallmethods GtLACPFileStoredSession
+removeallclassmethods GtLACPFileStoredSession
 
 removeallmethods GtLACPCodexStoredSession
 removeallclassmethods GtLACPCodexStoredSession
@@ -37490,6 +37693,12 @@ removeallclassmethods GtLForwardCollectionDataView
 removeallmethods GtLForwardObjectDataView
 removeallclassmethods GtLForwardObjectDataView
 
+removeallmethods GtLACPClaudeCodeTitleRecord
+removeallclassmethods GtLACPClaudeCodeTitleRecord
+
+removeallmethods TelemetryLoggerStarted
+removeallclassmethods TelemetryLoggerStarted
+
 removeallmethods GtLACPPromptTurnFinishedState
 removeallclassmethods GtLACPPromptTurnFinishedState
 
@@ -37516,9 +37725,6 @@ removeallclassmethods GtLACPPromptTurnDisconnectedState
 
 removeallmethods GtLACPPromptTurnFailedState
 removeallclassmethods GtLACPPromptTurnFailedState
-
-removeallmethods TelemetryLoggerStarted
-removeallclassmethods TelemetryLoggerStarted
 
 removeallmethods GtLRemotePhlowViewDomainObject
 removeallclassmethods GtLRemotePhlowViewDomainObject
@@ -37639,6 +37845,9 @@ removeallclassmethods GtJsonUnknown
 
 removeallmethods GtLACPProtocolMessage
 removeallclassmethods GtLACPProtocolMessage
+
+removeallmethods GtLMessageTallyExamples
+removeallclassmethods GtLMessageTallyExamples
 
 removeallmethods MADynamicDescriptionCache
 removeallclassmethods MADynamicDescriptionCache
@@ -40017,6 +40226,20 @@ category: 'testing'
 classmethod: GtLEntity
 isErrorResult: aDictionary
 	^ aDictionary size = 1 and: [ aDictionary includesKey: 'error' ]
+%
+
+category: 'examples'
+method: GtLSamplingProfilerExamples
+textReportLlmView
+	<gtExample>
+	| profiler view |
+	profiler := GtSamplingProfiler new.
+	profiler spyOn: [ 1000 timesRepeat: [ 1 + 1 ] ].
+	view := profiler llmTextReportFor: GtLDataView empty.
+	self assert: (view llmJsonData at: 'report') equals: profiler textReport.
+	self assert: profiler textReport notEmpty.
+	self assert: (profiler llmDataViewsInContext: GtLDataViewContext new) notEmpty.
+	^ profiler
 %
 
 category: 'accessing'
@@ -53451,650 +53674,6 @@ resolveMappingFor: class
 	(class respondsTo: #neoJsonMapping:)
 		ifTrue: [ 
 			class perform: #neoJsonMapping: with: self ]
-%
-
-category: 'examples'
-method: GtLACPExternalSessionStoreExamples
-allDiscoveryViews
- <gtExample>
- | codex claude query objects |
- codex := self codexStore.
- claude := self claudeStore.
- query := codex forDirectory: self projectDirectory.
- objects := { codex. claude. query. codex sessions first.
-  self codexSourceMetadata. codex issues first }.
- objects do: [ :object |
-  object class allMethods do: [ :method |
-   ((method pragmaAt: #gtView) notNil and: [ method methodClass package name = 'Gt4Llm-ACP' ])
-    ifTrue: [ | result |
-     result := GtPhlowViewTester new testView: (object perform: method selector with: GtPhlowView empty).
-     self assert: (result isOk or: [ result isEmpty ]) description: object class name, '>>', method selector ] ] ].
- ^ query
-%
-
-method: GtLACPExternalSessionStoreExamples
-claudeProjectQuery
- <gtExample>
- | query |
- query := self claudeStore forDirectory: self projectDirectory.
- self assert: query sessions size equals: 1.
- self assert: query sessions first sessionId equals: self firstId.
- self assert: query unresolvedSessions isEmpty.
- ^ query
-%
-
-method: GtLACPExternalSessionStoreExamples
-claudeQueryInspector
- <gtExample>
- | query scripter |
- query := self claudeProjectQuery.
- scripter := BlScripter new extent: 1200 @ 650; model: query;
-  element: (GtInspector forObject: query); yourself.
- scripter assertStep: [ :step | step onPhlowCellWithString: self firstId; exists ].
- scripter assertStep: [ :step |
-  step onPhlowCellWithString: query sessions first createdAt asString; exists ].
- GtLACPSessionExamples new assertNoRenderingErrorsIn: scripter.
- ^ scripter
-%
-
-method: GtLACPExternalSessionStoreExamples
-claudeSourceMetadata
- <gtExample>
- | source |
- source := self claudeProjectQuery sessions first sources first.
- self assert: (source metadata at: 'cwd') equals: self projectDirectory fullName.
- self assert: (source metadata at: 'sessionId') equals: self firstId.
- self assert: (source metadata includesKey: 'message') not.
- ^ source
-%
-
-method: GtLACPExternalSessionStoreExamples
-claudeStore
- <gtExample>
- | store session |
- store := (GtLACPClaudeCodeSessionStore on: self claudeRoot) read.
- self assert: store sessions size equals: 2.
- self assert: store issues isEmpty.
- session := store sessions detect: [ :each | each sessionId = self firstId ].
- self assert: session directory equals: self projectDirectory.
- self assert: session title equals: 'Readme check'.
- self assert: (session sources first metadata includesKey: 'message') not.
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-codexProjectQuery
- <gtExample>
- | query |
- query := self codexStore forDirectory: self projectDirectory.
- self assert: query sessions size equals: 1.
- self assert: query sessions first sessionId equals: self firstId.
- self assert: query unresolvedSessions size equals: 2.
- ^ query
-%
-
-method: GtLACPExternalSessionStoreExamples
-codexSourceMetadata
- <gtExample>
- | source |
- source := (self codexProjectQuery sessions first sources detect: [ :each | each format = #codexRollout ]).
- self assert: (source metadata at: 'cwd') equals: self projectDirectory fullName.
- self assert: (source metadata includesKey: 'instructions') not.
- self assert: (source metadata includesKey: 'content') not.
- ^ source
-%
-
-method: GtLACPExternalSessionStoreExamples
-codexStore
- <gtExample>
- | store session |
- store := (GtLACPCodexSessionStore on: self codexRoot) read.
- self assert: store sessions size equals: 4.
- session := store sessions detect: [ :each | each sessionId = self firstId ].
- self assert: session title equals: 'Current title'.
- self assert: session directory equals: self projectDirectory.
- self assert: session sources size equals: 3.
- self assert: session createdAt notNil.
- self assert: session updatedAt notNil.
- self assert: store issues size equals: 2.
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-compressedSessionIdentity
- <gtExample>
- | session |
- session := self codexStore sessions detect: [ :each | each sessionId = self compressedId ].
- self assert: session directory isNil.
- self assert: session sources first format equals: #codexCompressedRollout.
- self assert: (session sources first metadata at: 'filenameSessionId') equals: self compressedId.
- ^ session
-%
-
-method: GtLACPExternalSessionStoreExamples
-conditionalSessionLookup
-	<gtExample>
-	| stores |
-	stores := {self claudeStore.
-			self codexStore}.
-	stores
-		do: [ :store | 
-			| count present absent result |
-			count := store sessions size.
-			present := 0.
-			absent := 0.
-			result := store
-					sessionWithId: self firstId
-					ifPresent: [ :session | 
-						present := present + 1.
-						self assert: session == (store sessionWithId: self firstId).
-						nil ]
-					ifAbsent: [ absent := absent + 1.
-						#missing ].
-			self assert: result isNil.
-			self assert: present equals: 1.
-			self assert: absent equals: 0.
-			result := store
-					sessionWithId: 'missing'
-					ifPresent: [ :session | present := present + 1 ]
-					ifAbsent: [ absent := absent + 1.
-						#missing ].
-			self assert: result equals: #missing.
-			self assert: present equals: 1.
-			self assert: absent equals: 1.
-			self assert: store sessions size equals: count ].
-	^ stores
-%
-
-method: GtLACPExternalSessionStoreExamples
-conflictingDirectoryIsReported
- <gtExample>
- | root file store |
- root := self codexRoot.
- file := root / 'sessions' / 'rollout-conflicting.jsonl'.
- self writeRecords: { {
-  'type' -> 'session_meta'. 'payload' -> {
-   'id' -> self firstId. 'cwd' -> (self projectDirectory fullName, '-conflict') } asDictionary } asDictionary } to: file.
- store := (GtLACPCodexSessionStore on: root) read.
- self assert: (store issues anySatisfy: [ :issue |
-  issue description includesSubstring: 'Conflicting project directory' ]).
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-filenameIdentityConflictIsReported
- <gtExample>
- | root file store |
- root := self claudeRoot.
- file := root / 'projects' / 'conflict' / 'wrong-id.jsonl'.
- self writeRecords: { {
-  'sessionId' -> self secondId. 'cwd' -> self projectDirectory fullName } asDictionary } to: file.
- store := (GtLACPClaudeCodeSessionStore on: root) read.
- self assert: (store sessions detect: [ :session | session sessionId = 'wrong-id' ]) directory isNil.
- self assert: (store issues anySatisfy: [ :issue |
-  issue description includesSubstring: 'Session ID disagrees' ]).
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-invalidStoredSessionsCannotLoad
-	<gtExample>
-	| stores |
-	stores := {self claudeStore.
-			self codexStore}.
-	stores
-		do: [ :store | 
-			| stored |
-			stored := store sessionWithId: self firstId.
-			stored directory: nil.
-			self
-				assert: ([ stored load.
-					false ]
-						on: Error
-						do: [ :error | error messageText includesSubstring: 'directory is unknown' ]).
-			stored directory: FileSystem memory root / 'missing'.
-			self
-				assert: ([ stored load.
-					false ]
-						on: Error
-						do: [ :error | error messageText includesSubstring: 'directory no longer exists' ]) ].
-	^ stores
-%
-
-method: GtLACPExternalSessionStoreExamples
-invalidStoredSessionsDoNotLaunchClients
-	<gtExample>
-	| store configured |
-	store := self codexStore.
-	configured := false.
-	self
-		assert: ([ store
-				loadSession: 'missing'
-				configureClient: [ :client | configured := true ].
-			false ]
-				on: Error
-				do: [ :error | error messageText includesSubstring: 'Session not found' ]).
-	self
-		assert: ([ store
-				loadSession: self secondId
-				configureClient: [ :client | configured := true ].
-			false ]
-				on: Error
-				do: [ :error | error messageText includesSubstring: 'directory is unknown' ]).
-	(store sessionWithId: self firstId)
-		directory: FileSystem memory root / 'missing'.
-	self
-		assert: ([ store
-				loadSession: self firstId
-				configureClient: [ :client | configured := true ].
-			false ]
-				on: Error
-				do: [ :error | error messageText includesSubstring: 'directory no longer exists' ]).
-	self assert: configured not.
-	^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-loadableStoredSession
-	<gtExample>
-	| store stored client |
-	store := self codexStore.
-	stored := store sessionWithId: self firstId.
-	client := stored newClient.
-	client
-		transportFactory: [ :configuration :directory | GtLACPExamples new transport ].
-	^ GtLACPFixtureStoredSession new
-		store: store;
-		sessionId: stored sessionId;
-		title: stored title;
-		directory: FileLocator temp asFileReference asAbsolute;
-		client: client;
-		yourself
-%
-
-method: GtLACPExternalSessionStoreExamples
-malformedRecordIsReported
- <gtExample>
- | root file store |
- root := self codexRoot.
- file := root / 'sessions' / 'rollout-partial.jsonl'.
- file writeStreamDo: [ :stream |
-  stream nextPutAll: '{broken JSON'; lf.
-  stream nextPutAll: (STONJSON toString: {
-   'type' -> 'session_meta'. 'payload' -> {
-    'id' -> 'recovered'. 'cwd' -> self projectDirectory fullName.
-    'timestamp' -> '2026-10-30T15:00:00Z' } asDictionary } asDictionary); lf ].
- store := (GtLACPCodexSessionStore on: root) read.
- self assert: (store sessions anySatisfy: [ :each | each sessionId = 'recovered' ]).
- self assert: (store issues anySatisfy: [ :issue | issue file = file and: [ issue lineNumber = 1 ] ]).
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-metadataPrefixIsBounded
- <gtExample>
- | root file store records |
- root := FileSystem memory root / 'claude'.
- file := root / 'projects' / 'encoded' / (self firstId, '.jsonl').
- records := ((1 to: 50) collect: [ :index |
-  { 'type' -> 'queue-operation'. 'sessionId' -> self firstId } asDictionary ]) asOrderedCollection.
- records add: { 'sessionId' -> self firstId. 'cwd' -> self projectDirectory fullName } asDictionary.
- self writeRecords: records to: file.
- store := (GtLACPClaudeCodeSessionStore on: root) read.
- self assert: store sessions first directory isNil.
- self assert: store issues notEmpty.
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-missingStorage
- <gtExample>
- | root codex claude |
- root := FileSystem memory root / 'absent'.
- codex := (GtLACPCodexSessionStore on: root) read.
- claude := (GtLACPClaudeCodeSessionStore on: root) read.
- self assert: codex sessions isEmpty.
- self assert: claude sessions isEmpty.
- self assert: codex issues size equals: 1.
- self assert: claude issues size equals: 1.
- ^ codex
-%
-
-method: GtLACPExternalSessionStoreExamples
-projectQueryInspector
- <gtExample>
- | query scripter |
- query := self codexProjectQuery.
- scripter := BlScripter new extent: 1200 @ 650; model: query;
-  element: (GtInspector forObject: query); yourself.
- scripter assertStep: [ :step | step onPhlowCellWithString: self firstId; exists ].
- scripter clickStep: [ :step |
-  step onChildFromBlock: [ :root | self tabNamed: 'Unknown directory' in: root ] ].
- scripter assertStep: [ :step | step onPhlowCellWithString: self compressedId; exists ].
- scripter clickStep: [ :step |
-  step onChildFromBlock: [ :root | self tabNamed: 'Read problems' in: root ] ].
- scripter assertStep: [ :step |
-  step onPhlowCellWithString: 'Compressed rollout: identity read from filename; metadata not decoded'; exists ].
- GtLACPSessionExamples new assertNoRenderingErrorsIn: scripter.
- ^ scripter
-%
-
-method: GtLACPExternalSessionStoreExamples
-readingDoesNotChangeArtifacts
- <gtExample>
- | root before after store |
- root := self codexRoot.
- before := (root allChildren select: #isFile) collect: [ :file | file -> file contents ].
- store := (GtLACPCodexSessionStore on: root) read.
- store read.
- after := (root allChildren select: #isFile) collect: [ :file | file -> file contents ].
- self assert: after equals: before.
- self assert: store sessions size equals: 4.
- ^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-reloadCompletesPartialTranscript
- <gtExample>
- | root file store query |
- root := FileSystem memory root / 'claude'.
- file := root / 'projects' / 'encoded' / (self firstId, '.jsonl').
- file parent ensureCreateDirectory.
- file writeStreamDo: [ :stream | stream nextPutAll: '{"sessionId":' ].
- store := (GtLACPClaudeCodeSessionStore on: root) read.
- query := store forDirectory: self projectDirectory.
- self assert: query sessions isEmpty.
- self assert: query unresolvedSessions size equals: 1.
- self assert: store issues notEmpty.
- self writeRecords: { {
-  'sessionId' -> self firstId. 'cwd' -> self projectDirectory fullName.
-  'timestamp' -> '2026-10-30T13:00:00Z' } asDictionary } to: file.
- store read.
- self assert: query sessions size equals: 1.
- self assert: query unresolvedSessions isEmpty.
- self assert: store issues isEmpty.
- ^ query
-%
-
-method: GtLACPExternalSessionStoreExamples
-sessionLookupDoesNotCreateEntries
-	<gtExample>
-	| store count |
-	store := self codexStore.
-	count := store sessions size.
-	self
-		assert: (store sessionWithId: self firstId) directory
-		equals: self projectDirectory.
-	self assert: (store sessionWithId: 'missing' ifAbsent: [ nil ]) isNil.
-	self
-		assert: ([ store sessionWithId: 'missing'.
-			false ]
-				on: Error
-				do: [ :error | error messageText includesSubstring: 'Session not found' ]).
-	self assert: store sessions size equals: count.
-	^ store
-%
-
-method: GtLACPExternalSessionStoreExamples
-storedSessionContextMenu
-	<gtExample>
-	| store scripter |
-	store := self codexStore.
-	scripter := BlScripter new
-			extent: 1200 @ 650;
-			model: store;
-			element: (GtInspector forObject: store);
-			yourself.
-	scripter menuStep
-		onPhlowCellWithString: self firstId;
-		openContextMenu;
-		play.
-	scripter menuStep
-		onSpaceRoot;
-		assertMenuItemWithLabelExists: 'Load session';
-		play.
-	GtLACPSessionExamples new assertNoRenderingErrorsIn: scripter.
-	^ scripter
-%
-
-method: GtLACPExternalSessionStoreExamples
-storedSessionLoad
-	<gtExample>
-	| stored session |
-	stored := self loadableStoredSession.
-	session := stored load.
-	[ self assert: session isReady.
-	self assert: session remoteSessionId equals: stored sessionId.
-	self assert: session directory equals: stored directory ]
-		ensure: [ session client stop ].
-	^ session
-%
-
-method: GtLACPExternalSessionStoreExamples
-storedSessionLoadActionOpensChat
-	<gtExample>
-	| stored pager scripter tool deadline |
-	stored := self loadableStoredSession.
-	pager := GtPager createWrappedOn: (GtInspector forObject: stored).
-	scripter := BlScripter new
-			extent: 1600 @ 1000;
-			model: stored;
-			element: pager;
-			yourself.
-	[ scripter pulseUntilReady.
-	scripter click
-		// #'acp-load-stored-session';
-		play.
-	deadline := Time millisecondClockValue + 5000.
-	[ pager pages size < 2 and: [ Time millisecondClockValue < deadline ] ]
-		whileTrue: [ (Delay forMilliseconds: 10) wait.
-			scripter pulseUntilReady ].
-	self assert: pager pages size equals: 2.
-	tool := (pager query // GtLACPSessionToolElement) anyOne.
-	self assert: tool chat remoteSessionId equals: stored sessionId.
-	self assert: tool chat isReady.
-	self assert: tool chat client == stored newClient.
-	self
-		assert: (tool query // GtLACPChatElement) anyOne viewModel session == tool chat.
-	GtLACPSessionExamples new assertNoRenderingErrorsIn: scripter ]
-		ensure: [ stored newClient stop ].
-	^ scripter
-%
-
-method: GtLACPExternalSessionStoreExamples
-storedSessionsLoadUsingRecordedDirectory
-	<gtExample>
-	| loaded |
-	loaded := OrderedCollection new.
-	{self claudeStore.
-		self codexStore}
-		do: [ :store | 
-			| stored session request |
-			stored := store sessionWithId: self firstId.
-			stored directory: FileLocator temp asFileReference asAbsolute.
-			session := stored
-					loadConfigureClient: [ :client | 
-						client
-							transportFactory: [ :configuration :directory | 
-								self assert: directory equals: stored directory.
-								GtLACPExamples new transport ] ].
-			[ self assert: session isReady.
-			self assert: session client class equals: stored newClient class.
-			self assert: session remoteSessionId equals: stored sessionId.
-			self assert: session directory equals: stored directory.
-			request := session connection transport sentMessages
-					detect: [ :message | (message at: 'method' ifAbsent: [ '' ]) = 'session/load' ].
-			self
-				assert: ((request at: 'params') at: 'sessionId')
-				equals: stored sessionId.
-			self
-				assert: ((request at: 'params') at: 'cwd')
-				equals: stored directory fullName.
-			loaded add: session ] ensure: [ session client stop ] ].
-	^ loaded
-%
-
-method: GtLACPExternalSessionStoreExamples
-storesCreateAppropriateClients
-	<gtExample>
-	| claude codex claudeClient codexClient |
-	claude := self claudeStore.
-	codex := self codexStore.
-	claudeClient := claude newClient.
-	codexClient := codex newClient.
-	self assert: claudeClient class equals: GtLACPClaudeCodeClient.
-	self assert: codexClient class equals: GtLACPCodexClient.
-	self assert: claudeClient connections isEmpty.
-	self assert: codexClient connections isEmpty.
-	self assert: claude newClient ~~ claudeClient.
-	self assert: codex newClient ~~ codexClient.
-	^ {claudeClient.
-		codexClient}
-%
-
-method: GtLACPExternalSessionStoreExamples
-storesLoadSessionsUsingRecordedDirectory
-	<gtExample>
-	| stores loaded |
-	stores := {self claudeStore.
-			self codexStore}.
-	loaded := OrderedCollection new.
-	stores
-		do: [ :store | 
-			| session recordedDirectory request |
-			recordedDirectory := FileLocator temp asFileReference asAbsolute.
-			(store sessionWithId: self firstId) directory: recordedDirectory.
-			session := store
-					loadSession: self firstId
-					configureClient: [ :client | 
-						client configuration requestTimeout: 180.
-						client
-							transportFactory: [ :configuration :directory | 
-								self assert: directory equals: recordedDirectory.
-								GtLACPExamples new transport ] ].
-			[ self assert: session isReady.
-			self assert: session remoteSessionId equals: self firstId.
-			self assert: session directory equals: recordedDirectory.
-			self assert: session client class equals: store newClient class.
-			self assert: session connection requestTimeout equals: 180.
-			request := session connection transport sentMessages
-					detect: [ :message | (message at: 'method' ifAbsent: [ '' ]) = 'session/load' ].
-			self assert: ((request at: 'params') at: 'sessionId') equals: self firstId.
-			self
-				assert: ((request at: 'params') at: 'cwd')
-				equals: recordedDirectory fullName.
-			loaded add: session ] ensure: [ session client stop ] ].
-	^ loaded
-%
-
-method: GtLACPExternalSessionStoreExamples
-typedStoredSessions
-	<gtExample>
-	| claude codex |
-	claude := self claudeStore.
-	codex := self codexStore.
-	claude sessions
-		do: [ :session | 
-			self assert: session class equals: GtLACPClaudeCodeStoredSession.
-			self assert: session store == claude.
-			self assert: session newClient class equals: GtLACPClaudeCodeClient ].
-	codex sessions
-		do: [ :session | 
-			self assert: session class equals: GtLACPCodexStoredSession.
-			self assert: session store == codex.
-			self assert: session newClient class equals: GtLACPCodexClient ].
-	^ {claude.
-		codex}
-%
-
-category: 'fixtures'
-method: GtLACPExternalSessionStoreExamples
-claudeRoot
- | root |
- root := FileSystem memory root / 'claude'.
- root ensureCreateDirectory.
- self writeRecords: {
-  { 'type' -> 'queue-operation'. 'sessionId' -> self firstId } asDictionary.
-  { 'type' -> 'user'. 'sessionId' -> self firstId. 'cwd' -> self projectDirectory fullName.
-   'timestamp' -> '2026-10-30T13:00:00Z'. 'slug' -> 'Readme check'.
-   'message' -> { 'content' -> 'Conversation body is not retained' } asDictionary } asDictionary
- } to: root / 'projects' / 'lossy-encoded-name' / (self firstId, '.jsonl').
- self writeRecords: {
-  { 'type' -> 'user'. 'sessionId' -> self secondId.
-   'cwd' -> (self projectDirectory fullName, '-other').
-   'timestamp' -> '2026-10-29T13:00:00Z' } asDictionary
- } to: root / 'projects' / 'another-name' / (self secondId, '.jsonl').
- self writeRecords: {
-  { 'sessionId' -> 'subagent'. 'cwd' -> self projectDirectory fullName } asDictionary
- } to: root / 'projects' / 'lossy-encoded-name' / self firstId / 'subagents' / 'agent-sub.jsonl'.
- self writeRecords: {
-  { 'sessionId' -> 'orphan'. 'cwd' -> self projectDirectory fullName } asDictionary
- } to: root / 'projects' / 'lossy-encoded-name' / 'old.orphaned-123-example.jsonl'.
- ^ root
-%
-
-method: GtLACPExternalSessionStoreExamples
-codexRoot
- | root |
- root := FileSystem memory root / 'codex'.
- root ensureCreateDirectory.
- self writeRecords: {
-  { 'id' -> self firstId. 'thread_name' -> 'Current title'. 'updated_at' -> '2026-10-30T14:00:00Z' } asDictionary.
-  { 'id' -> self firstId. 'thread_name' -> 'Older title'. 'updated_at' -> '2026-10-29T14:00:00Z' } asDictionary.
-  { 'id' -> self secondId. 'thread_name' -> 'Index only'. 'updated_at' -> '2026-10-30T12:00:00Z' } asDictionary
- } to: root / 'session_index.jsonl'.
- self writeRecords: {
-  { 'type' -> 'session_meta'. 'payload' -> {
-   'id' -> self firstId. 'cwd' -> self projectDirectory fullName.
-   'timestamp' -> '2026-10-30T13:00:00Z'. 'cli_version' -> 'example'.
-   'instructions' -> 'Not discovery metadata' } asDictionary } asDictionary.
-  { 'type' -> 'response_item'. 'payload' -> { 'content' -> 'Conversation body is not retained' } asDictionary } asDictionary
- } to: root / 'sessions' / '2026' / '10' / '30' / ('rollout-example-', self firstId, '.jsonl').
- self writeRecords: {
-  { 'type' -> 'session_meta'. 'payload' -> {
-   'id' -> 'other-project'. 'cwd' -> (self projectDirectory fullName, '-other').
-   'timestamp' -> '2026-10-30T11:00:00Z' } asDictionary } asDictionary
- } to: root / 'archived_sessions' / 'rollout-other.jsonl'.
- (root / 'sessions' / '2026' / '10' / '30' / ('rollout-2026-10-30T13-00-00-', self compressedId, '.jsonl.zst'))
-  writeStreamDo: [ :stream | stream nextPutAll: 'Not decoded by the metadata reader' ].
- (root / 'state_5.sqlite') writeStreamDo: [ :stream | stream nextPutAll: 'Not opened by the metadata reader' ].
- ^ root
-%
-
-method: GtLACPExternalSessionStoreExamples
-compressedId
- ^ '33333333-3333-4333-8333-333333333333'
-%
-
-method: GtLACPExternalSessionStoreExamples
-firstId
- ^ '11111111-1111-4111-8111-111111111111'
-%
-
-method: GtLACPExternalSessionStoreExamples
-projectDirectory
- ^ (FileLocator temp / 'gt-acp-query-example-project') asFileReference asAbsolute
-%
-
-method: GtLACPExternalSessionStoreExamples
-secondId
- ^ '22222222-2222-4222-8222-222222222222'
-%
-
-method: GtLACPExternalSessionStoreExamples
-tabNamed: aString in: anElement
- | found |
- anElement withAllChildrenBreadthFirstDo: [ :each |
-  ((each isKindOf: BrTab) and: [ each label asString = aString ])
-   ifTrue: [ found ifNil: [ found := each ] ] ].
- ^ found ifNil: [ self error: 'Tab not found: ', aString ]
-%
-
-method: GtLACPExternalSessionStoreExamples
-writeRecords: records to: aFile
- aFile parent ensureCreateDirectory.
- aFile writeStreamDo: [ :stream |
-  records do: [ :record | stream nextPutAll: (STONJSON toString: record); lf ] ]
 %
 
 category: 'accessing'
@@ -110853,6 +110432,110 @@ writeObject: anObject on: jsonWriter
 %
 
 category: 'accessing'
+method: GtLACPCodexRolloutEntry
+file
+	^ file
+%
+
+method: GtLACPCodexRolloutEntry
+file: anObject
+	file := anObject
+%
+
+method: GtLACPCodexRolloutEntry
+kind
+	^ rawData at: 'type' ifAbsent: [ 'untyped' ]
+%
+
+method: GtLACPCodexRolloutEntry
+lineNumber
+	^ lineNumber
+%
+
+method: GtLACPCodexRolloutEntry
+lineNumber: anObject
+	lineNumber := anObject
+%
+
+method: GtLACPCodexRolloutEntry
+payload
+	^ rawData at: 'payload' ifAbsent: [ Dictionary new ]
+%
+
+method: GtLACPCodexRolloutEntry
+rawData
+	^ rawData
+%
+
+method: GtLACPCodexRolloutEntry
+rawData: anObject
+	rawData := anObject
+%
+
+method: GtLACPCodexRolloutEntry
+session
+	^ session
+%
+
+method: GtLACPCodexRolloutEntry
+session: anObject
+	session := anObject
+%
+
+method: GtLACPCodexRolloutEntry
+timestamp
+	^ rawData at: 'timestamp' ifAbsent: [ '' ]
+%
+
+category: 'gt - views'
+method: GtLACPCodexRolloutEntry
+gtFieldsFor: aView
+	"What fields are present in this rollout entry?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Fields';
+		priority: 0;
+		items: [ rawData associations ];
+		column: 'Field' text: #key;
+		column: 'Value' text: [ :entry | entry value printString ];
+		send: #value
+%
+
+method: GtLACPCodexRolloutEntry
+gtFileFor: aView
+	"Where is the original JSONL entry?"
+
+	<gtView>
+	^ aView forward
+		title: 'File';
+		priority: 10;
+		object: [ file ];
+		view: #gtContentsFor:
+%
+
+method: GtLACPCodexRolloutEntry
+gtPayloadFor: aView
+	"What payload was recorded at this line?"
+
+	<gtView>
+	^ aView forward
+		title: 'Payload';
+		priority: -5;
+		object: [ self payload ];
+		view: #gtItemsFor:
+%
+
+category: 'printing'
+method: GtLACPCodexRolloutEntry
+printOn: aStream
+	aStream
+		nextPutAll: self kind asString;
+		nextPutAll: ' at ';
+		print: lineNumber
+%
+
+category: 'accessing'
 method: GtLACPProtocolTranscript
 initialize
  super initialize.
@@ -115113,6 +114796,11 @@ agentName
 %
 
 method: GtLACPExternalSessionStore
+allSessions
+	^ self sessions
+%
+
+method: GtLACPExternalSessionStore
 issues
  ^ issues
 %
@@ -115149,6 +114837,20 @@ defaultDirectory
 %
 
 category: 'gt - views'
+method: GtLACPExternalSessionStore
+gtIssuesFor: aView
+	"What problems were found while reading the discovered sessions?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Read problems';
+		priority: 10;
+		items: [ self issues ];
+		column: 'File' text: [ :issue | issue file fullName ];
+		column: 'Line' text: [ :issue | issue lineNumber ifNil: [ '' ] ];
+		column: 'Reason' text: #description
+%
+
 method: GtLACPExternalSessionStore
 gtSessionsFor: aView
 	<gtView>
@@ -115293,22 +114995,35 @@ read
 
 method: GtLACPExternalSessionStore
 readJsonLines: aFile limit: aLimit do: aBlock
- | lineNumber |
- lineNumber := 0.
- [ aFile readStreamDo: [ :stream |
-  [ stream atEnd not and: [ lineNumber < aLimit ] ] whileTrue: [
-   | line |
-   lineNumber := lineNumber + 1.
-   line := stream nextLine.
-   line ifNotEmpty: [
-    [ | record |
-     record := STONJSON fromString: line.
-     (record isKindOf: Dictionary) ifFalse: [ self error: 'Expected a JSON object' ].
-     (aBlock value: record value: lineNumber) ifTrue: [ ^ self ] ]
-      on: Error do: [ :error |
-       self issueFor: aFile line: lineNumber description: error messageText ] ] ] ] ]
-  on: Error do: [ :error |
-   self issueFor: aFile line: lineNumber description: error messageText ]
+	"Read UTF-8 JSONL one byte line at a time. A true result stops before the
+	next line is read, so a rollout's conversation body remains untouched."
+
+	| lineNumber |
+	lineNumber := 0.
+	[ aFile
+		binaryReadStreamDo: [ :stream | 
+			[ stream atEnd not and: [ lineNumber < aLimit ] ]
+				whileTrue: [ | bytes |
+					lineNumber := lineNumber + 1.
+					bytes := stream upTo: 10.
+					bytes
+						ifNotEmpty: [ [ | record |
+							record := STONJSON fromString: bytes utf8Decoded.
+							(record isKindOf: Dictionary)
+								ifFalse: [ self error: 'Expected a JSON object' ].
+							(aBlock value: record value: lineNumber) ifTrue: [ ^ self ] ]
+								on: Error
+								do: [ :error | 
+									self
+										issueFor: aFile
+										line: lineNumber
+										description: error messageText ] ] ] ] ]
+		on: Error
+		do: [ :error | 
+			self
+				issueFor: aFile
+				line: lineNumber
+				description: error messageText ]
 %
 
 method: GtLACPExternalSessionStore
@@ -115325,21 +115040,6 @@ category: 'sessions'
 method: GtLACPExternalSessionStore
 loadSession: anId
 	^ self loadSession: anId configureClient: [ :client |  ]
-%
-
-category: 'views'
-method: GtLACPExternalSessionStore
-gtIssuesFor: aView
-	<gtView>
-	^ aView columnedList
-		title: 'Read problems';
-		priority: 10;
-		items: [ issues ];
-		column: 'File' text: [ :issue | issue file fullName ];
-		column: 'Line'
-			text: [ :issue | issue lineNumber ifNil: [ '' ] ifNotNil: [ :aLineNumber | aLineNumber asString ] ]
-			width: 50;
-		column: 'Reason' text: #description
 %
 
 category: 'instance creation'
@@ -117286,6 +116986,142 @@ gtMetadataFor: aView
   column: 'Field' text: #key;
   column: 'Value' text: [ :entry | entry value printString ];
   send: #value
+%
+
+category: 'accessing'
+method: GtLACPCodexSessionRecord
+createdAt
+	^ nil
+%
+
+method: GtLACPCodexSessionRecord
+dateAt: aKey
+	^ (metadata at: aKey ifAbsent: [ nil ])
+		ifNotNil: [ :value | [ (DateAndTime fromString: value) asUTC ] on: Error do: [ :error | nil ] ]
+%
+
+method: GtLACPCodexSessionRecord
+directory
+	^ nil
+%
+
+method: GtLACPCodexSessionRecord
+issues
+	| result |
+	result := OrderedCollection new.
+	self dateKeys
+		do: [ :key | 
+			metadata
+				at: key
+				ifPresent: [ :value | 
+					value
+						ifNotNil: [ (self dateAt: key)
+								ifNil: [ result add: (self newIssue: 'Invalid timestamp: ' , value printString) ] ] ] ].
+	^ result
+%
+
+method: GtLACPCodexSessionRecord
+lineNumber
+	^ lineNumber
+%
+
+method: GtLACPCodexSessionRecord
+lineNumber: anObject
+	lineNumber := anObject
+%
+
+method: GtLACPCodexSessionRecord
+rawData
+	^ metadata
+%
+
+method: GtLACPCodexSessionRecord
+rawData: aDictionary
+	(aDictionary isKindOf: Dictionary)
+		ifFalse: [ self error: 'Expected metadata dictionary' ].
+	metadata := (aDictionary associations
+			select: [ :entry | self metadataKeys includes: entry key ]) asDictionary
+%
+
+method: GtLACPCodexSessionRecord
+selectionReason
+	^ 'Source evidence'
+%
+
+method: GtLACPCodexSessionRecord
+session
+	^ session
+%
+
+method: GtLACPCodexSessionRecord
+session: anObject
+	session := anObject
+%
+
+method: GtLACPCodexSessionRecord
+sessionId
+	^ metadata at: 'id'
+%
+
+method: GtLACPCodexSessionRecord
+title
+	^ ''
+%
+
+method: GtLACPCodexSessionRecord
+updatedAt
+	^ nil
+%
+
+category: 'gt - views'
+method: GtLACPCodexSessionRecord
+gtProvenanceFor: aView
+	"Where was this metadata recorded, and which session owns it?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Provenance';
+		priority: -5;
+		items: [ {'Session' -> session.
+				'File' -> file.
+				'Line' -> lineNumber.
+				'Format' -> format.
+				'Selection' -> self selectionReason} ];
+		column: 'Property' text: #key;
+		column: 'Value' text: [ :entry | entry value asString ];
+		send: #value
+%
+
+category: 'metadata'
+method: GtLACPCodexSessionRecord
+dateKeys
+	^ #()
+%
+
+method: GtLACPCodexSessionRecord
+metadataKeys
+	^ #()
+%
+
+category: 'private'
+method: GtLACPCodexSessionRecord
+newIssue: aString
+	^ GtLACPStoredSessionReadIssue new
+		file: file;
+		lineNumber: lineNumber;
+		description: aString;
+		yourself
+%
+
+category: 'testing'
+method: GtLACPCodexSessionRecord
+isIndexRecord
+	^ false
+%
+
+method: GtLACPCodexSessionRecord
+isRolloutRecord
+	^ false
 %
 
 category: 'accessing'
@@ -123855,6 +123691,11 @@ agentName
  ^ 'Claude Code'
 %
 
+method: GtLACPClaudeCodeSessionStore
+issues
+	^ super issues , (sessions values flatCollect: #issues)
+%
+
 category: 'clients'
 method: GtLACPClaudeCodeSessionStore
 newClient
@@ -123893,32 +123734,7 @@ readSessions
 
 method: GtLACPClaudeCodeSessionStore
 readTranscript: aFile
- | identifier session metadata found |
- identifier := aFile basename allButLast: '.jsonl' size.
- session := self sessionAt: identifier.
- metadata := { 'filenameSessionId' -> identifier } asDictionary.
- found := false.
- self readJsonLines: aFile limit: 50 do: [ :record :line |
-  (record includesKey: 'cwd')
-   ifFalse: [ false ]
-   ifTrue: [
-    | nativeId |
-    metadata addAll: (self metadataFrom: record keys:
-     #('sessionId' 'cwd' 'timestamp' 'slug' 'gitBranch' 'version')).
-    nativeId := record at: 'sessionId' ifAbsent: [ identifier ].
-    nativeId = identifier
-     ifFalse: [
-      self issueFor: aFile line: line description: 'Session ID disagrees with transcript filename'.
-      true ]
-     ifTrue: [
-      self directory: (record at: 'cwd') for: session file: aFile line: line.
-      session createdAt: (self dateFrom: (record at: 'timestamp' ifAbsent: [ nil ]) file: aFile line: line).
-      session title: (record at: 'slug' ifAbsent: [ '' ]).
-      found := true.
-      true ] ] ].
- session addSource: (self sourceFile: aFile format: #claudeTranscript metadata: metadata).
- found ifFalse: [
-  self issueFor: aFile line: nil description: 'Project directory is unknown after scanning up to 50 records' ]
+	(self sessionAt: aFile basenameWithoutExtension) file: aFile
 %
 
 category: 'accessing'
@@ -125766,6 +125582,36 @@ validateTypeObject
 method: NeoJSONSchemaValidator
 validateTypeString
 	^ instance isString
+%
+
+category: 'accessing'
+method: GtLACPCodexCompressedRolloutRecord
+issues
+	^ {self
+			newIssue: 'Compressed rollout: identity read from filename; metadata not decoded'}
+%
+
+method: GtLACPCodexCompressedRolloutRecord
+selectionReason
+	^ 'Filename identity only; compressed metadata not decoded'
+%
+
+method: GtLACPCodexCompressedRolloutRecord
+sessionId
+	^ metadata at: 'filenameSessionId'
+%
+
+category: 'initialization'
+method: GtLACPCodexCompressedRolloutRecord
+initialize
+	super initialize.
+	format := #codexCompressedRollout
+%
+
+category: 'metadata'
+method: GtLACPCodexCompressedRolloutRecord
+metadataKeys
+	^ #('filenameSessionId')
 %
 
 category: 'accessing'
@@ -128422,6 +128268,495 @@ category: 'serialization'
 method: GtLDataViewWithError
 serializeToLlmPrimiteDataOn: aBuilder
 	self computeTargetView serializeToLlmPrimiteDataOn: aBuilder 
+%
+
+category: 'assertions'
+method: GtLACPStoredSessionFixtures
+assertViewsFor: objects
+	objects
+		do: [ :object | 
+			object class allMethods
+				do: [ :method | 
+					((method pragmaAt: #gtView) notNil
+						and: [ method methodClass package name = 'Gt4Llm-ACP' ])
+						ifTrue: [ | result |
+							result := GtPhlowViewTester new
+									testView: (object perform: method selector with: GtPhlowView empty).
+							self
+								assert: (result isOk or: [ result isEmpty ])
+								description: object class name , '>>' , method selector ] ] ]
+%
+
+category: 'fixtures'
+method: GtLACPStoredSessionFixtures
+claudeRoot
+	| root |
+	root := FileSystem memory root / 'claude'.
+	root ensureCreateDirectory.
+	self
+		writeRecords: {{'type' -> 'queue-operation'.
+					'sessionId' -> self firstId} asDictionary.
+				{'type' -> 'user'.
+					'sessionId' -> self firstId.
+					'cwd' -> self projectDirectory fullName.
+					'timestamp' -> '2026-10-30T13:00:00Z'.
+					'slug' -> 'Readme check'.
+					'message'
+						-> {'content' -> 'Conversation body is not retained'} asDictionary}
+					asDictionary}
+		to: root / 'projects' / 'lossy-encoded-name' / (self firstId , '.jsonl').
+	self
+		writeRecords: {{'type' -> 'user'.
+					'sessionId' -> self secondId.
+					'cwd' -> (self projectDirectory fullName , '-other').
+					'timestamp' -> '2026-10-29T13:00:00Z'} asDictionary}
+		to: root / 'projects' / 'another-name' / (self secondId , '.jsonl').
+	self
+		writeRecords: {{'sessionId' -> 'subagent'.
+					'cwd' -> self projectDirectory fullName} asDictionary}
+		to: root / 'projects' / 'lossy-encoded-name' / self firstId / 'subagents'
+				/ 'agent-sub.jsonl'.
+	self
+		writeRecords: {{'sessionId' -> 'orphan'.
+					'cwd' -> self projectDirectory fullName} asDictionary}
+		to: root / 'projects' / 'lossy-encoded-name'
+				/ 'old.orphaned-123-example.jsonl'.
+	^ root
+%
+
+method: GtLACPStoredSessionFixtures
+claudeStore
+	^ (GtLACPClaudeCodeSessionStore on: self claudeRoot) read
+%
+
+method: GtLACPStoredSessionFixtures
+codexRoot
+	| root |
+	root := FileSystem memory root / 'codex'.
+	root ensureCreateDirectory.
+	self
+		writeRecords: {{'id' -> self firstId.
+					'thread_name' -> 'Current title'.
+					'updated_at' -> '2026-10-30T14:00:00Z'} asDictionary.
+				{'id' -> self firstId.
+					'thread_name' -> 'Older title'.
+					'updated_at' -> '2026-10-29T14:00:00Z'} asDictionary.
+				{'id' -> self secondId.
+					'thread_name' -> 'Index only'.
+					'updated_at' -> '2026-10-30T12:00:00Z'} asDictionary}
+		to: root / 'session_index.jsonl'.
+	self
+		writeRecords: {{'type' -> 'session_meta'.
+					'payload'
+						-> {'id' -> self firstId.
+								'cwd' -> self projectDirectory fullName.
+								'timestamp' -> '2026-10-30T13:00:00Z'.
+								'cli_version' -> 'example'.
+								'instructions' -> 'Not discovery metadata'} asDictionary} asDictionary.
+				{'type' -> 'response_item'.
+					'payload'
+						-> {'content' -> 'Conversation body is not retained'} asDictionary}
+					asDictionary}
+		to: root / 'sessions' / '2026' / '10' / '30'
+				/ ('rollout-example-' , self firstId , '.jsonl').
+	self
+		writeRecords: {{'type' -> 'session_meta'.
+					'payload'
+						-> {'id' -> 'other-project'.
+								'cwd' -> (self projectDirectory fullName , '-other').
+								'timestamp' -> '2026-10-30T11:00:00Z'} asDictionary} asDictionary}
+		to: root / 'archived_sessions' / 'rollout-other.jsonl'.
+	root / 'sessions' / '2026' / '10' / '30'
+		/ ('rollout-2026-10-30T13-00-00-' , self compressedId , '.jsonl.zst')
+		writeStreamDo: [ :stream | stream nextPutAll: 'Not decoded by the metadata reader' ].
+	root / 'state_5.sqlite'
+		writeStreamDo: [ :stream | stream nextPutAll: 'Not opened by the metadata reader' ].
+	^ root
+%
+
+method: GtLACPStoredSessionFixtures
+codexStore
+	^ (GtLACPCodexSessionStore on: self codexRoot) read
+%
+
+method: GtLACPStoredSessionFixtures
+compressedId
+	^ '33333333-3333-4333-8333-333333333333'
+%
+
+method: GtLACPStoredSessionFixtures
+directory: aDirectory forStoredSession: aSession
+	"Configure evidence-backed sessions through metadata fixtures."
+
+	(aSession isKindOf: GtLACPCodexStoredSession)
+		ifTrue: [ | metadata |
+			metadata := {'id' -> aSession sessionId} asDictionary.
+			aDirectory ifNotNil: [ metadata at: 'cwd' put: aDirectory fullName ].
+			aSession sources removeAll.
+			aSession
+				addRecord: (GtLACPCodexRolloutRecord new
+						file: FileSystem memory root / 'fixture.jsonl';
+						lineNumber: 1;
+						rawData: metadata;
+						yourself).
+			^ self ].
+	(aSession isKindOf: GtLACPClaudeCodeStoredSession)
+		ifTrue: [ aSession
+				rawData: (STONJSON
+						toString: (aDirectory
+								ifNil: [ {'type' -> 'user'.
+										'sessionId' -> aSession sessionId} asDictionary ]
+								ifNotNil: [ {'type' -> 'user'.
+										'sessionId' -> aSession sessionId.
+										'cwd' -> aDirectory fullName} asDictionary ])).
+			^ self ].
+	aSession directory: aDirectory
+%
+
+method: GtLACPStoredSessionFixtures
+firstId
+	^ '11111111-1111-4111-8111-111111111111'
+%
+
+method: GtLACPStoredSessionFixtures
+projectDirectory
+	^ (FileLocator temp / 'gt-acp-query-example-project') asFileReference
+		asAbsolute
+%
+
+method: GtLACPStoredSessionFixtures
+secondId
+	^ '22222222-2222-4222-8222-222222222222'
+%
+
+method: GtLACPStoredSessionFixtures
+writeRecords: records to: aFile
+	aFile parent ensureCreateDirectory.
+	aFile
+		writeStreamDo: [ :stream | 
+			records
+				do: [ :record | 
+					stream
+						nextPutAll: (STONJSON toString: record);
+						lf ] ]
+%
+
+category: 'examples'
+method: GtLACPExternalSessionStoreExamples
+allDiscoveryViews
+	<gtExample>
+	| codex claude query objects |
+	codex := self codexStore.
+	claude := self claudeStore.
+	query := codex forDirectory: self projectDirectory.
+	objects := {codex.
+			claude.
+			query.
+			codex sessions first.
+			codex sessions first sources first.
+			codex issues first}.
+	self assertViewsFor: objects.
+	^ query
+%
+
+method: GtLACPExternalSessionStoreExamples
+claudeProjectQuery
+ <gtExample>
+ | query |
+ query := self claudeStore forDirectory: self projectDirectory.
+ self assert: query sessions size equals: 1.
+ self assert: query sessions first sessionId equals: self firstId.
+ self assert: query unresolvedSessions isEmpty.
+ ^ query
+%
+
+method: GtLACPExternalSessionStoreExamples
+claudeStore
+	<gtExample>
+	| store session |
+	store := (GtLACPClaudeCodeSessionStore on: self claudeRoot) read.
+	self assert: store sessions size equals: 2.
+	self assert: store issues isEmpty.
+	session := store sessions detect: [ :each | each sessionId = self firstId ].
+	self assert: session directory equals: self projectDirectory.
+	self assert: session title equals: 'Readme check'.
+	self assert: (session sources first metadata includesKey: 'message') not.
+	self assert: store newClient class equals: GtLACPClaudeCodeClient.
+	self assert: session class equals: GtLACPClaudeCodeStoredSession.
+	self assert: store allSessions equals: store sessions.
+	^ store
+%
+
+method: GtLACPExternalSessionStoreExamples
+codexHeaderStopsBeforeConversation
+	<gtExample>
+	| root file store |
+	root := FileSystem memory root / 'codex'.
+	file := root / 'sessions' / ('rollout-example-' , self firstId , '.jsonl').
+	file parent ensureCreateDirectory.
+	file
+		binaryWriteStreamDo: [ :stream | 
+			stream
+				nextPutAll: (STONJSON
+						toString: {'type' -> 'session_meta'.
+								'payload'
+									-> {'id' -> self firstId.
+											'cwd' -> (self projectDirectory / 'Révision 🦊') fullName.
+											'timestamp' -> '2026-11-01T10:00:00Z'} asDictionary} asDictionary)
+						utf8Encoded;
+				nextPut: 10;
+				nextPutAll: #[255 254 123 98 114 111 107 101 110] ].
+	store := (GtLACPCodexSessionStore on: root) read.
+	self assert: store issues isEmpty.
+	self
+		assert: (store sessionWithId: self firstId) directory
+		equals: self projectDirectory / 'Révision 🦊'.
+	^ store
+%
+
+method: GtLACPExternalSessionStoreExamples
+codexProjectQuery
+ <gtExample>
+ | query |
+ query := self codexStore forDirectory: self projectDirectory.
+ self assert: query sessions size equals: 1.
+ self assert: query sessions first sessionId equals: self firstId.
+ self assert: query unresolvedSessions size equals: 2.
+ ^ query
+%
+
+method: GtLACPExternalSessionStoreExamples
+codexStore
+	<gtExample>
+	| store session |
+	store := (GtLACPCodexSessionStore on: self codexRoot) read.
+	self assert: store sessions size equals: 4.
+	session := store sessions detect: [ :each | each sessionId = self firstId ].
+	self assert: session title equals: 'Current title'.
+	self assert: session directory equals: self projectDirectory.
+	self assert: session sources size equals: 3.
+	self assert: session createdAt notNil.
+	self assert: session updatedAt notNil.
+	self assert: store issues size equals: 2.
+	self assert: store newClient class equals: GtLACPCodexClient.
+	self assert: session class equals: GtLACPCodexStoredSession.
+	^ store
+%
+
+method: GtLACPExternalSessionStoreExamples
+conditionalSessionLookup
+	<gtExample>
+	| stores |
+	stores := {self claudeStore.
+			self codexStore}.
+	stores
+		do: [ :store | 
+			| count present absent result |
+			count := store sessions size.
+			present := 0.
+			absent := 0.
+			result := store
+					sessionWithId: self firstId
+					ifPresent: [ :session | 
+						present := present + 1.
+						self assert: session == (store sessionWithId: self firstId).
+						nil ]
+					ifAbsent: [ absent := absent + 1.
+						#missing ].
+			self assert: result isNil.
+			self assert: present equals: 1.
+			self assert: absent equals: 0.
+			result := store
+					sessionWithId: 'missing'
+					ifPresent: [ :session | present := present + 1 ]
+					ifAbsent: [ absent := absent + 1.
+						#missing ].
+			self assert: result equals: #missing.
+			self assert: present equals: 1.
+			self assert: absent equals: 1.
+			self assert: store sessions size equals: count ].
+	^ stores
+%
+
+method: GtLACPExternalSessionStoreExamples
+filenameIdentityConflictIsReported
+ <gtExample>
+ | root file store |
+ root := self claudeRoot.
+ file := root / 'projects' / 'conflict' / 'wrong-id.jsonl'.
+ self writeRecords: { {
+  'sessionId' -> self secondId. 'cwd' -> self projectDirectory fullName } asDictionary } to: file.
+ store := (GtLACPClaudeCodeSessionStore on: root) read.
+ self assert: (store sessions detect: [ :session | session sessionId = 'wrong-id' ]) directory isNil.
+ self assert: (store issues anySatisfy: [ :issue |
+  issue description includesSubstring: 'Session ID disagrees' ]).
+ ^ store
+%
+
+method: GtLACPExternalSessionStoreExamples
+invalidStoredSessionsCannotLoad
+	<gtExample>
+	| stores |
+	stores := {self claudeStore.
+			self codexStore}.
+	stores
+		do: [ :store | 
+			| stored |
+			stored := store sessionWithId: self firstId.
+			self directory: nil forStoredSession: stored.
+			self
+				assert: ([ stored load.
+					false ]
+						on: Error
+						do: [ :error | error messageText includesSubstring: 'directory is unknown' ]).
+			self directory: FileSystem memory root / 'missing' forStoredSession: stored.
+			self
+				assert: ([ stored load.
+					false ]
+						on: Error
+						do: [ :error | error messageText includesSubstring: 'directory no longer exists' ]) ].
+	^ stores
+%
+
+method: GtLACPExternalSessionStoreExamples
+malformedRecordIsReported
+ <gtExample>
+ | root file store |
+ root := self codexRoot.
+ file := root / 'sessions' / 'rollout-partial.jsonl'.
+ file writeStreamDo: [ :stream |
+  stream nextPutAll: '{broken JSON'; lf.
+  stream nextPutAll: (STONJSON toString: {
+   'type' -> 'session_meta'. 'payload' -> {
+    'id' -> 'recovered'. 'cwd' -> self projectDirectory fullName.
+    'timestamp' -> '2026-10-30T15:00:00Z' } asDictionary } asDictionary); lf ].
+ store := (GtLACPCodexSessionStore on: root) read.
+ self assert: (store sessions anySatisfy: [ :each | each sessionId = 'recovered' ]).
+ self assert: (store issues anySatisfy: [ :issue | issue file = file and: [ issue lineNumber = 1 ] ]).
+ ^ store
+%
+
+method: GtLACPExternalSessionStoreExamples
+missingStorage
+ <gtExample>
+ | root codex claude |
+ root := FileSystem memory root / 'absent'.
+ codex := (GtLACPCodexSessionStore on: root) read.
+ claude := (GtLACPClaudeCodeSessionStore on: root) read.
+ self assert: codex sessions isEmpty.
+ self assert: claude sessions isEmpty.
+ self assert: codex issues size equals: 1.
+ self assert: claude issues size equals: 1.
+ ^ codex
+%
+
+method: GtLACPExternalSessionStoreExamples
+reloadCompletesPartialTranscript
+ <gtExample>
+ | root file store query |
+ root := FileSystem memory root / 'claude'.
+ file := root / 'projects' / 'encoded' / (self firstId, '.jsonl').
+ file parent ensureCreateDirectory.
+ file writeStreamDo: [ :stream | stream nextPutAll: '{"sessionId":' ].
+ store := (GtLACPClaudeCodeSessionStore on: root) read.
+ query := store forDirectory: self projectDirectory.
+ self assert: query sessions isEmpty.
+ self assert: query unresolvedSessions size equals: 1.
+ self assert: store issues notEmpty.
+ self writeRecords: { {
+  'sessionId' -> self firstId. 'cwd' -> self projectDirectory fullName.
+  'timestamp' -> '2026-10-30T13:00:00Z' } asDictionary } to: file.
+ store read.
+ self assert: query sessions size equals: 1.
+ self assert: query unresolvedSessions isEmpty.
+ self assert: store issues isEmpty.
+ ^ query
+%
+
+method: GtLACPExternalSessionStoreExamples
+storedSessionLoadActionOpensChat
+	<gtExample>
+	| stored pager scripter tool deadline |
+	stored := self loadableStoredSession.
+	pager := GtPager createWrappedOn: (GtInspector forObject: stored).
+	scripter := BlScripter new
+			extent: 1600 @ 1000;
+			model: stored;
+			element: pager;
+			yourself.
+	[ scripter pulseUntilReady.
+	scripter click
+		// #'acp-load-stored-session';
+		play.
+	deadline := Time millisecondClockValue + 5000.
+	[ pager pages size < 2 and: [ Time millisecondClockValue < deadline ] ]
+		whileTrue: [ (Delay forMilliseconds: 10) wait.
+			scripter pulseUntilReady ].
+	self assert: pager pages size equals: 2.
+	tool := (pager query // GtLACPSessionToolElement) anyOne.
+	self assert: tool chat remoteSessionId equals: stored sessionId.
+	self assert: tool chat isReady.
+	self assert: tool chat client == stored newClient.
+	self
+		assert: (tool query // GtLACPChatElement) anyOne viewModel session == tool chat.
+	GtLACPSessionExamples new assertNoRenderingErrorsIn: scripter ]
+		ensure: [ stored newClient stop ].
+	^ scripter
+%
+
+method: GtLACPExternalSessionStoreExamples
+storesLoadSessionsUsingRecordedDirectory
+	<gtExample>
+	| stores loaded |
+	stores := {self claudeStore.
+			self codexStore}.
+	loaded := OrderedCollection new.
+	stores
+		do: [ :store | 
+			| session recordedDirectory request |
+			recordedDirectory := FileLocator temp asFileReference asAbsolute.
+			self
+				directory: recordedDirectory
+				forStoredSession: (store sessionWithId: self firstId).
+			session := store
+					loadSession: self firstId
+					configureClient: [ :client | 
+						client configuration requestTimeout: 180.
+						client
+							transportFactory: [ :configuration :directory | 
+								self assert: directory equals: recordedDirectory.
+								GtLACPExamples new transport ] ].
+			[ self assert: session isReady.
+			self assert: session remoteSessionId equals: self firstId.
+			self assert: session directory equals: recordedDirectory.
+			self assert: session client class equals: store newClient class.
+			self assert: session connection requestTimeout equals: 180.
+			request := session connection transport sentMessages
+					detect: [ :message | (message at: 'method' ifAbsent: [ '' ]) = 'session/load' ].
+			self assert: ((request at: 'params') at: 'sessionId') equals: self firstId.
+			self
+				assert: ((request at: 'params') at: 'cwd')
+				equals: recordedDirectory fullName.
+			loaded add: session ] ensure: [ session client stop ] ].
+	^ loaded
+%
+
+category: 'fixtures'
+method: GtLACPExternalSessionStoreExamples
+loadableStoredSession
+	| store stored client |
+	store := self codexStore.
+	stored := store sessionWithId: self firstId.
+	client := stored newClient.
+	client
+		transportFactory: [ :configuration :directory | GtLACPExamples new transport ].
+	^ GtLACPFixtureStoredSession new
+		store: store;
+		sessionId: stored sessionId;
+		title: stored title;
+		directory: FileLocator temp asFileReference asAbsolute;
+		client: client;
+		yourself
 %
 
 category: 'accessing'
@@ -138851,6 +139186,35 @@ agentName
  ^ 'Codex'
 %
 
+method: GtLACPCodexSessionStore
+allSessions
+	"All discovered sessions, including internal and delegated agents."
+
+	^ super sessions
+%
+
+method: GtLACPCodexSessionStore
+internalAgents
+	^ self allSessions select: #isInternalAgent
+%
+
+method: GtLACPCodexSessionStore
+issues
+	^ super issues , (sessions values flatCollect: #issues)
+%
+
+method: GtLACPCodexSessionStore
+sessions
+	"Browse top-level agents, excluding known subagents. Missing origin metadata stays visible."
+
+	^ super sessions reject: #isSubagent
+%
+
+method: GtLACPCodexSessionStore
+subagents
+	^ self allSessions select: #isSubagent
+%
+
 category: 'clients'
 method: GtLACPCodexSessionStore
 newClient
@@ -138867,6 +139231,25 @@ defaultDirectory
   ifFalse: [ configured asFileReference ]
 %
 
+category: 'gt - views'
+method: GtLACPCodexSessionStore
+gtAgentOriginsFor: aView
+	"Which discovered sessions are internal or delegated agents, including those omitted from Sessions?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Agent origins';
+		priority: 5;
+		items: [ self allSessions ];
+		column: 'Kind' text: #agentKind;
+		column: 'Title' text: #title;
+		column: 'Agent' text: [ :session | session agentNickname ifNil: [ '' ] ];
+		column: 'Path' text: [ :session | session agentPath ifNil: [ '' ] ];
+		column: 'Parent thread'
+			text: [ :session | session parentThreadId ifNil: [ '' ] ];
+		column: 'Session ID' text: #sessionId
+%
+
 category: 'private'
 method: GtLACPCodexSessionStore
 storedSessionClass
@@ -138876,52 +139259,63 @@ storedSessionClass
 category: 'reading'
 method: GtLACPCodexSessionStore
 readCompressedRollout: aFile
- | basename identifier session |
- [ basename := aFile basename allButLast: '.jsonl.zst' size.
- identifier := basename last: 36.
- UUID fromString: identifier.
- session := self sessionAt: identifier.
- session addSource: (self sourceFile: aFile format: #codexCompressedRollout
-  metadata: { 'filenameSessionId' -> identifier } asDictionary).
- self issueFor: aFile line: nil description: 'Compressed rollout: identity read from filename; metadata not decoded' ]
-  on: Error do: [ :error | self issueFor: aFile line: nil description: error messageText ]
+	[ | basename identifier record |
+	basename := aFile basename allButLast: '.jsonl.zst' size.
+	identifier := basename last: 36.
+	UUID fromString: identifier.
+	record := GtLACPCodexCompressedRolloutRecord new
+			file: aFile;
+			rawData: {'filenameSessionId' -> identifier} asDictionary;
+			yourself.
+	(self sessionAt: identifier) addRecord: record ]
+		on: Error
+		do: [ :error | 
+			self
+				issueFor: aFile
+				line: nil
+				description: error messageText ]
 %
 
 method: GtLACPCodexSessionStore
 readIndex: aFile
- self readJsonLines: aFile limit: Float infinity do: [ :record :line |
-  | session source updated |
-  session := self sessionAt: (record at: 'id').
-  source := self sourceFile: aFile format: #codexIndex metadata:
-   (self metadataFrom: record keys: #('id' 'thread_name' 'name' 'updated_at')).
-  session addSource: source.
-  updated := self dateFrom: (record at: 'updated_at' ifAbsent: [ nil ]) file: aFile line: line.
-  (session updatedAt isNil or: [ updated notNil and: [ updated >= session updatedAt ] ]) ifTrue: [
-   session title: (record at: 'thread_name' ifAbsent: [ record at: 'name' ifAbsent: [ '' ] ]).
-   updated ifNotNil: [ session updatedAt: updated ] ].
-  false ]
+	self
+		readJsonLines: aFile
+		limit: Float infinity
+		do: [ :data :line | 
+			| record |
+			record := GtLACPCodexIndexRecord new
+					file: aFile;
+					lineNumber: line;
+					rawData: data;
+					yourself.
+			(self sessionAt: record sessionId) addRecord: record.
+			false ]
 %
 
 method: GtLACPCodexSessionStore
 readRollout: aFile
- | found |
- found := false.
- self readJsonLines: aFile limit: 50 do: [ :record :line |
-  (record at: 'type' ifAbsent: [ '' ]) = 'session_meta'
-   ifFalse: [ false ]
-   ifTrue: [
-    | metadata session created |
-    metadata := record at: 'payload'.
-    session := self sessionAt: (metadata at: 'id').
-    session addSource: (self sourceFile: aFile format: #codexRollout metadata:
-     (self metadataFrom: metadata keys: #('id' 'cwd' 'timestamp' 'originator' 'cli_version'))).
-    metadata at: 'cwd' ifPresent: [ :project | self directory: project for: session file: aFile line: line ].
-    created := self dateFrom: (metadata at: 'timestamp' ifAbsent: [ nil ]) file: aFile line: line.
-    created ifNotNil: [ session createdAt: created ].
-    found := true.
-    true ] ].
- found ifFalse: [
-  self issueFor: aFile line: nil description: 'No session_meta record found in the first 50 records' ]
+	| found |
+	found := false.
+	self
+		readJsonLines: aFile
+		limit: 50
+		do: [ :data :line | 
+			(data at: 'type' ifAbsent: [ '' ]) = 'session_meta'
+				ifFalse: [ false ]
+				ifTrue: [ | record |
+					record := GtLACPCodexRolloutRecord new
+							file: aFile;
+							lineNumber: line;
+							rawData: (data at: 'payload');
+							yourself.
+					(self sessionAt: record sessionId) addRecord: record.
+					found := true.
+					true ] ].
+	found
+		ifFalse: [ self
+				issueFor: aFile
+				line: nil
+				description: 'No session_meta record found in the first 50 records' ]
 %
 
 method: GtLACPCodexSessionStore
@@ -141345,6 +141739,48 @@ category: 'testing'
 classmethod: GtLACPPromptTurnActiveState
 isAbstract
 	^ self == GtLACPPromptTurnActiveState
+%
+
+category: 'accessing'
+method: GtLACPCodexIndexRecord
+selectionReason
+	self == session titleRecord ifTrue: [ ^ 'Selected title' ].
+	self updatedAt ifNil: [ ^ 'No valid update time' ].
+	^ 'Older or superseded index record'
+%
+
+method: GtLACPCodexIndexRecord
+title
+	^ metadata at: 'thread_name' ifAbsent: [ metadata at: 'name' ifAbsent: [ '' ] ]
+%
+
+method: GtLACPCodexIndexRecord
+updatedAt
+	^ self dateAt: 'updated_at'
+%
+
+category: 'initialization'
+method: GtLACPCodexIndexRecord
+initialize
+	super initialize.
+	format := #codexIndex
+%
+
+category: 'metadata'
+method: GtLACPCodexIndexRecord
+dateKeys
+	^ #('updated_at')
+%
+
+method: GtLACPCodexIndexRecord
+metadataKeys
+	^ #('id' 'thread_name' 'name' 'updated_at')
+%
+
+category: 'testing'
+method: GtLACPCodexIndexRecord
+isIndexRecord
+	^ true
 %
 
 category: 'accessing'
@@ -144635,6 +145071,215 @@ method: GtLDataViewBuildContext
 hasContext
 
 	^ self arguments size = 2
+%
+
+category: 'examples'
+method: GtLACPClaudeCodeTranscriptExamples
+browsingDoesNotDecodeSnapshot
+	<gtExample>
+	| session result |
+	session := self
+			transcriptWithRecords: {{'type' -> 'user'.
+						'sessionId' -> self firstId.
+						'cwd' -> self projectDirectory fullName.
+						'timestamp' -> '2026-11-01T10:00:00Z'} asDictionary.
+					self titleRecord: 'Révision 🦊' field: 'aiTitle'}.
+	self assert: session hasRawBytes not.
+	self assert: session title equals: 'Révision 🦊'.
+	self assert: session directory equals: self projectDirectory.
+	self assert: session createdAt notNil.
+	self assert: session hasRawBytes.
+	self assert: session hasRawData not.
+	self assert: session hasParsedRecords not.
+	result := GtPhlowViewTester new
+			testView: (GtLACPStoredSession sessionsView: GtPhlowView empty items: [ {session} ]).
+	self assert: result isOk.
+	self assert: session hasRawData not.
+	self assert: session hasParsedRecords not.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+decodedTextSharesByteSnapshot
+	<gtExample>
+	| session |
+	session := self browsingDoesNotDecodeSnapshot.
+	session file writeStreamDo: [ :stream | stream nextPutAll: '{}' ].
+	self assert: (session rawData includesSubstring: 'Révision 🦊').
+	self assert: session recordCount equals: 2.
+	self assert: session title equals: 'Révision 🦊'.
+	session read.
+	self assert: session hasRawBytes not.
+	self assert: session hasRawData not.
+	self assert: session title isEmpty.
+	self assert: session directory isNil.
+	self assert: session createdAt isNil.
+	self assert: session rawData equals: '{}'.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+detailsParseConversationRecordsOnDemand
+	<gtExample>
+	| session result |
+	session := self claudeStore sessionWithId: self firstId.
+	session
+		rawData: (String
+				streamContents: [ :stream | 
+					stream
+						nextPutAll: (STONJSON
+								toString: {'type' -> 'user'.
+										'sessionId' -> self firstId.
+										'cwd' -> self projectDirectory fullName.
+										'timestamp' -> '2026-11-01T10:00:00Z'} asDictionary);
+						lf;
+						nextPutAll: '{"type":"assistant","message":';
+						lf;
+						nextPutAll: (STONJSON toString: (self titleRecord: 'Révision 🦊' field: 'aiTitle')) ]).
+	self assert: session title equals: 'Révision 🦊'.
+	self assert: session directory equals: self projectDirectory.
+	self assert: session createdAt notNil.
+	session
+		sortKey;
+		sources.
+	self assert: session hasParsedRecords not.
+	result := GtPhlowViewTester new
+			testView: (GtLACPStoredSession sessionsView: GtPhlowView empty items: [ {session} ]).
+	self assert: result isOk.
+	self assert: session hasParsedRecords not.
+	self assert: session issues size equals: 1.
+	self assert: session issues first lineNumber equals: 2.
+	self assert: session hasParsedRecords.
+	self assert: session recordCount equals: 2.
+	self
+		assert: session directoryRecord directorySelectionReason
+		equals: 'Selected directory'.
+	self assert: session selectedTitleRecord selectionReason equals: 'Selected'.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+inspectorViews
+	<gtExample>
+	| session |
+	session := self
+			transcriptWithRecords: {{'type' -> 'user'.
+						'sessionId' -> self firstId.
+						'cwd' -> self projectDirectory fullName} asDictionary.
+					self titleRecord: 'Title' field: 'aiTitle'}.
+	self
+		assertViewsFor: {session.
+				session titleRecords first.
+				session records first}.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+lateTitleAndDirectory
+	<gtExample>
+	| entries transcript store session |
+	entries := ((1 to: 60)
+			collect: [ :index | 
+				{'type' -> 'assistant'.
+					'message' -> 'Body is not retained'} asDictionary ]) asOrderedCollection.
+	entries
+		add: {'type' -> 'user'.
+				'cwd' -> self projectDirectory fullName.
+				'sessionId' -> self firstId.
+				'timestamp' -> '2026-10-30T13:00:00Z'.
+				'message' -> 'Body is not retained'} asDictionary.
+	entries add: (self titleRecord: 'Title beyond the old limit' field: 'aiTitle').
+	transcript := self transcriptWithRecords: entries.
+	store := (GtLACPClaudeCodeSessionStore on: transcript file parent parent parent)
+			read.
+	session := store sessionWithId: self firstId.
+	self assert: session directory equals: self projectDirectory.
+	self assert: session title equals: 'Title beyond the old limit'.
+	self assert: transcript recordCount equals: 62.
+	self assert: transcript records size equals: 2.
+	self
+		assert: (transcript records
+				allSatisfy: [ :record | (record rawData includesKey: 'message') not ]).
+	self assert: (transcript recordKinds at: 'assistant') equals: 60.
+	self assert: store issues isEmpty.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+sidecarTitlePrecedence
+	<gtExample>
+	| session sidecar |
+	session := self
+			transcriptWithRecords: {self titleRecord: 'Generated' field: 'aiTitle'}.
+	sidecar := session file parent / self firstId / 'custom-title.json'.
+	sidecar parent ensureCreateDirectory.
+	sidecar
+		writeStreamDo: [ :stream | 
+			stream
+				nextPutAll: (STONJSON toString: {'customTitle' -> 'Sidecar'} asDictionary) ].
+	self assert: session title equals: 'Sidecar'.
+	self assert: session selectedTitleRecord file equals: sidecar.
+	self assert: session selectedTitleRecord lineNumber isNil.
+	self
+		writeRecords: {self titleRecord: 'Transcript rename' field: 'customTitle'}
+		to: session file.
+	session read.
+	self assert: session title equals: 'Transcript rename'.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+titleRecord: text field: field
+	^ {'type' -> field.
+		'sessionId' -> self firstId.
+		field -> text} asDictionary
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+titleSelection
+	<gtExample>
+	| session foreign |
+	session := self
+			transcriptWithRecords: {self titleRecord: 'Initial' field: 'aiTitle'.
+					self titleRecord: 'Revised' field: 'aiTitle'}.
+	self assert: session title equals: 'Revised'.
+	self
+		assert: session titleRecords first selectionReason
+		equals: 'Superseded by later record'.
+	foreign := self titleRecord: 'Foreign' field: 'customTitle'.
+	foreign at: 'sessionId' put: self secondId.
+	session
+		rawData: (String
+				streamContents: [ :stream | 
+					{self titleRecord: 'Explicit' field: 'customTitle'.
+						self titleRecord: 'Generated' field: 'aiTitle'.
+						self titleRecord: '   ' field: 'customTitle'.
+						self titleRecord: 42 field: 'customTitle'.
+						foreign}
+						do: [ :record | 
+							stream
+								nextPutAll: (STONJSON toString: record);
+								lf ] ]).
+	self assert: session title equals: 'Explicit'.
+	self
+		assert: session titleRecords last selectionReason
+		equals: 'Different session'.
+	self
+		assert: session titleRecords second selectionReason
+		equals: 'Lower priority'.
+	session rawData: '{}'.
+	self assert: session selectedTitleRecord isNil.
+	self assert: session title isEmpty.
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptExamples
+transcriptWithRecords: entries
+	| file |
+	file := FileSystem memory root / 'projects' / 'example'
+			/ (self firstId , '.jsonl').
+	self writeRecords: entries to: file.
+	^ GtLACPClaudeCodeStoredSession on: file
 %
 
 category: 'accessing'
@@ -163436,6 +164081,180 @@ isCancelling
 %
 
 category: 'accessing'
+method: GtLACPCodexRolloutRecord
+agentKind
+	| subagent |
+	self isGuardianReview ifTrue: [ ^ 'guardian review' ].
+	subagent := self subagentSource.
+	subagent = 'review' ifTrue: [ ^ 'review' ].
+	subagent = 'compact' ifTrue: [ ^ 'compact' ].
+	((subagent isKindOf: Dictionary) and: [ subagent includesKey: 'thread_spawn' ])
+		ifTrue: [ ^ 'delegated agent' ].
+	self isSubagent ifTrue: [ ^ 'subagent' ].
+	self source isString ifTrue: [ ^ 'session' ].
+	^ 'unknown'
+%
+
+method: GtLACPCodexRolloutRecord
+agentNickname
+	^ metadata
+		at: 'agent_nickname'
+		ifAbsent: [ self spawnMetadata at: 'agent_nickname' ifAbsent: [ nil ] ]
+%
+
+method: GtLACPCodexRolloutRecord
+agentPath
+	^ metadata
+		at: 'agent_path'
+		ifAbsent: [ self spawnMetadata at: 'agent_path' ifAbsent: [ nil ] ]
+%
+
+method: GtLACPCodexRolloutRecord
+createdAt
+	^ self dateAt: 'timestamp'
+%
+
+method: GtLACPCodexRolloutRecord
+directory
+	^ [ self validatedDirectory ] on: Error do: [ :error | nil ]
+%
+
+method: GtLACPCodexRolloutRecord
+issues
+	| result |
+	result := super issues.
+	[ self validatedDirectory ]
+		on: Error
+		do: [ :error | result add: (self newIssue: error messageText) ].
+	^ result
+%
+
+method: GtLACPCodexRolloutRecord
+parentThreadId
+	^ metadata
+		at: 'parent_thread_id'
+		ifAbsent: [ self spawnMetadata at: 'parent_thread_id' ifAbsent: [ nil ] ]
+%
+
+method: GtLACPCodexRolloutRecord
+selectionReason
+	self directory ifNil: [ ^ 'Directory unavailable or invalid' ].
+	self == session directoryRecord ifTrue: [ ^ 'Selected directory' ].
+	self directory = session directory ifTrue: [ ^ 'Same directory' ].
+	^ 'Conflicting directory; earlier source retained'
+%
+
+method: GtLACPCodexRolloutRecord
+source
+	^ metadata at: 'source' ifAbsent: [ nil ]
+%
+
+method: GtLACPCodexRolloutRecord
+spawnMetadata
+	| subagent |
+	subagent := self subagentSource.
+	^ (subagent isKindOf: Dictionary)
+		ifTrue: [ subagent at: 'thread_spawn' ifAbsent: [ Dictionary new ] ]
+		ifFalse: [ Dictionary new ]
+%
+
+method: GtLACPCodexRolloutRecord
+subagentSource
+	| source |
+	source := self source.
+	^ (source isKindOf: Dictionary)
+		ifTrue: [ source at: 'subagent' ifAbsent: [ nil ] ]
+		ifFalse: [ nil ]
+%
+
+method: GtLACPCodexRolloutRecord
+threadSource
+	^ metadata at: 'thread_source' ifAbsent: [ nil ]
+%
+
+category: 'gt - views'
+method: GtLACPCodexRolloutRecord
+gtOriginFor: aView
+	"What explicit metadata identifies this session's agent kind and parent?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Agent origin';
+		priority: -10;
+		items: [ {'Kind' -> self agentKind.
+				'Source' -> self source.
+				'Thread source' -> self threadSource.
+				'Parent thread' -> self parentThreadId.
+				'Agent nickname' -> self agentNickname.
+				'Agent path' -> self agentPath} ];
+		column: 'Property' text: #key;
+		column: 'Value'
+			text: [ :entry | entry value ifNil: [ '(unknown)' ] ifNotNil: [ :value | value printString ] ];
+		send: #value
+%
+
+category: 'initialization'
+method: GtLACPCodexRolloutRecord
+initialize
+	super initialize.
+	format := #codexRollout
+%
+
+category: 'metadata'
+method: GtLACPCodexRolloutRecord
+dateKeys
+	^ #('timestamp')
+%
+
+method: GtLACPCodexRolloutRecord
+metadataKeys
+	^ #('id' 'cwd' 'timestamp' 'originator' 'cli_version' 'source' 'thread_source' 'parent_thread_id' 'forked_from_id' 'agent_nickname' 'agent_path' 'agent_role')
+%
+
+category: 'private'
+method: GtLACPCodexRolloutRecord
+validatedDirectory
+	| path |
+	path := metadata at: 'cwd' ifAbsent: [ ^ nil ].
+	path isString ifFalse: [ self error: 'Project directory must be a string' ].
+	path ifEmpty: [ self error: 'Project directory must not be empty' ].
+	path := path asFileReference.
+	path isAbsolute
+		ifFalse: [ self error: 'Recorded project directory must be absolute' ].
+	^ path
+%
+
+category: 'testing'
+method: GtLACPCodexRolloutRecord
+hasOrigin
+	^ self source notNil or: [ self threadSource notNil ]
+%
+
+method: GtLACPCodexRolloutRecord
+isGuardianReview
+	| subagent |
+	self threadSource = 'guardian_review' ifTrue: [ ^ true ].
+	subagent := self subagentSource.
+	^ (subagent isKindOf: Dictionary)
+		and: [ (subagent at: 'other' ifAbsent: [ nil ]) = 'guardian' ]
+%
+
+method: GtLACPCodexRolloutRecord
+isInternalAgent
+	^ #('guardian review' 'review' 'compact') includes: self agentKind
+%
+
+method: GtLACPCodexRolloutRecord
+isRolloutRecord
+	^ true
+%
+
+method: GtLACPCodexRolloutRecord
+isSubagent
+	^ self subagentSource notNil or: [ self isGuardianReview ]
+%
+
+category: 'accessing'
 method: GtLPhlowSummarizersChangedListener
 actionExecutor: anActionExecutor
 	actionExecutor := anActionExecutor
@@ -165431,6 +166250,290 @@ category: 'running'
 method: GtExamplesReportRetrySignal
 exception: anException
 	exception := anException 
+%
+
+category: 'examples'
+method: GtLACPCodexStoredSessionExamples
+agentOrigins
+	<gtExample>
+	| sessions |
+	sessions := {{'source' -> 'vscode'} asDictionary -> 'session'.
+			{'thread_source' -> 'guardian_review'} asDictionary -> 'guardian review'.
+			{'source'
+					-> {'subagent' -> {'other' -> 'guardian'} asDictionary} asDictionary}
+				asDictionary -> 'guardian review'.
+			{'source' -> {'subagent' -> 'review'} asDictionary} asDictionary -> 'review'.
+			{'source' -> {'subagent' -> 'compact'} asDictionary} asDictionary
+				-> 'compact'.
+			{'source'
+					-> {'subagent'
+								-> {'thread_spawn'
+											-> {'parent_thread_id' -> self secondId.
+													'agent_path' -> '/root/design'.
+													'agent_nickname' -> 'Bacon'} asDictionary} asDictionary}
+							asDictionary} asDictionary -> 'delegated agent'}
+			collect: [ :case | 
+				| session |
+				session := self discoveredSession.
+				self
+					addRecord: GtLACPCodexIndexRecord new
+					metadata: {'id' -> self firstId.
+							'thread_name' -> 'Guardian review'.
+							'updated_at' -> '2027-01-01T00:00:00Z'} asDictionary
+					to: session.
+				self
+					addRecord: GtLACPCodexRolloutRecord new
+					metadata: (case key copy
+							at: 'id' put: self firstId;
+							yourself)
+					to: session.
+				self assert: session agentKind equals: case value.
+				self assert: session isSubagent equals: case value ~= 'session'.
+				self
+					assert: session isInternalAgent
+					equals: (#('guardian review' 'review' 'compact') includes: case value).
+				self assert: session isGuardianReview equals: case value = 'guardian review'.
+				self assert: session hasRawBytes not.
+				session ].
+	self assert: sessions last agentPath equals: '/root/design'.
+	self assert: sessions last agentNickname equals: 'Bacon'.
+	self
+		assert: sessions last parentSession
+				== (sessions last store sessionWithId: self secondId).
+	self assertViewsFor: {sessions second originRecord}.
+	^ sessions
+%
+
+method: GtLACPCodexStoredSessionExamples
+directoryConflict
+	<gtExample>
+	| session other |
+	session := self discoveredSession.
+	other := GtLACPCodexRolloutRecord new
+			file: FileSystem memory root / 'conflicting.jsonl';
+			lineNumber: 1;
+			rawData: {'id' -> self firstId.
+					'cwd' -> '/other-project'} asDictionary;
+			yourself.
+	session addRecord: other.
+	self assert: session directory equals: self projectDirectory.
+	self assert: session directoryRecord == session rolloutRecords first.
+	self
+		assert: other selectionReason
+		equals: 'Conflicting directory; earlier source retained'.
+	self
+		assert: (session issues
+				anySatisfy: [ :issue | issue description includesSubstring: 'Conflicting project directory' ]).
+	self assert: session hasRawBytes not.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+inspectorViews
+	<gtExample>
+	| session store |
+	session := self directoryConflict.
+	store := session store.
+	self
+		assertViewsFor: {session.
+				session indexRecords first.
+				session rolloutRecords first.
+				store sessionWithId: self secondId.
+				store sessionWithId: self compressedId.
+				(store sessionWithId: self compressedId) metadataRecords first.
+				session allRecords last}.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+malformedBodyIsDeferred
+	<gtExample>
+	| session |
+	session := self discoveredSession.
+	session file
+		writeStreamDo: [ :stream | 
+			stream
+				nextPutAll: (STONJSON
+						toString: {'type' -> 'session_meta'.
+								'payload' -> session rolloutRecords first rawData} asDictionary);
+				lf;
+				nextPutAll: '{broken JSON' ].
+	self assert: session issues isEmpty.
+	self assert: session hasParsedRecords not.
+	self assert: session recordCount equals: 1.
+	self assert: session issues size equals: 1.
+	self assert: session issues first lineNumber equals: 2.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+metadataViewsStayLazy
+	<gtExample>
+	| session result |
+	session := self discoveredSession.
+	#(gtMetadataRecordsFor: gtTitleEvidenceFor: gtDirectoryEvidenceFor: gtDetailsFor: gtSourcesFor: gtIssuesFor:)
+		do: [ :selector | 
+			result := GtPhlowViewTester new
+					testView: (session perform: selector with: GtPhlowView empty).
+			self assert: (result isOk or: [ result isEmpty ]) description: selector.
+			self assert: session hasRawBytes not.
+			self assert: session hasRawData not.
+			self assert: session hasParsedRecords not ].
+	result := GtPhlowViewTester new
+			testView: (GtLACPStoredSession sessionsView: GtPhlowView empty items: [ {session} ]).
+	self assert: result isOk.
+	self assert: session hasRawBytes not.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+partialMetadata
+	<gtExample>
+	| store index compressed |
+	store := self codexStore.
+	index := store sessionWithId: self secondId.
+	compressed := store sessionWithId: self compressedId.
+	self assert: index title equals: 'Index only'.
+	self assert: index issues isEmpty.
+	self
+		assert: compressed metadataRecords first class
+		equals: GtLACPCodexCompressedRolloutRecord.
+	self assert: compressed issues size equals: 1.
+	{index.
+		compressed}
+		do: [ :session | 
+			self assert: session file isNil.
+			self assert: session directory isNil.
+			self assert: session agentKind equals: 'unknown'.
+			self assert: session hasRawBytes not ].
+	^ store
+%
+
+method: GtLACPCodexStoredSessionExamples
+rolloutEntriesAreLazy
+	<gtExample>
+	| session |
+	session := self discoveredSession.
+	self assert: session hasParsedRecords not.
+	self assert: session recordCount equals: 2.
+	self assert: session hasRawBytes.
+	self assert: session hasRawData.
+	self assert: session hasParsedRecords.
+	self assert: session allRecords first kind equals: 'session_meta'.
+	self assert: session allRecords last kind equals: 'response_item'.
+	self assert: session allRecords last session == session.
+	self assert: session allRecords last lineNumber equals: 2.
+	self assert: (session recordKinds at: 'response_item') equals: 1.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+titleSelection
+	<gtExample>
+	| session record |
+	session := self discoveredSession.
+	self assert: session title equals: 'Current title'.
+	self assert: session titleRecord == session indexRecords first.
+	record := self
+			addRecord: GtLACPCodexIndexRecord new
+			metadata: {'id' -> self firstId.
+					'thread_name' -> 'Renamed'.
+					'updated_at' -> '2026-10-30T14:00:00Z'} asDictionary
+			to: session.
+	self assert: session title equals: 'Renamed'.
+	self assert: session titleRecord == record.
+	self assert: record selectionReason equals: 'Selected title'.
+	record := self
+			addRecord: GtLACPCodexIndexRecord new
+			metadata: {'id' -> self firstId.
+					'thread_name' -> 'Invalid date'.
+					'updated_at' -> 'invalid'} asDictionary
+			to: session.
+	self assert: session title equals: 'Renamed'.
+	self assert: record issues size equals: 1.
+	self assert: record selectionReason equals: 'No valid update time'.
+	self assert: session hasRawBytes not.
+	^ session
+%
+
+method: GtLACPCodexStoredSessionExamples
+topLevelSessions
+	<gtExample>
+	| store guardian delegated root |
+	store := self codexStore.
+	root := store sessionWithId: self firstId.
+	root
+		addRecord: (GtLACPCodexRolloutRecord new
+				file: root file;
+				lineNumber: 1;
+				rawData: {'id' -> root sessionId.
+						'source' -> 'vscode'} asDictionary;
+				yourself).
+	guardian := store sessionAt: 'guardian-child'.
+	guardian
+		addRecord: (GtLACPCodexRolloutRecord new
+				file: root file;
+				lineNumber: 1;
+				rawData: {'id' -> guardian sessionId.
+						'thread_source' -> 'guardian_review'.
+						'parent_thread_id' -> root sessionId.
+						'cwd' -> self projectDirectory fullName} asDictionary;
+				yourself).
+	delegated := store sessionAt: 'delegated-child'.
+	delegated
+		addRecord: (GtLACPCodexRolloutRecord new
+				file: root file;
+				lineNumber: 1;
+				rawData: {'id' -> delegated sessionId.
+						'cwd' -> self projectDirectory fullName.
+						'source'
+							-> {'subagent'
+										-> {'thread_spawn'
+													-> {'parent_thread_id' -> root sessionId.
+															'agent_path' -> '/root/design'} asDictionary} asDictionary}
+									asDictionary} asDictionary;
+				yourself).
+	self assert: (store sessions includes: root).
+	self assert: (store sessions includes: guardian) not.
+	self assert: (store sessions includes: delegated) not.
+	self assert: (store allSessions includes: guardian).
+	self assert: (store subagents includes: delegated).
+	self assert: (store internalAgents includes: guardian).
+	self assert: (store sessionWithId: guardian sessionId) == guardian.
+	self assert: guardian parentSession == root.
+	self
+		assert: (store allSessions allSatisfy: [ :session | session hasRawBytes not ]).
+	self assert: (store sessions includes: (store sessionWithId: self secondId)).
+	self
+		assert: (store sessions includes: (store sessionWithId: self compressedId)).
+	self
+		assert: (store sessionWithId: self compressedId) agentKind
+		equals: 'unknown'.
+	self
+		assert: ((store forDirectory: self projectDirectory) sessions noneSatisfy: #isSubagent).
+	self
+		assert: ((store forDirectory: self projectDirectory) unresolvedSessions
+				noneSatisfy: #isSubagent).
+	self assertViewsFor: {store}.
+	self
+		assert: (store allSessions allSatisfy: [ :session | session hasRawBytes not ]).
+	^ store
+%
+
+category: 'fixtures'
+method: GtLACPCodexStoredSessionExamples
+addRecord: aRecord metadata: metadata to: session
+	aRecord
+		file: (session file ifNil: [ FileSystem memory root / 'fixture.jsonl' ]);
+		lineNumber: 1;
+		rawData: metadata.
+	session addRecord: aRecord.
+	^ aRecord
+%
+
+method: GtLACPCodexStoredSessionExamples
+discoveredSession
+	^ self codexStore sessionWithId: self firstId
 %
 
 category: 'accessing'
@@ -188678,6 +189781,154 @@ printOneLineContentsOn: stream
 %
 
 category: 'accessing'
+method: GtLACPClaudeCodeTranscriptRecord
+belongsToSession
+	^ (rawData at: 'sessionId' ifAbsent: [ session sessionId ]) = session sessionId
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+directory
+	^ rawData at: 'cwd' ifAbsent: [ '' ]
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+directorySelectionReason
+	self hasDirectory ifFalse: [ ^ '' ].
+	self belongsToSession ifFalse: [ ^ 'Different session' ].
+	(self sameLocationAs: session directoryRecord)
+		ifTrue: [ ^ 'Selected directory' ].
+	^ 'Later directory record'
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+file
+	^ file
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+file: anObject
+	file := anObject
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+hasDirectory
+	^ rawData includesKey: 'cwd'
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+isTitleRecord
+	^ false
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+kind
+	^ rawData at: 'type' ifAbsent: [ file basename ]
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+lineNumber
+	^ lineNumber
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+lineNumber: anObject
+	lineNumber := anObject
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+printOn: aStream
+	aStream
+		nextPutAll: self kind asString;
+		nextPutAll: ' at ';
+		nextPutAll: (lineNumber ifNil: [ 'sidecar' ] ifNotNil: [ :value | value asString ])
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+rawData
+	^ rawData
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+rawData: anObject
+	rawData := anObject
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+session
+	^ session
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+session: anObject
+	session := anObject
+%
+
+category: 'gt - views'
+method: GtLACPClaudeCodeTranscriptRecord
+gtFieldsFor: aView
+	"What metadata was recorded at this file and line?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Fields';
+		priority: 0;
+		items: [ rawData associations sorted: [ :a :b | a key <= b key ] ];
+		column: 'Field' text: #key;
+		column: 'Value' text: [ :entry | entry value printString ];
+		send: #value
+%
+
+method: GtLACPClaudeCodeTranscriptRecord
+gtFileFor: aView
+	"Where is the original evidence, including fields not retained by discovery?"
+
+	<gtView>
+	^ aView forward
+		title: 'File';
+		priority: 20;
+		object: [ file ];
+		view: #gtContentsFor:
+%
+
+category: 'testing'
+method: GtLACPClaudeCodeTranscriptRecord
+sameLocationAs: aRecord
+	^ aRecord notNil
+		and: [ session == aRecord session
+				and: [ file = aRecord file and: [ lineNumber = aRecord lineNumber ] ] ]
+%
+
+category: 'accessing'
+classmethod: GtLACPClaudeCodeTranscriptRecord
+from: aDictionary
+	| recordClass |
+	recordClass := (self titleFields
+			anySatisfy: [ :key | aDictionary includesKey: key ])
+			ifTrue: [ GtLACPClaudeCodeTitleRecord ]
+			ifFalse: [ self ].
+	^ recordClass new
+		rawData: (aDictionary associations
+				select: [ :entry | self metadataKeys includes: entry key ]) asDictionary;
+		yourself
+%
+
+classmethod: GtLACPClaudeCodeTranscriptRecord
+includesMetadata: aDictionary
+	^ (aDictionary includesKey: 'cwd')
+		or: [ self titleFields anySatisfy: [ :key | aDictionary includesKey: key ] ]
+%
+
+classmethod: GtLACPClaudeCodeTranscriptRecord
+metadataKeys
+	^ #('type' 'sessionId' 'cwd' 'timestamp' 'slug' 'gitBranch' 'version' 'customTitle' 'aiTitle' 'summary')
+%
+
+classmethod: GtLACPClaudeCodeTranscriptRecord
+titleFields
+	^ #('customTitle' 'aiTitle' 'summary' 'slug')
+%
+
+category: 'accessing'
 method: SubscriptOutOfBounds
 lowerBound
 	^ lowerBound
@@ -195582,11 +196833,26 @@ directory: anObject
 %
 
 method: GtLACPStoredSession
+loadConfigureClient: aBlock
+	| client |
+	self directory
+		ifNil: [ self
+				error: 'Session found, but its project directory is unknown: '
+						, self sessionId asString ].
+	self directory isDirectory
+		ifFalse: [ self
+				error: 'The recorded project directory no longer exists: ' , self directory fullName ].
+	client := self newClient.
+	aBlock value: client.
+	^ client loadSession: self sessionId in: self directory
+%
+
+method: GtLACPStoredSession
 loadSessionScript
 	"Build source only; do not connect to an agent or load the session."
 
 	| clientClassName |
-	(directory isNil or: [ sessionId isNil ]) ifTrue: [ ^ nil ].
+	(self directory isNil or: [ self sessionId isNil ]) ifTrue: [ ^ nil ].
 	clientClassName := self newClient class name.
 	^ String
 		streamContents: [ :stream | 
@@ -195601,11 +196867,11 @@ loadSessionScript
 				cr;
 				tab;
 				nextPutAll: 'loadSession: ';
-				nextPutAll: sessionId printString;
+				nextPutAll: self sessionId printString;
 				cr;
 				tab;
 				nextPutAll: 'in: ';
-				nextPutAll: directory fullName printString;
+				nextPutAll: self directory fullName printString;
 				nextPutAll: ' asFileReference.';
 				cr;
 				nextPutAll: 'GtLACPSessionRegistry current registerSession: session' ]
@@ -195623,9 +196889,9 @@ sessionId: anObject
 
 method: GtLACPStoredSession
 sortKey
- ^ updatedAt
-  ifNil: [ createdAt ifNil: [ '' ] ifNotNil: [ :date | date asString ] ]
-  ifNotNil: [ :date | date asString ]
+	^ self updatedAt
+		ifNil: [ self createdAt ifNil: [ '' ] ifNotNil: [ :date | date asString ] ]
+		ifNotNil: [ :date | date asString ]
 %
 
 method: GtLACPStoredSession
@@ -195680,36 +196946,6 @@ gtLoadFor: anAction
 
 category: 'gt - extensions'
 method: GtLACPStoredSession
-gtDetailsFor: aView
-	"Which identity and project metadata describe this stored session?"
-
-	<gtView>
-	| valueText |
-	valueText := [ :value | value ifNil: [ '(unknown)' ] ifNotNil: [ :aValue | aValue asString ] ].
-	^ aView details
-		title: 'Details';
-		priority: 5;
-		row: 'Agent'
-			value: [ self agentName ]
-			text: valueText;
-		row: 'Session ID'
-			value: [ sessionId ]
-			text: valueText;
-		row: 'Project directory'
-			value: [ directory ]
-			text: valueText;
-		row: 'Title'
-			value: [ title ]
-			text: valueText;
-		row: 'Created'
-			value: [ createdAt ]
-			text: valueText;
-		row: 'Updated'
-			value: [ updatedAt ]
-			text: valueText
-%
-
-method: GtLACPStoredSession
 gtLoadScriptFor: aView
 	"What script can I edit and run to load this session with its client and project directory?"
 
@@ -195726,6 +196962,50 @@ gtLoadScriptFor: aView
 				asExpandedOnlyElement) vFitContentLimited ]
 %
 
+category: 'gt - views'
+method: GtLACPStoredSession
+gtDetailsFor: aView
+	"Which identity and project metadata describe this stored session?"
+
+	<gtView>
+	| valueText |
+	valueText := [ :value | value ifNil: [ '(unknown)' ] ifNotNil: [ :aValue | aValue asString ] ].
+	^ aView details
+		title: 'Details';
+		priority: 5;
+		row: 'Agent'
+			value: [ self agentName ]
+			text: valueText;
+		row: 'Session ID'
+			value: [ self sessionId ]
+			text: valueText;
+		row: 'Project directory'
+			value: [ self directory ]
+			text: valueText;
+		row: 'Title'
+			value: [ self title ]
+			text: valueText;
+		row: 'Created'
+			value: [ self createdAt ]
+			text: valueText;
+		row: 'Updated'
+			value: [ self updatedAt ]
+			text: valueText
+%
+
+method: GtLACPStoredSession
+gtSourcesFor: aView
+	<gtView>
+	^ aView columnedList
+		title: 'Sources';
+		priority: 0;
+		items: [ self sources ];
+		column: 'Format'
+			text: #format
+			width: 130;
+		column: 'File' text: [ :source | source file fullName ]
+%
+
 category: 'initialization'
 method: GtLACPStoredSession
 initialize
@@ -195738,20 +197018,6 @@ category: 'loading'
 method: GtLACPStoredSession
 load
 	^ self loadConfigureClient: [ :client |  ]
-%
-
-method: GtLACPStoredSession
-loadConfigureClient: aBlock
-	| client |
-	directory
-		ifNil: [ self
-				error: 'Session found, but its project directory is unknown: ' , sessionId asString ].
-	directory isDirectory
-		ifFalse: [ self
-				error: 'The recorded project directory no longer exists: ' , directory fullName ].
-	client := self newClient.
-	aBlock value: client.
-	^ client loadSession: sessionId in: directory
 %
 
 method: GtLACPStoredSession
@@ -195773,20 +197039,6 @@ addSource: aSource
 %
 
 category: 'views'
-method: GtLACPStoredSession
-gtSourcesFor: aView
-	<gtView>
-	^ aView columnedList
-		title: 'Sources';
-		priority: 0;
-		items: [ sources ];
-		column: 'Format'
-			text: #format
-			width: 130;
-		column: 'File' text: [ :source | source file fullName ]
-%
-
-category: 'views'
 classmethod: GtLACPStoredSession
 sessionsView: aView items: aBlock
 	^ aView columnedList
@@ -195803,18 +197055,459 @@ sessionsView: aView items: aBlock
 					ifNil: [ '(unknown)' ]
 					ifNotNil: [ :aDirectory | aDirectory fullName ] ];
 		column: 'Session ID' text: #sessionId;
-		column: 'Metadata time'
+		column: 'Time'
 			text: [ :each | 
 				(each updatedAt ifNil: [ each createdAt ])
 					ifNil: [ '(unknown)' ]
-					ifNotNil: [ :aTime | aTime asString ] ];
+					ifNotNil: [ :aTime | aTime printToSeconds ] ];
 		actionUpdateButtonTooltip: 'Refresh session list'
+%
+
+category: 'accessing'
+method: GtLACPFileStoredSession
+allRecords
+	^ allRecords ifNil: [ allRecords := self parseRecords ]
+%
+
+method: GtLACPFileStoredSession
+file
+	^ self subclassResponsibility
+%
+
+method: GtLACPFileStoredSession
+rawBytes
+	^ rawBytes
+		ifNil: [ rawBytes := self file
+					ifNil: [ #[] ]
+					ifNotNil: [ :aFile | 
+						[ aFile binaryContents ]
+							on: Error
+							do: [ :error | 
+								parseIssues add: (self newIssueAt: nil description: error messageText).
+								#[] ] ] ]
+%
+
+method: GtLACPFileStoredSession
+rawData
+	^ rawData
+		ifNil: [ rawData := [ self rawBytes utf8Decoded ]
+					on: Error
+					do: [ :error | 
+						parseIssues add: (self newIssueAt: nil description: error messageText).
+						'' ] ]
+%
+
+method: GtLACPFileStoredSession
+rawData: aString
+	self read.
+	rawData := aString.
+	rawBytes := aString utf8Encoded
+%
+
+method: GtLACPFileStoredSession
+recordCount
+	^ self allRecords size
+%
+
+method: GtLACPFileStoredSession
+recordKinds
+	| counts |
+	counts := Dictionary new.
+	self allRecords
+		do: [ :record | 
+			| kind |
+			kind := record kind.
+			kind isString ifFalse: [ kind := 'invalid type' ].
+			counts at: kind put: (counts at: kind ifAbsent: [ 0 ]) + 1 ].
+	^ counts
+%
+
+category: 'initialization'
+method: GtLACPFileStoredSession
+initialize
+	super initialize.
+	parseIssues := OrderedCollection new
+%
+
+category: 'private'
+method: GtLACPFileStoredSession
+newIssueAt: aLine description: aString
+	^ GtLACPStoredSessionReadIssue new
+		file: self file;
+		lineNumber: aLine;
+		description: aString;
+		yourself
+%
+
+method: GtLACPFileStoredSession
+parseRecords
+	| result lineNumber sourceFile |
+	result := OrderedCollection new.
+	lineNumber := 0.
+	sourceFile := self file.
+	self rawData
+		linesDo: [ :line | 
+			lineNumber := lineNumber + 1.
+			line
+				ifNotEmpty: [ [ | data record |
+					data := STONJSON fromString: line.
+					(data isKindOf: Dictionary)
+						ifFalse: [ self error: 'Expected a JSON object' ].
+					record := self recordFrom: data.
+					record
+						session: self;
+						file: sourceFile;
+						lineNumber: lineNumber.
+					result add: record ]
+						on: Error
+						do: [ :error | parseIssues add: (self newIssueAt: lineNumber description: error messageText) ] ] ].
+	^ result
+%
+
+method: GtLACPFileStoredSession
+recordFrom: aDictionary
+	^ self subclassResponsibility
+%
+
+category: 'reading'
+method: GtLACPFileStoredSession
+read
+	rawBytes := nil.
+	rawData := nil.
+	allRecords := nil.
+	directory := nil.
+	createdAt := nil.
+	updatedAt := nil.
+	title := nil.
+	parseIssues removeAll.
+	^ self
+%
+
+category: 'testing'
+method: GtLACPFileStoredSession
+hasParsedRecords
+	^ allRecords isNotNil
+%
+
+method: GtLACPFileStoredSession
+hasRawBytes
+	^ rawBytes isNotNil
+%
+
+method: GtLACPFileStoredSession
+hasRawData
+	^ rawData isNotNil
+%
+
+category: 'accessing'
+method: GtLACPCodexStoredSession
+agentKind
+	^ self originRecord ifNil: [ 'unknown' ] ifNotNil: [ :value | value agentKind ]
+%
+
+method: GtLACPCodexStoredSession
+agentNickname
+	^ self originRecord ifNotNil: [ :value | value agentNickname ]
+%
+
+method: GtLACPCodexStoredSession
+agentPath
+	^ self originRecord ifNotNil: [ :value | value agentPath ]
+%
+
+method: GtLACPCodexStoredSession
+createdAt
+	^ createdAt
+		ifNil: [ createdAt := self createdAtRecord ifNotNil: [ :value | value createdAt ] ]
+%
+
+method: GtLACPCodexStoredSession
+createdAtRecord
+	| selected |
+	selected := nil.
+	self rolloutRecords
+		do: [ :record | record createdAt ifNotNil: [ selected := record ] ].
+	^ selected
+%
+
+method: GtLACPCodexStoredSession
+directory
+	^ directory
+		ifNil: [ directory := self directoryRecord ifNotNil: [ :value | value directory ] ]
+%
+
+method: GtLACPCodexStoredSession
+directoryRecord
+	^ self rolloutRecords
+		detect: [ :record | record directory notNil ]
+		ifNone: [ nil ]
+%
+
+method: GtLACPCodexStoredSession
+file
+	"Full entries are read from the first uncompressed rollout; all sources remain navigable."
+
+	^ self rolloutRecords
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ :records | records first file ]
+%
+
+method: GtLACPCodexStoredSession
+indexRecords
+	^ self metadataRecords select: #isIndexRecord
+%
+
+method: GtLACPCodexStoredSession
+issues
+	"Discovery problems and problems from details already requested; do not force the body."
+
+	| result selected |
+	result := parseIssues copy.
+	self metadataRecords do: [ :record | result addAll: record issues ].
+	selected := self directoryRecord.
+	selected
+		ifNotNil: [ self rolloutRecords
+				do: [ :record | 
+					(record directory notNil and: [ record directory ~= selected directory ])
+						ifTrue: [ result
+								add: (record newIssue: 'Conflicting project directory; earlier source retained') ] ] ].
+	^ result
+%
+
+method: GtLACPCodexStoredSession
+metadataRecords
+	^ sources select: [ :source | source isKindOf: GtLACPCodexSessionRecord ]
+%
+
+method: GtLACPCodexStoredSession
+originRecord
+	^ originRecord
+		ifNil: [ originRecord := self rolloutRecords detect: #hasOrigin ifNone: [ nil ] ]
+%
+
+method: GtLACPCodexStoredSession
+parentSession
+	^ self parentThreadId
+		ifNotNil: [ :identifier | store sessionWithId: identifier ifAbsent: [ nil ] ]
+%
+
+method: GtLACPCodexStoredSession
+parentThreadId
+	^ self originRecord ifNotNil: [ :value | value parentThreadId ]
+%
+
+method: GtLACPCodexStoredSession
+records
+	^ self metadataRecords
+%
+
+method: GtLACPCodexStoredSession
+rolloutRecords
+	^ self metadataRecords select: #isRolloutRecord
+%
+
+method: GtLACPCodexStoredSession
+source
+	^ self originRecord ifNotNil: [ :value | value source ]
+%
+
+method: GtLACPCodexStoredSession
+threadSource
+	^ self originRecord ifNotNil: [ :value | value threadSource ]
+%
+
+method: GtLACPCodexStoredSession
+title
+	^ title
+		ifNil: [ title := self titleRecord ifNil: [ '' ] ifNotNil: [ :value | value title ] ]
+%
+
+method: GtLACPCodexStoredSession
+titleRecord
+	| selected latest |
+	selected := nil.
+	latest := nil.
+	self indexRecords
+		do: [ :record | 
+			| updated |
+			updated := record updatedAt.
+			(latest isNil or: [ updated notNil and: [ updated >= latest ] ])
+				ifTrue: [ selected := record.
+					updated ifNotNil: [ latest := updated ] ] ].
+	^ selected
+%
+
+method: GtLACPCodexStoredSession
+updatedAt
+	^ updatedAt
+		ifNil: [ updatedAt := self titleRecord ifNotNil: [ :value | value updatedAt ] ]
+%
+
+category: 'adding'
+method: GtLACPCodexStoredSession
+addRecord: aRecord
+	aRecord sessionId = sessionId
+		ifFalse: [ self error: 'Record belongs to another session' ].
+	aRecord session: self.
+	self addSource: aRecord.
+	self read
+%
+
+category: 'gt - views'
+method: GtLACPCodexStoredSession
+gtDirectoryEvidenceFor: aView
+	"Which rollout supplies the directory, and do other rollouts disagree?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Directory evidence';
+		priority: 6;
+		items: [ self rolloutRecords ];
+		column: 'Directory'
+			text: [ :record | record directory ifNil: [ '(unknown)' ] ifNotNil: [ :value | value fullName ] ];
+		column: 'Created' text: [ :record | record createdAt ifNil: [ '(unknown)' ] ];
+		column: 'File' text: [ :record | record file fullName ];
+		column: 'Decision' text: #selectionReason
+%
+
+method: GtLACPCodexStoredSession
+gtIssuesFor: aView
+	"What discovery problems and already-observed rollout parsing problems affect this session?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Read problems';
+		priority: 15;
+		items: [ self issues ];
+		column: 'File' text: [ :issue | issue file fullName ];
+		column: 'Line' text: [ :issue | issue lineNumber ifNil: [ '' ] ];
+		column: 'Reason' text: #description
+%
+
+method: GtLACPCodexStoredSession
+gtKindsFor: aView
+	"What kinds of entries occur in the primary rollout?"
+
+	<gtView>
+	self file ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Record kinds';
+		priority: 25;
+		items: [ self recordKinds associations sorted: [ :a :b | a key <= b key ] ];
+		column: 'Kind' text: #key;
+		column: 'Count' text: #value
+%
+
+method: GtLACPCodexStoredSession
+gtMetadataRecordsFor: aView
+	"What index, rollout-header and compressed-file evidence describes this session?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Metadata records';
+		priority: -5;
+		items: [ self metadataRecords ];
+		column: 'Format' text: #format;
+		column: 'File' text: [ :record | record file fullName ];
+		column: 'Line' text: [ :record | record lineNumber ifNil: [ '' ] ];
+		column: 'Selection' text: #selectionReason
+%
+
+method: GtLACPCodexStoredSession
+gtOriginFor: aView
+	"What recorded origin distinguishes internal, delegated and ordinary sessions?"
+
+	<gtView>
+	self originRecord ifNil: [ ^ aView empty ].
+	^ aView forward
+		title: 'Agent origin';
+		priority: 8;
+		object: [ self originRecord ];
+		view: #gtOriginFor:
+%
+
+method: GtLACPCodexStoredSession
+gtRawDataFor: aView
+	"What exact primary-rollout JSONL snapshot do the full entries derive from?"
+
+	<gtView>
+	self file ifNil: [ ^ aView empty ].
+	^ aView textEditor
+		title: 'Raw data';
+		priority: 30;
+		text: [ self rawData ]
+%
+
+method: GtLACPCodexStoredSession
+gtRolloutEntriesFor: aView
+	"What entries occur in the primary uncompressed rollout? Load its body only for this view."
+
+	<gtView>
+	self file ifNil: [ ^ aView empty ].
+	^ aView columnedList
+		title: 'Rollout entries';
+		priority: 20;
+		items: [ self allRecords ];
+		column: 'Line' text: #lineNumber;
+		column: 'Kind' text: #kind;
+		column: 'Timestamp' text: #timestamp
+%
+
+method: GtLACPCodexStoredSession
+gtTitleEvidenceFor: aView
+	"Which index entry supplies the title, and why are other entries not selected?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Title evidence';
+		priority: -10;
+		items: [ self indexRecords ];
+		column: 'Title' text: #title;
+		column: 'Updated' text: [ :record | record updatedAt ifNil: [ '(unknown)' ] ];
+		column: 'Line' text: #lineNumber;
+		column: 'Decision' text: #selectionReason
 %
 
 category: 'loading'
 method: GtLACPCodexStoredSession
 newClient
 	^ GtLACPCodexClient new
+%
+
+category: 'private'
+method: GtLACPCodexStoredSession
+recordFrom: aDictionary
+	^ GtLACPCodexRolloutEntry new
+		rawData: aDictionary;
+		yourself
+%
+
+category: 'reading'
+method: GtLACPCodexStoredSession
+read
+	super read.
+	originRecord := nil.
+	^ self
+%
+
+category: 'testing'
+method: GtLACPCodexStoredSession
+isGuardianReview
+	^ self originRecord
+		ifNil: [ false ]
+		ifNotNil: [ :value | value isGuardianReview ]
+%
+
+method: GtLACPCodexStoredSession
+isInternalAgent
+	^ self originRecord
+		ifNil: [ false ]
+		ifNotNil: [ :value | value isInternalAgent ]
+%
+
+method: GtLACPCodexStoredSession
+isSubagent
+	^ self originRecord ifNil: [ false ] ifNotNil: [ :value | value isSubagent ]
 %
 
 category: 'accessing'
@@ -215048,6 +216741,67 @@ originMethodsInto: aStream
 			aPhlowView dataViews do: [ :each | each originMethodsInto: aStream ] ]
 %
 
+category: 'accessing'
+method: GtLACPClaudeCodeTitleRecord
+isTitleRecord
+	^ true
+%
+
+method: GtLACPClaudeCodeTitleRecord
+isUsable
+	^ self belongsToSession
+		and: [ self title isString and: [ self title trimBoth notEmpty ] ]
+%
+
+method: GtLACPClaudeCodeTitleRecord
+priority
+	self titleField = 'customTitle'
+		ifTrue: [ ^ lineNumber ifNil: [ 35 ] ifNotNil: [ 40 ] ].
+	self titleField = 'aiTitle' ifTrue: [ ^ 30 ].
+	self titleField = 'summary' ifTrue: [ ^ 20 ].
+	^ 10
+%
+
+method: GtLACPClaudeCodeTitleRecord
+selectionReason
+	self belongsToSession ifFalse: [ ^ 'Different session' ].
+	self isUsable ifFalse: [ ^ 'Missing or invalid text' ].
+	(self sameLocationAs: session selectedTitleRecord) ifTrue: [ ^ 'Selected' ].
+	self priority < session selectedTitleRecord priority
+		ifTrue: [ ^ 'Lower priority' ].
+	^ 'Superseded by later record'
+%
+
+method: GtLACPClaudeCodeTitleRecord
+title
+	^ rawData at: self titleField
+%
+
+method: GtLACPClaudeCodeTitleRecord
+titleField
+	^ self class titleFields detect: [ :key | rawData includesKey: key ]
+%
+
+category: 'gt - views'
+method: GtLACPClaudeCodeTitleRecord
+gtSelectionFor: aView
+	"Why is this title candidate selected or excluded?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Selection';
+		priority: -10;
+		items: [ {'Title' -> self title.
+				'Field' -> self titleField.
+				'Priority' -> self priority.
+				'Decision' -> self selectionReason.
+				'File' -> file.
+				'Line' -> lineNumber} ];
+		column: 'Property' text: #key;
+		column: 'Value' text: [ :entry | entry value asString ];
+		send: #value
+%
+
 category: 'testing'
 method: GtLACPPromptTurnFinishedState
 isFinished
@@ -218498,6 +220252,19 @@ gtJsonFor: aView
 		styler: JSONParser gtStyler;
 		aptitude: BrGlamorousCodeEditorAptitude;
 		actionUpdateButtonTooltip: 'Refresh json'
+%
+
+category: 'examples'
+method: GtLMessageTallyExamples
+textReportLlmView
+	<gtExample>
+	| tally view report |
+	tally := MessageTally gtExampleSimplePrintString.
+	report := tally gtTextReport.
+	view := tally llmTextReportFor: GtLDataView empty.
+	self assert: report notEmpty.
+	self assert: (view llmJsonData at: 'report') equals: report.
+	^ tally
 %
 
 category: 'defaults'
@@ -224817,10 +226584,304 @@ street: aString
 	self valueAt: #street put: aString
 %
 
+category: 'accessing'
+method: GtLACPClaudeCodeStoredSession
+createdAt
+	file ifNil: [ ^ super createdAt ].
+	^ createdAt
+		ifNil: [ createdAt := self directoryRecord
+					ifNotNil: [ :record | 
+						(record rawData at: 'timestamp' ifAbsent: [ nil ])
+							ifNotNil: [ :timestamp | [ (DateAndTime fromString: timestamp) asUTC ] on: Error do: [ :error | nil ] ] ] ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+directory
+	file ifNil: [ ^ super directory ].
+	^ directory
+		ifNil: [ directory := self directoryRecord
+					ifNotNil: [ :record | [ self directoryFromRecord: record ] on: Error do: [ :error | nil ] ] ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+directoryRecord
+	^ self metadataRecords
+		detect: [ :record | record hasDirectory and: [ record belongsToSession ] ]
+		ifNone: [ nil ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+file
+	^ file
+%
+
+method: GtLACPClaudeCodeStoredSession
+file: aFile
+	file := aFile.
+	self read
+%
+
+method: GtLACPClaudeCodeStoredSession
+issues
+	| result record |
+	file ifNil: [ ^ #() ].
+	self allRecords.
+	self sidecarRecords.
+	result := parseIssues copy.
+	self records , self sidecarRecords
+		do: [ :each | 
+			each belongsToSession
+				ifFalse: [ result
+						add: (GtLACPStoredSessionReadIssue new
+								file: each file;
+								lineNumber: each lineNumber;
+								description: 'Session ID disagrees with transcript filename';
+								yourself) ] ].
+	record := self directoryRecord.
+	record
+		ifNil: [ result
+				add: (self newIssueAt: nil description: 'Project directory is unknown in transcript') ]
+		ifNotNil: [ [ self directoryFromRecord: record ]
+				on: Error
+				do: [ :error | result add: (self newIssueAt: record lineNumber description: error messageText) ].
+			(record rawData at: 'timestamp' ifAbsent: [ nil ])
+				ifNotNil: [ :timestamp | 
+					[ DateAndTime fromString: timestamp ]
+						on: Error
+						do: [ :error | 
+							result
+								add: (self
+										issueAt: record lineNumber
+										description: 'Invalid timestamp: ' , timestamp printString) ] ] ].
+	^ result
+%
+
+method: GtLACPClaudeCodeStoredSession
+metadataRecords
+	^ metadataRecords ifNil: [ metadataRecords := self parseMetadataRecords ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+records
+	^ self allRecords
+		select: [ :record | GtLACPClaudeCodeTranscriptRecord includesMetadata: record rawData ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+sidecarRecords
+	^ sidecarRecords ifNil: [ sidecarRecords := self parseSidecarRecords ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+sources
+	| metadata |
+	file ifNil: [ ^ super sources ].
+	metadata := {'filenameSessionId' -> self sessionId} asDictionary.
+	self directoryRecord ifNotNil: [ :record | metadata addAll: record rawData ].
+	^ {GtLACPStoredSessionSource new
+			file: file;
+			format: #claudeTranscript;
+			metadata: metadata;
+			yourself}
+%
+
+method: GtLACPClaudeCodeStoredSession
+title
+	file ifNil: [ ^ super title ].
+	^ title
+		ifNil: [ title := self selectedTitleRecord
+					ifNil: [ '' ]
+					ifNotNil: [ :value | value title ] ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+titleRecords
+	^ (self metadataRecords select: #isTitleRecord) , self sidecarRecords
+%
+
+category: 'gt - views'
+method: GtLACPClaudeCodeStoredSession
+gtIssuesFor: aView
+	"What prevented metadata from being read or associated with this session?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Read problems';
+		priority: 15;
+		items: [ self issues ];
+		column: 'File' text: [ :issue | issue file fullName ];
+		column: 'Line' text: [ :issue | issue lineNumber ifNil: [ '' ] ];
+		column: 'Reason' text: #description
+%
+
+method: GtLACPClaudeCodeStoredSession
+gtKindsFor: aView
+	"What kinds of records occur in the JSONL snapshot, including those without metadata?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Record kinds';
+		priority: 10;
+		items: [ self recordKinds associations sorted: [ :a :b | a key <= b key ] ];
+		column: 'Kind' text: #key;
+		column: 'Count' text: #value
+%
+
+method: GtLACPClaudeCodeStoredSession
+gtRawDataFor: aView
+	"What exact JSONL snapshot do the properties derive from?"
+
+	<gtView>
+	^ aView textEditor
+		title: 'Raw data';
+		priority: 30;
+		text: [ self rawData ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+gtRecordsFor: aView
+	"Which metadata records were retained, where did each come from, and which supplies the directory?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Metadata records';
+		priority: 5;
+		items: [ self records ];
+		column: 'Line' text: [ :record | record lineNumber ifNil: [ 'sidecar' ] ];
+		column: 'Kind' text: #kind;
+		column: 'Session matches' text: #belongsToSession;
+		column: 'Directory' text: #directory;
+		column: 'Directory evidence' text: #directorySelectionReason
+%
+
+method: GtLACPClaudeCodeStoredSession
+gtTitlesFor: aView
+	"Which title is selected, and why were other candidates not selected?"
+
+	<gtView>
+	^ aView columnedList
+		title: 'Title evidence';
+		priority: -10;
+		items: [ self titleRecords ];
+		column: 'Line' text: [ :record | record lineNumber ifNil: [ 'sidecar' ] ];
+		column: 'Field' text: #titleField;
+		column: 'Title' text: #title;
+		column: 'Priority' text: #priority;
+		column: 'Decision' text: #selectionReason
+%
+
 category: 'loading'
 method: GtLACPClaudeCodeStoredSession
 newClient
 	^ GtLACPClaudeCodeClient new
+%
+
+category: 'private'
+method: GtLACPClaudeCodeStoredSession
+directoryFromRecord: aRecord
+	| path |
+	path := aRecord directory.
+	path isString ifFalse: [ self error: 'Project directory must be a string' ].
+	path ifEmpty: [ self error: 'Project directory must not be empty' ].
+	path := path asFileReference.
+	path isAbsolute
+		ifFalse: [ self error: 'Recorded project directory must be absolute' ].
+	^ path
+%
+
+method: GtLACPClaudeCodeStoredSession
+parseMetadataRecords
+	"Scan UTF-8 bytes using ASCII field markers. Decode only candidate metadata lines.
+	The temporary ByteString is a byte container, not decoded user text."
+
+	| result lineNumber foundDirectory |
+	result := OrderedCollection new.
+	lineNumber := 0.
+	foundDirectory := false.
+	self rawBytes asString
+		linesDo: [ :line | 
+			| needsDirectory hasTitle |
+			lineNumber := lineNumber + 1.
+			needsDirectory := foundDirectory not and: [ line includesSubstring: '"cwd"' ].
+			hasTitle := #('"customTitle"' '"aiTitle"' '"summary"' '"slug"')
+					anySatisfy: [ :marker | line includesSubstring: marker ].
+			(needsDirectory or: [ hasTitle ])
+				ifTrue: [ [ | data record |
+					data := STONJSON fromString: line asByteArray utf8Decoded.
+					(data isKindOf: Dictionary)
+						ifTrue: [ record := GtLACPClaudeCodeTranscriptRecord from: data.
+							record
+								file: file;
+								lineNumber: lineNumber;
+								session: self.
+							(record isTitleRecord or: [ needsDirectory and: [ record hasDirectory ] ])
+								ifTrue: [ result add: record ].
+							(record hasDirectory and: [ record belongsToSession ])
+								ifTrue: [ foundDirectory := true ] ] ]
+						on: Error
+						do: [  "Detailed diagnostics are derived by the full parser on demand.":error |  ] ] ].
+	^ result
+%
+
+method: GtLACPClaudeCodeStoredSession
+parseSidecarRecords
+	| sidecar data record |
+	file ifNil: [ ^ #() ].
+	sidecar := file parent / self sessionId / 'custom-title.json'.
+	sidecar exists ifFalse: [ ^ #() ].
+	^ [ data := STONJSON fromString: sidecar contents.
+	(data isKindOf: Dictionary) ifFalse: [ self error: 'Expected a JSON object' ].
+	(data includesKey: 'customTitle')
+		ifFalse: [ #() ]
+		ifTrue: [ record := GtLACPClaudeCodeTranscriptRecord from: data.
+			record
+				file: sidecar;
+				session: self.
+			{record} ] ]
+		on: Error
+		do: [ :error | 
+			parseIssues
+				add: (GtLACPStoredSessionReadIssue new
+						file: sidecar;
+						description: error messageText;
+						yourself).
+			#() ]
+%
+
+method: GtLACPClaudeCodeStoredSession
+recordFrom: aDictionary
+	^ GtLACPClaudeCodeTranscriptRecord from: aDictionary
+%
+
+category: 'reading'
+method: GtLACPClaudeCodeStoredSession
+read
+	super read.
+	metadataRecords := nil.
+	sidecarRecords := nil.
+	^ self
+%
+
+method: GtLACPClaudeCodeStoredSession
+selectedTitleRecord
+	| selected |
+	selected := nil.
+	self titleRecords
+		do: [ :record | 
+			record isUsable
+				ifTrue: [ (selected isNil or: [ record priority >= selected priority ])
+						ifTrue: [ selected := record ] ] ].
+	^ selected
+%
+
+category: 'instance creation'
+classmethod: GtLACPClaudeCodeStoredSession
+on: aFile
+	^ self new
+		store: GtLACPClaudeCodeSessionStore new;
+		sessionId: aFile basenameWithoutExtension;
+		file: aFile;
+		yourself
 %
 
 category: '*GToolkit4Magritte-Core'
@@ -272497,6 +274558,15 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
+	className: #'GtLMessageTallyExamples';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
 	className: #'GtLObjectWithViewsForExamples';
 	meta: true;
 	selector: #new;
@@ -273335,6 +275405,15 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtMagritteActionUtility';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPStoredSessionFixtures';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -274972,6 +277051,15 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
+	className: #'GtLACPCodexRolloutEntry';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
 	className: #'GtLACPProtocolTranscript';
 	meta: true;
 	selector: #new;
@@ -275126,6 +277214,15 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtLACPClaudeCodeSessionStore';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPFileStoredSession';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -275387,6 +277484,15 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtLMessageCreatedState';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLSamplingProfilerExamples';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -276638,6 +278744,15 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtMagritteAddItemViewModel';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPClaudeCodeTranscriptExamples';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -278509,7 +280624,7 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
-	className: #'GtWardleyMapAddNodeChangeSpecification';
+	className: #'GtMagritteEditorAptitude';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -278527,7 +280642,7 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
-	className: #'GtMagritteEditorAptitude';
+	className: #'GtWardleyMapAddNodeChangeSpecification';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -279122,6 +281237,24 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtLMcpServer';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPClaudeCodeTranscriptRecord';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPClaudeCodeTitleRecord';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -280984,6 +283117,42 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
+	className: #'GtLACPCodexSessionRecord';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPCodexCompressedRolloutRecord';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPCodexIndexRecord';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLACPCodexRolloutRecord';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
 	className: #'GtLMagritteToolForDirectoryContents';
 	meta: true;
 	selector: #new;
@@ -281128,7 +283297,7 @@ GtGemStoneExtensionMethod new
 	hash: #new;
 	apply.
 GtGemStoneExtensionMethod new
-	className: #'GtLOpenAIThread';
+	className: #'GtLACPCodexStoredSessionExamples';
 	meta: true;
 	selector: #new;
 	source: 'new
@@ -281138,6 +283307,15 @@ GtGemStoneExtensionMethod new
 	apply.
 GtGemStoneExtensionMethod new
 	className: #'GtLMagritteToolForMethodsCompilation';
+	meta: true;
+	selector: #new;
+	source: 'new
+	<gtGsExtension>
+	^ self basicNew initialize';
+	hash: #new;
+	apply.
+GtGemStoneExtensionMethod new
+	className: #'GtLOpenAIThread';
 	meta: true;
 	selector: #new;
 	source: 'new
