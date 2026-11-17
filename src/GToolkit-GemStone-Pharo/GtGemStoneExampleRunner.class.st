@@ -209,7 +209,8 @@ GtGemStoneExampleRunner >> select [
 							GtJsonExamples.
 							GtJsonModelExamples.
 							GtJsonShapeComparisonExamples.
-							GtLSynchronousFutureExamples}.
+							GtLSynchronousFutureExamples.
+							GtLSerializedObjectValueExamples}.
 				exampleClasses
 					do: [ :each | 
 						(GtExampleGroup withAll: each gtExamplesFactory gtExamplesAllContained) examples

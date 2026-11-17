@@ -272,9 +272,13 @@ GtGemStoneGtCodeExporterExamples >> staticAnalysisClassifiesKnownFailures [
 	generated := analysis at: #generated.
 	self assert: ((generated at: #additionalClasses) includes: AssertionFailure).
 	self assert: ((generated at: #stubClasses) includes: GtRBNamespace).
-	self assert: ((generated at: #excludedMethods) includes: GtLClassCreationDataExtractor>>#extractSuperclassIfError:).
-	self assert: ((generated at: #excludedMethods) includes: GtLDataView>>#documentData).
-	self assert: ((generated at: #excludedMethods) includes: GtLMarkdown>>#commentForSmaCC).
+	self
+		assert: ((generated at: #excludedMethods)
+				includes: GtLClassCreationDataExtractor >> #extractSuperclassIfError:).
+	self
+		assert: ((generated at: #excludedMethods) includes: GtLSmaCCModel >> #grammarFor:).	"Methods with a gsCode: variant are exported from the pragma source, so the analysis skips them."
+	self
+		assert: ((generated at: #excludedMethods) includes: GtLDataView >> #documentData) not.
 	stubDifferences := (analysis at: #differences) at: #stubClasses.
 	^ analysis
 ]

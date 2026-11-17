@@ -207,6 +207,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#GtGemStoneCheckSuite
 		#GtGemStoneExtensionMethod
 		#GtGemStoneExtensionMethods
+		#GtGsSecureSocketStream
 		#KeyNotFound
 		#Mutex
 		#MutexTest
@@ -253,7 +254,8 @@ GtGemStoneGtCodeExporter >> additionalClasses [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> alternateClassDefinitions [
 	"Use GemStone dynamic variables for the Zinc URL configuration.
-	ZnIgnoreNewLineWriterStream is a WriteStream subclass in Pharo, but only wraps another stream: GemStone's WriteStream writes to its own collection, bypassing #nextPut:, so the stone class is an Object subclass and gets its stream protocol from ext_ZnIgnoreNewLineWriterStream_* descriptors."
+	ZnIgnoreNewLineWriterStream is a WriteStream subclass in Pharo, but only wraps another stream: GemStone's WriteStream writes to its own collection, bypassing #nextPut:, so the stone class is an Object subclass and gets its stream protocol from ext_ZnIgnoreNewLineWriterStream_* descriptors.
+	GtGsSecureSocketStream is GemStone-only: in the stone it is a subclass of the native Zinc SocketStream and gets its methods from ext_GtGsSecureSocketStream_* descriptors."
 
 	^ Dictionary new
 		at: #ZnDefaultCharacterEncoder
@@ -262,6 +264,8 @@ GtGemStoneGtCodeExporter >> alternateClassDefinitions [
 			put: 'GtGsDynamicVariable subclass: ''ZnMaximumNumberOfDictionaryEntries'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
 		at: #ZnIgnoreNewLineWriterStream
 			put: 'Object subclass: ''ZnIgnoreNewLineWriterStream'' instVarNames: #( stream cr lf previous lineEnding replacement ) classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #GtGsSecureSocketStream
+			put: 'SocketStream subclass: ''GtGsSecureSocketStream'' instVarNames: #( serverName ) classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
 		yourself
 ]
 
@@ -314,9 +318,10 @@ GtGemStoneGtCodeExporter >> excludedMethods [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> excludedMethodsList [
+	"GtLOllamaMigrationExamples>>#llama3PageInstructions, #qwen35Instructions and GtLOpenAiResponsesExamples>>#openAiServerSideCompaction, #openAiServerSideMultipleCompaction are GT-only examples: they need Lepiter, which isn't exported to the stone. The first two read a GT Book page (#gtPageExplanation:); the compaction pair uses GtLTools gt, which includes the Lepiter tools (leSearch, leChange)."
+
 	<excludedMethods>
-	^ {GtLMarkdown >> #commentForSmaCC.
-		GtLClassCreationDataExtractor >> #extractSuperclassIfError:.
+	^ {GtLClassCreationDataExtractor >> #extractSuperclassIfError:.
 		GtLClassCreationDataExtractor >> #extractTargetClassNameIfError:.
 		GRPlatform >> #bindingOf:.
 		GtLDataSourceEncoderDecoder class >> #writeClientHistory:to:selector:.
@@ -332,6 +337,10 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 			>> #extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
 		GtLToolForTestClassesRun >> #privatePerformToolCall:inContext:.
 		GtLOllamaMigrationExamples >> #gemma4Image.
+		GtLOllamaMigrationExamples >> #llama3PageInstructions.
+		GtLOllamaMigrationExamples >> #qwen35Instructions.
+		GtLOpenAiResponsesExamples >> #openAiServerSideCompaction.
+		GtLOpenAiResponsesExamples >> #openAiServerSideMultipleCompaction.
 		GtLMagritteToolForClassCommentChangeExamples >> #changeCommentSuccessful.
 		GtLClassDefinitionChangeHistory >> #gtViewChangeIcon.
 		GtLClassCommentChangeDescriptionElement >> #initialize.
@@ -414,7 +423,7 @@ GtGemStoneGtCodeExporter >> exporter [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClassList [
 	<gsCodeClasses>
-	^ #(#Class #CurrentExecutionEnvironment #Exception #GsNMethod #GtExample #GtExampleClassResolver #GtExampleDependenciesResolver #GtExampleEvaluator #GtExampleMethodResolver #GtExampleResultNoValue #GtGemStoneExtensionMethod #GtGemStoneTopazExporterExamples #GtLClassChangeDataExtractor #GtLClassDefinitionDescription #GtLClassDescription #GtLDataView #GtLMagritteToolForClassCommentChange #GtLMagritteToolForClassCommentChangeExamples #GtLMagritteToolForClassCreation #GtLMagritteToolForClassDefinitionChange #GtLMagritteToolForClassDefinitionChangeExamples #GtLMagritteToolForClassSearch #GtLMagritteToolForMethodCompilation #GtLMagritteToolForMethodsCompilationExamples #GtLMagritteToolForMethodsRemoval #GtLMagritteToolForMethodsRemovalExamples #GtLMagritteToolForObjectStorageSlotValue #GtLMcpGemStoneExamples #GtLMcpServer #GtLModelExamplesExecutor #GtLSerializedObjectValue #GtLToolForExampleClassesRun #GtLToolForExampleClassesRunExamples #GtLWrappedObjectModel #GtMagriteJSONDataCreationVisitor #GtProcessStackOverflowChecker #Metaclass3 #Object #Pragma #Symbol)
+	^ #(#Class #CurrentExecutionEnvironment #Exception #GsNMethod #GtExample #GtExampleClassResolver #GtExampleDependenciesResolver #GtExampleEvaluator #GtExampleMethodResolver #GtExampleResultNoValue #GtGemStoneExtensionMethod #GtGemStoneTopazExporterExamples #GtLClassChangeDataExtractor #GtLClassDefinitionDescription #GtLClassDescription #GtLDataView #GtLMagritteToolForClassCommentChange #GtLMagritteToolForClassCommentChangeExamples #GtLMagritteToolForClassCreation #GtLMagritteToolForClassDefinitionChange #GtLMagritteToolForClassDefinitionChangeExamples #GtLMagritteToolForClassSearch #GtLMagritteToolForMethodCompilation #GtLMagritteToolForMethodsCompilationExamples #GtLMagritteToolForMethodsRemoval #GtLMagritteToolForMethodsRemovalExamples #GtLMagritteToolForObjectStorageSlotValue #GtLMcpGemStoneExamples #GtLMcpServer #GtLModelExamplesExecutor #GtLSerializedObjectValue #GtLSerializedSlotInfo #GtLToolForExampleClassesRun #GtLToolForExampleClassesRunExamples #GtLWrappedObjectModel #GtMagriteJSONDataCreationVisitor #GtProcessStackOverflowChecker #Metaclass3 #Object #Pragma #Symbol)
 ]
 
 { #category : #accessing }
