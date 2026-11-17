@@ -108,7 +108,9 @@ GtGemStoneExampleRunner >> records [
 
 { #category : #running }
 GtGemStoneExampleRunner >> refresh [
-	"Answer rows sorted by class name, then selector."
+	"Answer rows sorted by class name, then selector.
+	Examples are labelled by the class that runs them (receiverClass), so inherited examples
+	are attributed to the subclass rather than the defining superclass."
 
 	records := self session
 			evaluateBlockAndWait: [ :selection | 
@@ -119,7 +121,7 @@ GtGemStoneExampleRunner >> refresh [
 						{entry first.
 							(entry first = 'Test'
 								ifTrue: [ item class name ]
-								ifFalse: [ item methodClass name ]) asString.
+								ifFalse: [ item receiverClass name ]) asString.
 							item selector asString.
 							entry third} ])
 					asSortedCollection: [ :a :b | a second < b second or: [ a second = b second and: [ a third <= b third ] ] ])
@@ -198,13 +200,19 @@ GtGemStoneExampleRunner >> select [
 					dictionaryName: nil)
 					do: [ :name | exampleClasses add: name asSymbol asClass ].
 				exampleClasses
-					addAll: {
-							GtLMagritteToolForMethodSourceExamples.
+					addAll: {GtLMagritteToolForMethodSourceExamples.
 							GtLMagritteToolForMethodsSourceExamples.
-							}.
+							GtLOpenAIEntityExamples.
+							GtLOpenAIProviderCopyChatExamples.
+							GtLOpenAiResponsesExamples.
+							GtLOllamaMigrationExamples.
+							GtJsonExamples.
+							GtJsonModelExamples.
+							GtJsonShapeComparisonExamples.
+							GtLSynchronousFutureExamples}.
 				exampleClasses
 					do: [ :each | 
-						(GtExampleGroup withAll: each gtExamples) examples
+						(GtExampleGroup withAll: each gtExamplesFactory gtExamplesAllContained) examples
 							do: [ :example | 
 								selection
 									add: {'Example'.
