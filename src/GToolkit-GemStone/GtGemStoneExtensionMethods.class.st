@@ -1016,6 +1016,77 @@ GtGemStoneExtensionMethods class >> ext_CurrentExecutionEnvironment_runUnmanaged
 	^ anExampleEvaluator value'
 ]
 
+{ #category : #accessing }
+GtGemStoneExtensionMethods class >> ext_DateAndTimeANSI_asLocalStringYMDHM [
+	^ GtGemStoneExtensionMethod new
+		selector: #asLocalStringYMDHM;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asLocalStringYMDHM
+	<gtGsExtension>
+	^ self asLocal asStringYMDHM'
+]
+
+{ #category : #accessing }
+GtGemStoneExtensionMethods class >> ext_DateAndTimeANSI_asLocalStringYMDHMS [
+	^ GtGemStoneExtensionMethod new
+		selector: #asLocalStringYMDHMS;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asLocalStringYMDHMS
+	<gtGsExtension>
+	^ self asLocal asStringYMDHMS'
+]
+
+{ #category : #accessing }
+GtGemStoneExtensionMethods class >> ext_DateAndTimeANSI_asStringYMDHM [
+	^ GtGemStoneExtensionMethod new
+		selector: #asStringYMDHM;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asStringYMDHM
+	<gtGsExtension>
+	| full |
+	full := self asStringYMDHMS.
+	^ full copyFrom: 1 to: full size - 3'
+]
+
+{ #category : #accessing }
+GtGemStoneExtensionMethods class >> ext_DateAndTimeANSI_asStringYMDHMS [
+	^ GtGemStoneExtensionMethod new
+		selector: #asStringYMDHMS;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asStringYMDHMS
+	<gtGsExtension>
+	^ String streamContents: [ :aStream |
+		self year negative ifTrue: [ aStream nextPut: $- ].
+		aStream
+			nextPutAll: (self year abs asString padded: #left to: 4 with: $0);
+			nextPut: $-;
+			nextPutAll: (self month asString padded: #left to: 2 with: $0);
+			nextPut: $-;
+			nextPutAll: (self dayOfMonth asString padded: #left to: 2 with: $0);
+			nextPut: Character space;
+			nextPutAll: (self hour asString padded: #left to: 2 with: $0);
+			nextPut: $:;
+			nextPutAll: (self minute asString padded: #left to: 2 with: $0);
+			nextPut: $:;
+			nextPutAll: (self second truncated asString padded: #left to: 2 with: $0) ]'
+]
+
 { #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_DateAndTime_class_fromString_ [
 	^ GtGemStoneExtensionMethod new
@@ -4221,6 +4292,21 @@ GtGemStoneExtensionMethods class >> ext_ReadStream_readStream [
 	"polymorphic with SequenceableCollection.  Return self"
 
 	^ self'
+]
+
+{ #category : #extensions }
+GtGemStoneExtensionMethods class >> ext_STONWriter_jsonMode [
+	^ GtGemStoneExtensionMethod new
+		selector: #jsonMode;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #STONWriter;
+		hash: #new;
+		source: 'jsonMode
+	"Answer whether this writer is producing JSON. OrderedDictionary>>stonOn: uses this accessor."
+	<gtGsExtension>
+	^ jsonMode'
 ]
 
 { #category : #extensions }

@@ -12,10 +12,9 @@ GtGemStoneDefaultSessionIdentifier class >> leJsonV4Name [
 
 { #category : #accessing }
 GtGemStoneDefaultSessionIdentifier >> displayNameIn: aGtGemStoneSessionRegistry [
-
 	^ aGtGemStoneSessionRegistry defaultSession
 		ifNil: [ '<not selected>' ]
-		ifNotNil: #displayName
+		ifNotNil: [ :v | v displayName ]
 ]
 
 { #category : #accessing }

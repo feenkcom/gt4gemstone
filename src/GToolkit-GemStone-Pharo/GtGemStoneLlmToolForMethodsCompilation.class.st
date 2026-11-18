@@ -12,11 +12,13 @@ GtGemStoneLlmToolForMethodsCompilation >> description [
 	^ 'Compiles multiple method sources in a GemStone database and reports each result in request order. Requests are independent: an error does not roll back earlier compilations or prevent later requests.
 
 Arguments:
-- methods: array of objects with methodClassName, sourceCode, protocol, classSide, and optional environmentId (integer, defaults to 0)
+- methods: array of objects with methodClassName, sourceCode, classSide, an optional protocol, and optional environmentId (integer, defaults to 0)
 
-Example JSON arguments:
+The protocol is optional. Omit it when modifying an existing method: the method keeps its current category. Do not guess a protocol for an existing method; changing the protocol of an extension method (a protocol starting with *) moves it to a different package. Provide a protocol only for a new method whose protocol is known, or to deliberately change the protocol of an existing method. A new method without a protocol is classified as ''as yet unclassified''.
+
+Example JSON arguments (modifying an existing method, then adding a new one):
 {"methods": [
-  {"methodClassName": "MyClass", "sourceCode": "myMethod ^ 42", "protocol": "accessing", "classSide": false},
+  {"methodClassName": "MyClass", "sourceCode": "myMethod ^ 42", "classSide": false},
   {"methodClassName": "MyClass", "sourceCode": "anotherMethod ^ 1", "protocol": "accessing", "classSide": true, "environmentId": 0}
 ]}
 
