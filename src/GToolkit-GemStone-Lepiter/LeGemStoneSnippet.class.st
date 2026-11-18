@@ -116,8 +116,7 @@ LeGemStoneSnippet >> sessionIdentifier: aGtGemStoneSessionIdentifier [
 
 { #category : #accessing }
 LeGemStoneSnippet >> sessionName [
-
-	^ sessionIdentifier ifNotNil: #sessionName
+	^ sessionIdentifier ifNotNil: [ :v | v sessionName ]
 ]
 
 { #category : #testing }

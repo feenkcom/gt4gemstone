@@ -452,13 +452,10 @@ GtGemStoneSessionSelectionElement >> switchState [
 { #category : #private }
 GtGemStoneSessionSelectionElement >> updateContent [
 	| items |
-
-	items := state = #sessions ifTrue:
-		[ self sessionsToDisplay ]
-	ifFalse: [ state = #connectors ifTrue:
-		[ self registry connectors 
-			ifNil: [ #() ]
-			ifNotNil: #values ] ].
+	items := state = #sessions
+			ifTrue: [ self sessionsToDisplay ]
+			ifFalse: [ state = #connectors
+					ifTrue: [ self registry connectors ifNil: [ #() ] ifNotNil: [ :v | v values ] ] ].
 	items := items sorted: #name ascending.
-	currentList items: items.
+	currentList items: items
 ]

@@ -43,8 +43,8 @@ GtGemStoneSnippetCoderEvaluator >> notifyInvalidBinding: anInvalidBinding inCont
 { #category : #accessing }
 GtGemStoneSnippetCoderEvaluator >> primitiveEvaluate: aSourceString inContext: aGtSourceCoderEvaluationContext onFailDo: anEvaluationFailBlock [
 	"Evaluate the supplied GemStone script."
-	| gemstoneSession executionBuilder pharoBindings remoteBindings remoteScript  instanceVariableNames |
-	
+
+	| gemstoneSession executionBuilder pharoBindings remoteBindings remoteScript instanceVariableNames |
 	[ GtGemStoneParser
 		parse: aSourceString
 		startingAt: GtGemStoneParser startingStateForMethodSequence ]
@@ -56,35 +56,32 @@ GtGemStoneSnippetCoderEvaluator >> primitiveEvaluate: aSourceString inContext: a
 						+ aGtSourceCoderEvaluationContext evaluatedInterval first - 1
 				requesterObject: aGtSourceCoderEvaluationContext requesterObject.
 			^ anEvaluationFailBlock value ].
-	
-	gemstoneSession := aGtSourceCoderEvaluationContext session 
-		ifNil: [ 
-			^ self error: 'GemStone session not set.  Does the connector exist?' ]
-		ifNotNil: #asGemStoneSession.
-	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].
-	
-	"Temporary hack"
-	instanceVariableNames := self 
-		targetClassInstVarNamesInContext: aGtSourceCoderEvaluationContext
-		forGemStoneSession: gemstoneSession.
-	
-	(self 
-		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy 
-		inSession: gemstoneSession)
-		ifFalse: [ "In case we get a proceed" ^ self ].
+
+	gemstoneSession := aGtSourceCoderEvaluationContext session
+			ifNil: [ ^ self error: 'GemStone session not set.  Does the connector exist?' ]
+			ifNotNil: [ :v | v asGemStoneSession ].
+	gemstoneSession isRunning ifFalse: [ gemstoneSession connect ].	"Temporary hack"
+	instanceVariableNames := self
+			targetClassInstVarNamesInContext: aGtSourceCoderEvaluationContext
+			forGemStoneSession: gemstoneSession.
+
+	(self
+		canRunComputationWithStrategy: aGtSourceCoderEvaluationContext executionStrategy
+		inSession: gemstoneSession) ifFalse: [  "In case we get a proceed"^ self ].
 
 	pharoBindings := aGtSourceCoderEvaluationContext pharoBindings.
-	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new 
-		gemstoneSession: gemstoneSession;
-		instanceVariableNames:  instanceVariableNames;
-		localBindings: pharoBindings;
-		sourceString: aSourceString.
-	executionBuilder withFirstInvalidRemoteBinding: [ :anInvalidBinding |
-		self  
-			notifyInvalidBinding: anInvalidBinding
-			inContext: aGtSourceCoderEvaluationContext.
-		^ anEvaluationFailBlock value ].
-		 
+	executionBuilder := GtGemStoneSnippetRemoteExecutionBuilder new
+			gemstoneSession: gemstoneSession;
+			instanceVariableNames: instanceVariableNames;
+			localBindings: pharoBindings;
+			sourceString: aSourceString.
+	executionBuilder
+		withFirstInvalidRemoteBinding: [ :anInvalidBinding | 
+			self
+				notifyInvalidBinding: anInvalidBinding
+				inContext: aGtSourceCoderEvaluationContext.
+			^ anEvaluationFailBlock value ].
+
 	remoteBindings := executionBuilder remoteBindingsDictionary.
 	remoteScript := executionBuilder generateRemoteScript.
 
