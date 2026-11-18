@@ -206,6 +206,7 @@ GtGemStoneExampleRunner >> select [
 							GtLOpenAIProviderCopyChatExamples.
 							GtLOpenAiResponsesExamples.
 							GtLOllamaMigrationExamples.
+							GtDateTimeUtilityExamples.
 							GtJsonExamples.
 							GtJsonModelExamples.
 							GtJsonShapeComparisonExamples.

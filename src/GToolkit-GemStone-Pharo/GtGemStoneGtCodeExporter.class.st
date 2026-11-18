@@ -186,59 +186,7 @@ GtGemStoneGtCodeExporter >> additionalClassList [
 { #category : #private }
 GtGemStoneGtCodeExporter >> additionalClassNames [
 	<additionalClassNames>
-	^ #(
-		#ArithmeticError
-		#AssertionFailure
-		#AsyncFutureExecutionError
-		#AsyncMutex
-		#AsyncMutexExamples
-		#AutomaticRewriting
-		#BlDevScripterAssertionFailure
-		#ConnectionClosed
-		#DateError
-		#DateParser
-		#DefaultExecutionEnvironment
-		#Deprecation
-		#DeprecationPerformedNotification
-		#DomainError
-		#ExecutionEnvironment
-		#GtBasicGroup
-		#GtExampleComparisonExceptionWithDebuggingViews
-		#GtGemStoneCheckSuite
-		#GtGemStoneExtensionMethod
-		#GtGemStoneExtensionMethods
-		#GtGsSecureSocketStream
-		#KeyNotFound
-		#Mutex
-		#MutexTest
-		#NetworkError
-		#NotFound
-		#OCCodeError
-		#OrderedDictionary
-		#OrderedDictionaryTest
-		#Point
-		#RBRefactoringError
-		#Rectangle
-		#RectangleTest
-		#SmaCCParserError
-		#SubscriptOutOfBounds
-		#SystemNotification
-		#TestExecutionEnvironment
-		#TestExecutionService
-		#TestSkipped
-		#TestTookTooMuchTime
-		#ZnDefaultCharacterEncoder
-		#ZnIgnoreNewLineWriterStream
-		#ZnMaximumNumberOfDictionaryEntries
-		#ZnMultiValueDictionary
-		#ZnPercentEncoder
-		#ZnPortNotANumber
-		#ZnResourceMetaUtils
-		#ZnTooManyDictionaryEntries
-		#ZnUnknownScheme
-		#ZnUrl
-		#ZnUrlTest
-	)
+	^ #(#ArithmeticError #AssertionFailure #AsyncFutureExecutionError #AsyncMutex #AsyncMutexExamples #AutomaticRewriting #BlDevScripterAssertionFailure #ConnectionClosed #DateError #DateParser #DefaultExecutionEnvironment #Deprecation #DeprecationPerformedNotification #DomainError #ExecutionEnvironment #GtBasicGroup #GtDateTimeUtilityExamples #GtExampleComparisonExceptionWithDebuggingViews #GtGemStoneCheckSuite #GtGemStoneExtensionMethod #GtGemStoneExtensionMethods #GtGsSecureSocketStream #KeyNotFound #Mutex #MutexTest #NetworkError #NotFound #OCCodeError #OrderedDictionary #OrderedDictionaryTest #Point #RBRefactoringError #Rectangle #RectangleTest #SmaCCParserError #SubscriptOutOfBounds #SystemNotification #TestExecutionEnvironment #TestExecutionService #TestSkipped #TestTookTooMuchTime #ZnDefaultCharacterEncoder #ZnIgnoreNewLineWriterStream #ZnMaximumNumberOfDictionaryEntries #ZnMultiValueDictionary #ZnPercentEncoder #ZnPortNotANumber #ZnResourceMetaUtils #ZnTooManyDictionaryEntries #ZnUnknownScheme #ZnUrl #ZnUrlTest)
 ]
 
 { #category : #private }
@@ -318,7 +266,7 @@ GtGemStoneGtCodeExporter >> excludedMethods [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> excludedMethodsList [
-	"GtLOllamaMigrationExamples>>#llama3PageInstructions, #qwen35Instructions and GtLOpenAiResponsesExamples>>#openAiServerSideCompaction, #openAiServerSideMultipleCompaction are GT-only examples: they need Lepiter, which isn't exported to the stone. The first two read a GT Book page (#gtPageExplanation:); the compaction pair uses GtLTools gt, which includes the Lepiter tools (leSearch, leChange)."
+	"GtLModelAssistantMessage>>#gtContentFor:inContext: is GT-only: its styled view needs Phlow\'s GT objectRegistry; GemStone uses #gtContentTextFor:.\n\tGtLOllamaMigrationExamples>>#llama3PageInstructions, #qwen35Instructions and GtLOpenAiResponsesExamples>>#openAiServerSideCompaction, #openAiServerSideMultipleCompaction are GT-only examples: they need Lepiter, which isn't exported to the stone. The first two read a GT Book page (#gtPageExplanation:); the compaction pair uses GtLTools gt, which includes the Lepiter tools (leSearch, leChange)."
 
 	<excludedMethods>
 	^ {GtLClassCreationDataExtractor >> #extractSuperclassIfError:.
@@ -341,6 +289,7 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 		GtLOllamaMigrationExamples >> #qwen35Instructions.
 		GtLOpenAiResponsesExamples >> #openAiServerSideCompaction.
 		GtLOpenAiResponsesExamples >> #openAiServerSideMultipleCompaction.
+		GtLModelAssistantMessage >> #gtContentFor:inContext:.
 		GtLMagritteToolForClassCommentChangeExamples >> #changeCommentSuccessful.
 		GtLClassDefinitionChangeHistory >> #gtViewChangeIcon.
 		GtLClassCommentChangeDescriptionElement >> #initialize.
