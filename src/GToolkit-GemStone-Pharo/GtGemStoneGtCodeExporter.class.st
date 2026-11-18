@@ -195,15 +195,19 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#AutomaticRewriting
 		#BlDevScripterAssertionFailure
 		#ConnectionClosed
+		#DateError
+		#DateParser
 		#DefaultExecutionEnvironment
 		#Deprecation
 		#DeprecationPerformedNotification
 		#DomainError
 		#ExecutionEnvironment
+		#GtBasicGroup
 		#GtExampleComparisonExceptionWithDebuggingViews
 		#GtGemStoneCheckSuite
 		#GtGemStoneExtensionMethod
 		#GtGemStoneExtensionMethods
+		#GtGsSecureSocketStream
 		#KeyNotFound
 		#Mutex
 		#MutexTest
@@ -224,6 +228,7 @@ GtGemStoneGtCodeExporter >> additionalClassNames [
 		#TestSkipped
 		#TestTookTooMuchTime
 		#ZnDefaultCharacterEncoder
+		#ZnIgnoreNewLineWriterStream
 		#ZnMaximumNumberOfDictionaryEntries
 		#ZnMultiValueDictionary
 		#ZnPercentEncoder
@@ -248,10 +253,19 @@ GtGemStoneGtCodeExporter >> additionalClasses [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> alternateClassDefinitions [
-	"Use GemStone dynamic variables for the Zinc URL configuration."
+	"Use GemStone dynamic variables for the Zinc URL configuration.
+	ZnIgnoreNewLineWriterStream is a WriteStream subclass in Pharo, but only wraps another stream: GemStone's WriteStream writes to its own collection, bypassing #nextPut:, so the stone class is an Object subclass and gets its stream protocol from ext_ZnIgnoreNewLineWriterStream_* descriptors.
+	GtGsSecureSocketStream is GemStone-only: in the stone it is a subclass of the native Zinc SocketStream and gets its methods from ext_GtGsSecureSocketStream_* descriptors."
+
 	^ Dictionary new
-		at: #ZnDefaultCharacterEncoder put: 'GtGsDynamicVariable subclass: ''ZnDefaultCharacterEncoder'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
-		at: #ZnMaximumNumberOfDictionaryEntries put: 'GtGsDynamicVariable subclass: ''ZnMaximumNumberOfDictionaryEntries'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #ZnDefaultCharacterEncoder
+			put: 'GtGsDynamicVariable subclass: ''ZnDefaultCharacterEncoder'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #ZnMaximumNumberOfDictionaryEntries
+			put: 'GtGsDynamicVariable subclass: ''ZnMaximumNumberOfDictionaryEntries'' instVarNames: #() classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #ZnIgnoreNewLineWriterStream
+			put: 'Object subclass: ''ZnIgnoreNewLineWriterStream'' instVarNames: #( stream cr lf previous lineEnding replacement ) classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
+		at: #GtGsSecureSocketStream
+			put: 'SocketStream subclass: ''GtGsSecureSocketStream'' instVarNames: #( serverName ) classVars: #() classInstVars: #() poolDictionaries: #() inDictionary: Globals options: #()';
 		yourself
 ]
 
@@ -304,97 +318,88 @@ GtGemStoneGtCodeExporter >> excludedMethods [
 
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> excludedMethodsList [
-	<excludedMethods>
+	"GtLOllamaMigrationExamples>>#llama3PageInstructions, #qwen35Instructions and GtLOpenAiResponsesExamples>>#openAiServerSideCompaction, #openAiServerSideMultipleCompaction are GT-only examples: they need Lepiter, which isn't exported to the stone. The first two read a GT Book page (#gtPageExplanation:); the compaction pair uses GtLTools gt, which includes the Lepiter tools (leSearch, leChange)."
 
-	^ {
-	GtLMarkdown>>#commentForSmaCC.
-	GtLClassCreationDataExtractor>>#extractSuperclassIfError:.
-	
-	GtLClassCreationDataExtractor>>#extractTargetClassNameIfError:.
-	GtLDataView>>#documentData.
-	
-	GtLDataView>>#emptyData.
-	GtLDataView>>#forwardCollection.
-	GtLDataView>>#forwardObject.
-	GtLDataView>>#imageData.
-	
-	
-	GtLDataView>>#basicOn:perform:withArguments:.
-	GRPlatform>>#bindingOf:.
-	GtLDataSourceEncoderDecoder class>>#writeClientHistory:to:selector:.
-	GtLValueSerializerExamples>>#serializeProtoObjectClass.
-	GtLPackageChangeHistory>>#gtViewChangeIcon.
-	GtLPackageTagChangeHistory>>#gtViewChangeIcon.
-	
-	GtLSmaCCModel>>#grammarFor:.
-	
-	GtLSmaCCToolForParserCompilationExamples>>#compile.
-	GtLSmaCCToolForParserCompilationExamples>>#cleanUp.
-	
-	GtLMethodChangeHistory>>#gtViewChangeIcon.
-	GtLDocumentDataViewExamples>>#samplePdfBytes.
-	GtLResponseMarkdownFormat>>#initialize.
-	
-	GtLToolForExampleClassesRun>>#extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
-	GtLToolForTestClassesRun>>#privatePerformToolCall:inContext:.
-	GtLOllamaMigrationExamples>>#gemma4Image.
-	GtLMagritteToolForClassCommentChangeExamples>>#changeCommentSuccessful.
-	GtLClassDefinitionChangeHistory>>#gtViewChangeIcon.
-	GtLClassCommentChangeDescriptionElement>>#initialize.
-	GtLMethodChangeDescriptionElement>>#initialize.
-	GtLSmaCCParserTest>>#testParse.
-	MARelationDescription>>#descriptionClasses.
-	GtLMagritteToolForClassRemovalExamples>>#removeExistingClass.
-	GtLClassDefinitionChangeDescriptionElement>>#updateForClassDefinitionChangeHistory:.
-	GtLMagritteToolForClassRemovalExamples>>#removeClassNamedIfPresent:.
-	GtLMagritteToolForMethodRemovalExamples>>#removeClassNamedIfPresent:.
-	GtLPrimitiveDocumentDataBlockExamples>>#samplePdfBytes.
-	GtLClassDefinitionDescriptionExamples>>#fromClassWithTraits.
-	GtLPdfFileExamples>>#samplePdfContent.
-	GtLMagritteToolForClassCreationExamples>>#createClassWithComment.
-	GtLMagritteToolForClassCreationExamples>>#createClassWithInstanceVariables.
-	GtLMagritteToolForClassCreationExamples>>#removeClassNamedIfPresent:.
-	GtLClassChangeHistory>>#gtViewChangeIcon.
-	GtLCodeChangesToolCallsSummarizerExamples>>#messagesGroupWithExecutedClassCommentChange.
-	GtLCodeChangesToolCallsSummarizerExamples>>#removeClassNamedIfPresent:.
-	MAStringReader>>#visitBlockDescription:.
-	GtExamplesHudsonReport>>#runExample:.
-	TestExecutionEnvironment>>#runUnmanagedExampleEvaluator:.
-	TestExecutionEnvironment>>#processMonitor.
-	GtExampleExternalDependencyResolver>>#appliesTo:.
-	GtExamplesCommandLineHandler>>#activate.
-	GtExampleOpenDebugger>>#initialize.
-	GtExampleSubject>>#gtExamplesContained.
-	GtExampleSubject>>#gtParametrizedExamplesContained.
-	GtExampleThemeIcon>>#basicForm.
-	GtDummyExamplesInSubclass>>#dCallSuper.
-	GtExampleGroup>>#gtInspectorExamplesIn:.
-	GtExampleThemeIcon>>#exists.
-	Deprecation>>#freeze.
-	GtExamplesCommandLineHandler>>#runPackages.
-	GtExampleExternalDependencyResolver>>#posibleExampleForNode:fromMethod:forOriginalExample:.
-	GtGemStoneExtensionMethods class>>#compileAllOnGemStone.
-	GtGemStoneExtensionMethods class>>#newFromClass:selector:meta:.
-	GtGemStoneExtensionMethods class>>#newFromClass:selector:meta:session:.
-	GtMagritteModelExamples>>#simpleBaselineDescription.
-	GtMagritteMemento>>#debugValidateValue:.
-		NeoJSONReaderTests>>#testSmallDictionary.
-		NeoJSONWriterTests>>#testListsExtra.
-		NeoJSONWriterTests>>#testMapsExtra.
-	OrderedDictionary>>#gtDebuggerPrintForComparisonOn:.
-	OrderedDictionaryTest>>#testDictionaryPublicProtocolCompatibility.
-	Point>>#@.
-	Point >> #asBlocVector.
-	Point>>#asScale3D.
-	Point>>#asTranslate3D.
-	Point>>#scalarMultiplicate2D:.
-	Point>>#asBrAnchoredAnchorBounds.
-	Point>>#asGVector.
-	Point>>#asMargin.
-	MemoryTelemetry>>#startSync:.
-	TelemetryPing>>#totalFullGCTimeMicroseconds.
-	TelemetryPing>>#totalScavengeGCTimeMicroseconds.
-	}
+	<excludedMethods>
+	^ {GtLClassCreationDataExtractor >> #extractSuperclassIfError:.
+		GtLClassCreationDataExtractor >> #extractTargetClassNameIfError:.
+		GRPlatform >> #bindingOf:.
+		GtLDataSourceEncoderDecoder class >> #writeClientHistory:to:selector:.
+		GtLValueSerializerExamples >> #serializeProtoObjectClass.
+		GtLPackageChangeHistory >> #gtViewChangeIcon.
+		GtLPackageTagChangeHistory >> #gtViewChangeIcon.
+		GtLSmaCCModel >> #grammarFor:.
+		GtLSmaCCToolForParserCompilationExamples >> #compile.
+		GtLSmaCCToolForParserCompilationExamples >> #cleanUp.
+		GtLMethodChangeHistory >> #gtViewChangeIcon.
+		GtLDocumentDataViewExamples >> #samplePdfBytes.
+		GtLToolForExampleClassesRun
+			>> #extractExamplesFromMethodsFrom:in:reportingNotFoundIn:.
+		GtLToolForTestClassesRun >> #privatePerformToolCall:inContext:.
+		GtLOllamaMigrationExamples >> #gemma4Image.
+		GtLOllamaMigrationExamples >> #llama3PageInstructions.
+		GtLOllamaMigrationExamples >> #qwen35Instructions.
+		GtLOpenAiResponsesExamples >> #openAiServerSideCompaction.
+		GtLOpenAiResponsesExamples >> #openAiServerSideMultipleCompaction.
+		GtLMagritteToolForClassCommentChangeExamples >> #changeCommentSuccessful.
+		GtLClassDefinitionChangeHistory >> #gtViewChangeIcon.
+		GtLClassCommentChangeDescriptionElement >> #initialize.
+		GtLMethodChangeDescriptionElement >> #initialize.
+		GtLSmaCCParserTest >> #testParse.
+		MARelationDescription >> #descriptionClasses.
+		GtLMagritteToolForClassRemovalExamples >> #removeExistingClass.
+		GtLClassDefinitionChangeDescriptionElement
+			>> #updateForClassDefinitionChangeHistory:.
+		GtLMagritteToolForClassRemovalExamples >> #removeClassNamedIfPresent:.
+		GtLMagritteToolForMethodRemovalExamples >> #removeClassNamedIfPresent:.
+		GtLPrimitiveDocumentDataBlockExamples >> #samplePdfBytes.
+		GtLClassDefinitionDescriptionExamples >> #fromClassWithTraits.
+		GtLPdfFileExamples >> #samplePdfContent.
+		GtLMagritteToolForClassCreationExamples >> #createClassWithComment.
+		GtLMagritteToolForClassCreationExamples >> #createClassWithInstanceVariables.
+		GtLMagritteToolForClassCreationExamples >> #removeClassNamedIfPresent:.
+		GtLClassChangeHistory >> #gtViewChangeIcon.
+		GtLCodeChangesToolCallsSummarizerExamples
+			>> #messagesGroupWithExecutedClassCommentChange.
+		GtLCodeChangesToolCallsSummarizerExamples >> #removeClassNamedIfPresent:.
+		MAStringReader >> #visitBlockDescription:.
+		GtExamplesHudsonReport >> #runExample:.
+		TestExecutionEnvironment >> #runUnmanagedExampleEvaluator:.
+		TestExecutionEnvironment >> #processMonitor.
+		GtExampleExternalDependencyResolver >> #appliesTo:.
+		GtExamplesCommandLineHandler >> #activate.
+		GtExampleOpenDebugger >> #initialize.
+		GtExampleSubject >> #gtExamplesContained.
+		GtExampleSubject >> #gtParametrizedExamplesContained.
+		GtExampleThemeIcon >> #basicForm.
+		GtDummyExamplesInSubclass >> #dCallSuper.
+		GtExampleGroup >> #gtInspectorExamplesIn:.
+		GtExampleThemeIcon >> #exists.
+		Deprecation >> #freeze.
+		GtExamplesCommandLineHandler >> #runPackages.
+		GtExampleExternalDependencyResolver
+			>> #posibleExampleForNode:fromMethod:forOriginalExample:.
+		GtGemStoneExtensionMethods class >> #compileAllOnGemStone.
+		GtGemStoneExtensionMethods class >> #newFromClass:selector:meta:.
+		GtGemStoneExtensionMethods class >> #newFromClass:selector:meta:session:.
+		GtMagritteModelExamples >> #simpleBaselineDescription.
+		GtMagritteMemento >> #debugValidateValue:.
+		NeoJSONReaderTests >> #testSmallDictionary.
+		NeoJSONWriterTests >> #testListsExtra.
+		NeoJSONWriterTests >> #testMapsExtra.
+		OrderedDictionary >> #gtDebuggerPrintForComparisonOn:.
+		OrderedDictionaryTest >> #testDictionaryPublicProtocolCompatibility.
+		Point >> #@.
+		Point >> #asBlocVector.
+		Point >> #asScale3D.
+		Point >> #asTranslate3D.
+		Point >> #scalarMultiplicate2D:.
+		Point >> #asBrAnchoredAnchorBounds.
+		Point >> #asGVector.
+		Point >> #asMargin.
+		MemoryTelemetry >> #startSync:.
+		TelemetryPing >> #totalFullGCTimeMicroseconds.
+		TelemetryPing >> #totalScavengeGCTimeMicroseconds}
 ]
 
 { #category : #accessing }
@@ -418,47 +423,7 @@ GtGemStoneGtCodeExporter >> exporter [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> gsCodeClassList [
 	<gsCodeClasses>
-	^ #(
-		#Class
-		#CurrentExecutionEnvironment
-		#Exception
-		#GsNMethod
-		#GtExample
-		#GtExampleClassResolver
-		#GtExampleDependenciesResolver
-		#GtExampleEvaluator
-		#GtExampleMethodResolver
-		#GtExampleResultNoValue
-		#GtGemStoneExtensionMethod
-		#GtGemStoneTopazExporterExamples
-		#GtLClassChangeDataExtractor
-		#GtLClassDefinitionDescription
-		#GtLClassDescription
-		#GtLDataView
-		#GtLMagritteToolForClassCommentChange
-		#GtLMagritteToolForClassCommentChangeExamples
-		#GtLMagritteToolForClassCreation
-		#GtLMagritteToolForClassDefinitionChange
-		#GtLMagritteToolForClassDefinitionChangeExamples
-		#GtLMagritteToolForClassSearch
-		#GtLMagritteToolForMethodCompilation
-		#GtLMagritteToolForMethodsCompilationExamples
-		#GtLMagritteToolForMethodsRemoval
-		#GtLMagritteToolForMethodsRemovalExamples
-		#GtLMagritteToolForObjectStorageSlotValue
-		#GtLMcpGemStoneExamples
-		#GtLMcpServer
-		#GtLSerializedObjectValue
-		#GtLToolForExampleClassesRun
-		#GtLToolForExampleClassesRunExamples
-		#GtLWrappedObjectModel
-		#GtMagriteJSONDataCreationVisitor
-		#GtProcessStackOverflowChecker
-		#Metaclass3
-		#Object
-		#Pragma
-		#Symbol
-	)
+	^ #(#Class #CurrentExecutionEnvironment #Exception #GsNMethod #GtExample #GtExampleClassResolver #GtExampleDependenciesResolver #GtExampleEvaluator #GtExampleMethodResolver #GtExampleResultNoValue #GtGemStoneExtensionMethod #GtGemStoneTopazExporterExamples #GtLClassChangeDataExtractor #GtLClassDefinitionDescription #GtLClassDescription #GtLDataView #GtLMagritteToolForClassCommentChange #GtLMagritteToolForClassCommentChangeExamples #GtLMagritteToolForClassCreation #GtLMagritteToolForClassDefinitionChange #GtLMagritteToolForClassDefinitionChangeExamples #GtLMagritteToolForClassSearch #GtLMagritteToolForMethodCompilation #GtLMagritteToolForMethodsCompilationExamples #GtLMagritteToolForMethodsRemoval #GtLMagritteToolForMethodsRemovalExamples #GtLMagritteToolForObjectStorageSlotValue #GtLMcpGemStoneExamples #GtLMcpServer #GtLModelExamplesExecutor #GtLSerializedObjectValue #GtLSerializedSlotInfo #GtLToolForExampleClassesRun #GtLToolForExampleClassesRunExamples #GtLWrappedObjectModel #GtMagriteJSONDataCreationVisitor #GtProcessStackOverflowChecker #Metaclass3 #Object #Pragma #Symbol)
 ]
 
 { #category : #accessing }
@@ -607,25 +572,23 @@ GtGemStoneGtCodeExporter >> packageClassNames [
 { #category : #accessing }
 GtGemStoneGtCodeExporter >> packageNames [
 	| packagePrefixes packageNames |
-
-	packagePrefixes := { 
-		'Gt4Llm'. 
-		'GToolkit-Examples-Dummies'.
-		'GToolkit4Magritte'.
-		'GToolkit4NeoJSON'.
-		'Neo-JSON'.
-		'SortFunctions-'.
-		}.
-	packageNames := packagePrefixes flatCollect: [ :prefix |
-		PackageOrganizer default packageNames asOrderedCollection
-			select: [ :name | name beginsWith: prefix ] ]
-				as: OrderedCollection.
-	packageNames addAll: {
-		'Grease-Core'.
-		'GToolkit-Examples'.
-		'Magritte-Model'.
-		'Telemetry'.
-		}.
+	packagePrefixes := {'Gt4Llm'.
+			'GToolkit-Examples-Dummies'.
+			'GToolkit4Magritte'.
+			'GToolkit4NeoJSON'.
+			'Neo-JSON'.
+			'SortFunctions-'}.
+	packageNames := packagePrefixes
+			flatCollect: [ :prefix | 
+				PackageOrganizer default packageNames asOrderedCollection
+					select: [ :name | name beginsWith: prefix ] ]
+			as: OrderedCollection.
+	packageNames
+		addAll: {'Grease-Core'.
+				'GToolkit-Examples'.
+				'GToolkit4Json'.
+				'Magritte-Model'.
+				'Telemetry'}.
 	^ packageNames
 ]
 
@@ -648,65 +611,83 @@ GtGemStoneGtCodeExporter >> smalltalkCodeEvaluationGsCodeClasses [
 
 { #category : #analysis }
 GtGemStoneGtCodeExporter >> staticExportAnalysisForPackageNames: aCollection [
+	"Methods with a #gsCode: pragma are exported from their pragma-supplied GemStone source, so their Pharo bodies neither need excluding nor contribute class references."
+
 	| gemstoneNames excludedClasses selected classesToScan scanned additional stubs excluded methods references missingClass generated actual difference |
 	gemstoneNames := GtGemStoneTopazExporter gemstoneClassNames asSet.
 	excludedClasses := self excludedClasses asSet.
 	selected := Set new.
-	aCollection do: [ :packageName |
-		selected addAll: ((PackageOrganizer default
-			packageNamed: packageName
-			ifAbsent: [ self error: 'Unknown package: ', packageName ]) definedClasses) ].
-	selected := selected reject: [ :each |
-		each isTrait or: [ (excludedClasses includes: each) or: [ each superclass == PackageManifest ] ] ].
+	aCollection
+		do: [ :packageName | 
+			selected
+				addAll: (PackageOrganizer default
+						packageNamed: packageName
+						ifAbsent: [ self error: 'Unknown package: ' , packageName ])
+						definedClasses ].
+	selected := selected
+			reject: [ :each | 
+				each isTrait
+					or: [ (excludedClasses includes: each) or: [ each superclass == PackageManifest ] ] ].
 	classesToScan := selected asOrderedCollection.
 	scanned := Set new.
 	additional := Set new.
 	stubs := Set new.
 	excluded := Set new.
-	[ classesToScan isEmpty ] whileFalse: [
-		| class |
-		class := classesToScan removeFirst.
-		(scanned includes: class) ifFalse: [
-			scanned add: class.
-			methods := (class methodDict values, class classSide methodDict values).
-			methods do: [ :method |
-				((self methodReferencesSmalltalk: method)
-					or: [ method readsThisContext
-					or: [ self methodContainsTopazTerminatorInLiteral: method ] ])
-					ifTrue: [ excluded add: method ] ].
-			references := Set new.
-			methods do: [ :method |
-				(excluded includes: method) ifFalse: [ references addAll: method referencedClasses ] ].
-			class superclass ifNotNil: [ references add: class superclass ].
-			references do: [ :referencedClass |
-				missingClass := referencedClass instanceSide.
-				((selected includes: missingClass)
-					or: [ (additional includes: missingClass)
-					or: [ gemstoneNames includes: missingClass name ] ]) ifFalse: [
-					((missingClass = Exception) or: [ missingClass inheritsFrom: Exception ])
-						ifTrue: [
-							additional add: missingClass.
-							classesToScan add: missingClass ]
-						ifFalse: [ stubs add: missingClass ] ] ] ] ].
+	[ classesToScan isEmpty ]
+		whileFalse: [ | class |
+			class := classesToScan removeFirst.
+			(scanned includes: class)
+				ifFalse: [ scanned add: class.
+					methods := class methodDict values , class classSide methodDict values
+							reject: [ :method | method hasPragmaNamed: #gsCode: ].
+					methods
+						do: [ :method | 
+							((self methodReferencesSmalltalk: method)
+								or: [ method readsThisContext
+										or: [ self methodContainsTopazTerminatorInLiteral: method ] ])
+								ifTrue: [ excluded add: method ] ].
+					references := Set new.
+					methods
+						do: [ :method | 
+							(excluded includes: method)
+								ifFalse: [ references addAll: method referencedClasses ] ].
+					class superclass ifNotNil: [ references add: class superclass ].
+					references
+						do: [ :referencedClass | 
+							missingClass := referencedClass instanceSide.
+							((selected includes: missingClass)
+								or: [ (additional includes: missingClass)
+										or: [ gemstoneNames includes: missingClass name ] ])
+								ifFalse: [ (missingClass = Exception or: [ missingClass inheritsFrom: Exception ])
+										ifTrue: [ additional add: missingClass.
+											classesToScan add: missingClass ]
+										ifFalse: [ stubs add: missingClass ] ] ] ] ].
 	generated := Dictionary new
-		at: #additionalClasses put: (additional sorted: [ :a :b | a name <= b name ]);
-		at: #stubClasses put: (stubs sorted: [ :a :b | a name <= b name ]);
-		at: #excludedMethods put: (excluded sorted: [ :a :b | a printString <= b printString ]);
-		yourself.
+			at: #additionalClasses
+				put: (additional sorted: [ :a :b | a name <= b name ]);
+			at: #stubClasses put: (stubs sorted: [ :a :b | a name <= b name ]);
+			at: #excludedMethods
+				put: (excluded sorted: [ :a :b | a printString <= b printString ]);
+			yourself.
 	actual := Dictionary new
-		at: #additionalClasses put: self additionalClasses asSet;
-		at: #stubClasses put: self stubClasses asSet;
-		at: #excludedMethods put: self excludedMethods asSet;
-		yourself.
+			at: #additionalClasses put: self additionalClasses asSet;
+			at: #stubClasses put: self stubClasses asSet;
+			at: #excludedMethods put: self excludedMethods asSet;
+			yourself.
 	difference := Dictionary new.
-	#(#additionalClasses #stubClasses #excludedMethods) do: [ :key |
-		| generatedSet actualSet |
-		generatedSet := (generated at: key) asSet.
-		actualSet := (actual at: key) asSet.
-		difference at: key put: (Dictionary new
-			at: #missingFromExisting put: (generatedSet reject: [ :each | actualSet includes: each ]);
-			at: #onlyInExisting put: (actualSet reject: [ :each | generatedSet includes: each ]);
-			yourself) ].
+	#(#additionalClasses #stubClasses #excludedMethods)
+		do: [ :key | 
+			| generatedSet actualSet |
+			generatedSet := (generated at: key) asSet.
+			actualSet := (actual at: key) asSet.
+			difference
+				at: key
+				put: (Dictionary new
+						at: #missingFromExisting
+							put: (generatedSet reject: [ :each | actualSet includes: each ]);
+						at: #onlyInExisting
+							put: (actualSet reject: [ :each | generatedSet includes: each ]);
+						yourself) ].
 	^ Dictionary new
 		at: #generated put: generated;
 		at: #existing put: actual;
@@ -934,6 +915,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BrMenuSubmenuItem
 		#BrPackageNameInputFilter
 		#BrPackageTagNameInputFilter
+		#BrPlusIconStencil
 		#BrRBTextStyler
 		#BrRadioButton
 		#BrRadioButtonGroup
@@ -1001,7 +983,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtAnthropicListModelsAPIClient
 		#GtAnthropicModelsGroup
 		#GtBPEEncoder
-		#GtBasicGroup
 		#GtButtonAttribute
 		#GtCachedTextExpandButtonAttribute
 		#GtCharacterGroupDiffSplitter
@@ -1064,14 +1045,13 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtHomeMultiCardSection
 		#GtInsertTextCompletionAction
 		#GtInspector
+		#GtInspectorAcceptIconStencil
 		#GtInspectorElementOverviewProperty
 		#GtInspectorObject
 		#GtInspectorPlusIconStencil
 		#GtInspectorRoundButtonStencil
 		#GtInspectorSampleWithExceptionsInExtensions
 		#GtInspectorTool
-		#GtJson
-		#GtJsonShapeComparison
 		#GtLlmAbstractFunctionTool
 		#GtLlmActionCall
 		#GtLlmActionMessage
@@ -1400,7 +1380,6 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#ZnEntity
 		#ZnHeaders
 		#ZnHttpUnsuccessful
-		#ZnIgnoreNewLineWriterStream
 		#ZnMimePart
 		#ZnMimeType
 		#ZnMultiPartFormDataEntity
@@ -1457,5 +1436,6 @@ GtGemStoneGtCodeExporter >> znUrlPortExporter [
 { #category : #exporting }
 GtGemStoneGtCodeExporter >> znUrlPortExtensionSelectors [
 	"Only the GT-managed adapters needed by the focused URL port."
-	^ #(ext_ZnPercentEncoder_decode_to_ ext_ZnUrl_parseHostPort_ ext_ZnResourceMetaUtils_class_writeQueryFields_on_ ext_ZnDefaultCharacterEncoder_default ext_ZnDefaultCharacterEncoder_class_defaultValue ext_ZnMaximumNumberOfDictionaryEntries_class_defaultValue ext_ZnResourceMetaUtils_class_queryKeyValueSafeSet ext_String_asZnUrl ext_Collection_addedToZnUrl_ ext_ZnPercentEncoder_decode_ ext_ZnUrl_asString ext_String_addedToZnUrl_ ext_ZnUrlTest_testReferenceResolution ext_ZnPercentEncoder_readHexFrom_ ext_ZnUrl_portIfAbsent_ ext_String_asUrl ext_DomainError_class_signalFrom_to_ ext_ZnPercentEncoder_encode_to_)
+
+	^ #(ext_ZnPercentEncoder_decode_to_ ext_ZnUrl_parseHostPort_ ext_ZnResourceMetaUtils_class_writeQueryFields_on_ ext_ZnDefaultCharacterEncoder_default ext_ZnDefaultCharacterEncoder_class_defaultValue ext_ZnMaximumNumberOfDictionaryEntries_class_defaultValue ext_ZnResourceMetaUtils_class_queryKeyValueSafeSet ext_String_asZnUrl ext_Collection_addedToZnUrl_ ext_ZnPercentEncoder_decode_ ext_ZnUrl_asString ext_String_addedToZnUrl_ ext_ZnUrlTest_testReferenceResolution ext_ZnPercentEncoder_readHexFrom_ ext_ZnUrl_portIfAbsent_ ext_String_asUrl ext_DomainError_class_signalFrom_to_ ext_ZnPercentEncoder_encode_to_ ext_CharacterCollection_asZnUrl ext_CharacterCollection_asUrl ext_CharacterCollection_addedToZnUrl_)
 ]
