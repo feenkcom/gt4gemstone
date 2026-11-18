@@ -1158,6 +1158,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtPhlowEmptyView
 		#GtPhlowExplicitView
 		#GtPhlowForwardViewDefiningMethodProvider
+		#GtPhlowForwarderView
 		#GtPhlowLabelTooltipAptitude2
 		#GtPhlowListToSelectHandler
 		#GtPhlowNoAction
@@ -1206,12 +1207,14 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtRrImageSyncEvents
 		#GtRrJobCompletedAnnouncement
 		#GtRrLocalManagerStartupAndShutdown
+		#GtSamplingProfiler
 		#GtSearchFixedMethodsFilter
 		#GtSelectorInputFilter
 		#GtSelectorStyler
 		#GtSharedStringUpdated
 		#GtSharedVariablesBindings
 		#GtShellScriptProcess
+		#GtShellScriptSourceCoder
 		#GtSmaCCDiffSplitter
 		#GtSmaCCGrammar
 		#GtSmaCCPharoStyler
