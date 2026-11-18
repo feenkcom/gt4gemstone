@@ -40,6 +40,46 @@ GtGemStoneToolForMethodCompilationExamples >> compileClassSideMethod [
 ]
 
 { #category : #examples }
+GtGemStoneToolForMethodCompilationExamples >> compileExistingMethodWithoutProtocolKeepsCategory [
+	"Modifying an existing method without a protocol keeps its current category"
+
+	<gtExample>
+	<after: #stopServer>
+	| selector tool call targetObject category |
+	selector := #gtLlmCompiledExampleKeepsCategory.
+	tool := GtGemStoneLlmToolForMethodCompilation new session: self runningServer.
+	self removeRemoteSelector: selector classSide: false.
+	[ self
+		executeTool: tool
+		withArguments: {'methodRequest'
+					-> {'methodClassName' -> 'GtGemStoneEvaluationContextTest'.
+							'sourceCode' -> 'gtLlmCompiledExampleKeepsCategory ^ 1'.
+							'protocol' -> 'examples'.
+							'classSide' -> false} asDictionary} asDictionary.
+	call := self
+			executeTool: tool
+			withArguments: {'methodRequest'
+						-> {'methodClassName' -> 'GtGemStoneEvaluationContextTest'.
+								'sourceCode' -> 'gtLlmCompiledExampleKeepsCategory ^ 2'.
+								'classSide' -> false} asDictionary} asDictionary.
+	targetObject := call result targetObject.
+	self assert: (targetObject isKindOf: GtLMethodCompilationResult).
+	self assert: targetObject status equals: 'compiled'.
+	self assert: targetObject oldMethod notNil.
+	category := self runningServer
+			evaluateBlockAndWait: [ :clsName :aSelector | 
+				((GsSession currentSession objectNamed: clsName)
+					categoryOfSelector: aSelector
+					environmentId: 0) asString ]
+			withArguments: {#GtGemStoneEvaluationContextTest.
+					selector}
+			serializationStrategy: GtRsrWireSerializationStrategy.
+	self assert: category equals: 'examples' ]
+		ensure: [ self removeRemoteSelector: selector classSide: false ].
+	^ call
+]
+
+{ #category : #examples }
 GtGemStoneToolForMethodCompilationExamples >> compileInstanceSideMethod [
 	<gtExample>
 	<after: #stopServer>
@@ -83,6 +123,39 @@ GtGemStoneToolForMethodCompilationExamples >> compileMethodMissingArgument [
 		withPropertyNames: #('methodRequest')
 		path: #(nil)
 		errorMessage: 'required properties missing [methodRequest]'.
+	^ call
+]
+
+{ #category : #examples }
+GtGemStoneToolForMethodCompilationExamples >> compileNewMethodWithoutProtocol [
+	"A new method compiled without a protocol is classified as 'as yet unclassified'"
+
+	<gtExample>
+	<after: #stopServer>
+	| selector tool call targetObject category |
+	selector := #gtLlmCompiledExampleUnclassified.
+	tool := GtGemStoneLlmToolForMethodCompilation new session: self runningServer.
+	self removeRemoteSelector: selector classSide: false.
+	[ call := self
+			executeTool: tool
+			withArguments: {'methodRequest'
+						-> {'methodClassName' -> 'GtGemStoneEvaluationContextTest'.
+								'sourceCode' -> 'gtLlmCompiledExampleUnclassified ^ 42'.
+								'classSide' -> false} asDictionary} asDictionary.
+	targetObject := call result targetObject.
+	self assert: (targetObject isKindOf: GtLMethodCompilationResult).
+	self assert: targetObject status equals: 'compiled'.
+	self assert: targetObject oldMethod isNil.
+	category := self runningServer
+			evaluateBlockAndWait: [ :clsName :aSelector | 
+				((GsSession currentSession objectNamed: clsName)
+					categoryOfSelector: aSelector
+					environmentId: 0) asString ]
+			withArguments: {#GtGemStoneEvaluationContextTest.
+					selector}
+			serializationStrategy: GtRsrWireSerializationStrategy.
+	self assert: category equals: 'as yet unclassified' ]
+		ensure: [ self removeRemoteSelector: selector classSide: false ].
 	^ call
 ]
 
