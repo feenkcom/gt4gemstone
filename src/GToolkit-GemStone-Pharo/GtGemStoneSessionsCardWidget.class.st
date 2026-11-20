@@ -457,9 +457,10 @@ GtGemStoneSessionsCardWidget >> sessionList [
 
 { #category : #'private - ui' }
 GtGemStoneSessionsCardWidget >> sessionsToDisplay [
-	^ ((self registry sessionsToDisplay 
-		sorted: #name ascending) ifEmpty:[ 
-			{ GtGemStoneCardWidgetNoSessions new } ])
+	^(self registry sessionsToDisplay
+		sorted: [:aSession | aSession connector name] ascending
+				, [:aSession | aSession sessionId asString] ascending)
+			ifEmpty: [{GtGemStoneCardWidgetNoSessions new}]
 ]
 
 { #category : #'private - ui' }
