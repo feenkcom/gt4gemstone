@@ -29,17 +29,20 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Export'
 }
 
-{ #category : #utilities }
+{ #category : #'as yet unclassified' }
 GtGemStoneTopazExporter class >> compileMethod: aCompiledMethod in: aGemStoneSession [
-	| script |
+	| script result |
 	script := GtGemStoneClassDefinitionTool
-		compileScriptForSource: (self gemstoneSourceFor: aCompiledMethod)
-		protocol: aCompiledMethod protocolName
-		className: aCompiledMethod methodClass instanceSide name
-		meta: aCompiledMethod methodClass isMeta
-		environmentId: 0.
+				compileScriptForSource: (self gemstoneSourceFor: aCompiledMethod)
+				protocol: aCompiledMethod protocolName
+				className: aCompiledMethod methodClass instanceSide name
+				meta: aCompiledMethod methodClass isMeta
+				environmentId: 0.
 	aGemStoneSession connect.
-	^ aGemStoneSession evaluateAndWait: script
+	result := aGemStoneSession evaluateAndWait: script.
+	aGemStoneSession announce: (GtGemStoneSessionMethodCompiledAnnouncement
+				session: aGemStoneSession).
+	^result
 ]
 
 { #category : #accessing }
