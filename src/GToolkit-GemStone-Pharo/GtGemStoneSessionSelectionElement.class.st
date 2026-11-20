@@ -403,9 +403,10 @@ GtGemStoneSessionSelectionElement >> sessionBeDefault: aGtGemStoneSession [
 
 { #category : #private }
 GtGemStoneSessionSelectionElement >> sessionsToDisplay [
-	^ ((self registry sessionsToDisplay 
-		sorted: #name ascending) ifEmpty:[ 
-			{ GtGemStoneCardWidgetNoSessions new } ])
+	^(self registry sessionsToDisplay
+		sorted: [:aSession | aSession connector name] ascending
+				, [:aSession | aSession sessionId asString] ascending)
+			ifEmpty: [{GtGemStoneCardWidgetNoSessions new}]
 ]
 
 { #category : #accessing }
