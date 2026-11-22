@@ -4,6 +4,24 @@ Class {
 	#category : #'GToolkit-GemStone-Pharo-Examples'
 }
 
+{ #category : #'examples - variables' }
+GtGemStoneStackFrameFilterExamples >> blockFrameWithNilSelfLeavesOutSelf [
+	"The variable rows of a block frame as GemStone sends them for `| x | x := 3. [ self halt ] value` (names, types and icons are Symbols, display strings are Strings).
+	In a block frame GemStone can answer self with the value nil (block optimisation); GtGemStoneStackFrame>>#filterSelfFrom: leaves it out and keeps the original index of the other variables."
+	<gtExample>
+	| frame variables |
+
+	frame := self frameForClass: 'Object' selector: 'printString' inBlock: true identifier: 1.
+	variables := frame filterSelfFrom: {
+		{ #self. 'nil'. #self. #classIcon }.
+		{ #receiver. 'anExecBlock0'. #receiver. #classIcon }.
+		{ #x. '3'. #frame. #magnitudeIcon } }.
+
+	self assert: (variables collect: [ :each | each first ]) equals: #(#receiver #x).
+	self assert: (variables collect: [ :each | each last ]) equals: #(2 3).
+	^ variables
+]
+
 { #category : #'examples - clean stack' }
 GtGemStoneStackFrameFilterExamples >> cleanStackNoFiltering [
 	<gtExample>
