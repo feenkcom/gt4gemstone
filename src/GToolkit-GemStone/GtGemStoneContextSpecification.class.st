@@ -21,11 +21,11 @@ GtGemStoneContextSpecification class >> forGsCallFrame: aGsCallFrame [
 GtGemStoneContextSpecification >> asDictionaryForExport [
 
 	^ super asDictionaryForExport
-		at: #isForBlock put: isForBlock;
-		at: #ipOffset put: ipOffset;
-		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
-		at: #programCounterMarkers put: programCounterMarkers;
-		at: #callerProgramCounterMarkers put: callerProgramCounterMarkers;
+		at: 'isForBlock' put: isForBlock;
+		at: 'ipOffset' put: ipOffset;
+		at: 'frameIdentifier' put: frameIdentifier asDictionaryForExport;
+		at: 'programCounterMarkers' put: programCounterMarkers;
+		at: 'callerProgramCounterMarkers' put: callerProgramCounterMarkers;
 		yourself
 ]
 
@@ -60,14 +60,14 @@ GtGemStoneContextSpecification >> initializeForGsCallFrame: aGsCallFrame [
 GtGemStoneContextSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 
-	isForBlock := aDictionary at: #isForBlock.
-	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
-	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
-	callerProgramCounterMarkers := aDictionary at: #callerProgramCounterMarkers ifAbsent: [ nil ].
+	isForBlock := aDictionary at: 'isForBlock'.
+	ipOffset := aDictionary at: 'ipOffset' ifAbsent: [ nil ].
+	programCounterMarkers := aDictionary at: 'programCounterMarkers' ifAbsent: [ nil ].
+	callerProgramCounterMarkers := aDictionary at: 'callerProgramCounterMarkers' ifAbsent: [ nil ].
 
-	(aDictionary includesKey: #frameIdentifier) ifTrue: [
+	(aDictionary includesKey: 'frameIdentifier') ifTrue: [
 		frameIdentifier := GtGemStoneCallFrameIdentifier
-			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]
+			fromJSONDictionary: (aDictionary at: 'frameIdentifier') ]
 ]
 
 { #category : #initialization }
