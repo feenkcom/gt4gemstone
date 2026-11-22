@@ -15,6 +15,7 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardCellsAreAlignedWithTheirHe
 	keepAliveExamples
 		connectSessionWith: (keepAliveExamples connectorNamed: 'aligned')
 		to: registry.
+		
 	aScripter := BlScripter new.
 	aScripter extent: 325 @ 150.
 	aScripter
@@ -32,8 +33,8 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardCellsAreAlignedWithTheirHe
 				headerStarts := self headerStartsIn: aCard sessionList.
 				headerStarts size = 3 and: [
 					(self rowCellStartsIn: aCard sessionList) = headerStarts ] ] ].
+					
 	^ aScripter
-
 ]
 
 { #category : #examples }
@@ -49,12 +50,12 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardMarksTheSessionsPendingLog
 			value: [ :aCard |
 				((aCard sessionList query // #scrollable) anyOne children collect: [ :aRow |
 					(aRow userData at: #gtGemStoneLogoutPendingRowAptitude) isLogoutPending ]) asArray ]
-			equals: #(true false true) ].
+			equals: #(false true true) ].
 	aScripter assertStep: [ :s |
 		s
 			label: 'Assert the orange background of a row pending logout';
 			value: [ :aCard |
-				((aCard sessionList query // #scrollable) anyOne children first) background paint color ]
+				((aCard sessionList query // #scrollable) anyOne children second) background paint color ]
 			equals: GtGemStoneLogoutPendingRowAptitude backgroundColor ].
 	^ aScripter
 
@@ -73,6 +74,7 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardOffersToPostponeTheLogout 
 	changedAndPending := registry activeSessions detect: [ :each |
 		each name = 'changed-pending:default' ].
 	labels := ((card sessionActionsFor: pending) items collect: #key) asArray.
+	
 	self
 		assert: (labels indexOf: 'Postpone logout for 15 minutes')
 		equals: (labels indexOf: 'Disconnect') + 1.
@@ -82,6 +84,7 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardOffersToPostponeTheLogout 
 		value cull: card.
 	self assert: pending keepAlive isPostponed.
 	self assert: pending isLogoutPending not.
+	
 	aScripter wait forEmptySpaceTaskQueue; play.
 	aScripter assertStep: [ :s |
 		s
@@ -89,9 +92,9 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> cardOffersToPostponeTheLogout 
 			value: [ :aCard |
 				((aCard sessionList query // #scrollable) anyOne children collect: [ :aRow |
 					(aRow userData at: #gtGemStoneLogoutPendingRowAptitude) isLogoutPending ]) asArray ]
-			equals: #(true false false) ].
+			equals: #(false true false) ].
+		
 	^ aScripter
-
 ]
 
 { #category : #private }
@@ -126,7 +129,5 @@ GtGemStoneSessionsCardWidgetByScripterExamples >> scripterOnCardWithSessionsInDi
 			registry: registry;
 			matchParent;
 			yourself).
-	aScripter wait forEmptySpaceTaskQueue; play.
 	^ aScripter
-
 ]
