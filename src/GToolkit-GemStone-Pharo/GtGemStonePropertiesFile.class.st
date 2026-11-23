@@ -58,7 +58,7 @@ GtGemStonePropertiesFile >> connectorNamed: aString [
 	"Answer the session connection details with the supplied name"
 	<return: #GtGemStoneConnector>
 
-	^ (properties at: #namedConnectors) at: aString
+	^ (properties at: 'namedConnectors') at: aString
 ]
 
 { #category : #accessing }
@@ -67,7 +67,7 @@ GtGemStonePropertiesFile >> connectorNamed: aString put: aGtGemStoneConnector [
 	| announcement |
 
 	aGtGemStoneConnector name: aString.
-	(properties at: #namedConnectors) at: aString put: aGtGemStoneConnector.
+	(properties at: 'namedConnectors') at: aString put: aGtGemStoneConnector.
 	self saveProperties.
 	announcement := (GtGemStoneConnectorAnnouncement new
 		connector: aGtGemStoneConnector;
@@ -82,7 +82,7 @@ GtGemStonePropertiesFile >> connectorNames [
 	"Answer the set of defined session names"
 	<return: #Array>
 
-	^ (properties at: #namedConnectors) keys
+	^ (properties at: 'namedConnectors') keys
 ]
 
 { #category : #accessing }
@@ -96,7 +96,7 @@ GtGemStonePropertiesFile >> defaultConnectorName [
 	"Answer the default session to use"
 
 	^ properties 
-		at: #defaultName
+		at: 'defaultName'
 		ifAbsent: [ #default ]
 ]
 
@@ -104,7 +104,7 @@ GtGemStonePropertiesFile >> defaultConnectorName [
 GtGemStonePropertiesFile >> defaultConnectorName: aString [
 	"Set the default session to use"
 
-	^ self at: #defaultName put: aString.
+	^ self at: 'defaultName' put: aString.
 
 ]
 
@@ -135,14 +135,14 @@ GtGemStonePropertiesFile >> hasConnectorNamed: aString [
 	"Answer a boolean indicating whether the receiver has the named connector"
 	<return: #Boolean>
 
-	^ (properties at: #namedConnectors) includesKey: aString
+	^ (properties at: 'namedConnectors') includesKey: aString
 ]
 
 { #category : #initialization }
 GtGemStonePropertiesFile >> initialize [ 
 
 	super initialize.
-	properties at: 'namedConnectors' put: Dictionary new.
+	properties at: 'namedConnectors' put: GtStringContentDictionary new.
 ]
 
 { #category : #private }
@@ -159,7 +159,7 @@ GtGemStonePropertiesFile >> loadProperties [
 { #category : #private }
 GtGemStonePropertiesFile >> namedConnectors [
 
-	^ properties at: #namedConnectors
+	^ properties at: 'namedConnectors'
 ]
 
 { #category : #private }
@@ -169,10 +169,10 @@ GtGemStonePropertiesFile >> onConnectorChanged: aGtGemStoneConnectorAnnouncement
 	| namedConnectors |
 
 	aGtGemStoneConnectorAnnouncement isNameChange ifTrue:
-		[ namedConnectors := Dictionary new.
+		[ namedConnectors := GtStringContentDictionary new.
 		self allConnectors do: [ :connector |
 			namedConnectors at: connector name put: connector ].
-		properties at: #namedConnectors put: namedConnectors ].
+		properties at: 'namedConnectors' put: namedConnectors ].
 
 	self announce: aGtGemStoneConnectorAnnouncement
 ]
@@ -183,7 +183,7 @@ GtGemStonePropertiesFile >> removeConnectorNamed: aString [
 	If the connector isn't known, quietly return"
 	| namedConnections connector |
 
-	namedConnections := properties at: #namedConnectors.
+	namedConnections := properties at: 'namedConnectors'.
 	connector := namedConnections 
 		at: aString
 		ifAbsent: [ ^ self ].

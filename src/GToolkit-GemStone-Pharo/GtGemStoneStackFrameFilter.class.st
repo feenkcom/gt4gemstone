@@ -196,7 +196,7 @@ GtGemStoneStackFrameFilter >> findFirstRelevantFrameOrdinal [
 
 	firstRelevantFrameOrdinal := 1.
 	allFrames size - 1 to: 1 by: -1 do: [ :i |
-		((self exceptionInfrastructureSelectors includes: (allFrames at: i) selector)
+		((self exceptionInfrastructureSelectors includesSameContentAs: (allFrames at: i) selector)
 			and: [ self isAboveExecuteHandlerBarrier: i ])
 				ifTrue: [
 					firstRelevantFrameOrdinal := i + 1.
@@ -306,7 +306,8 @@ GtGemStoneStackFrameFilter >> isEvaluationInfrastructureAt: anIndex [
 
 	className := (allFrames at: anIndex) targetClassName.
 	className ifNil: [ ^ false ].
-	^ evaluationInfrastructureClassNames includes: className
+	"The frames come from GemStone with String names; the infrastructure names are Symbols"
+	^ evaluationInfrastructureClassNames includesSameContentAs: className
 ]
 
 { #category : #testing }
