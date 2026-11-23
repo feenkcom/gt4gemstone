@@ -1358,6 +1358,15 @@ GtGemStoneGtCodeExporter >> stubClasses [
 		thenReject: [ :each | each isNil ]
 ]
 
+{ #category : #accessing }
+GtGemStoneGtCodeExporter >> variableChangeHistoryExcludedMethods [
+	"Bloc and the Pharo UI icons are not ported to GemStone."
+
+	<excludedMethods>
+	^ {GtLVariableChangeHistory >> #gtViewChangeIcon.
+		GtLVariableChangeHistoryExamples >> #variableChangeDetailsElements}
+]
+
 { #category : #private }
 GtGemStoneGtCodeExporter >> znUrlExcludedMethods [
 	<excludedMethods>
