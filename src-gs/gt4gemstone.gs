@@ -946,6 +946,27 @@ removeallclassmethods GtGsRelease
 
 doit
 (Object
+	subclass: 'GtGsSecureSocketStream'
+	instVarNames: #(serverName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #( #logCreation )
+)
+		category: 'GToolkit-GemStone';
+		comment: 'I am the HTTPS socket stream for GemStone''s native Zinc (ZincGlobals), which has no secure socket stream class of its own (ZnNetworkingUtils>>#secureSocketStreamClass looks for Zodiac''s ZdcSecureSocketStream).
+
+I exist only for the GemStone export. In the stone I am a SocketStream subclass (GtGemStoneGtCodeExporter>>#alternateClassDefinitions) and my methods come from the ext_GtGsSecureSocketStream_* descriptors in GtGemStoneExtensionMethods; ext_ZnNetworkingUtils_secureSocketStreamClass makes Zinc use me. The TCP connection is opened as for http, then #connect upgrades it to TLS with GsSecureSocket. The certificate chain is always verified against the system CA bundle, and the host name against serverName (set through #serverNameIndication:, which is also sent as SNI). There is no unverified mode.';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GtGsSecureSocketStream
+removeallclassmethods GtGsSecureSocketStream
+
+doit
+(Object
 	subclass: 'GtRsrSerializationStrategy'
 	instVarNames: #()
 	classVars: #()
@@ -3408,11 +3429,13 @@ isSerializedData: aValue
 category: 'testing'
 classmethod: GtGemstoneEvaluationResult
 isSerializedDataForCurrentClass: aValue
+	"The type name comes from the other side: a Symbol through RSR, a String through other transports or from other versions"
+
 	^ (aValue class = Dictionary and: [
 		aValue 
 			at: '__typeName'
 			ifPresent: [ :aClassName | 
-				aClassName = self name ] 
+				self name sameContentAs: aClassName ] 
 			ifAbsent: [ false ] ])
 %
 
@@ -4089,6 +4112,23 @@ ext_AbstractException_gtMessageTextFor_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_AbstractFileReference_binaryContents
+	^ GtGemStoneExtensionMethod new
+		selector: #binaryContents;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #AbstractFileReference;
+		hash: #new;
+		source: 'binaryContents
+	<gtGsExtension>
+
+	self binaryReadStreamDo: [ :stream |
+		^ stream contents ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_AbstractFraction_asScaledDecimal
 	^ GtGemStoneExtensionMethod new
 		selector: #asScaledDecimal;
@@ -4509,6 +4549,22 @@ ext_CharacterCollection_asDateAndTime
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_CharacterCollection_asGtLInstructionPiece
+	^ GtGemStoneExtensionMethod new
+		selector: #asGtLInstructionPiece;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #CharacterCollection;
+		hash: #new;
+		source: 'asGtLInstructionPiece
+	<gtGsExtension>
+	"GT compatibility method (Gt4LlmCore''s String>>#asGtLInstructionPiece). On CharacterCollection so wide strings are covered too."
+	^ GtLInstructionString new string: self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_CharacterCollection_asUrl
 	"Same as the String extension, for the CharacterCollection classes outside String (DoubleByteString, QuadByteString, Unicode16, Unicode32), e.g. strings decoded from non-Latin-1 UTF-8. String keeps its own extension; see ext_String_asUrl."
 
@@ -4543,6 +4599,23 @@ ext_CharacterCollection_asZnUrl
 	^ (zinc
 		ifNil: [ ZnUrl ]
 		ifNotNil: [ zinc at: #ZnUrl ]) fromString: self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_CharacterCollection_isAllDigits
+	^ GtGemStoneExtensionMethod new
+		selector: #isAllDigits;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #CharacterCollection;
+		hash: #new;
+		source: 'isAllDigits
+	"GT compatibility method (Pharo''s String>>#isAllDigits, sent by the native Zinc''s ZnUtils class>>#parseHttpDate:). Answer whether the receiver has at least one character and consists only of digits."
+	<gtGsExtension>
+	self do: [ :each | each isDigit ifFalse: [ ^ false ] ].
+	^ self notEmpty'
 %
 
 category: 'extensions'
@@ -4872,6 +4945,29 @@ ext_Collection_flatCollect_as_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Collection_groupedBy_
+	^ GtGemStoneExtensionMethod new
+		selector: #groupedBy:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Collection;
+		hash: #new;
+		source: 'groupedBy: aBlock
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s Collection>>#groupedBy:). Answer an OrderedDictionary whose keys are the results of aBlock for my elements, each mapped to the elements that gave that key, in my species."
+	| groups |
+	groups := OrderedDictionary new.
+	self do: [ :each |
+		(groups at: (aBlock value: each) ifAbsentPut: [ OrderedCollection new ]) add: each ].
+	self species ~~ OrderedCollection ifTrue: [
+		groups associationsDo: [ :association |
+			association value: (self species withAll: association value) ] ].
+	^ groups'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Collection_identityIncludes_
  ^ GtGemStoneExtensionMethod new
  selector: #identityIncludes:;
@@ -5008,26 +5104,6 @@ ext_Collection_reject_thenDo_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
-ext_Collection_sameContentAs_
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #Collection;
-		hash: #new;
-		source: 'sameContentAs: aCollection 
-	"Answer true if the reciever contains the same elements as aCollection, and vice versa, comparing strings and symbols based on their content."
-	<gtGsExtension>
-
-	^(aCollection isCollection) 
-		and: [ aCollection size = self size 
-			and: [ aCollection allSatisfy: [ :each | 
-				(aCollection occurrencesOf: each) sameContentAs: (self occurrencesOf: each) ]]]'
-%
-
-category: 'extensions'
-classmethod: GtGemStoneExtensionMethods
 ext_CurrentExecutionEnvironment_runUnmanagedExampleEvaluator_
 	^ GtGemStoneExtensionMethod new
 		selector: #runUnmanagedExampleEvaluator:;
@@ -5040,6 +5116,81 @@ ext_CurrentExecutionEnvironment_runUnmanagedExampleEvaluator_
 
 	"GemStone evaluates unmanaged examples synchronously in the current process."
 	^ anExampleEvaluator value'
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+ext_DateAndTimeANSI_asLocalStringYMDHM
+	^ GtGemStoneExtensionMethod new
+		selector: #asLocalStringYMDHM;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asLocalStringYMDHM
+	<gtGsExtension>
+	^ self asLocal asStringYMDHM'
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+ext_DateAndTimeANSI_asLocalStringYMDHMS
+	^ GtGemStoneExtensionMethod new
+		selector: #asLocalStringYMDHMS;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asLocalStringYMDHMS
+	<gtGsExtension>
+	^ self asLocal asStringYMDHMS'
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+ext_DateAndTimeANSI_asStringYMDHM
+	^ GtGemStoneExtensionMethod new
+		selector: #asStringYMDHM;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asStringYMDHM
+	<gtGsExtension>
+	| full |
+	full := self asStringYMDHMS.
+	^ full copyFrom: 1 to: full size - 3'
+%
+
+category: 'accessing'
+classmethod: GtGemStoneExtensionMethods
+ext_DateAndTimeANSI_asStringYMDHMS
+	^ GtGemStoneExtensionMethod new
+		selector: #asStringYMDHMS;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #DateAndTimeANSI;
+		hash: #new;
+		source: 'asStringYMDHMS
+	<gtGsExtension>
+	^ String streamContents: [ :aStream |
+		self year negative ifTrue: [ aStream nextPut: $- ].
+		aStream
+			nextPutAll: (self year abs asString padded: #left to: 4 with: $0);
+			nextPut: $-;
+			nextPutAll: (self month asString padded: #left to: 2 with: $0);
+			nextPut: $-;
+			nextPutAll: (self dayOfMonth asString padded: #left to: 2 with: $0);
+			nextPut: Character space;
+			nextPutAll: (self hour asString padded: #left to: 2 with: $0);
+			nextPut: $:;
+			nextPutAll: (self minute asString padded: #left to: 2 with: $0);
+			nextPut: $:;
+			nextPutAll: (self second truncated asString padded: #left to: 2 with: $0) ]'
 %
 
 category: 'extensions'
@@ -5691,6 +5842,217 @@ ext_ExecBlock_onErrorDo_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_abs
+	^ GtGemStoneExtensionMethod new
+		selector: #abs;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'abs
+	"GT compatibility method (Pharo''s collection arithmetic). Answer a copy with the absolute value of each element."
+	<gtGsExtension>
+	^ self collect: [ :each | each abs ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_at_put_
+	^ GtGemStoneExtensionMethod new
+		selector: #at:put:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'at: index put: aNumber
+	"GT compatibility method (Pharo''s Float32Array>>#at:put:). Store aNumber as a Float."
+	<gtGsExtension>
+	^ super at: index put: aNumber asFloat'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_class_new_
+	^ GtGemStoneExtensionMethod new
+		selector: #new:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'new: size
+	"GT compatibility method (Pharo''s Float32Array is zero-filled). The stone class is a pointer-indexed stub holding Floats, not 32-bit words, so values keep 64-bit precision."
+	<gtGsExtension>
+	^ (super new: size)
+		atAllPut: 0.0;
+		yourself'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_class_withAll_
+	^ GtGemStoneExtensionMethod new
+		selector: #withAll:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'withAll: aCollection
+	"GT compatibility method (Pharo''s Float32Array class>>#withAll:). Store every element as a Float, as Pharo does."
+	<gtGsExtension>
+	| result |
+	result := self new: aCollection size.
+	aCollection doWithIndex: [ :each :index | result at: index put: each ].
+	^ result'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_divide
+	^ GtGemStoneExtensionMethod new
+		selector: #/;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: '/ anOperand
+	"GT compatibility method (Pharo''s Float32Array>>#/). Element-wise with a number or an equal-sized collection."
+	<gtGsExtension>
+	^ self elementwiseWith: anOperand collect: [ :a :b | a / b ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_dot_
+	^ GtGemStoneExtensionMethod new
+		selector: #dot:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'dot: aFloatVector
+	"GT compatibility method (the Smalltalk fallback of Pharo''s Float32Array>>#dot:). Answer the dot product of the receiver and the argument."
+	<gtGsExtension>
+	| result |
+	self size = aFloatVector size ifFalse: [ ^ self error: ''Must be equal size'' ].
+	result := 0.0.
+	1 to: self size do: [ :i | result := result + ((self at: i) * (aFloatVector at: i)) ].
+	^ result'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_elementwiseWith_collect_
+	^ GtGemStoneExtensionMethod new
+		selector: #elementwiseWith:collect:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'elementwiseWith: anOperand collect: aBinaryBlock
+	"Private (stone only): answer a new Float32Array with aBinaryBlock applied to each element and either anOperand, if it''s a number, or its element at the same index. Pharo does this with FloatArrayPlugin primitives."
+	<gtGsExtension>
+	| result |
+	anOperand isNumber ifFalse: [
+		self size = anOperand size ifFalse: [ ^ self error: ''Must be equal size'' ] ].
+	result := self species new: self size.
+	1 to: self size do: [ :i |
+		result
+			at: i
+			put: (aBinaryBlock
+				value: (self at: i)
+				value: (anOperand isNumber ifTrue: [ anOperand ] ifFalse: [ anOperand at: i ])) ].
+	^ result'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_minus
+	^ GtGemStoneExtensionMethod new
+		selector: #-;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: '- anOperand
+	"GT compatibility method (Pharo''s Float32Array>>#-). Element-wise with a number or an equal-sized collection."
+	<gtGsExtension>
+	^ self elementwiseWith: anOperand collect: [ :a :b | a - b ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_negated
+	^ GtGemStoneExtensionMethod new
+		selector: #negated;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'negated
+	"GT compatibility method (Pharo''s Float32Array>>#negated). Answer a copy with each element negated."
+	<gtGsExtension>
+	^ self collect: [ :each | each negated ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_plus
+	^ GtGemStoneExtensionMethod new
+		selector: #+;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: '+ anOperand
+	"GT compatibility method (Pharo''s Float32Array>>#+). Element-wise with a number or an equal-sized collection."
+	<gtGsExtension>
+	^ self elementwiseWith: anOperand collect: [ :a :b | a + b ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_sum
+	^ GtGemStoneExtensionMethod new
+		selector: #sum;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: 'sum
+	"GT compatibility method (Pharo''s Float32Array>>#sum). Answer the sum of the elements, 0.0 when empty."
+	<gtGsExtension>
+	^ self inject: 0.0 into: [ :total :each | total + each ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Float32Array_times
+	^ GtGemStoneExtensionMethod new
+		selector: #*;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Float32Array;
+		hash: #new;
+		source: '* anOperand
+	"GT compatibility method (Pharo''s Float32Array>>#*). Element-wise with a number or an equal-sized collection."
+	<gtGsExtension>
+	^ self elementwiseWith: anOperand collect: [ :a :b | a * b ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Float_class_infinity
  ^ GtGemStoneExtensionMethod new
  selector: #infinity;
@@ -5956,6 +6318,72 @@ ext_GtExample_new
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_GtGsSecureSocketStream_class_caCertificateFile
+	^ GtGemStoneExtensionMethod new
+		selector: #caCertificateFile;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #GtGsSecureSocketStream;
+		hash: #new;
+		source: 'caCertificateFile
+	"GemStone-only. Answer the system CA certificate bundle on the Gem host. Signal an error when there is none, rather than connecting without verification (unlike GsSecureSocket class>>#setCaCertLocation, which disables verification in that case)."
+	<gtGsExtension>
+	^ #(''/etc/ssl/certs/ca-certificates.crt'' ''/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem'' ''/etc/ssl/cert.pem'')
+		detect: [ :each | GsFile existsOnServer: each ]
+		ifNone: [ self error: ''No CA certificate bundle found on the Gem host; refusing an unverified TLS connection'' ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtGsSecureSocketStream_connect
+	^ GtGemStoneExtensionMethod new
+		selector: #connect;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GtGsSecureSocketStream;
+		hash: #new;
+		source: 'connect
+	"GemStone-only. Upgrade the connected TCP socket to TLS. The certificate chain is verified against the system CA bundle and the certificate against serverName; a failed verification signals an error from #secureConnectTimeoutMs:."
+	<gtGsExtension>
+	| tcpSocket secureSocket milliseconds |
+	serverName ifNil: [ ^ self error: ''No server name for TLS host name verification'' ].
+	GsSecureSocket useCACertificateFileForClients: self class caCertificateFile.
+	tcpSocket := self socket.
+	secureSocket := GsSecureSocket newClientFromGsSocket: tcpSocket underlyingSocket.
+	secureSocket
+		enableCertificateVerification;
+		setExpectedHost: serverName.
+	(secureSocket setServerNameIndication: serverName)
+		ifFalse: [ ^ self error: ''Could not set the TLS server name indication'' ].
+	milliseconds := (timeout isNil or: [ timeout < 0 ])
+		ifTrue: [ -1 ]
+		ifFalse: [ (timeout * 1000) truncated ].
+	(secureSocket secureConnectTimeoutMs: milliseconds) ifFalse: [
+		secureSocket close.
+		^ ConnectionTimedOut signal: ''TLS handshake timed out'' ].
+	tcpSocket onNativeSocket: secureSocket'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_GtGsSecureSocketStream_serverNameIndication_
+	^ GtGemStoneExtensionMethod new
+		selector: #serverNameIndication:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #GtGsSecureSocketStream;
+		hash: #new;
+		source: 'serverNameIndication: aString
+	"GemStone-only. Zinc sends this before #connect (ZnNetworkingUtils>>#socketStreamToUrlDirectly:). The name is sent as SNI and is the host name the server certificate must match."
+	<gtGsExtension>
+	serverName := aString'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_GtSystemUtility_freeze_
 	^ GtGemStoneExtensionMethod new
 		selector: #freeze:;
@@ -5982,6 +6410,45 @@ ext_Integer_asCharacterDigit
  source: 'asCharacterDigit
  <gtGsExtension>
  ^ Character digitValue: self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Integer_class_readFrom_base_
+	^ GtGemStoneExtensionMethod new
+		selector: #readFrom:base:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #Integer;
+		hash: #new;
+		source: 'readFrom: aStringOrStream base: base
+	"GT compatibility method (Pharo''s Integer class>>#readFrom:base:, sent by the native Zinc''s ZnChunkedReadStream>>#getNextChunkSize). Read an optionally negative integer in base from a String or a stream, stopping at the first character that isn''t a digit in that base. Signal an error when there is no digit."
+	<gtGsExtension>
+	| stream negative value digit found |
+	stream := aStringOrStream isString
+		ifTrue: [ aStringOrStream readStream ]
+		ifFalse: [ aStringOrStream ].
+	negative := stream peekFor: $-.
+	value := 0.
+	found := false.
+	[ stream atEnd not and: [
+		| character |
+		character := stream peek asUppercase.
+		digit := (character between: $0 and: $9)
+			ifTrue: [ character asInteger - $0 asInteger ]
+			ifFalse: [ (character between: $A and: $Z)
+				ifTrue: [ character asInteger - $A asInteger + 10 ]
+				ifFalse: [ base ] ].
+		digit < base ] ]
+		whileTrue: [
+			stream next.
+			value := value * base + digit.
+			found := true ].
+	found ifFalse: [ ^ self error: ''Reading a number failed: a digit in base '', base printString, '' expected'' ].
+	^ negative
+		ifTrue: [ value negated ]
+		ifFalse: [ value ]'
 %
 
 category: 'extensions'
@@ -7126,6 +7593,21 @@ ext_Number_adaptToPoint_andSend_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Number_asDuration
+	^ GtGemStoneExtensionMethod new
+		selector: #asDuration;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'asDuration
+	<gtGsExtension>
+	^ Duration seconds: self asInteger'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Number_asMargin
 	^ GtGemStoneExtensionMethod new
 		selector: #'asMargin';
@@ -7156,6 +7638,21 @@ ext_Number_asPoint
 	or scaling."
 
 	^self @ self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_asSeconds
+	^ GtGemStoneExtensionMethod new
+		selector: #asSeconds;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'asSeconds
+	<gtGsExtension>
+	^ Duration seconds: self'
 %
 
 category: 'extensions'
@@ -7191,6 +7688,37 @@ ext_Number_closeTo_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Number_day
+	^ GtGemStoneExtensionMethod new
+		selector: #day;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'day
+	<gtGsExtension>
+	^ self days'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_days
+	^ GtGemStoneExtensionMethod new
+		selector: #days;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'days
+	"GT compatibility method (Pharo''s Number>>#days, sent by the native Zinc''s TimeStamp>>#plusDays: for a cookie without Expires). The stone''s Duration has no class-side #days:."
+	<gtGsExtension>
+	^ Duration days: self hours: 0 minutes: 0 seconds: 0'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Number_hour
  ^ GtGemStoneExtensionMethod new
  selector: #hour;
@@ -7221,6 +7749,81 @@ ext_Number_hours
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Number_milliSecond
+	^ GtGemStoneExtensionMethod new
+		selector: #milliSecond;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'milliSecond
+	<gtGsExtension>
+	^ self milliSeconds'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_milliSeconds
+	^ GtGemStoneExtensionMethod new
+		selector: #milliSeconds;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'milliSeconds
+	<gtGsExtension>
+	^ Duration seconds: self / 1000'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_minute
+	^ GtGemStoneExtensionMethod new
+		selector: #minute;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'minute
+	<gtGsExtension>
+	^ self minutes'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_minutes
+	^ GtGemStoneExtensionMethod new
+		selector: #minutes;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'minutes
+	<gtGsExtension>
+	^ Duration seconds: self * 60'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_nanoSecond
+	^ GtGemStoneExtensionMethod new
+		selector: #nanoSecond;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'nanoSecond
+	<gtGsExtension>
+	^ self nanoSeconds'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Number_neoJsonOn_
  ^ GtGemStoneExtensionMethod new
  selector: #neoJsonOn:;
@@ -7232,6 +7835,81 @@ ext_Number_neoJsonOn_
  source: 'neoJsonOn: neoJSONWriter
  <gtGsExtension>
 	neoJSONWriter writeFloat: self asFloat'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_second
+	^ GtGemStoneExtensionMethod new
+		selector: #second;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'second
+	<gtGsExtension>
+	^ self seconds'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_week
+	^ GtGemStoneExtensionMethod new
+		selector: #week;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'week
+	<gtGsExtension>
+	^ self weeks'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_weeks
+	^ GtGemStoneExtensionMethod new
+		selector: #weeks;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'weeks
+	<gtGsExtension>
+	^ Duration seconds: self * 604800'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_year
+	^ GtGemStoneExtensionMethod new
+		selector: #year;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'year
+	<gtGsExtension>
+	^ self years'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Number_years
+	^ GtGemStoneExtensionMethod new
+		selector: #years;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Number;
+		hash: #new;
+		source: 'years
+	<gtGsExtension>
+	^ Duration seconds: self * 31536000'
 %
 
 category: 'extensions'
@@ -7375,6 +8053,25 @@ ext_Object_gtLiveFor_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Object_initializeMagritte
+	^ GtGemStoneExtensionMethod new
+		selector: #initializeMagritte;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'initializeMagritte
+	"Initializes the receiving object with the default values of its description."
+	<gtGsExtension>
+
+	self magritteDescription do: [ :each |
+		each isReadOnly
+			ifFalse: [ self write: each default using: each ] ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Object_isArray
 	^ GtGemStoneExtensionMethod new
 		selector: #isArray;
@@ -7408,6 +8105,22 @@ ext_Object_isBoolean
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Object_isDescription
+	^ GtGemStoneExtensionMethod new
+		selector: #isDescription;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'isDescription
+	<gtGsExtension>
+
+	^ false'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Object_isPoint
 	^ GtGemStoneExtensionMethod new
 		selector: #'isPoint';
@@ -7421,6 +8134,51 @@ ext_Object_isPoint
 	"Overridden to return true in Point."
 
 	^ false'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_isSameAs_
+	^ GtGemStoneExtensionMethod new
+		selector: #isSameAs:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'isSameAs: rhs
+	<gtGsExtension>
+
+	^ self isSameAs: rhs using: [ self magritteDescription ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_isSameAs_using_
+	^ GtGemStoneExtensionMethod new
+		selector: #isSameAs:using:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'isSameAs: rhs using: valuableDescription
+	"Use #isSameAs: unless you need to cache the description for efficiency.
+	CAUTION: this may not work if the description depends on the instance e.g. uses `self` in a block
+	(See comment below for more details)"
+	<gtGsExtension>
+
+	^ valuableDescription value allSatisfy: [ :desc |
+			| myVal rhsVal |
+			(desc accessor canRead: rhs)
+				ifFalse: [ false ]
+				ifTrue: [
+					myVal := desc read: self.
+					rhsVal := desc read: rhs.
+					({ nil. desc default } includesAll: { myVal. rhsVal })
+						ifTrue: [ true ]
+						ifFalse: [ myVal = rhsVal ] ] ].
+	"Motivation: We cache the description because profiling on a large dataset (120,000 records) showed about 66% of processing time was spent (re)building it"'
 %
 
 category: 'extensions'
@@ -7488,6 +8246,142 @@ ext_Object_llmDataViewsInContext_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_Object_maFullPrintString
+	^ GtGemStoneExtensionMethod new
+		selector: #maFullPrintString;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maFullPrintString
+	<gtGsExtension>
+
+	^ String streamContents: [ :str | self maPrintOn: str ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_magritteActions
+	^ GtGemStoneExtensionMethod new
+		selector: #magritteActions;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'magritteActions
+	<gtGsExtension>
+
+	^ (MAActionPragmaBuilder for: self) children'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_maHash
+	^ GtGemStoneExtensionMethod new
+		selector: #maHash;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maHash
+	<gtGsExtension>
+
+	^ self maHashUsing: [ self magritteDescription ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_maHashUsing_
+	^ GtGemStoneExtensionMethod new
+		selector: #maHashUsing:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maHashUsing: valuabledescription
+	"See isSameAs:using: comments"
+	<gtGsExtension>
+
+	^ valuabledescription value children 
+			inject: 0 hash 
+			into: [ :hash :desc | hash bitXor: (desc read: self) hash ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_maLazyInstVarUsing_
+	^ GtGemStoneExtensionMethod new
+		selector: #maLazyInstVarUsing:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maLazyInstVarUsing: description
+	"Return the current value of a field as specified by its description. See #lazilyInitializeFrom:for: comment for more info.
+		- NB: Only works with a selector accessor with matching inst var name e.g. (readSelector = instVarName = #myField). It could be extended to other cases if the need arises."
+	<gtGsExtension>
+
+	| currentValue |
+	currentValue := self instVarNamed: description accessor readSelector.
+	^ description lazilyInitializeFrom: currentValue for: self.'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_maPrintOn_
+	^ GtGemStoneExtensionMethod new
+		selector: #maPrintOn:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maPrintOn: aStream
+	<gtGsExtension>
+
+	self magritteDescription print: self on: aStream'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_maValidate
+	^ GtGemStoneExtensionMethod new
+		selector: #maValidate;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'maValidate
+	<gtGsExtension>
+
+	^ self magritteDescription validate: self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_mementoClass
+	^ GtGemStoneExtensionMethod new
+		selector: #mementoClass;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'mementoClass
+	"Return a class to be used to remember or cache the receiver, namely a memento object."
+	<gtGsExtension>
+
+	^ MACheckedMemento'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_Object_neoJsonOn_
  ^ GtGemStoneExtensionMethod new
  selector: #neoJsonOn:;
@@ -7503,18 +8397,38 @@ ext_Object_neoJsonOn_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
-ext_Object_sameContentAs_
+ext_Object_readUsing_
 	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
+		selector: #readUsing:;
 		protocol: #'gt-extension';
 		meta: false;
 		gtVersions: nil;
 		className: #Object;
 		hash: #new;
-		source: 'sameContentAs: anObject
+		source: 'readUsing: aDescription
+	"This hook is needed so that e.g. mementos and adaptive models can implement their own behavior. All other entry points e.g. MADescription>>#read: should come through here"
 	<gtGsExtension>
 
-	^ self = anObject'
+	| result |
+	result := aDescription accessor read: self.
+	^ result ifNil: [ aDescription undefinedValue ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_Object_write_using_
+	^ GtGemStoneExtensionMethod new
+		selector: #write:using:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #Object;
+		hash: #new;
+		source: 'write: anObject using: aDescription
+	"This hook is needed so that e.g. mementos and adaptive models can implement their own behavior. All other entry points e.g. MADescription>>#read: should come through here"
+	<gtGsExtension>
+
+	aDescription accessor write: anObject to: self'
 %
 
 category: 'extensions'
@@ -7613,6 +8527,22 @@ ext_Point_asMargin
 	"Return a margin instance based on the receiver. aMargin is an object representing either 1, 2 or 4 numbers. It represents the space between a rectangular area and this rectangular area augmented by the margin"
 
 	^ Margin fromPoint: self'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_PositionableStream_isBinary
+	^ GtGemStoneExtensionMethod new
+		selector: #isBinary;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #PositionableStream;
+		hash: #new;
+		source: 'isBinary
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s PositionableStream>>#isBinary, and the stone''s own PositionableStreamPortable). A stream over a ByteArray is binary; without this, Zinc''s ZnLineReader stores raw bytes into a String."
+	^ collection class == ByteArray'
 %
 
 category: 'extensions'
@@ -7773,24 +8703,19 @@ ext_SequenceableCollection_first_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
-ext_SequenceableCollection_hasSameContentElements_
+ext_SequenceableCollection_identityIndexOf_ifAbsent_
 	^ GtGemStoneExtensionMethod new
-		selector: #hasSameContentElements:;
+		selector: #identityIndexOf:ifAbsent:;
 		protocol: #'gt-extension';
 		meta: false;
 		gtVersions: nil;
 		className: #SequenceableCollection;
 		hash: #new;
-		source: 'hasSameContentElements: otherCollection
-	"Compare corresponding elements by content."
+		source: 'identityIndexOf: anElement ifAbsent: exceptionBlock
 	<gtGsExtension>
-	| size |
-	(otherCollection isKindOf: SequenceableCollection) ifFalse: [ ^ false ].
-	(size := self size) = otherCollection size ifFalse: [ ^ false ].
-	1 to: size do: [ :index |
-		((self at: index) sameContentAs: (otherCollection at: index))
-			ifFalse: [ ^ false ] ].
-	^ true'
+	"GT compatibility method (Pharo''s SequenceableCollection>>#identityIndexOf:ifAbsent:). Answer the index of anElement within the receiver, or the value of exceptionBlock if it is absent."
+	1 to: self size do: [ :i | (self at: i) == anElement ifTrue: [ ^ i ] ].
+	^ exceptionBlock value'
 %
 
 category: 'extensions'
@@ -7824,25 +8749,25 @@ ext_SequenceableCollection_isSortedBy_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
-ext_SequenceableCollection_sameContentAs_
+ext_SequenceableCollection_last_
 	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
+		selector: #last:;
 		protocol: #'gt-extension';
 		meta: false;
 		gtVersions: nil;
 		className: #SequenceableCollection;
-		hash: #new;
-		source: 'sameContentAs: otherCollection
-	"Answer true if the receiver is equivalent to the otherCollection.
-	First test for identity, then rule out different species and sizes of
-	collections. As a last resort, examine each element of the receiver
-	and the otherCollection.
-	Compare strings and symbols based on their content."
-	<gtGsExtension>
+		hash: '919c162745c107cd3c56bb9f8a90e2cd43204b351f96460b6b2f675534c250ac';
+		source: 'last: n
+	"Answer the last n elements of the receiver.
+	Raise an error if there are not enough elements.
+	GemStone''s native last: stores its argument in the last position; this replaces it with Pharo''s behaviour."
+	"(#(a b c d e) last: 2) >>> #(d e)"
+	"(#(a b c d e) last: 3) >>> #(c d e)"
 
-	self == otherCollection ifTrue: [^ true].
-	self species == otherCollection species ifFalse: [^ false].
-	^ self hasSameContentElements: otherCollection'
+	<gtGsExtension>
+	| size |
+	size := self size.
+	^ self copyFrom: size - n + 1 to: size'
 %
 
 category: 'extensions'
@@ -7886,6 +8811,32 @@ comparison."
 	"(#(xa xc xz xb xy) sorted: #last ascending) >>> #(xa xb xc xy xz)"
 
 	^ (self copy sort: aSortBlockOrNil) as: self species'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_SequenceableCollection_withIndexCollect_
+	^ GtGemStoneExtensionMethod new
+		selector: #withIndexCollect:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #SequenceableCollection;
+		hash: #new;
+		source: 'withIndexCollect: elementAndIndexBlock
+	"Just like with:collect: except that the iteration index supplies the second argument to the block."
+
+	"(#(10 20 30) withIndexCollect: [:each :index | each + (index * 2)]) >>> #(12 24 36)"
+	<gtGsExtension>
+
+	| result |
+	result := self species new: self size.
+	1 to: self size do:
+		[:index | result at: index put:
+		(elementAndIndexBlock
+			value: (self at: index)
+			value: index)].
+	^ result'
 %
 
 category: 'extensions'
@@ -8005,6 +8956,22 @@ ext_SortFunction_class_default
 		source: 'default
 	<gtGsExtension>
 	^ SessionTemps current at: #SortFunction_default_value ifAbsentPut: [ DefaultSortFunction new ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_STONWriter_jsonMode
+	^ GtGemStoneExtensionMethod new
+		selector: #jsonMode;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #STONWriter;
+		hash: #new;
+		source: 'jsonMode
+	"Answer whether this writer is producing JSON. OrderedDictionary>>stonOn: uses this accessor."
+	<gtGsExtension>
+	^ jsonMode'
 %
 
 category: 'extensions'
@@ -8159,6 +9126,22 @@ ext_String_capitalized
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_String_class_lf
+	^ GtGemStoneExtensionMethod new
+		selector: #lf;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'lf
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s String class>>#lf). Answer a string containing a single line feed character."
+	^ self with: Character lf'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_String_class_new_withAll_
  ^ GtGemStoneExtensionMethod new
  selector: #new:withAll:;
@@ -8191,6 +9174,22 @@ ext_String_class_space
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_String_class_tab
+	^ GtGemStoneExtensionMethod new
+		selector: #tab;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #String;
+		hash: #new;
+		source: 'tab
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s String class>>#tab). Answer a string containing a single tab character."
+	^ self with: Character tab'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_String_findTokens_
 	^ GtGemStoneExtensionMethod new
 		selector: #findTokens:;
@@ -8200,13 +9199,13 @@ ext_String_findTokens_
 		className: #String;
 		hash: #new;
 		source: 'findTokens: delimiters
+	"Accept a character or collection of delimiters and omit empty tokens, as in GT. GemStone''s #substrings: keeps an empty token between adjacent delimiters ('', '' in an HTTP date), so empty tokens are removed explicitly."
 	<gtGsExtension>
-	"Accept a character or collection of delimiters and omit empty tokens, as in GT."
 	| separators |
 	separators := delimiters isCharacter
 		ifTrue: [ Array with: delimiters ]
 		ifFalse: [ delimiters ].
-	^ (self substrings: separators) asOrderedCollection'
+	^ ((self substrings: separators) reject: [ :each | each isEmpty ]) asOrderedCollection'
 %
 
 category: 'extensions'
@@ -8322,25 +9321,6 @@ ext_String_removeSuffix_
 	^ (self endsWith: suffix)
 		ifTrue: [ self copyFrom: 1 to: self size - suffix size ]
 		ifFalse: [ self ]'
-%
-
-category: 'extensions'
-classmethod: GtGemStoneExtensionMethods
-ext_String_sameContentAs_
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #String;
-		hash: #new;
-		source: 'sameContentAs: aString
-	"Compare string and symbol contents, case-sensitively, without collation tables."
-	<gtGsExtension>
-	(aString isString and: [ self size = aString size ]) ifFalse: [ ^ false ].
-	1 to: self size do: [ :index |
-		(self at: index) = (aString at: index) ifFalse: [ ^ false ] ].
-	^ true'
 %
 
 category: 'extensions'
@@ -8557,26 +9537,6 @@ ext_Symbol_isUnary
 	"#between:and: isUnary >>> false"
 
 	^ self precedence = 1'
-%
-
-category: 'extensions'
-classmethod: GtGemStoneExtensionMethods
-ext_Symbol_sameContentAs_
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #Symbol;
-		hash: #new;
-		source: 'sameContentAs: aString
-	"Compare the receiver and aString."
-	<gtGsExtension>
-
-	self == aString ifTrue: [^ true].
-	self class == aString class ifTrue: [^ false].
-	"Use String comparison otherwise"
-	^ super sameContentAs: aString'
 %
 
 category: 'extensions'
@@ -8867,6 +9827,48 @@ ext_UUID_class_fromString36_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_ZnClient_forJsonREST
+	"Compiled into the frozen native ZnClient (ZincGlobals), which predates forJsonREST. Needs ext_ZnUtils_class_defaultJSONReader and ext_ZnUtils_class_defaultJSONWriter."
+
+	^ GtGemStoneExtensionMethod new
+		selector: #forJsonREST;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ZnClient;
+		hash: #new;
+		source: 'forJsonREST
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s ZnClient>>#forJsonREST). Configure the receiver for JSON REST interaction."
+	| reader writer |
+	reader := ZnUtils defaultJSONReader.
+	writer := ZnUtils defaultJSONWriter.
+	self
+		accept: ZnMimeType applicationJson;
+		contentReader: [ :entity | reader fromString: entity contents ];
+		contentWriter: [ :data | ZnEntity json: (writer toString: data) ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnClient_setBearerAuthentication_
+	"Compiled into the frozen native ZnClient (ZincGlobals). Needs ext_ZnRequest_setBearerAuthentication_."
+
+	^ GtGemStoneExtensionMethod new
+		selector: #setBearerAuthentication:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ZnClient;
+		hash: #new;
+		source: 'setBearerAuthentication: token
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s ZnClient>>#setBearerAuthentication:). Set the bearer token for authentication for the current request."
+	self request setBearerAuthentication: token'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_ZnDefaultCharacterEncoder_class_defaultValue
 	^ GtGemStoneExtensionMethod new
 		className: #ZnDefaultCharacterEncoder;
@@ -9091,6 +10093,41 @@ ext_ZnMessage_gtJsonContents
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_ZnMimeType_class_forFilenameExtension_ifAbsent_
+	^ GtGemStoneExtensionMethod new
+		selector: #forFilenameExtension:ifAbsent:;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #ZnMimeType;
+		hash: #new;
+		source: 'forFilenameExtension: extension ifAbsent: block
+	"GT compatibility method (Pharo Zinc''s ZnMimeType class>>#forFilenameExtension:ifAbsent:, used by GtLChat>>#sendFiles:withMessage:). The stone''s native ZnMimeType keeps the map in the ExtensionsMap class variable and has no #extensionsMap accessor."
+	<gtGsExtension>
+	^ ExtensionsMap
+		at: extension
+		ifAbsent: block'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnNetworkingUtils_secureSocketStreamClass
+	^ GtGemStoneExtensionMethod new
+		selector: #secureSocketStreamClass;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ZnNetworkingUtils;
+		hash: 'cb4192d1068839ec1af9671a1bf1e11242d59920ec41e4d539b5d1824c399dc7';
+		source: 'secureSocketStreamClass
+	"GT override of the native method: fall back to GtGsSecureSocketStream when Zodiac''s ZdcSecureSocketStream is absent. The fallback isn''t cached in the instance variable, because the Default instance is persistent."
+	<gtGsExtension>
+	^ secureSocketStreamClass ifNil: [
+		Smalltalk globals at: #ZdcSecureSocketStream ifAbsent: [ GtGsSecureSocketStream ] ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_ZnPercentEncoder_decode_
 	^ GtGemStoneExtensionMethod new
 		className: #ZnPercentEncoder;
@@ -9185,6 +10222,26 @@ ext_ZnPercentEncoder_readHexFrom_
 
 category: 'extensions'
 classmethod: GtGemStoneExtensionMethods
+ext_ZnRequest_setBearerAuthentication_
+	"Compiled into the frozen native ZnRequest (ZincGlobals), which has setAuthorization: but not this."
+
+	^ GtGemStoneExtensionMethod new
+		selector: #setBearerAuthentication:;
+		protocol: #'gt-extension';
+		meta: false;
+		gtVersions: nil;
+		className: #ZnRequest;
+		hash: #new;
+		source: 'setBearerAuthentication: token
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s ZnRequest>>#setBearerAuthentication:). A nil token removes the Authorization header."
+	token
+		ifNil: [ self headers removeKey: ''Authorization'' ifAbsent: [ ] ]
+		ifNotNil: [ self setAuthorization: ''Bearer '' , token ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
 ext_ZnResourceMetaUtils_class_queryKeyValueSafeSet
 	^ GtGemStoneExtensionMethod new
 		className: #ZnResourceMetaUtils;
@@ -9219,14 +10276,15 @@ classmethod: GtGemStoneExtensionMethods
 ext_ZnStringEntity_class_json_
 	^ GtGemStoneExtensionMethod new
 		selector: #json:;
-		protocol: #convenience;
+		protocol: #'gt-extension';
 		meta: true;
 		gtVersions: nil;
 		className: #ZnStringEntity;
 		hash: #new;
 		source: 'json: string
+	"GT compatibility method. The content type declares charset=utf-8 because the native Zinc''s ZnStringEntity>>#initializeEncoder falls back to ZnNullEncoder when there is no charset (GT''s Zinc falls back to ZnDefaultCharacterEncoder, UTF-8), which sends a DoubleByteString as raw two-byte units."
 	<gtGsExtension>
-	^ (self type: ZnMimeType applicationJson)
+	^ (self type: (ZnMimeType applicationJson copy setCharSetUTF8; yourself))
 		string: string;
 		yourself'
 %
@@ -9361,6 +10419,46 @@ ext_ZnUrl_portIfAbsent_
 		source: 'portIfAbsent: valuable
 	<gtGsExtension>
 	^ self hasPort ifTrue: [ self port ] ifFalse: [ valuable value ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnUtils_class_defaultJSONReader
+	^ GtGemStoneExtensionMethod new
+		selector: #defaultJSONReader;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #ZnUtils;
+		hash: #new;
+		source: 'defaultJSONReader
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s ZnUtils class>>#defaultJSONReader). Answer NeoJSONObject, or STONJSON if NeoJSON is absent. Looked up in the symbol list, as GemStone has no class environment."
+	| symbolList |
+	symbolList := System myUserProfile symbolList.
+	^ (symbolList objectNamed: #NeoJSONObject)
+		ifNil: [ (symbolList objectNamed: #STONJSON)
+			ifNil: [ self error: ''Could not find a suitable JSON parser'' ] ]'
+%
+
+category: 'extensions'
+classmethod: GtGemStoneExtensionMethods
+ext_ZnUtils_class_defaultJSONWriter
+	^ GtGemStoneExtensionMethod new
+		selector: #defaultJSONWriter;
+		protocol: #'gt-extension';
+		meta: true;
+		gtVersions: nil;
+		className: #ZnUtils;
+		hash: #new;
+		source: 'defaultJSONWriter
+	<gtGsExtension>
+	"GT compatibility method (Pharo''s ZnUtils class>>#defaultJSONWriter). Answer NeoJSONWriter, or STONJSON if NeoJSON is absent. Looked up in the symbol list, as GemStone has no class environment."
+	| symbolList |
+	symbolList := System myUserProfile symbolList.
+	^ (symbolList objectNamed: #NeoJSONWriter)
+		ifNil: [ (symbolList objectNamed: #STONJSON)
+			ifNil: [ self error: ''Could not find a suitable JSON writer'' ] ]'
 %
 
 category: 'updating'
@@ -10921,6 +12019,13 @@ v1_1_617
 	^ self major: 1 minor: 1 patch: 617
 %
 
+category: 'instance creation'
+classmethod: GtGemStoneSemanticVersionNumber
+v1_1_699
+
+	^ self major: 1 minor: 1 patch: 699
+%
+
 category: 'accessing'
 classmethod: GtGemStoneSemanticVersionNumber
 versionNumberRegexString
@@ -11717,7 +12822,8 @@ method: GtGemStoneClassBasicDetails
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 	
-	targetClassName := aDictionary at: 'targetClassName'.
+	"A class name, also when the other side sent it as a String"
+	targetClassName := (aDictionary at: 'targetClassName') ifNotNil: [ :aName | aName asSymbol ].
 	targetClassIconName := aDictionary at: 'targetClassIconName'.
 %
 
@@ -11988,16 +13094,16 @@ initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 
 	self
-		initializeForClassName: (aDictionary at: #coderClassName)
-		iconName: (aDictionary at: #coderClassIconName ifAbsent: [ nil ])
-		isMeta: (aDictionary at: #isMeta)
-		categoryName: (aDictionary at: #categoryName)
-		selector: (aDictionary at: #selector)
-		sourceString: (aDictionary at: #sourceString)
-		protocolName: (aDictionary at: #protocolName)
-		explicitReceiver: ((aDictionary includesKey: #explicitProviderBehaviourDetails)
+		initializeForClassName: ((aDictionary at: 'coderClassName') ifNotNil: [ :aName | aName asSymbol ])
+		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
+		isMeta: (aDictionary at: 'isMeta')
+		categoryName: (aDictionary at: 'categoryName')
+		selector: ((aDictionary at: 'selector') ifNotNil: [ :aSelector | aSelector asSymbol ])
+		sourceString: (aDictionary at: 'sourceString')
+		protocolName: (aDictionary at: 'protocolName')
+		explicitReceiver: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')
 			ifTrue: [ GtGemStoneClassBasicDetails  fromJSONDictionary: (
-				aDictionary at: #explicitProviderBehaviourDetails)]
+				aDictionary at: 'explicitProviderBehaviourDetails')]
 			ifFalse: [ nil ])
 %
 
@@ -12076,11 +13182,11 @@ method: GtGemStoneContextSpecification
 asDictionaryForExport
 
 	^ super asDictionaryForExport
-		at: #isForBlock put: isForBlock;
-		at: #ipOffset put: ipOffset;
-		at: #frameIdentifier put: frameIdentifier asDictionaryForExport;
-		at: #programCounterMarkers put: programCounterMarkers;
-		at: #callerProgramCounterMarkers put: callerProgramCounterMarkers;
+		at: 'isForBlock' put: isForBlock;
+		at: 'ipOffset' put: ipOffset;
+		at: 'frameIdentifier' put: frameIdentifier asDictionaryForExport;
+		at: 'programCounterMarkers' put: programCounterMarkers;
+		at: 'callerProgramCounterMarkers' put: callerProgramCounterMarkers;
 		yourself
 %
 
@@ -12120,14 +13226,14 @@ method: GtGemStoneContextSpecification
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 
-	isForBlock := aDictionary at: #isForBlock.
-	ipOffset := aDictionary at: #ipOffset ifAbsent: [ nil ].
-	programCounterMarkers := aDictionary at: #programCounterMarkers ifAbsent: [ nil ].
-	callerProgramCounterMarkers := aDictionary at: #callerProgramCounterMarkers ifAbsent: [ nil ].
+	isForBlock := aDictionary at: 'isForBlock'.
+	ipOffset := aDictionary at: 'ipOffset' ifAbsent: [ nil ].
+	programCounterMarkers := aDictionary at: 'programCounterMarkers' ifAbsent: [ nil ].
+	callerProgramCounterMarkers := aDictionary at: 'callerProgramCounterMarkers' ifAbsent: [ nil ].
 
-	(aDictionary includesKey: #frameIdentifier) ifTrue: [
+	(aDictionary includesKey: 'frameIdentifier') ifTrue: [
 		frameIdentifier := GtGemStoneCallFrameIdentifier
-			fromJSONDictionary: (aDictionary at: #frameIdentifier) ]
+			fromJSONDictionary: (aDictionary at: 'frameIdentifier') ]
 %
 
 category: 'initialization'
@@ -12202,7 +13308,7 @@ method: GtGemStoneMethodsSpecification
 initializeFromJSONDictionary: aDictionary
 	super initializeFromJSONDictionary: aDictionary.
 	
-	methodCoderSpecifications := (aDictionary at: #methodCoderSpecifications)
+	methodCoderSpecifications := (aDictionary at: 'methodCoderSpecifications')
 		collect: [ :aCoderJsonData  |
 			self instantiateCoderSpecificationFromJsonData: aCoderJsonData ]
 %
@@ -13869,6 +14975,32 @@ isDictionary
 	^ true
 %
 
+category: '*GToolkit-GemStone-GemStone'
+method: AbstractDictionary
+sameContentAs: aDictionary
+	"Answer whether aDictionary has the same keys as the receiver, each with the same value,
+	comparing keys and values with #sameContentAs: (Strings and Symbols by their characters)"
+
+	| includesAll |
+	self == aDictionary ifTrue: [ ^ true ].
+	(aDictionary isKindOf: AbstractDictionary) ifFalse: [ ^ false ].
+	self size = aDictionary size ifFalse: [ ^ false ].
+	includesAll := [ :aSource :aTarget |
+		| result |
+		result := true.
+		aSource keysAndValuesDo: [ :aKey :aValue |
+			result ifTrue: [
+				| targetKey |
+				targetKey := (aTarget includesKey: aKey)
+					ifTrue: [ aKey ]
+					ifFalse: [ aTarget keys detect: [ :each | each sameContentAs: aKey ] ifNone: [ nil ] ].
+				result := targetKey notNil
+					and: [ (aTarget at: targetKey) sameContentAs: aValue ] ] ].
+		result ].
+	^ (includesAll value: self value: aDictionary)
+		and: [ includesAll value: aDictionary value: self ]
+%
+
 ! Class extensions for 'Array'
 
 !		Instance methods for 'Array'
@@ -13967,6 +15099,23 @@ join: aSequenceableCollection
 	^ self asString join: aSequenceableCollection
 %
 
+! Class extensions for 'CharacterCollection'
+
+!		Instance methods for 'CharacterCollection'
+
+category: '*GToolkit-GemStone-GemStone'
+method: CharacterCollection
+sameContentAs: aString
+	"Answer whether aString is a String or a Symbol with the same characters as the receiver, case-sensitively.
+	A String and a Symbol are never equal in GemStone; names sent by the other side of a connection can be either"
+
+	(aString isKindOf: CharacterCollection) ifFalse: [ ^ false ].
+	self size = aString size ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		(self at: index) = (aString at: index) ifFalse: [ ^ false ] ].
+	^ true
+%
+
 ! Class extensions for 'ClassOrganizer'
 
 !		Class methods for 'ClassOrganizer'
@@ -14028,6 +15177,29 @@ max
 	"Answer the maximum value of the receiver"
 
 	^ self inject: self anyOne into: [ :max :each | max max: each ]
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Collection
+sameContentAs: aCollection
+	"Answer whether aCollection has the same elements as the receiver, each as many times,
+	comparing the elements with #sameContentAs: (Strings and Symbols by their characters)"
+
+	| others used |
+	aCollection isCollection ifFalse: [ ^ false ].
+	self size = aCollection size ifFalse: [ ^ false ].
+	others := aCollection asArray.
+	used := Array new: others size.
+	self do: [ :each |
+		| found |
+		found := false.
+		1 to: others size do: [ :index |
+			(found not and: [ (used at: index) isNil and: [ each sameContentAs: (others at: index) ] ])
+				ifTrue: [
+					used at: index put: true.
+					found := true ] ].
+		found ifFalse: [ ^ false ] ].
+	^ true
 %
 
 category: '*GToolkit-GemStone-GemStone'
@@ -14555,6 +15727,15 @@ isNotNil
 	^ self ~~ nil
 %
 
+category: '*GToolkit-GemStone-GemStone'
+method: Object
+sameContentAs: anObject
+	"Answer whether the receiver and anObject are equal.
+	CharacterCollection compares Strings and Symbols by their characters; collections compare their elements with this message"
+
+	^ self = anObject
+%
+
 ! Class extensions for 'OrderedCollection'
 
 !		Instance methods for 'OrderedCollection'
@@ -14642,6 +15823,20 @@ flatCollect: aBlock
 		streamContents: [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ]
 %
 
+category: '*GToolkit-GemStone-GemStone'
+method: SequenceableCollection
+sameContentAs: otherCollection
+	"Answer whether otherCollection has the same species, size and elements as the receiver,
+	comparing the elements with #sameContentAs: (Strings and Symbols by their characters)"
+
+	self == otherCollection ifTrue: [ ^ true ].
+	self species == otherCollection species ifFalse: [ ^ false ].
+	self size = otherCollection size ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		((self at: index) sameContentAs: (otherCollection at: index)) ifFalse: [ ^ false ] ].
+	^ true
+%
+
 ! Class extensions for 'Set'
 
 !		Instance methods for 'Set'
@@ -14695,6 +15890,17 @@ repeat: aNumber
 
 category: '*GToolkit-GemStone-GemStone'
 method: String
+sameContentAs: aString
+	"Compare string and symbol contents, case-sensitively, without collation tables."
+
+	(aString isString and: [ self size = aString size ]) ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		(self at: index) = (aString at: index) ifFalse: [ ^ false ] ].
+	^ true
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: String
 utf8Encoded
 	"Answer a ByteArray of the receiver in UTF8 format"
 
@@ -14737,6 +15943,17 @@ method: Symbol
 cull: anObject cull: arg2 cull: arg3 cull: arg4
 
 	^ anObject perform: self
+%
+
+category: '*GToolkit-GemStone-GemStone'
+method: Symbol
+sameContentAs: aString
+	"Compare the receiver and aString."
+
+	self == aString ifTrue: [^ true].
+	self class == aString class ifTrue: [^ false].
+	"Use String comparison otherwise"
+	^ super sameContentAs: aString
 %
 
 category: '*GToolkit-GemStone-GemStone'
