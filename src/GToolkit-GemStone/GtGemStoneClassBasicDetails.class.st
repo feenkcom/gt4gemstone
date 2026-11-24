@@ -27,7 +27,8 @@ GtGemStoneClassBasicDetails >> asDictionaryForExport [
 GtGemStoneClassBasicDetails >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 	
-	targetClassName := aDictionary at: 'targetClassName'.
+	"A class name, also when the other side sent it as a String"
+	targetClassName := (aDictionary at: 'targetClassName') ifNotNil: [ :aName | aName asSymbol ].
 	targetClassIconName := aDictionary at: 'targetClassIconName'.
 ]
 

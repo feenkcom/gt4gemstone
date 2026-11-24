@@ -274,7 +274,7 @@ GtRemoteGemStoneDebuggerStepExamples >> scripterWithDebuggerOn: aBlock withExcep
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggerStepExamples >> stepIntoMethodNamed: aMethodName in: aDebuggingSession [
 	[ aDebuggingSession remoteStackFrames noneSatisfy: [ :f |
-		f methodSelector = aMethodName ] ] whileTrue: [
+		(f methodSelector sameContentAs: aMethodName) ] ] whileTrue: [
 			aDebuggingSession gsStepIntoFrameIdentifier:
 				aDebuggingSession remoteContext frameIdentifier.
 			aDebuggingSession synchronizeCallStack ]
