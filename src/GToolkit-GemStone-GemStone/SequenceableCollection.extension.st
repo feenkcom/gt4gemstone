@@ -1,13 +1,13 @@
-Extension { #name : #SequenceableCollection }
+Extension { #name : 'SequenceableCollection' }
 
-{ #category : #'*GToolkit-GemStone-GemStone' }
+{ #category : '*GToolkit-GemStone-GemStone' }
 SequenceableCollection >> allButFirstDo: block [
 
 	2 to: self size do:
 		[ :index | block value: (self at: index) ]
 ]
 
-{ #category : #'*GToolkit-GemStone-GemStone' }
+{ #category : '*GToolkit-GemStone-GemStone' }
 SequenceableCollection >> flatCollect: aBlock [
 	"Evaluate aBlock for each of the receiver's elements and answer the
 	list of all resulting values flatten one level. Assumes that aBlock returns some kind
@@ -23,4 +23,17 @@ SequenceableCollection >> flatCollect: aBlock [
 	^ self class 
 		new: 0
 		streamContents: [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ]
+]
+
+{ #category : '*GToolkit-GemStone-GemStone' }
+SequenceableCollection >> sameContentAs: otherCollection [
+	"Answer whether otherCollection has the same species, size and elements as the receiver,
+	comparing the elements with #sameContentAs: (Strings and Symbols by their characters)"
+
+	self == otherCollection ifTrue: [ ^ true ].
+	self species == otherCollection species ifFalse: [ ^ false ].
+	self size = otherCollection size ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		((self at: index) sameContentAs: (otherCollection at: index)) ifFalse: [ ^ false ] ].
+	^ true
 ]
