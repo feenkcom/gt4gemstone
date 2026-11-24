@@ -982,26 +982,6 @@ GtGemStoneExtensionMethods class >> ext_Collection_reject_thenDo_ [
 ]
 
 { #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_Collection_sameContentAs_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #Collection;
-		hash: #new;
-		source: 'sameContentAs: aCollection 
-	"Answer true if the reciever contains the same elements as aCollection, and vice versa, comparing strings and symbols based on their content."
-	<gtGsExtension>
-
-	^(aCollection isCollection) 
-		and: [ aCollection size = self size 
-			and: [ aCollection allSatisfy: [ :each | 
-				(aCollection occurrencesOf: each) sameContentAs: (self occurrencesOf: each) ]]]'
-
-]
-
-{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_CurrentExecutionEnvironment_runUnmanagedExampleEvaluator_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #runUnmanagedExampleEvaluator:;
@@ -4138,22 +4118,6 @@ GtGemStoneExtensionMethods class >> ext_Object_readUsing_ [
 ]
 
 { #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_Object_sameContentAs_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #Object;
-		hash: #new;
-		source: 'sameContentAs: anObject
-	<gtGsExtension>
-
-	^ self = anObject'
-
-]
-
-{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_Object_write_using_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #write:using:;
@@ -4444,27 +4408,6 @@ GtGemStoneExtensionMethods class >> ext_SequenceableCollection_first_ [
 ]
 
 { #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_SequenceableCollection_hasSameContentElements_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #hasSameContentElements:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #SequenceableCollection;
-		hash: #new;
-		source: 'hasSameContentElements: otherCollection
-	"Compare corresponding elements by content."
-	<gtGsExtension>
-	| size |
-	(otherCollection isKindOf: SequenceableCollection) ifFalse: [ ^ false ].
-	(size := self size) = otherCollection size ifFalse: [ ^ false ].
-	1 to: size do: [ :index |
-		((self at: index) sameContentAs: (otherCollection at: index))
-			ifFalse: [ ^ false ] ].
-	^ true'
-]
-
-{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_SequenceableCollection_identityIndexOf_ifAbsent_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #identityIndexOf:ifAbsent:;
@@ -4528,29 +4471,6 @@ GtGemStoneExtensionMethods class >> ext_SequenceableCollection_last_ [
 	| size |
 	size := self size.
 	^ self copyFrom: size - n + 1 to: size'
-]
-
-{ #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_SequenceableCollection_sameContentAs_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #SequenceableCollection;
-		hash: #new;
-		source: 'sameContentAs: otherCollection
-	"Answer true if the receiver is equivalent to the otherCollection.
-	First test for identity, then rule out different species and sizes of
-	collections. As a last resort, examine each element of the receiver
-	and the otherCollection.
-	Compare strings and symbols based on their content."
-	<gtGsExtension>
-
-	self == otherCollection ifTrue: [^ true].
-	self species == otherCollection species ifFalse: [^ false].
-	^ self hasSameContentElements: otherCollection'
-
 ]
 
 { #category : #extensions }
@@ -5066,24 +4986,6 @@ GtGemStoneExtensionMethods class >> ext_String_removeSuffix_ [
 ]
 
 { #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_String_sameContentAs_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #String;
-		hash: #new;
-		source: 'sameContentAs: aString
-	"Compare string and symbol contents, case-sensitively, without collation tables."
-	<gtGsExtension>
-	(aString isString and: [ self size = aString size ]) ifFalse: [ ^ false ].
-	1 to: self size do: [ :index |
-		(self at: index) = (aString at: index) ifFalse: [ ^ false ] ].
-	^ true'
-]
-
-{ #category : #extensions }
 GtGemStoneExtensionMethods class >> ext_String_splitOn_ [
 	^ GtGemStoneExtensionMethod new
 		selector: #splitOn:;
@@ -5286,26 +5188,6 @@ GtGemStoneExtensionMethods class >> ext_Symbol_isUnary [
 	"#between:and: isUnary >>> false"
 
 	^ self precedence = 1'
-]
-
-{ #category : #extensions }
-GtGemStoneExtensionMethods class >> ext_Symbol_sameContentAs_ [
-	^ GtGemStoneExtensionMethod new
-		selector: #sameContentAs:;
-		protocol: #'gt-extension';
-		meta: false;
-		gtVersions: nil;
-		className: #Symbol;
-		hash: #new;
-		source: 'sameContentAs: aString
-	"Compare the receiver and aString."
-	<gtGsExtension>
-
-	self == aString ifTrue: [^ true].
-	self class == aString class ifTrue: [^ false].
-	"Use String comparison otherwise"
-	^ super sameContentAs: aString'
-
 ]
 
 { #category : #extensions }
