@@ -52,8 +52,8 @@ GtGemStoneToolForMethodImplementorsExamples >> implementorsForUnknownMethodNameD
 	dataBlock := compositeView serializeToLlmPrimiteData.
 	self assertDataBlockHasOnlyJsonData: dataBlock.
 	expectedJson := Dictionary new
-		at: #foundMethods put: NeoJSONArray new;
-		at: #mayHaveMore put: false;
+		at: 'foundMethods' put: NeoJSONArray new;
+		at: 'mayHaveMore' put: false;
 		yourself.
 	self assertDataBlock: dataBlock hasLlmJsonData: expectedJson.
 	^ dataBlock

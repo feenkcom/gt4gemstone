@@ -20,9 +20,9 @@ GtGemStoneToolForClassSubclassesExamples >> classSubclassesDataViewSerialization
 	dataBlock := compositeView serializeToLlmPrimiteData.
 	self assertDataBlockHasOnlyJsonData: dataBlock.
 	jsonData := dataBlock llmJsonData.
-	self assert: (jsonData at: #givenClassName) equals: 'Collection'.
-	self assert: (jsonData at: #subclassNames) isNotEmpty.
-	self assert: (jsonData at: #mayHaveMore) not.
+	self assert: (jsonData at: 'givenClassName') equals: 'Collection'.
+	self assert: (jsonData at: 'subclassNames') isNotEmpty.
+	self assert: (jsonData at: 'mayHaveMore') not.
 	^ dataBlock
 ]
 

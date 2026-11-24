@@ -114,7 +114,8 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	viewDictionary := phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
 
-	self assert: viewSpecification title equals: #Raw.
+	"The title and the type labels are Strings or Symbols, depending on the side that wrote them"
+	self assert: viewSpecification title asString equals: 'Raw'.
 	self
 		assert: viewSpecification columnTitles
 		equals: {'Icon'.
@@ -122,8 +123,8 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 				'Value'}.
 	self assert: viewSpecification columnWidths equals: #(36 nil nil).
 	self
-		assert: (viewSpecification columnTypes collect: #typeLabel)
-		equals: #(#icon #text #text).
+		assert: (viewSpecification columnTypes collect: [ :each | each typeLabel asString ])
+		equals: #('icon' 'text' 'text').
 	self
 		assert: viewSpecification dataTransport
 		equals: GtPhlowViewSpecification dataLazy.

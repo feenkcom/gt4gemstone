@@ -18,11 +18,13 @@ GtGemstoneEvaluationResult class >> isSerializedData: aValue [
 
 { #category : #testing }
 GtGemstoneEvaluationResult class >> isSerializedDataForCurrentClass: aValue [
+	"The type name comes from the other side: a Symbol through RSR, a String through other transports or from other versions"
+
 	^ (aValue class = Dictionary and: [
 		aValue 
 			at: '__typeName'
 			ifPresent: [ :aClassName | 
-				aClassName = self name ] 
+				self name sameContentAs: aClassName ] 
 			ifAbsent: [ false ] ])
 ]
 

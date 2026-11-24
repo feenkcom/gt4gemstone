@@ -605,7 +605,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_executingSnippetAfterSessio
 
 	scripter := self playgroundPageWithConnectedGemStone.
 
-	initialSession := self gemstoneSessionRegistry sessions at: #'test:default'.
+	initialSession := self gemstoneSessionRegistry sessions at: 'test:default'.
 	self assert: initialSession isRunning.	"Close the session and add a new one with the same name."
 	initialSession close.
 	secondSession := self gemstoneSessionRegistry
@@ -1715,7 +1715,7 @@ GtRemoteGemStonePlaygroundExamples >> playgroundPage_stateChangingComputationInM
 		onPagerPaneWithIndex: 2;
 		assertSelectedTabWithName: 'Items';
 		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [ :aSet | aSet remoteClass ] 
+		assertInspectedObjectValueFor: [ :aSet | aSet remoteClass asString ] 
 			equals: 'Set';
 		assertInspectedObjectValueFor: [ :aSet | aSet size ] 
 			equals: 3;

@@ -19,7 +19,8 @@ GtGemStoneMethodCoderHeaderModel >> initializeForCoderViewModel: aCoderViewModel
 				behaviorNameDo: [ :aBehaviourName | aBehaviourName ].
 			methodDefiningBehaviourIconName := coderSpecification coderClassIconName.
 			methodReceiverBehaviorName := aProviderDetails targetClassName.
-			(methodReceiverBehaviorName = #UndefinedObject and: [ aCoderViewModel coderModel stackFrame inBlock ]) ifTrue:
+			"The class name comes from GemStone: a String or a Symbol"
+			((#UndefinedObject sameContentAs: methodReceiverBehaviorName) and: [ aCoderViewModel coderModel stackFrame inBlock ]) ifTrue:
 				[ methodReceiverBehaviorName := '' ].
 			methodReceiverBehaviourIconName := aProviderDetails targetClassIconName ].
 

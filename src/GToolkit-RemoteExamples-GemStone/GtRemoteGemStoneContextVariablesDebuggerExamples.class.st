@@ -276,7 +276,7 @@ GtRemoteGemStoneContextVariablesDebuggerExamples >> objectSlots_02_doubleClickOp
 	scripter inspectorStep
 		onPagerPaneWithIndex: 2;
 		assertInspectedObjectOfType: GtGsBareProxy;
-		assertInspectedObjectValueFor: [ :obj | obj remoteClass ]
+		assertInspectedObjectValueFor: [ :obj | obj remoteClass asString ]
 			equals: [ 'GtRemotePhlowDebuggerStepTestObject' ];
 		play.
 

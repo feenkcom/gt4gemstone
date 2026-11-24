@@ -48,16 +48,17 @@ GtGemStoneToolForClassDefinitionChangeExamples >> changeClassDefinition [
 								'packageName' -> 'GToolkit-GemStone-Examples-Changed'} asDictionary}
 					asDictionary.
 	result := call result targetObject.
-	self assert: result currentClassName equals: className.
-	self assert: result instanceSlotNames asArray equals: #('value' 'otherValue').
-	self assert: result classVariableNames asArray equals: #('DefaultValue').
-	self assert: result classSlotNames asArray equals: #('registry').
+	"The names come from GemStone: Strings or Symbols"
+	self assert: result currentClassName asString equals: className.
+	self assert: (result instanceSlotNames collect: [ :each | each asString ]) asArray equals: #('value' 'otherValue').
+	self assert: (result classVariableNames collect: [ :each | each asString ]) asArray equals: #('DefaultValue').
+	self assert: (result classSlotNames collect: [ :each | each asString ]) asArray equals: #('registry').
 	self assert: result packageName equals: (self isRowan
 		ifTrue: [ 'Kernel' ]
 		ifFalse: [ 'GToolkit-GemStone-Examples-Changed' ]).
 	self assert: result comment equals: 'Changed by the GemStone LLM tool'.
-	self assert: result allInstanceMethodNames asArray equals: #('keptInstanceMethod').
-	self assert: result allClassMethodNames asArray equals: #('keptClassMethod').
+	self assert: (result allInstanceMethodNames collect: [ :each | each asString ]) asArray equals: #('keptInstanceMethod').
+	self assert: (result allClassMethodNames collect: [ :each | each asString ]) asArray equals: #('keptClassMethod').
 	retainedMethods := self runningServer
 		evaluateBlockAndWait: [ :aName |
 			| cls |
@@ -70,7 +71,7 @@ GtGemStoneToolForClassDefinitionChangeExamples >> changeClassDefinition [
 				cls class categoryOfSelector: #keptClassMethod } ]
 		withArguments: {className}
 		serializationStrategy: GtRsrWireSerializationStrategy.
-	self assert: retainedMethods equals: { #(#keptInstanceMethod). #(#keptClassMethod). 41. 43. #accessing. #accessing } ]
+	self assert: (retainedMethods sameContentAs: { #(#keptInstanceMethod). #(#keptClassMethod). 41. 43. #accessing. #accessing }) ]
 		ensure: [ self runningServer
 				evaluateBlockAndWait: [ :aName | UserGlobals removeKey: aName asSymbol ifAbsent: [  ] ]
 				withArguments: {className}

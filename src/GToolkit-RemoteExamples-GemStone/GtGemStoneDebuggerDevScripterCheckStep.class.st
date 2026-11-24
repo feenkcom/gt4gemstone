@@ -290,7 +290,7 @@ GtGemStoneDebuggerDevScripterCheckStep >> doubleClickOnVariableNamed: aName [
 			list withAllChildrenBreadthFirst
 				detect: [ :el |
 					(el isKindOf: BrLabel) and: [
-						el text asString = aName ] ] ]
+						el text asString = aName asString ] ] ]
 ]
 
 { #category : #'actions - stack' }
