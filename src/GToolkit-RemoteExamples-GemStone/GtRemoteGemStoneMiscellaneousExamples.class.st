@@ -35,11 +35,15 @@ GtRemoteGemStoneMiscellaneousExamples >> remoteExampleExecution [
 { #category : #examples }
 GtRemoteGemStoneMiscellaneousExamples >> sameContentAs [
 	"Confirm #sameContentAs: operation in GemStone.
-	Requires GT.gs to be loaded.
-	noTest as GT.gs is not loaded by default."
+	gt4gemstone 1.1.699 and older have #sameContentAs: in GemStone only when GT.gs is loaded, which is not the default."
+
 	<gtExample>
-	<noTest>
+	<after: #stopServer>
 	| results |
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_699
+		do: [ ^ self ].
+
 	results := self runningServer
 			evaluateAndWait: '
 		{ ('''' sameContentAs: '''').

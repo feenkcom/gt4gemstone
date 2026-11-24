@@ -12,11 +12,12 @@ GtRemoteGemStoneDeclarativeViewsExamples >> assertColumnedListTypedColumnsTwoIte
 
 	self runningServer
 		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_699
-		do: [ ^ self
+		do: [ self
 				assert: anItemsCollection
-				equals: self expectedColumnedListTypedColumnsTwoItemsUpToGt4GemStone1_1_699 ].
-
-	self assert: anItemsCollection equals: self expectedColumnedListTypedColumnsTwoItems
+				equals: self expectedColumnedListTypedColumnsTwoItemsUpToGt4GemStone1_1_699 ]
+		after: [ self
+				assert: anItemsCollection
+				equals: self expectedColumnedListTypedColumnsTwoItems ]
 ]
 
 { #category : #private }
