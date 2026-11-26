@@ -59,3 +59,11 @@ Object >> isInteger [
 Object >> isNotNil [
 	^ self ~~ nil
 ]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+Object >> sameContentAs: anObject [
+	"Answer whether the receiver and anObject are equal.
+	CharacterCollection compares Strings and Symbols by their characters; collections compare their elements with this message"
+
+	^ self = anObject
+]

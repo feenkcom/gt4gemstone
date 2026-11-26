@@ -19,9 +19,9 @@ GtGemStoneToolForClassReferencesExamples >> classReferencesDataViewSerialization
 	dataBlock := compositeView serializeToLlmPrimiteData.
 	self assertDataBlockHasOnlyJsonData: dataBlock.
 	jsonData := dataBlock compositeJsonData.
-	self assert: (jsonData at: #givenClassName) equals: 'GtGemStoneEvaluationContext'.
-	self assert: (jsonData at: #mayHaveMore) not.
-	self assert: (jsonData at: #references) isNotEmpty.
+	self assert: (jsonData at: 'givenClassName') equals: 'GtGemStoneEvaluationContext'.
+	self assert: (jsonData at: 'mayHaveMore') not.
+	self assert: (jsonData at: 'references') isNotEmpty.
 	^ dataBlock
 ]
 

@@ -313,7 +313,8 @@ GtGemStoneStackFrameFilter >> isEvaluationInfrastructureAt: anIndex [
 { #category : #testing }
 GtGemStoneStackFrameFilter >> isExecuteHandlerBarrierAt: anIndex [
 
-	^ (allFrames at: anIndex) selector = '_executeHandler:'
+	"The selector is a Symbol or a String, depending on how the frame was read"
+	^ #_executeHandler: sameContentAs: (allFrames at: anIndex) selector
 ]
 
 { #category : #testing }

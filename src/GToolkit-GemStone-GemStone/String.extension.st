@@ -28,6 +28,16 @@ String >> repeat: aNumber [
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
+String >> sameContentAs: aString [
+	"Compare string and symbol contents, case-sensitively, without collation tables."
+
+	(aString isString and: [ self size = aString size ]) ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		(self at: index) = (aString at: index) ifFalse: [ ^ false ] ].
+	^ true
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
 String >> utf8Encoded [
 	"Answer a ByteArray of the receiver in UTF8 format"
 

@@ -690,7 +690,8 @@ GtRsrProxyServiceClient >> llmRemoteJsonObject [
 GtRsrProxyServiceClient >> object [
 	"Answer the receiver's object as an immediate"
 
-	(#(Set Dictionary Array OrderedCollection) includes: remoteClass) ifFalse:
+	"The class name comes from GemStone: a String or a Symbol"
+	(#(Set Dictionary Array OrderedCollection) anySatisfy: [ :each | each sameContentAs: remoteClass ]) ifFalse:
 		[ self error: 'Unable to return non-immediate object' ].
 	^ remoteSelf object wait
 ]

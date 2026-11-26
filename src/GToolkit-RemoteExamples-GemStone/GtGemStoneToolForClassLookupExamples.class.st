@@ -19,10 +19,10 @@ GtGemStoneToolForClassLookupExamples >> lookupClassDataViewSerialization [
 	dataBlock := compositeView serializeToLlmPrimiteData.
 	self assertDataBlockHasOnlyJsonData: dataBlock.
 	jsonData := dataBlock llmJsonData.
-	self assert: (jsonData at: #currentClassName) equals: 'GtRsrProxyServiceServer'.
-	self assert: (jsonData at: #allInstanceMethodNames) isNotEmpty.
-	self assert: ((jsonData at: #allClassMethodNames) isKindOf: Collection).
-	self assert: (jsonData at: #options) isEmpty.
+	self assert: (jsonData at: 'currentClassName') equals: 'GtRsrProxyServiceServer'.
+	self assert: (jsonData at: 'allInstanceMethodNames') isNotEmpty.
+	self assert: ((jsonData at: 'allClassMethodNames') isKindOf: Collection).
+	self assert: (jsonData at: 'options') isEmpty.
 	^ dataBlock
 ]
 

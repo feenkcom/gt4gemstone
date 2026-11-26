@@ -24,3 +24,16 @@ SequenceableCollection >> flatCollect: aBlock [
 		new: 0
 		streamContents: [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ]
 ]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
+SequenceableCollection >> sameContentAs: otherCollection [
+	"Answer whether otherCollection has the same species, size and elements as the receiver,
+	comparing the elements with #sameContentAs: (Strings and Symbols by their characters)"
+
+	self == otherCollection ifTrue: [ ^ true ].
+	self species == otherCollection species ifFalse: [ ^ false ].
+	self size = otherCollection size ifFalse: [ ^ false ].
+	1 to: self size do: [ :index |
+		((self at: index) sameContentAs: (otherCollection at: index)) ifFalse: [ ^ false ] ].
+	^ true
+]

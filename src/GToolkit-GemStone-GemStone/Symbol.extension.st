@@ -30,6 +30,16 @@ Symbol >> cull: anObject cull: arg2 cull: arg3 cull: arg4 [
 ]
 
 { #category : #'*GToolkit-GemStone-GemStone' }
+Symbol >> sameContentAs: aString [
+	"Compare the receiver and aString."
+
+	self == aString ifTrue: [^ true].
+	self class == aString class ifTrue: [^ false].
+	"Use String comparison otherwise"
+	^ super sameContentAs: aString
+]
+
+{ #category : #'*GToolkit-GemStone-GemStone' }
 Symbol >> value: anObject [
 
 	^ anObject perform: self

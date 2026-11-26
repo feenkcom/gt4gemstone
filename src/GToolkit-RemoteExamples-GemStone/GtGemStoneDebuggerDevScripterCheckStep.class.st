@@ -153,8 +153,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 	self assert
 		onParentStepTarget: self;
 		label: 'Assert session frame ' , anIndex printString , ' selector';
-		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector ]
-			equals: aSelector;
+		value: [ :debuggerEl | (debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector asString ]
+			equals: aSelector asString;
 		// GtGemStoneExpandableDebuggerElement.
 	self assert
 		onParentStepTarget: self;
@@ -170,8 +170,8 @@ GtGemStoneDebuggerDevScripterCheckStep >> assertSessionFrameAtTopIndex: anIndex 
 		onParentStepTarget: self;
 		label: 'Assert session frame ' , anIndex printString , ' not selector ' , aSelector;
 		value: [ :debuggerEl | 
-				(debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector
-					~= aSelector ]
+				((debuggerEl debugSession remoteStackFrames at: anIndex) methodSelector
+					sameContentAs: aSelector) not ]
 			equals: true;
 		// GtGemStoneExpandableDebuggerElement
 ]
@@ -290,7 +290,7 @@ GtGemStoneDebuggerDevScripterCheckStep >> doubleClickOnVariableNamed: aName [
 			list withAllChildrenBreadthFirst
 				detect: [ :el |
 					(el isKindOf: BrLabel) and: [
-						el text asString = aName ] ] ]
+						el text asString = aName asString ] ] ]
 ]
 
 { #category : #'actions - stack' }

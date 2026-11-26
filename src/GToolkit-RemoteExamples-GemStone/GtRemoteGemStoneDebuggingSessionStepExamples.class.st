@@ -36,7 +36,7 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: an
 
 { #category : #assertions }
 GtRemoteGemStoneDebuggingSessionStepExamples >> assertFrames: frames atIndex: anIndex isSelector: aSelector inBlock: aBoolean [
-	self assert: (frames at: anIndex) methodSelector equals: aSelector.
+	self assert: (frames at: anIndex) methodSelector asString equals: aSelector asString.
 	self assert: (frames at: anIndex) inBlock equals: aBoolean
 ]
 
@@ -143,12 +143,12 @@ GtRemoteGemStoneDebuggingSessionStepExamples >> stepIntoIn: aDebuggingSession [
 { #category : #'private - helpers' }
 GtRemoteGemStoneDebuggingSessionStepExamples >> stepIntoMethodNamed: aMethodName in: aDebuggingSession [
 	[ aDebuggingSession remoteStackFrames noneSatisfy: [ :f |
-		f methodSelector = aMethodName ] ] whileTrue: [
+		(f methodSelector sameContentAs: aMethodName) ] ] whileTrue: [
 			self stepIntoIn: aDebuggingSession ].
 
 	self
 		assert: (aDebuggingSession remoteStackFrames anySatisfy: [ :f |
-			f methodSelector = aMethodName ])
+			(f methodSelector sameContentAs: aMethodName) ])
 		description: aMethodName, ' should be on the stack'.
 ]
 

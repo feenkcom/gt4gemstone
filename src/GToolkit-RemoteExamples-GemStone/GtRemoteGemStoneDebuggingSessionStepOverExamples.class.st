@@ -197,7 +197,7 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> doLoop_03_exitMethod [
 	self stepOverIn: debuggingSession.
 
 	self
-		assert: debuggingSession remoteContext methodSelector ~= 'doLoop'
+		assert: (debuggingSession remoteContext methodSelector sameContentAs: 'doLoop') not
 		description: 'Should have exited doLoop'.
 
 	^ debuggingSession
@@ -296,13 +296,13 @@ GtRemoteGemStoneDebuggingSessionStepOverExamples >> multipleMethodCalls_04_exitM
 	stepCount := 0.
 	maxSteps := 20.
 	[ topFrame := debuggingSession remoteContext.
-	  (topFrame methodSelector = 'doMultipleMethodCalls') and: [ stepCount < maxSteps ] ]
+	  (topFrame methodSelector sameContentAs: 'doMultipleMethodCalls') and: [ stepCount < maxSteps ] ]
 		whileTrue: [
 			self stepOverIn: debuggingSession.
 			stepCount := stepCount + 1 ].
 
 	self
-		assert: debuggingSession remoteContext methodSelector ~= 'doMultipleMethodCalls'
+		assert: (debuggingSession remoteContext methodSelector sameContentAs: 'doMultipleMethodCalls') not
 		description: 'Should have exited doMultipleMethodCalls'.
 	self assert: stepCount < maxSteps.
 

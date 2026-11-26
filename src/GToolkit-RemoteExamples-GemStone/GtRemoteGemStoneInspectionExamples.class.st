@@ -700,7 +700,7 @@ GtRemoteGemStoneInspectionExamples >> spawnNavigationInColumnListViewWithPrimiti
 
 	gemStoneInspectorTool := self selectedToolFromPageElement: secondPageElement.
 
-	self assert: gemStoneInspectorTool object remoteClass equals: 'SmallInteger'.
+	self assert: gemStoneInspectorTool object remoteClass equals: #SmallInteger.
 	self assert: gemStoneInspectorTool object gtDisplayString equals: '42'.
 
 	^ scripter

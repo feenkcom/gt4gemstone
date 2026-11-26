@@ -12,7 +12,7 @@ Class {
 { #category : #'helpers - assertions' }
 GtRemoteGemStoneStackFilterExamples >> assertFrames: frames atIndex: anIndex isSelector: aSelector inBlock: aBoolean [
 
-	self assert: (frames at: anIndex) methodSelector equals: aSelector.
+	self assert: (frames at: anIndex) methodSelector asString equals: aSelector asString.
 	self assert: (frames at: anIndex) inBlock equals: aBoolean
 ]
 
@@ -131,7 +131,7 @@ GtRemoteGemStoneStackFilterExamples >> callMethodInHandler_05_stepOutOfHandlerRe
 	self stepOverIn: debuggingSession.
 
 	frames := debuggingSession remoteStackFrames.
-	self assert: frames first methodSelector equals: '_executeHandler:'.
+	self assert: frames first methodSelector asString equals: '_executeHandler:'.
 	self assert: frames first inBlock equals: false.
 
 	^ debuggingSession
@@ -317,7 +317,7 @@ GtRemoteGemStoneStackFilterExamples >> haltInDoubleNestedHandler_02_filterObject
 	filter := self filterForDebuggingSession: debuggingSession.
 	allFrames := filter allFrames.
 
-	executeHandlerCount := allFrames count: [ :f | f selector = '_executeHandler:' ].
+	executeHandlerCount := allFrames count: [ :f | (f selector sameContentAs: '_executeHandler:') ].
 	self assert: executeHandlerCount >= 2.
 
 	self assert: filter executeHandlerBarrierIndex > 0.
@@ -490,7 +490,7 @@ GtRemoteGemStoneStackFilterExamples >> haltInExceptionHandler_04_bottomContextsF
 
 	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
 	filteredFrames do: [ :frame |
-		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+		self assert: (evalInfraClassNames includesSameContentAs: frame targetClassName) not ].
 
 	self assert: filteredFrames last sender isNotNil.
 
@@ -595,7 +595,7 @@ GtRemoteGemStoneStackFilterExamples >> haltInTripleNestedHandler_04_bottomContex
 
 	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
 	filteredFrames do: [ :frame |
-		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+		self assert: (evalInfraClassNames includesSameContentAs: frame targetClassName) not ].
 
 	self assert: filteredFrames last sender isNotNil.
 
@@ -684,7 +684,7 @@ GtRemoteGemStoneStackFilterExamples >> multipleCallsInHandler_04_stepOutOfHandle
 	self stepOverIn: debuggingSession.
 
 	frames := debuggingSession remoteStackFrames.
-	self assert: frames first methodSelector equals: '_executeHandler:'.
+	self assert: frames first methodSelector asString equals: '_executeHandler:'.
 
 	^ debuggingSession
 ]
@@ -752,7 +752,7 @@ GtRemoteGemStoneStackFilterExamples >> normalHalt_03_bottomContextsFiltered [
 
 	evalInfraClassNames := #(GsProcess GsNMethod GtRsrEvaluatorServiceServer GtGemStoneEvaluationContext).
 	filteredFrames do: [ :frame |
-		self assert: (evalInfraClassNames includes: frame targetClassName) not ].
+		self assert: (evalInfraClassNames includesSameContentAs: frame targetClassName) not ].
 
 	self assert: filteredFrames last sender isNotNil.
 

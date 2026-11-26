@@ -6,6 +6,20 @@ Class {
 	#category : #'GToolkit-RemoteExamples-GemStone'
 }
 
+{ #category : #assertions }
+GtRemoteGemStoneDeclarativeViewsExamples >> assertColumnedListTypedColumnsTwoItems: anItemsCollection [
+	"gt4gemstone 1.1.699 and older export the item data with Symbol keys"
+
+	self runningServer
+		gt4GemStoneUpToVersion: GtGemStoneSemanticVersionNumber v1_1_699
+		do: [ self
+				assert: anItemsCollection
+				equals: self expectedColumnedListTypedColumnsTwoItemsUpToGt4GemStone1_1_699 ]
+		after: [ self
+				assert: anItemsCollection
+				equals: self expectedColumnedListTypedColumnsTwoItems ]
+]
+
 { #category : #private }
 GtRemoteGemStoneDeclarativeViewsExamples >> computeStyledTextForTreeNumber: anInteger [
 	| computedString|
@@ -20,6 +34,15 @@ GtRemoteGemStoneDeclarativeViewsExamples >> computeStyledTextForTreeNumber: anIn
 
 { #category : #'accessing - expected' }
 GtRemoteGemStoneDeclarativeViewsExamples >> expectedColumnedListTypedColumnsTwoItems [
+
+	^ ((Array new: 2) at: 1 put: ((Dictionary new) add: ('nodeValue'->((Dictionary new) add: ('columnValues'->((Array new: 3) at: 1 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'+1.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'+2'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: ('nodeId'->1); yourself); at: 2 put: ((Dictionary new) add: ('nodeValue'->((Dictionary new) add: ('columnValues'->((Array new: 3) at: 1 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'+2.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'+3'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: ('valueTypeName'->'textualValue'); add: ('itemText'->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: ('nodeId'->2); yourself); yourself)
+]
+
+{ #category : #'accessing - expected' }
+GtRemoteGemStoneDeclarativeViewsExamples >> expectedColumnedListTypedColumnsTwoItemsUpToGt4GemStone1_1_699 [
+	"The item data as gt4gemstone 1.1.699 and older export it: the keys are Symbols.
+	Remove with the version check in #assertColumnedListTypedColumnsTwoItems: once those versions are no longer supported"
+
 
 	^ ((Array new: 2) at: 1 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+1.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: (#nodeId->1); yourself); at: 2 put: ((Dictionary new) add: (#nodeValue->((Dictionary new) add: (#columnValues->((Array new: 3) at: 1 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+2.0'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 2 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'+3'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); at: 3 put: ((Dictionary new) add: (#valueTypeName->'textualValue'); add: (#itemText->'classIcon'); add: ('__typeName'->#GtRemotePhlowItemTextualValue); yourself); yourself)); yourself)); add: (#nodeId->2); yourself); yourself)
 ]
@@ -114,7 +137,8 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 	viewDictionary := phlowSpecificationsProvider getViewDeclaration: #gtRawFor:.
 	viewSpecification := GtPhlowViewSpecification fromDictionary: viewDictionary.
 
-	self assert: viewSpecification title equals: #Raw.
+	"The title and the type labels are Strings or Symbols, depending on the side that wrote them"
+	self assert: viewSpecification title asString equals: 'Raw'.
 	self
 		assert: viewSpecification columnTitles
 		equals: {'Icon'.
@@ -122,8 +146,8 @@ GtRemoteGemStoneDeclarativeViewsExamples >> rawView [
 				'Value'}.
 	self assert: viewSpecification columnWidths equals: #(36 nil nil).
 	self
-		assert: (viewSpecification columnTypes collect: #typeLabel)
-		equals: #(#icon #text #text).
+		assert: (viewSpecification columnTypes collect: [ :each | each typeLabel asString ])
+		equals: #('icon' 'text' 'text').
 	self
 		assert: viewSpecification dataTransport
 		equals: GtPhlowViewSpecification dataLazy.

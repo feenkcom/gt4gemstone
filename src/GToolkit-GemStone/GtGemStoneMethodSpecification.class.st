@@ -139,11 +139,11 @@ GtGemStoneMethodSpecification >> initializeFromJSONDictionary: aDictionary [
 	super initializeFromJSONDictionary: aDictionary.
 
 	self
-		initializeForClassName: (aDictionary at: 'coderClassName')
+		initializeForClassName: ((aDictionary at: 'coderClassName') ifNotNil: [ :aName | aName asSymbol ])
 		iconName: (aDictionary at: 'coderClassIconName' ifAbsent: [ nil ])
 		isMeta: (aDictionary at: 'isMeta')
 		categoryName: (aDictionary at: 'categoryName')
-		selector: (aDictionary at: 'selector')
+		selector: ((aDictionary at: 'selector') ifNotNil: [ :aSelector | aSelector asSymbol ])
 		sourceString: (aDictionary at: 'sourceString')
 		protocolName: (aDictionary at: 'protocolName')
 		explicitReceiver: ((aDictionary includesKey: 'explicitProviderBehaviourDetails')

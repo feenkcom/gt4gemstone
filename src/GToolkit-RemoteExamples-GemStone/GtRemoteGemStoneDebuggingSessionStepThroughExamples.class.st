@@ -176,14 +176,14 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> doLoop_06_exitMethod [
 	stepCount := 0.
 	maxSteps := 100.
 	[ topFrame := debuggingSession remoteContext.
-	  (topFrame methodSelector = 'doLoop') and: [ stepCount < maxSteps ] ]
+	  (topFrame methodSelector sameContentAs: 'doLoop') and: [ stepCount < maxSteps ] ]
 		whileTrue: [
 			self stepThroughIn: debuggingSession.
 			stepCount := stepCount + 1 ].
 
 	topFrame := debuggingSession remoteContext.
 	self
-		assert: topFrame methodSelector ~= 'doLoop'
+		assert: (topFrame methodSelector sameContentAs: 'doLoop') not
 		description: 'Should have exited doLoop'.
 	self assert: stepCount < maxSteps.
 
@@ -227,7 +227,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_02_st
 
 	3 timesRepeat: [
 		self stepThroughIn: debuggingSession.
-		self assert: debuggingSession remoteContext methodSelector equals: 'doMultipleMethodCalls'.
+		self assert: debuggingSession remoteContext methodSelector asString equals: 'doMultipleMethodCalls'.
 		self assert: debuggingSession remoteContext inBlock equals: false ].
 
 	frames := debuggingSession remoteStackFrames.
@@ -256,7 +256,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> multipleMethodCalls_03_ex
 	7 timesRepeat: [ self stepThroughIn: debuggingSession ].
 
 	self
-		assert: debuggingSession remoteContext methodSelector ~= 'doMultipleMethodCalls'
+		assert: (debuggingSession remoteContext methodSelector sameContentAs: 'doMultipleMethodCalls') not
 		description: 'Should have exited doMultipleMethodCalls'.
 
 	^ debuggingSession
@@ -280,7 +280,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_01_enterMeth
 
 	self stepIntoMethodNamed: 'doNestedBlocks' in: debuggingSession.
 
-	self assert: debuggingSession remoteContext methodSelector equals: 'doNestedBlocks'.
+	self assert: debuggingSession remoteContext methodSelector asString equals: 'doNestedBlocks'.
 
 	^ debuggingSession
 ]
@@ -431,7 +431,7 @@ GtRemoteGemStoneDebuggingSessionStepThroughExamples >> nestedBlocks_05_exitMetho
 	4 timesRepeat: [ self stepThroughIn: debuggingSession ].
 
 	self
-		assert: debuggingSession remoteContext methodSelector ~= 'doNestedBlocks'
+		assert: (debuggingSession remoteContext methodSelector sameContentAs: 'doNestedBlocks') not
 		description: 'Should have exited doNestedBlocks'.
 
 	^ debuggingSession

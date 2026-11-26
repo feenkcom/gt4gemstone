@@ -470,7 +470,8 @@ GtGemStoneMethodCoderModel >> handleCompilerErrorsDuring: aBlock errorDo: anErro
 			| remoteException |
 			
 			remoteException := ex debuggerProxy proxyPerform: #exception.
-			(remoteException remoteClass = #CompileError)
+			"The class name comes from GemStone: a String or a Symbol"
+			(#CompileError sameContentAs: remoteException remoteClass)
 				ifTrue:
 					[ | errorDetails |
 					errorDetails := remoteException proxyPerform: #errorDetails.

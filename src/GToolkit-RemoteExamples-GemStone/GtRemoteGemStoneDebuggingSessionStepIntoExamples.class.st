@@ -20,7 +20,7 @@ GtRemoteGemStoneDebuggingSessionStepIntoExamples >> doLoop_02_enterBlock [
 	found := false.
 	[ found not and: [ stepCount < 100 ] ] whileTrue: [
 		topFrame := debuggingSession remoteContext.
-		(topFrame methodSelector = 'doLoop' and: [ topFrame inBlock ])
+		((topFrame methodSelector sameContentAs: 'doLoop') and: [ topFrame inBlock ])
 			ifTrue: [ found := true ]
 			ifFalse: [
 				self stepIntoIn: debuggingSession.
