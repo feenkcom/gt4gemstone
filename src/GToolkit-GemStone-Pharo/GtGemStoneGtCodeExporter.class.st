@@ -238,8 +238,10 @@ GtGemStoneGtCodeExporter >> configuredExporter [
 { #category : #private }
 GtGemStoneGtCodeExporter >> excludedClassList [
 	<excludedClasses>
-	^ { GtGemStoneTopazExporterExamples.
-		GtExamplesCommandLineHandler. }
+	^ {GtGemStoneTopazExporterExamples.
+		GtExamplesCommandLineHandler.
+		GtLTraitMethodExamplesSubjects.
+		GtLMethodReferenceTraitExamples}
 ]
 
 { #category : #private }
@@ -348,7 +350,21 @@ GtGemStoneGtCodeExporter >> excludedMethodsList [
 		Point >> #asMargin.
 		MemoryTelemetry >> #startSync:.
 		TelemetryPing >> #totalFullGCTimeMicroseconds.
-		TelemetryPing >> #totalScavengeGCTimeMicroseconds}
+		TelemetryPing >> #totalScavengeGCTimeMicroseconds.
+		GtLMagritteToolForMethodCompilationExamples
+			>> #compileNewClassSideTraitMethodWithoutProtocol.
+		GtLMagritteToolForMethodCompilationExamples >> #compileOverridingTraitMethod.
+		GtLMagritteToolForMethodCompilationExamples
+			>> #compileOverridingTraitMethodWithoutProtocol.
+		GtLMagritteToolForMethodRemovalExamples >> #removeClassSideTraitProvidedMethod.
+		GtLMagritteToolForMethodRemovalExamples >> #removeConflictingTraitMethod.
+		GtLMagritteToolForMethodRemovalExamples >> #removeMethodFromTrait.
+		GtLMagritteToolForMethodRemovalExamples >> #removeOverridingTraitMethod.
+		GtLMagritteToolForMethodRemovalExamples >> #removeTraitProvidedMethod.
+		GtLRefactoringCodeChangesExamples
+			>> #overrideOfTraitMethodIsReportedAsAddition.
+		GtLRefactoringCodeChangesExamples
+			>> #removeTraitMethodReportsOnlyTheTraitMethod}
 ]
 
 { #category : #accessing }
@@ -780,9 +796,11 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#BlTextStyler
 		#BlTextStylerTelemetry
 		#BlTextUnderlayAttribute
+		#BlTheme
 		#BlVector
 		#BlVisibility
 		#BrAnchoredVisualAnalysis
+		#BrAntColors
 		#BrAsyncFileWidget
 		#BrButton
 		#BrCheckbox
@@ -1158,6 +1176,7 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#GtRrLocalManagerStartupAndShutdown
 		#GtSamplingProfiler
 		#GtSearchFixedMethodsFilter
+		#GtSearchReferencesFilter
 		#GtSelectorInputFilter
 		#GtSelectorStyler
 		#GtSharedStringUpdated
@@ -1271,6 +1290,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#PBApplication
 		#PBProxyObject
 		#PNGReadWriter
+		#PP2CompositeNode
+		#PP2Failure
+		#PP2PredicateObjectNode
 		#PackageOrganizer
 		#PharoLinkTestCaseError
 		#PharoLinkTestCaseFailure
@@ -1315,6 +1337,9 @@ GtGemStoneGtCodeExporter >> stubClassNames [
 		#SystemAnnouncer
 		#SystemNavigation
 		#TAsyncFuture
+		#TGtLExampleComposedTrait
+		#TGtLExampleTrait
+		#TaSequence
 		#TaskAtQueue
 		#ThemeIcons
 		#TraitChange
